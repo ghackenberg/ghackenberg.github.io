@@ -627,16 +627,6 @@ function buildImageIndex(): void {
           } else if (norm.includes('src/content/characters/')) {
             const match = norm.match(/src\/content\/characters\/([^/]+)/);
             targetDir = match ? `characters/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'characters';
-          } else if (norm.includes('src/content/feeds/')) {
-            const match = norm.match(/src\/content\/feeds\/(linkedin|youtube|github)\/(.+)\/[^/]+$/);
-            if (match) {
-              const platform = match[1];
-              const subpath = match[2].replace(/[<>:"/\\|?*]/g, '_');
-              targetDir = `feeds/${platform}/${subpath}`;
-            } else {
-              const simpleMatch = norm.match(/src\/content\/feeds\/([^/]+)/);
-              targetDir = simpleMatch ? `feeds/${simpleMatch[1]}` : 'feeds';
-            }
           } else if (norm.includes('src/assets/avatar/')) {
             targetDir = 'assets/avatar';
           } else if (norm.includes('src/assets/technologies/')) {
@@ -777,14 +767,6 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
       const match = searchPath.match(/(?:src\/content\/)?characters\/([^/]+)/);
       const charSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
       return charSlug ? `characters/${charSlug}/[name]-[hash][extname]` : `characters/[name]-[hash][extname]`;
-    }
-    if (searchPath.includes('src/content/feeds/') || searchPath.includes('/feeds/')) {
-      const match = searchPath.match(/(?:src\/content\/)?feeds\/(linkedin|youtube|github)\/(.+)\/[^/]+$/);
-      if (match) {
-        return `feeds/${match[1]}/${match[2].replace(/[<>:"/\\|?*]/g, '_')}/[name]-[hash][extname]`;
-      }
-      const simpleMatch = searchPath.match(/(?:src\/content\/)?feeds\/([^/]+)/);
-      return simpleMatch ? `feeds/${simpleMatch[1]}/[name]-[hash][extname]` : `feeds/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/assets/avatar/') || searchPath.includes('/avatar/') || cleanName.includes('comic-profile')) {
       return `assets/avatar/[name]-[hash][extname]`;

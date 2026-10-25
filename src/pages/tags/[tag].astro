@@ -23,12 +23,6 @@ export async function getStaticPaths() {
   const services = await getCollection("services");
   const interests = await getCollection("interests");
   const visualizations = await getCollection("visualizations");
-  const repos = await getCollection("github-repos");
-
-  const repoMap = new Map();
-  for (const repo of repos) {
-    repoMap.set(repo.id.toLowerCase(), repo.data);
-  }
 
   return tags.map((tag) => {
     const relatedPosts = posts
@@ -88,7 +82,7 @@ interface Props {
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
   presentations: CollectionEntry<"presentations">[];
-  courses: (CollectionEntry<"courses"> & { tech: string; starCount: number })[];
+  courses: CollectionEntry<"courses">[];
   projects: CollectionEntry<"projects">[];
   services: CollectionEntry<"services">[];
   visualizations: CollectionEntry<"visualizations">[];

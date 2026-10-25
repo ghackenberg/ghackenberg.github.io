@@ -106,7 +106,7 @@ for (const file of htmlFiles) {
     // Exempt card/widget components where h2/h3 represents an internal item label rather than a macro content heading
     const isCardOrWidget =
       $el.closest(
-        '.preview-card, .gallery-card, .gallery-track, .gallery-viewport, .tag-card, .publication-card-item, .timeline-slide-entry, [data-timeline-container], [data-timeline-entry], .timeline-card, [data-card-id], .activity-card-anim, [data-screenshot-index], .screenshot-card, a[href]'
+        '.preview-card, .gallery-card, .gallery-track, .gallery-viewport, .tag-card, .publication-card-item, .timeline-slide-entry, [data-timeline-container], [data-timeline-entry], .timeline-card, [data-card-id], [data-screenshot-index], .screenshot-card, a[href]'
       ).length > 0;
 
     if (isCardOrWidget) {

@@ -26,7 +26,6 @@
     "preview": "astro preview",
     "typecheck": "astro check --minimumFailingSeverity hint",
     "lint": "eslint . --max-warnings=0",
-    "sync": "tsx src/scripts/sync.ts",
     "generate-assets": "tsx src/scripts/generate-assets.ts",
     "lighthouse": "node --experimental-strip-types src/scripts/run-lighthouse.ts",
     "mcp:analytics": "tsx src/tools/unified-analytics.ts",

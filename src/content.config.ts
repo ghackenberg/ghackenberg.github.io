@@ -59,76 +59,6 @@ const coverImageSchema = ({ image }: { image: ImageFunction }) =>
     message: "Image title and description must be distinct (no duplicate fallbacks)",
   }));
 
-const linkedinPosts = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/linkedin/posts',
-    pattern: '**/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
-    likes: z.number().default(0),
-    comments: z.number().default(0),
-    shares: z.number().default(0),
-    image: image().nullable().optional(),
-  }),
-});
-
-const linkedinProfile = defineCollection({
-  loader: glob({ base: './src/content/feeds/linkedin', pattern: 'profile.json' }),
-  schema: z.object({
-    followers: z.string().optional(),
-    postIds: z.array(z.string()).optional(),
-  }),
-});
-
-const githubProfile = defineCollection({
-  loader: glob({ base: './src/content/feeds/github', pattern: 'profile.json' }),
-  schema: z.object({
-    followers: z.number(),
-  }),
-});
-
-const githubRepos = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/github/repositories',
-    pattern: '**/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    description: z.string(),
-    url: z.string(),
-    stars: z.number(),
-    language: z.string(),
-    image: image().nullable().optional(),
-    pubDate: z.coerce.date(),
-    pushDate: z.coerce.date(),
-  }),
-});
-
-const youtubeProfile = defineCollection({
-  loader: glob({ base: './src/content/feeds/youtube', pattern: 'profile.json' }),
-  schema: z.object({
-    subscribers: z.string(),
-  }),
-});
-
-const youtubeVideos = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/youtube/videos',
-    pattern: '**/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
-    image: image().nullable().optional(),
-    description: z.string().optional().nullable().default(''),
-    views: z.number().default(0),
-    likes: z.number().default(0),
-  }),
-});
-
 const baseReferenceFields = {
   id: z.string().min(1),
   label: z.string().optional(),
@@ -639,12 +569,6 @@ const newsletters = defineCollection({
 });
 
 export const collections = {
-  'linkedin-posts': linkedinPosts,
-  'linkedin-profile': linkedinProfile,
-  'github-profile': githubProfile,
-  'github-repos': githubRepos,
-  'youtube-profile': youtubeProfile,
-  'youtube-videos': youtubeVideos,
   'posts': posts,
   'publications': publications,
   'visualizations': visualizations,
