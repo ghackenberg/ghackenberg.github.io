@@ -486,7 +486,13 @@ for (const file of htmlFiles) {
       errorsCount++;
       assertion5Errors++;
     }
-    if (!io.creator || io.creator['@type'] !== 'Person' || !io.creator.name) {
+    const hasValidCreator = Boolean(
+      io.creator && (
+        io.creator['@id'] === 'https://hackenberg.tech/#person' ||
+        (io.creator['@type'] === 'Person' && Boolean(io.creator.name))
+      )
+    );
+    if (!hasValidCreator) {
       console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject (${id}) missing valid Person creator`);
       errorsCount++;
       assertion5Errors++;

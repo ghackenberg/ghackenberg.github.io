@@ -121,7 +121,10 @@ const schemaGraph: JsonLdNode[] = [
     "description": presentation.data.description,
     ...(previewUrl ? { "image": `https://hackenberg.tech${previewUrl}` } : {}),
     "author": {
-      "@id": "https://hackenberg.tech/#georg"
+      "@id": "https://hackenberg.tech/#person"
+    },
+    "isPartOf": {
+      "@id": "https://hackenberg.tech/presentations/#collectionpage"
     },
     "datePublished": presentation.data.pubDate.toISOString(),
     "inLanguage": presentation.data.lang,

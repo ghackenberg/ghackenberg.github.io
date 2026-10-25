@@ -3,6 +3,7 @@ import Layout from '@layouts/Layout.astro';
 import Navbar from '@components/Navbar.astro';
 import Container from '@components/Container.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { buildCollectionPageSchema } from '@commons/server/json-ld';
 import NewsletterCard from '@components/NewsletterCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -37,7 +38,7 @@ const breadcrumbSchema = {
   title={pageTitle}
   description={pageDescription}
   image={sortedIssues[0]?.data.icon.src}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("newsletters", sortedIssues.map((n) => ({ id: `https://hackenberg.tech/newsletters/${n.id}/#article` }))), breadcrumbSchema]}
   lang="en"
 >
   <Navbar />

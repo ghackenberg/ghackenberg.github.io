@@ -387,11 +387,8 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
   let totalHtmlEnriched = 0;
   let totalImageObjectsCreated = 0;
 
-  const personEntity = {
-    '@type': 'Person',
+  const personRef = {
     '@id': 'https://hackenberg.tech/#person',
-    name: 'Dr. Georg Hackenberg',
-    url: 'https://hackenberg.tech',
   };
 
   const targetArticleTypes = new Set([
@@ -492,9 +489,9 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         acquireLicensePage: 'https://hackenberg.tech/impressum/#kontakt',
         creditText: 'Dr. Georg Hackenberg',
         copyrightNotice: '© Dr. Georg Hackenberg. All rights reserved.',
-        author: { ...personEntity },
-        creator: { ...personEntity },
-        copyrightHolder: { ...personEntity },
+        author: personRef,
+        creator: personRef,
+        copyrightHolder: personRef,
         isPartOf: { '@id': canonicalPageUrl },
       };
     });

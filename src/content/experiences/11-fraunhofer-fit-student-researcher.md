@@ -8,6 +8,8 @@ endYear: 2010
 location: "Cologne Bonn Region"
 color: "blue"
 order: 10
+organizationId: "https://www.wikidata.org/wiki/Q1451984"
+organizationUrl: "https://www.fit.fraunhofer.de/"
 ---
 
 Implementing markerless 3D hand tracking algorithms and gesture recognition models. Leveraging OpenCV, OpenGL, and C++ to build high-speed computer vision systems for interactive environments.

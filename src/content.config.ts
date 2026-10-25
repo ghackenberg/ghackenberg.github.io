@@ -188,6 +188,9 @@ const experiences = defineCollection({
     location: z.string().optional(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().optional(),
+    organizationId: z.url().optional(),
+    organizationUrl: z.url().optional(),
+    occupationalCategory: z.string().optional(),
   }),
 });
 
@@ -202,6 +205,8 @@ const degrees = defineCollection({
     location: z.string().optional(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().optional(),
+    institutionId: z.url().optional(),
+    institutionUrl: z.url().optional(),
   }),
 });
 

@@ -45,9 +45,10 @@ const moduleServiceSchema = {
   "url": moduleUrl,
   "category": parentService.data.title,
   "provider": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
+    "@id": "https://hackenberg.tech/#person"
+  },
+  "isPartOf": {
+    "@id": `https://hackenberg.tech/services/${parentService.id}/#service`
   },
   "areaServed": "Global"
 };

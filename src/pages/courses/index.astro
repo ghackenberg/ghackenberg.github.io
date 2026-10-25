@@ -7,6 +7,7 @@ import { getImage } from "astro:assets";
 import CourseCard from "@components/CourseCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const courses = await getCollection("courses");
 
@@ -56,7 +57,7 @@ const breadcrumbSchema = {
   description="Explore university course materials, lecture slides, and GitHub repositories on software engineering and industrial informatics by Dr. Georg Hackenberg."
   image={firstCourseScreenshot}
   preloadImage={optimizedFirstScreenshot?.src}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("courses", courses.map((c) => ({ id: `https://hackenberg.tech/courses/${c.id}/#course` }))), breadcrumbSchema]}
   lang="en"
 >
   <Navbar />

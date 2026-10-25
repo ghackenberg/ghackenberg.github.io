@@ -60,6 +60,23 @@ const payload = await buildGraphPayload({
 
 const visUrl = `https://hackenberg.tech/visualizations/${vis.id}/`;
 
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": `${visUrl}#visualization`,
+  "name": title,
+  "description": description || `${title} interactive visualization by Dr. Georg Hackenberg.`,
+  "url": visUrl,
+  "applicationCategory": "DataVisualizationApplication",
+  "operatingSystem": "Any",
+  "author": {
+    "@id": "https://hackenberg.tech/#person"
+  },
+  "isPartOf": {
+    "@id": "https://hackenberg.tech/visualizations/#collectionpage"
+  }
+};
+
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -90,7 +107,7 @@ const breadcrumbSchema = {
   title={`${title} | Dr. Georg Hackenberg`} 
   description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
   image={screenshot || optimizedScreenshot?.src}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[webAppSchema, breadcrumbSchema]}
 >
   <Navbar />
 

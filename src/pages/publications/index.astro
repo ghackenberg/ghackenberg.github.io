@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 import PublicationCard from "@components/PublicationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -60,7 +61,7 @@ const breadcrumbSchema = {
   title="Reviewed Publications | Dr. Georg Hackenberg" 
   description="Browse academic research papers, conference articles, book chapters, and presentations by Dr. Georg Hackenberg on smart grids, gestural input, and informatics."
   image={firstPubIcon}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("publications", publications.map((p) => ({ id: `https://hackenberg.tech/publications/${p.id}/#article` }))), breadcrumbSchema]}
 >
   <Navbar />
 

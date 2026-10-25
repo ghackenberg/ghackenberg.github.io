@@ -116,6 +116,38 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
 
 const tagUrl = `https://hackenberg.tech/tags/${tag.id}/`;
 
+const definedTermSchema = {
+  "@context": "https://schema.org",
+  "@type": "DefinedTerm",
+  "@id": `${tagUrl}#term`,
+  "name": tag.data.title,
+  "description": tag.data.description,
+  "url": tagUrl
+};
+
+const tagHasPart = [
+  ...posts.map((p) => ({ "@id": `https://hackenberg.tech/posts/${p.id}/#article` })),
+  ...publications.map((p) => ({ "@id": `https://hackenberg.tech/publications/${p.id}/#article` })),
+  ...presentations.map((p) => ({ "@id": `https://hackenberg.tech/presentations/${p.id}/#presentation` })),
+  ...courses.map((c) => ({ "@id": `https://hackenberg.tech/courses/${c.id}/#course` })),
+  ...projects.map((p) => ({ "@id": `https://hackenberg.tech/projects/${p.id}/#software` })),
+  ...services.map((s) => ({ "@id": `https://hackenberg.tech/services/${s.id}/#service` })),
+  ...newsletters.map((n) => ({ "@id": `https://hackenberg.tech/newsletters/${n.id}/#article` })),
+  ...visualizations.map((v) => ({ "@id": `https://hackenberg.tech/visualizations/${v.id}/#visualization` })),
+];
+
+const collectionPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${tagUrl}#collectionpage`,
+  "url": tagUrl,
+  "name": `#${tag.data.title}`,
+  "description": tag.data.description,
+  "isPartOf": { "@id": "https://hackenberg.tech/tags/#collectionpage" },
+  "about": { "@id": `${tagUrl}#term` },
+  ...(tagHasPart.length > 0 ? { "hasPart": tagHasPart } : {})
+};
+
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -147,7 +179,7 @@ const breadcrumbSchema = {
   description={tag.data.description}
   image={previewImage}
   tags={[tag.id]}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[definedTermSchema, collectionPageSchema, breadcrumbSchema]}
 >
   <Navbar />
 

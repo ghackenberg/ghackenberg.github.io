@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import PresentationCard from "@components/PresentationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 import { getCollection } from "astro:content";
 
 const allPresentations = await getCollection("presentations");
@@ -50,7 +51,7 @@ const breadcrumbSchema = {
   title="Interactive Presentations | Dr. Georg Hackenberg"
   description="Explore interactive presentations, keynote slide decks, and executive briefings by Dr. Georg Hackenberg on AI, search engines, knowledge graphs, and software architecture."
   image={pagePreviewImage}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("presentations", presentations.map((p) => ({ id: `https://hackenberg.tech/presentations/${p.id}/#presentation` }))), breadcrumbSchema]}
   lang="en"
 >
   <Navbar />

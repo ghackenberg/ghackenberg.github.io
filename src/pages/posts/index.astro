@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 import PostCard from "@components/PostCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const allPosts = await getCollection("posts");
 const posts = allPosts.sort(
@@ -47,7 +48,7 @@ const breadcrumbSchema = {
   title="Blog Posts | Dr. Georg Hackenberg" 
   description="Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg covering systems development, styling, and graphics."
   image={pagePreviewImage}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("posts", posts.map((p) => ({ id: `https://hackenberg.tech/posts/${p.id}/#article` }))), breadcrumbSchema]}
 >
   <Navbar />
 

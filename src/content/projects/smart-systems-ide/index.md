@@ -16,7 +16,7 @@ tags:
   - "transportation-systems"
 accentColor: "blue"
 order: 7
-repoName: "ghackenberg/Smart-Systems-IDE"
+repoName: "Smart-Systems-IDE"
 screenshot:
   src: "./screenshot.png"
   title: "XTREAM Dynamic Optimization Workbench & Hydro Power Plant Simulation"

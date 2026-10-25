@@ -9,6 +9,7 @@ endYear: null
 location: "Remote"
 color: "green"
 order: 2
+occupationalCategory: "27-3042.00"
 ---
 
 Producing technical content, scientific papers, and articles for platforms like YouTube, LinkedIn, and GitHub. Engaging with the global tech community to share insights on software engineering.

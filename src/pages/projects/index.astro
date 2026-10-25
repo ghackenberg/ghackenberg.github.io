@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 import TrlCircle from "@components/TrlCircle.astro";
 import { getCollection } from "astro:content";
 
@@ -51,7 +52,7 @@ const breadcrumbSchema = {
   title="Software Projects | Dr. Georg Hackenberg" 
   description="Explore software engineering projects, open-source systems, and interactive tools designed and built by Dr. Georg Hackenberg."
   image={firstProjectScreenshot}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("projects", projects.map((p) => ({ id: `https://hackenberg.tech/projects/${p.id}/#software` }))), breadcrumbSchema]}
 >
   <Navbar />
 

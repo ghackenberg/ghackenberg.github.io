@@ -38,16 +38,21 @@ const courseSchema = {
   "image": course.data.screenshot ? new URL(course.data.screenshot.src.src, Astro.site).href : undefined,
   "url": courseUrl,
   "provider": {
-    "@type": "EducationalOrganization",
-    "name": "UAP - University of Applied Sciences Upper Austria",
-    "sameAs": "https://www.wikidata.org/wiki/Q1390494"
+    "@id": "https://www.wikidata.org/wiki/Q1388312"
   },
   "instructor": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech",
-    "sameAs": "https://www.wikidata.org/wiki/Q141537961"
+    "@id": "https://hackenberg.tech/#person"
   },
+  "isPartOf": {
+    "@id": "https://hackenberg.tech/courses/#collectionpage"
+  },
+  ...(courseModules.length > 0
+    ? {
+        "hasPart": courseModules.map((m) => ({
+          "@id": `https://hackenberg.tech/courses/${course.id}/${m.id.split('/').pop()}/#module`
+        }))
+      }
+    : {}),
   "inLanguage": course.data.language,
   "educationalCredentialAwarded": "Academic Course Credit",
   "teaches": course.data.learningGoals ? course.data.learningGoals.join(", ") : undefined

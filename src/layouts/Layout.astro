@@ -36,6 +36,7 @@ import PreviewMediaLoader from "@components/PreviewMediaLoader.astro";
 import Telemetry from "@components/Telemetry.astro";
 import NewsletterSignup from "@components/NewsletterSignup.astro";
 import { getCollection } from "astro:content";
+import { CONTENT_DOMAINS, DOMAIN_METADATA } from "@commons/shared/domain-themes";
 
 const isDev = import.meta.env.DEV;
 
@@ -155,14 +156,9 @@ const pathnameSegments = Astro.url.pathname.replace(/^\/|\/$/g, "").split("/").f
 
 if (!hasBreadcrumbList && pathnameSegments.length > 0) {
   const SEGMENT_NAMES: Record<string, string> = {
-    posts: "Posts",
-    publications: "Publications",
-    presentations: "Presentations",
-    courses: "Courses",
-    projects: "Projects",
-    services: "Services",
-    visualizations: "Visualizations",
-    tags: "Tags",
+    ...Object.fromEntries(CONTENT_DOMAINS.map((d) => [d, DOMAIN_METADATA[d].label])),
+    about: "About",
+    contact: "Contact",
     impressum: "Impressum",
     datenschutz: "Datenschutz"
   };

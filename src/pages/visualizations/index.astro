@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const visualizations = await getCollection("visualizations");
 
@@ -45,7 +46,7 @@ const breadcrumbSchema = {
   title="Content Visualizations | Dr. Georg Hackenberg" 
   description="Explore interactive real-time knowledge graphs, network diagrams, and WebGL visualizations connecting research, software projects, and topics."
   image={firstVisScreenshot}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[buildCollectionPageSchema("visualizations", visualizations.map((v) => ({ id: `https://hackenberg.tech/visualizations/${v.id}/#visualization` }))), breadcrumbSchema]}
 >
   <Navbar />
 

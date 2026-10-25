@@ -3,7 +3,7 @@ title: "Spatial Systems IDE"
 trl: 4
 description: "Integrated Development Environment (IDE) for spatio-temporal systems enabling component-based modeling across mechanical, electrical, and software disciplines."
 href: "https://github.com/ghackenberg/Spatial-Systems-IDE"
-repoName: "ghackenberg/Spatial-Systems-IDE"
+repoName: "Spatial-Systems-IDE"
 tags: ["mechatronic-systems", "systems-engineering", "manufacturing-systems", "java", "simulation", "open-source", "software-systems"]
 accentColor: "blue"
 order: 5

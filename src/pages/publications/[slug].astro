@@ -66,25 +66,19 @@ const scholarlyArticleSchema = {
   "author": pub.data.author.split(/,| and /).map(a => {
     const trimmed = a.trim();
     const isGeorg = /Georg Hackenberg/i.test(trimmed);
-    return {
-      "@type": "Person",
-      "name": trimmed,
-      ...(isGeorg ? {
-        "url": "https://hackenberg.tech",
-        "sameAs": "https://www.wikidata.org/wiki/Q141537961"
-      } : {})
-    };
+    return isGeorg
+      ? { "@id": "https://hackenberg.tech/#person" }
+      : { "@type": "Person", "name": trimmed };
   }),
+  "isPartOf": [
+    { "@id": "https://hackenberg.tech/publications/#collectionpage" },
+    ...(pub.data.book ? [{ "@type": "Periodical", "name": pub.data.book }] : [])
+  ],
   "datePublished": pub.data.pubDate.toISOString(),
   "description": cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
-  "publication": pub.data.book ? {
-    "@type": "PublicationEvent",
-    "name": pub.data.book
-  } : undefined,
   "image": iconSrc ? new URL(iconSrc, Astro.site).href : undefined,
   "sameAs": pub.data.publisherUrl || undefined,
   "mainEntityOfPage": {
-    "@type": "WebPage",
     "@id": pubUrl
   }
 };

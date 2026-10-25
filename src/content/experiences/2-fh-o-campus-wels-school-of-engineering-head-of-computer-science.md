@@ -9,6 +9,8 @@ endYear: null
 location: "Linz-Wels-Steyr Area"
 color: "purple"
 order: 1
+organizationId: "https://www.wikidata.org/wiki/Q1388312"
+organizationUrl: "https://www.fh-ooe.at/"
 ---
 
 Managing the computer science teaching portfolio, coordinating academic staff and lecturers, and designing new curriculum modules. Aligning educational programs with recent industry demands.

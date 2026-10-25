@@ -69,19 +69,25 @@ const articleSchema = {
   url: issueUrl,
   datePublished: issue.data.pubDate.toISOString(),
   author: {
-    '@type': 'Person',
-    name: 'Dr. Georg Hackenberg',
-    url: 'https://hackenberg.tech',
+    '@id': 'https://hackenberg.tech/#person',
   },
   publisher: {
-    '@type': 'Person',
-    name: 'Dr. Georg Hackenberg',
-    url: 'https://hackenberg.tech',
+    '@id': 'https://hackenberg.tech/#person',
+  },
+  isPartOf: {
+    '@id': 'https://hackenberg.tech/newsletters/#collectionpage',
   },
   mainEntityOfPage: {
-    '@type': 'WebPage',
     '@id': issueUrl,
   },
+  mentions: [
+    ...featuredPosts.map((p) => ({ '@id': `https://hackenberg.tech/posts/${p.id}/#article` })),
+    ...featuredPresentations.map((p) => ({ '@id': `https://hackenberg.tech/presentations/${p.id}/#presentation` })),
+    ...featuredPublications.map((p) => ({ '@id': `https://hackenberg.tech/publications/${p.id}/#article` })),
+    ...featuredCourses.map((c) => ({ '@id': `https://hackenberg.tech/courses/${c.id}/#course` })),
+    ...featuredProjects.map((p) => ({ '@id': `https://hackenberg.tech/projects/${p.id}/#software` })),
+    ...featuredVisualizations.map((v) => ({ '@id': `https://hackenberg.tech/visualizations/${v.id}/#visualization` })),
+  ],
 };
 
 const breadcrumbSchema = {

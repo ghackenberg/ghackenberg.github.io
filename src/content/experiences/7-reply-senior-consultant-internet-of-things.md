@@ -9,6 +9,8 @@ endYear: 2017
 location: "Greater Munich Metropolitan Area"
 color: "blue"
 order: 6
+organizationId: "https://www.wikidata.org/wiki/Q2145077"
+organizationUrl: "https://www.reply.com/"
 ---
 
 Designing scalable IoT architectures, system integrations, and containerized deployments using Docker, AWS, and Azure. Collaborating on UI/UX requirements engineering and end-to-end quality assurance.

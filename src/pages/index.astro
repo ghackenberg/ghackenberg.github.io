@@ -26,6 +26,7 @@ import profileClosedMouthBlinkImage from "@assets/avatar/comic-profile-head-clos
 import profileClosedMouthBlinkDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-blink-depth.png";
 import { getCollection } from "astro:content";
 import { calculateTagCounts } from "@commons/shared/graph-payload.js";
+import { CONTENT_DOMAINS, DOMAIN_METADATA } from "@commons/shared/domain-themes";
 
 const optimizedProfile = await getImage({
   src: profileImage,
@@ -178,8 +179,6 @@ const newsletters = await getCollection("newsletters");
 const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
 const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
-const profiles = await getCollection("profiles");
-const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
 
 // Calculate tags and graph payload for the home page Vis.js Network
 const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, visualizations, newsletters });
@@ -319,250 +318,20 @@ const restNewslettersPct = restTotalContentCount > 0 ? Math.round((restNewslette
 const restFontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
 const restFontWeightClass = "font-semibold";
 
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://hackenberg.tech/#person",
-  "name": "Dr. Georg Hackenberg",
-  "givenName": "Georg",
-  "familyName": "Hackenberg",
-  "honorificPrefix": "Dr.",
-  "jobTitle": "Professor for Industrial Informatics",
-  "worksFor": {
-    "@type": "EducationalOrganization",
-    "@id": "https://www.wikidata.org/wiki/Q1390494",
-    "name": "UAP - University of Applied Sciences Upper Austria",
-    "alternateName": [
-      "UAP",
-      "UAP Technology Campus Wels",
-      "UAP Campus Wels",
-      "FH Upper Austria",
-      "FH Oberösterreich",
-      "FH OÖ Technology Campus Wels",
-      "FH OÖ Campus Wels",
-      "University of Applied Sciences Upper Austria"
-    ],
-    "url": "https://www.fh-ooe.at/",
-    "sameAs": "https://www.wikidata.org/wiki/Q1390494"
-  },
-  "alumniOf": [
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://www.wikidata.org/wiki/Q157808",
-      "name": "Technical University of Munich",
-      "alternateName": ["TUM", "Technische Universität München"],
-      "url": "https://www.tum.de/",
-      "sameAs": "https://www.wikidata.org/wiki/Q157808"
-    },
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://www.wikidata.org/wiki/Q2732",
-      "name": "RWTH Aachen University",
-      "alternateName": ["RWTH Aachen", "Rheinisch-Westfälische Technische Hochschule Aachen"],
-      "url": "https://www.rwth-aachen.de/",
-      "sameAs": "https://www.wikidata.org/wiki/Q2732"
-    },
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://www.wikidata.org/wiki/Q317070",
-      "name": "University of Mannheim",
-      "alternateName": ["Universität Mannheim"],
-      "url": "https://www.uni-mannheim.de/",
-      "sameAs": "https://www.wikidata.org/wiki/Q317070"
-    }
-  ],
-  "hasCredential": [
-    {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "name": "Doctor of Natural Sciences (Dr. rer. nat.) in Software and Systems Engineering",
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.wikidata.org/wiki/Q157808",
-        "name": "Technical University of Munich"
-      }
-    },
-    {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "name": "Master of Science (M.Sc.) in Software Systems Engineering",
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.wikidata.org/wiki/Q2732",
-        "name": "RWTH Aachen University"
-      }
-    },
-    {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "name": "Bachelor of Science (B.Sc.) in Software & Internet Technology",
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.wikidata.org/wiki/Q317070",
-        "name": "University of Mannheim"
-      }
-    }
-  ],
-  "hasOccupation": [
-    {
-      "@type": "Occupation",
-      "name": "Professor of Computer Science & Industrial Informatics",
-      "occupationalCategory": "25-1021.00",
-      "description": "Teaching and conducting research in industrial informatics, cyber-physical systems, and model-based software engineering."
-    },
-    {
-      "@type": "Occupation",
-      "name": "Software Architect",
-      "occupationalCategory": "15-1252.00",
-      "description": "Designing type-safe, resilient cloud software architectures, web platforms, and discrete-event simulation engines."
-    },
-    {
-      "@type": "Occupation",
-      "name": "AI Systems Consultant",
-      "occupationalCategory": "15-1221.00",
-      "description": "Advising on sovereign AI tech stacks, local LLM orchestration, and autonomous agent workflows."
-    },
-    {
-      "@type": "Occupation",
-      "name": "Digital Content Creator & Technical Publisher",
-      "occupationalCategory": "27-3042.00",
-      "description": "Creating multi-channel technical content, video lectures, and open-source publications across Web, YouTube, LinkedIn, and GitHub."
-    }
-  ],
-  "founder": [
-    {
-      "@type": "SoftwareApplication",
-      "name": "CADdrive",
-      "url": "https://caddrive.com",
-      "applicationCategory": "DesignApplication",
-      "description": "Cloud-based CAD collaboration platform and file manager."
-    },
-    {
-      "@type": "SoftwareApplication",
-      "name": "Mentawise",
-      "url": "https://mentawise.com",
-      "applicationCategory": "EducationalApplication",
-      "description": "Knowledge graph engine and digital learning platform."
-    }
-  ],
-  "url": "https://hackenberg.tech",
-  "email": "georg.hackenberg@fh-wels.at",
-  "sameAs": sortedProfiles.map((p) => p.data.url),
-  "knowsAbout": [
-    "Industrial Informatics",
-    "Software Architecture",
-    "Software Engineering",
-    "Test-Driven Development",
-    "Continuous Integration & Delivery",
-    "Knowledge Graphs",
-    "Model-Based Systems Engineering",
-    "Model-Driven Software Engineering",
-    "AI-Augmented Engineering",
-    "Agentic AI",
-    "Artificial Intelligence Agents",
-    "Large Language Models",
-    "Multimodal Generative AI",
-    "Model Context Protocol (MCP)",
-    "Digital Content Production",
-    "Cross-Channel Media Publishing",
-    "Agentic Workflow Automation",
-    "Cyber-Physical Systems",
-    "Computer Simulation",
-    "Discrete-Event Simulation",
-    "Parallel GPU Computing",
-    "Digital Engineering",
-    "User Experience (UX) Design",
-    "Human-Computer Interaction",
-    "WebGL & 3D Data Visualization"
-  ]
-};
-
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "@id": "https://hackenberg.tech/#website",
-  "url": "https://hackenberg.tech",
+  "url": "https://hackenberg.tech/",
   "name": "Dr. Georg Hackenberg",
   "description": "Personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, digital entrepreneur, and software engineer.",
   "publisher": { "@id": "https://hackenberg.tech/#person" },
   "hasPart": [
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/about/",
-      "url": "https://hackenberg.tech/about/",
-      "name": "About",
-      "description": "Academic background, software engineering leadership, and career timeline of Dr. Georg Hackenberg."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/posts/",
-      "url": "https://hackenberg.tech/posts/",
-      "name": "Posts",
-      "description": "Technical articles, dev logs, and engineering insights on AI, systems, and web architectures."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/publications/",
-      "url": "https://hackenberg.tech/publications/",
-      "name": "Publications",
-      "description": "Peer-reviewed scientific papers, academic publications, and conference proceedings."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/presentations/",
-      "url": "https://hackenberg.tech/presentations/",
-      "name": "Presentations",
-      "description": "Interactive slide decks, keynote presentations, and executive briefings with synchronized neural voiceovers."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/courses/",
-      "url": "https://hackenberg.tech/courses/",
-      "name": "Courses",
-      "description": "University curriculum, interactive teaching modules, and hands-on computer science courses."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/projects/",
-      "url": "https://hackenberg.tech/projects/",
-      "name": "Projects",
-      "description": "Open-source software repositories, production web applications, and developer tools."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/services/",
-      "url": "https://hackenberg.tech/services/",
-      "name": "Services",
-      "description": "Sovereign artificial intelligence architectures, agentic automation, and automated media publishing pipelines."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/newsletters/",
-      "url": "https://hackenberg.tech/newsletters/",
-      "name": "Newsletters",
-      "description": "Archive of technical newsletters covering software architecture, agentic AI, and system engineering."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/visualizations/",
-      "url": "https://hackenberg.tech/visualizations/",
-      "name": "Visualizations",
-      "description": "Interactive data visualizations, WebGL simulations, and graph network engines."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/tags/",
-      "url": "https://hackenberg.tech/tags/",
-      "name": "Tags",
-      "description": "Topical directory and semantic knowledge taxonomy connecting research, publications, and projects."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/contact/",
-      "url": "https://hackenberg.tech/contact/",
-      "name": "Contact",
-      "description": "Direct contact details, office locations, university affiliation, and business headquarters."
-    }
+    { "@id": "https://hackenberg.tech/about/#profilepage" },
+    { "@id": "https://hackenberg.tech/contact/#contactpage" },
+    ...CONTENT_DOMAINS.map((domain) => ({
+      "@id": `https://hackenberg.tech/${domain}/#collectionpage`
+    }))
   ]
 };
 
@@ -586,72 +355,16 @@ const siteNavigationSchema = {
       "description": "Academic background, software engineering leadership, and career timeline",
       "url": "https://hackenberg.tech/about/"
     },
+    ...CONTENT_DOMAINS.map((domain, idx) => ({
+      "@type": "SiteNavigationElement",
+      "position": idx + 3,
+      "name": DOMAIN_METADATA[domain].label,
+      "description": DOMAIN_METADATA[domain].navDescription || DOMAIN_METADATA[domain].label,
+      "url": `https://hackenberg.tech/${domain}/`
+    })),
     {
       "@type": "SiteNavigationElement",
-      "position": 3,
-      "name": "Posts",
-      "description": "Technical articles, dev logs, and engineering insights",
-      "url": "https://hackenberg.tech/posts/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 4,
-      "name": "Publications",
-      "description": "Peer-reviewed scientific papers and academic publications",
-      "url": "https://hackenberg.tech/publications/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 5,
-      "name": "Presentations",
-      "description": "Interactive slide decks and keynote presentations",
-      "url": "https://hackenberg.tech/presentations/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 6,
-      "name": "Courses",
-      "description": "University curriculum and teaching modules",
-      "url": "https://hackenberg.tech/courses/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 7,
-      "name": "Projects",
-      "description": "Open-source software projects and developer tools",
-      "url": "https://hackenberg.tech/projects/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 8,
-      "name": "Services",
-      "description": "Sovereign AI architectures and engineering advisory",
-      "url": "https://hackenberg.tech/services/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 9,
-      "name": "Newsletters",
-      "description": "Archive of technical newsletters and updates",
-      "url": "https://hackenberg.tech/newsletters/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 10,
-      "name": "Visualizations",
-      "description": "Interactive data visualizations and graph network engines",
-      "url": "https://hackenberg.tech/visualizations/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 11,
-      "name": "Tags",
-      "description": "Topical directory and semantic knowledge taxonomy",
-      "url": "https://hackenberg.tech/tags/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 12,
+      "position": CONTENT_DOMAINS.length + 3,
       "name": "Contact",
       "description": "Direct contact details, office locations, and university affiliation",
       "url": "https://hackenberg.tech/contact/"
@@ -659,47 +372,7 @@ const siteNavigationSchema = {
   ]
 };
 
-const profilePageSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfilePage",
-  "@id": "https://hackenberg.tech/#profilepage",
-  "url": "https://hackenberg.tech",
-  "name": "Dr. Georg Hackenberg Profile",
-  "mainEntity": { "@id": "https://hackenberg.tech/#person" }
-};
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Who is Dr. Georg Hackenberg?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Dr. Georg Hackenberg is a Professor for Industrial Informatics at UAP (University of Applied Sciences Upper Austria / FH Upper Austria, Technology Campus Wels) and an enterprise software architect. He holds a doctorate (Dr. rer. nat.) in Software and Systems Engineering from the Technical University of Munich (TUM), a Master of Science in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science in Software & Internet Technology from the University of Mannheim."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What are CADdrive and Mentawise?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "CADdrive (caddrive.com) is a cloud-based CAD file manager and collaboration tool created by Dr. Georg Hackenberg. Mentawise (mentawise.com) is a digital learning and knowledge platform designed for academic and professional technical education."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What business services and training does Dr. Georg Hackenberg offer?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Dr. Georg Hackenberg offers specialized business services across two primary domains: Artificial Intelligence (sovereign technology stack with vLLM, Hermes Agent, Google WikiSkills, LangGraph, and Mem0, open-source system integration, and agentic automation) and Media Publishing (channel definition and cross-channel strategy, social media design systems, and automated content production pipelines)."
-      }
-    }
-  ]
-};
-
-const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, siteNavigationSchema];
+const homeJsonLd = [websiteSchema, siteNavigationSchema];
 ---
 
 <Layout 

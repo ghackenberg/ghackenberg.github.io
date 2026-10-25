@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
@@ -42,21 +43,7 @@ const optimizedServices = await Promise.all(
   })
 );
 
-const servicesJsonLd = sortedServices.map(s => ({
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "@id": `https://hackenberg.tech/services/#${s.id}`,
-  "name": s.data.title,
-  "serviceType": s.data.title,
-  "description": s.data.description,
-  "url": `https://hackenberg.tech/services/${s.id}/`,
-  "provider": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
-  },
-  "areaServed": "Global"
-}));
+
 
 const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewImage;
 
@@ -79,7 +66,12 @@ const breadcrumbSchema = {
   ]
 };
 
-const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
+const collectionPageSchema = buildCollectionPageSchema(
+  "services",
+  sortedServices.map((s) => ({ id: `https://hackenberg.tech/services/${s.id}/#service` }))
+);
+
+const pageJsonLd = [breadcrumbSchema, collectionPageSchema];
 ---
 
 <Layout 

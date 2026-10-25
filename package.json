@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && npm run export:slides -- --if-ci && npm run newsletter:build",
-    "postbuild": "npm run validate:semantic-ids && npm run validate:assets && npm run lint:slide-typography -- --fail-on-warning && npm run lint:slide-density -- --fail-on-warning",
+    "postbuild": "npm run validate:semantic-ids && npm run validate:assets && npm run validate:jsonld && npm run lint:slide-typography -- --fail-on-warning && npm run lint:slide-density -- --fail-on-warning",
     "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:skills && npm run validate:slides:syntax && npm run validate:citations:syntax && npm run lint:posts && npm run lint:styles && npm run lint:domains && npm run lint:colors && npm run lint:svgs && npm run validate:architecture",
     "verify": "npm run validate && npm run build",
     "test": "npm run verify",
@@ -53,7 +53,8 @@
     "migrate:svgs": "tsx src/scripts/migrate-adaptive-svgs.ts",
     "newsletter:build": "tsx src/scripts/build-newsletters.ts",
     "newsletter:sync": "tsx src/scripts/sync-newsletters.ts",
-    "astro": "astro"
+    "astro": "astro",
+    "validate:jsonld": "tsx src/scripts/validate-jsonld.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",

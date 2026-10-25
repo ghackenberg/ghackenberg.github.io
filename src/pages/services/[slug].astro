@@ -37,10 +37,18 @@ const serviceSchema = {
   "image": service.data.previewImage ? new URL(service.data.previewImage.src.src, Astro.site).href : undefined,
   "url": serviceUrl,
   "provider": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
+    "@id": "https://hackenberg.tech/#person"
   },
+  "isPartOf": {
+    "@id": "https://hackenberg.tech/services/#collectionpage"
+  },
+  ...(serviceModules.length > 0
+    ? {
+        "hasPart": serviceModules.map((m) => ({
+          "@id": `https://hackenberg.tech/services/${service.id}/${m.id.split('/').pop()}/#service`
+        }))
+      }
+    : {}),
   "areaServed": "Global"
 };
 
