@@ -590,186 +590,105 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
         <Container as="div" size="wide" padding="none">
           <NewsletterSignup variant="footer" />
           
-          <!-- Brand Info: Centered at top across all screen sizes -->
-          <div class="flex flex-col items-center justify-center text-center pt-10 pb-8 border-t border-b border-element-border/50">
-            <a href="/" class="flex items-center space-x-3 group">
-              <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
-                <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
-                  GH
-                </span>
-              </span>
-              <div class="flex flex-col leading-tight min-w-0 text-left">
-                <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors">
-                  Dr. Georg Hackenberg
-                </span>
-                <span class="text-xs text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors whitespace-nowrap">
-                  Professor for Industrial Informatics @ UAP
-                </span>
-              </div>
-            </a>
-          </div>
-
-          <!-- 2-Column Grid with Perfect Row-Pair Alignment -->
-          <div class="grid grid-cols-1 min-[580px]:grid-cols-[1fr_270px] gap-y-6 min-[580px]:gap-y-8 gap-x-6 min-[580px]:gap-x-8 md:gap-x-12 pt-8 pb-10 border-b border-element-border">
-            
-            <!-- Row 1 Left: Pages -->
-            <div class="min-[580px]:order-1 flex flex-col space-y-2">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider min-[580px]:pt-[6px] flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
-                <span>Pages</span>
-              </span>
-              <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs">
-                <li>
-                  <a href="/" class="hover:text-brand-blue transition-colors inline-block">Home</a>
-                </li>
-                <li>
-                  <a href="/about/" class="hover:text-brand-blue transition-colors inline-block">About</a>
-                </li>
-                <li>
-                  <a href="/contact/" class="hover:text-brand-blue transition-colors inline-block">Contact</a>
-                </li>
-                <li>
-                  <a href="/impressum/" class="hover:text-brand-blue transition-colors inline-block">Impressum</a>
-                </li>
-                <li>
-                  <a href="/datenschutz/" class="hover:text-brand-blue transition-colors inline-block">Datenschutz</a>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Row 2 Left: Catalogs -->
-            <div class="min-[580px]:order-3 flex flex-col space-y-2">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider min-[580px]:pt-[6px] flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-                </svg>
-                <span>Catalogs</span>
-              </span>
-              <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs">
-                <li>
-                  <a href="/posts/" class="hover:text-brand-blue transition-colors inline-block">Posts</a>
-                </li>
-                <li>
-                  <a href="/publications/" class="hover:text-brand-blue transition-colors inline-block">Publications</a>
-                </li>
-                <li>
-                  <a href="/presentations/" class="hover:text-brand-blue transition-colors inline-block">Presentations</a>
-                </li>
-                <li>
-                  <a href="/courses/" class="hover:text-brand-blue transition-colors inline-block">Courses</a>
-                </li>
-                <li>
-                  <a href="/projects/" class="hover:text-brand-blue transition-colors inline-block">Projects</a>
-                </li>
-                <li>
-                  <a href="/services/" class="hover:text-brand-blue transition-colors inline-block">Services</a>
-                </li>
-                <li>
-                  <a href="/visualizations/" class="hover:text-brand-blue transition-colors inline-block">Visualizations</a>
-                </li>
-                <li>
-                  <a href="/newsletters/" class="hover:text-brand-blue transition-colors inline-block">Newsletters</a>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Row 3 Left: Profiles -->
-            <div class="min-[580px]:order-5 flex flex-col space-y-2">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider min-[580px]:pt-[6px] flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-                <span>Profiles</span>
-              </span>
-              <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs">
-                <li>
-                  <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors inline-block" aria-label="GitHub">GitHub</a>
-                </li>
-                <li>
-                  <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors inline-block" aria-label="LinkedIn">LinkedIn</a>
-                </li>
-                <li>
-                  <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors inline-block" aria-label="YouTube">YouTube</a>
-                </li>
-                <li>
-                  <a href="https://scholar.google.com/citations?user=WS9Q3eYAAAAJ" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors inline-block" aria-label="Google Scholar">Google Scholar</a>
-                </li>
-                <li>
-                  <a href="https://orcid.org/0000-0003-3913-4148" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors inline-block" aria-label="ORCID">ORCID</a>
-                </li>
-                <li>
-                  <a href="https://www.wikidata.org/wiki/Q141537961" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors inline-block" aria-label="Wikidata">Wikidata</a>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Row 1 Right: Direct Contact -->
-            <div class="min-[580px]:order-2 flex flex-col space-y-1.5">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider min-[580px]:pt-[6px] flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0"></span>
-                <span>Direct Contact</span>
-              </span>
-              <div class="flex flex-col space-y-1">
-                <a 
-                  href="mailto:georg.hackenberg@fh-wels.at" 
-                  class="text-xs text-brand-blue hover:text-brand-blue/80 hover:underline select-all font-mono inline-block"
-                >
-                  georg.hackenberg@fh-wels.at
-                </a>
-                <a 
-                  href="tel:+436648048444066" 
-                  class="text-xs text-gray-300 hover:text-brand-blue font-mono select-all inline-block"
-                >
-                  +43 664 80484 44066
-                </a>
-              </div>
-            </div>
-
-            <!-- Row 2 Right: University Office -->
-            <div class="min-[580px]:order-4 flex flex-col space-y-1.5">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider min-[580px]:pt-[6px] flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-blue shrink-0"></span>
-                <span>University Office</span>
-              </span>
-              <p class="text-xs text-gray-500 leading-relaxed">
-                FH Upper Austria &bull; Campus Wels<br />
-                Stelzhamerstrasse 23, 4600 Wels, Austria
-              </p>
-            </div>
-
-            <!-- Row 3 Right: Business Office -->
-            <div class="min-[580px]:order-6 flex flex-col space-y-1.5">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider min-[580px]:pt-[6px] flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-purple shrink-0"></span>
-                <span>Business Office</span>
-              </span>
-              <p class="text-xs text-gray-500 leading-relaxed">
-                Dr. Georg Hackenberg (IT-Dienstleister)<br />
-                Edthof 13a, 4645 Grünau im Almtal, Austria
-              </p>
-            </div>
-            
-          </div>
-          
-          <!-- Footer Bottom -->
-          <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-text-subtle gap-4">
-            <div class="flex flex-col items-center sm:items-start gap-1">
-              <p>&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
-              <p class="text-[10px] text-text-subtle mt-0.5">
+          <!-- Minimalist Footer Single-Bar (Variant 1A) -->
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-6 text-xs text-text-subtle">
+            <!-- Left: Copyright & Colophon -->
+            <div class="flex flex-col items-center lg:items-start gap-1">
+              <p class="text-gray-400 light:text-slate-600 font-medium">&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
+              <p class="text-xs text-text-subtle">
                 Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
               </p>
             </div>
-            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2">
+
+            <!-- Center: External Profiles (6 glass icon buttons) -->
+            <div class="flex items-center gap-2" aria-label="External Profiles">
+              <a 
+                href="https://github.com/ghackenberg" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                aria-label="GitHub Profile" 
+                title="GitHub"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                </svg>
+              </a>
+              <a 
+                href="https://www.linkedin.com/in/georghackenberg/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                aria-label="LinkedIn Profile" 
+                title="LinkedIn"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                </svg>
+              </a>
+              <a 
+                href="https://youtube.com/@georghackenberg" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                aria-label="YouTube Channel" 
+                title="YouTube"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </a>
+              <a 
+                href="https://scholar.google.com/citations?user=WS9Q3eYAAAAJ" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                aria-label="Google Scholar Profile" 
+                title="Google Scholar"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/>
+                </svg>
+              </a>
+              <a 
+                href="https://orcid.org/0000-0003-3913-4148" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                aria-label="ORCID Profile" 
+                title="ORCID"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/>
+                </svg>
+              </a>
+              <a 
+                href="https://www.wikidata.org/wiki/Q141537961" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                aria-label="Wikidata Profile" 
+                title="Wikidata"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M1.5 4.5h2.25v15H1.5v-15zm3.375 0h1.125v15H4.875v-15zm2.25 0h2.25v15h-2.25v-15zm3.375 0h1.125v15H10.5v-15zm2.25 0h1.125v15H12.75v-15zm2.25 0h2.25v15H15v-15zm3.375 0h1.125v15h-1.125v-15zm2.25 0h1.875v15h-1.875v-15z"/>
+                </svg>
+              </a>
+            </div>
+
+            <!-- Right: Legal, AI Feeds & Back-to-top -->
+            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-x-4 gap-y-2">
               <a href="/impressum/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Impressum</a>
               <a href="/datenschutz/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Datenschutz</a>
+              <span class="opacity-30 select-none" aria-hidden="true">|</span>
               <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
               <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
+              <span class="opacity-30 select-none" aria-hidden="true">|</span>
               <a href="#" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Back to top ↑</a>
             </div>
           </div>
         </Container>
+
       </footer>
     </div>
 
