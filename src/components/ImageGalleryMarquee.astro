@@ -32,7 +32,7 @@ function getDomainFromHref(href: string): string {
   const match = href.match(/^\/([^/]+)/);
   if (match) {
     const section = match[1];
-    if (['interests', 'posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations'].includes(section)) {
+    if (['posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations'].includes(section)) {
       return section;
     }
   }
@@ -203,7 +203,6 @@ function getDomainFromHref(href: string): string {
   }
 
   /* Domain-specific color mapping */
-  .gallery-card[data-domain="interests"] { --card-domain-color: var(--color-domain-interests); }
   .gallery-card[data-domain="posts"] { --card-domain-color: var(--color-domain-posts); }
   .gallery-card[data-domain="publications"] { --card-domain-color: var(--color-domain-publications); }
   .gallery-card[data-domain="presentations"] { --card-domain-color: var(--color-domain-presentations); }
@@ -398,7 +397,7 @@ function getDomainFromHref(href: string): string {
     const match = href.match(/^\/([^/]+)/);
     if (match) {
       const section = match[1];
-      if (['interests', 'posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations'].includes(section)) {
+      if (['posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations'].includes(section)) {
         return section;
       }
     }

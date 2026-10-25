@@ -4,7 +4,6 @@
  */
 
 export type ContentDomain =
-  | 'interests'
   | 'posts'
   | 'publications'
   | 'presentations'
@@ -35,22 +34,6 @@ export interface DomainMetadata {
 }
 
 export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
-  interests: {
-    id: 'interests',
-    label: 'Interests',
-    emoji: '🎯',
-    cssVar: '--color-domain-interests',
-    colors: {
-      dark: '#10b981',
-      light: '#059669',
-    },
-    headingGradientClass: 'heading-gradient-domain-interests',
-    bgGradientClass: 'bg-gradient-domain-interests',
-    badgeClasses: 'bg-domain-interests/10 text-domain-interests border-domain-interests/20',
-    borderHoverClass: 'hover:border-domain-interests/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(59,130,246,0.25)]',
-    radialGlowClass: 'bg-domain-interests/10',
-  },
   posts: {
     id: 'posts',
     label: 'Posts',
@@ -198,7 +181,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
 };
 
 export const CONTENT_DOMAINS: readonly ContentDomain[] = [
-  'interests',
   'posts',
   'publications',
   'presentations',

@@ -11,7 +11,6 @@ import ProjectCard from "@components/ProjectCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import NewsletterCard from "@components/NewsletterCard.astro";
-import InterestCard from "@components/InterestCard.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
 import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
@@ -164,7 +163,6 @@ const sortedProjects = projects.sort((a, b) => {
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-const interests = (await getCollection("interests")).sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const posts = await getCollection("posts");
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -184,8 +182,7 @@ const profiles = await getCollection("profiles");
 const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
 
 // Calculate tags and graph payload for the home page Vis.js Network
-const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, interests, visualizations, newsletters });
-const tagInterests = tagCounts.interests;
+const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, visualizations, newsletters });
 const tagPosts = tagCounts.posts;
 const tagPubs = tagCounts.publications;
 const tagPresentations = tagCounts.presentations;
@@ -201,7 +198,6 @@ interface TagCloudItem {
   name: string;
   description: string;
   totalCount: number;
-  interestsCount: number;
   postsCount: number;
   pubsCount: number;
   presCount: number;
@@ -210,7 +206,6 @@ interface TagCloudItem {
   servicesCount: number;
   visCount: number;
   newslettersCount: number;
-  interestsPct: number;
   postsPct: number;
   pubsPct: number;
   presPct: number;
@@ -224,7 +219,6 @@ interface TagCloudItem {
 }
 
 const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
-  const interestsCount = tagInterests[tagId] || 0;
   const postsCount = tagPosts[tagId] || 0;
   const pubsCount = tagPubs[tagId] || 0;
   const presCount = tagPresentations[tagId] || 0;
@@ -233,9 +227,8 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const servicesCount = tagServices[tagId] || 0;
   const visCount = tagVisualizations[tagId] || 0;
   const newslettersCount = tagNewsletters[tagId] || 0;
-  const totalCount = interestsCount + postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + visCount + newslettersCount;
+  const totalCount = postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + visCount + newslettersCount;
   
-  const interestsPct = totalCount > 0 ? Math.round((interestsCount / totalCount) * 100) : 0;
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
   const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
   const presPct = totalCount > 0 ? Math.round((presCount / totalCount) * 100) : 0;
@@ -254,7 +247,6 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     name,
     description,
     totalCount,
-    interestsCount,
     postsCount,
     pubsCount,
     presCount,
@@ -263,7 +255,6 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     servicesCount,
     visCount,
     newslettersCount,
-    interestsPct,
     postsPct,
     pubsPct,
     presPct,
@@ -305,7 +296,6 @@ const overflowTags = sortedByFreq.slice(21);
 const restTagsCount = overflowTags.length;
 const overflowTagIds = new Set(overflowTags.map(t => t.id));
 
-const restInterestsCount = interests.filter(i => i.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restPostsCount = posts.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restPubsCount = publications.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restPresCount = presentations.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
@@ -314,9 +304,8 @@ const restProjectsCount = projects.filter(p => p.data.tags?.some(t => overflowTa
 const restServicesCount = services.filter(s => s.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restVisCount = visualizations.filter(v => v.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restNewslettersCount = newsletters.filter(n => n.data.tags?.some(t => overflowTagIds.has(t))).length;
-const restTotalContentCount = restInterestsCount + restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restVisCount + restNewslettersCount;
+const restTotalContentCount = restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restVisCount + restNewslettersCount;
 
-const restInterestsPct = restTotalContentCount > 0 ? Math.round((restInterestsCount / restTotalContentCount) * 100) : 0;
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
 const restPubsPct = restTotalContentCount > 0 ? Math.round((restPubsCount / restTotalContentCount) * 100) : 0;
 const restPresPct = restTotalContentCount > 0 ? Math.round((restPresCount / restTotalContentCount) * 100) : 0;
@@ -462,18 +451,29 @@ const personSchema = {
   "knowsAbout": [
     "Industrial Informatics",
     "Software Architecture",
+    "Software Engineering",
+    "Test-Driven Development",
+    "Continuous Integration & Delivery",
     "Knowledge Graphs",
     "Model-Based Systems Engineering",
     "Model-Driven Software Engineering",
     "AI-Augmented Engineering",
     "Agentic AI",
     "Artificial Intelligence Agents",
+    "Large Language Models",
+    "Multimodal Generative AI",
+    "Model Context Protocol (MCP)",
     "Digital Content Production",
     "Cross-Channel Media Publishing",
     "Agentic Workflow Automation",
     "Cyber-Physical Systems",
     "Computer Simulation",
-    "Digital Engineering"
+    "Discrete-Event Simulation",
+    "Parallel GPU Computing",
+    "Digital Engineering",
+    "User Experience (UX) Design",
+    "Human-Computer Interaction",
+    "WebGL & 3D Data Visualization"
   ]
 };
 
@@ -541,13 +541,6 @@ const websiteSchema = {
       "url": "https://hackenberg.tech/visualizations/",
       "name": "Visualizations",
       "description": "Interactive data visualizations, WebGL simulations, and graph network engines."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/interests/",
-      "url": "https://hackenberg.tech/interests/",
-      "name": "Professional Interests",
-      "description": "Academic domains, industrial informatics, and technical research focus areas."
     },
     {
       "@type": "WebPage",
@@ -645,27 +638,20 @@ const siteNavigationSchema = {
     {
       "@type": "SiteNavigationElement",
       "position": 10,
-      "name": "Professional Interests",
-      "description": "Research domains and academic focus areas",
-      "url": "https://hackenberg.tech/interests/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 11,
       "name": "Newsletters",
       "description": "Archive of technical newsletters and updates",
       "url": "https://hackenberg.tech/newsletters/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 12,
+      "position": 11,
       "name": "Tags",
       "description": "Topical directory and semantic knowledge taxonomy",
       "url": "https://hackenberg.tech/tags/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 13,
+      "position": 12,
       "name": "Contact",
       "description": "Direct contact details, office locations, and university affiliation",
       "url": "https://hackenberg.tech/contact/"
@@ -1201,57 +1187,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       };
     })();
   </script>
-
-  <!-- Professional Interests Section -->
-  <Section id="about" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Professional <span class="text-domain-interests">Interests</span>
-        </h2>
-        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-          Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
-        </p>
-      </div>
-
-      <div class="carousel-stage at-start relative">
-        <!-- Navigation Buttons (< lg) -->
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
-          aria-label="Previous items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
-          aria-label="Next items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-
-        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-4 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-          {interests.map((interest) => (
-            <div class="w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto">
-              <InterestCard
-                id={interest.id}
-                title={interest.data.title}
-                description={interest.data.description}
-                heroImage={interest.data.heroImage}
-                tags={interest.data.tags}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </Container>
-  </Section>
 
   <!-- Featured Blog Posts Section -->
   <Section id="latest-posts" border="top" padding="standard">
@@ -2066,7 +2001,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
                   {tag.totalCount > 0 && (
                     <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                      {tag.interestsCount > 0 && <div class="bg-domain-interests h-full" style={`width: ${tag.interestsPct}%`} title={`Interests: ${tag.interestsCount}`}></div>}
                       {tag.postsCount > 0 && <div class="bg-domain-posts h-full" style={`width: ${tag.postsPct}%`} title={`Posts: ${tag.postsCount}`}></div>}
                       {tag.pubsCount > 0 && <div class="bg-domain-publications h-full" style={`width: ${tag.pubsPct}%`} title={`Publications: ${tag.pubsCount}`}></div>}
                       {tag.presCount > 0 && <div class="bg-domain-presentations h-full" style={`width: ${tag.presPct}%`} title={`Presentations: ${tag.presCount}`}></div>}
@@ -2079,13 +2013,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                   )}
 
                   <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] sm:text-[11px] text-gray-300 light:text-slate-600 font-medium pt-0.5">
-                    {tag.interestsCount > 0 && (
-                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                        <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                        <span>{tag.interestsCount} {tag.interestsCount === 1 ? 'Interest' : 'Interests'}</span>
-                        <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
-                      </span>
-                    )}
                     {tag.postsCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
@@ -2177,7 +2104,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
                   {restTotalContentCount > 0 && (
                     <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                      {restInterestsCount > 0 && <div class="bg-domain-interests h-full" style={`width: ${restInterestsPct}%`} title={`Interests: ${restInterestsCount}`}></div>}
                       {restPostsCount > 0 && <div class="bg-domain-posts h-full" style={`width: ${restPostsPct}%`} title={`Posts: ${restPostsCount}`}></div>}
                       {restPubsCount > 0 && <div class="bg-domain-publications h-full" style={`width: ${restPubsPct}%`} title={`Publications: ${restPubsCount}`}></div>}
                       {restPresCount > 0 && <div class="bg-domain-presentations h-full" style={`width: ${restPresPct}%`} title={`Presentations: ${restPresCount}`}></div>}
@@ -2190,13 +2116,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                   )}
 
                   <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] sm:text-[11px] text-gray-300 light:text-slate-600 font-medium pt-0.5">
-                    {restInterestsCount > 0 && (
-                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                        <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                        <span>{restInterestsCount} {restInterestsCount === 1 ? 'Interest' : 'Interests'}</span>
-                        <span class="text-gray-400 text-[10px]">({restInterestsPct}%)</span>
-                      </span>
-                    )}
                     {restPostsCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-posts"></span>

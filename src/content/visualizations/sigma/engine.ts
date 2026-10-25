@@ -104,7 +104,6 @@ const engine: SigmaEngine = {
         node.startsWith('/projects/') ||
         node.startsWith('/courses/') ||
         node.startsWith('/services/') ||
-        node.startsWith('/interests/') ||
         node.startsWith('/visualizations/') ||
         node.startsWith('/newsletters/') ||
         node.startsWith('/tags/')
@@ -192,11 +191,10 @@ const engine: SigmaEngine = {
       const courses = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 4);
       const projects = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 5);
       const services = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 6);
-      const interests = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 7);
-      const visualizations = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 8);
-      const newsletters = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 9);
+      const visualizations = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 7);
+      const newsletters = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 8);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests, visualizations, newsletters];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, visualizations, newsletters];
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {

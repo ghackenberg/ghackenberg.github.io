@@ -1,7 +1,6 @@
 /* Canonical Domain Color Tokens and Utilities */
 
 @theme {
-  --color-domain-interests: var(--color-accent-1);      /* 1: Emerald */
   --color-domain-posts: var(--color-accent-2);          /* 2: Teal */
   --color-domain-publications: var(--color-accent-3);   /* 3: Cyan */
   --color-domain-presentations: var(--color-accent-4);  /* 4: Sky */
@@ -14,7 +13,6 @@
 }
 
 :root.light, .light {
-  --color-domain-interests: var(--color-accent-1);
   --color-domain-posts: var(--color-accent-2);
   --color-domain-publications: var(--color-accent-3);
   --color-domain-presentations: var(--color-accent-4);
@@ -27,18 +25,6 @@
 }
 
 /* Domain-Specific Heading Gradient Utilities */
-.heading-gradient-domain-interests {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, #10b981, #14b8a6);
-}
-
-:root.light .heading-gradient-domain-interests,
-.light .heading-gradient-domain-interests {
-  background-image: linear-gradient(to right, #059669, #0d9488);
-}
-
 .heading-gradient-domain-posts {
   background-clip: text;
   -webkit-background-clip: text;
@@ -148,15 +134,6 @@
 }
 
 /* Domain-Specific Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
-.bg-gradient-domain-interests {
-  background-image: linear-gradient(to right, #10b981, #14b8a6);
-}
-
-:root.light .bg-gradient-domain-interests,
-.light .bg-gradient-domain-interests {
-  background-image: linear-gradient(to right, #059669, #0d9488);
-}
-
 .bg-gradient-domain-posts {
   background-image: linear-gradient(to right, #14b8a6, #06b6d4);
 }
@@ -245,7 +222,6 @@
   --color-current-domain: var(--color-domain-posts);
 }
 
-[data-domain="interests"], .domain-scope-interests { --color-current-domain: var(--color-domain-interests); }
 [data-domain="posts"], .domain-scope-posts { --color-current-domain: var(--color-domain-posts); }
 [data-domain="publications"], .domain-scope-publications { --color-current-domain: var(--color-domain-publications); }
 [data-domain="presentations"], .domain-scope-presentations { --color-current-domain: var(--color-domain-presentations); }

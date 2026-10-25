@@ -1,7 +1,7 @@
 /**
  * Canonical 9-Step Accent Palette (9-Stop Signature Brand Spectrum)
  * Ordered continuously along the signature brand spectrum:
- * 1: Blue    (217°) - Interests
+ * 1: Blue    (217°)
  * 2: Indigo  (239°) - Posts
  * 3: Violet  (258°) - Publications
  * 4: Purple  (271°) - Presentations
@@ -32,7 +32,6 @@ export type SlideAccent = AccentNumber | AccentName | string;
 
 export const ACCENT_NAME_TO_NUMBER: Record<string, AccentNumber> = {
   blue: 1,
-  interests: 1,
 
   indigo: 2,
   posts: 2,
@@ -94,7 +93,7 @@ export function resolveAccentNumber(accent?: SlideAccent): AccentNumber {
       return ACCENT_NAME_TO_NUMBER[normalized];
     }
   }
-  return 1; // Default: 1 (Blue / Interests)
+  return 1; // Default: 1 (Blue)
 }
 
 /**

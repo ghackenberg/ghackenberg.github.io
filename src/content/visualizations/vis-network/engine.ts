@@ -332,7 +332,6 @@ const engine: VisNetworkEngine = {
           targetPath.startsWith('/projects') ||
           targetPath.startsWith('/courses') ||
           targetPath.startsWith('/services') ||
-          targetPath.startsWith('/interests') ||
           targetPath.startsWith('/visualizations') ||
           targetPath.startsWith('/newsletters') ||
           targetPath.startsWith('/tags')
@@ -467,11 +466,10 @@ const engine: VisNetworkEngine = {
       const courses = (this.nodes || []).filter(n => n.group === 4);
       const projects = (this.nodes || []).filter(n => n.group === 5);
       const services = (this.nodes || []).filter(n => n.group === 6);
-      const interests = (this.nodes || []).filter(n => n.group === 7);
-      const visualizations = (this.nodes || []).filter(n => n.group === 8);
-      const newsletters = (this.nodes || []).filter(n => n.group === 9);
+      const visualizations = (this.nodes || []).filter(n => n.group === 7);
+      const newsletters = (this.nodes || []).filter(n => n.group === 8);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests, visualizations, newsletters];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, visualizations, newsletters];
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;

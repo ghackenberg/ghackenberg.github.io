@@ -35,7 +35,6 @@ const domainFromAccent: Record<string, ContentDomain> = {
   teal: "projects",
   emerald: "services",
   yellow: "visualizations",
-  rose: "interests",
   orange: "tags",
   // Legacy aliases
   purple: "services",
@@ -48,7 +47,6 @@ const threshold = minItemsThreshold ?? ((pageSize ?? 12) + 1);
 const shouldRender = totalCount === undefined || totalCount >= threshold;
 
 const searchFocusClasses: Record<ContentDomain, string> = {
-  interests: "focus:border-domain-interests/50 focus:ring-1 focus:ring-domain-interests/50",
   posts: "focus:border-domain-posts/50 focus:ring-1 focus:ring-domain-posts/50",
   publications: "focus:border-domain-publications/50 focus:ring-1 focus:ring-domain-publications/50",
   presentations: "focus:border-domain-presentations/50 focus:ring-1 focus:ring-domain-presentations/50",
@@ -61,7 +59,6 @@ const searchFocusClasses: Record<ContentDomain, string> = {
 };
 
 const summaryHoverBorder: Record<ContentDomain, string> = {
-  interests: "hover:border-domain-interests/30",
   posts: "hover:border-domain-posts/30",
   publications: "hover:border-domain-publications/30",
   presentations: "hover:border-domain-presentations/30",

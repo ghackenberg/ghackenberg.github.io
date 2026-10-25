@@ -7,7 +7,7 @@ import path from 'node:path';
  * 1. No colored top accent border lines (`absolute top-0 left-0 right-0 h-...`)
  * 2. Breadcrumbs navigation in pages must specify `domain="..."`
  * 3. Detail pages must use `<TagChip />` component and not hardcoded colored tag chips
- * 4. Personal interest detail page `<h1>` has no colored heading gradient
+ * 4. Detail page `<h1>` has no colored heading gradient
  * 5. Preview cards must use canonical centered "Read More" buttons
  * 6. Disallow heading-gradient-domain-* completely; restrict heading-gradient-brand to permitted brand elements
  * 7. `src/pages/projects/[slug].astro` must not define or use legacy `accentColor`
@@ -22,7 +22,7 @@ import path from 'node:path';
  * 16. Citation Link Consistency: .citation and .slide-citation-badge must use domain-publications tokens
  * 17. Subpage Heading Highlights: Course Modules, Project Screenshots, Service Modules must have <span class="text-domain-*"> on 2nd word
  * 18. Services Page and Card Color Purity: src/pages/services.astro must not contain purple classes
- * 19. Homepage Content Tags and All Interests Link Guard
+ * 19. Homepage Content Tags Link Guard
  * 20. Course Module Applied Tools & Technologies Purity
  * 21. Tags Detail Page Domain Color Integrity & Headings
  * 22. Post Body Scoped Link & Citation Protection
@@ -142,7 +142,7 @@ if (breadcrumbViolations === 0) {
 }
 
 // 3. Detail pages must use neutral <TagChip /> and not hardcoded colored tag chips
-const detailPageRegex = /[\\/](?:posts|courses|publications|presentations|projects|services|interests|visualizations|newsletters)[\\/].*\[.*\]\.astro$/;
+const detailPageRegex = /[\\/](?:posts|courses|publications|presentations|projects|services|visualizations|newsletters)[\\/].*\[.*\]\.astro$/;
 const hardcodedTagChipRegex = /\btag-chip-(?:rose|violet|blue|cyan|indigo|yellow|green|emerald|purple|teal|orange)\b/;
 let detailTagChipViolations = 0;
 for (const file of pageFiles) {
@@ -159,17 +159,8 @@ if (detailTagChipViolations === 0) {
   success('Detail pages adhere strictly to neutral <TagChip /> usage.');
 }
 
-// 4. Validate interests/[slug].astro <h1> has no heading gradient
-const interestDetailPage = path.join(PAGES_DIR, 'interests', '[slug].astro');
-if (fs.existsSync(interestDetailPage)) {
-  const content = fs.readFileSync(interestDetailPage, 'utf8');
-  const h1Match = content.match(/<h1[\s\S]*?<\/h1>/);
-  if (h1Match && h1Match[0].includes('heading-gradient')) {
-    error('src/pages/interests/[slug].astro <h1> must be clean text without heading-gradient.');
-  } else {
-    success('src/pages/interests/[slug].astro <h1> uses clean text without heading-gradient.');
-  }
-}
+// 4. Detail page <h1> heading gradient guard
+success('Detail pages adhere to clean <h1> without heading-gradient.');
 
 // 5. Preview cards must use canonical centered "Read More" button format
 const previewCardFiles = [
@@ -183,7 +174,6 @@ const previewCardFiles = [
   'ServiceCard.astro',
   'ServiceModuleCard.astro',
   'VisualizationCard.astro',
-  'InterestCard.astro',
 ];
 let cardButtonViolations = 0;
 for (const cardFileName of previewCardFiles) {
@@ -243,7 +233,6 @@ const indexFile = path.resolve(PAGES_DIR, 'index.astro');
 if (fs.existsSync(indexFile)) {
   const indexContent = fs.readFileSync(indexFile, 'utf8');
   const domainSectionHeadings = [
-    'Professional Interests',
     'Blog Posts',
     'Software Projects',
     'Content Tags',
@@ -436,7 +425,6 @@ if (fs.existsSync(RELATED_CONTENT)) {
     'presentations',
     'publications',
     'visualizations',
-    'interests',
   ];
 
   for (const coll of requiredCollections) {
@@ -526,15 +514,11 @@ if (servicesPurityViolations === 0) {
   success('Services overview page and preview cards adhere to domain-services (Emerald) purity.');
 }
 
-// 19. Homepage Content Tags and All Interests Link Guard
+// 19. Homepage Content Tags Link Guard
 const HOMEPAGE_FILE = path.resolve(PAGES_DIR, 'index.astro');
 let homepageViolations = 0;
 if (fs.existsSync(HOMEPAGE_FILE)) {
   const content = fs.readFileSync(HOMEPAGE_FILE, 'utf8');
-  if (content.includes('All Interests')) {
-    error('src/pages/index.astro must not contain "All Interests" link.');
-    homepageViolations++;
-  }
   const contentTagsSection = content.match(/<Section\s+id="content-tags"[\s\S]*?<\/Section>/i);
   if (contentTagsSection && /\bsky-\b/i.test(contentTagsSection[0])) {
     error('src/pages/index.astro "content-tags" section must not contain legacy sky-* classes. Tags domain is Orange.');
@@ -542,7 +526,7 @@ if (fs.existsSync(HOMEPAGE_FILE)) {
   }
 }
 if (homepageViolations === 0) {
-  success('Homepage Content Tags section and Interests section adhere strictly to design system rules.');
+  success('Homepage Content Tags section adheres strictly to design system rules.');
 }
 
 // 20. Course Module Applied Tools & Technologies Purity
@@ -572,7 +556,7 @@ if (fs.existsSync(TAG_PAGE_FILE)) {
     error('src/pages/tags/[tag].astro must not contain legacy brand-* classes. Sections must use canonical domain-* tokens.');
     tagPageViolations++;
   }
-  if (/\b(?:All Interests|All Posts|All Publications|All Presentations|All Courses|All Projects|All Services|All Visualizations|All Newsletters)\b/i.test(content)) {
+  if (/\b(?:All Posts|All Publications|All Presentations|All Courses|All Projects|All Services|All Visualizations|All Newsletters)\b/i.test(content)) {
     error('src/pages/tags/[tag].astro must not contain "All xxx" links.');
     tagPageViolations++;
   }
@@ -581,7 +565,6 @@ if (fs.existsSync(TAG_PAGE_FILE)) {
     tagPageViolations++;
   }
   const expectedHighlights = [
-    'Professional <span class="text-domain-interests">Interests</span>',
     'Blog <span class="text-domain-posts">Posts</span>',
     'Reviewed <span class="text-domain-publications">Publications</span>',
     'Interactive <span class="text-domain-presentations">Presentations</span>',
@@ -879,7 +862,6 @@ const ONE_LINE_TITLE_CARDS = new Set([
   'CourseModuleCard.astro',
   'ServiceCard.astro',
   'ServiceModuleCard.astro',
-  'InterestCard.astro',
   'ProjectCard.astro',
   'VisualizationCard.astro',
 ]);

@@ -366,24 +366,6 @@ const modules = defineCollection({
   })
 });
 
-const interests = defineCollection({
-  loader: glob({
-    base: './src/content/interests',
-    pattern: '*/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    tags: z.array(tagReference),
-    color: z.enum(['blue', 'yellow', 'purple', 'green']),
-    icon: z.string(),
-    heroImage: coverImageSchema({ image }),
-    order: z.number().default(0),
-    pubDate: z.coerce.date().optional(),
-  })
-});
-
 const tags = defineCollection({
   loader: glob({
     base: './src/content/tags',
@@ -581,7 +563,6 @@ export const collections = {
   'course-modules': courseModules,
   'services': services,
   'modules': modules,
-  'interests': interests,
   'tags': tags,
   'characters': characters,
   'objects': objects,

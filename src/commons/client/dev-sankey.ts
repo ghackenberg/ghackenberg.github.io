@@ -110,7 +110,6 @@ interface ContentManifestPayload {
   publications?: ContentManifestItem[];
   visualizations?: ContentManifestItem[];
   services?: ContentManifestItem[];
-  interests?: ContentManifestItem[];
   tags?: ContentManifestItem[];
 }
 
@@ -217,9 +216,7 @@ function resolvePageDomainTheme(rawPath: string): SankeyDomainTheme {
   const norm = normalizePath(rawPath);
 
   let emoji = '🏠';
-  if (norm.startsWith('/interests/')) {
-    emoji = '🎯';
-  } else if (norm.startsWith('/posts/')) {
+  if (norm.startsWith('/posts/')) {
     emoji = '✍️';
   } else if (norm.startsWith('/publications/')) {
     emoji = '📚';
@@ -297,7 +294,6 @@ function ingestManifestPayload(manifest: ContentManifestPayload | null | undefin
   registerGroup(manifest.publications, '📚', 'Publication');
   registerGroup(manifest.visualizations, '🌐', 'Visualization');
   registerGroup(manifest.services, '💼', 'Service');
-  registerGroup(manifest.interests, '🎯', 'Interest');
   registerGroup(manifest.tags, '🏷️', 'Tag');
   isManifestPopulated = true;
 }

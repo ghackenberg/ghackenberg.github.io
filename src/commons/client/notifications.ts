@@ -22,7 +22,6 @@ interface ContentManifest {
   services: ManifestItem[];
   publications: ManifestItem[];
   visualizations: ManifestItem[];
-  interests?: ManifestItem[];
 }
 
 interface FeedItem {
@@ -38,7 +37,7 @@ interface FeedItem {
 
 const STORAGE_KEY = 'gh_site_notifications_v1';
 const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests', 'newsletters'];
+const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'newsletters'];
 
 const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: string; actionText: string }> = {
   posts: { 
@@ -82,12 +81,6 @@ const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: 
     badgeClass: 'bg-domain-visualizations/15 text-domain-visualizations border border-domain-visualizations/30',
     icon: '📈',
     actionText: 'Open Tool'
-  },
-  interests: { 
-    label: 'Interest', 
-    badgeClass: 'bg-domain-interests/15 text-domain-interests border border-domain-interests/30',
-    icon: '💡',
-    actionText: 'Explore Interest'
   },
   newsletters: {
     label: 'Newsletter',
@@ -204,7 +197,6 @@ function getUnreadBadgeClass(section: string): string {
   if (section === 'projects') return 'badge-new-teal';
   if (section === 'services') return 'badge-new-emerald';
   if (section === 'visualizations') return 'badge-new-yellow';
-  if (section === 'interests') return 'badge-new-rose';
   return 'badge-new-blue';
 }
 

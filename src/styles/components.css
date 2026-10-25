@@ -573,20 +573,6 @@ html.light .whats-new-luminous svg {
   }
 }
 
-.badge-new-rose,
-.badge-new-interests {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-interests) 80%, black) 0%, var(--color-domain-interests) 50%, color-mix(in srgb, var(--color-domain-interests) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-interests) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-interests) 80%, black) 0%, var(--color-domain-interests) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-interests) 25%, transparent);
-  }
-}
 
 /* Timeline lifeline dashed SVG lines in light mode */
 .light [data-lifeline-dashed-top] stop[offset="0%"] {
@@ -653,21 +639,6 @@ div.vis-tooltip {
 }
 
 /* Hover States (when not matching active tag filter) */
-/* 1. Interests (Rose) */
-.tag-chip-rose:hover:not(.active-tag-match),
-.tag-chip-interests:hover:not(.active-tag-match) {
-  border-color: color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
-  color: color-mix(in srgb, var(--color-domain-interests) 70%, white);
-  background: color-mix(in srgb, var(--color-domain-interests) 8%, transparent);
-}
-:root.light .tag-chip-rose:hover:not(.active-tag-match),
-.light .tag-chip-rose:hover:not(.active-tag-match),
-:root.light .tag-chip-interests:hover:not(.active-tag-match),
-.light .tag-chip-interests:hover:not(.active-tag-match) {
-  background: color-mix(in srgb, var(--color-domain-interests) 6%, transparent);
-  border-color: color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
-  color: var(--color-domain-interests);
-}
 
 /* 2. Posts (Violet) */
 .tag-chip-violet:hover:not(.active-tag-match),
@@ -823,24 +794,6 @@ div.vis-tooltip {
 }
 
 /* Active Highlight Matches - Harmonized 1:1 across 10 Domains */
-/* 1. Interests (Rose) */
-.tag-chip-rose.active-tag-match,
-.tag-chip-interests.active-tag-match {
-  background: color-mix(in srgb, var(--color-domain-interests) 20%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-domain-interests) 50%, transparent) !important;
-  color: color-mix(in srgb, var(--color-domain-interests) 70%, white) !important;
-  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-interests) 25%, transparent) !important;
-  font-weight: 700 !important;
-}
-:root.light .tag-chip-rose.active-tag-match,
-.light .tag-chip-rose.active-tag-match,
-:root.light .tag-chip-interests.active-tag-match,
-.light .tag-chip-interests.active-tag-match {
-  background: color-mix(in srgb, var(--color-domain-interests) 15%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-domain-interests) 40%, transparent) !important;
-  color: var(--color-domain-interests) !important;
-  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-interests) 20%, transparent) !important;
-}
 
 /* 2. Posts (Violet) */
 .tag-chip-violet.active-tag-match,

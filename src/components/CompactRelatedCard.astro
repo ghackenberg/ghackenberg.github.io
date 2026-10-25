@@ -36,7 +36,6 @@ const {
 } = Astro.props;
 
 const defaultIcons: Record<string, string> = {
-  interests: "🎯",
   posts: "✍️",
   publications: "📚",
   presentations: "🖥️",
@@ -79,11 +78,6 @@ const TYPE_CONFIG: Record<
     label: "Service",
     icon: "💼",
     badgeStyle: "bg-domain-services/15 text-domain-services border-domain-services/30",
-  },
-  interests: {
-    label: "Interest",
-    icon: "🎯",
-    badgeStyle: "bg-domain-interests/15 text-domain-interests border-domain-interests/30",
   },
   visualizations: {
     label: "Visualization",
@@ -156,14 +150,6 @@ const DOMAIN_THEMES: Record<
     badgeClass: "badge-new-emerald",
     tagChip: "tag-chip-emerald",
     fallbackBg: "bg-domain-services/10 text-domain-services",
-  },
-  interests: {
-    borderHover: "hover:border-domain-interests/50",
-    titleHover: "group-hover:text-domain-interests",
-    arrowHover: "group-hover:text-domain-interests",
-    badgeClass: "badge-new-rose",
-    tagChip: "tag-chip-rose",
-    fallbackBg: "bg-domain-interests/10 text-domain-interests",
   },
   visualizations: {
     borderHover: "hover:border-domain-visualizations/50",

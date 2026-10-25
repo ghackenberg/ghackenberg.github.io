@@ -91,7 +91,6 @@ const engine: Force3DEngine = {
           node.id.startsWith('/projects/') ||
           node.id.startsWith('/courses/') ||
           node.id.startsWith('/services/') ||
-          node.id.startsWith('/interests/') ||
           node.id.startsWith('/visualizations/') ||
           node.id.startsWith('/newsletters/') ||
           node.id.startsWith('/tags/')
@@ -180,11 +179,10 @@ const engine: Force3DEngine = {
       const courses = this.nodes.filter(n => n.group === 4);
       const projects = this.nodes.filter(n => n.group === 5);
       const services = this.nodes.filter(n => n.group === 6);
-      const interests = this.nodes.filter(n => n.group === 7);
-      const visualizations = this.nodes.filter(n => n.group === 8);
-      const newsletters = this.nodes.filter(n => n.group === 9);
+      const visualizations = this.nodes.filter(n => n.group === 7);
+      const newsletters = this.nodes.filter(n => n.group === 8);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests, visualizations, newsletters];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, visualizations, newsletters];
       const isMobile = window.innerWidth < 768;
       const heightFactor = 25;
       const widthFactor = 25;
