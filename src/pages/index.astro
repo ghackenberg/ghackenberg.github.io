@@ -10,6 +10,7 @@ import CourseCard from "@components/CourseCard.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
+import NewsletterCard from "@components/NewsletterCard.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
 import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
@@ -174,6 +175,8 @@ const courses = await getCollection("courses");
 const sortedCourses = courses;
 const visualizations = await getCollection("visualizations");
 const sortedVisualizations = visualizations;
+const newsletters = await getCollection("newsletters");
+const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
 const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 const profiles = await getCollection("profiles");
@@ -1839,6 +1842,99 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               </p>
               <div class="w-full pt-2 flex justify-center">
                 <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-visualizations hover:bg-domain-visualizations/90 text-white text-xs font-bold shadow-lg shadow-domain-visualizations/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Email Newsletters Section -->
+  <Section id="newsletters" border="top" padding="standard">
+    <Container size="wide" padding="none">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="newsletters-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+            Email <span class="text-domain-newsletters">Newsletters</span>
+          </h2>
+          <a
+            href="/newsletters/"
+            aria-label="Explore all Newsletters"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-newsletters hover:bg-domain-newsletters/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-newsletters/20 hover:shadow-domain-newsletters/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+          Periodic English-language dispatches summarizing newly published blog posts, presentations, courses, projects, visualizations, and publications.
+        </p>
+      </div>
+
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedNewsletters.slice(0, 5).map((issue, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <NewsletterCard
+                id={issue.id}
+                issueNumber={issue.data.issueNumber}
+                title={issue.data.title}
+                description={issue.data.description}
+                pubDate={issue.data.pubDate}
+                icon={issue.data.icon}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/newsletters/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-newsletters/25 hover:border-domain-newsletters/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-newsletters/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-newsletters/15 border border-domain-newsletters/30 text-domain-newsletters flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                ✉️
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-newsletters/15 text-domain-newsletters border border-domain-newsletters/30 mb-3">
+                {newsletters.length} {newsletters.length === 1 ? 'Issue' : 'Issues'} Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Newsletters
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse curated engineering dispatches, release summaries, and research updates.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-newsletters hover:bg-domain-newsletters/90 text-white text-xs font-bold shadow-lg shadow-domain-newsletters/20 transition-all duration-200">
                   <span>View Archive</span>
                   <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
