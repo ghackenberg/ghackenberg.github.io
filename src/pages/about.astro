@@ -6,10 +6,8 @@ import Section from "@components/Section.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import EducationTimeline from "@components/EducationTimeline.astro";
 import Timeline from "@components/Timeline.astro";
-import InterestCard from "@components/InterestCard.astro";
 import { getCollection } from "astro:content";
 
-const interests = (await getCollection("interests")).sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 const profiles = await getCollection("profiles");
 const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
 const degrees = await getCollection("degrees");
@@ -85,29 +83,6 @@ const profilePageSchema = {
 
         <!-- Career & Academic Timeline -->
         <div class="space-y-16">
-          <!-- Subsection 1: Professional Interests -->
-          <div>
-            <div class="mb-8">
-              <h2 id="professional-interests-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
-                Professional <span class="text-domain-interests">Interests</span>
-              </h2>
-              <p id="professional-interests-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
-                Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
-              </p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {interests.map((interest) => (
-                <InterestCard
-                  id={interest.id}
-                  title={interest.data.title}
-                  description={interest.data.description}
-                  heroImage={interest.data.heroImage}
-                  tags={interest.data.tags}
-                />
-              ))}
-            </div>
-          </div>
-
           <div>
             <div class="mb-8">
               <h2 id="academic-degrees-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">

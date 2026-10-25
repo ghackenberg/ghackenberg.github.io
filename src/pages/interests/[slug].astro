@@ -53,8 +53,8 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "About",
-      "item": "https://hackenberg.tech/about/"
+      "name": "Professional Interests",
+      "item": "https://hackenberg.tech/#about"
     },
     {
       "@type": "ListItem",
@@ -83,7 +83,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     <Breadcrumbs 
       items={[
         { label: "Home", href: "/" },
-        { label: "About", href: "/about/" },
+        { label: "Professional Interests", href: "/#about" },
         { label: interest.data.title }
       ]}
       domain="interests"

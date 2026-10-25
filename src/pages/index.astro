@@ -11,6 +11,7 @@ import ProjectCard from "@components/ProjectCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import NewsletterCard from "@components/NewsletterCard.astro";
+import InterestCard from "@components/InterestCard.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
 import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
@@ -163,7 +164,7 @@ const sortedProjects = projects.sort((a, b) => {
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-const interests = await getCollection("interests");
+const interests = (await getCollection("interests")).sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const posts = await getCollection("posts");
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -1200,6 +1201,57 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       };
     })();
   </script>
+
+  <!-- Professional Interests Section -->
+  <Section id="about" border="top" padding="standard">
+    <Container size="wide" padding="none">
+      <div class="section-header max-w-2xl">
+        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
+          Professional <span class="text-domain-interests">Interests</span>
+        </h2>
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+          Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
+        </p>
+      </div>
+
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-4 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {interests.map((interest) => (
+            <div class="w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto">
+              <InterestCard
+                id={interest.id}
+                title={interest.data.title}
+                description={interest.data.description}
+                heroImage={interest.data.heroImage}
+                tags={interest.data.tags}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </Section>
 
   <!-- Featured Blog Posts Section -->
   <Section id="latest-posts" border="top" padding="standard">
