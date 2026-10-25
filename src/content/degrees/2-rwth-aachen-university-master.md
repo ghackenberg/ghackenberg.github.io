@@ -8,3 +8,5 @@ location: "Aachen, Germany"
 color: "blue"
 order: 2
 ---
+
+Focusing on virtual reality, computer vision, and machine learning. Exploring real-time 3D graphics, interactive simulation environments, visual pattern recognition, and statistical learning algorithms.

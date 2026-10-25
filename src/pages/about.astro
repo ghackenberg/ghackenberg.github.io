@@ -51,9 +51,30 @@ const breadcrumbSchema = {
         </div>
 
         <!-- Career & Academic Timeline -->
-        <div class="space-y-12">
-          <EducationTimeline />
-          <Timeline />
+        <div class="space-y-16">
+          <div>
+            <div class="mb-8">
+              <h2 id="academic-degrees-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
+                Academic <span class="text-brand-blue">Degrees</span>
+              </h2>
+              <p id="academic-degrees-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
+                University education and academic degrees in computer science and software systems engineering across Mannheim, Aachen, and Munich.
+              </p>
+            </div>
+            <EducationTimeline />
+          </div>
+
+          <div>
+            <div class="mb-8">
+              <h2 id="professional-experience-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
+                Professional <span class="text-brand-blue">Experience</span>
+              </h2>
+              <p id="professional-experience-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
+                Academic leadership, applied research positions, and software engineering roles across university and industry.
+              </p>
+            </div>
+            <Timeline />
+          </div>
         </div>
       </Container>
     </Section>

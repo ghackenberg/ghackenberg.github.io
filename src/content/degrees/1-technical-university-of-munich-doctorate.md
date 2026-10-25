@@ -8,3 +8,5 @@ location: "Munich, Germany"
 color: "blue"
 order: 1
 ---
+
+Focusing on model-based, test-driven, and agile development methodologies for cyber-physical systems. Investigating integrated engineering workflows, formal system modeling, and continuous verification across mechatronic and software domains.
