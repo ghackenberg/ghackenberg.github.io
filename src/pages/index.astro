@@ -831,8 +831,19 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </a>
           </div>
 
-          <!-- Contact & Social Buttons -->
-          <div id="hero-actions-row" class="max-w-2xl relative z-10 flex flex-nowrap items-center gap-3 sm:gap-4 min-w-0">
+          <!-- Contact & About Buttons -->
+          <div id="hero-actions-row" class="max-w-2xl relative z-10 flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap min-w-0">
+            <a 
+              id="hero-about-btn"
+              href="/about/" 
+              aria-label="About Dr. Georg Hackenberg"
+              class="shrink-0 h-12 px-6 rounded-xl bg-element-bg/90 light:bg-white/90 border-2 border-element-border-medium hover:border-brand-blue text-gray-200 light:text-slate-800 hover:text-brand-blue light:hover:text-brand-blue font-extrabold shadow-md transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-2 whitespace-nowrap"
+            >
+              <span class="text-sm select-none" aria-hidden="true">👤</span>
+              <span class="hero-about-full">About Me</span>
+              <span class="hero-about-short hidden">About</span>
+            </a>
+
             <a 
               id="hero-contact-btn"
               href="/contact/" 
@@ -845,61 +856,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
             </a>
-
-            <!-- Social Media Buttons -->
-            <div id="hero-social-group" class="flex flex-nowrap items-center gap-2.5 sm:gap-3 shrink-0">
-              <!-- GitHub -->
-              <a 
-                href="https://github.com/ghackenberg" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-blue/40 hover:bg-brand-blue/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="GitHub Profile"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-                </svg>
-              </a>
-
-              <!-- LinkedIn -->
-              <a 
-                href="https://www.linkedin.com/in/georghackenberg/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-purple/40 hover:bg-brand-purple/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="LinkedIn Profile"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
-                </svg>
-              </a>
-
-              <!-- Twitter / X -->
-              <a 
-                href="https://twitter.com/georghackenberg" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-yellow/40 hover:bg-brand-yellow/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="Twitter Profile"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-
-              <!-- YouTube -->
-              <a 
-                href="https://youtube.com/@georghackenberg" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-green/40 hover:bg-brand-green/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="YouTube Channel"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                </svg>
-              </a>
-            </div>
           </div>
 
           <!-- Portrait Cell (dynamically positioned by syncHeroResponsiveLayout) -->
@@ -942,54 +898,77 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       let lastContourJson = '';
 
       function syncHeroResponsiveLayout() {
-        // 1. Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
+        // 1. Adaptive Hero CTA Buttons (#hero-about-btn & #hero-contact-btn)
         const actionsRow = document.getElementById('hero-actions-row');
         const contactBtn = document.getElementById('hero-contact-btn');
-        const socialGroup = document.getElementById('hero-social-group');
+        const aboutBtn = document.getElementById('hero-about-btn');
 
-        if (actionsRow && contactBtn && socialGroup) {
-          const textFull = contactBtn.querySelector('.hero-cta-full');
-          const textShort = contactBtn.querySelector('.hero-cta-short');
-          const icon = contactBtn.querySelector('.hero-cta-icon');
+        if (actionsRow && (contactBtn || aboutBtn)) {
+          const availableWidth = actionsRow.clientWidth;
+          if (availableWidth !== lastActionsWidth || isFontsReady !== lastActionsFontsReady) {
+            lastActionsWidth = availableWidth;
+            lastActionsFontsReady = isFontsReady;
 
-          if (textFull && textShort && icon) {
-            const availableWidth = actionsRow.clientWidth;
-            if (availableWidth !== lastActionsWidth || isFontsReady !== lastActionsFontsReady) {
-              lastActionsWidth = availableWidth;
-              lastActionsFontsReady = isFontsReady;
+            const contactFull = contactBtn ? contactBtn.querySelector('.hero-cta-full') : null;
+            const contactShort = contactBtn ? contactBtn.querySelector('.hero-cta-short') : null;
+            const contactIcon = contactBtn ? contactBtn.querySelector('.hero-cta-icon') : null;
 
-              const style = window.getComputedStyle(actionsRow);
-              const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
-              const socialWidth = socialGroup.offsetWidth;
+            const aboutFull = aboutBtn ? aboutBtn.querySelector('.hero-about-full') : null;
+            const aboutShort = aboutBtn ? aboutBtn.querySelector('.hero-about-short') : null;
 
-              const fits = function () {
-                return contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
-              };
+            const style = window.getComputedStyle(actionsRow);
+            const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
 
-              // Level 1: Full text ("Get in Touch")
-              textFull.classList.remove('hidden');
-              textShort.classList.add('hidden');
-              icon.classList.add('hidden');
+            const fits = function () {
+              const cWidth = contactBtn ? contactBtn.offsetWidth : 0;
+              const aWidth = aboutBtn ? aboutBtn.offsetWidth : 0;
+              const needed = cWidth > 0 && aWidth > 0 ? cWidth + gap + aWidth : cWidth + aWidth;
+              return needed <= availableWidth + 1;
+            };
+
+            // Level 1: Full text ("About Me" & "Get in Touch")
+            if (contactFull) contactFull.classList.remove('hidden');
+            if (contactShort) contactShort.classList.add('hidden');
+            if (contactIcon) contactIcon.classList.add('hidden');
+            if (contactBtn) {
               contactBtn.classList.remove('w-12', 'px-0', 'px-4');
               contactBtn.classList.add('px-6');
+            }
 
-              if (!fits()) {
-                // Level 2: Short text ("Contact")
-                textFull.classList.add('hidden');
-                textShort.classList.remove('hidden');
-                icon.classList.add('hidden');
-                contactBtn.classList.remove('w-12', 'px-0', 'px-6');
+            if (aboutFull) aboutFull.classList.remove('hidden');
+            if (aboutShort) aboutShort.classList.add('hidden');
+            if (aboutBtn) {
+              aboutBtn.classList.remove('px-4');
+              aboutBtn.classList.add('px-6');
+            }
+
+            // Level 2: If tight, shorten contact button text ("Contact")
+            if (!fits() && contactShort && contactFull) {
+              contactFull.classList.add('hidden');
+              contactShort.classList.remove('hidden');
+              if (contactBtn) {
+                contactBtn.classList.remove('px-6');
                 contactBtn.classList.add('px-4');
-
-                if (!fits()) {
-                  // Level 3: Envelope Icon Only
-                  textFull.classList.add('hidden');
-                  textShort.classList.add('hidden');
-                  icon.classList.remove('hidden');
-                  contactBtn.classList.remove('px-6', 'px-4');
-                  contactBtn.classList.add('w-12', 'px-0');
-                }
               }
+            }
+
+            // Level 3: If still tight, shorten about button text ("About")
+            if (!fits() && aboutShort && aboutFull) {
+              aboutFull.classList.add('hidden');
+              aboutShort.classList.remove('hidden');
+              if (aboutBtn) {
+                aboutBtn.classList.remove('px-6');
+                aboutBtn.classList.add('px-4');
+              }
+            }
+
+            // Level 4: Extreme fallback for micro-screens (< 260px)
+            if (!fits() && contactIcon && contactFull && contactShort && contactBtn) {
+              contactFull.classList.add('hidden');
+              contactShort.classList.add('hidden');
+              contactIcon.classList.remove('hidden');
+              contactBtn.classList.remove('px-6', 'px-4');
+              contactBtn.classList.add('w-12', 'px-0');
             }
           }
         }
@@ -1053,28 +1032,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           }
 
           if (actionsRow) {
-            if (contactBtn) {
-              const cr = contactBtn.getBoundingClientRect();
-              if (cr.width > 2 && cr.height > 2) {
-                rawRects.push({
-                  top: cr.top - contentOriginY,
-                  bottom: cr.bottom - contentOriginY,
-                  right: cr.right - gridRect.left
-                });
-              }
-            }
-            if (socialGroup) {
-              for (let i = 0; i < socialGroup.children.length; i++) {
-                const child = socialGroup.children[i];
-                if (child instanceof HTMLElement) {
-                  const cr = child.getBoundingClientRect();
-                  if (cr.width > 2 && cr.height > 2) {
-                    rawRects.push({
-                      top: cr.top - contentOriginY,
-                      bottom: cr.bottom - contentOriginY,
-                      right: cr.right - gridRect.left
-                    });
-                  }
+            for (let i = 0; i < actionsRow.children.length; i++) {
+              const child = actionsRow.children[i];
+              if (child instanceof HTMLElement) {
+                const cr = child.getBoundingClientRect();
+                if (cr.width > 2 && cr.height > 2) {
+                  rawRects.push({
+                    top: cr.top - contentOriginY,
+                    bottom: cr.bottom - contentOriginY,
+                    right: cr.right - gridRect.left
+                  });
                 }
               }
             }

@@ -589,34 +589,31 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
       <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-element-border py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
         <Container as="div" size="wide" padding="none">
           <NewsletterSignup variant="footer" />
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[minmax(0,3.6fr)_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,2.6fr)] gap-8 md:gap-10 xl:gap-8 pt-10 pb-10 border-t border-b border-element-border">
+          <div class="grid grid-cols-1 md:grid-cols-[1fr_280px] xl:grid-cols-[minmax(0,3.6fr)_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,2.6fr)] gap-8 md:gap-10 xl:gap-8 pt-10 pb-10 border-t border-b border-element-border">
             
-            <!-- Brand Column -->
-            <div class="col-span-1 xl:col-auto flex flex-col space-y-4">
-              <a href="/" class="flex items-center space-x-3 group self-start">
-                <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
-                  <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
-                    GH
+            <!-- Left Column: Brand & Bio + Navigation in rows on < xl; dissolved via xl:contents on xl -->
+            <div class="flex flex-col space-y-6 xl:contents">
+              <!-- Brand -->
+              <div class="flex flex-col space-y-4 xl:col-auto">
+                <a href="/" class="flex items-center space-x-3 group self-start">
+                  <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
+                    <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
+                      GH
+                    </span>
                   </span>
-                </span>
-                <div class="flex flex-col leading-tight min-w-0">
-                  <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors">
-                    Dr. Georg Hackenberg
-                  </span>
-                  <span class="text-xs text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors whitespace-nowrap">
-                    Professor for Industrial Informatics @ UAP
-                  </span>
-                </div>
-              </a>
-              <p class="text-xs text-gray-500 leading-relaxed">
-                Full Professor for Industrial Informatics & enterprise software architect bridging academic systems engineering with sovereign agentic AI workflows, cyber-physical simulation, and digital content creation. Founder of CADdrive and Mentawise.
-              </p>
-            </div>
-            
-            <!-- Navigation & Profiles Wrapper (stacked on < xl, dissolved via contents on xl) -->
-            <div class="col-span-1 flex flex-col space-y-6 xl:contents">
+                  <div class="flex flex-col leading-tight min-w-0">
+                    <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors">
+                      Dr. Georg Hackenberg
+                    </span>
+                    <span class="text-xs text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors whitespace-nowrap">
+                      Professor for Industrial Informatics @ UAP
+                    </span>
+                  </div>
+                </a>
+              </div>
+              
               <!-- Pages Column -->
-              <div class="flex flex-col space-y-2 xl:space-y-3">
+              <div class="flex flex-col space-y-2 xl:space-y-3 xl:col-auto">
                 <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Pages</span>
                 <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs xl:flex-col xl:space-y-2 xl:gap-0">
                   <li>
@@ -638,7 +635,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
               </div>
 
               <!-- Catalogs Column -->
-              <div class="flex flex-col space-y-2 xl:space-y-3">
+              <div class="flex flex-col space-y-2 xl:space-y-3 xl:col-auto">
                 <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Catalogs</span>
                 <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs xl:flex-col xl:space-y-2 xl:gap-0">
                   <li>
@@ -669,7 +666,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
               </div>
 
               <!-- Profiles Column -->
-              <div class="flex flex-col space-y-2 xl:space-y-3">
+              <div class="flex flex-col space-y-2 xl:space-y-3 xl:col-auto">
                 <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Profiles</span>
                 <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs xl:flex-col xl:space-y-2 xl:gap-0">
                   <li>
@@ -694,8 +691,8 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
               </div>
             </div>
             
-            <!-- Contact & Offices Column -->
-            <div class="col-span-1 md:col-span-2 xl:col-auto flex flex-col gap-4 pt-6 border-t border-element-border/50 md:grid md:grid-cols-3 md:gap-6 md:pt-8 xl:flex xl:flex-col xl:gap-4 xl:pt-0 xl:border-t-0">
+            <!-- Right Column: Contact & Offices -->
+            <div class="flex flex-col space-y-4 w-full md:w-[280px] md:shrink-0 xl:w-auto xl:col-auto">
               <!-- Direct Contact Channels -->
               <div>
                 <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px] flex items-center gap-1.5">
