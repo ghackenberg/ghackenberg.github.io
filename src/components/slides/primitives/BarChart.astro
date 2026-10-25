@@ -38,15 +38,19 @@ const {
 const elementId = explicitId;
 
 const accentColors: Record<string, { bar: string; text: string }> = {
-  rose: { bar: 'bg-[var(--color-slide-accent-rose)]', text: 'text-[var(--color-slide-accent-rose)]' },
-  purple: { bar: 'bg-[var(--color-slide-accent-purple)]', text: 'text-[var(--color-slide-accent-purple)]' },
-  indigo: { bar: 'bg-[var(--color-slide-accent-indigo)]', text: 'text-[var(--color-slide-accent-indigo)]' },
   blue: { bar: 'bg-[var(--color-slide-accent-blue)]', text: 'text-[var(--color-slide-accent-blue)]' },
+  indigo: { bar: 'bg-[var(--color-slide-accent-indigo)]', text: 'text-[var(--color-slide-accent-indigo)]' },
+  violet: { bar: 'bg-[var(--color-slide-accent-violet)]', text: 'text-[var(--color-slide-accent-violet)]' },
+  purple: { bar: 'bg-[var(--color-slide-accent-purple)]', text: 'text-[var(--color-slide-accent-purple)]' },
+  fuchsia: { bar: 'bg-[var(--color-slide-accent-fuchsia)]', text: 'text-[var(--color-slide-accent-fuchsia)]' },
+  pink: { bar: 'bg-[var(--color-slide-accent-pink)]', text: 'text-[var(--color-slide-accent-pink)]' },
+  rose: { bar: 'bg-[var(--color-slide-accent-rose)]', text: 'text-[var(--color-slide-accent-rose)]' },
+  orange: { bar: 'bg-[var(--color-slide-accent-orange)]', text: 'text-[var(--color-slide-accent-orange)]' },
+  amber: { bar: 'bg-[var(--color-slide-accent-amber)]', text: 'text-[var(--color-slide-accent-amber)]' },
+  // Legacy aliases
   cyan: { bar: 'bg-[var(--color-slide-accent-cyan)]', text: 'text-[var(--color-slide-accent-cyan)]' },
   teal: { bar: 'bg-[var(--color-slide-accent-teal)]', text: 'text-[var(--color-slide-accent-teal)]' },
-  emerald: { bar: 'bg-[var(--color-slide-accent-emerald)]', text: 'text-[var(--color-slide-accent-emerald)]' },
-  amber: { bar: 'bg-[var(--color-slide-accent-amber)]', text: 'text-[var(--color-slide-accent-amber)]' },
-  orange: { bar: 'bg-[var(--color-slide-accent-orange)]', text: 'text-[var(--color-slide-accent-orange)]' }
+  emerald: { bar: 'bg-[var(--color-slide-accent-emerald)]', text: 'text-[var(--color-slide-accent-emerald)]' }
 };
 
 // Initial SSR Calculation for zero-flash layout
@@ -353,4 +357,12 @@ function computeSsrBarRounding(value: number) {
 
   :global([data-accent="orange"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-orange); }
   :global([data-accent="orange"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-orange); }
+  :global([data-accent="violet"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-violet); }
+  :global([data-accent="violet"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-violet); }
+
+  :global([data-accent="fuchsia"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-fuchsia); }
+  :global([data-accent="fuchsia"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-fuchsia); }
+
+  :global([data-accent="pink"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-pink); }
+  :global([data-accent="pink"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-pink); }
 </style>

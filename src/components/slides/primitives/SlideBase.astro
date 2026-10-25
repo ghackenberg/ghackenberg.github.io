@@ -176,14 +176,14 @@ const isNotFirstSlide = num > 1 && !isSection;
   .slide-ambient-glow {
     background-image: 
       radial-gradient(1500px 1000px at 0% 0%, rgba(37, 99, 235, 0.18) 0%, rgba(37, 99, 235, 0.08) 35%, rgba(37, 99, 235, 0.02) 65%, transparent 85%),
-      radial-gradient(1500px 1000px at 100% 100%, rgba(6, 182, 212, 0.16) 0%, rgba(6, 182, 212, 0.07) 35%, rgba(6, 182, 212, 0.02) 65%, transparent 85%);
+      radial-gradient(1500px 1000px at 100% 100%, rgba(168, 85, 247, 0.16) 0%, rgba(168, 85, 247, 0.07) 35%, rgba(168, 85, 247, 0.02) 65%, transparent 85%);
   }
 
   :global(.light) .slide-ambient-glow,
   :global(.light:root) .slide-ambient-glow {
     background-image: 
       radial-gradient(1500px 1000px at 0% 0%, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.05) 35%, rgba(59, 130, 246, 0.015) 65%, transparent 85%),
-      radial-gradient(1500px 1000px at 100% 100%, rgba(6, 182, 212, 0.10) 0%, rgba(6, 182, 212, 0.04) 35%, rgba(6, 182, 212, 0.015) 65%, transparent 85%);
+      radial-gradient(1500px 1000px at 100% 100%, rgba(147, 51, 234, 0.10) 0%, rgba(147, 51, 234, 0.04) 35%, rgba(147, 51, 234, 0.015) 65%, transparent 85%);
   }
 
   /* German Typography & Hyphenation */
@@ -222,62 +222,64 @@ const isNotFirstSlide = num > 1 && !isSection;
   }
 
   /* Ton-in-Ton Bullet Badges per Container Accent (Canonical 9 Accents + Aliases + Numbers) */
-  :global([data-accent="rose"] .bullet-badge),
-  :global([data-accent="red"] .bullet-badge),
-  :global([data-accent="1"] .bullet-badge) {
-    background-color: var(--color-slide-accent-rose);
-    color: white;
-  }
-  :global([data-accent="purple"] .bullet-badge),
-  :global([data-accent="violet"] .bullet-badge),
-  :global([data-accent="2"] .bullet-badge) {
-    background-color: var(--color-slide-accent-purple);
-    color: white;
-  }
-  :global([data-accent="indigo"] .bullet-badge),
-  :global([data-accent="3"] .bullet-badge) {
-    background-color: var(--color-slide-accent-indigo);
-    color: white;
-  }
   :global([data-accent="blue"] .bullet-badge),
-  :global([data-accent="4"] .bullet-badge) {
+  :global([data-accent="1"] .bullet-badge) {
     background-color: var(--color-slide-accent-blue);
     color: white;
   }
+  :global([data-accent="indigo"] .bullet-badge),
+  :global([data-accent="2"] .bullet-badge) {
+    background-color: var(--color-slide-accent-indigo);
+    color: white;
+  }
+  :global([data-accent="violet"] .bullet-badge),
+  :global([data-accent="3"] .bullet-badge) {
+    background-color: var(--color-slide-accent-violet);
+    color: white;
+  }
+  :global([data-accent="purple"] .bullet-badge),
+  :global([data-accent="4"] .bullet-badge) {
+    background-color: var(--color-slide-accent-purple);
+    color: white;
+  }
+  :global([data-accent="fuchsia"] .bullet-badge),
   :global([data-accent="cyan"] .bullet-badge),
   :global([data-accent="5"] .bullet-badge) {
-    background-color: var(--color-slide-accent-cyan);
+    background-color: var(--color-slide-accent-fuchsia);
     color: white;
   }
+  :global([data-accent="pink"] .bullet-badge),
   :global([data-accent="teal"] .bullet-badge),
   :global([data-accent="6"] .bullet-badge) {
-    background-color: var(--color-slide-accent-teal);
+    background-color: var(--color-slide-accent-pink);
     color: white;
   }
+  :global([data-accent="rose"] .bullet-badge),
+  :global([data-accent="red"] .bullet-badge),
   :global([data-accent="emerald"] .bullet-badge),
   :global([data-accent="green"] .bullet-badge),
   :global([data-accent="7"] .bullet-badge) {
-    background-color: var(--color-slide-accent-emerald);
+    background-color: var(--color-slide-accent-rose);
+    color: white;
+  }
+  :global([data-accent="orange"] .bullet-badge),
+  :global([data-accent="8"] .bullet-badge) {
+    background-color: var(--color-slide-accent-orange);
     color: white;
   }
   :global([data-accent="amber"] .bullet-badge),
   :global([data-accent="yellow"] .bullet-badge),
-  :global([data-accent="8"] .bullet-badge) {
-    background-color: var(--color-slide-accent-amber);
-    color: white;
-  }
-  :global([data-accent="orange"] .bullet-badge),
   :global([data-accent="9"] .bullet-badge) {
-    background-color: var(--color-slide-accent-orange);
+    background-color: var(--color-slide-accent-amber);
     color: white;
   }
   :global([data-accent="neutral"] .bullet-badge) {
     background-color: var(--color-gray-800);
-    color: var(--color-slide-text);
+    color: white;
   }
   :global(.light [data-accent="neutral"] .bullet-badge) {
     background-color: var(--color-gray-200);
-    color: var(--color-slide-text);
+    color: var(--color-gray-800);
   }
 
   /* ==========================================================================
@@ -295,140 +297,144 @@ const isNotFirstSlide = num > 1 && !isSection;
     color: var(--color-slide-text);
   }
 
+  :global([data-accent="blue"] .callout-box),
+  :global([data-accent="1"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
+  }
+  :global(.light [data-accent="blue"] .callout-box),
+  :global(.light [data-accent="1"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 25%, transparent);
+    color: var(--color-slide-accent-blue);
+  }
+
+  :global([data-accent="indigo"] .callout-box),
+  :global([data-accent="2"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+  }
+  :global(.light [data-accent="indigo"] .callout-box),
+  :global(.light [data-accent="2"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 25%, transparent);
+    color: var(--color-slide-accent-indigo);
+  }
+
+  :global([data-accent="violet"] .callout-box),
+  :global([data-accent="3"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-violet) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-violet) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-violet) 35%, white);
+  }
+  :global(.light [data-accent="violet"] .callout-box),
+  :global(.light [data-accent="3"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-violet) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-violet) 25%, transparent);
+    color: var(--color-slide-accent-violet);
+  }
+
+  :global([data-accent="purple"] .callout-box),
+  :global([data-accent="4"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+  }
+  :global(.light [data-accent="purple"] .callout-box),
+  :global(.light [data-accent="4"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 25%, transparent);
+    color: var(--color-slide-accent-purple);
+  }
+
+  :global([data-accent="fuchsia"] .callout-box),
+  :global([data-accent="cyan"] .callout-box),
+  :global([data-accent="5"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 35%, white);
+  }
+  :global(.light [data-accent="fuchsia"] .callout-box),
+  :global(.light [data-accent="cyan"] .callout-box),
+  :global(.light [data-accent="5"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 25%, transparent);
+    color: var(--color-slide-accent-fuchsia);
+  }
+
+  :global([data-accent="pink"] .callout-box),
+  :global([data-accent="teal"] .callout-box),
+  :global([data-accent="6"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-pink) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-pink) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-pink) 35%, white);
+  }
+  :global(.light [data-accent="pink"] .callout-box),
+  :global(.light [data-accent="teal"] .callout-box),
+  :global(.light [data-accent="6"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-pink) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-pink) 25%, transparent);
+    color: var(--color-slide-accent-pink);
+  }
+
   :global([data-accent="rose"] .callout-box),
   :global([data-accent="red"] .callout-box),
-  :global([data-accent="1"] .callout-box) {
+  :global([data-accent="emerald"] .callout-box),
+  :global([data-accent="green"] .callout-box),
+  :global([data-accent="7"] .callout-box) {
     background-color: color-mix(in srgb, var(--color-slide-accent-rose) 12%, transparent);
     border-color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, transparent);
     color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
   }
   :global(.light [data-accent="rose"] .callout-box),
   :global(.light [data-accent="red"] .callout-box),
-  :global(.light [data-accent="1"] .callout-box) {
+  :global(.light [data-accent="emerald"] .callout-box),
+  :global(.light [data-accent="green"] .callout-box),
+  :global(.light [data-accent="7"] .callout-box) {
     background-color: color-mix(in srgb, var(--color-slide-accent-rose) 6%, white);
     border-color: color-mix(in srgb, var(--color-slide-accent-rose) 25%, transparent);
     color: var(--color-slide-accent-rose);
   }
 
-  :global([data-accent="purple"] .callout-box),
-  :global([data-accent="violet"] .callout-box),
-  :global([data-accent="2"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+  :global([data-accent="orange"] .callout-box),
+  :global([data-accent="8"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
   }
-  :global(.light [data-accent="purple"] .callout-box),
-  :global(.light [data-accent="violet"] .callout-box),
-  :global(.light [data-accent="2"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 25%, transparent);
-    color: var(--color-slide-accent-purple);
-  }
-
-  :global([data-accent="indigo"] .callout-box),
-  :global([data-accent="3"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
-  }
-  :global(.light [data-accent="indigo"] .callout-box),
-  :global(.light [data-accent="3"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 25%, transparent);
-    color: var(--color-slide-accent-indigo);
-  }
-
-  :global([data-accent="blue"] .callout-box),
-  :global([data-accent="4"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
-  }
-  :global(.light [data-accent="blue"] .callout-box),
-  :global(.light [data-accent="4"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 25%, transparent);
-    color: var(--color-slide-accent-blue);
-  }
-
-  :global([data-accent="cyan"] .callout-box),
-  :global([data-accent="5"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
-  }
-  :global(.light [data-accent="cyan"] .callout-box),
-  :global(.light [data-accent="5"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 25%, transparent);
-    color: var(--color-slide-accent-cyan);
-  }
-
-  :global([data-accent="teal"] .callout-box),
-  :global([data-accent="6"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
-  }
-  :global(.light [data-accent="teal"] .callout-box),
-  :global(.light [data-accent="6"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 25%, transparent);
-    color: var(--color-slide-accent-teal);
-  }
-
-  :global([data-accent="emerald"] .callout-box),
-  :global([data-accent="green"] .callout-box),
-  :global([data-accent="7"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
-  }
-  :global(.light [data-accent="emerald"] .callout-box),
-  :global(.light [data-accent="green"] .callout-box),
-  :global(.light [data-accent="7"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 25%, transparent);
-    color: var(--color-slide-accent-emerald);
+  :global(.light [data-accent="orange"] .callout-box),
+  :global(.light [data-accent="8"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 25%, transparent);
+    color: var(--color-slide-accent-orange);
   }
 
   :global([data-accent="amber"] .callout-box),
   :global([data-accent="yellow"] .callout-box),
-  :global([data-accent="8"] .callout-box) {
+  :global([data-accent="9"] .callout-box) {
     background-color: color-mix(in srgb, var(--color-slide-accent-amber) 12%, transparent);
     border-color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, transparent);
     color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
   }
   :global(.light [data-accent="amber"] .callout-box),
   :global(.light [data-accent="yellow"] .callout-box),
-  :global(.light [data-accent="8"] .callout-box) {
+  :global(.light [data-accent="9"] .callout-box) {
     background-color: color-mix(in srgb, var(--color-slide-accent-amber) 6%, white);
     border-color: color-mix(in srgb, var(--color-slide-accent-amber) 25%, transparent);
     color: var(--color-slide-accent-amber);
   }
 
-  :global([data-accent="orange"] .callout-box),
-  :global([data-accent="9"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
-  }
-  :global(.light [data-accent="orange"] .callout-box),
-  :global(.light [data-accent="9"] .callout-box) {
-    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 25%, transparent);
-    color: var(--color-slide-accent-orange);
-  }
-
   :global([data-accent="neutral"] .callout-box) {
-    background-color: var(--color-slide-card-bg);
-    border-color: var(--color-slide-card-border);
-    color: var(--color-slide-text);
+    background-color: color-mix(in srgb, var(--color-gray-800) 40%, transparent);
+    border-color: color-mix(in srgb, var(--color-gray-700) 50%, transparent);
+    color: var(--color-gray-300);
   }
   :global(.light [data-accent="neutral"] .callout-box) {
-    background-color: var(--color-slide-card-bg);
-    border-color: var(--color-slide-card-border);
-    color: var(--color-slide-text);
+    background-color: color-mix(in srgb, var(--color-gray-200) 60%, white);
+    border-color: color-mix(in srgb, var(--color-gray-300) 80%, transparent);
+    color: var(--color-gray-700);
   }
 
   /* ==========================================================================
@@ -439,7 +445,7 @@ const isNotFirstSlide = num > 1 && !isSection;
   :global(.highlight-marker) {
     --hl-alpha-1: 38%;
     --hl-alpha-2: 48%;
-    --hl-color: var(--color-slide-accent-cyan);
+    --hl-color: var(--color-slide-accent-blue);
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
     background-color: transparent !important;
@@ -472,7 +478,7 @@ const isNotFirstSlide = num > 1 && !isSection;
     border-radius: 0.4em !important;
     padding: 0.14em 0.5em !important;
     margin: 0 0.05em !important;
-    --hl-color: var(--slide-accent, var(--color-slide-accent-cyan));
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
   }
@@ -480,107 +486,111 @@ const isNotFirstSlide = num > 1 && !isSection;
   /* Default Marker Colors */
   :global(mark),
   :global(.highlight-marker) {
-    --hl-color: var(--slide-accent, var(--color-slide-accent-cyan));
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
   }
 
-  /* Container-driven Highlight: 1 (Rose / Red) */
-  :global([data-accent="rose"] mark),
-  :global([data-accent="rose"] .highlight-marker),
-  :global([data-accent="red"] mark),
-  :global([data-accent="red"] .highlight-marker),
-  :global([data-accent="1"] mark),
-  :global([data-accent="1"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-rose);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
-    --hl-text-light: var(--color-slide-accent-rose);
-  }
-
-  /* Container-driven Highlight: 2 (Purple / Violet) */
-  :global([data-accent="purple"] mark),
-  :global([data-accent="purple"] .highlight-marker),
-  :global([data-accent="violet"] mark),
-  :global([data-accent="violet"] .highlight-marker),
-  :global([data-accent="2"] mark),
-  :global([data-accent="2"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-purple);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
-    --hl-text-light: var(--color-slide-accent-purple);
-  }
-
-  /* Container-driven Highlight: 3 (Indigo) */
-  :global([data-accent="indigo"] mark),
-  :global([data-accent="indigo"] .highlight-marker),
-  :global([data-accent="3"] mark),
-  :global([data-accent="3"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-indigo);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
-    --hl-text-light: var(--color-slide-accent-indigo);
-  }
-
-  /* Container-driven Highlight: 4 (Blue) */
+  /* Container-driven Highlight: 1 (Blue) */
   :global([data-accent="blue"] mark),
   :global([data-accent="blue"] .highlight-marker),
-  :global([data-accent="4"] mark),
-  :global([data-accent="4"] .highlight-marker) {
+  :global([data-accent="1"] mark),
+  :global([data-accent="1"] .highlight-marker) {
     --hl-color: var(--color-slide-accent-blue);
     --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
     --hl-text-light: var(--color-slide-accent-blue);
   }
 
-  /* Container-driven Highlight: 5 (Cyan) */
+  /* Container-driven Highlight: 2 (Indigo) */
+  :global([data-accent="indigo"] mark),
+  :global([data-accent="indigo"] .highlight-marker),
+  :global([data-accent="2"] mark),
+  :global([data-accent="2"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-indigo);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+    --hl-text-light: var(--color-slide-accent-indigo);
+  }
+
+  /* Container-driven Highlight: 3 (Violet) */
+  :global([data-accent="violet"] mark),
+  :global([data-accent="violet"] .highlight-marker),
+  :global([data-accent="3"] mark),
+  :global([data-accent="3"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-violet);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-violet) 35%, white);
+    --hl-text-light: var(--color-slide-accent-violet);
+  }
+
+  /* Container-driven Highlight: 4 (Purple) */
+  :global([data-accent="purple"] mark),
+  :global([data-accent="purple"] .highlight-marker),
+  :global([data-accent="4"] mark),
+  :global([data-accent="4"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-purple);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+    --hl-text-light: var(--color-slide-accent-purple);
+  }
+
+  /* Container-driven Highlight: 5 (Fuchsia / Cyan) */
+  :global([data-accent="fuchsia"] mark),
+  :global([data-accent="fuchsia"] .highlight-marker),
   :global([data-accent="cyan"] mark),
   :global([data-accent="cyan"] .highlight-marker),
   :global([data-accent="5"] mark),
   :global([data-accent="5"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-cyan);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
-    --hl-text-light: var(--color-slide-accent-cyan);
+    --hl-color: var(--color-slide-accent-fuchsia);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-fuchsia) 35%, white);
+    --hl-text-light: var(--color-slide-accent-fuchsia);
   }
 
-  /* Container-driven Highlight: 6 (Teal) */
+  /* Container-driven Highlight: 6 (Pink / Teal) */
+  :global([data-accent="pink"] mark),
+  :global([data-accent="pink"] .highlight-marker),
   :global([data-accent="teal"] mark),
   :global([data-accent="teal"] .highlight-marker),
   :global([data-accent="6"] mark),
   :global([data-accent="6"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-teal);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
-    --hl-text-light: var(--color-slide-accent-teal);
+    --hl-color: var(--color-slide-accent-pink);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-pink) 35%, white);
+    --hl-text-light: var(--color-slide-accent-pink);
   }
 
-  /* Container-driven Highlight: 7 (Emerald / Green) */
+  /* Container-driven Highlight: 7 (Rose / Red / Emerald / Green) */
+  :global([data-accent="rose"] mark),
+  :global([data-accent="rose"] .highlight-marker),
+  :global([data-accent="red"] mark),
+  :global([data-accent="red"] .highlight-marker),
   :global([data-accent="emerald"] mark),
   :global([data-accent="emerald"] .highlight-marker),
   :global([data-accent="green"] mark),
   :global([data-accent="green"] .highlight-marker),
   :global([data-accent="7"] mark),
   :global([data-accent="7"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-emerald);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
-    --hl-text-light: var(--color-slide-accent-emerald);
+    --hl-color: var(--color-slide-accent-rose);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
+    --hl-text-light: var(--color-slide-accent-rose);
   }
 
-  /* Container-driven Highlight: 8 (Amber / Yellow) */
+  /* Container-driven Highlight: 8 (Orange) */
+  :global([data-accent="orange"] mark),
+  :global([data-accent="orange"] .highlight-marker),
+  :global([data-accent="8"] mark),
+  :global([data-accent="8"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-orange);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
+    --hl-text-light: var(--color-slide-accent-orange);
+  }
+
+  /* Container-driven Highlight: 9 (Amber / Yellow) */
   :global([data-accent="amber"] mark),
   :global([data-accent="amber"] .highlight-marker),
   :global([data-accent="yellow"] mark),
   :global([data-accent="yellow"] .highlight-marker),
-  :global([data-accent="8"] mark),
-  :global([data-accent="8"] .highlight-marker) {
+  :global([data-accent="9"] mark),
+  :global([data-accent="9"] .highlight-marker) {
     --hl-color: var(--color-slide-accent-amber);
     --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
     --hl-text-light: var(--color-slide-accent-amber);
-  }
-
-  /* Container-driven Highlight: 9 (Orange) */
-  :global([data-accent="orange"] mark),
-  :global([data-accent="orange"] .highlight-marker),
-  :global([data-accent="9"] mark),
-  :global([data-accent="9"] .highlight-marker) {
-    --hl-color: var(--color-slide-accent-orange);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
-    --hl-text-light: var(--color-slide-accent-orange);
   }
 
   /* Container-driven Highlight: Neutral (falls back cleanly to slide accent) */

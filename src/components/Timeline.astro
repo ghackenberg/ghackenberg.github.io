@@ -258,8 +258,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
         svgContent = `
           <defs>
             <linearGradient id="exp-${index}-tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="steelblue" />
-              <stop offset="100%" stop-color="navy" />
+              <stop offset="0%" stop-color="var(--color-brand-blue)" />
+              <stop offset="100%" stop-color="color-mix(in srgb, var(--color-brand-blue) 45%, black)" />
             </linearGradient>
           </defs>
           <rect width="100" height="100" rx="24" fill="url(#exp-${index}-tumGrad)" />

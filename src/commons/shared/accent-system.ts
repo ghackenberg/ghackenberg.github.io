@@ -1,78 +1,80 @@
 /**
- * Canonical 9-Step Accent Palette (Single Source of Truth)
- * Ordered continuously along the 360° color wheel:
- * 1: Rose    (350°) - Interests
- * 2: Violet  (260°) - Posts
- * 3: Indigo  (240°) - Publications
- * 4: Blue    (215°) - Presentations
- * 5: Cyan    (190°) - Courses
- * 6: Teal    (170°) - Projects
- * 7: Emerald (155°) - Services
- * 8: Yellow  (48°)  - Visualizations
- * 9: Orange  (25°)  - Tags
+ * Canonical 9-Step Accent Palette (9-Stop Signature Brand Spectrum)
+ * Ordered continuously along the signature brand spectrum:
+ * 1: Blue    (217°) - Interests
+ * 2: Indigo  (239°) - Posts
+ * 3: Violet  (258°) - Publications
+ * 4: Purple  (271°) - Presentations
+ * 5: Fuchsia (292°) - Courses
+ * 6: Pink    (330°) - Projects
+ * 7: Rose    (350°) - Services
+ * 8: Orange  (25°)  - Visualizations
+ * 9: Amber   (38°)  - Tags
  */
 
 export const ACCENT_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export type AccentNumber = typeof ACCENT_NUMBERS[number];
 
 export const ACCENT_NAMES = [
-  'rose',
-  'purple',
-  'indigo',
   'blue',
-  'cyan',
-  'teal',
-  'emerald',
-  'amber',
-  'orange'
+  'indigo',
+  'violet',
+  'purple',
+  'fuchsia',
+  'pink',
+  'rose',
+  'orange',
+  'amber'
 ] as const;
 export type AccentName = typeof ACCENT_NAMES[number];
 
 export type SlideAccent = AccentNumber | AccentName | string;
 
 export const ACCENT_NAME_TO_NUMBER: Record<string, AccentNumber> = {
-  rose: 1,
-  red: 1,
+  blue: 1,
   interests: 1,
 
-  purple: 2,
-  violet: 2,
+  indigo: 2,
   posts: 2,
 
-  indigo: 3,
+  violet: 3,
   publications: 3,
 
-  blue: 4,
+  purple: 4,
   presentations: 4,
 
+  fuchsia: 5,
   cyan: 5,
   courses: 5,
 
+  pink: 6,
   teal: 6,
   projects: 6,
 
+  rose: 7,
+  red: 7,
   emerald: 7,
   green: 7,
   services: 7,
 
-  amber: 8,
-  yellow: 8,
+  orange: 8,
   visualizations: 8,
 
-  orange: 9,
+  amber: 9,
+  yellow: 9,
   tags: 9
 };
 
 export const ACCENT_NUMBER_TO_NAME: Record<AccentNumber, AccentName> = {
-  1: 'rose',
-  2: 'purple',
-  3: 'indigo',
-  4: 'blue',
-  5: 'cyan',
-  6: 'teal',
-  7: 'emerald',
-  8: 'amber',
-  9: 'orange'
+  1: 'blue',
+  2: 'indigo',
+  3: 'violet',
+  4: 'purple',
+  5: 'fuchsia',
+  6: 'pink',
+  7: 'rose',
+  8: 'orange',
+  9: 'amber'
 };
 
 /**
@@ -92,7 +94,7 @@ export function resolveAccentNumber(accent?: SlideAccent): AccentNumber {
       return ACCENT_NAME_TO_NUMBER[normalized];
     }
   }
-  return 4; // Default: 4 (Blue / Presentations)
+  return 1; // Default: 1 (Blue / Interests)
 }
 
 /**

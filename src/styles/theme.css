@@ -57,16 +57,16 @@
   --color-element-border-hover: rgba(255, 255, 255, 0.2);
   --color-element-border-medium: rgba(255, 255, 255, 0.1);
   
-  /* Canonical Numbered Accent Palette (360° Color Wheel) */
-  --color-accent-1: #f43f5e; /* Rose (350°) */
-  --color-accent-2: #8b5cf6; /* Violet (260°) */
-  --color-accent-3: #6366f1; /* Indigo (240°) */
-  --color-accent-4: #3b82f6; /* Blue (215°) */
-  --color-accent-5: #06b6d4; /* Cyan (190°) */
-  --color-accent-6: #14b8a6; /* Teal (170°) */
-  --color-accent-7: #10b981; /* Emerald (155°) */
-  --color-accent-8: #eab308; /* Yellow (48°) */
-  --color-accent-9: #f97316; /* Orange (25°) */
+  /* Canonical Numbered Accent Palette (9-Stop Signature Brand Spectrum) */
+  --color-accent-1: #3b82f6; /* 1: Blue (217°)    - Interests */
+  --color-accent-2: #6366f1; /* 2: Indigo (239°)  - Posts */
+  --color-accent-3: #8b5cf6; /* 3: Violet (258°)  - Publications */
+  --color-accent-4: #a855f7; /* 4: Purple (271°)  - Presentations */
+  --color-accent-5: #d946ef; /* 5: Fuchsia (292°) - Courses */
+  --color-accent-6: #ec4899; /* 6: Pink (330°)    - Projects */
+  --color-accent-7: #f43f5e; /* 7: Rose (350°)    - Services */
+  --color-accent-8: #f97316; /* 8: Orange (25°)   - Visualizations */
+  --color-accent-9: #f59e0b; /* 9: Amber (38°)    - Tags */
 
   /* Presentation Slide Design Tokens (mapped to canonical accent palette) */
   --color-slide-bg: #020617;
@@ -74,15 +74,19 @@
   --color-slide-text-subtle: #94a3b8;
   --color-slide-card-bg: rgba(15, 23, 42, 0.95);
   --color-slide-card-border: rgba(51, 65, 85, 0.45);
-  --color-slide-accent-rose: var(--color-accent-1);
-  --color-slide-accent-purple: var(--color-accent-2);
-  --color-slide-accent-indigo: var(--color-accent-3);
-  --color-slide-accent-blue: var(--color-accent-4);
+  --color-slide-accent-blue: var(--color-accent-1);
+  --color-slide-accent-indigo: var(--color-accent-2);
+  --color-slide-accent-violet: var(--color-accent-3);
+  --color-slide-accent-purple: var(--color-accent-4);
+  --color-slide-accent-fuchsia: var(--color-accent-5);
+  --color-slide-accent-pink: var(--color-accent-6);
+  --color-slide-accent-rose: var(--color-accent-7);
+  --color-slide-accent-orange: var(--color-accent-8);
+  --color-slide-accent-amber: var(--color-accent-9);
+  /* Legacy aliases mapped to signature spectrum stops */
   --color-slide-accent-cyan: var(--color-accent-5);
   --color-slide-accent-teal: var(--color-accent-6);
   --color-slide-accent-emerald: var(--color-accent-7);
-  --color-slide-accent-amber: var(--color-accent-8);
-  --color-slide-accent-orange: var(--color-accent-9);
 
   /* Presentation Slide Spacing Tokens */
   --slide-space-tight: 0.5rem;   /* 8px: micro-binding (label to term, title to desc) */
@@ -150,15 +154,15 @@
   --color-gray-950: #ebf2f8;
 
   /* Canonical Numbered Accent Palette (Light Mode Shifts) */
-  --color-accent-1: #e11d48;
-  --color-accent-2: #7c3aed;
-  --color-accent-3: #4f46e5;
-  --color-accent-4: #2563eb;
-  --color-accent-5: #0891b2;
-  --color-accent-6: #0d9488;
-  --color-accent-7: #059669;
-  --color-accent-8: #ca8a04;
-  --color-accent-9: #ea580c;
+  --color-accent-1: #2563eb; /* 1: Blue 600 */
+  --color-accent-2: #4f46e5; /* 2: Indigo 600 */
+  --color-accent-3: #7c3aed; /* 3: Violet 600 */
+  --color-accent-4: #9333ea; /* 4: Purple 600 */
+  --color-accent-5: #c026d3; /* 5: Fuchsia 600 */
+  --color-accent-6: #db2777; /* 6: Pink 600 */
+  --color-accent-7: #e11d48; /* 7: Rose 600 */
+  --color-accent-8: #ea580c; /* 8: Orange 600 */
+  --color-accent-9: #d97706; /* 9: Amber 600 */
 
   /* Presentation Slide Design Tokens (Light Mode Shift) */
   --color-slide-bg: #ffffff;
@@ -166,15 +170,19 @@
   --color-slide-text-subtle: #475569;
   --color-slide-card-bg: rgba(255, 255, 255, 0.95);
   --color-slide-card-border: rgba(203, 213, 225, 0.8);
-  --color-slide-accent-rose: var(--color-accent-1);
-  --color-slide-accent-purple: var(--color-accent-2);
-  --color-slide-accent-indigo: var(--color-accent-3);
-  --color-slide-accent-blue: var(--color-accent-4);
+  --color-slide-accent-blue: var(--color-accent-1);
+  --color-slide-accent-indigo: var(--color-accent-2);
+  --color-slide-accent-violet: var(--color-accent-3);
+  --color-slide-accent-purple: var(--color-accent-4);
+  --color-slide-accent-fuchsia: var(--color-accent-5);
+  --color-slide-accent-pink: var(--color-accent-6);
+  --color-slide-accent-rose: var(--color-accent-7);
+  --color-slide-accent-orange: var(--color-accent-8);
+  --color-slide-accent-amber: var(--color-accent-9);
+  /* Legacy aliases mapped to signature spectrum stops */
   --color-slide-accent-cyan: var(--color-accent-5);
   --color-slide-accent-teal: var(--color-accent-6);
   --color-slide-accent-emerald: var(--color-accent-7);
-  --color-slide-accent-amber: var(--color-accent-8);
-  --color-slide-accent-orange: var(--color-accent-9);
 }
 
 @layer base {
@@ -212,12 +220,12 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #3b82f6, #a855f7, #f59e0b);
+  background-image: linear-gradient(to right, #3b82f6, #6366f1, #8b5cf6, #a855f7, #d946ef, #ec4899, #f43f5e, #f97316, #f59e0b);
 }
 
 :root.light .heading-gradient-brand,
 .light .heading-gradient-brand {
-  background-image: linear-gradient(to right, #2563eb, #9333ea, #d97706);
+  background-image: linear-gradient(to right, #2563eb, #4f46e5, #7c3aed, #9333ea, #c026d3, #db2777, #e11d48, #ea580c, #d97706);
 }
 
 .heading-gradient-blue {
@@ -270,12 +278,12 @@
 
 /* Unified Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
 .bg-gradient-brand {
-  background-image: linear-gradient(to right, #3b82f6, #a855f7, #f59e0b);
+  background-image: linear-gradient(to right, #3b82f6, #6366f1, #8b5cf6, #a855f7, #d946ef, #ec4899, #f43f5e, #f97316, #f59e0b);
 }
 
 :root.light .bg-gradient-brand,
 .light .bg-gradient-brand {
-  background-image: linear-gradient(to right, #2563eb, #9333ea, #d97706);
+  background-image: linear-gradient(to right, #2563eb, #4f46e5, #7c3aed, #9333ea, #c026d3, #db2777, #e11d48, #ea580c, #d97706);
 }
 
 .bg-gradient-blue {
