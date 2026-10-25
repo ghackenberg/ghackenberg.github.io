@@ -180,6 +180,8 @@ const visualizations = await getCollection("visualizations");
 const sortedVisualizations = visualizations;
 const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
+const profiles = await getCollection("profiles");
+const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
 
 // Calculate tags and graph payload for the home page Vis.js Network
 const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, interests, visualizations });
@@ -450,7 +452,7 @@ const personSchema = {
     {
       "@type": "EducationalOccupationalCredential",
       "credentialCategory": "degree",
-      "name": "Doctor rerum naturalium (Dr. rer. nat.)",
+      "name": "Doctor of Natural Sciences (Dr. rer. nat.) in Software and Systems Engineering",
       "recognizedBy": {
         "@type": "EducationalOrganization",
         "@id": "https://www.wikidata.org/wiki/Q157808",
@@ -470,7 +472,7 @@ const personSchema = {
     {
       "@type": "EducationalOccupationalCredential",
       "credentialCategory": "degree",
-      "name": "Bachelor of Science (B.Sc.) in Software- und Internettechnologie",
+      "name": "Bachelor of Science (B.Sc.) in Software & Internet Technology",
       "recognizedBy": {
         "@type": "EducationalOrganization",
         "@id": "https://www.wikidata.org/wiki/Q317070",
@@ -522,14 +524,7 @@ const personSchema = {
   ],
   "url": "https://hackenberg.tech",
   "email": "georg.hackenberg@fh-wels.at",
-  "sameAs": [
-    "https://www.wikidata.org/wiki/Q141537961",
-    "https://github.com/ghackenberg",
-    "https://www.linkedin.com/in/georghackenberg/",
-    "https://youtube.com/@georghackenberg",
-    "https://scholar.google.com/citations?user=WS9Q3eYAAAAJ",
-    "https://orcid.org/0000-0003-3913-4148"
-  ],
+  "sameAs": sortedProfiles.map((p) => p.data.url),
   "knowsAbout": [
     "Industrial Informatics",
     "Software Architecture",
@@ -557,6 +552,13 @@ const websiteSchema = {
   "description": "Personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, digital entrepreneur, and software engineer.",
   "publisher": { "@id": "https://hackenberg.tech/#person" },
   "hasPart": [
+    {
+      "@type": "WebPage",
+      "@id": "https://hackenberg.tech/about/",
+      "url": "https://hackenberg.tech/about/",
+      "name": "About",
+      "description": "Academic background, software engineering leadership, and career timeline of Dr. Georg Hackenberg."
+    },
     {
       "@type": "WebPage",
       "@id": "https://hackenberg.tech/posts/",
@@ -612,6 +614,27 @@ const websiteSchema = {
       "url": "https://hackenberg.tech/interests/",
       "name": "Professional Interests",
       "description": "Academic domains, industrial informatics, and technical research focus areas."
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://hackenberg.tech/newsletters/",
+      "url": "https://hackenberg.tech/newsletters/",
+      "name": "Newsletters",
+      "description": "Archive of technical newsletters covering software architecture, agentic AI, and system engineering."
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://hackenberg.tech/tags/",
+      "url": "https://hackenberg.tech/tags/",
+      "name": "Tags",
+      "description": "Topical directory and semantic knowledge taxonomy connecting research, publications, and projects."
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://hackenberg.tech/contact/",
+      "url": "https://hackenberg.tech/contact/",
+      "name": "Contact",
+      "description": "Direct contact details, office locations, university affiliation, and business headquarters."
     }
   ]
 };
@@ -632,58 +655,86 @@ const siteNavigationSchema = {
     {
       "@type": "SiteNavigationElement",
       "position": 2,
+      "name": "About",
+      "description": "Academic background, software engineering leadership, and career timeline",
+      "url": "https://hackenberg.tech/about/"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 3,
       "name": "Posts",
       "description": "Technical articles, dev logs, and engineering insights",
       "url": "https://hackenberg.tech/posts/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 3,
+      "position": 4,
       "name": "Publications",
       "description": "Peer-reviewed scientific papers and academic publications",
       "url": "https://hackenberg.tech/publications/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 4,
+      "position": 5,
       "name": "Presentations",
       "description": "Interactive slide decks and keynote presentations",
       "url": "https://hackenberg.tech/presentations/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 5,
+      "position": 6,
       "name": "Courses",
       "description": "University curriculum and teaching modules",
       "url": "https://hackenberg.tech/courses/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 6,
+      "position": 7,
       "name": "Projects",
       "description": "Open-source software projects and developer tools",
       "url": "https://hackenberg.tech/projects/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 7,
+      "position": 8,
       "name": "Services",
       "description": "Sovereign AI architectures and engineering advisory",
       "url": "https://hackenberg.tech/services/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 8,
+      "position": 9,
       "name": "Visualizations",
       "description": "Interactive data visualizations and graph network engines",
       "url": "https://hackenberg.tech/visualizations/"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 9,
+      "position": 10,
       "name": "Professional Interests",
       "description": "Research domains and academic focus areas",
       "url": "https://hackenberg.tech/interests/"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 11,
+      "name": "Newsletters",
+      "description": "Archive of technical newsletters and updates",
+      "url": "https://hackenberg.tech/newsletters/"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 12,
+      "name": "Tags",
+      "description": "Topical directory and semantic knowledge taxonomy",
+      "url": "https://hackenberg.tech/tags/"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 13,
+      "name": "Contact",
+      "description": "Direct contact details, office locations, and university affiliation",
+      "url": "https://hackenberg.tech/contact/"
     }
   ]
 };
@@ -706,7 +757,7 @@ const faqSchema = {
       "name": "Who is Dr. Georg Hackenberg?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Dr. Georg Hackenberg is a Professor for Industrial Informatics at UAP (University of Applied Sciences Upper Austria / FH Upper Austria, Technology Campus Wels) and an enterprise software architect. He holds a doctorate (Dr. rer. nat.) from the Technical University of Munich (TUM), a Master of Science in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science in Software- und Internettechnologie from the University of Mannheim."
+        "text": "Dr. Georg Hackenberg is a Professor for Industrial Informatics at UAP (University of Applied Sciences Upper Austria / FH Upper Austria, Technology Campus Wels) and an enterprise software architect. He holds a doctorate (Dr. rer. nat.) in Software and Systems Engineering from the Technical University of Munich (TUM), a Master of Science in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science in Software & Internet Technology from the University of Mannheim."
       }
     },
     {

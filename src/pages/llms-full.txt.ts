@@ -12,6 +12,8 @@ export async function GET() {
   const services = await getCollection("services");
   const modules = await getCollection("modules");
   const tags = await getCollection("tags");
+  const degrees = await getCollection("degrees");
+  const profiles = await getCollection("profiles");
 
   // Sort posts, presentations, and publications by date descending
   const sortedPosts = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
@@ -25,19 +27,33 @@ export async function GET() {
     const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || '').getTime();
     return db - da;
   });
+  const sortedDegrees = degrees.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
+
+  const degreeLines = sortedDegrees
+    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.institution} (${d.data.startYear}-${d.data.endYear})`)
+    .join("\n");
+  const profileLines = sortedProfiles
+    .map((p) => `- ${p.data.name} (${p.data.handle}): ${p.data.url}`)
+    .join("\n");
 
   let output = `# Dr. Georg Hackenberg - Complete Website Corpus (llms-full.txt)
 
 > Professor for Industrial Informatics at UAP - University of Applied Sciences Upper Austria (Technology Campus Wels) and enterprise software architect. He bridges academic systems engineering with autonomous agent workflows and modern digital production across Web, YouTube, LinkedIn, and GitHub. Founder of CADdrive (caddrive.com) and Mentawise (mentawise.com).
 > Website: https://hackenberg.tech
-> Wikidata: https://www.wikidata.org/wiki/Q141537961
 > Contact: georg.hackenberg@fh-wels.at
 
 ---
 
 ## 1. About Dr. Georg Hackenberg
 
-Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industrial Informatics at UAP – University of Applied Sciences Upper Austria (Technology Campus Wels). He holds a Doctorate in Computer Science (Dr. rer. nat.) from the Technical University of Munich (TUM), a Master of Science (M.Sc.) in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science (B.Sc.) in Software- und Internettechnologie from the University of Mannheim. His academic research and software engineering practice bridge model-based systems engineering, cyber-physical systems simulation, knowledge graph architectures, and sovereign agentic AI workflows. He is the founder and architect of software platforms including CADdrive (https://caddrive.com) and Mentawise (https://mentawise.com).
+Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industrial Informatics at UAP – University of Applied Sciences Upper Austria (Technology Campus Wels). He holds a Doctor of Natural Sciences (Dr. rer. nat.) in Software and Systems Engineering from the Technical University of Munich (TUM), a Master of Science (M.Sc.) in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science (B.Sc.) in Software & Internet Technology from the University of Mannheim. His academic research and software engineering practice bridge model-based systems engineering, cyber-physical systems simulation, knowledge graph architectures, and sovereign agentic AI workflows. He is the founder and architect of software platforms including CADdrive (https://caddrive.com) and Mentawise (https://mentawise.com).
+
+### Academic Degrees & Education
+${degreeLines}
+
+### External Profiles & Identifiers
+${profileLines}
 
 ---
 

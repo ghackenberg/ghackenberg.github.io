@@ -6,6 +6,12 @@ import Section from "@components/Section.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import EducationTimeline from "@components/EducationTimeline.astro";
 import Timeline from "@components/Timeline.astro";
+import { getCollection } from "astro:content";
+
+const profiles = await getCollection("profiles");
+const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
+const degrees = await getCollection("degrees");
+const sortedDegrees = degrees.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -25,12 +31,37 @@ const breadcrumbSchema = {
     }
   ]
 };
+
+const profilePageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": "https://hackenberg.tech/about/#profilepage",
+  "url": "https://hackenberg.tech/about/",
+  "name": "About Dr. Georg Hackenberg",
+  "mainEntity": {
+    "@type": "Person",
+    "@id": "https://hackenberg.tech/#person",
+    "name": "Dr. Georg Hackenberg",
+    "jobTitle": "Professor for Industrial Informatics",
+    "url": "https://hackenberg.tech",
+    "sameAs": sortedProfiles.map((p) => p.data.url),
+    "hasCredential": sortedDegrees.map((d) => ({
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "degree",
+      "name": `${d.data.degree} in ${d.data.program}`,
+      "recognizedBy": {
+        "@type": "EducationalOrganization",
+        "name": d.data.institution
+      }
+    }))
+  }
+};
 ---
 
 <Layout
   title="About Dr. Georg Hackenberg - Professor, Software Architect & Researcher"
   description="Discover the academic background, software engineering leadership, and career timeline of Dr. Georg Hackenberg."
-  jsonLd={breadcrumbSchema}
+  jsonLd={[profilePageSchema, breadcrumbSchema]}
 >
   <Navbar />
 

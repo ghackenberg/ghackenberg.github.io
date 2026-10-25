@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { ensureMapAssets } from "@commons/server/map-assets";
+import { getCollection } from "astro:content";
 
 const { 
   welsMapLightSrc, 
@@ -34,42 +35,30 @@ const breadcrumbSchema = {
   ]
 };
 
-const socialProfiles = [
-  {
-    name: "GitHub",
-    handle: "ghackenberg",
-    url: "https://github.com/ghackenberg",
-    description: "Open-source software, platform architectures, and agentic coding experiments.",
-    icon: "github"
-  },
-  {
-    name: "LinkedIn",
-    handle: "georghackenberg",
-    url: "https://www.linkedin.com/in/georghackenberg/",
-    description: "Professional networking, academic milestones, and engineering advisory discussions.",
-    icon: "linkedin"
-  },
-  {
-    name: "Twitter/X",
-    handle: "georghackenberg",
-    url: "https://twitter.com/georghackenberg",
-    description: "Real-time updates, research papers, and technical commentary on computing.",
-    icon: "twitter"
-  },
-  {
-    name: "YouTube",
-    handle: "@georghackenberg",
-    url: "https://youtube.com/@georghackenberg",
-    description: "Conference talks, video tutorials, and Slide-as-Code walkthroughs.",
-    icon: "youtube"
+const profiles = (await getCollection("profiles")).sort((a, b) => a.data.order - b.data.order);
+
+const contactPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "@id": "https://hackenberg.tech/contact/#contactpage",
+  "url": "https://hackenberg.tech/contact/",
+  "name": "Contact Dr. Georg Hackenberg",
+  "mainEntity": {
+    "@type": "Person",
+    "@id": "https://hackenberg.tech/#person",
+    "name": "Dr. Georg Hackenberg",
+    "email": "georg.hackenberg@fh-wels.at",
+    "telephone": "+43 5 0804 43240",
+    "url": "https://hackenberg.tech",
+    "sameAs": profiles.map((p) => p.data.url)
   }
-];
+};
 ---
 
 <Layout
   title="Contact Dr. Georg Hackenberg - Campus Wels, FH Upper Austria"
   description="Get in touch with Dr. Georg Hackenberg for research initiatives, industry collaborations, university teaching, and speaking inquiries."
-  jsonLd={breadcrumbSchema}
+  jsonLd={[contactPageSchema, breadcrumbSchema]}
 >
   <Navbar />
 
@@ -519,36 +508,46 @@ const socialProfiles = [
             </div>
           </div>
 
-          <!-- Social Media Profiles -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {socialProfiles.map(profile => (
+          <!-- External Profiles -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {profiles.map(profile => (
             <a
-              href={profile.url}
+              href={profile.data.url}
               target="_blank"
               rel="noopener noreferrer"
               class="glass-card p-6 rounded-2xl border border-element-border hover:border-brand-blue/40 hover:shadow-lg hover:shadow-brand-blue/5 transition-all duration-300 flex flex-col group h-full"
-              aria-label={`${profile.name} Profile`}
+              aria-label={`${profile.data.name} Profile`}
             >
               <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 rounded-xl bg-element-bg border border-element-border-medium flex items-center justify-center text-gray-400 group-hover:text-brand-blue group-hover:border-brand-blue/40 group-hover:bg-brand-blue/10 transition-all duration-300">
-                  {profile.icon === "github" && (
+                  {profile.data.icon === "github" && (
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
                     </svg>
                   )}
-                  {profile.icon === "linkedin" && (
+                  {profile.data.icon === "linkedin" && (
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
                     </svg>
                   )}
-                  {profile.icon === "twitter" && (
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  {profile.data.icon === "youtube" && (
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                     </svg>
                   )}
-                  {profile.icon === "youtube" && (
+                  {profile.data.icon === "scholar" && (
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                      <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "orcid" && (
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "wikidata" && (
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M1.5 4.5h2.25v15H1.5v-15zm3.375 0h1.125v15H4.875v-15zm2.25 0h2.25v15h-2.25v-15zm3.375 0h1.125v15H10.5v-15zm2.25 0h1.125v15H12.75v-15zm2.25 0h2.25v15H15v-15zm3.375 0h1.125v15h-1.125v-15zm2.25 0h1.875v15h-1.875v-15z"/>
                     </svg>
                   )}
                 </div>
@@ -557,14 +556,14 @@ const socialProfiles = [
                 </svg>
               </div>
 
-              <h3 id={`social-card-title-${profile.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`} class="text-base font-bold text-gray-100 group-hover:text-brand-blue transition-colors">
-                {profile.name}
+              <h3 id={`social-card-title-${profile.id.replace(/[^a-z0-9]/g, '-')}`} class="text-base font-bold text-gray-100 group-hover:text-brand-blue transition-colors">
+                {profile.data.name}
               </h3>
               <p class="text-xs font-mono text-brand-blue/80 mb-2">
-                {profile.handle}
+                {profile.data.handle}
               </p>
               <p class="text-xs text-gray-400 light:text-slate-600 leading-relaxed font-normal mt-auto">
-                {profile.description}
+                {profile.body?.trim()}
               </p>
             </a>
           ))}

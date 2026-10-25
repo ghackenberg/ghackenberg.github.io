@@ -275,6 +275,17 @@ const degrees = defineCollection({
   }),
 });
 
+const profiles = defineCollection({
+  loader: glob({ base: './src/content/profiles', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    name: z.string(),
+    handle: z.string(),
+    url: z.url(),
+    icon: z.enum(['github', 'linkedin', 'youtube', 'scholar', 'orcid', 'wikidata']),
+    order: z.number().default(0),
+  }),
+});
+
 const projects = defineCollection({
   loader: glob({
     base: './src/content/projects',
@@ -639,6 +650,7 @@ export const collections = {
   'visualizations': visualizations,
   'experiences': experiences,
   'degrees': degrees,
+  'profiles': profiles,
   'projects': projects,
   'courses': courses,
   'course-modules': courseModules,
