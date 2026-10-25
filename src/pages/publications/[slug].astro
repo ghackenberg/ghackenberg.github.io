@@ -235,12 +235,12 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         // Visual feedback
         copyBtnText.textContent = 'Copied!';
         copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+        copyBtn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
         
         // Reset after 2.5 seconds
         setTimeout(() => {
           copyBtnText.textContent = 'Copy Citation';
-          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+          copyBtn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
           copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
         }, 2500);
       }).catch(err => {

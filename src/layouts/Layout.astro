@@ -581,7 +581,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     )}
   </head>
 
-  <body data-domain={activeDomain} class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
+  <body data-domain={activeDomain} class="text-gray-100 selection:bg-brand-primary selection:text-white min-h-screen flex flex-col relative antialiased">
     <!-- Parallax vector background with astronomical moon phases and day/night transitions -->
     <Background />
 
@@ -600,7 +600,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
             <div class="flex flex-col items-center min-[1100px]:items-start gap-1 shrink-0 whitespace-nowrap">
               <p class="text-gray-400 light:text-slate-600 font-medium">&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
               <p class="text-xs text-text-subtle">
-                Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
+                Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
               </p>
             </div>
 
@@ -611,7 +611,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
                   href={profile.data.url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-blue flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                  class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-primary/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-105" 
                   aria-label={`${profile.data.name} Profile`} 
                   title={profile.data.name}
                 >
@@ -651,13 +651,13 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
 
             <!-- Right: Legal, AI Feeds & Back-to-top -->
             <div class="flex flex-wrap items-center justify-center min-[1100px]:justify-end gap-x-4 gap-y-2 whitespace-nowrap">
-              <a href="/impressum/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Impressum</a>
-              <a href="/datenschutz/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Datenschutz</a>
+              <a href="/impressum/" class="text-text-subtle hover:text-brand-primary/80 transition-colors">Impressum</a>
+              <a href="/datenschutz/" class="text-text-subtle hover:text-brand-primary/80 transition-colors">Datenschutz</a>
               <span class="opacity-30 select-none" aria-hidden="true">|</span>
-              <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
-              <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
+              <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary/80 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
+              <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary/80 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
               <span class="opacity-30 select-none" aria-hidden="true">|</span>
-              <a href="#" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Back to top ↑</a>
+              <a href="#" class="text-text-subtle hover:text-brand-primary/80 transition-colors">Back to top ↑</a>
             </div>
           </div>
         </Container>

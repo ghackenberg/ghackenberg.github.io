@@ -12,7 +12,7 @@ import path from 'node:path';
  * 6. Disallow heading-gradient-domain-* completely; restrict heading-gradient-brand to permitted brand elements
  * 7. `src/pages/projects/[slug].astro` must not define or use legacy `accentColor`
  * 8. `src/components/TrlCard.astro` supports and defaults to `domain="projects"`
- * 9. Non-posts detail pages in `src/pages/` must not reference `--color-brand-blue`
+ * 9. Non-posts detail pages in `src/pages/` must not reference `--color-brand-primary` or `--color-brand-blue`
  * 10. Overview pages <h1> must contain canonical solid domain highlights (<span class="text-domain-*">)
  * 11. Graph visualization engines must use GRAPH_COLORS and zero private color arrays
  * 12. Graph legends in index.astro and visualizations/[slug].astro strictly use bg-domain-* classes
@@ -285,20 +285,20 @@ if (fs.existsSync(trlCardPath)) {
   }
 }
 
-// 9. Non-posts detail pages must not reference --color-brand-blue
+// 9. Non-posts detail pages must not reference --color-brand-primary or --color-brand-blue
 let colorBrandBlueViolations = 0;
 for (const file of pageFiles) {
   const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
   if (detailPageRegex.test(file) && !rel.startsWith('src/pages/posts/')) {
     const content = fs.readFileSync(file, 'utf8');
-    if (content.includes('color-brand-blue')) {
-      error(`Non-posts detail page ${rel} contains reference to color-brand-blue. Must use domain token.`);
+    if (content.includes('color-brand-blue') || content.includes('color-brand-primary')) {
+      error(`Non-posts detail page ${rel} contains reference to color-brand-primary. Must use domain token.`);
       colorBrandBlueViolations++;
     }
   }
 }
 if (colorBrandBlueViolations === 0) {
-  success('Zero non-posts detail pages reference color-brand-blue.');
+  success('Zero non-posts detail pages reference color-brand-primary or color-brand-blue.');
 }
 
 // 10. Overview pages <h1> must contain canonical solid domain highlights (<span class="text-domain-*">)
@@ -372,7 +372,7 @@ for (const file of LEGEND_PAGES) {
     const legendBlockMatch = content.match(/<!-- Floating Glassmorphic Legend[\s\S]*?<\/div>\s*<\/div>/i);
     if (legendBlockMatch) {
       const legendText = legendBlockMatch[0];
-      const forbiddenLegendClasses = ['bg-sky-400', 'bg-cyan-500', 'bg-brand-blue', 'bg-brand-yellow', 'bg-brand-green', 'bg-brand-purple', 'bg-rose-500', 'bg-indigo-500'];
+      const forbiddenLegendClasses = ['bg-sky-400', 'bg-cyan-500', 'bg-brand-primary', 'bg-brand-blue', 'bg-brand-yellow', 'bg-brand-green', 'bg-brand-purple', 'bg-rose-500', 'bg-indigo-500'];
       for (const cls of forbiddenLegendClasses) {
         if (legendText.includes(cls)) {
           error(`Legend in ${rel} contains forbidden legacy class "${cls}". Must use bg-domain-*.`);
@@ -568,7 +568,7 @@ const TAG_PAGE_FILE = path.resolve(PAGES_DIR, 'tags', '[tag].astro');
 let tagPageViolations = 0;
 if (fs.existsSync(TAG_PAGE_FILE)) {
   const content = fs.readFileSync(TAG_PAGE_FILE, 'utf8');
-  if (/\b(?:brand-blue|brand-purple|brand-yellow|brand-green)\b/i.test(content)) {
+  if (/\b(?:brand-primary|brand-blue|brand-purple|brand-yellow|brand-green)\b/i.test(content)) {
     error('src/pages/tags/[tag].astro must not contain legacy brand-* classes. Sections must use canonical domain-* tokens.');
     tagPageViolations++;
   }
@@ -712,8 +712,8 @@ for (const { file, domain } of PAGINATED_PAGES_CONFIG) {
     }
 
     // Check SSR navigation buttons
-    if (content.includes('hover:border-brand-blue')) {
-      error(`${rel} pagination navigation buttons must not contain legacy hover:border-brand-blue. Use hover:border-domain-${domain}/30.`);
+    if (content.includes('hover:border-brand-blue') || content.includes('hover:border-brand-primary')) {
+      error(`${rel} pagination navigation buttons must not contain legacy hover:border-brand-primary. Use hover:border-domain-${domain}/30.`);
       paginationDomainViolations++;
     }
   }

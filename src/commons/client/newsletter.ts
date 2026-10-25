@@ -289,9 +289,9 @@ function wireNewsletterForm(form: HTMLFormElement): void {
       feedbackEl.textContent = '';
       return;
     }
-    feedbackEl.classList.remove('hidden', 'text-brand-green', 'bg-brand-green/10', 'border-brand-green/30', 'text-callout-caution', 'bg-callout-caution/10', 'border-callout-caution/30');
+    feedbackEl.classList.remove('hidden', 'text-callout-tip', 'bg-callout-tip/10', 'border-callout-tip/30', 'text-callout-caution', 'bg-callout-caution/10', 'border-callout-caution/30');
     if (type === 'success') {
-      feedbackEl.classList.add('text-brand-green', 'bg-brand-green/10', 'border-brand-green/30');
+      feedbackEl.classList.add('text-callout-tip', 'bg-callout-tip/10', 'border-callout-tip/30');
     } else {
       feedbackEl.classList.add('text-callout-caution', 'bg-callout-caution/10', 'border-callout-caution/30');
     }

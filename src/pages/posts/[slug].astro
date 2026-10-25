@@ -244,10 +244,10 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
                     <span>{ref.howpublished ? ` ${ref.howpublished}. ` : ' '}{ref.note ? `${ref.note}. ` : ''}</span>
                   )}
                   {ref.doi && (
-                    <span>DOI: <a href={ref.doi.startsWith('http') ? ref.doi : `https://doi.org/${ref.doi}`} target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">{ref.doi}</a>. </span>
+                    <span>DOI: <a href={ref.doi.startsWith('http') ? ref.doi : `https://doi.org/${ref.doi}`} target="_blank" rel="noopener noreferrer" class="text-brand-primary hover:underline break-all">{ref.doi}</a>. </span>
                   )}
                   {ref.url && (!ref.doi || !ref.url.includes(ref.doi)) && (
-                    <span>{ref.type === 'online' ? (post.data.lang === 'en' ? 'Available online at ' : 'Online verfügbar unter ') : ''}<a href={ref.url} target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">{ref.url}</a>.</span>
+                    <span>{ref.type === 'online' ? (post.data.lang === 'en' ? 'Available online at ' : 'Online verfügbar unter ') : ''}<a href={ref.url} target="_blank" rel="noopener noreferrer" class="text-brand-primary hover:underline break-all">{ref.url}</a>.</span>
                   )}
                 </div>
               </li>

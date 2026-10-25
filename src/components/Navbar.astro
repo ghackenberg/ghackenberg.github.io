@@ -129,6 +129,143 @@ const moreItems = [
     priority: 10
   }
 ];
+
+const NAV_DOMAIN_STYLES: Record<string, {
+  cssVar: string;
+  desktopActiveText: string;
+  desktopActiveBar: string;
+  mobileActive: string;
+  megaCardActive: string;
+  megaCardHover: string;
+  megaIconActive: string;
+  megaIconHover: string;
+  megaTitleHover: string;
+}> = {
+  about: {
+    cssVar: 'var(--color-domain-interests)',
+    desktopActiveText: 'text-domain-interests font-semibold',
+    desktopActiveBar: 'bg-domain-interests',
+    mobileActive: 'text-domain-interests font-semibold border-l-2 border-domain-interests pl-3 -ml-3',
+    megaCardActive: 'bg-domain-interests/15 text-domain-interests font-semibold border border-domain-interests/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-interests/30',
+    megaIconActive: 'bg-domain-interests/20 text-domain-interests',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-interests group-hover/item:bg-domain-interests/15',
+    megaTitleHover: 'group-hover/item:text-domain-interests transition-colors duration-200',
+  },
+  interests: {
+    cssVar: 'var(--color-domain-interests)',
+    desktopActiveText: 'text-domain-interests font-semibold',
+    desktopActiveBar: 'bg-domain-interests',
+    mobileActive: 'text-domain-interests font-semibold border-l-2 border-domain-interests pl-3 -ml-3',
+    megaCardActive: 'bg-domain-interests/15 text-domain-interests font-semibold border border-domain-interests/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-interests/30',
+    megaIconActive: 'bg-domain-interests/20 text-domain-interests',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-interests group-hover/item:bg-domain-interests/15',
+    megaTitleHover: 'group-hover/item:text-domain-interests transition-colors duration-200',
+  },
+  posts: {
+    cssVar: 'var(--color-domain-posts)',
+    desktopActiveText: 'text-domain-posts font-semibold',
+    desktopActiveBar: 'bg-domain-posts',
+    mobileActive: 'text-domain-posts font-semibold border-l-2 border-domain-posts pl-3 -ml-3',
+    megaCardActive: 'bg-domain-posts/15 text-domain-posts font-semibold border border-domain-posts/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-posts/30',
+    megaIconActive: 'bg-domain-posts/20 text-domain-posts',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-posts group-hover/item:bg-domain-posts/15',
+    megaTitleHover: 'group-hover/item:text-domain-posts transition-colors duration-200',
+  },
+  publications: {
+    cssVar: 'var(--color-domain-publications)',
+    desktopActiveText: 'text-domain-publications font-semibold',
+    desktopActiveBar: 'bg-domain-publications',
+    mobileActive: 'text-domain-publications font-semibold border-l-2 border-domain-publications pl-3 -ml-3',
+    megaCardActive: 'bg-domain-publications/15 text-domain-publications font-semibold border border-domain-publications/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-publications/30',
+    megaIconActive: 'bg-domain-publications/20 text-domain-publications',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-publications group-hover/item:bg-domain-publications/15',
+    megaTitleHover: 'group-hover/item:text-domain-publications transition-colors duration-200',
+  },
+  presentations: {
+    cssVar: 'var(--color-domain-presentations)',
+    desktopActiveText: 'text-domain-presentations font-semibold',
+    desktopActiveBar: 'bg-domain-presentations',
+    mobileActive: 'text-domain-presentations font-semibold border-l-2 border-domain-presentations pl-3 -ml-3',
+    megaCardActive: 'bg-domain-presentations/15 text-domain-presentations font-semibold border border-domain-presentations/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-presentations/30',
+    megaIconActive: 'bg-domain-presentations/20 text-domain-presentations',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-presentations group-hover/item:bg-domain-presentations/15',
+    megaTitleHover: 'group-hover/item:text-domain-presentations transition-colors duration-200',
+  },
+  courses: {
+    cssVar: 'var(--color-domain-courses)',
+    desktopActiveText: 'text-domain-courses font-semibold',
+    desktopActiveBar: 'bg-domain-courses',
+    mobileActive: 'text-domain-courses font-semibold border-l-2 border-domain-courses pl-3 -ml-3',
+    megaCardActive: 'bg-domain-courses/15 text-domain-courses font-semibold border border-domain-courses/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-courses/30',
+    megaIconActive: 'bg-domain-courses/20 text-domain-courses',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-courses group-hover/item:bg-domain-courses/15',
+    megaTitleHover: 'group-hover/item:text-domain-courses transition-colors duration-200',
+  },
+  projects: {
+    cssVar: 'var(--color-domain-projects)',
+    desktopActiveText: 'text-domain-projects font-semibold',
+    desktopActiveBar: 'bg-domain-projects',
+    mobileActive: 'text-domain-projects font-semibold border-l-2 border-domain-projects pl-3 -ml-3',
+    megaCardActive: 'bg-domain-projects/15 text-domain-projects font-semibold border border-domain-projects/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-projects/30',
+    megaIconActive: 'bg-domain-projects/20 text-domain-projects',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-projects group-hover/item:bg-domain-projects/15',
+    megaTitleHover: 'group-hover/item:text-domain-projects transition-colors duration-200',
+  },
+  services: {
+    cssVar: 'var(--color-domain-services)',
+    desktopActiveText: 'text-domain-services font-semibold',
+    desktopActiveBar: 'bg-domain-services',
+    mobileActive: 'text-domain-services font-semibold border-l-2 border-domain-services pl-3 -ml-3',
+    megaCardActive: 'bg-domain-services/15 text-domain-services font-semibold border border-domain-services/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-services/30',
+    megaIconActive: 'bg-domain-services/20 text-domain-services',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-services group-hover/item:bg-domain-services/15',
+    megaTitleHover: 'group-hover/item:text-domain-services transition-colors duration-200',
+  },
+  visualizations: {
+    cssVar: 'var(--color-domain-visualizations)',
+    desktopActiveText: 'text-domain-visualizations font-semibold',
+    desktopActiveBar: 'bg-domain-visualizations',
+    mobileActive: 'text-domain-visualizations font-semibold border-l-2 border-domain-visualizations pl-3 -ml-3',
+    megaCardActive: 'bg-domain-visualizations/15 text-domain-visualizations font-semibold border border-domain-visualizations/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-visualizations/30',
+    megaIconActive: 'bg-domain-visualizations/20 text-domain-visualizations',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-visualizations group-hover/item:bg-domain-visualizations/15',
+    megaTitleHover: 'group-hover/item:text-domain-visualizations transition-colors duration-200',
+  },
+  newsletters: {
+    cssVar: 'var(--color-domain-newsletters)',
+    desktopActiveText: 'text-domain-newsletters font-semibold',
+    desktopActiveBar: 'bg-domain-newsletters',
+    mobileActive: 'text-domain-newsletters font-semibold border-l-2 border-domain-newsletters pl-3 -ml-3',
+    megaCardActive: 'bg-domain-newsletters/15 text-domain-newsletters font-semibold border border-domain-newsletters/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-newsletters/30',
+    megaIconActive: 'bg-domain-newsletters/20 text-domain-newsletters',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-newsletters group-hover/item:bg-domain-newsletters/15',
+    megaTitleHover: 'group-hover/item:text-domain-newsletters transition-colors duration-200',
+  },
+  tags: {
+    cssVar: 'var(--color-domain-tags)',
+    desktopActiveText: 'text-domain-tags font-semibold',
+    desktopActiveBar: 'bg-domain-tags',
+    mobileActive: 'text-domain-tags font-semibold border-l-2 border-domain-tags pl-3 -ml-3',
+    megaCardActive: 'bg-domain-tags/15 text-domain-tags font-semibold border border-domain-tags/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-tags/30',
+    megaIconActive: 'bg-domain-tags/20 text-domain-tags',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-tags group-hover/item:bg-domain-tags/15',
+    megaTitleHover: 'group-hover/item:text-domain-tags transition-colors duration-200',
+  },
+};
+
+const activeNavItem = directNavItems.find(item => item.active);
+const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cssVar || 'var(--color-brand-primary)') : 'var(--color-brand-primary)';
 ---
 
 <div class="sticky top-0 left-0 right-0 z-50 w-full" id="navbar-root">
@@ -138,6 +275,7 @@ const moreItems = [
     data-nav-mode="desktop"
     data-nav-count="10"
     data-active-priority={activePriority}
+    style={`--active-nav-color: ${activeNavCssVar};`}
   >
     <!-- Background frosted glass layer (separated from header to avoid backdrop-root clipping on dropdown menus) -->
     <div class="header-bg absolute inset-0 glass-panel border-b border-element-border backdrop-blur-md -z-10 pointer-events-none" id="site-header-bg"></div>
@@ -146,7 +284,7 @@ const moreItems = [
       
       <!-- Logo / Brand on the left (shrink-0 with dedicated minimum distance to nav) -->
       <a href="/" class="flex items-center space-x-3 group shrink-0 mr-8 min-w-max" id="nav-brand">
-        <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
+        <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-primary/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
           <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
             GH
           </span>
@@ -164,28 +302,34 @@ const moreItems = [
       <!-- Desktop Navigation Links (Right-aligned, Priority+ Dynamic Container) -->
       <nav id="desktop-nav" class="ml-auto flex items-center justify-end gap-4 lg:gap-5 transition-opacity duration-200">
         <!-- 9 Direct Canonical Items -->
-        {directNavItems.map(item => (
-          <a 
-            href={item.href} 
-            data-nav-item={item.id}
-            data-nav-priority={item.priority > 1 ? String(item.priority) : undefined}
-            class={`nav-item-desktop relative py-1 text-sm font-medium transition-colors duration-200 flex items-center whitespace-nowrap ${
-              item.active 
-                ? "text-brand-blue font-semibold" 
-                : "text-gray-400 hover:text-gray-100"
-            }`}
-          >
-            {item.id === 'about' && (
-              <svg class="w-4 h-4 mr-1.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-              </svg>
-            )}
-            <span>{item.label}</span>
-            {item.active && (
-              <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-blue rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-            )}
-          </a>
-        ))}
+        {directNavItems.map(item => {
+          const styles = NAV_DOMAIN_STYLES[item.id] || NAV_DOMAIN_STYLES.about;
+          return (
+            <a 
+              href={item.href} 
+              data-nav-item={item.id}
+              data-nav-priority={item.priority > 1 ? String(item.priority) : undefined}
+              class={`nav-item-desktop relative py-1 text-sm font-medium transition-colors duration-200 flex items-center whitespace-nowrap ${
+                item.active 
+                  ? styles.desktopActiveText 
+                  : "text-gray-400 hover:text-gray-100"
+              }`}
+            >
+              {item.id === 'about' && (
+                <svg class="w-4 h-4 mr-1.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              )}
+              <span>{item.label}</span>
+              {item.active && (
+                <span 
+                  class={`absolute bottom-0 left-0 right-0 h-[2px] ${styles.desktopActiveBar} rounded-full`}
+                  style={`box-shadow: 0 0 8px color-mix(in srgb, ${styles.cssVar} 80%, transparent);`}
+                ></span>
+              )}
+            </a>
+          );
+        })}
 
         <!-- 10. More ▾ Mega-Menu Dropdown Trigger -->
         <div class="relative group shrink-0" id="more-dropdown-container">
@@ -199,7 +343,7 @@ const moreItems = [
             class="relative py-1 text-sm font-medium transition-colors duration-200 flex items-center gap-1 cursor-pointer whitespace-nowrap text-gray-400 hover:text-gray-100"
           >
             <span>More ▾</span>
-            <span class="more-active-indicator hidden absolute bottom-0 left-0 right-0 h-[2px] bg-brand-blue rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+            <span class="more-active-indicator hidden absolute bottom-0 left-0 right-0 h-[2px] bg-brand-primary rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
           </button>
 
           <!-- Dropdown Panel with Hover Bridge -->
@@ -216,6 +360,7 @@ const moreItems = [
               <div id="more-items-container" class="grid grid-cols-2 gap-2">
                 {moreItems.map(item => {
                   const active = isActive(item.href);
+                  const styles = NAV_DOMAIN_STYLES[item.domain] || NAV_DOMAIN_STYLES.about;
                   return (
                     <a
                       href={item.href}
@@ -223,14 +368,14 @@ const moreItems = [
                       data-more-priority={item.priority}
                       class={`p-2.5 rounded-xl transition-all duration-200 flex items-start gap-3 group/item ${
                         active
-                          ? "bg-brand-blue/15 text-brand-blue font-semibold border border-brand-blue/30"
-                          : "hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent"
+                          ? styles.megaCardActive
+                          : styles.megaCardHover
                       }`}
                     >
-                      <div class={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      <div class={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-200 ${
                         active
-                          ? "bg-brand-blue/20 text-brand-blue"
-                          : "bg-element-bg text-gray-400 group-hover/item:text-brand-blue group-hover/item:bg-brand-blue/10"
+                          ? styles.megaIconActive
+                          : styles.megaIconHover
                       }`}>
                         {item.domain === "posts" && (
                           <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -280,7 +425,7 @@ const moreItems = [
                         )}
                       </div>
                       <div class="flex flex-col min-w-0">
-                        <span class="text-sm font-semibold leading-snug">{item.label}</span>
+                        <span class={`text-sm font-semibold leading-snug ${active ? "" : styles.megaTitleHover}`}>{item.label}</span>
                         <span class="text-xs text-gray-400 line-clamp-1 leading-normal">{item.description}</span>
                       </div>
                     </a>
@@ -344,8 +489,8 @@ const moreItems = [
           href="/contact/" 
           class={`group relative px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm ml-2 active:scale-95 ${
             isContactActive 
-              ? "bg-brand-blue hover:bg-brand-blue/90 text-white shadow-brand-blue/30 shadow-md ring-2 ring-brand-blue/50" 
-              : "bg-brand-blue/15 hover:bg-brand-blue text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue hover:shadow-md hover:shadow-brand-blue/25"
+              ? "bg-brand-primary hover:bg-brand-primary/90 text-white shadow-brand-primary/30 shadow-md ring-2 ring-brand-primary/50" 
+              : "bg-brand-primary/15 hover:bg-brand-primary text-brand-primary hover:text-white border border-brand-primary/30 hover:border-brand-primary hover:shadow-md hover:shadow-brand-primary/25"
           }`}
         >
           <span>Contact</span>
@@ -507,23 +652,26 @@ const moreItems = [
     id="mobile-menu" 
     class="hidden glass-panel border-b border-element-border absolute top-full left-0 right-0 py-5 px-6 flex flex-col space-y-1.5 shadow-xl shadow-black/30 backdrop-blur-md max-h-[85vh] overflow-y-auto"
   >
-    {mobileNavItems.map(item => (
-      <a 
-        href={item.href} 
-        class={`text-base font-medium transition-colors py-1.5 flex items-center ${
-          item.active 
-            ? "text-brand-blue font-semibold border-l-2 border-brand-blue pl-3 -ml-3" 
-            : "text-gray-300 hover:text-gray-100"
-        }`}
-      >
-        {item.id === 'about' && (
-          <svg class="w-4 h-4 mr-2 shrink-0 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-          </svg>
-        )}
-        <span>{item.label}</span>
-      </a>
-    ))}
+    {mobileNavItems.map(item => {
+      const styles = NAV_DOMAIN_STYLES[item.id] || NAV_DOMAIN_STYLES.about;
+      return (
+        <a 
+          href={item.href} 
+          class={`text-base font-medium transition-colors py-1.5 flex items-center ${
+            item.active 
+              ? styles.mobileActive 
+              : "text-gray-300 hover:text-gray-100"
+          }`}
+        >
+          {item.id === 'about' && (
+            <svg class="w-4 h-4 mr-2 shrink-0 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          )}
+          <span>{item.label}</span>
+        </a>
+      );
+    })}
 
     <!-- Contact CTA Full Width at bottom -->
     <div class="pt-3 border-t border-element-border/50 mt-2">
@@ -531,8 +679,8 @@ const moreItems = [
         href="/contact/"
         class={`group w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
           isContactActive
-            ? "bg-brand-blue hover:bg-brand-blue/90 text-white shadow-brand-blue/30 shadow-md ring-2 ring-brand-blue/50"
-            : "bg-brand-blue/15 hover:bg-brand-blue text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue hover:shadow-md hover:shadow-brand-blue/25"
+            ? "bg-brand-primary hover:bg-brand-primary/90 text-white shadow-brand-primary/30 shadow-md ring-2 ring-brand-primary/50"
+            : "bg-brand-primary/15 hover:bg-brand-primary text-brand-primary hover:text-white border border-brand-primary/30 hover:border-brand-primary hover:shadow-md hover:shadow-brand-primary/25"
         }`}
       >
         <span>Contact</span>
@@ -909,11 +1057,13 @@ const moreItems = [
 
   /* More trigger active state highlight & indicator bar */
   #more-dropdown-trigger[data-more-active="true"] {
-    color: var(--color-brand-blue) !important;
+    color: var(--active-nav-color, var(--color-brand-primary)) !important;
     font-weight: 600 !important;
   }
   #more-dropdown-trigger[data-more-active="true"] .more-active-indicator {
     display: block !important;
+    background-color: var(--active-nav-color, var(--color-brand-primary)) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--active-nav-color, var(--color-brand-primary)) 80%, transparent) !important;
   }
 
   /* Priority+ Item Folding in Top Bar (from right to left) */

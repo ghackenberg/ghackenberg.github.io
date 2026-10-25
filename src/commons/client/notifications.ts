@@ -216,7 +216,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
   if (!isTracking) {
     listEl.innerHTML = `
       <div class="py-16 px-6 text-center glass-card rounded-3xl border border-element-border-medium light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
-        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-blue/15 text-brand-blue flex items-center justify-center border border-brand-blue/30 shadow-inner">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-primary/15 text-brand-primary flex items-center justify-center border border-brand-primary/30 shadow-inner">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
@@ -228,7 +228,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
         <button 
           type="button" 
           data-open-privacy-modal 
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold text-xs sm:text-sm hover:bg-brand-blue/90 transition-all shadow-lg shadow-brand-blue/25 cursor-pointer active:scale-95"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white font-semibold text-xs sm:text-sm hover:bg-brand-primary/90 transition-all shadow-lg shadow-brand-primary/25 cursor-pointer active:scale-95"
         >
           <span>Open Privacy Settings</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -244,7 +244,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
   if (unreadCount === 0) {
     listEl.innerHTML = `
       <div class="py-16 px-6 text-center glass-card rounded-3xl border border-element-border-medium light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
-        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-blue/15 text-brand-blue flex items-center justify-center border border-brand-blue/30 shadow-inner">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-primary/15 text-brand-primary flex items-center justify-center border border-brand-primary/30 shadow-inner">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -274,7 +274,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
     return `
       <a 
         href="${item.url}" 
-        class="group block p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer border-brand-blue/50 bg-brand-blue/[0.04] shadow-lg shadow-brand-blue/5 hover:border-brand-blue/80 light:bg-blue-50/40 light:border-brand-blue/30"
+        class="group block p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer border-brand-primary/50 bg-brand-primary/[0.04] shadow-lg shadow-brand-primary/5 hover:border-brand-primary/80 light:bg-emerald-50/40 light:border-brand-primary/30"
       >
         <div class="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-5">
           <!-- Preview Image: 16:9 on mobile, Compact Square (matching text height) on Desktop -->
@@ -304,7 +304,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
                 </span>
               </div>
 
-              <h3 class="text-base font-bold text-gray-100 light:text-slate-900 group-hover:text-brand-blue light:group-hover:text-brand-blue transition-colors line-clamp-2 leading-snug">
+              <h3 class="text-base font-bold text-gray-100 light:text-slate-900 group-hover:text-brand-primary light:group-hover:text-brand-primary transition-colors line-clamp-2 leading-snug">
                 ${escapeHtml(item.title)}
               </h3>
 
@@ -315,7 +315,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
               ` : ''}
             </div>
 
-            <div class="mt-2 flex items-center text-xs font-semibold text-brand-blue group-hover:translate-x-1 transition-transform">
+            <div class="mt-2 flex items-center text-xs font-semibold text-brand-primary group-hover:translate-x-1 transition-transform">
               <span>${config.actionText}</span>
               <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

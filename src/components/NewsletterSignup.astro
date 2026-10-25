@@ -85,11 +85,11 @@ const copy = variantCopy[variant];
             required
             autocomplete="email"
             placeholder="Enter your email address..."
-            class="flex-1 min-w-0 h-10 px-3.5 rounded-xl bg-element-bg/70 light:bg-white border border-element-border-medium light:border-slate-300 text-xs sm:text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/25 transition-all"
+            class="flex-1 min-w-0 h-10 px-3.5 rounded-xl bg-element-bg/70 light:bg-white border border-element-border-medium light:border-slate-300 text-xs sm:text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/25 transition-all"
           />
           <button
             type="submit"
-            class="h-10 px-4 sm:px-5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-brand-blue/20 cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+            class="h-10 px-4 sm:px-5 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-brand-primary/20 cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
           >
             <svg data-submit-spinner class="hidden w-3.5 h-3.5 animate-spin text-white shrink-0" fill="none" viewBox="0 0 24 24" aria-hidden="true">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
@@ -124,7 +124,7 @@ const copy = variantCopy[variant];
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
             <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
           </svg>
-          <svg data-altcha-icon="verified" class="hidden w-3.5 h-3.5 text-brand-blue shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+          <svg data-altcha-icon="verified" class="hidden w-3.5 h-3.5 text-brand-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
           <span data-altcha-status>Protected by ALTCHA</span>
@@ -137,7 +137,7 @@ const copy = variantCopy[variant];
 
       <a
         href="/newsletters/"
-        class="inline-flex items-center gap-1 font-semibold text-brand-blue hover:text-brand-blue/80 hover:underline transition-colors shrink-0"
+        class="inline-flex items-center gap-1 font-semibold text-brand-primary hover:text-brand-primary/80 hover:underline transition-colors shrink-0"
       >
         <span>{variant !== 'modal' && <span class="hidden sm:inline">Browse past issues in the </span>}Archive</span>
         <span aria-hidden="true">→</span>

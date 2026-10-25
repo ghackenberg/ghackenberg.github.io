@@ -103,8 +103,8 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full -rotate-90">
         <defs>
           <linearGradient id={`depth-grad-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="var(--color-brand-blue)" />
-            <stop offset="100%" stop-color="var(--color-brand-purple)" />
+            <stop offset="0%" stop-color="var(--color-brand-primary)" />
+            <stop offset="100%" stop-color="var(--color-accent-10)" />
           </linearGradient>
         </defs>
         <circle
@@ -133,13 +133,13 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       <div class="w-14 sm:w-16 flex items-center gap-1 text-[8px] font-mono text-gray-400 light:text-slate-500 leading-none mb-1">
         <span class="w-6 shrink-0">RGB</span>
         <div class="flex-1 h-1 rounded-full bg-gray-700/50 light:bg-slate-300/70 overflow-hidden">
-          <div class="depth-bar-rgb h-full bg-brand-blue w-0 transition-none"></div>
+          <div class="depth-bar-rgb h-full bg-brand-primary w-0 transition-none"></div>
         </div>
       </div>
       <div class="w-14 sm:w-16 flex items-center gap-1 text-[8px] font-mono text-gray-400 light:text-slate-500 leading-none">
         <span class="w-6 shrink-0">DEP</span>
         <div class="flex-1 h-1 rounded-full bg-gray-700/50 light:bg-slate-300/70 overflow-hidden">
-          <div class="depth-bar-depth h-full bg-brand-purple w-0 transition-none"></div>
+          <div class="depth-bar-depth h-full bg-brand-primary w-0 transition-none"></div>
         </div>
       </div>
     </div>

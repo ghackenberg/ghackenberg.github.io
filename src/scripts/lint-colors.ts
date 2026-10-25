@@ -10,6 +10,7 @@ import path from 'node:path';
  * 4. Rule 4: Domain Metadata Purity in src/commons/shared/domain-themes.ts (badgeClasses canonical tokens).
  * 5. Rule 5: Card Architecture Token Integrity (CompactRelatedCard DOMAIN_THEMES, services modules domain-services purity).
  * 6. Rule 6: Presentation Slide Accent Governance (No 'neutral' accents; No manual step accents in <Pipeline>; No 'accent=' attribute on <BentoCard>; No raw Tailwind palette classes in slide MDX).
+ * 7. Rule 7: Zero Legacy Brand Color Tokens (No brand-blue, brand-yellow, brand-purple, brand-green).
  */
 
 const ROOT_DIR = process.cwd();
@@ -544,13 +545,55 @@ if (rule6Violations === 0) {
 }
 
 // ============================================================================
+// Rule 7: Zero Legacy Brand Color Tokens
+// ============================================================================
+if (verbose) {
+  console.log('Auditing Rule 7: Zero Legacy Brand Color Tokens...');
+}
+
+let rule7Violations = 0;
+const LEGACY_BRAND_REGEX = /\b(?:brand-blue|brand-yellow|brand-purple|brand-green)\b/i;
+
+const auditFilesRule7 = allSrcFiles.filter((f) => {
+  const rel = path.relative(ROOT_DIR, f).replace(/\\/g, '/');
+  return (
+    (rel.startsWith('src/pages/') ||
+      rel.startsWith('src/components/') ||
+      rel.startsWith('src/layouts/') ||
+      rel.startsWith('src/styles/')) &&
+    !rel.includes('lint-')
+  );
+});
+
+for (const file of auditFilesRule7) {
+  const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
+  const content = fs.readFileSync(file, 'utf8');
+  const lines = content.split('\n');
+
+  lines.forEach((line, idx) => {
+    if (LEGACY_BRAND_REGEX.test(line)) {
+      error(
+        `Legacy brand color token found in ${rel}:${idx + 1}. Must use brand-primary, canonical domain-* tokens, or callout tokens.\n      Offending code: ${line.trim()}`
+      );
+      rule7Violations++;
+    }
+  });
+}
+
+if (rule7Violations === 0) {
+  success('Rule 7 passed: Zero legacy brand color tokens (brand-blue/yellow/purple/green) across pages, components, layouts, and styles.');
+} else {
+  console.log(`⚠️  Rule 7 detected ${rule7Violations} legacy brand color token violation(s).\n`);
+}
+
+// ============================================================================
 // Final Evaluation
 // ============================================================================
 if (verbose || errorCount > 0) {
   console.log('----------------------------------------------------------------------');
 }
 if (errorCount === 0) {
-  console.log('✅ [lint:colors] All 6 color token governance rules passed (0 errors).');
+  console.log('✅ [lint:colors] All 7 color token governance rules passed (0 errors).');
   process.exit(0);
 } else {
   console.error(`💥 [lint:colors] Color token governance audit failed with ${errorCount} total violation(s).`);
