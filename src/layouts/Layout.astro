@@ -166,12 +166,14 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     datenschutz: "Datenschutz"
   };
 
+  const leafTitle = title ? title.split(/\s+[|–—-]\s+/)[0].trim() : pathnameSegments[pathnameSegments.length - 1];
+
   const breadcrumbElements: Array<Record<string, JsonLdValue>> = [
     {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": new URL("/", Astro.site || "https://hackenberg.tech").href.replace(/\/$/, "")
+      "item": new URL("/", Astro.site || "https://hackenberg.tech").href
     }
   ];
 
@@ -182,11 +184,10 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     const segmentUrl = new URL(accumulatedPath + "/", Astro.site || "https://hackenberg.tech").href;
 
     if (isLeaf) {
-      const cleanTitle = title ? title.split(" | ")[0].trim() : seg;
       breadcrumbElements.push({
         "@type": "ListItem",
         "position": idx + 2,
-        "name": cleanTitle || seg,
+        "name": leafTitle || seg,
         "item": canonicalURL.href
       });
     } else {
@@ -203,8 +204,9 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
   });
 
   resolvedJsonLd.push({
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    "@id": `${canonicalURL.href}#breadcrumb`,
+    "name": `${leafTitle || "Page"} Breadcrumbs`,
     "itemListElement": breadcrumbElements
   });
 }
@@ -333,7 +335,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     <meta property="og:description" content={description} />
     <meta property="og:image" content={resolvedImageURL} />
     <meta property="og:site_name" content="Dr. Georg Hackenberg" />
-    <meta property="og:locale" content={lang === "de" ? "de_AT" : "en_US"} />
+    <meta property="og:locale" content={htmlLang === "de" ? "de_AT" : "en_US"} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />

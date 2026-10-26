@@ -49,7 +49,7 @@ function extractSemanticSlug(src: string, title?: string): string {
     // preview-a1b2c3d4.jpg -> preview
     const noHash = noExt
       .replace(/\.[a-zA-Z0-9_-]{6,}(?:_[a-zA-Z0-9_-]+)?$/i, '')
-      .replace(/-[a-zA-Z0-9_-]{6,}$/i, '');
+      .replace(/-[a-zA-Z0-9_]{6,}$/i, '');
 
     const candidate = slugify(noHash);
     const isPureHash = /^[a-f0-9]{16,}$/i.test(candidate);
@@ -140,6 +140,17 @@ interface SchemaEntity {
   [key: string]: JsonLdValue;
 }
 
+function isExcludedUiOrRelatedImage($el: ReturnType<cheerio.CheerioAPI>, srcOrUrl: string): boolean {
+  const clean = srcOrUrl.split('?')[0].split('#')[0];
+  if (/\/(favicon\.(svg|ico)|favicon-\d+x\d+\.png|apple-touch-icon\.png)$/i.test(clean)) {
+    return true;
+  }
+  if ($el.closest('#related-content, [data-related-content], .related-content, .compact-card').length > 0) {
+    return true;
+  }
+  return false;
+}
+
 /**
  * Scans all generated HTML files in dist/, validates every image against zero-fallback criteria,
  * enriches Schema.org ImageObject structured data in every page's JSON-LD script,
@@ -225,6 +236,9 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
 
       const absUrl = toAbsoluteImageUrl(src, pageUrlPath);
+      if (isExcludedUiOrRelatedImage($img, absUrl)) {
+        return;
+      }
       if (absUrl && !seenImageUrls.has(absUrl)) {
         seenImageUrls.add(absUrl);
         imagesForPage.push({
@@ -267,6 +281,9 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
 
       const absUrl = toAbsoluteImageUrl(diagramContentUrl, pageUrlPath);
+      if (isExcludedUiOrRelatedImage($fig, absUrl)) {
+        return;
+      }
       if (absUrl && !seenImageUrls.has(absUrl)) {
         seenImageUrls.add(absUrl);
         imagesForPage.push({
@@ -332,6 +349,9 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
 
       const absUrl = toAbsoluteImageUrl(src, pageUrlPath);
+      if (isExcludedUiOrRelatedImage($img, absUrl)) {
+        return;
+      }
       if (absUrl && !seenImageUrls.has(absUrl)) {
         seenImageUrls.add(absUrl);
         imagesForPage.push({
@@ -343,17 +363,11 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
     });
 
-    if (imagesForPage.length > 0) {
-      pageImagesMap.set(canonicalPageUrl, imagesForPage);
-      if (canonicalPageUrl.endsWith('/')) {
-        pageImagesMap.set(canonicalPageUrl.slice(0, -1), imagesForPage);
-      }
-      pageDataList.push({
-        htmlFile,
-        canonicalPageUrl,
-        images: imagesForPage,
-      });
-    }
+    pageDataList.push({
+      htmlFile,
+      canonicalPageUrl,
+      images: imagesForPage,
+    });
   }
 
   // 3. Fail Fast if any image violates strict zero-fallback rules
@@ -388,7 +402,10 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
   let totalImageObjectsCreated = 0;
 
   const personRef = {
+    '@type': 'Person',
     '@id': 'https://hackenberg.tech/#person',
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech/about/',
   };
 
   const targetArticleTypes = new Set([
@@ -454,7 +471,20 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         const heroUrl = node.image.trim();
         const relAssetPath = heroUrl.slice(SITE_ORIGIN.length).replace(/^\/+/, '');
         const physicalHeroPath = path.join(distDir, relAssetPath);
-        if (fs.existsSync(physicalHeroPath) && !images.some((img) => img.url === heroUrl)) {
+        const heroBaseNoExt = path.basename(heroUrl.split('?')[0]).replace(/\.[a-zA-Z0-9]+$/, '');
+        const heroSlug = extractSemanticSlug(heroUrl);
+        const existingIdx = images.findIndex((img) => {
+          if (img.url === heroUrl) return true;
+          const imgBaseNoExt = path.basename(img.url.split('?')[0]).replace(/\.[a-zA-Z0-9]+$/, '');
+          if (imgBaseNoExt === heroBaseNoExt || imgBaseNoExt.startsWith(`${heroBaseNoExt}_`)) return true;
+          if (heroSlug !== 'image' && extractSemanticSlug(img.url) === heroSlug) return true;
+          return false;
+        });
+
+        if (existingIdx > 0) {
+          const [existingHero] = images.splice(existingIdx, 1);
+          images.unshift(existingHero);
+        } else if (existingIdx === -1 && fs.existsSync(physicalHeroPath)) {
           const heroTitle =
             (typeof node.headline === 'string' && node.headline.trim()) ||
             (typeof node.name === 'string' && node.name.trim()) ||
@@ -470,6 +500,15 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
           });
         }
       }
+    }
+
+    if (images.length === 0) {
+      continue;
+    }
+
+    pageImagesMap.set(canonicalPageUrl, images);
+    if (canonicalPageUrl.endsWith('/')) {
+      pageImagesMap.set(canonicalPageUrl.slice(0, -1), images);
     }
 
     // Determine the primary entity ID on this page (e.g. #article, #presentation, #course, etc.)
@@ -501,7 +540,7 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       return {
         '@type': 'ImageObject',
         '@id': entityId,
-        url: entityId,
+        url: canonicalPageUrl,
         contentUrl: img.url,
         name: img.title,
         caption: img.caption,

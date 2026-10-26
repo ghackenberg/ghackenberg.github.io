@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { DOMAIN_METADATA, CONTENT_DOMAINS, type ContentDomain } from '@commons/shared/domain-themes';
 import type { CollectionEntry } from 'astro:content';
 import type { AuthorEntry } from '@commons/shared/authors';
@@ -6,15 +8,37 @@ export const PERSON_ID = 'https://hackenberg.tech/#person';
 export const WEBSITE_ID = 'https://hackenberg.tech/#website';
 export const NAVIGATION_ID = 'https://hackenberg.tech/#navigation';
 
-export const PERSON_REF = { '@id': PERSON_ID };
-export const WEBSITE_REF = { '@id': WEBSITE_ID };
+export const PERSON_REF = {
+  '@type': 'Person',
+  '@id': PERSON_ID,
+  name: 'Dr. Georg Hackenberg',
+  url: 'https://hackenberg.tech/about/'
+};
+
+export const WEBSITE_REF = {
+  '@type': 'WebSite',
+  '@id': WEBSITE_ID,
+  name: 'Dr. Georg Hackenberg',
+  url: 'https://hackenberg.tech/'
+};
+
+export const FH_OOW_REF = {
+  '@type': 'EducationalOrganization',
+  '@id': 'https://www.wikidata.org/wiki/Q1388312',
+  name: 'University of Applied Sciences Upper Austria',
+  sameAs: 'https://www.fh-ooe.at/'
+};
 
 export type JsonLdPrimitive = string | number | boolean | null | undefined;
 export type JsonLdValue = JsonLdPrimitive | { [key: string]: JsonLdValue } | JsonLdValue[];
 export type JsonLdNode = Record<string, JsonLdValue>;
 
-export const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?: boolean }> = {
-  'https://www.wikidata.org/wiki/Q1388312': { name: 'University of Applied Sciences Upper Austria', isEducational: true },
+export const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?: boolean; sameAs?: string }> = {
+  'https://www.wikidata.org/wiki/Q1388312': {
+    name: 'University of Applied Sciences Upper Austria',
+    isEducational: true,
+    sameAs: 'https://www.fh-ooe.at/'
+  },
   'https://www.wikidata.org/wiki/Q157808': { name: 'Technical University of Munich', isEducational: true },
   'https://www.wikidata.org/wiki/Q273263': { name: 'RWTH Aachen University', isEducational: true },
   'https://www.wikidata.org/wiki/Q317070': { name: 'University of Mannheim', isEducational: true },
@@ -23,6 +47,32 @@ export const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?:
   'https://www.wikidata.org/wiki/Q1451984': { name: 'Fraunhofer FIT' },
   'https://www.wikidata.org/wiki/Q81230': { name: 'Siemens' }
 };
+
+let tagTitleCache: Map<string, string> | null = null;
+
+function getTagTitle(tagId: string): string {
+  if (!tagTitleCache) {
+    tagTitleCache = new Map<string, string>();
+    try {
+      const tagsDir = path.resolve(process.cwd(), 'src/content/tags');
+      if (fs.existsSync(tagsDir)) {
+        for (const file of fs.readdirSync(tagsDir)) {
+          if (!file.endsWith('.md')) continue;
+          const id = file.replace(/\.md$/, '');
+          const raw = fs.readFileSync(path.join(tagsDir, file), 'utf-8');
+          const match = raw.match(/^title:\s*(?:"([^"]+)"|'([^']+)'|([^\r\n]+))/m);
+          if (match) {
+            const title = (match[1] ?? match[2] ?? match[3] ?? '').trim();
+            if (title) tagTitleCache.set(id, title);
+          }
+        }
+      }
+    } catch {
+      // Fallback if filesystem is unavailable
+    }
+  }
+  return tagTitleCache.get(tagId) || tagId;
+}
 
 export function getCanonicalEntityId(domain: string, slug: string, siteUrl = 'https://hackenberg.tech'): string {
   const cleanSlug = slug.replace(/^\/|\/$/g, '');
@@ -53,7 +103,14 @@ export function getCanonicalEntityId(domain: string, slug: string, siteUrl = 'ht
 }
 
 export function buildTagAboutRefs(tags?: string[]) {
-  return tags?.length ? tags.map((t) => ({ '@id': `https://hackenberg.tech/tags/${t}/#term` })) : undefined;
+  return tags?.length
+    ? tags.map((t) => ({
+        '@type': 'DefinedTerm',
+        '@id': `https://hackenberg.tech/tags/${t}/#term`,
+        name: getTagTitle(t),
+        url: `https://hackenberg.tech/tags/${t}/`
+      }))
+    : undefined;
 }
 
 export function buildWebsiteSchema() {
@@ -124,12 +181,17 @@ export function buildCollectionPageSchema(
 export function buildAboutPageSchemas(params: {
   degrees: Array<CollectionEntry<'degrees'>>;
   experiences: Array<CollectionEntry<'experiences'>>;
+  profiles?: Array<CollectionEntry<'profiles'>>;
+  imageUrl?: string;
 }) {
-  const { degrees, experiences } = params;
+  const { degrees, experiences, profiles, imageUrl } = params;
   const sortedDegrees = degrees.slice().sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const activeExperiences = experiences
     .filter((e) => e.data.endYear === null)
     .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedProfiles = profiles
+    ? profiles.slice().sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+    : [];
 
   const orgMap = new Map<string, Record<string, string | undefined>>();
 
@@ -142,11 +204,12 @@ export function buildAboutPageSchemas(params: {
         '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
         '@id': id,
         name: meta?.name || org.name,
+        ...(meta?.sameAs ? { sameAs: meta.sameAs } : {})
       });
     }
   }
 
-  for (const e of experiences) {
+  for (const e of activeExperiences) {
     const org = e.data.organization;
     const id = org?.id;
     if (id && !orgMap.has(id)) {
@@ -155,6 +218,7 @@ export function buildAboutPageSchemas(params: {
         '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
         '@id': id,
         name: meta?.name || org.name,
+        ...(meta?.sameAs ? { sameAs: meta.sameAs } : {})
       });
     }
   }
@@ -165,12 +229,18 @@ export function buildAboutPageSchemas(params: {
   for (const d of sortedDegrees) {
     if (d.data.organization?.id) pastOrgIds.add(d.data.organization.id);
   }
-  for (const e of experiences) {
-    if (e.data.endYear !== null && e.data.organization?.id) {
-      pastOrgIds.add(e.data.organization.id);
-    }
-  }
-  const alumniOfList = Array.from(pastOrgIds).map((id) => ({ '@id': id }));
+  const alumniOfList = Array.from(pastOrgIds).map((id) => orgMap.get(id) ?? { '@id': id });
+
+  const worksForOrgs = Array.from(
+    new Map(
+      activeExperiences
+        .filter((e) => e.data.organization?.id)
+        .map((e) => {
+          const id = e.data.organization!.id!;
+          return [id, orgMap.get(id) ?? { '@id': id }];
+        })
+    ).values()
+  );
 
   const personSchema = {
     '@type': 'Person',
@@ -180,12 +250,25 @@ export function buildAboutPageSchemas(params: {
     familyName: 'Hackenberg',
     honorificPrefix: 'Dr.',
     jobTitle: 'Professor for Industrial Informatics',
-    url: 'https://hackenberg.tech/',
-    worksFor: [
-      {
-        '@id': 'https://www.wikidata.org/wiki/Q1388312'
+    description:
+      'Full Professor for Industrial Informatics at FH OÖ Campus Wels, software engineer, digital entrepreneur, and researcher.',
+    url: 'https://hackenberg.tech/about/',
+    ...(imageUrl ? { image: imageUrl } : {}),
+    email: 'mailto:mail@georghackenberg.com',
+    telephone: '+43 50804 43250',
+    workLocation: {
+      '@type': 'Place',
+      name: 'University of Applied Sciences Upper Austria (FH OÖ Campus Wels)',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Stelzhamerstraße 23',
+        addressLocality: 'Wels',
+        postalCode: '4600',
+        addressCountry: 'AT'
       }
-    ],
+    },
+    ...(sortedProfiles.length > 0 ? { sameAs: sortedProfiles.map((p) => p.data.url) } : {}),
+    worksFor: worksForOrgs,
     hasOccupation: activeExperiences.map((e) => ({
       '@type': 'Occupation',
       name: e.data.title,
@@ -197,7 +280,7 @@ export function buildAboutPageSchemas(params: {
       credentialCategory: 'degree',
       name: `${d.data.degree} in ${d.data.program}`,
       ...(d.data.organization?.id
-        ? { recognizedBy: { '@id': d.data.organization.id } }
+        ? { recognizedBy: orgMap.get(d.data.organization.id) ?? { '@id': d.data.organization.id } }
         : {
             recognizedBy: {
               '@type': 'EducationalOrganization',
@@ -223,6 +306,7 @@ export function buildContactPageSchemas(params: {
   profiles: Array<CollectionEntry<'profiles'>>;
 }) {
   const { profiles } = params;
+  const sortedProfiles = profiles.slice().sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const contactPageSchema = {
     '@type': 'ContactPage',
     '@id': 'https://hackenberg.tech/contact/#contactpage',
@@ -235,6 +319,8 @@ export function buildContactPageSchemas(params: {
   const personSchema = {
     '@type': 'Person',
     '@id': PERSON_ID,
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech/about/',
     email: 'mailto:mail@georghackenberg.com',
     telephone: '+43 50804 43250',
     workLocation: {
@@ -248,7 +334,7 @@ export function buildContactPageSchemas(params: {
         addressCountry: 'AT'
       }
     },
-    sameAs: profiles.map((p) => p.data.url)
+    sameAs: sortedProfiles.map((p) => p.data.url)
   };
 
   return [contactPageSchema, personSchema];
@@ -259,7 +345,7 @@ export function buildTagsOverviewSchemas(params: {
 }) {
   const { tags } = params;
   const collectionPageSchema = {
-    '@type': 'CollectionPage',
+    '@type': ['CollectionPage', 'DefinedTermSet'],
     '@id': 'https://hackenberg.tech/tags/#collectionpage',
     url: 'https://hackenberg.tech/tags/',
     name: 'Taxonomy & Topic Cloud',
@@ -272,7 +358,10 @@ export function buildTagsOverviewSchemas(params: {
         '@type': 'ListItem',
         position: idx + 1,
         item: {
-          '@id': `https://hackenberg.tech/tags/${tag.id}/#term`
+          '@type': 'DefinedTerm',
+          '@id': `https://hackenberg.tech/tags/${tag.id}/#term`,
+          name: getTagTitle(tag.id),
+          url: `https://hackenberg.tech/tags/${tag.id}/`
         }
       }))
     }
@@ -281,9 +370,9 @@ export function buildTagsOverviewSchemas(params: {
   const personSchema = {
     '@type': 'Person',
     '@id': PERSON_ID,
-    knowsAbout: tags.map((tag) => ({
-      '@id': `https://hackenberg.tech/tags/${tag.id}/#term`
-    }))
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech/about/',
+    knowsAbout: buildTagAboutRefs(tags.map((t) => t.id))
   };
 
   return [collectionPageSchema, personSchema];
@@ -312,13 +401,19 @@ export function buildTagDetailSchemas(params: {
 }) {
   const { tag, items } = params;
   const termUrl = `https://hackenberg.tech/tags/${tag.id}/`;
+  const definedTermSetRef = {
+    '@type': ['CollectionPage', 'DefinedTermSet'],
+    '@id': 'https://hackenberg.tech/tags/#collectionpage',
+    name: 'Taxonomy & Topic Cloud',
+    url: 'https://hackenberg.tech/tags/'
+  };
 
   const definedTermSchema = {
     '@type': 'DefinedTerm',
     '@id': `${termUrl}#term`,
     name: tag.data.title,
     description: tag.data.description || `Articles, publications, and projects related to ${tag.data.title}.`,
-    inDefinedTermSet: 'https://hackenberg.tech/tags/#collectionpage',
+    inDefinedTermSet: definedTermSetRef,
     url: termUrl
   };
 
@@ -328,15 +423,22 @@ export function buildTagDetailSchemas(params: {
     url: termUrl,
     name: `Topics in ${tag.data.title}`,
     description: tag.data.description || `Browse all resources tagged with ${tag.data.title}.`,
-    isPartOf: { '@id': 'https://hackenberg.tech/tags/#collectionpage' },
-    about: { '@id': `${termUrl}#term` },
+    isPartOf: definedTermSetRef,
+    about: {
+      '@type': 'DefinedTerm',
+      '@id': `${termUrl}#term`,
+      name: tag.data.title,
+      url: termUrl
+    },
     mainEntity: {
       '@type': 'ItemList',
       itemListElement: items.map((item, idx) => ({
         '@type': 'ListItem',
         position: idx + 1,
         item: {
-          '@id': item.url
+          '@id': item.id,
+          name: item.title,
+          url: item.url
         }
       }))
     }
@@ -485,7 +587,9 @@ export function buildPublicationSchema(params: {
     headline: pub.data.title,
     name: pub.data.title,
     url: pubUrl,
+    inLanguage: 'en',
     author: mappedAuthors,
+    publisher: PERSON_REF,
     isPartOf: [
       { '@id': 'https://hackenberg.tech/publications/#collectionpage' },
       ...(pub.data.book ? [{ '@type': 'Periodical', name: pub.data.book }] : [])
@@ -587,9 +691,7 @@ export function buildCourseSchema(params: {
     description: course.data.description || `${course.data.title} taught by Dr. Georg Hackenberg.`,
     image: resolvedImage ? new URL(resolvedImage, siteUrl).href : undefined,
     url: courseUrl,
-    provider: {
-      '@id': 'https://www.wikidata.org/wiki/Q1388312'
-    },
+    provider: FH_OOW_REF,
     instructor: PERSON_REF,
     isPartOf: {
       '@id': 'https://hackenberg.tech/courses/#collectionpage'
@@ -597,9 +699,16 @@ export function buildCourseSchema(params: {
     about: buildTagAboutRefs(course.data.tags),
     ...(modules.length > 0
       ? {
-          hasPart: modules.map((m) => ({
-            '@id': `${siteUrl}/courses/${course.id}/${m.id.split('/').pop()}/#module`
-          }))
+          hasPart: modules.map((m) => {
+            const modSlug = m.id.split('/').pop();
+            const modUrl = `${siteUrl}/courses/${course.id}/${modSlug}/`;
+            return {
+              '@type': 'LearningResource',
+              '@id': `${modUrl}#module`,
+              name: m.data.title,
+              url: modUrl
+            };
+          })
         }
       : {}),
     inLanguage: course.data.inLanguage,
@@ -633,7 +742,7 @@ export function buildCourseModuleSchema(params: {
   const { parentCourse, module, siteUrl = 'https://hackenberg.tech' } = params;
   const moduleSlug = module.id.split('/').pop();
   const moduleUrl = `${siteUrl}/courses/${parentCourse.id}/${moduleSlug}/`;
-  const resolvedImage = extractImageSrc(module.data.image);
+  const resolvedImage = extractImageSrc(module.data.image || parentCourse.data.image);
 
   const moduleCourseSchema = {
     '@type': 'LearningResource',
@@ -669,7 +778,6 @@ export function buildProjectSchema(params: {
   const projectUrl = `${siteUrl}/projects/${project.id}/`;
   const repoName = project.data.repoName;
   const repoUrl = repoName ? `https://github.com/ghackenberg/${repoName}` : undefined;
-  const tech = project.data.tags?.[0] ?? 'Web';
   const resolvedImage = mainScreenshotUrl || extractImageSrc(project.data.image);
 
   const softwareAppSchema = {
@@ -684,7 +792,11 @@ export function buildProjectSchema(params: {
     applicationCategory: 'Software',
     operatingSystem: 'Cross-platform',
     runtimePlatform: 'Cross-platform',
-    programmingLanguage: project.data.tags || [tech],
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR'
+    },
     ...((project.data as { features?: Array<{ title: string }> }).features &&
     (project.data as { features?: Array<{ title: string }> }).features!.length > 0
       ? {
@@ -735,9 +847,16 @@ export function buildServiceSchema(params: {
       : {}),
     ...(modules.length > 0
       ? {
-          hasPart: modules.map((m) => ({
-            '@id': `${siteUrl}/services/${service.id}/${m.id.split('/').pop()}/#service`
-          }))
+          hasPart: modules.map((m) => {
+            const modSlug = m.id.split('/').pop();
+            const modUrl = `${siteUrl}/services/${service.id}/${modSlug}/`;
+            return {
+              '@type': 'Service',
+              '@id': `${modUrl}#service`,
+              name: m.data.title,
+              url: modUrl
+            };
+          })
         }
       : {})
   };
@@ -753,7 +872,7 @@ export function buildServiceModuleSchema(params: {
   const { parentService, module, siteUrl = 'https://hackenberg.tech' } = params;
   const moduleSlug = module.id.split('/').pop();
   const moduleUrl = `${siteUrl}/services/${parentService.id}/${moduleSlug}/`;
-  const imageSrc = extractImageSrc(module.data.image);
+  const imageSrc = extractImageSrc(module.data.image || parentService.data.image);
 
   const serviceModuleSchema = {
     '@type': 'Service',
@@ -827,6 +946,11 @@ export function buildVisualizationSchema(params: {
     url: vizUrl,
     applicationCategory: 'DataVisualization',
     operatingSystem: 'Any modern browser with WebGL',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR'
+    },
     author: PERSON_REF,
     creator: PERSON_REF,
     isPartOf: {

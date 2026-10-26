@@ -1,6 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { buildNewsletterIssueSchema } from "@commons/server/json-ld";
+import { buildNewsletterIssueSchema, getCanonicalEntityId } from "@commons/server/json-ld";
 import Navbar from '@components/Navbar.astro';
 import Container from '@components/Container.astro';
 import Section from '@components/Section.astro';
@@ -60,12 +60,12 @@ const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Dr. G
 const newsletterSchema = buildNewsletterIssueSchema({
   issue,
   mentions: [
-    ...featuredPosts.map((p) => ({ '@id': `https://hackenberg.tech/posts/${p.id}/#article` })),
-    ...featuredPresentations.map((p) => ({ '@id': `https://hackenberg.tech/presentations/${p.id}/#presentation` })),
-    ...featuredPublications.map((p) => ({ '@id': `https://hackenberg.tech/publications/${p.id}/#article` })),
-    ...featuredCourses.map((c) => ({ '@id': `https://hackenberg.tech/courses/${c.id}/#course` })),
-    ...featuredProjects.map((p) => ({ '@id': `https://hackenberg.tech/projects/${p.id}/#software` })),
-    ...featuredVisualizations.map((v) => ({ '@id': `https://hackenberg.tech/visualizations/${v.id}/#visualization` })),
+    ...featuredPosts.map((p) => ({ '@id': getCanonicalEntityId('posts', p.id) })),
+    ...featuredPresentations.map((p) => ({ '@id': getCanonicalEntityId('presentations', p.id) })),
+    ...featuredPublications.map((p) => ({ '@id': getCanonicalEntityId('publications', p.id) })),
+    ...featuredCourses.map((c) => ({ '@id': getCanonicalEntityId('courses', c.id) })),
+    ...featuredProjects.map((p) => ({ '@id': getCanonicalEntityId('projects', p.id) })),
+    ...featuredVisualizations.map((v) => ({ '@id': getCanonicalEntityId('visualizations', v.id) })),
   ],
   siteUrl: Astro.site?.origin || 'https://hackenberg.tech'
 });

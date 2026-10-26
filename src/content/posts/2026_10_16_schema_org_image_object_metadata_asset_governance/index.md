@@ -160,7 +160,7 @@ Similarly, [`src/plugins/remark-mermaid.ts`](https://github.com/ghackenberg/ghac
 
 ### Gate 2: Exhaustive Post-Build DOM Auditing in `image-sitemap.ts`
 
-Because Astro pages also render images via `.astro` components, JSX templates, and inline SVGs that bypass the Markdown Remark pipeline, AST validation alone is insufficient. Hooked into `astro:build:done` via `imageSitemapEnforcer()` in [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts), [`validateAndEnrichImageSitemaps()`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/image-sitemap.ts#L148-L590) loads every generated HTML file in `dist/` with Cheerio and inspects three distinct DOM selectors:
+Because Astro pages also render images via `.astro` components, JSX templates, and inline SVGs that bypass the Markdown Remark pipeline, AST validation alone is insufficient. Hooked into `astro:build:done` via `imageSitemapEnforcer()` in [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts), [`validateAndEnrichImageSitemaps()`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/image-sitemap.ts#L159-L655) loads every generated HTML file in `dist/` with Cheerio and inspects three distinct DOM selectors:
 
 1. **Standard HTML Images (`$('img')`):** Audits `src`, `alt`, and `title`, explicitly exempting decorative elements marked with `aria-hidden="true"`, `role="presentation"`, or `role="none"`.
 2. **Compiled Architectural Diagrams (`$('figure.mermaid-diagram, figure.svg-diagram')`):** Extracts `data-diagram-title` (or `meta[itemprop="name"]`), `data-diagram-caption` (or `meta[itemprop="description"]`), and `meta[itemprop="contentUrl"]`.
@@ -245,7 +245,7 @@ function extractSemanticSlug(src: string, title?: string): string {
     // preview-a1b2c3d4.jpg -> preview
     const noHash = noExt
       .replace(/\.[a-zA-Z0-9_-]{6,}(?:_[a-zA-Z0-9_-]+)?$/i, '')
-      .replace(/-[a-zA-Z0-9_-]{6,}$/i, '');
+      .replace(/-[a-zA-Z0-9_]{6,}$/i, '');
 
     const candidate = slugify(noHash);
     const isPureHash = /^[a-f0-9]{16,}$/i.test(candidate);
@@ -278,11 +278,11 @@ Next, each `PageImage` is transformed into a complete Schema.org `ImageObject` [
 
 ```typescript
 // Excerpt from src/plugins/image-sitemap.ts
-const personEntity = {
+const personRef = {
   '@type': 'Person',
   '@id': 'https://hackenberg.tech/#person',
   name: 'Dr. Georg Hackenberg',
-  url: 'https://hackenberg.tech',
+  url: 'https://hackenberg.tech/about/',
 };
 
 const imageObjects = images.map((img) => {
@@ -292,10 +292,9 @@ const imageObjects = images.map((img) => {
   const mimeType = getMimeType(img.url);
 
   return {
-    '@context': 'https://schema.org',
     '@type': 'ImageObject',
     '@id': entityId,
-    url: entityId,
+    url: canonicalPageUrl,
     contentUrl: img.url,
     name: img.title,
     caption: img.caption,
@@ -305,16 +304,16 @@ const imageObjects = images.map((img) => {
     acquireLicensePage: 'https://hackenberg.tech/impressum/#kontakt',
     creditText: 'Dr. Georg Hackenberg',
     copyrightNotice: '© Dr. Georg Hackenberg. All rights reserved.',
-    author: { ...personEntity },
-    creator: { ...personEntity },
-    copyrightHolder: { ...personEntity },
-    isPartOf: { '@id': canonicalPageUrl },
+    author: personRef,
+    creator: personRef,
+    copyrightHolder: personRef,
+    isPartOf: { '@id': primaryPageEntityId },
   };
 });
 ```
 
 Note the two intentional Schema.org distinctions in this graph construction:
-- **`ImageObject.url` vs. `ImageObject.contentUrl`:** While `url` (`entityId`) points to the dereferenceable `#image-${uniqueSlug}` fragment URI inside the host HTML document where the image appears in context, `contentUrl` (`img.url`) points directly to the physical, content-hashed byte stream (`.webp`, `.jpg`, or exported `.svg`).
+- **`ImageObject.@id`, `ImageObject.url`, and `ImageObject.contentUrl`:** While `@id` (`entityId`: `${canonicalPageUrl}#image-${uniqueSlug}`) provides the unique graph node identifier, `url` (`canonicalPageUrl`) points to the dereferenceable host HTML page where the image appears in context, `contentUrl` (`img.url`) points directly to the physical, content-hashed byte stream (`.webp`, `.jpg`, or exported `.svg`), and `isPartOf` (`{ '@id': primaryPageEntityId }`) links the `ImageObject` back to the page's primary content entity.
 - **`primaryImageOfPage` vs. `image[]`:** On every matching page-level content entity, `node.primaryImageOfPage = { '@id': primaryImage['@id'] }` designates the single canonical representative image (`imageObjects[0]`), whereas `node.image = imageRefs` links the complete ordered collection of all `ImageObject` nodes on the page.
 
 The enforcer then filters out any pre-existing `ImageObject` nodes sharing the `${canonicalPageUrl}#image-` prefix to ensure **100% idempotency across repeated runs**, and serializes the enriched JSON-LD array back into the HTML `<head>`.
@@ -352,7 +351,7 @@ Even with build-time plugins in place, bundler upgrades (such as Vite or Rolldow
 
 ### Deep Dive into Assertion 5: Independent Verification of the Knowledge Graph
 
-Following the principle of independent verification (separation of compiler and auditor), Assertion 5 in [`src/scripts/validate-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-assets.ts#L320-L537) does not trust `image-sitemap.ts` blindly. Instead, it independently re-scans every HTML file in `dist/` for content images across `<img>`, `figure.mermaid-diagram, figure.svg-diagram`, and `svg image`, and also checks for any HTML Microdata declarations (`[itemtype*="ImageObject"]`):
+Following the principle of independent verification (separation of compiler and auditor), Assertion 5 in [`src/scripts/validate-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-assets.ts#L337-L567) does not trust `image-sitemap.ts` blindly. Instead, it independently re-scans every HTML file in `dist/` for content images across `<img>`, `figure.mermaid-diagram, figure.svg-diagram`, and `svg image`, and also checks for any HTML Microdata declarations (`[itemtype*="ImageObject"]`):
 
 ```typescript
 // Excerpt from src/scripts/validate-assets.ts (Assertion 5: Microdata & JSON-LD Verification)

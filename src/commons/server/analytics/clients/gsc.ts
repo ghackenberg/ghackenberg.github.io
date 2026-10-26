@@ -219,11 +219,25 @@ export async function inspectUrlIndexStatus(urlOrPath: string): Promise<UrlInspe
   const result = res.data.inspectionResult;
   const indexStatus = result?.indexStatusResult;
   const mobile = result?.mobileUsabilityResult;
+  const richResults = result?.richResultsResult;
 
   const rawIssues: string[] = [];
   if (mobile?.issues) {
     for (const issue of mobile.issues) {
       if (issue.issueType) rawIssues.push(issue.issueType);
+    }
+  }
+  if (richResults?.detectedItems) {
+    for (const detected of richResults.detectedItems) {
+      for (const item of detected.items || []) {
+        for (const issue of item.issues || []) {
+          if (issue.issueMessage) {
+            rawIssues.push(
+              `[${detected.richResultType || 'RichResult'}:${issue.severity || 'ISSUE'}] ${issue.issueMessage}`
+            );
+          }
+        }
+      }
     }
   }
 
@@ -240,6 +254,17 @@ export async function inspectUrlIndexStatus(urlOrPath: string): Promise<UrlInspe
     referringUrls: indexStatus?.referringUrls || [],
     lastCrawlTime: indexStatus?.lastCrawlTime || undefined,
     mobileUsabilityVerdict: mobile?.verdict || 'VERDICT_UNSPECIFIED',
+    richResultsVerdict: richResults?.verdict || 'VERDICT_UNSPECIFIED',
+    richResultsItems: richResults?.detectedItems?.map((d) => ({
+      richResultType: d.richResultType || undefined,
+      items: (d.items || []).map((i) => ({
+        name: i.name || undefined,
+        issues: (i.issues || []).map((iss) => ({
+          issueMessage: iss.issueMessage || undefined,
+          severity: iss.severity || undefined,
+        })),
+      })),
+    })),
     rawIssues: rawIssues.length > 0 ? rawIssues : undefined,
   };
 }

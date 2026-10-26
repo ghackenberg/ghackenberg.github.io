@@ -323,6 +323,17 @@ interface SchemaEntity {
   [key: string]: JsonLdValue;
 }
 
+function isExcludedUiOrRelatedImage($el: ReturnType<cheerio.CheerioAPI>, srcOrUrl: string): boolean {
+  const clean = srcOrUrl.split('?')[0].split('#')[0];
+  if (/(^|\/)(favicon\.(svg|ico)|favicon-\d+x\d+\.png|apple-touch-icon\.png)$/i.test(clean)) {
+    return true;
+  }
+  if ($el.closest('#related-content, [data-related-content], .related-content, .compact-card').length > 0) {
+    return true;
+  }
+  return false;
+}
+
 // -------------------------------------------------------------
 // Assertion 5: ImageObject JSON-LD Structured Data Parity
 // -------------------------------------------------------------
@@ -368,7 +379,7 @@ for (const file of htmlFiles) {
       return;
     }
     const src = $img.attr('src');
-    if (src) {
+    if (src && !isExcludedUiOrRelatedImage($img, src)) {
       contentImages.push(src);
     }
   });
@@ -377,7 +388,7 @@ for (const file of htmlFiles) {
   $('figure.mermaid-diagram, figure.svg-diagram').each((_, el) => {
     const $fig = $(el);
     const diagramUrl = ($fig.find('meta[itemprop="contentUrl"]').attr('content') || '').trim();
-    if (diagramUrl) {
+    if (diagramUrl && !isExcludedUiOrRelatedImage($fig, diagramUrl)) {
       contentImages.push(diagramUrl);
     }
   });
@@ -395,24 +406,20 @@ for (const file of htmlFiles) {
       return;
     }
     const src = $img.attr('href') || $img.attr('xlink:href') || '';
-    if (src && !src.startsWith('data:')) {
+    if (src && !src.startsWith('data:') && !isExcludedUiOrRelatedImage($img, src)) {
       contentImages.push(src);
     }
   });
 
-  if (contentImages.length === 0) {
-    continue;
-  }
-
-  pagesWithImagesChecked++;
-
   const $script = $('script[type="application/ld+json"]').first();
   if ($script.length === 0) {
-    console.error(
-      `[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${contentImages.length} content image(s) but is missing <script type="application/ld+json">`
-    );
-    errorsCount++;
-    assertion5Errors++;
+    if (contentImages.length > 0) {
+      console.error(
+        `[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${contentImages.length} content image(s) but is missing <script type="application/ld+json">`
+      );
+      errorsCount++;
+      assertion5Errors++;
+    }
     continue;
   }
 
@@ -435,6 +442,12 @@ for (const file of htmlFiles) {
   const imageObjects = jsonLdData.filter(
     (item): item is SchemaEntity => Boolean(item && typeof item === 'object' && item['@type'] === 'ImageObject')
   );
+
+  if (contentImages.length === 0 && imageObjects.length === 0) {
+    continue;
+  }
+
+  pagesWithImagesChecked++;
 
   if (imageObjects.length === 0) {
     console.error(

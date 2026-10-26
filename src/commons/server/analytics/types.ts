@@ -230,6 +230,19 @@ export interface SeoOpportunity {
   suggestedAction: string;
 }
 
+export interface RichResultIssue {
+  issueMessage?: string;
+  severity?: string;
+}
+
+export interface RichResultDetectedItem {
+  richResultType?: string;
+  items?: Array<{
+    name?: string;
+    issues?: RichResultIssue[];
+  }>;
+}
+
 export interface UrlInspectionDetails {
   url: string;
   inspectionVerdict?: string;
@@ -243,6 +256,8 @@ export interface UrlInspectionDetails {
   referringUrls?: string[];
   lastCrawlTime?: string;
   mobileUsabilityVerdict?: string;
+  richResultsVerdict?: string;
+  richResultsItems?: RichResultDetectedItem[];
   rawIssues?: string[];
 }
 

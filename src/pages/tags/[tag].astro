@@ -1,6 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { buildTagDetailSchemas } from "@commons/server/json-ld";
+import { buildTagDetailSchemas, getCanonicalEntityId } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
@@ -117,14 +117,14 @@ const previewImage = posts.find((p) => p.data.image)?.data.image;
 
 
 const items = [
-  ...posts.map((p) => ({ id: p.id, url: `https://hackenberg.tech/posts/${p.id}/`, title: p.data.title })),
-  ...publications.map((p) => ({ id: p.id, url: `https://hackenberg.tech/publications/${p.id}/`, title: p.data.title })),
-  ...presentations.map((p) => ({ id: p.id, url: `https://hackenberg.tech/presentations/${p.id}/`, title: p.data.title })),
-  ...courses.map((c) => ({ id: c.id, url: `https://hackenberg.tech/courses/${c.id}/`, title: c.data.title })),
-  ...projects.map((p) => ({ id: p.id, url: `https://hackenberg.tech/projects/${p.id}/`, title: p.data.title })),
-  ...services.map((s) => ({ id: s.id, url: `https://hackenberg.tech/services/${s.id}/`, title: s.data.title })),
-  ...newsletters.map((n) => ({ id: n.id, url: `https://hackenberg.tech/newsletters/${n.id}/`, title: n.data.title })),
-  ...visualizations.map((v) => ({ id: v.id, url: `https://hackenberg.tech/visualizations/${v.id}/`, title: v.data.title })),
+  ...posts.map((p) => ({ id: getCanonicalEntityId('posts', p.id), url: `https://hackenberg.tech/posts/${p.id}/`, title: p.data.title })),
+  ...publications.map((p) => ({ id: getCanonicalEntityId('publications', p.id), url: `https://hackenberg.tech/publications/${p.id}/`, title: p.data.title })),
+  ...presentations.map((p) => ({ id: getCanonicalEntityId('presentations', p.id), url: `https://hackenberg.tech/presentations/${p.id}/`, title: p.data.title })),
+  ...courses.map((c) => ({ id: getCanonicalEntityId('courses', c.id), url: `https://hackenberg.tech/courses/${c.id}/`, title: c.data.title })),
+  ...projects.map((p) => ({ id: getCanonicalEntityId('projects', p.id), url: `https://hackenberg.tech/projects/${p.id}/`, title: p.data.title })),
+  ...services.map((s) => ({ id: getCanonicalEntityId('services', s.id), url: `https://hackenberg.tech/services/${s.id}/`, title: s.data.title })),
+  ...newsletters.map((n) => ({ id: getCanonicalEntityId('newsletters', n.id), url: `https://hackenberg.tech/newsletters/${n.id}/`, title: n.data.title })),
+  ...visualizations.map((v) => ({ id: getCanonicalEntityId('visualizations', v.id), url: `https://hackenberg.tech/visualizations/${v.id}/`, title: v.data.title })),
 ];
 const tagJsonLd = buildTagDetailSchemas({ tag, items });
 ---

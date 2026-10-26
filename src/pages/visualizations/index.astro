@@ -28,7 +28,7 @@ const firstVisScreenshot = visualizations.find(v => v.data.image)?.data.image;
   title="Content Visualizations | Dr. Georg Hackenberg" 
   description="Explore interactive real-time knowledge graphs, network diagrams, and WebGL visualizations connecting research, software projects, and topics."
   image={firstVisScreenshot}
-  jsonLd={buildCollectionPageSchema("visualizations", visualizations.map((v) => ({ id: `https://hackenberg.tech/visualizations/${v.id}/#visualization` })))}
+  jsonLd={buildCollectionPageSchema("visualizations", visualizations.map((v) => ({ id: v.id })))}
 >
   <Navbar />
 

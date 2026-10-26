@@ -199,7 +199,7 @@ function addViolation(gate: number, rule: string, page: string, message: string)
 // -------------------------------------------------------------
 // Data Structures for Cross-Page & Graph-Level Analysis
 // -------------------------------------------------------------
-const propertyDefinitions = new Map<string, Map<string, Set<string>>>();
+const entityPropertyValues = new Map<string, Map<string, { serialized: string; firstPage: string }>>();
 const definedEntityIds = new Set<string>();
 
 interface IdReference {
@@ -222,6 +222,7 @@ const RELATION_PROPERTIES = new Set([
   'provider',
   'instructor',
   'creator',
+  'copyrightHolder',
   'isPartOf',
   'hasPart',
   'mainEntity',
@@ -232,7 +233,23 @@ const RELATION_PROPERTIES = new Set([
   'worksFor',
   'alumniOf',
   'recognizedBy',
-  'about'
+  'about',
+  'item',
+  'primaryImageOfPage',
+  'image',
+  'audio',
+  'encoding',
+  'inDefinedTermSet'
+]);
+
+const SUMMARY_PROPS = new Set(['@context', '@id', '@type', 'name', 'url', 'sameAs']);
+const RICH_RESULT_ACTOR_PROPS = new Set([
+  'author',
+  'creator',
+  'publisher',
+  'provider',
+  'instructor',
+  'copyrightHolder'
 ]);
 
 const wikidataCandidates: WikidataCandidate[] = [];
@@ -367,13 +384,15 @@ function extractNodesFromTree(root: JsonLdNode, relPath: string, collector: Json
 
   validateUriFields(node, relPath);
 
-  const isPurePointer = Object.keys(node).filter((k) => k !== '@id' && k !== '@type' && k !== '@context').length === 0;
-  if (!isPurePointer && !node['@type']) {
+  const isSummaryPointer = Boolean(
+    typeof node['@id'] === 'string' && Object.keys(node).every((k) => SUMMARY_PROPS.has(k))
+  );
+  if (!isSummaryPointer && !node['@type']) {
     addViolation(1, 'Missing @type', relPath, `Node with @id "${node['@id'] || 'anonymous'}" must declare a valid "@type".`);
   }
 
   checkAnonymousEntityClones(node, relPath, parentProp);
-  trackNodeProperties(node, relPath);
+  trackNodeProperties(node, relPath, parentProp);
   collectGate6Candidates(node, relPath);
 
   for (const [key, value] of Object.entries(node)) {
@@ -422,7 +441,7 @@ function validateUriFields(node: JsonLdNode, relPath: string) {
 // -------------------------------------------------------------
 // Gate 2: Track Node Properties & Inspect Relations
 // -------------------------------------------------------------
-function trackNodeProperties(node: JsonLdNode, relPath: string) {
+function trackNodeProperties(node: JsonLdNode, relPath: string, parentProp?: string) {
   const id = typeof node['@id'] === 'string' ? node['@id'].trim() : undefined;
   if (!id) return;
 
@@ -431,21 +450,32 @@ function trackNodeProperties(node: JsonLdNode, relPath: string) {
     return;
   }
 
-  const nonMetaProps = Object.keys(node).filter((k) => k !== '@context' && k !== '@type' && k !== '@id');
+  const nonMetaProps = Object.keys(node).filter((k) => k !== '@context' && k !== '@id');
+  const nonSummaryProps = Object.keys(node).filter((k) => !SUMMARY_PROPS.has(k));
+
+  if (!parentProp || nonSummaryProps.length > 0) {
+    definedEntityIds.add(id);
+  }
 
   if (nonMetaProps.length > 0) {
-    definedEntityIds.add(id);
-
-    if (!propertyDefinitions.has(id)) {
-      propertyDefinitions.set(id, new Map());
+    if (!entityPropertyValues.has(id)) {
+      entityPropertyValues.set(id, new Map());
     }
-    const propMap = propertyDefinitions.get(id)!;
+    const propMap = entityPropertyValues.get(id)!;
 
     for (const prop of nonMetaProps) {
-      if (!propMap.has(prop)) {
-        propMap.set(prop, new Set());
+      const serialized = JSON.stringify(node[prop]);
+      const existing = propMap.get(prop);
+      if (!existing) {
+        propMap.set(prop, { serialized, firstPage: relPath });
+      } else if (existing.serialized !== serialized) {
+        addViolation(
+          2,
+          'Gate 2a: Conflicting Cross-Page Property Value',
+          relPath,
+          `Entity "${id}" has conflicting values for property "${prop}" between "${existing.firstPage}" (${existing.serialized}) and "${relPath}" (${serialized}).`
+        );
       }
-      propMap.get(prop)!.add(relPath);
     }
   }
 }
@@ -455,6 +485,17 @@ function inspectRelationField(relProp: string, value: JsonLdValue | undefined, r
   const items = Array.isArray(value) ? value : [value];
 
   for (const item of items) {
+    if (typeof item === 'string') {
+      if (item.startsWith('https://hackenberg.tech/') && item.includes('#')) {
+        addViolation(
+          4,
+          'Gate 4: Raw String @id Reference',
+          relPath,
+          `Relation property "${relProp}" contains a raw string URI "${item}" with a "#" fragment. Wrap it in {"@id": "${item}"}.`
+        );
+      }
+      continue;
+    }
     if (typeof item !== 'object' || item === null || Array.isArray(item)) continue;
     const itemObj = item as JsonLdNode;
     const targetId = typeof itemObj['@id'] === 'string' ? itemObj['@id'].trim() : undefined;
@@ -476,16 +517,17 @@ function inspectRelationField(relProp: string, value: JsonLdValue | undefined, r
 
       const isCanonicalTarget = targetId.startsWith('https://hackenberg.tech/') || targetId.startsWith('https://www.wikidata.org/');
       const isPresentationSlide = parentNode['@type'] === 'PresentationDigitalDocument' && relProp === 'hasPart';
+      const isEmbeddedMedia = relProp === 'encoding' || relProp === 'audio';
       const isImage = itemObj['@type'] === 'ImageObject';
 
-      if (isCanonicalTarget && !isPresentationSlide && !isImage) {
-        const extraKeys = Object.keys(itemObj).filter((k) => k !== '@id' && k !== '@type');
-        if (extraKeys.length > 0) {
+      if (isCanonicalTarget && !isPresentationSlide && !isEmbeddedMedia && !isImage) {
+        const nonSummaryKeys = Object.keys(itemObj).filter((k) => !SUMMARY_PROPS.has(k));
+        if (nonSummaryKeys.length > 0) {
           addViolation(
             2,
             'Gate 2b: Impure Relation Pointer',
             relPath,
-            `Relation property "${relProp}" references canonical entity "${targetId}" but inlines properties: [${extraKeys.join(', ')}]. Expected pure @id pointer ({ "@id": "..." }).`
+            `Relation property "${relProp}" references canonical entity "${targetId}" but inlines non-summary properties: [${nonSummaryKeys.join(', ')}]. Only summary properties (@id, @type, name, url, sameAs) are permitted on relation pointers.`
           );
         }
       }
@@ -581,23 +623,6 @@ function collectGate6Candidates(node: JsonLdNode, relPath: string) {
 }
 
 // -------------------------------------------------------------
-// Gate 2a Evaluation: Cross-Page Duplicate Properties
-// -------------------------------------------------------------
-for (const [entityId, propMap] of propertyDefinitions.entries()) {
-  for (const [propName, pagesSet] of propMap.entries()) {
-    if (pagesSet.size > 1) {
-      const pagesList = Array.from(pagesSet);
-      addViolation(
-        2,
-        'Gate 2a: Duplicate Property Definition',
-        pagesList[0],
-        `Entity "${entityId}" has property "${propName}" duplicated across ${pagesSet.size} pages: [${pagesList.slice(0, 4).join(', ')}${pagesList.length > 4 ? '...' : ''}].`
-      );
-    }
-  }
-}
-
-// -------------------------------------------------------------
 // Gate 4 Evaluation: 100% Referential Integrity (Zero Dangling @id Pointers)
 // -------------------------------------------------------------
 for (const ref of referencedIds) {
@@ -622,14 +647,63 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
   for (const n of pageData.nodes) {
     if (typeof n['@id'] === 'string') {
       const existing = nodesById.get(n['@id']);
-      const nonMetaCount = Object.keys(n).filter((k) => k !== '@id' && k !== '@type' && k !== '@context').length;
-      if (!existing || nonMetaCount > 0) {
+      const nonSummaryCount = Object.keys(n).filter((k) => !SUMMARY_PROPS.has(k)).length;
+      const existingNonSummaryCount = existing
+        ? Object.keys(existing).filter((k) => !SUMMARY_PROPS.has(k)).length
+        : 0;
+      if (!existing || nonSummaryCount >= existingNonSummaryCount) {
         nodesById.set(n['@id'], n);
       }
     }
     const t = n['@type'];
     if (Array.isArray(t)) t.forEach((item) => nodeTypes.add(item));
     else if (typeof t === 'string') nodeTypes.add(t);
+  }
+
+  // Verify BreadcrumbList completeness (@id and name) and Rich-Result actor completeness (author, creator, publisher, provider, instructor, copyrightHolder)
+  for (const n of pageData.nodes) {
+    const t = n['@type'];
+    const tList = Array.isArray(t) ? t : t ? [t] : [];
+    if (tList.includes('BreadcrumbList')) {
+      const bId = typeof n['@id'] === 'string' ? n['@id'].trim() : '';
+      const bName = typeof n['name'] === 'string' ? n['name'].trim() : '';
+      if (!bId || !bName) {
+        addViolation(
+          5,
+          'Gate 5: Incomplete BreadcrumbList',
+          normPath,
+          'BreadcrumbList must declare non-empty "@id" and "name" properties.'
+        );
+      }
+    }
+
+    for (const actorProp of RICH_RESULT_ACTOR_PROPS) {
+      if (!(actorProp in n) || n[actorProp] === undefined || n[actorProp] === null) continue;
+      const actors = Array.isArray(n[actorProp]) ? n[actorProp] : [n[actorProp]];
+      for (const actor of actors) {
+        if (typeof actor !== 'object' || actor === null || Array.isArray(actor)) continue;
+        const actorObj = actor as JsonLdNode;
+        const hasInlineTypeAndName = Boolean(
+          actorObj['@type'] && typeof actorObj['name'] === 'string' && actorObj['name'].trim() !== ''
+        );
+        const actorId = typeof actorObj['@id'] === 'string' ? actorObj['@id'].trim() : '';
+        const samePageTarget = actorId ? nodesById.get(actorId) : undefined;
+        const hasSamePageTypeAndName = Boolean(
+          samePageTarget &&
+            samePageTarget['@type'] &&
+            typeof samePageTarget['name'] === 'string' &&
+            samePageTarget['name'].trim() !== ''
+        );
+        if (!hasInlineTypeAndName && !hasSamePageTypeAndName) {
+          addViolation(
+            2,
+            'Gate 2b: Incomplete Rich-Result Actor Entity',
+            normPath,
+            `Property "${actorProp}" on node "${n['@id'] || n['name'] || 'anonymous'}" must either inline "@type" and "name" or resolve to a same-page @graph node with "@type" and "name".`
+          );
+        }
+      }
+    }
   }
 
   // 1. Homepage (index.html)
@@ -1351,7 +1425,7 @@ async function run() {
   console.log('======================================================');
   console.log(`Audited HTML pages: ${auditedFiles.length}`);
   console.log(`Defined entity @ids: ${definedEntityIds.size}`);
-  console.log(`Global property definitions tracked: ${propertyDefinitions.size}`);
+  console.log(`Global property definitions tracked: ${entityPropertyValues.size}`);
   console.log(`Internal relation pointers checked: ${referencedIds.length}`);
   console.log(`Wikidata entity references verified: ${wikidataCandidates.length}`);
   console.log(`O*NET-SOC occupation categories verified: ${onetCandidates.length}`);
