@@ -265,7 +265,7 @@ const currentDeckId = presentationId || talkId || "presentation";
                     <li class="text-[11px] text-slate-400 light:text-slate-600 leading-snug flex items-baseline gap-1.5">
                       <span class="text-domain-publications font-mono font-bold shrink-0">•</span>
                       <span class="min-w-0">
-                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.authors ? ref.authors.map(a => a.name).join(', ') : ref.author}</span>
+                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.authors ? ref.authors.map(a => (typeof a === 'string' ? a : a.name)).join(', ') : ''}</span>
                         {ref.year && <span> ({ref.year})</span>}:{" "}
                         {ref.url ? (
                           <a

@@ -1,11 +1,7 @@
 ---
-title: "Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und naive
-  RAG scheitern – Problem, Architektur und empirische Evaluation von Mem0"
+title: "Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und naive RAG scheitern – Problem, Architektur und empirische Evaluation von Mem0"
 pubDate: 2026-09-04
-description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei
-  LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das
-  Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur
-  stützen."
+description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur stützen."
 tags:
   - artificial-intelligence
   - agentic-ai
@@ -17,37 +13,50 @@ tags:
   - benchmarks
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Langzeitgedächtnis für autonome KI-Agenten: Warum
-    Full-Context und naive RAG scheitern – Problem, Architektur und empirische
-    Evaluation von Mem0"
-  description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei
-    LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0
-    das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur
-    stützen."
+  title: "Titelgrafik: Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und naive RAG scheitern – Problem, Architektur und empirische Evaluation von Mem0"
+  description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur stützen."
 references:
   - type: article
-    author: Chhikara, P., Khurana, K., & Goyal, A.
     title: "Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory"
     url: https://arxiv.org/abs/2504.19413
     year: 2025
     journal: arXiv preprint arXiv:2504
     id: chhikara-2025-mem0
+    authors:
+      - name: Prateek Chhikara
+      - name: Dev Khant
+      - name: Saket Aryan
+      - name: Taranjeet Singh
+      - name: Deshraj Yadav
   - type: article
-    author: Liu, N. F., Lin, K., Hewitt, J., Paranjape, A., Bevilacqua, M., Petroni,
-      F., & Liang, P.
     title: "Lost in the Middle: How Language Models Use Long Contexts"
     url: https://arxiv.org/abs/2307.03172
     year: 2024
     doi: 10.1162/tacl_a_00638
     journal: Transactions of the Association for Computational Linguistics (TACL)
     id: liu-2024-lost-in-middle
+    authors:
+      - name: Nelson F. Liu
+      - name: Kevin Lin
+      - name: John Hewitt
+      - name: Ashwin Paranjape
+      - name: Michele Bevilacqua
+      - name: Fabio Petroni
+      - name: Percy Liang
   - type: article
-    author: Packer, C., Fang, V., Patil, S. G., Lin, K., Wooders, S., & Gonzalez, J. E.
     title: "MemGPT: Towards LLMs as Operating Systems"
     url: https://arxiv.org/abs/2310.08560
     year: 2023
     journal: arXiv preprint arXiv:2310
     id: packer-2023-memgpt
+    authors:
+      - name: Charles Packer
+      - name: Sarah Wooders
+      - name: Kevin Lin
+      - name: Vivian Fang
+      - name: Shishir G. Patil
+      - name: Ion Stoica
+      - name: Joseph E. Gonzalez
 ---
 
 

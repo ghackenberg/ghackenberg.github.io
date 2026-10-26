@@ -1,9 +1,7 @@
 ---
 title: "Mastra TypeScript Agent Framework: Architektur im Detail"
 pubDate: 2026-09-19
-description: "Tiefgehende Architekturanalyse des Mastra-Frameworks: Typsichere
-  Workflows, RAG-Pipelines, Tool-Calling und deterministische KI-Agenten in
-  TypeScript."
+description: "Tiefgehende Architekturanalyse des Mastra-Frameworks: Typsichere Workflows, RAG-Pipelines, Tool-Calling und deterministische KI-Agenten in TypeScript."
 tags:
   - mastra
   - typescript
@@ -17,36 +15,44 @@ tags:
 icon:
   src: ./hero.jpg
   title: Mastra TypeScript Framework Architektur-Schaltbild
-  description: "Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die
-    Architektur aus autonomen Agenten, deterministischen Workflows und
-    MCP-Gateway"
+  description: "Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die Architektur aus autonomen Agenten, deterministischen Workflows und MCP-Gateway"
 references:
   - type: online
-    author: Anthropic
     title: Model Context Protocol (MCP) Specification
     url: https://modelcontextprotocol.io/
     year: 2024
     id: anthropic-2024-mcp
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: article
-    author: Lu, Y., Chen, Y., Wu, S., & Arık, S. Ö.
     title: "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents"
     url: https://arxiv.org/abs/2609.09153
     year: 2026
     journal: Google Cloud AI Research
     id: lu-2026-procedural-graphs
+    authors:
+      - name: Yuxing Lu
+      - name: Yicheng Chen
+      - name: Shanchan Wu
+      - name: Sercan Ö. Arık
   - type: online
-    author: Mastra Core Team
     title: "Mastra: TypeScript Framework for AI Agents and Workflows"
     url: https://mastra.ai/
     year: 2024
     id: team-2024-mastra
+    authors:
+      - name: Mastra Core Team
+        type: Organization
   - type: online
-    author: Microsoft
     title: TypeScript Language Specification
     url: https://www.typescriptlang.org/
     year: 2024
     siteName: Microsoft Corporation
     id: microsoft-2024-typescript-language
+    authors:
+      - name: Microsoft
+        type: Organization
 ---
 
 Als TypeScript-natives Agent-Orchestration-Framework vereint Mastra deklarative, typsichere Workflows, flexible LLM-Integrationen und deterministische Zustandsübergänge in einer konsistenten Software-Architektur. Anstelle fragiler Skripte ermöglicht es Enterprise-Entwicklern die Konstruktion verifizierbarer Multi-Agenten-Systeme mit strikter Schema-Validierung via Zod, integrierter RAG-Infrastruktur und standardisierten MCP-Schnittstellen für produktionsreife Web- und Backend-Anwendungen.

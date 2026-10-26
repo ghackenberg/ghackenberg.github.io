@@ -4,23 +4,9 @@ export const authorObjectSchema = z.object({
   name: z.string().min(1),
   type: z.enum(['Person', 'Organization']).default('Person'),
   id: z.url().optional(),
-  orcid: z.string().regex(/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/).optional(),
-  wikidata: z.string().regex(/^(https:\/\/www\.wikidata\.org\/wiki\/)?Q\d+$/).optional(),
-  url: z.url().optional(),
 });
 
 export type RawAuthorObject = z.input<typeof authorObjectSchema>;
-
-export const publicationAuthorSchema = z.object({
-  name: z.string().min(1),
-  type: z.enum(['Person', 'Organization']).default('Person'),
-  id: z.url(),
-  orcid: z.string().regex(/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/).optional(),
-  wikidata: z.string().regex(/^(https:\/\/www\.wikidata\.org\/wiki\/)?Q\d+$/).optional(),
-  url: z.url(),
-});
-
-export type RawPublicationAuthor = z.input<typeof publicationAuthorSchema>;
 
 export const authorEntrySchema = z
   .union([
@@ -29,19 +15,10 @@ export const authorEntrySchema = z
   ])
   .transform((entry) => {
     const id = 'id' in entry ? entry.id : undefined;
-    const orcid = 'orcid' in entry ? entry.orcid : undefined;
-    const wikidata = 'wikidata' in entry ? entry.wikidata : undefined;
-    const url = 'url' in entry ? entry.url : undefined;
 
     const isGeorg =
       id === 'https://hackenberg.tech/#person' ||
-      orcid === '0000-0002-0096-2484' ||
       /^Georg Hackenberg$/i.test(entry.name.trim());
-
-    let normalizedWikidata = wikidata;
-    if (normalizedWikidata && !normalizedWikidata.startsWith('http')) {
-      normalizedWikidata = `https://www.wikidata.org/wiki/${normalizedWikidata}`;
-    }
 
     if (isGeorg) {
       return {
@@ -49,52 +26,15 @@ export const authorEntrySchema = z
         name: 'Georg Hackenberg',
         type: 'Person' as const,
         id: 'https://hackenberg.tech/#person',
-        orcid: orcid || '0000-0002-0096-2484',
-        wikidata: normalizedWikidata,
-        url: url || 'https://hackenberg.tech/',
       };
     }
 
     return {
       ...entry,
       name: entry.name.trim(),
-      wikidata: normalizedWikidata,
       id,
-      url,
     };
   });
-
-export const publicationAuthorEntrySchema = publicationAuthorSchema.transform((entry) => {
-  const isGeorg =
-    entry.id === 'https://hackenberg.tech/#person' ||
-    entry.orcid === '0000-0002-0096-2484' ||
-    /^Georg Hackenberg$/i.test(entry.name.trim());
-
-  let normalizedWikidata = entry.wikidata;
-  if (normalizedWikidata && !normalizedWikidata.startsWith('http')) {
-    normalizedWikidata = `https://www.wikidata.org/wiki/${normalizedWikidata}`;
-  }
-
-  if (isGeorg) {
-    return {
-      ...entry,
-      name: 'Georg Hackenberg',
-      type: 'Person' as const,
-      id: 'https://hackenberg.tech/#person',
-      orcid: entry.orcid || '0000-0002-0096-2484',
-      wikidata: normalizedWikidata,
-      url: entry.url || 'https://hackenberg.tech/',
-    };
-  }
-
-  return {
-    ...entry,
-    name: entry.name.trim(),
-    wikidata: normalizedWikidata,
-    id: entry.id,
-    url: entry.url,
-  };
-});
 
 export type AuthorEntry = z.infer<typeof authorEntrySchema>;
 

@@ -1,7 +1,7 @@
 ---
-title: "Zeilenexakte Text-Geometrie & 2D-SDF-Gitter mit TreeWalker im Hero-Layout"
+title: Zeilenexakte Text-Geometrie & 2D-SDF-Gitter mit TreeWalker im Hero-Layout
 pubDate: 2026-10-14
-description: "Wie wir mit TreeWalker, Range.getClientRects() und 2D Signed Distance Fields (Quilez smin) ein kollisionsfreies Hero-Layout mit 60 FPS Canvas-Batching bauten."
+description: Wie wir mit TreeWalker, Range.getClientRects() und 2D Signed Distance Fields (Quilez smin) ein kollisionsfreies Hero-Layout mit 60 FPS Canvas-Batching bauten.
 lang: de
 tags:
   - web-development
@@ -16,75 +16,88 @@ tags:
   - software-architecture
 icon:
   src: ./hero.jpg
-  title: "Dr. Georg Hackenberg entwickelt die TreeWalker- und 2D-SDF-Hero-Engine im Almtal Home Office"
-  description: "Dr. Georg Hackenberg analysiert am Ultrawide-Monitor im Almtal Home Office die zeilenexakte TreeWalker-Textkontur und das 2D-Signed-Distance-Field-Punktraster"
+  title: Dr. Georg Hackenberg entwickelt die TreeWalker- und 2D-SDF-Hero-Engine im Almtal Home Office
+  description: Dr. Georg Hackenberg analysiert am Ultrawide-Monitor im Almtal Home Office die zeilenexakte TreeWalker-Textkontur und das 2D-Signed-Distance-Field-Punktraster
 references:
   - id: whatwg-2024-dom-treewalker
     type: online
-    author: "WHATWG"
-    title: "DOM Standard — Interface TreeWalker and NodeIterator"
-    url: "https://dom.spec.whatwg.org/#interface-treewalker"
+    title: DOM Standard — Interface TreeWalker and NodeIterator
+    url: https://dom.spec.whatwg.org/#interface-treewalker
     year: 2024
-    siteName: "WHATWG Living Standard"
+    siteName: WHATWG Living Standard
+    authors:
+      - name: WHATWG
   - id: w3c-2016-cssom-view
     type: online
-    author: "W3C CSS Working Group"
-    title: "CSSOM View Module — Extensions to the Range Interface (getClientRects)"
-    url: "https://www.w3.org/TR/cssom-view-1/#extensions-to-the-range-interface"
+    title: CSSOM View Module — Extensions to the Range Interface (getClientRects)
+    url: https://www.w3.org/TR/cssom-view-1/#extensions-to-the-range-interface
     year: 2016
-    siteName: "W3C Working Draft"
+    siteName: W3C Working Draft
+    authors:
+      - name: W3C CSS Working Group
+        type: Organization
   - id: w3c-2014-css-font-loading
     type: online
-    author: "W3C CSS Working Group"
-    title: "CSS Font Loading Module Level 3 — The ready Attribute"
-    url: "https://www.w3.org/TR/css-font-loading-3/#font-face-set-ready"
+    title: CSS Font Loading Module Level 3 — The ready Attribute
+    url: https://www.w3.org/TR/css-font-loading-3/#font-face-set-ready
     year: 2014
-    siteName: "W3C Working Draft"
+    siteName: W3C Working Draft
+    authors:
+      - name: W3C CSS Working Group
+        type: Organization
   - id: knuth-1981-breaking-paragraphs
     type: article
-    author: "Knuth, Donald E. and Plass, Michael F."
-    title: "Breaking Paragraphs into Lines"
+    title: Breaking Paragraphs into Lines
     journal: "Software: Practice and Experience"
     year: 1981
     volume: "11"
     number: "11"
-    pages: "1119--1184"
-    url: "https://doi.org/10.1002/spe.4380111102"
-    doi: "10.1002/spe.4380111102"
+    pages: 1119--1184
+    url: https://doi.org/10.1002/spe.4380111102
+    doi: 10.1002/spe.4380111102
+    authors:
+      - name: Donald E. Knuth
+      - name: Michael F. Plass
   - id: quilez-2013-smin
     type: online
-    author: "Quilez, Inigo"
-    title: "Smooth Minimum (smin) for Distance Fields"
-    url: "https://iquilezles.org/articles/smin/"
+    title: Smooth Minimum (smin) for Distance Fields
+    url: https://iquilezles.org/articles/smin/
     year: 2013
-    siteName: "Inigo Quilez Articles"
+    siteName: Inigo Quilez Articles
+    authors:
+      - name: Inigo Quilez
   - id: quilez-2018-distfunctions2d
     type: online
-    author: "Quilez, Inigo"
-    title: "2D Distance Functions (Signed Distance Fields)"
-    url: "https://iquilezles.org/articles/distfunctions2d/"
+    title: 2D Distance Functions (Signed Distance Fields)
+    url: https://iquilezles.org/articles/distfunctions2d/
     year: 2018
-    siteName: "Inigo Quilez Articles"
+    siteName: Inigo Quilez Articles
+    authors:
+      - name: Inigo Quilez
   - id: green-2007-alpha-tested-magnification
     type: inproceedings
-    author: "Green, Chris"
-    title: "Improved Alpha-Tested Magnification for Vector Textures and Special Effects"
-    booktitle: "ACM SIGGRAPH 2007 Courses"
+    title: Improved Alpha-Tested Magnification for Vector Textures and Special Effects
+    booktitle: ACM SIGGRAPH 2007 Courses
     year: 2007
-    pages: "9--18"
-    url: "https://doi.org/10.1145/1281500.1281665"
-    doi: "10.1145/1281500.1281665"
+    pages: 9--18
+    url: https://doi.org/10.1145/1281500.1281665
+    doi: 10.1145/1281500.1281665
+    authors:
+      - name: Chris Green
   - id: badros-2001-cassowary
     type: article
-    author: "Badros, Gregory J. and Borning, Alan and Stuckey, Peter J."
-    title: "The Cassowary Linear Arithmetic Constraint Solving Algorithm"
-    journal: "ACM Transactions on Computer-Human Interaction"
+    title: The Cassowary Linear Arithmetic Constraint Solving Algorithm
+    journal: ACM Transactions on Computer-Human Interaction
     year: 2001
     volume: "8"
     number: "4"
-    pages: "267--306"
-    url: "https://doi.org/10.1145/504704.504705"
-    doi: "10.1145/504704.504705"
+    pages: 267--306
+    url: https://doi.org/10.1145/504704.504705
+    doi: 10.1145/504704.504705
+    authors:
+      - name: Greg J. Badros
+      - name: Alan Borning
+      - name: Peter J. Stuckey
 ---
 
 Die Kombination aus zeilenexakter DOM-Textvermessung mittels `document.createTreeWalker` und `Range.getClientRects()` sowie kontinuierlichen zweidimensionalen Signed Distance Fields (2D SDF) löst ein klassisches Dilemma moderner Web-Oberflächen: Sie ersetzt starre, rechteckige CSS-Block-Bounding-Boxes durch die reale, treppenförmige Zeilenkontur des umbrochenen Textes. Auf dieser Basis platziert ein deterministischer 2D-Optimierer im Hero-Bereich unserer Startseite sowohl das interaktive WebGL-Porträt als auch ein physikbasiertes Hintergrund-Punktraster millimetergenau in die frei gewordenen Freiräume – ohne Überlappungen, ohne Layout-Shift (CLS = 0) und mit maximal zehn gebündelten Canvas-2D-Draw-Calls pro Frame.

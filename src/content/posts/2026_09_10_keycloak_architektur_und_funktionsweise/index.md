@@ -2,9 +2,7 @@
 title: Keycloak Architektur & Funktionsweise im AI Tech Stack
 pubDate: 2026-09-10
 lang: de
-description: "Softwaretechnische Analyse von Keycloak: Cloud-native
-  Quarkus-Laufzeit, Token Exchange (RFC 8693) für KI-Agenten, UMA 2.0 und
-  Zero-Trust-Governance."
+description: "Softwaretechnische Analyse von Keycloak: Cloud-native Quarkus-Laufzeit, Token Exchange (RFC 8693) für KI-Agenten, UMA 2.0 und Zero-Trust-Governance."
 tags:
   - keycloak
   - agentic-ai
@@ -20,30 +18,39 @@ tags:
 icon:
   src: ./hero.jpg
   title: Keycloak
-  description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im
-    souveränen AI Tech Stack"
+  description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack"
 references:
   - type: misc
-    author: Hardt, D.
     title: The OAuth 2.0 Authorization Framework
     url: https://www.rfc-editor.org/rfc/rfc6749
     year: 2012
     howpublished: IETF RFC 6749
     id: hardt-2012-oauth2
+    authors:
+      - name: Dick Hardt
   - type: misc
-    author: Jones, M., Nadalin, A., Campbell, B., & Mortimore, C.
     title: OAuth 2.0 Token Exchange
     url: https://www.rfc-editor.org/rfc/rfc8693
     year: 2020
     howpublished: IETF RFC 8693
     id: jones-2020-oauth2
+    authors:
+      - name: Michael Jones
+      - name: Anthony Nadalin
+      - name: Brian Campbell
+      - name: Campbell Mortimore
   - type: online
-    author: Sakimura, N., Bradley, J., Jones, M., de Medeiros, B., & Mortimore, C.
     title: OpenID Connect Core 1.0 incorporating errata set 1
     url: https://openid.net/specs/openid-connect-core-1_0.html
     year: 2014
     siteName: OpenID Foundation
     id: sakimura-2014-oidc
+    authors:
+      - name: Nat Sakimura
+      - name: John Bradley
+      - name: Michael Jones
+      - name: Breno de Medeiros
+      - name: Campbell Mortimore
 ---
 
 

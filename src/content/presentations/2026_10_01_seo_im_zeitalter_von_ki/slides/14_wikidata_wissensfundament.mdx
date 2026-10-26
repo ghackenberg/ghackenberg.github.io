@@ -1,29 +1,28 @@
 ---
-title: "Wikidata als globales Wissensfundament"
+title: Wikidata als globales Wissensfundament
 subtitle: "Die Rolle freier Wissensgraphen: Von Community-Daten zum {cue:hl-sub-wikidata-1001}Ground-Truth-Anker für Sprachmodelle{/cue}"
 number: "14"
-slideLayout: "split"
-voiceover: >
-  Neben kommerziellen Systemen spielt ein offenes Projekt die zentrale Schlüsselrolle im globalen KI-Ökosystem.
-  {cue:sub} Wikidata fungiert heute als der {cue:hl-sub-wikidata-1001}maßgebliche Ground-Truth-Anker für moderne Sprachmodelle{/cue}.
-  {cue:col-wiki-arch} Wie Denny Vrandečić und Markus Krötzsch in den Communications of the ACM darlegen, basiert das System auf {cue:hl-callout-wiki-paper}maschinenlesbaren semantischen Tripeln{/cue}. Eindeutige {cue:hl-wiki-qids}Entitäten-Identifikatoren wie Q-IDs{/cue} trennen Begriffe scharf, {cue:hl-wiki-multilingual}sprachunabhängige Fakten{/cue} verbinden die Welt, und die offene Schnittstelle erlaubt {cue:hl-wiki-sparql}komplexe semantische SPARQL-Abfragen{/cue}.
-  {cue:col-wiki-ki} Im KI-Ökosystem dient Wikidata als {cue:hl-callout-wiki-grounding}zentraler Ground-Truth-Hub für LLMs{/cue}. Es liefert das Fundament für {cue:hl-wiki-pretraining}Wissens-Grounding beim Pre-Training{/cue}, löst {cue:hl-wiki-disambig}Entity Disambiguation bei B2B-Nischenbegriffen{/cue} auf und verankert Ihr Unternehmen über {cue:hl-wiki-b2b}sameAs-Verknüpfungen dauerhaft im Modellwissen{/cue}.
+slideLayout: split
+voiceover: |
+  Neben kommerziellen Systemen spielt ein offenes Projekt die zentrale Schlüsselrolle im globalen KI-Ökosystem. {cue:sub} Wikidata fungiert heute als der {cue:hl-sub-wikidata-1001}maßgebliche Ground-Truth-Anker für moderne Sprachmodelle{/cue}. {cue:col-wiki-arch} Wie Denny Vrandečić und Markus Krötzsch in den Communications of the ACM darlegen, basiert das System auf {cue:hl-callout-wiki-paper}maschinenlesbaren semantischen Tripeln{/cue}. Eindeutige {cue:hl-wiki-qids}Entitäten-Identifikatoren wie Q-IDs{/cue} trennen Begriffe scharf, {cue:hl-wiki-multilingual}sprachunabhängige Fakten{/cue} verbinden die Welt, und die offene Schnittstelle erlaubt {cue:hl-wiki-sparql}komplexe semantische SPARQL-Abfragen{/cue}. {cue:col-wiki-ki} Im KI-Ökosystem dient Wikidata als {cue:hl-callout-wiki-grounding}zentraler Ground-Truth-Hub für LLMs{/cue}. Es liefert das Fundament für {cue:hl-wiki-pretraining}Wissens-Grounding beim Pre-Training{/cue}, löst {cue:hl-wiki-disambig}Entity Disambiguation bei B2B-Nischenbegriffen{/cue} auf und verankert Ihr Unternehmen über {cue:hl-wiki-b2b}sameAs-Verknüpfungen dauerhaft im Modellwissen{/cue}.
 notes: |
   - Zeit: 16:00 - 18:30 Min.
   - Vrandečić & Krötzsch (2014) in Communications of the ACM zitieren.
   - Kernaussage für Entscheider: Wikidata ist kein "Wikipedia-Hobby", sondern das strukturelle Rückgrat, aus dem Google, OpenAI und Anthropic ihre Fakten-Konsistenz speisen.
 references:
   - type: article
-    id: "vrandecic-2014-wikidata"
-    author: "Vrandečić, Denny and Krötzsch, Markus"
+    id: vrandecic-2014-wikidata
     title: "Wikidata: A Free Collaborative Knowledge Base"
-    journal: "Communications of the ACM"
+    journal: Communications of the ACM
     year: 2014
     volume: "57"
     number: "10"
-    pages: "78–85"
-    doi: "10.1145/2629489"
-    url: "https://doi.org/10.1145/2629489"
+    pages: 78–85
+    doi: 10.1145/2629489
+    url: https://doi.org/10.1145/2629489
+    authors:
+      - name: Denny Vrandečić
+      - name: Markus Krötzsch
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

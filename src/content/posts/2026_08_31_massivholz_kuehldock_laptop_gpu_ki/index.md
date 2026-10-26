@@ -2,9 +2,7 @@
 title: "Massivholz-Kühldock: Minimalistischer Laptopständer"
 pubDate: 2026-08-31
 lang: de
-description: "Leichtgewichtiger Holz-Laptopständer mit Kamineffekt: Passive
-  Kühlung für anspruchsvolle GPU-Workstations im eleganten, minimalistischen
-  Naturdesign."
+description: "Leichtgewichtiger Holz-Laptopständer mit Kamineffekt: Passive Kühlung für anspruchsvolle GPU-Workstations im eleganten, minimalistischen Naturdesign."
 tags:
   - hardware
   - thermal-engineering
@@ -19,29 +17,35 @@ icon:
   description: Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht
 references:
   - type: book
-    author: Incropera, F. P., DeWitt, D. P., Bergman, T. L., & Lavine, A. S.
     title: Fundamentals of Heat and Mass Transfer
     publisher: John Wiley & Sons
     edition: 6th ed.
     year: 2007
     url: https://books.google.com/books?vid=ISBN1118989171
     id: incropera-2007-fundamentals-heat
+    authors:
+      - name: Frank P. Incropera
+      - name: David P. DeWitt
+      - name: Theodore L. Bergman
+      - name: Adrienne S. Lavine
   - type: online
-    author: ISO
-    title: "ISO 11201:2010: Acoustics — Noise emitted by machinery and equipment —
-      Determination of emission sound pressure levels at a work station and at
-      other specified positions"
+    title: "ISO 11201:2010: Acoustics — Noise emitted by machinery and equipment — Determination of emission sound pressure levels at a work station and at other specified positions"
     url: https://www.iso.org/standard/44820.html
     year: 2010
     siteName: International Organization for Standardization
     id: iso-11201
+    authors:
+      - name: ISO
+        type: Organization
   - type: online
-    author: NVIDIA Corporation
     title: NVIDIA Management Library (NVML) Reference Manual
     url: https://docs.nvidia.com/deploy/nvml-api/
     year: 2024
     siteName: NVIDIA Developer Documentation
     id: corporation-2024-nvidia-management
+    authors:
+      - name: NVIDIA Corporation
+        type: Organization
 ---
 
 

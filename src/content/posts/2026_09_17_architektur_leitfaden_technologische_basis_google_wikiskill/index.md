@@ -1,10 +1,7 @@
 ---
 title: "Architektur-Leitfaden: Die richtige technologische Basis für Google WikiSkill"
 pubDate: 2026-09-17
-description: Wie lässt sich das WikiSkill-Paradigma (Inference → Tracing → Wiki
-  Maintenance → Skill Synthesis → Gating) in Software gießen? Ein fundierter
-  Technologie- und Architektur-Vergleich zwischen Mastra, Pi Agent, PydanticAI,
-  Hermes Agent und LangGraph für Web-, CLI- und Enterprise-Ökosysteme.
+description: Wie lässt sich das WikiSkill-Paradigma (Inference → Tracing → Wiki Maintenance → Skill Synthesis → Gating) in Software gießen? Ein fundierter Technologie- und Architektur-Vergleich zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph für Web-, CLI- und Enterprise-Ökosysteme.
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -22,31 +19,37 @@ tags:
 icon:
   src: ./hero.jpg
   title: Architektur-Leitfaden für Google WikiSkill
-  description: "Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg
-    analysiert am Besprechungstisch im Campus Office Wels die technologische
-    Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph"
+  description: "Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph"
 references:
   - type: online
-    author: Colvin, S., et al.
     title: "PydanticAI: Agent Framework powered by Pydantic"
     url: https://ai.pydantic.dev/
     year: 2024
     siteName: Pydantic Inc
     id: colvin-2024-pydantic-ai
+    authors:
+      - name: Samuel Colvin
   - type: online
-    author: Mastra Core Team
     title: "Mastra: The TypeScript AI Agent Framework"
     url: https://mastra.ai/
     year: 2024
     id: team-2024-mastra
+    authors:
+      - name: Mastra Core Team
+        type: Organization
   - type: article
-    author: Tang, Y., et al.
-    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for
-      Skill Evolution"
+    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution"
     url: https://arxiv.org/abs/2608.27454
     year: 2026
     journal: Google Research & Virginia Tech
     id: tang-2026-wikiskill
+    authors:
+      - name: Liyan Tang
+      - name: Cyrus Rashtchian
+      - name: Chun-Sung Ferng
+      - name: Andrew Tomkins
+      - name: Da-Cheng Juan
+      - name: Tu Vu
 ---
 
 

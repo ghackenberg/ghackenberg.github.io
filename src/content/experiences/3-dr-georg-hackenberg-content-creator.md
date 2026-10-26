@@ -11,7 +11,6 @@ order: 2
 organization:
   name: "Dr. Georg Hackenberg"
   id: "https://hackenberg.tech/#organization"
-  url: "https://hackenberg.tech/"
 occupationalCategory: "27-3042.00"
 ---
 

@@ -1,9 +1,7 @@
 ---
 title: "Bildgenerierungsmaschine: Reusable Assets & Room DNA"
 pubDate: 2026-09-21
-description: Wie wir mit Relational Libraries, Character Slots und Room DNA
-  hochgradig reproduzierbare und visuell konsistente Disney/Pixar-Illustrationen
-  für Fachartikel methodisch lenken.
+description: Wie wir mit Relational Libraries, Character Slots und Room DNA hochgradig reproduzierbare und visuell konsistente Disney/Pixar-Illustrationen für Fachartikel methodisch lenken.
 tags:
   - generative-ai
   - diffusion-models
@@ -16,35 +14,44 @@ tags:
 icon:
   src: ./hero.jpg
   title: Visual Systems Engineering
-  description: "Visual Systems Engineering: Reproduzierbare Bildgenerierung im
-    Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern"
+  description: "Visual Systems Engineering: Reproduzierbare Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern"
 references:
   - type: inproceedings
-    author: Rombach, R., Blattmann, A., Lorenz, D., Esser, P., & Ommer, B.
     title: High-Resolution Image Synthesis with Latent Diffusion Models
     url: https://arxiv.org/abs/2112.10752
     year: 2022
     doi: 10.1109/CVPR52688.2022.01042
-    booktitle: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
-      Recognition (CVPR '22)
+    booktitle: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR '22)
     id: rombach-2022-highresolution-image
+    authors:
+      - name: Robin Rombach
+      - name: Andreas Blattmann
+      - name: Dominik Lorenz
+      - name: Patrick Esser
+      - name: Bjorn Ommer
   - type: article
-    author: Ye, H., Zhang, J., Liu, H., Han, X., & Yang, W.
-    title: "IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image
-      Diffusion Models"
+    title: "IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image Diffusion Models"
     url: https://arxiv.org/abs/2308.06721
     year: 2023
     journal: arXiv preprint arXiv:2308
     id: ye-2023-ipadapter-text
+    authors:
+      - name: Hu Ye
+      - name: Jun Zhang
+      - name: Sibo Liu
+      - name: Xiao Han
+      - name: Wei Yang
   - type: inproceedings
-    author: Zhang, L., Rao, A., & Agrawala, M.
     title: Adding Conditional Control to Text-to-Image Diffusion Models
     url: https://arxiv.org/abs/2302.05543
     year: 2023
     doi: 10.1109/ICCV51070.2023.00355
-    booktitle: Proceedings of the IEEE/CVF International Conference on Computer
-      Vision (ICCV '23)
+    booktitle: Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV '23)
     id: zhang-2023-adding-conditional
+    authors:
+      - name: Lvmin Zhang
+      - name: Anyi Rao
+      - name: Maneesh Agrawala
 ---
 
 

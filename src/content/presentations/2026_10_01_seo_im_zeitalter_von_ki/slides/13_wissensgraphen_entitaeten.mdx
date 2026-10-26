@@ -1,24 +1,22 @@
 ---
-title: "Wissensgraphen & Entitäten"
-subtitle: "Warum unstrukturierte Vektoren versagen und {cue:hl-sub-graph-1001}Relationen im Wissensgraphen entscheiden{/cue}"
+title: Wissensgraphen & Entitäten
+subtitle: Warum unstrukturierte Vektoren versagen und {cue:hl-sub-graph-1001}Relationen im Wissensgraphen entscheiden{/cue}
 number: "13"
-slideLayout: "graph"
-voiceover: >
-  Neben unstrukturierten Vektoren spielen Wissensgraphen und eindeutige Entitäten eine entscheidende Rolle.
-  {cue:sub} Sie zeigen, warum unstrukturierte Vektoren versagen und {cue:hl-sub-graph-1001}Relationen im Wissensgraphen entscheiden{/cue}.
-  {cue:col-graph} Entitäten wie Unternehmen, Personen und Produkte werden als {cue:hl-graph-knoten}Knoten und Relationen{/cue} modelliert und über gerichtete Kanten verknüpft.
-  {cue:col-advantages} Deterministische Tripel wie {cue:hl-callout-graph-tripel}Unternehmen produziert Produkt nach Norm{/cue} sind {cue:hl-keine-hallu}eindeutig verankert{/cue}, geschützt durch {cue:hl-eindeutige-uris}persistente Bezeichner{/cue}, und erlauben {cue:hl-multi-hop}Schlussfolgerungen über Beziehungsebenen{/cue} hinweg.
+slideLayout: graph
+voiceover: |
+  Neben unstrukturierten Vektoren spielen Wissensgraphen und eindeutige Entitäten eine entscheidende Rolle. {cue:sub} Sie zeigen, warum unstrukturierte Vektoren versagen und {cue:hl-sub-graph-1001}Relationen im Wissensgraphen entscheiden{/cue}. {cue:col-graph} Entitäten wie Unternehmen, Personen und Produkte werden als {cue:hl-graph-knoten}Knoten und Relationen{/cue} modelliert und über gerichtete Kanten verknüpft. {cue:col-advantages} Deterministische Tripel wie {cue:hl-callout-graph-tripel}Unternehmen produziert Produkt nach Norm{/cue} sind {cue:hl-keine-hallu}eindeutig verankert{/cue}, geschützt durch {cue:hl-eindeutige-uris}persistente Bezeichner{/cue}, und erlauben {cue:hl-multi-hop}Schlussfolgerungen über Beziehungsebenen{/cue} hinweg.
 notes: |
   - Zeit: 15:30 - 18:00 Min.
   - Praxisbezug: Wenn eine KI nach "Lieferant für ISO 9001 zertifizierte Wechselrichter in OÖ" gefragt wird, hilft kein Keyword – das Modell traversiert den Wissensgraphen!
 references:
   - type: online
-    id: "singhal-2012-knowledge-graph"
-    author: "Singhal, Amit"
+    id: singhal-2012-knowledge-graph
     title: "Introducing the Knowledge Graph: things, not strings"
-    siteName: "Google Official Blog"
+    siteName: Google Official Blog
     year: 2012
-    url: "https://www.blog.google/products/search/introducing-knowledge-graph-things-not/"
+    url: https://www.blog.google/products/search/introducing-knowledge-graph-things-not/
+    authors:
+      - name: Amit Singhal
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

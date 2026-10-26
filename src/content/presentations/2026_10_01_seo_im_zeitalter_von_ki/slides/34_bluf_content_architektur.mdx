@@ -1,25 +1,24 @@
 ---
-title: "Das BLUF-Prinzip im Content-Design"
+title: Das BLUF-Prinzip im Content-Design
 subtitle: "Bottom Line Up Front: {cue:hl-sub-bluf-1001}Die umgekehrte Pyramide für perfekte maschinenlesbare Extraktion{/cue}"
 number: "34"
-slideLayout: "story-hero"
-voiceover: >
-  Damit Sprachmodelle Ihre Inhalte zitieren, müssen Texte radikal anders aufgebaut werden als im Werbeprospekt.
-  {cue:sub} Das entscheidende Konzept heißt BLUF: {cue:hl-sub-bluf-1001}Bottom Line Up Front als umgekehrte Informationspyramide{/cue}.
-  {cue:vis-bluf-pyramid} Unsere technische Schnittzeichnung visualisiert die drei Schichten für optimale KI-Extraktion.
-  {cue:card-bluf-structure} RAG-Chunker extrahieren Antworten bevorzugt aus {cue:hl-callout-bluf-window}den ersten fünfundvierzig Wörtern{/cue}: An der Spitze {cue:hl-bluf-answer}liefert der erste Satz die präzise Kernantwort{/cue}, darunter folgen Kennzahlen in {cue:hl-bluf-table}einer strukturierten Markdown-Tabelle{/cue}, und erst zum Schluss liefern {cue:hl-bluf-context}Hintergründe und Methodik das Fundament für LLM-Begründungen{/cue}.
+slideLayout: story-hero
+voiceover: |
+  Damit Sprachmodelle Ihre Inhalte zitieren, müssen Texte radikal anders aufgebaut werden als im Werbeprospekt. {cue:sub} Das entscheidende Konzept heißt BLUF: {cue:hl-sub-bluf-1001}Bottom Line Up Front als umgekehrte Informationspyramide{/cue}. {cue:vis-bluf-pyramid} Unsere technische Schnittzeichnung visualisiert die drei Schichten für optimale KI-Extraktion. {cue:card-bluf-structure} RAG-Chunker extrahieren Antworten bevorzugt aus {cue:hl-callout-bluf-window}den ersten fünfundvierzig Wörtern{/cue}: An der Spitze {cue:hl-bluf-answer}liefert der erste Satz die präzise Kernantwort{/cue}, darunter folgen Kennzahlen in {cue:hl-bluf-table}einer strukturierten Markdown-Tabelle{/cue}, und erst zum Schluss liefern {cue:hl-bluf-context}Hintergründe und Methodik das Fundament für LLM-Begründungen{/cue}.
 notes: |
   - Zeit: 47:00 - 49:30 Min.
   - Das ist die wichtigste Content-Gestaltungsregel für Redakteure und Techniker: Keine langen Vorreden, das Wesentliche sofort an den Anfang.
   - Google Information Gain Patent US 11,720,613 B2 zitieren.
 references:
   - type: misc
-    id: "google-2023-information-gain"
-    author: "Google LLC"
-    title: "Contextual estimation of link information gain"
-    howpublished: "US Patent US 11,720,613 B2"
+    id: google-2023-information-gain
+    title: Contextual estimation of link information gain
+    howpublished: US Patent US 11,720,613 B2
     year: 2023
-    url: "https://patents.google.com/patent/US11720613B2/en"
+    url: https://patents.google.com/patent/US11720613B2/en
+    authors:
+      - name: Google LLC
+        type: Organization
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

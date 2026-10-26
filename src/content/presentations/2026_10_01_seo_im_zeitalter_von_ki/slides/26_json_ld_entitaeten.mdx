@@ -1,25 +1,26 @@
 ---
 title: "JSON-LD: Entitäts-Fundament"
-subtitle: "Disambiguierung von Marke und Urheber über {cue:hl-sub-jsonld-1001}eindeutige URI-Identifier im @graph{/cue}"
+subtitle: Disambiguierung von Marke und Urheber über {cue:hl-sub-jsonld-1001}eindeutige URI-Identifier im @graph{/cue}
 number: "26"
-slideLayout: "code"
-voiceover: >
-  In unserem ersten Code-Deep-Dive betrachten wir das Fundament jedes semantischen Webs: Die saubere Deklaration von Entitäten.
-  {cue:sub} Sie ermöglicht die Disambiguierung von Marke und Urheber über {cue:hl-sub-jsonld-1001}eindeutige URI-Identifier im Graph-Array{/cue}.
-  {cue:code-jsonld-ent} Das JSON-LD-Dokument deklariert zunächst die Organisation und die handelnde Person mit stabilen IDs.
-  {cue:card-entitaeten} Im Zentrum steht die {cue:hl-jsonld-uri}globale Verankerung in verifizierten Registern{/cue}. Über stabile URIs erhält jedes Unternehmen einen {cue:hl-jsonld-graph}eindeutigen Identifier im Semantic Web{/cue}. Mittels sameAs verknüpfen wir die Autorenidentität direkt mit {cue:hl-jsonld-orcid}ORCID, Wikidata und LinkedIn{/cue}, während worksFor {cue:hl-fakten-inst}die institutionelle Zugehörigkeit felsenfest verankert{/cue}.
+slideLayout: code
+voiceover: |
+  In unserem ersten Code-Deep-Dive betrachten wir das Fundament jedes semantischen Webs: Die saubere Deklaration von Entitäten. {cue:sub} Sie ermöglicht die Disambiguierung von Marke und Urheber über {cue:hl-sub-jsonld-1001}eindeutige URI-Identifier im Graph-Array{/cue}. {cue:code-jsonld-ent} Das JSON-LD-Dokument deklariert zunächst die Organisation und die handelnde Person mit stabilen IDs. {cue:card-entitaeten} Im Zentrum steht die {cue:hl-jsonld-uri}globale Verankerung in verifizierten Registern{/cue}. Über stabile URIs erhält jedes Unternehmen einen {cue:hl-jsonld-graph}eindeutigen Identifier im Semantic Web{/cue}. Mittels sameAs verknüpfen wir die Autorenidentität direkt mit {cue:hl-jsonld-orcid}ORCID, Wikidata und LinkedIn{/cue}, während worksFor {cue:hl-fakten-inst}die institutionelle Zugehörigkeit felsenfest verankert{/cue}.
 notes: |
   - Zeit: 35:00 - 36:30 Min.
   - Schritt 1 von 2: Die semantische Basis legen (wer publiziert und wer ist der Urheber?).
   - Erklären: Warum @id und sameAs das Fundament gegen Halluzinationen bilden.
 references:
   - type: misc
-    id: "gandon-2020-json-ld"
-    author: "Gandon, Fabien and Kellogg, Gregg and Lanthaler, Markus and Champin, Pierre-Antoine"
+    id: gandon-2020-json-ld
     title: "JSON-LD 1.1: A JSON-based Serialization for Linked Data"
-    howpublished: "W3C Recommendation"
+    howpublished: W3C Recommendation
     year: 2020
-    url: "https://www.w3.org/TR/json-ld11/"
+    url: https://www.w3.org/TR/json-ld11/
+    authors:
+      - name: Fabien Gandon
+      - name: Gregg Kellogg
+      - name: Markus Lanthaler
+      - name: Pierre-Antoine Champin
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';

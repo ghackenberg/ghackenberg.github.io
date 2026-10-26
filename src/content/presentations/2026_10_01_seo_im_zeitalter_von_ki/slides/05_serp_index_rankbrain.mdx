@@ -2,28 +2,27 @@
 title: "Der klassische SERP-Index: Crawl, Index & Rank"
 subtitle: "Wie Google 25 Jahre funktionierte: {cue:hl-sub-serp-1001}Vom Web-Crawler über Inverted Index zu RankBrain{/cue}"
 number: "05"
-slideLayout: "story-hero"
-voiceover: >
-  Um den radikalen Wandel durch generative KIs zu verstehen, müssen wir die klassische Websuche betrachten.
-  {cue:sub} Sie funktionierte über ein Vierteljahrhundert nach der Dreiteilung: {cue:hl-sub-serp-1001}Vom Web-Crawler über den Inverted Index bis zu RankBrain{/cue}.
-  {cue:vis-serp-pipeline} Auf der linken Seite sehen Sie die traditionelle Pipeline schematisch dargestellt.
-  {cue:card-serp-arch} Seit der Grundlegung von Brin und Page basiert die Websuche auf {cue:hl-callout-serp-brin}dokumentenbasiertem Inverted-Index-Retrieval{/cue}: Der Googlebot erfasst {cue:hl-serp-crawl}Webseiten über Hyperlink-Netzwerke{/cue}, speichert Begriffe in {cue:hl-serp-index}riesigen invertierten Index-Matrizen{/cue}, und Algorithmen berechnen {cue:hl-serp-rank}die statische Rangfolge der zehn blauen Links{/cue} – exakt dieses Prinzip wird heute von RAG abgelöst.
+slideLayout: story-hero
+voiceover: |
+  Um den radikalen Wandel durch generative KIs zu verstehen, müssen wir die klassische Websuche betrachten. {cue:sub} Sie funktionierte über ein Vierteljahrhundert nach der Dreiteilung: {cue:hl-sub-serp-1001}Vom Web-Crawler über den Inverted Index bis zu RankBrain{/cue}. {cue:vis-serp-pipeline} Auf der linken Seite sehen Sie die traditionelle Pipeline schematisch dargestellt. {cue:card-serp-arch} Seit der Grundlegung von Brin und Page basiert die Websuche auf {cue:hl-callout-serp-brin}dokumentenbasiertem Inverted-Index-Retrieval{/cue}: Der Googlebot erfasst {cue:hl-serp-crawl}Webseiten über Hyperlink-Netzwerke{/cue}, speichert Begriffe in {cue:hl-serp-index}riesigen invertierten Index-Matrizen{/cue}, und Algorithmen berechnen {cue:hl-serp-rank}die statische Rangfolge der zehn blauen Links{/cue} – exakt dieses Prinzip wird heute von RAG abgelöst.
 notes: |
   - Zeit: 8:00 - 10:30 Min.
   - Historische Grundlage: Sergey Brin & Larry Page (1998) und die Evolution bis zu RankBrain (2015).
   - Wichtig: Den Kontrast zwischen statischer Dokumenten-Rangfolge und dynamischer generativer Antwortsynthese herausarbeiten.
 references:
   - type: article
-    id: "brin-1998-pagerank"
-    author: "Brin, Sergey and Page, Lawrence"
-    title: "The Anatomy of a Large-Scale Hypertextual Web Search Engine"
-    journal: "Computer Networks and ISDN Systems"
+    id: brin-1998-pagerank
+    title: The Anatomy of a Large-Scale Hypertextual Web Search Engine
+    journal: Computer Networks and ISDN Systems
     volume: "30"
-    number: "1-7"
-    pages: "107–117"
+    number: 1-7
+    pages: 107–117
     year: 1998
-    doi: "10.1016/S0169-7552(98)00110-X"
-    url: "http://infolab.stanford.edu/pub/papers/google.pdf"
+    doi: 10.1016/S0169-7552(98)00110-X
+    url: http://infolab.stanford.edu/pub/papers/google.pdf
+    authors:
+      - name: Sergey Brin
+      - name: Lawrence Page
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

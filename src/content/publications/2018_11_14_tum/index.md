@@ -1,12 +1,15 @@
 ---
-title: "Test-driven conceptual design of cyber-physical manufacturing systems"
-pubDate: "2018-11-14"
-icon: "./preview.jpg"
-book: "Technische Universität München"
-author: "<strong>Georg Hackenberg</strong>"
-abstract: |-
-  Today, manufacturing system engineering companies face three major trends: First, the systems have to implement more functions and, hence, grow in complexity. Then, besides mechanical engineering discipline the electrical and software engineering disciplines contribute more and more to the functionality of the system and, hence, require increasing efforts. And finally, the integration of the components from the individual engineering disciplines has become a costly task taking up to 25% of the p...»
-tags: ["systems-engineering", "systems-design", "software-systems", "systems-verification", "manufacturing-systems"]
+title: Test-driven conceptual design of cyber-physical manufacturing systems
+pubDate: 2018-11-14
+icon: ./preview.jpg
+book: Technische Universität München
+abstract: "Today, manufacturing system engineering companies face three major trends: First, the systems have to implement more functions and, hence, grow in complexity. Then, besides mechanical engineering discipline the electrical and software engineering disciplines contribute more and more to the functionality of the system and, hence, require increasing efforts. And finally, the integration of the components from the individual engineering disciplines has become a costly task taking up to 25% of the p...»"
+tags:
+  - systems-engineering
+  - systems-design
+  - software-systems
+  - systems-verification
+  - manufacturing-systems
 bibtex: |
   @TECHREPORT{hackenberg2018testdriven,
     author={Georg Hackenberg},
@@ -14,7 +17,10 @@ bibtex: |
     year={2018},
     institution={Technische Universität München}
   }
-publisherUrl: "https://mediatum.ub.tum.de/1431606"
+publisherUrl: https://mediatum.ub.tum.de/1431606
+authors:
+  - name: Georg Hackenberg
+    id: https://hackenberg.tech/#person
 ---
 
 Today, manufacturing system engineering companies face three major trends: First, the systems have to implement more functions and, hence, grow in complexity. Then, besides mechanical engineering discipline the electrical and software engineering disciplines contribute more and more to the functionality of the system and, hence, require increasing efforts. And finally, the integration of the components from the individual engineering disciplines has become a costly task taking up to 25% of the p...»

@@ -1,7 +1,7 @@
 ---
-title: "2D Elliptical Bin-Packing for Responsive DOM Tag Clouds"
+title: 2D Elliptical Bin-Packing for Responsive DOM Tag Clouds
 pubDate: 2026-10-17
-description: "How we engineered a deterministic 2D elliptical bin-packing layout engine in TypeScript that shapes interactive DOM tag clouds with zero layout shift."
+description: How we engineered a deterministic 2D elliptical bin-packing layout engine in TypeScript that shapes interactive DOM tag clouds with zero layout shift.
 lang: en
 tags:
   - web-development
@@ -14,69 +14,90 @@ tags:
   - astro
 icon:
   src: ./hero.jpg
-  title: "2D Elliptical Bin-Packing Blueprint for Responsive Tag Cloud Layouts"
-  description: "Top-down architectural blueprint on a pine timber desk in Grünau im Almtal illustrating concentric elliptical envelope curves and center-heavy pendulum bin-packing of tag pills"
+  title: 2D Elliptical Bin-Packing Blueprint for Responsive Tag Cloud Layouts
+  description: Top-down architectural blueprint on a pine timber desk in Grünau im Almtal illustrating concentric elliptical envelope curves and center-heavy pendulum bin-packing of tag pills
 references:
   - id: garey-1979-intractability
     type: book
-    author: "Garey, Michael R. and Johnson, David S."
     title: "Computers and Intractability: A Guide to the Theory of NP-Completeness"
-    publisher: "W. H. Freeman and Company"
+    publisher: W. H. Freeman and Company
     year: 1979
-    isbn: "978-0716710455"
-    url: "https://dl.acm.org/doi/book/10.5555/574848"
+    isbn: 978-0716710455
+    url: https://dl.acm.org/doi/book/10.5555/574848
+    authors:
+      - name: Michael R. Garey
+      - name: David S. Johnson
   - id: coffman-1996-bin-packing
     type: inproceedings
-    author: "Coffman, Edward G. and Garey, Michael R. and Johnson, David S."
     title: "Approximation Algorithms for Bin Packing: A Survey"
-    booktitle: "Approximation Algorithms for NP-Hard Problems"
-    publisher: "PWS Publishing Company"
+    booktitle: Approximation Algorithms for NP-Hard Problems
+    publisher: PWS Publishing Company
     year: 1996
-    pages: "46--93"
-    url: "https://dl.acm.org/doi/10.5555/241938.241940"
+    pages: 46--93
+    url: https://dl.acm.org/doi/10.5555/241938.241940
+    authors:
+      - name: Edward G. Coffman
+      - name: Michael R. Garey
+      - name: David S. Johnson
   - id: rivadeneira-2007-tag-clouds
     type: inproceedings
-    author: "Rivadeneira, A. W. and Gruen, Daniel M. and Muller, Michael J. and Millen, David R."
     title: "Getting Our Head in the Clouds: Toward Evaluation Studies of TagClouds"
-    booktitle: "Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '07)"
+    booktitle: Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '07)
     year: 2007
-    pages: "995--998"
-    url: "https://doi.org/10.1145/1240624.1240775"
-    doi: "10.1145/1240624.1240775"
+    pages: 995--998
+    url: https://doi.org/10.1145/1240624.1240775
+    doi: 10.1145/1240624.1240775
+    authors:
+      - name: Ana Walkyria Rivadeneira
+      - name: Daniel M. Gruen
+        id: https://orcid.org/0000-0003-0155-3777
+      - name: Michael J. Muller
+        id: https://orcid.org/0000-0001-7860-163X
+      - name: David R. Millen
   - id: bateman-2008-seeing-things-clouds
     type: inproceedings
-    author: "Bateman, Scott and Gutwin, Carl and Nacenta, Miguel"
     title: "Seeing Things in the Clouds: The Effect of Visual Features on Tag Cloud Selections"
-    booktitle: "Proceedings of the Nineteenth ACM Conference on Hypertext and Hypermedia (HT '08)"
+    booktitle: Proceedings of the Nineteenth ACM Conference on Hypertext and Hypermedia (HT '08)
     year: 2008
-    pages: "193--202"
-    url: "https://doi.org/10.1145/1379092.1379130"
-    doi: "10.1145/1379092.1379130"
+    pages: 193--202
+    url: https://doi.org/10.1145/1379092.1379130
+    doi: 10.1145/1379092.1379130
+    authors:
+      - name: Scott Bateman
+      - name: Carl Gutwin
+      - name: Miguel Nacenta
   - id: viegas-2009-wordle
     type: article
-    author: "Viégas, Fernanda B. and Wattenberg, Martin and Feinberg, Jonathan"
-    title: "Participatory Visualization with Wordle"
-    journal: "IEEE Transactions on Visualization and Computer Graphics"
+    title: Participatory Visualization with Wordle
+    journal: IEEE Transactions on Visualization and Computer Graphics
     year: 2009
     volume: "15"
     number: "6"
-    pages: "1137--1144"
-    url: "https://doi.org/10.1109/TVCG.2009.171"
-    doi: "10.1109/TVCG.2009.171"
+    pages: 1137--1144
+    url: https://doi.org/10.1109/TVCG.2009.171
+    doi: 10.1109/TVCG.2009.171
+    authors:
+      - name: Fernanda B. Viégas
+      - name: Martin Wattenberg
+      - name: Jonathan Feinberg
   - id: w3c-2016-cssom-view
     type: online
-    author: "W3C CSS Working Group"
-    title: "CSSOM View Module — Element Interface (getBoundingClientRect)"
-    url: "https://www.w3.org/TR/cssom-view-1/#dom-element-getboundingclientrect"
+    title: CSSOM View Module — Element Interface (getBoundingClientRect)
+    url: https://www.w3.org/TR/cssom-view-1/#dom-element-getboundingclientrect
     year: 2016
-    siteName: "W3C Working Draft"
+    siteName: W3C Working Draft
+    authors:
+      - name: W3C CSS Working Group
+        type: Organization
   - id: w3c-2020-resize-observer
     type: online
-    author: "W3C CSS Working Group"
-    title: "Resize Observer Specification"
-    url: "https://www.w3.org/TR/resize-observer-1/"
+    title: Resize Observer Specification
+    url: https://www.w3.org/TR/resize-observer-1/
     year: 2020
-    siteName: "W3C First Public Working Draft"
+    siteName: W3C First Public Working Draft
+    authors:
+      - name: W3C CSS Working Group
+        type: Organization
 ---
 
 A **2D Elliptical Bin-Packing Tag Cloud Layout Engine** is a deterministic client-side combinatorial solver that measures sub-pixel DOM badge widths and packs interactive topic pills into discrete horizontal rows constrained by a parametric elliptical width envelope, placing high-frequency core tags dead-center while dynamically aggregating unplaced items into an overflow counter.

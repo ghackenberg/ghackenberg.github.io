@@ -1,12 +1,7 @@
 ---
-title: "Persistente Wissensevolution für autonome Agenten: Das
-  Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
+title: "Persistente Wissensevolution für autonome Agenten: Das Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
 pubDate: 2026-09-06
-description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der
-  'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung
-  versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen
-  persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die
-  Effektivität belegen."
+description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der 'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die Effektivität belegen."
 tags:
   - artificial-intelligence
   - agentic-ai
@@ -17,45 +12,56 @@ tags:
   - prompt-engineering
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Persistente Wissensevolution für autonome Agenten: Das
-    Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
-  description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der
-    'Optimization Amnesia' bei Agent-Skills: Warum naive
-    Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill
-    (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche
-    empirischen Benchmarks die Effektivität belegen."
+  title: "Titelgrafik: Persistente Wissensevolution für autonome Agenten: Das Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
+  description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der 'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die Effektivität belegen."
 references:
   - type: online
-    author: AgentSkills.io Community
     title: The Open Agent Skills Specification (`SKILL.md`)
     url: https://agentskills.io/
     year: 2024
     id: community-2024-open-agent
+    authors:
+      - name: AgentSkills.io Community
+        type: Organization
   - type: online
-    author: Shinn, N., Cassano, F., Gopinath, A., Narasimhan, K., & Yao, S.
     title: "Reflexion: Language Agents with Verbal Reinforcement Learning"
     url: https://arxiv.org/abs/2303.11366
     year: 2023
-    siteName: Advances in Neural Information Processing Systems (NeurIPS 2023), 36,
-      8634–8652
+    siteName: Advances in Neural Information Processing Systems (NeurIPS 2023), 36, 8634–8652
     id: shinn-2023-reflexion
+    authors:
+      - name: Noah Shinn
+      - name: Federico Cassano
+      - name: Edward Berman
+      - name: Ashwin Gopinath
+      - name: Karthik Narasimhan
+      - name: Shunyu Yao
   - type: article
-    author: Tang, Y., et al.
-    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for
-      Skill Evolution"
+    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution"
     url: https://arxiv.org/abs/2608.27454
     year: 2026
     journal: Google Research & Virginia Tech
     id: tang-2026-wikiskill
+    authors:
+      - name: Liyan Tang
+      - name: Cyrus Rashtchian
+      - name: Chun-Sung Ferng
+      - name: Andrew Tomkins
+      - name: Da-Cheng Juan
+      - name: Tu Vu
   - type: inproceedings
-    author: Zhao, A., et al.
     title: "ExpeL: LLM Agents Are Experiential Learners"
     url: https://arxiv.org/abs/2308.10144
     year: 2023
-    booktitle: Proceedings of the AAAI Conference on Human Computation and
-      Crowdsourcing. arXiv preprint arXiv:2308.10144. Online verfügbar unter
-      [arxiv.org/abs/2308.10144](https://arxiv.org/abs/2308.10144).
+    booktitle: Proceedings of the AAAI Conference on Human Computation and Crowdsourcing. arXiv preprint arXiv:2308.10144. Online verfügbar unter [arxiv.org/abs/2308.10144](https://arxiv.org/abs/2308.10144).
     id: zhao-2023-expel
+    authors:
+      - name: Andrew Zhao
+      - name: Daniel Huang
+      - name: Quentin Xu
+      - name: Matthieu Lin
+      - name: Yong-Jin Liu
+      - name: Gao Huang
 ---
 
 

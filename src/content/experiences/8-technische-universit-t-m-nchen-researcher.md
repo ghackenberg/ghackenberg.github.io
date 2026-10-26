@@ -11,7 +11,6 @@ order: 7
 organization:
   name: "Technische Universität München"
   id: "https://www.wikidata.org/wiki/Q157808"
-  url: "https://www.tum.de/"
 ---
 
 Researching conceptual design and test-driven development methodologies for cyber-physical systems in energy and manufacturing. Constructing interactive simulation environments with JavaFX.

@@ -1,9 +1,7 @@
 ---
 title: "SEO, GEO, AEO & AIO: Leitfaden fürs KI-Zeitalter"
 pubDate: 2026-08-11
-description: Wie man Websites für traditionelle Suchmaschinen (SEO), Generative
-  Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch
-  optimiert.
+description: Wie man Websites für traditionelle Suchmaschinen (SEO), Generative Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch optimiert.
 tags:
   - aeo
   - agentic-ai
@@ -20,29 +18,43 @@ icon:
   description: SEO, GEO, AEO & AIO Optimierungsmodell
 references:
   - type: inproceedings
-    author: Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K.,
-      & Deshpande, A.
     title: "GEO: Generative Engine Optimization"
     url: https://doi.org/10.1145/3637528.3671900
     year: 2024
     doi: 10.1145/3637528.3671900
-    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery
-      and Data Mining (KDD '24)
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)
     id: aggarwal-2024-geo
+    authors:
+      - name: Pranjal Aggarwal
+        id: https://orcid.org/0000-0002-2962-1535
+      - name: Vishvak Murahari
+        id: https://orcid.org/0009-0008-9304-0701
+      - name: Tanmay Rajpurohit
+        id: https://orcid.org/0000-0001-9302-4244
+      - name: Ashwin Kalyan
+        id: https://orcid.org/0009-0006-3448-3305
+      - name: Karthik Narasimhan
+        id: https://orcid.org/0000-0001-9894-9983
+      - name: Ameet Deshpande
+        id: https://orcid.org/0000-0001-9885-0385
   - type: online
-    author: Google Search Central
     title: Creating helpful, reliable, people-first content
     url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
     year: 2024
     siteName: Google Documentation
     id: google-2024-creating-helpful
+    authors:
+      - name: Google Search Central
+        type: Organization
   - type: online
-    author: Willison, S., Howard, J., et al.
     title: "The /llms.txt File Format Proposal: Helping AI models find content"
     url: https://llmstxt.org/
     year: 2024
     siteName: Answer.AI Community Proposal
     id: willison-2024-llms-txt
+    authors:
+      - name: Simon Willison
+      - name: Jeremy Howard
 ---
 
 

@@ -2,8 +2,7 @@
 title: GPU Water Flow & Hydrology Shaders in Delta Dynamics
 pubDate: 2026-05-25
 lang: en
-description: Real-time shallow water and groundwater simulation shaders on the
-  GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong texture computation.
+description: Real-time shallow water and groundwater simulation shaders on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong texture computation.
 tags:
   - computer-graphics
   - gpgpu
@@ -14,14 +13,10 @@ tags:
   - webgl
 icon:
   src: ./icon.png
-  title: "Titelgrafik: GPU-Accelerated Water Flow and Subsurface Hydrology Shaders
-    in Delta Dynamics"
-  description: How we implemented a high-performance, discrete grid-based shallow
-    water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js,
-    and FBO ping-pong textures.
+  title: "Titelgrafik: GPU-Accelerated Water Flow and Subsurface Hydrology Shaders in Delta Dynamics"
+  description: How we implemented a high-performance, discrete grid-based shallow water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong textures.
 references:
   - type: article
-    author: Courant, R., Friedrichs, K., & Lewy, H.
     title: Über die partiellen Differenzengleichungen der mathematischen Physik
     url: https://doi.org/10.1007/BF01448839
     year: 1928
@@ -30,19 +25,20 @@ references:
     volume: "100"
     number: "1"
     id: courant-1928-partiellen-differenzengleichungen
+    authors:
+      - name: Richard Courant
+      - name: Kurt O. Friedrichs
+      - name: Hans Lewy
   - type: book
-    author: Darcy, H.
-    title: "Les fontaines publiques de la ville de Dijon: exposition et application
-      des principes à suivre et des formules à employer dans les questions de
-      distribution d'eau"
+    title: "Les fontaines publiques de la ville de Dijon: exposition et application des principes à suivre et des formules à employer dans les questions de distribution d'eau"
     url: https://archive.org/details/bub_gb_42EUAAAAQAAJ
     year: 1856
     publisher: Victor Dalmont
     id: darcy-1856-darcy-law
+    authors:
+      - name: Henry Darcy
   - type: article
-    author: Stelling, G. S., & Duinmeijer, S. P. A.
-    title: A staggered conservative scheme for every-day shallow water flow with
-      curved boundaries
+    title: A staggered conservative scheme for every-day shallow water flow with curved boundaries
     url: https://doi.org/10.1002/fld.595
     year: 2003
     doi: 10.1002/fld.595
@@ -50,6 +46,9 @@ references:
     volume: "43"
     number: "12"
     id: stelling-2003-staggered-conservative
+    authors:
+      - name: Guus Stelling
+      - name: Marcel Zijlema
 ---
 
 

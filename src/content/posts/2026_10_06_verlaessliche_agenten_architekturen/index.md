@@ -1,67 +1,93 @@
 ---
 title: "Verlässliche Agenten-Architekturen im Enterprise-Einsatz: ReAct-Loops, Statecharts und Procedural Graphs im Vergleich"
 pubDate: 2026-10-06
-description: "ReAct-Loops, Statecharts oder Procedural Graphs? Ein Architekturvergleich für verlässliche Enterprise-Agenten mit Simplex-Safety-Envelopes und Audit-Garantien."
+description: ReAct-Loops, Statecharts oder Procedural Graphs? Ein Architekturvergleich für verlässliche Enterprise-Agenten mit Simplex-Safety-Envelopes und Audit-Garantien.
 lang: de
 tags:
   - agentic-ai
   - software-architecture
 icon:
   src: ./hero.jpg
-  title: "Dr. Georg Hackenberg präsentiert verlässliche Agenten-Architekturen im Design Thinking Lab"
-  description: "Präsentation von Simplex Safety Envelopes, Statecharts und Procedural Graphs an der Projektionswand im Design Thinking Lab am FH OÖ Campus Wels"
+  title: Dr. Georg Hackenberg präsentiert verlässliche Agenten-Architekturen im Design Thinking Lab
+  description: Präsentation von Simplex Safety Envelopes, Statecharts und Procedural Graphs an der Projektionswand im Design Thinking Lab am FH OÖ Campus Wels
 references:
   - id: yao-2023-react
     type: inproceedings
-    author: "Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan"
     title: "ReAct: Synergizing Reasoning and Acting in Language Models"
-    booktitle: "International Conference on Learning Representations (ICLR 2023)"
+    booktitle: International Conference on Learning Representations (ICLR 2023)
     year: 2023
-    url: "https://arxiv.org/abs/2210.03629"
-    doi: "10.48550/arXiv.2210.03629"
+    url: https://arxiv.org/abs/2210.03629
+    doi: 10.48550/arXiv.2210.03629
+    authors:
+      - name: Shunyu Yao
+      - name: Jeffrey Zhao
+      - name: Dian Yu
+      - name: Nan Du
+      - name: Izhak Shafran
+      - name: Karthik Narasimhan
+      - name: Yuan Cao
   - id: sha-2001-simplicity
     type: article
-    author: "Sha, Lui"
-    title: "Using Simplicity to Control Complexity"
-    journal: "IEEE Software"
+    title: Using Simplicity to Control Complexity
+    journal: IEEE Software
     year: 2001
     volume: "18"
     number: "4"
-    pages: "28--36"
-    url: "https://doi.org/10.1109/MS.2001.936213"
-    doi: "10.1109/MS.2001.936213"
+    pages: 28--36
+    url: https://doi.org/10.1109/MS.2001.936213
+    doi: 10.1109/MS.2001.936213
+    authors:
+      - name: Lui Sha
   - id: harel-1987-statecharts
     type: article
-    author: "Harel, David"
     title: "Statecharts: A Visual Formalism for Complex Systems"
-    journal: "Science of Computer Programming"
+    journal: Science of Computer Programming
     year: 1987
     volume: "8"
     number: "3"
-    pages: "231--274"
-    url: "https://doi.org/10.1016/0167-6423(87)90035-9"
-    doi: "10.1016/0167-6423(87)90035-9"
+    pages: 231--274
+    url: https://doi.org/10.1016/0167-6423(87)90035-9
+    doi: 10.1016/0167-6423(87)90035-9
+    authors:
+      - name: David Harel
   - id: lu-2026-procedural-graphs
     type: article
-    author: "Lu, Yuxing and Chen, Yicheng and Wu, Shanchan and Arık, Sercan Ö."
     title: "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents"
-    journal: "Google Cloud AI Research"
+    journal: Google Cloud AI Research
     year: 2026
-    url: "https://arxiv.org/abs/2609.09153"
+    url: https://arxiv.org/abs/2609.09153
+    authors:
+      - name: Yuxing Lu
+      - name: Yicheng Chen
+      - name: Shanchan Wu
+      - name: Sercan Ö. Arık
   - id: packer-2023-memgpt
     type: article
-    author: "Packer, Charles and Fang, Vivian and Patil, Shishir G. and Lin, Kevin and Wooders, Sarah and Gonzalez, Joseph E."
     title: "MemGPT: Towards LLMs as Operating Systems"
-    journal: "arXiv preprint arXiv:2310.08560"
+    journal: arXiv preprint arXiv:2310.08560
     year: 2023
-    url: "https://arxiv.org/abs/2310.08560"
+    url: https://arxiv.org/abs/2310.08560
+    authors:
+      - name: Charles Packer
+      - name: Vivian Fang
+      - name: Shishir G. Patil
+      - name: Kevin Lin
+      - name: Sarah Wooders
+      - name: Joseph E. Gonzalez
   - id: jimenez-2024-swebench
     type: inproceedings
-    author: "Jimenez, Carlos E. and Yang, John and Wettig, Alexander and Yao, Shunyu and Pei, Kexin and Press, Ofir and Narasimhan, Karthik"
     title: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?"
-    booktitle: "International Conference on Learning Representations (ICLR 2024)"
+    booktitle: International Conference on Learning Representations (ICLR 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2310.06770"
+    url: https://arxiv.org/abs/2310.06770
+    authors:
+      - name: Carlos E. Jimenez
+      - name: John Yang
+      - name: Alexander Wettig
+      - name: Shunyu Yao
+      - name: Kexin Pei
+      - name: Ofir Press
+      - name: Karthik Narasimhan
 ---
 
 Verlässliche Agenten-Architekturen im Enterprise-Einsatz verbinden probabilistische Sprachmodelle mit deterministischen Kontrollstrukturen, um unvorhersehbare Endlosschleifen, Prompt-Drift und Fehlerausbreitung in produktiven Systemen systematisch zu unterbinden. Statt rein autonomer ReAct-Zyklen erzwingen Statecharts, prozedurale Graphen und Safety Envelopes verifizierbare Zustandsübergänge, feste Token- und Latenzgrenzen sowie lückenlose Audit-Trails für geschäftskritische Workflows.

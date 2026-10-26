@@ -1,9 +1,7 @@
 ---
 title: Website Relaunch with Astro & TypeScript on GitHub Pages
 pubDate: 2026-05-23
-description: "Learn how to build a static portfolio on GitHub Pages with Astro,
-  TypeScript & AI agents: Automated migration, sub-second loads, and full type
-  safety."
+description: "Learn how to build a static portfolio on GitHub Pages with Astro, TypeScript & AI agents: Automated migration, sub-second loads, and full type safety."
 lang: en
 tags:
   - web-development
@@ -14,35 +12,34 @@ tags:
   - github-pages
 icon:
   src: ./icon.png
-  title: "Cover illustration: Relaunching my personal website on GitHub Pages with
-    Astro and TypeScript"
-  description: Discover how I relaunched my personal website on GitHub Pages using
-    Astro, TypeScript, and Google Antigravity to automate legacy PHP content
-    migration.
+  title: "Cover illustration: Relaunching my personal website on GitHub Pages with Astro and TypeScript"
+  description: Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration.
 references:
   - type: online
-    author: Miller, J.
     title: Islands Architecture
     url: https://jasonformat.com/islands-architecture/
     year: 2020
-    siteName: Jason Format Architecture Essays. Available online at
-      [jasonformat.com/islands-architecture](https://jasonformat.com/islands-architecture/)
+    siteName: Jason Format Architecture Essays. Available online at [jasonformat.com/islands-architecture](https://jasonformat.com/islands-architecture/)
     id: miller-2020-islands-architecture
+    authors:
+      - name: Jason Miller
   - type: online
-    author: Astro Core Team
-    title: "Astro Documentation: Content Collections, Islands Architecture, and
-      Static Site Generation"
+    title: "Astro Documentation: Content Collections, Islands Architecture, and Static Site Generation"
     url: https://docs.astro.build/
     year: 2024
     siteName: Available online at [docs.astro.build](https://docs.astro.build/)
     id: team-2024-astro
+    authors:
+      - name: Astro Core Team
+        type: Organization
   - type: online
-    author: Colinhacks
     title: "Zod: TypeScript-first schema validation with static type inference"
     url: https://zod.dev/
     year: 2024
     siteName: Available online at [zod.dev](https://zod.dev/)
     id: colinhacks-2024-typescriptfirst-schema
+    authors:
+      - name: Colinhacks
 ---
 
 

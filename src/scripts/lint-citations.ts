@@ -482,9 +482,14 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
       howpublished: r.howpublished
     }));
 
-    // In-text citation validation
+    // Authors and in-text citation validation
     for (const rawRef of parsed.references) {
-      if (Array.isArray(rawRef.authors)) {
+      if (rawRef.author) {
+        errors.push(`[${relPath}] Reference "${rawRef.id || rawRef.title}" uses deprecated "author" field. Only "authors: [...]" array is supported.`);
+      }
+      if (!Array.isArray(rawRef.authors) || rawRef.authors.length === 0) {
+        errors.push(`[${relPath}] Reference "${rawRef.id || rawRef.title}" is missing mandatory non-empty "authors" array.`);
+      } else {
         for (const a of rawRef.authors) {
           if (typeof a === 'object' && a !== null) {
             if (!a.name || typeof a.name !== 'string' || !a.name.trim()) {
@@ -492,15 +497,6 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
             }
             if (a.id && (typeof a.id !== 'string' || !/^https?:\/\//i.test(a.id))) {
               errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "id": "${a.id}". Must be a valid absolute HTTP(S) URL.`);
-            }
-            if (a.url && (typeof a.url !== 'string' || !/^https?:\/\//i.test(a.url))) {
-              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "url": "${a.url}". Must be a valid absolute HTTP(S) URL.`);
-            }
-            if (a.orcid && (typeof a.orcid !== 'string' || !/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/.test(a.orcid))) {
-              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "orcid": "${a.orcid}". Must match standard 16-character format.`);
-            }
-            if (a.wikidata && (typeof a.wikidata !== 'string' || !/^(https:\/\/www\.wikidata\.org\/wiki\/)?Q\d+$/.test(a.wikidata))) {
-              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "wikidata": "${a.wikidata}". Must be QID or Wikidata URL.`);
             }
           }
         }

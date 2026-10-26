@@ -71,7 +71,33 @@ Every document supporting references must satisfy three strict invariant rules:
 - **No Horizontal Divider**: Never place `---` or divider lines immediately before the `## References` / `## Referenzen` heading or list.
 - **Tabular Two-Column CSS Subgrid (`src/pages/posts/[slug].astro`)**: Blog post references are rendered automatically by [`src/pages/posts/[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/posts/%5Bslug%5D.astro) using a two-column CSS Grid (`<ol class="grid grid-cols-[max-content_1fr] gap-x-3 sm:gap-x-4 gap-y-4">`) where each `<li class="col-span-2 grid grid-cols-subgrid items-baseline">` places the `[Key]` badge (`justify-self-start`) in column 1 and the bibliography text in column 2. This guarantees that variable-width BibTeX-Alpha keys (`[W3C23]` vs `[GBC+16]`) align to the widest badge and wrapped lines never drift under the badge column.
 
-## 6. Pre-Flight Validation Tools
+## 6. Automated Multi-Source Author & Reference Resolution
+The standalone script [`src/scripts/resolve-citations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/resolve-citations.ts) automates reference discovery, full author name extraction, and metadata normalization across all posts and presentations:
+- **Multi-Source Discovery Pipeline**:
+  1. **arXiv REST API**: Fetches Atom XML feeds for `arxiv.org/abs/...` URLs or `10.48550/arXiv.*` DOIs to extract 100% unabbreviated author names.
+  2. **Crossref API**: Queries official DOI records for journals, conferences, and books.
+  3. **OpenAlex API Enrichment**: When Crossref only contains publisher initials (e.g. `M. S. Hagger`, `R. Courant`), OpenAlex is queried automatically to enrich complete first names and ORCIDs.
+  4. **SSRN & NBER Working Papers**: Auto-detects paper URLs (`papers.ssrn.com`, `nber.org`) and synthesizes their official DOIs (`10.2139/ssrn.*`, `10.3386/*`).
+  5. **Canonical Disambiguation Dictionary**: Normalizes historic initials, All-Caps names, and non-DOI sources (e.g. `William R. Thompson`, `Jason Miller`, `Henry Darcy`, `Rand Fishkin`).
+- **Author Array Conventions**:
+  - Always use `authors: [{ name: "..." }]` (the legacy `author` string is rejected by linting).
+  - First names must always be written out in full (no single-letter abbreviations).
+  - `type: Person` is the schema default and must be omitted in YAML frontmatter.
+  - Corporate authors must declare `type: Organization` (e.g. `Perplexity AI`, `W3C Web Applications Working Group`, `ISO`).
+  - Verified ORCID profiles should be supplied via `id: "https://orcid.org/0000-..."`.
+- **Usage Commands**:
+  ```powershell
+  # Resolve all missing authors and expand abbreviated first names across the repo:
+  npm run resolve:citations
+
+  # Target a single file during post or presentation drafting:
+  npm run resolve:citations -- --file=src/content/posts/my-post/index.md
+
+  # Force-query and re-normalize all references:
+  npm run resolve:citations -- --all
+  ```
+
+## 7. Pre-Flight Validation Tools
 Run fast syntax and remote content checks (pass an optional `<slug>` or `--file <path>` argument to scope validation to a single post or presentation during authoring):
 - **Phase 1 (Syntax & Parity Gate, <200ms)**:
   ```powershell

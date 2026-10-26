@@ -1,12 +1,7 @@
 ---
-title: "Skill Evolution im Vergleich: Wie Nous Research (Hermes Agent) und
-  Google (WikiSkills) das Gedächtnis autonomer Agenten transformieren"
+title: "Skill Evolution im Vergleich: Wie Nous Research (Hermes Agent) und Google (WikiSkills) das Gedächtnis autonomer Agenten transformieren"
 pubDate: 2026-09-16
-description: "Eine softwaretechnische Vergleichsanalyse: Die pragmatische
-  Runtime-Kuratierung des Hermes Agent trifft auf die formale
-  3-Schichten-Entkopplung von Google WikiSkills. Wie sich Optimization Amnesia,
-  Progressive Disclosure und Continuous Learning in modernen
-  Enterprise-Architekturen vereinen lassen."
+description: "Eine softwaretechnische Vergleichsanalyse: Die pragmatische Runtime-Kuratierung des Hermes Agent trifft auf die formale 3-Schichten-Entkopplung von Google WikiSkills. Wie sich Optimization Amnesia, Progressive Disclosure und Continuous Learning in modernen Enterprise-Architekturen vereinen lassen."
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -22,31 +17,37 @@ tags:
 icon:
   src: ./hero.jpg
   title: "Vergleichsarchitektur: Hermes Agent vs. Google WikiSkills"
-  description: "Skill Evolution im Vergleich: Dr. Georg Hackenberg analysiert die
-    modulare Runtime-Kuratierung des Hermes Agent und das kristalline
-    Wissensarchiv von Google WikiSkills"
+  description: "Skill Evolution im Vergleich: Dr. Georg Hackenberg analysiert die modulare Runtime-Kuratierung des Hermes Agent und das kristalline Wissensarchiv von Google WikiSkills"
 references:
   - type: online
-    author: AgentSkills.io Community
     title: The Open Agent Skills Specification
     url: https://agentskills.io/
     year: 2024
     id: community-2024-open-agent
+    authors:
+      - name: AgentSkills.io Community
+        type: Organization
   - type: online
-    author: Nous Research
-    title: "Hermes 3 Technical Report: Open Bi-Directional Function Calling and
-      Advanced Reasoning"
+    title: "Hermes 3 Technical Report: Open Bi-Directional Function Calling and Advanced Reasoning"
     url: https://nousresearch.com/hermes3/
     year: 2024
     id: research-2024-hermes3
+    authors:
+      - name: Nous Research
+        type: Organization
   - type: article
-    author: Tang, Y., et al.
-    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for
-      Skill Evolution"
+    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution"
     url: https://arxiv.org/abs/2608.27454
     year: 2026
     journal: Google Research & Virginia Tech
     id: tang-2026-wikiskill
+    authors:
+      - name: Liyan Tang
+      - name: Cyrus Rashtchian
+      - name: Chun-Sung Ferng
+      - name: Andrew Tomkins
+      - name: Da-Cheng Juan
+      - name: Tu Vu
 ---
 
 

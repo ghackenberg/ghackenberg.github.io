@@ -1,7 +1,7 @@
 ---
 title: "Emergent Properties: History, Scaling Theory, and Why AI Security Incidents Are Control-Loop Failures"
 pubDate: 2026-10-22
-description: "An interdisciplinary analysis of emergent properties—from Mill, Broad, and Anderson's symmetry breaking to LLM scaling mirages, Nancy Leveson's STAMP/STPA-Sec control theory, and frontier AI security incidents."
+description: An interdisciplinary analysis of emergent properties—from Mill, Broad, and Anderson's symmetry breaking to LLM scaling mirages, Nancy Leveson's STAMP/STPA-Sec control theory, and frontier AI security incidents.
 lang: en
 tags:
   - cybersecurity
@@ -11,189 +11,277 @@ tags:
   - systems-verification
 icon:
   src: ./hero.jpg
-  title: "Emergent Properties & STAMP/STPA-Sec AI Security Control Boundaries"
-  description: "Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a mathematical phase-transition curve alongside Nancy Leveson's STAMP/STPA-Sec closed-loop AI harness security architecture"
+  title: Emergent Properties & STAMP/STPA-Sec AI Security Control Boundaries
+  description: Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a mathematical phase-transition curve alongside Nancy Leveson's STAMP/STPA-Sec closed-loop AI harness security architecture
 references:
   - id: mill-1843-system-of-logic
     type: book
-    author: "Mill, John Stuart"
-    title: "A System of Logic, Ratiocinative and Inductive"
-    publisher: "John W. Parker"
+    title: A System of Logic, Ratiocinative and Inductive
+    publisher: John W. Parker
     year: 1843
-    doi: "10.1017/CBO9781139149839"
-    url: "https://doi.org/10.1017/CBO9781139149839"
+    doi: 10.1017/CBO9781139149839
+    url: https://doi.org/10.1017/CBO9781139149839
+    authors:
+      - name: John Stuart Mill
   - id: lewes-1875-problems-of-life-and-mind
     type: book
-    author: "Lewes, George Henry"
     title: "Problems of Life and Mind, First Series: The Foundations of a Creed, Vol. 2"
-    publisher: "Trübner & Co."
+    publisher: Trübner & Co.
     year: 1875
-    doi: "10.1037/14244-000"
-    url: "https://doi.org/10.1037/14244-000"
+    doi: 10.1037/14244-000
+    url: https://doi.org/10.1037/14244-000
+    authors:
+      - name: George Henry Lewes
   - id: broad-1925-mind-and-its-place
     type: book
-    author: "Broad, Charlie Dunbar"
-    title: "The Mind and Its Place in Nature"
-    publisher: "Routledge"
+    title: The Mind and Its Place in Nature
+    publisher: Routledge
     year: 1925
-    doi: "10.4324/9781315824147"
-    url: "https://doi.org/10.4324/9781315824147"
+    doi: 10.4324/9781315824147
+    url: https://doi.org/10.4324/9781315824147
+    authors:
+      - name: Charlie Dunbar Broad
   - id: anderson-1972-more-is-different
     type: article
-    author: "Anderson, Philip W."
-    title: "More Is Different"
-    journal: "Science"
+    title: More Is Different
+    journal: Science
     year: 1972
     volume: "177"
     number: "4047"
-    pages: "393--396"
-    doi: "10.1126/science.177.4047.393"
-    url: "https://doi.org/10.1126/science.177.4047.393"
+    pages: 393--396
+    doi: 10.1126/science.177.4047.393
+    url: https://doi.org/10.1126/science.177.4047.393
+    authors:
+      - name: Philip W. Anderson
   - id: crutchfield-1994-calculi-of-emergence
     type: article
-    author: "Crutchfield, James P."
     title: "The Calculi of Emergence: Computation, Dynamics and Induction"
     journal: "Physica D: Nonlinear Phenomena"
     year: 1994
     volume: "75"
-    number: "1-3"
-    pages: "11--54"
-    doi: "10.1016/0167-2789(94)90273-9"
-    url: "https://doi.org/10.1016/0167-2789(94)90273-9"
+    number: 1-3
+    pages: 11--54
+    doi: 10.1016/0167-2789(94)90273-9
+    url: https://doi.org/10.1016/0167-2789(94)90273-9
+    authors:
+      - name: James P. Crutchfield
   - id: lloyd-2001-measures-of-complexity
     type: article
-    author: "Lloyd, Seth"
     title: "Measures of Complexity: A Nonexhaustive List"
-    journal: "IEEE Control Systems Magazine"
+    journal: IEEE Control Systems Magazine
     year: 2001
     volume: "21"
     number: "4"
-    pages: "7--8"
-    doi: "10.1109/MCS.2001.939938"
-    url: "https://doi.org/10.1109/MCS.2001.939938"
+    pages: 7--8
+    doi: 10.1109/MCS.2001.939938
+    url: https://doi.org/10.1109/MCS.2001.939938
+    authors:
+      - name: Seth Lloyd
   - id: chalmers-2006-strong-and-weak-emergence
     type: inproceedings
-    author: "Chalmers, David J."
-    title: "Strong and Weak Emergence"
+    title: Strong and Weak Emergence
     booktitle: "The Re-Emergence of Emergence: The Emergentist Hypothesis from Science to Religion"
-    publisher: "Oxford University Press"
+    publisher: Oxford University Press
     year: 2006
-    pages: "244--254"
-    doi: "10.1093/acprof:oso/9780199544318.003.0011"
-    url: "https://doi.org/10.1093/acprof:oso/9780199544318.003.0011"
+    pages: 244--254
+    doi: 10.1093/acprof:oso/9780199544318.003.0011
+    url: https://doi.org/10.1093/acprof:oso/9780199544318.003.0011
+    authors:
+      - name: David J. Chalmers
   - id: wei-2022-emergent-abilities
     type: article
-    author: "Wei, Jason and Tay, Yi and Bommasani, Rishi and Raffel, Colin and Zoph, Barret and Borgeaud, Sebastian and Yogatama, Dani and Bosma, Maarten and Zhou, Denny and Metzler, Donald and Chi, Ed H. and Hashimoto, Tatsunori and Vinyals, Oriol and Liang, Percy and Dean, Jeff and Fedus, William"
-    title: "Emergent Abilities of Large Language Models"
-    journal: "Transactions on Machine Learning Research (TMLR)"
+    title: Emergent Abilities of Large Language Models
+    journal: Transactions on Machine Learning Research (TMLR)
     year: 2022
-    url: "https://arxiv.org/abs/2206.07682"
+    url: https://arxiv.org/abs/2206.07682
+    authors:
+      - name: Jason Wei
+      - name: Yi Tay
+      - name: Rishi Bommasani
+      - name: Colin Raffel
+      - name: Barret Zoph
+      - name: Sebastian Borgeaud
+      - name: Dani Yogatama
+      - name: Maarten Bosma
+      - name: Denny Zhou
+      - name: Donald Metzler
+      - name: Ed H. Chi
+      - name: Tatsunori Hashimoto
+      - name: Oriol Vinyals
+      - name: Percy Liang
+      - name: Jeff Dean
+      - name: William Fedus
   - id: schaeffer-2023-mirage
     type: inproceedings
-    author: "Schaeffer, Rylan and Miranda, Brando and Koyejo, Sanmi"
-    title: "Are Emergent Abilities of Large Language Models a Mirage?"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2023)"
+    title: Are Emergent Abilities of Large Language Models a Mirage?
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2023)
     year: 2023
-    url: "https://arxiv.org/abs/2304.15004"
+    url: https://arxiv.org/abs/2304.15004
+    authors:
+      - name: Rylan Schaeffer
+      - name: Brando Miranda
+      - name: Sanmi Koyejo
   - id: du-2024-understanding-emergent-abilities
     type: inproceedings
-    author: "Du, Zhengxiao and Zeng, Aohan and Dong, Yuxiao and Tang, Jie"
-    title: "Understanding Emergent Abilities of Language Models from the Loss Perspective"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2024)"
+    title: Understanding Emergent Abilities of Language Models from the Loss Perspective
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2403.15796"
+    url: https://arxiv.org/abs/2403.15796
+    authors:
+      - name: Zhengxiao Du
+      - name: Aohan Zeng
+      - name: Yuxiao Dong
+      - name: Jie Tang
   - id: leveson-2011-engineering-a-safer-world
     type: book
-    author: "Leveson, Nancy G."
     title: "Engineering a Safer World: Systems Thinking Applied to Safety"
-    publisher: "MIT Press"
+    publisher: MIT Press
     year: 2011
-    doi: "10.7551/mitpress/8179.001.0001"
-    url: "https://doi.org/10.7551/mitpress/8179.001.0001"
+    doi: 10.7551/mitpress/8179.001.0001
+    url: https://doi.org/10.7551/mitpress/8179.001.0001
+    authors:
+      - name: Nancy G. Leveson
   - id: young-2014-stpa-sec
     type: article
-    author: "Young, William and Leveson, Nancy G."
-    title: "An Integrated Approach to Safety and Security Based on Systems Theory"
-    journal: "Communications of the ACM"
+    title: An Integrated Approach to Safety and Security Based on Systems Theory
+    journal: Communications of the ACM
     year: 2014
     volume: "57"
     number: "2"
-    pages: "31--35"
-    doi: "10.1145/2556938"
-    url: "https://doi.org/10.1145/2556938"
+    pages: 31--35
+    doi: 10.1145/2556938
+    url: https://doi.org/10.1145/2556938
+    authors:
+      - name: William Young
+      - name: Nancy G. Leveson
   - id: openai-2024-o1-system-card
     type: misc
-    author: "OpenAI"
-    title: "OpenAI o1 System Card"
+    title: OpenAI o1 System Card
     year: 2024
-    howpublished: "arXiv preprint arXiv:2412.16720"
-    url: "https://arxiv.org/abs/2412.16720"
+    howpublished: arXiv preprint arXiv:2412.16720
+    url: https://arxiv.org/abs/2412.16720
+    authors:
+      - name: OpenAI
+        type: Organization
   - id: betley-2025-emergent-misalignment
     type: inproceedings
-    author: "Betley, Jan and Tan, Daniel and Warncke, Niels and Sztyber-Betley, Anna and Bao, Xuchan and Soto, Martín and Labenz, Nathan and Evans, Owain"
     title: "Emergent Misalignment: Narrow Finetuning Can Produce Broadly Misaligned LLMs"
-    booktitle: "Proceedings of the 42nd International Conference on Machine Learning (ICML 2025)"
+    booktitle: Proceedings of the 42nd International Conference on Machine Learning (ICML 2025)
     year: 2025
-    url: "https://arxiv.org/abs/2502.17424"
+    url: https://arxiv.org/abs/2502.17424
+    authors:
+      - name: Jan Betley
+      - name: Daniel Tan
+      - name: Niels Warncke
+      - name: Anna Sztyber-Betley
+      - name: Xuchan Bao
+      - name: Martín Soto
+      - name: Nathan Labenz
+      - name: Owain Evans
   - id: yang-2024-sweagent
     type: inproceedings
-    author: "Yang, John and Jimenez, Carlos E. and Wettig, Alexander and Lieret, Kilian and Yao, Shunyu and Narasimhan, Karthik and Press, Ofir"
     title: "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2024)"
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2405.15793"
+    url: https://arxiv.org/abs/2405.15793
+    authors:
+      - name: John Yang
+      - name: Carlos E. Jimenez
+      - name: Alexander Wettig
+      - name: Kilian Lieret
+      - name: Shunyu Yao
+      - name: Karthik Narasimhan
+      - name: Ofir Press
   - id: schluntz-2024-effective-agents
     type: online
-    author: "Schluntz, Erik and Zhang, Barry"
-    title: "Building Effective Agents"
+    title: Building Effective Agents
     year: 2024
-    siteName: "Anthropic Engineering"
-    url: "https://www.anthropic.com/engineering/building-effective-agents"
+    siteName: Anthropic Engineering
+    url: https://www.anthropic.com/engineering/building-effective-agents
+    authors:
+      - name: Erik Schluntz
+      - name: Barry Zhang
   - id: mcp-specification-2024
     type: online
-    author: "Anthropic"
-    title: "Model Context Protocol Specification"
+    title: Model Context Protocol Specification
     year: 2024
-    siteName: "Model Context Protocol"
-    url: "https://modelcontextprotocol.io/specification"
+    siteName: Model Context Protocol
+    url: https://modelcontextprotocol.io/specification
+    authors:
+      - name: Anthropic
+        type: Organization
   - id: greshake-2023-indirect-prompt-injection
     type: inproceedings
-    author: "Greshake, Kai and Abdelnabi, Sahar and Mishra, Shailesh and Endres, Christoph and Holz, Thorsten and Fritz, Mario"
     title: "Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
-    booktitle: "Proceedings of the 16th ACM Workshop on Artificial Intelligence and Security (AISec '23)"
-    publisher: "ACM"
+    booktitle: Proceedings of the 16th ACM Workshop on Artificial Intelligence and Security (AISec '23)
+    publisher: ACM
     year: 2023
-    pages: "79--90"
-    doi: "10.1145/3605764.3623985"
-    url: "https://doi.org/10.1145/3605764.3623985"
+    pages: 79--90
+    doi: 10.1145/3605764.3623985
+    url: https://doi.org/10.1145/3605764.3623985
+    authors:
+      - name: Kai Greshake
+        id: https://orcid.org/0009-0005-0460-5327
+      - name: Sahar Abdelnabi
+        id: https://orcid.org/0009-0000-5269-951X
+      - name: Shailesh Mishra
+        id: https://orcid.org/0009-0003-7330-1912
+      - name: Christoph Endres
+        id: https://orcid.org/0009-0005-7653-4417
+      - name: Thorsten Holz
+        id: https://orcid.org/0000-0002-2783-1264
+      - name: Mario Fritz
+        id: https://orcid.org/0000-0001-8949-9896
   - id: wang-2026-exploitgym
     type: misc
-    author: "Wang, Zhun and Schiller, Nico and Li, Hongwei and Narayana, Srijiith Sesha and Nasr, Milad and Carlini, Nicholas and Qi, Xiangyu and Wallace, Eric and Bursztein, Elie and Invernizzi, Luca and Thomas, Kurt and Shoshitaishvili, Yan and Guo, Wenbo and He, Jingxuan and Holz, Thorsten and Song, Dawn"
     title: "ExploitGym: Can AI Agents Turn Security Vulnerabilities into Real Attacks?"
     year: 2026
-    howpublished: "arXiv preprint arXiv:2605.11086"
-    url: "https://arxiv.org/abs/2605.11086"
+    howpublished: arXiv preprint arXiv:2605.11086
+    url: https://arxiv.org/abs/2605.11086
+    authors:
+      - name: Zhun Wang
+      - name: Nico Schiller
+      - name: Hongwei Li
+      - name: Srijiith Sesha Narayana
+      - name: Milad Nasr
+      - name: Nicholas Carlini
+      - name: Xiangyu Qi
+      - name: Eric Wallace
+      - name: Elie Bursztein
+      - name: Luca Invernizzi
+      - name: Kurt Thomas
+      - name: Yan Shoshitaishvili
+      - name: Wenbo Guo
+      - name: Jingxuan He
+      - name: Thorsten Holz
+      - name: Dawn Song
   - id: nvd-2025-cve-2025-32711
     type: online
-    author: "NIST National Vulnerability Database"
     title: "CVE-2025-32711 Detail: Microsoft 365 Copilot AI Command Injection Vulnerability (EchoLeak)"
     year: 2025
-    siteName: "National Vulnerability Database (NVD)"
-    url: "https://nvd.nist.gov/vuln/detail/CVE-2025-32711"
+    siteName: National Vulnerability Database (NVD)
+    url: https://nvd.nist.gov/vuln/detail/CVE-2025-32711
+    authors:
+      - name: NIST National Vulnerability Database
+        type: Organization
   - id: nvd-2025-cve-2025-59536
     type: online
-    author: "NIST National Vulnerability Database"
     title: "CVE-2025-59536 Detail: Anthropic Claude Code Startup Trust Dialog Code Injection Vulnerability"
     year: 2025
-    siteName: "National Vulnerability Database (NVD)"
-    url: "https://nvd.nist.gov/vuln/detail/CVE-2025-59536"
+    siteName: National Vulnerability Database (NVD)
+    url: https://nvd.nist.gov/vuln/detail/CVE-2025-59536
+    authors:
+      - name: NIST National Vulnerability Database
+        type: Organization
   - id: nvd-2026-cve-2026-21852
     type: online
-    author: "NIST National Vulnerability Database"
     title: "CVE-2026-21852 Detail: Anthropic Claude Code ANTHROPIC_BASE_URL Credential Exfiltration Vulnerability"
     year: 2026
-    siteName: "National Vulnerability Database (NVD)"
-    url: "https://nvd.nist.gov/vuln/detail/CVE-2026-21852"
+    siteName: National Vulnerability Database (NVD)
+    url: https://nvd.nist.gov/vuln/detail/CVE-2026-21852
+    authors:
+      - name: NIST National Vulnerability Database
+        type: Organization
 ---
 
 An **emergent property** is a system-level behavior, capability, or hazard that arises from non-linear interactions among constituent components but cannot be predicted by analyzing those components in isolation. Across artificial intelligence and systems engineering, emergence governs both abrupt benchmark capability jumps and catastrophic security boundary failures inside autonomous agent harnesses.

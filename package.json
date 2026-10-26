@@ -54,6 +54,7 @@
     "newsletter:build": "tsx src/scripts/build-newsletters.ts",
     "newsletter:sync": "tsx src/scripts/sync-newsletters.ts",
     "astro": "astro",
+    "resolve:citations": "tsx src/scripts/resolve-citations.ts",
     "validate:jsonld": "tsx src/scripts/validate-jsonld.ts"
   },
   "dependencies": {

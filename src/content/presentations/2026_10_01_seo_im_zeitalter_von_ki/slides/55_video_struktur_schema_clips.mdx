@@ -1,25 +1,24 @@
 ---
-title: "Strukturierte Video-Architektur für LLMs"
+title: Strukturierte Video-Architektur für LLMs
 subtitle: "Transkripte, Video Chapters & Schema.org: {cue:hl-sub-videostruct}Wie KIs exakte 20-Sekunden-Segmente als Antwort zitieren{/cue}"
 number: "55"
-slideLayout: "split"
-voiceover: >
-  Um zu verstehen, warum YouTube so dominant zitiert wird, müssen wir den maschinellen Lese-Mechanismus analysieren.
-  {cue:sub} Die strukturierte Video-Architektur mit Transkripten und Schema.org erklärt, {cue:hl-sub-videostruct}wie KIs exakte 20-Sekunden-Segmente als Antwort zitieren{/cue}.
-  {cue:col-video-mechanics} Sprachmodelle schauen Videos nicht als reine Pixeldatei, sondern {cue:hl-video-nlp}parsen das zeitcodierte Transkript als hochdichten semantischen Fließtext{/cue}. Exakte Zeitstempel {cue:hl-video-chapters}gliedern das Video in maschinenlesbare Key Moments und semantische Sinneinheiten{/cue}, {cue:hl-video-deeplink}KI-Antwortsysteme verlinken sekundengenau auf die exakte Antwortpassage{/cue}, und B2B-Käufer erhalten {cue:hl-video-relief}die gesuchte Erklärung des Ingenieurs sofort und ohne Wartezeit serviert{/cue}.
-  {cue:col-video-schema} Für Entwickler und Webmaster ergibt sich daraus {cue:hl-video-code}ein klar definierter technischer Implementierungsstandard{/cue}: Wir deklarieren {cue:hl-video-schemaorg}Schema.org VideoObject mit Clip- und hasPart-Properties auf der Website{/cue}, hinterlegen {cue:hl-video-transcript}redigierte Volltranskripte als strukturierte maschinenlesbare Ressource{/cue}, und synchronisieren {cue:hl-video-youtube}YouTube-Kapitelmarken bidirektional mit dem Wissensgraphen der eigenen Domain{/cue}.
+slideLayout: split
+voiceover: |
+  Um zu verstehen, warum YouTube so dominant zitiert wird, müssen wir den maschinellen Lese-Mechanismus analysieren. {cue:sub} Die strukturierte Video-Architektur mit Transkripten und Schema.org erklärt, {cue:hl-sub-videostruct}wie KIs exakte 20-Sekunden-Segmente als Antwort zitieren{/cue}. {cue:col-video-mechanics} Sprachmodelle schauen Videos nicht als reine Pixeldatei, sondern {cue:hl-video-nlp}parsen das zeitcodierte Transkript als hochdichten semantischen Fließtext{/cue}. Exakte Zeitstempel {cue:hl-video-chapters}gliedern das Video in maschinenlesbare Key Moments und semantische Sinneinheiten{/cue}, {cue:hl-video-deeplink}KI-Antwortsysteme verlinken sekundengenau auf die exakte Antwortpassage{/cue}, und B2B-Käufer erhalten {cue:hl-video-relief}die gesuchte Erklärung des Ingenieurs sofort und ohne Wartezeit serviert{/cue}. {cue:col-video-schema} Für Entwickler und Webmaster ergibt sich daraus {cue:hl-video-code}ein klar definierter technischer Implementierungsstandard{/cue}: Wir deklarieren {cue:hl-video-schemaorg}Schema.org VideoObject mit Clip- und hasPart-Properties auf der Website{/cue}, hinterlegen {cue:hl-video-transcript}redigierte Volltranskripte als strukturierte maschinenlesbare Ressource{/cue}, und synchronisieren {cue:hl-video-youtube}YouTube-Kapitelmarken bidirektional mit dem Wissensgraphen der eigenen Domain{/cue}.
 notes: |
   - Zeit: 56:00 - 57:30 Min.
   - Technischer Deep Dive: Google Key Moments Guidelines & Schema.org VideoObject.
   - Den Entwicklern im Raum zeigen: Video-SEO ist reines Datenstrukturierungs-Handwerk (Transkript + Clips).
 references:
   - type: online
-    id: "google-2024-video-structured-data"
-    author: "Google Search Central"
-    title: "Video Structured Data and Key Moments Guidelines"
-    siteName: "Google for Developers"
+    id: google-2024-video-structured-data
+    title: Video Structured Data and Key Moments Guidelines
+    siteName: Google for Developers
     year: 2024
-    url: "https://developers.google.com/search/docs/appearance/structured-data/video"
+    url: https://developers.google.com/search/docs/appearance/structured-data/video
+    authors:
+      - name: Google Search Central
+        type: Organization
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

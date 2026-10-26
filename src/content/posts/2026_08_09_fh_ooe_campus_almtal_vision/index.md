@@ -2,9 +2,7 @@
 title: "Vision Campus Almtal 2035: Dezentraler Innovationsraum"
 pubDate: 2026-08-09
 lang: de
-description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales
-  Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im
-  Wandel."
+description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im Wandel."
 tags:
   - education
   - innovation
@@ -13,17 +11,11 @@ tags:
   - almtal
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum
-    dezentralen Innovationsraum"
-  description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der
-    Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und
-    Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural
-    Sciences & Applications."
+  title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum dezentralen Innovationsraum"
+  description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural Sciences & Applications."
 references:
   - type: article
-    author: Etzkowitz, H., & Leydesdorff, L.
-    title: 'The dynamics of innovation: from National Systems and "Mode 2" to a
-      Triple Helix of university-industry-government relations'
+    title: 'The dynamics of innovation: from National Systems and "Mode 2" to a Triple Helix of university-industry-government relations'
     url: https://doi.org/10.1016/S0048-7333(99
     year: 2000
     doi: 10.1016/S0048-7333(99)00055-4
@@ -31,19 +23,20 @@ references:
     volume: "29"
     number: "2"
     id: etzkowitz-2000-dynamics-innovation
+    authors:
+      - name: Henry Etzkowitz
+      - name: Loet Leydesdorff
   - type: online
-    author: Europäische Kommission
-    title: Eine langfristige Vision für die ländlichen Gebiete der EU – Für
-      stärkere, vernetzte, widerstandsfähige und florierende ländliche Gebiete
-      bis 2040
+    title: Eine langfristige Vision für die ländlichen Gebiete der EU – Für stärkere, vernetzte, widerstandsfähige und florierende ländliche Gebiete bis 2040
     url: https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:52021DC0345
     year: 2021
     siteName: Mitteilung der Kommission COM(2021) 345 final
     id: kommission-2021-eine-langfristige
+    authors:
+      - name: Europäische Kommission
+        type: Organization
   - type: article
-    author: Porter, M. E.
-    title: "Location, Competition, and Economic Development: Local Clusters in a
-      Global Economy"
+    title: "Location, Competition, and Economic Development: Local Clusters in a Global Economy"
     url: https://doi.org/10.1177/089124240001400105
     year: 2000
     doi: 10.1177/089124240001400105
@@ -51,6 +44,8 @@ references:
     volume: "14"
     number: "1"
     id: porter-2000-location-competition
+    authors:
+      - name: Michael E. Porter
 ---
 
 

@@ -1,8 +1,7 @@
 ---
 title: "Local Browser AI Agents: Web-LLM in Delta Dynamics"
 pubDate: 2026-05-31
-description: Bringing client-side LLM-driven AI agents into the browser with
-  WebGPU, MLC Web-LLM, and web workers for decentralized ecosystem simulation.
+description: Bringing client-side LLM-driven AI agents into the browser with WebGPU, MLC Web-LLM, and web workers for decentralized ecosystem simulation.
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -14,36 +13,50 @@ tags:
   - webgpu
 icon:
   src: ./icon.png
-  title: "Cover illustration: Running Local AI Agents in the Browser: Integrating
-    Web-LLM into Delta Dynamics"
-  description: A deep dive into bringing decentralized, client-side LLM-driven AI
-    behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and
-    asynchronous web workers.
+  title: "Cover illustration: Running Local AI Agents in the Browser: Integrating Web-LLM into Delta Dynamics"
+  description: A deep dive into bringing decentralized, client-side LLM-driven AI behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and asynchronous web workers.
 references:
   - type: article
-    author: Ruan, C. F., & Chen, T.
     title: "WebLLM: A High-Performance In-Browser LLM Inference Engine"
     url: https://arxiv.org/abs/2412.15803
     year: 2024
     journal: arXiv preprint arXiv:2412.15803
     id: ruan-2024-webllm
+    authors:
+      - name: Charlie F. Ruan
+      - name: Yucheng Qin
+      - name: Akaash R. Parthasarathy
+      - name: Xun Zhou
+      - name: Ruihang Lai
+      - name: Hongyi Jin
+      - name: Yixin Dong
+      - name: Bohan Hou
+      - name: Meng-Shiun Yu
+      - name: Yiyan Zhai
+      - name: Sudeep Agarwal
+      - name: Hangrui Cao
+      - name: Siyuan Feng
+      - name: Tianqi Chen
   - type: online
-    author: Dettmers, T., Lewis, M., Belkada, Y., & Zettlemoyer, L.
     title: "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale"
     url: https://arxiv.org/abs/2208.07339
     year: 2022
-    siteName: Advances in Neural Information Processing Systems (NeurIPS 2022), 35,
-      30318–30332. Available online at
-      [arxiv.org/abs/2208.07339](https://arxiv.org/abs/2208.07339)
+    siteName: Advances in Neural Information Processing Systems (NeurIPS 2022), 35, 30318–30332. Available online at [arxiv.org/abs/2208.07339](https://arxiv.org/abs/2208.07339)
     id: dettmers-2022-llmint8-8bit
+    authors:
+      - name: Tim Dettmers
+      - name: Mike Lewis
+      - name: Younes Belkada
+      - name: Luke Zettlemoyer
   - type: misc
-    author: W3C GPU for the Web Working Group
-    title: "WebGPU: A Cross-Platform API for Accelerated Graphics and Compute on the
-      Web"
+    title: "WebGPU: A Cross-Platform API for Accelerated Graphics and Compute on the Web"
     url: https://www.w3.org/TR/webgpu/
     year: 2024
     howpublished: W3C Candidate Recommendation Draft
     id: w3c-2024-webgpu-crossplatform
+    authors:
+      - name: W3C GPU for the Web Working Group
+        type: Organization
 ---
 
 

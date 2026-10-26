@@ -1,7 +1,7 @@
 ---
-title: "Sovereign Newsletter-as-Code with React Email, Listmonk & Zero-Allocation ALTCHA Proof-of-Work"
+title: Sovereign Newsletter-as-Code with React Email, Listmonk & Zero-Allocation ALTCHA Proof-of-Work
 pubDate: 2026-10-20
-description: "How we engineered a Git-native Newsletter-as-Code pipeline with dual-target React Email compilation, an upgrade-safe Listmonk v6.2.0 shell, and an Int32Array SHA-256 Proof-of-Work Web Worker."
+description: How we engineered a Git-native Newsletter-as-Code pipeline with dual-target React Email compilation, an upgrade-safe Listmonk v6.2.0 shell, and an Int32Array SHA-256 Proof-of-Work Web Worker.
 lang: en
 tags:
   - software-architecture
@@ -13,56 +13,66 @@ tags:
   - performance
 icon:
   src: ./hero.jpg
-  title: "Newsletter-as-Code Pipeline with React Email, Listmonk, and SHA-256 Proof-of-Work"
-  description: "Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a React Email and Listmonk dispatch pipeline alongside a 32-bit integer SHA-256 Proof-of-Work cryptographic grid"
+  title: Newsletter-as-Code Pipeline with React Email, Listmonk, and SHA-256 Proof-of-Work
+  description: Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a React Email and Listmonk dispatch pipeline alongside a 32-bit integer SHA-256 Proof-of-Work cryptographic grid
 references:
   - id: dwork-1992-pricing-via-processing
     type: inproceedings
-    author: "Dwork, Cynthia and Naor, Moni"
-    title: "Pricing via Processing or Combatting Junk Mail"
-    booktitle: "Advances in Cryptology — CRYPTO '92 (Lecture Notes in Computer Science, vol. 740)"
+    title: Pricing via Processing or Combatting Junk Mail
+    booktitle: Advances in Cryptology — CRYPTO '92 (Lecture Notes in Computer Science, vol. 740)
     year: 1992
-    pages: "139--147"
-    publisher: "Springer"
-    doi: "10.1007/3-540-48071-4_10"
-    url: "https://doi.org/10.1007/3-540-48071-4_10"
+    pages: 139--147
+    publisher: Springer
+    doi: 10.1007/3-540-48071-4_10
+    url: https://doi.org/10.1007/3-540-48071-4_10
+    authors:
+      - name: Cynthia Dwork
+      - name: Moni Naor
   - id: back-2002-hashcash
     type: misc
-    author: "Back, Adam"
-    title: "Hashcash - A Denial of Service Counter-Measure"
+    title: Hashcash - A Denial of Service Counter-Measure
     year: 2002
-    howpublished: "Technical Report"
-    url: "http://www.hashcash.org/papers/hashcash.pdf"
+    howpublished: Technical Report
+    url: http://www.hashcash.org/papers/hashcash.pdf
+    authors:
+      - name: Adam Back
   - id: nist-2015-fips-180-4
     type: misc
-    author: "National Institute of Standards and Technology"
     title: "FIPS PUB 180-4: Secure Hash Standard (SHS)"
     year: 2015
-    howpublished: "Federal Information Processing Standards Publication"
-    doi: "10.6028/NIST.FIPS.180-4"
-    url: "https://doi.org/10.6028/NIST.FIPS.180-4"
+    howpublished: Federal Information Processing Standards Publication
+    doi: 10.6028/NIST.FIPS.180-4
+    url: https://doi.org/10.6028/NIST.FIPS.180-4
+    authors:
+      - name: National Institute of Standards and Technology (US)
+        type: Organization
   - id: altcha-2024-pow-mechanism
     type: online
-    author: "ALTCHA"
-    title: "How ALTCHA Works — Proof-of-Work Mechanism"
+    title: How ALTCHA Works — Proof-of-Work Mechanism
     year: 2024
-    siteName: "ALTCHA Docs"
-    url: "https://altcha.org/docs/how-it-works/"
+    siteName: ALTCHA Docs
+    url: https://altcha.org/docs/how-it-works/
+    authors:
+      - name: ALTCHA
+        type: Organization
   - id: nadh-2024-listmonk-docs
     type: online
-    author: "Nadh, Kailash"
-    title: "listmonk — Self-hosted Newsletter and Mailing List Manager Documentation"
+    title: listmonk — Self-hosted Newsletter and Mailing List Manager Documentation
     year: 2024
-    siteName: "listmonk Documentation"
-    url: "https://listmonk.app/docs/"
+    siteName: listmonk Documentation
+    url: https://listmonk.app/docs/
+    authors:
+      - name: Kailash Nadh
   - id: rfc-8058-one-click-unsubscribe
     type: misc
-    author: "Levine, John and Herkula, Tobias"
     title: "RFC 8058: Signaling One-Click Functionality for List Email Headers"
     year: 2017
-    howpublished: "Internet Engineering Task Force (IETF) Request for Comments"
-    doi: "10.17487/RFC8058"
-    url: "https://www.rfc-editor.org/rfc/rfc8058"
+    howpublished: Internet Engineering Task Force (IETF) Request for Comments
+    doi: 10.17487/RFC8058
+    url: https://www.rfc-editor.org/rfc/rfc8058
+    authors:
+      - name: John Levine
+      - name: Todd Herkula
 ---
 
 Sovereign Newsletter-as-Code replaces third-party email platforms and fragile database-bound WYSIWYG editors with a deterministic Git-to-SMTP pipeline. By combining Astro Content Collections, dual-target React Email compilation, an upgrade-safe Listmonk v6.2.0 shell, stateless REST/SSH synchronization, and a zero-allocation `Int32Array` SHA-256 Proof-of-Work Web Worker, `hackenberg.tech` achieves complete editorial sovereignty and cookie-free spam defense.

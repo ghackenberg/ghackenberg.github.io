@@ -11,7 +11,6 @@ order: 0
 organization:
   name: "FH OÖ Campus Wels | School of Engineering"
   id: "https://www.wikidata.org/wiki/Q1388312"
-  url: "https://www.fh-ooe.at/"
 occupationalCategory: "25-1021.00"
 ---
 

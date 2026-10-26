@@ -1,12 +1,7 @@
 ---
-title: "Vom Konzept zum Agenten-Werkzeug: Wie unser Unified Analytics MCP Server
-  Search Console und Plausible für datengestützte GEO/AIO-Audits vereint"
+title: "Vom Konzept zum Agenten-Werkzeug: Wie unser Unified Analytics MCP Server Search Console und Plausible für datengestützte GEO/AIO-Audits vereint"
 pubDate: 2026-09-23
-description: "Datengestützte Content-Optimierung im Zeitalter von
-  KI-Suchmaschinen: Warum isolierte Web-Analytics versagen, wie unser nativer
-  Model Context Protocol (MCP) Server Google Search Console und Plausible
-  deterministisch zusammenführt, und wie Coding-Agenten Seiten vollautomatisch
-  auditieren."
+description: "Datengestützte Content-Optimierung im Zeitalter von KI-Suchmaschinen: Warum isolierte Web-Analytics versagen, wie unser nativer Model Context Protocol (MCP) Server Google Search Console und Plausible deterministisch zusammenführt, und wie Coding-Agenten Seiten vollautomatisch auditieren."
 tags:
   - aeo
   - agentic-ai
@@ -23,29 +18,34 @@ tags:
 icon:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg am Flipchart auf der Almtal-Terrasse
-  description: Dr. Georg Hackenberg präsentiert die Architektur des Unified
-    Analytics MCP Servers am Flipchart auf der Holzterrasse in Grünau im Almtal
+  description: Dr. Georg Hackenberg präsentiert die Architektur des Unified Analytics MCP Servers am Flipchart auf der Holzterrasse in Grünau im Almtal
 references:
   - type: online
-    author: Anthropic
     title: Model Context Protocol (MCP) Specification
     url: https://modelcontextprotocol.io/
     year: 2024
     id: anthropic-2024-mcp
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: online
-    author: Google Developers
     title: Google Search Console API Documentation
     url: https://developers.google.com/webmaster-tools
     year: 2024
     siteName: Google for Developers
     id: google-2024-google-search
+    authors:
+      - name: Google Developers
+        type: Organization
   - type: online
-    author: Plausible Analytics
     title: Plausible Stats API Documentation
     url: https://plausible.io/docs/stats-api
     year: 2024
     siteName: Plausible Insights OÜ
     id: plausible-2024-plausible-stats
+    authors:
+      - name: Plausible Analytics
+        type: Organization
 ---
 
 Als deterministische Brücke zwischen Google Search Console und Plausible Analytics filtert der Unified Analytics MCP Server organische Suchintentionen, Klicks und Nutzersignale vor und überführt sie in token-effiziente Modellwerkzeuge. Autonome Coding-Agenten können Content-Repositories dadurch direkt im lokalen Git-Dateisystem auditieren, Optimierungspotenziale aufdecken und die Lücke zwischen Telemetrie und Code-Refactoring nahtlos schließen.

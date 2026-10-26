@@ -1,13 +1,7 @@
 ---
-title: "Architektur und Funktionsweise von LiteLLM: Universelle
-  Modell-Abstraktion, dynamisches Routing, Multi-Provider Fallbacks und
-  Enterprise-Governance"
+title: "Architektur und Funktionsweise von LiteLLM: Universelle Modell-Abstraktion, dynamisches Routing, Multi-Provider Fallbacks und Enterprise-Governance"
 pubDate: 2026-09-09
-description: "Eine softwaretechnische Tiefenanalyse von LiteLLM: Wie die
-  universelle Abstraktionsschicht 100+ LLMs vereinheitlicht, wie intelligentes
-  Routing und kaskadierende Fallbacks Ausfallsicherheit garantieren, warum
-  Multilevel-Caching Latenzen minimiert und wie Enterprise-Governance via
-  Keycloak und Virtual Keys funktioniert."
+description: "Eine softwaretechnische Tiefenanalyse von LiteLLM: Wie die universelle Abstraktionsschicht 100+ LLMs vereinheitlicht, wie intelligentes Routing und kaskadierende Fallbacks Ausfallsicherheit garantieren, warum Multilevel-Caching Latenzen minimiert und wie Enterprise-Governance via Keycloak und Virtual Keys funktioniert."
 tags:
   - litellm
   - agentic-ai
@@ -23,33 +17,34 @@ tags:
 icon:
   src: ./hero.jpg
   title: LiteLLM
-  description: "LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne
-    Multi-Model Ökosystem"
+  description: "LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem"
 references:
   - type: online
-    author: Banga, G., et al.
     title: "LiteLLM: A Unified Interface for Large Language Model APIs"
     url: https://docs.litellm.ai/
     year: 2024
     siteName: Open Source Documentation and Architecture Guide
     id: banga-2024-litellm
+    authors:
+      - name: Krrish Dholakia
   - type: online
-    author: OpenTelemetry Authors
     title: Semantic Conventions for Generative AI Systems
     url: https://opentelemetry.io/docs/specs/semconv/gen-ai/
     year: 2024
     siteName: Cloud Native Computing Foundation (CNCF)
     id: authors-2024-semantic-conventions
+    authors:
+      - name: OpenTelemetry Authors
+        type: Organization
   - type: inproceedings
-    author: Fu, B., & Feng, D.
-    title: "GPTCache: An Open-Source Semantic Cache for LLM Applications Enabling
-      Faster Answers and Cost Savings"
+    title: "GPTCache: An Open-Source Semantic Cache for LLM Applications Enabling Faster Answers and Cost Savings"
     url: https://doi.org/10.18653/v1/2023.nlposs-1.24
     year: 2023
     doi: 10.18653/v1/2023.nlposs-1.24
-    booktitle: Proceedings of the 3rd Workshop for Natural Language Processing Open
-      Source Software (NLP-OSS 2023)
+    booktitle: Proceedings of the 3rd Workshop for Natural Language Processing Open Source Software (NLP-OSS 2023)
     id: fu-2023-gptcache
+    authors:
+      - name: Fu Bang
 ---
 
 

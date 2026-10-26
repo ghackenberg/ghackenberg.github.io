@@ -11,7 +11,6 @@ order: 12
 organization:
   name: "Siemens"
   id: "https://www.wikidata.org/wiki/Q81230"
-  url: "https://www.siemens.com/"
 ---
 
 Developing clinical trial database applications and distributed data management tools. Implementing enterprise web services using Java EE, XML, SOAP protocols, and automated build pipelines.

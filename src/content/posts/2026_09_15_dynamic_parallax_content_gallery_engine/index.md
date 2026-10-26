@@ -1,13 +1,9 @@
 ---
-title: "Building a Dynamic Parallax Content Gallery: Kinematics,
-  Zero-Duplication Pooling, and LRU History Tracking"
+title: "Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
 pubDate: 2026-09-15
 lang: en
 language: en
-description: How we engineered a living 3-tier parallax content gallery in Astro
-  and TypeScript featuring optical motion kinematics, zero on-screen
-  duplication, and a two-factor probabilistic selection engine powered by
-  localStorage LRU history tracking.
+description: How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking.
 tags:
   - web-development
   - astro
@@ -18,17 +14,11 @@ tags:
   - software-architecture
 icon:
   src: ./icon.jpg
-  title: "Cover illustration: Building a Dynamic Parallax Content Gallery:
-    Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
-  description: How we engineered a living 3-tier parallax content gallery in Astro
-    and TypeScript featuring optical motion kinematics, zero on-screen
-    duplication, and a two-factor probabilistic selection engine powered by
-    localStorage LRU history tracking.
+  title: "Cover illustration: Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
+  description: How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking.
 references:
   - type: inproceedings
-    author: Cutting, J. E., & Vishton, P. M.
-    title: "Perceiving layout and knowing distances: The integration, relative
-      potency, and contextual use of different information about depth"
+    title: "Perceiving layout and knowing distances: The integration, relative potency, and contextual use of different information about depth"
     booktitle: Perception of Space and Motion
     publisher: Academic Press
     year: 1995
@@ -36,20 +26,27 @@ references:
     doi: 10.1016/B978-012240530-3/50005-5
     url: https://doi.org/10.1016/B978-012240530-3/50005-5
     id: cutting-1995-perceiving-layout
+    authors:
+      - name: James E. Cutting
+      - name: Peter M. Vishton
   - type: online
-    author: Google Web Vitals
     title: Optimize Cumulative Layout Shift (CLS)
     url: https://web.dev/articles/cls
     year: 2024
     siteName: web.dev
     id: google-2024-optimize-cumulative
+    authors:
+      - name: Google Web Vitals
+        type: Organization
   - type: misc
-    author: W3C Accessibility Guidelines Working Group
     title: Web Content Accessibility Guidelines (WCAG) 2.2
     url: https://www.w3.org/TR/WCAG22/
     year: 2023
     howpublished: W3C Recommendation
     id: w3c-2023-content-accessibility
+    authors:
+      - name: W3C Accessibility Guidelines Working Group
+        type: Organization
 ---
 
 

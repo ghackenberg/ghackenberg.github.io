@@ -1,25 +1,26 @@
 ---
 title: "JSON-LD: Content-Graph"
-subtitle: "Verknüpfung von Fachartikeln, Urhebern und Themen {cue:hl-sub-jsonld-rel}ohne Datenredundanz für KI-Crawler{/cue}"
+subtitle: Verknüpfung von Fachartikeln, Urhebern und Themen {cue:hl-sub-jsonld-rel}ohne Datenredundanz für KI-Crawler{/cue}
 number: "27"
-slideLayout: "code"
-voiceover: >
-  Im zweiten Schritt verknüpfen wir unsere publizierten Fachinhalte relational mit den zuvor definierten Entitäten.
-  {cue:sub} Dadurch erreichen wir eine fehlerfreie Ingestion {cue:hl-sub-jsonld-rel}ohne jegliche Datenredundanz für KI-Crawler{/cue}.
-  {cue:code-jsonld-rel} Hier sehen Sie die Definition eines technischen Fachartikels im selben Graph-Array.
-  {cue:card-relationen} Statt Autoren- oder Verlagsdaten redundant zu kopieren, {cue:hl-jsonld-ref}referenziert der Artikel bestehende Knoten per URI{/cue}. Diese präzisen Pointer erlauben {cue:hl-jsonld-pointer}eine extrem schlanke und relationale Datenstruktur{/cue}. Für LLMs wie GPTBot oder Perplexity entfällt {cue:hl-jsonld-zero}jedes probabilistische Rätselraten über die Autorenschaft{/cue}, während das About-Feld {cue:hl-jsonld-themen}den semantischen Themenkontext unmissverständlich festlegt{/cue}.
+slideLayout: code
+voiceover: |
+  Im zweiten Schritt verknüpfen wir unsere publizierten Fachinhalte relational mit den zuvor definierten Entitäten. {cue:sub} Dadurch erreichen wir eine fehlerfreie Ingestion {cue:hl-sub-jsonld-rel}ohne jegliche Datenredundanz für KI-Crawler{/cue}. {cue:code-jsonld-rel} Hier sehen Sie die Definition eines technischen Fachartikels im selben Graph-Array. {cue:card-relationen} Statt Autoren- oder Verlagsdaten redundant zu kopieren, {cue:hl-jsonld-ref}referenziert der Artikel bestehende Knoten per URI{/cue}. Diese präzisen Pointer erlauben {cue:hl-jsonld-pointer}eine extrem schlanke und relationale Datenstruktur{/cue}. Für LLMs wie GPTBot oder Perplexity entfällt {cue:hl-jsonld-zero}jedes probabilistische Rätselraten über die Autorenschaft{/cue}, während das About-Feld {cue:hl-jsonld-themen}den semantischen Themenkontext unmissverständlich festlegt{/cue}.
 notes: |
   - Zeit: 36:30 - 38:00 Min.
   - Schritt 2 von 2: Die relationale Content-Verknüpfung (TechArticle verweist auf Person und Organization).
   - Zeigen: Null Redundanz durch @id-Zeiger, maximale Klarheit für KI-Systeme.
 references:
   - type: misc
-    id: "gandon-2020-json-ld"
-    author: "Gandon, Fabien and Kellogg, Gregg and Lanthaler, Markus and Champin, Pierre-Antoine"
+    id: gandon-2020-json-ld
     title: "JSON-LD 1.1: A JSON-based Serialization for Linked Data"
-    howpublished: "W3C Recommendation"
+    howpublished: W3C Recommendation
     year: 2020
-    url: "https://www.w3.org/TR/json-ld11/"
+    url: https://www.w3.org/TR/json-ld11/
+    authors:
+      - name: Fabien Gandon
+      - name: Gregg Kellogg
+      - name: Markus Lanthaler
+      - name: Pierre-Antoine Champin
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';

@@ -7,8 +7,7 @@ import { formatAuthorsHtml, type AuthorEntry } from "@commons/shared/authors";
 interface Props {
   id: string;
   title: string;
-  author?: string;
-  authors?: AuthorEntry[];
+  authors: AuthorEntry[];
   pubDate: Date | string;
   book?: string;
   tags?: string[];
@@ -21,8 +20,7 @@ interface Props {
 
 const { 
   id, 
-  title, 
-  author, 
+  title,  
   authors,
   pubDate, 
   book, 
@@ -120,7 +118,7 @@ const optimizedIcon = iconImg && typeof iconImg === 'object' && !isSvg ? await g
 
     <!-- Authors -->
     <p class="text-gray-300 light:text-slate-600 text-xs sm:text-sm font-normal mb-3 leading-relaxed line-clamp-2 min-h-[2lh]">
-      <span set:html={authors ? formatAuthorsHtml(authors) : author} />
+      <span set:html={formatAuthorsHtml(authors)} />
     </p>
 
     <!-- Tags & Action Button Area -->

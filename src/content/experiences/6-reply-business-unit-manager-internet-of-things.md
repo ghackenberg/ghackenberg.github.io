@@ -11,7 +11,6 @@ order: 5
 organization:
   name: "Reply"
   id: "https://www.wikidata.org/wiki/Q2145077"
-  url: "https://www.reply.com/"
 ---
 
 Directing business development, organizational growth, and team building within the IoT division. Managing project life cycles and product strategies for connected cars and industrial automation.

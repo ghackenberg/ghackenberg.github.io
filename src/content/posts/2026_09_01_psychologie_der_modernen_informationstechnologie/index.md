@@ -2,9 +2,7 @@
 title: Psychologie der modernen Informationstechnologie
 pubDate: 2026-09-01
 lang: de
-description: "Interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft,
-  Dopamin-Schleifen und Aufmerksamkeitsökonomie moderne Software-Architekturen
-  prägen."
+description: "Interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Dopamin-Schleifen und Aufmerksamkeitsökonomie moderne Software-Architekturen prägen."
 tags:
   - psychology
   - cyberpsychology
@@ -15,14 +13,10 @@ tags:
   - social-media
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Psychologie der modernen Informationstechnologie: Stand der
-    Wissenschaft und Stand der Technik"
-  description: "Eine interdisziplinäre Bestandsaufnahme: Wie
-    Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie,
-    Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
+  title: "Titelgrafik: Psychologie der modernen Informationstechnologie: Stand der Wissenschaft und Stand der Technik"
+  description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
 references:
   - type: article
-    author: Clark, A., & Chalmers, D.
     title: The Extended Mind
     url: https://doi.org/10.1093/analys/58.1.7
     year: 1998
@@ -31,8 +25,10 @@ references:
     volume: "58"
     number: "1"
     id: clark-1998-extended-mind
+    authors:
+      - name: Andy Clark
+      - name: David J. Chalmers
   - type: article
-    author: Hagger, M. S., et al.
     title: A Multilab Preregistered Replication of the Ego-Depletion Effect
     url: https://doi.org/10.1177/1745691616652873
     year: 2016
@@ -41,19 +37,128 @@ references:
     volume: "11"
     number: "4"
     id: hagger-2016-multilab-preregistered
+    authors:
+      - name: Martin S. Hagger
+        id: https://orcid.org/0000-0002-2685-1546
+      - name: Nikos L. D. Chatzisarantis
+        id: https://orcid.org/0000-0001-7059-6805
+      - name: Hugo J. E. M. Alberts
+        id: https://orcid.org/0000-0001-9161-8807
+      - name: Calvin Octavianus Anggono
+      - name: Cédric Batailler
+        id: https://orcid.org/0000-0003-0553-6827
+      - name: Angela R. Birt
+      - name: Ralf Brand
+        id: https://orcid.org/0000-0003-3143-4816
+      - name: Muriele Brand
+      - name: Gayle Brewer
+      - name: Sabrina D. Bruyneel
+        id: https://orcid.org/0000-0002-3990-7975
+      - name: Dustin P. Calvillo
+        id: https://orcid.org/0000-0002-6747-9605
+      - name: William Keith Campbell
+      - name: Peter Robert Cannon
+        id: https://orcid.org/0000-0001-9462-4292
+      - name: Maria Concetta Carlucci
+      - name: Nicholas P. Carruth
+        id: https://orcid.org/0000-0001-6277-2215
+      - name: Tracy T. L. Cheung
+      - name: Adrienne L. Crowell
+      - name: Denise T. D. de Ridder
+        id: https://orcid.org/0000-0002-8237-9506
+      - name: Siegfried Dewitte
+        id: https://orcid.org/0000-0001-6010-4782
+      - name: Malte Elson
+        id: https://orcid.org/0000-0001-7806-9583
+      - name: Jacqueline Renee Evans
+        id: https://orcid.org/0000-0002-2044-1853
+      - name: Brian A. Fay
+      - name: Bob M. Fennis
+        id: https://orcid.org/0000-0003-4738-7524
+      - name: Anna J Finley
+        id: https://orcid.org/0000-0002-0881-9147
+      - name: Zoë Lynn Francis
+        id: https://orcid.org/0000-0002-9488-9132
+      - name: Elke Heise
+      - name: Katherine H. Hoemann
+      - name: Michael Inzlicht
+        id: https://orcid.org/0000-0001-9297-6497
+      - name: Sander Leon Koole
+        id: https://orcid.org/0000-0002-3422-223X
+      - name: Lina Koppel
+        id: https://orcid.org/0000-0002-6302-0047
+      - name: Floor M. Kroese
+        id: https://orcid.org/0000-0002-6626-483X
+      - name: Florian Lange
+        id: https://orcid.org/0000-0002-8336-5608
+      - name: Karen M. Lau
+        id: https://orcid.org/0000-0002-7486-3250
+      - name: Patricia A. Lynch
+      - name: Carolien Martijn
+        id: https://orcid.org/0000-0002-1480-5980
+      - name: Harald L. G. J. Merckelbach
+        id: https://orcid.org/0000-0002-5116-7826
+      - name: Nicholas V. Mills
+      - name: Alexej Michirev
+        id: https://orcid.org/0000-0002-0468-4636
+      - name: Akira Miyake
+        id: https://orcid.org/0000-0003-4671-7843
+      - name: Amy E. Mosser
+      - name: Megan D. Muise
+        id: https://orcid.org/0000-0002-9739-5939
+      - name: Dominique Muller B
+        id: https://orcid.org/0000-0001-9544-5317
+      - name: Marco Muzi
+      - name: Dario Nalis
+      - name: Ratri Nurwanti
+        id: https://orcid.org/0000-0003-2793-9870
+      - name: Henry Otgaar
+        id: https://orcid.org/0000-0002-2782-2181
+      - name: Michael Carl Philipp
+        id: https://orcid.org/0000-0001-8203-8018
+      - name: Pierpaolo Primoceri
+        id: https://orcid.org/0000-0002-2014-607X
+      - name: Katrin Rentzsch
+        id: https://orcid.org/0000-0001-8632-6842
+      - name: Lara Jade Ringos
+      - name: Caroline Schlinkert
+        id: https://orcid.org/0000-0001-7038-903X
+      - name: Brandon J. Schmeichel
+        id: https://orcid.org/0000-0003-3527-5365
+      - name: Sarah Fiona Schoch
+        id: https://orcid.org/0000-0002-3962-5804
+      - name: Miranda Schrama
+      - name: Astrid Schütz
+      - name: Angelos Stamos
+        id: https://orcid.org/0000-0002-4648-1474
+      - name: Gustav Tinghög
+        id: https://orcid.org/0000-0002-8159-1249
+      - name: Johannes Ullrich
+        id: https://orcid.org/0000-0002-0471-7004
+      - name: Michelle R. vanDellen
+        id: https://orcid.org/0000-0002-3457-194X
+      - name: Supra Wimbarti
+        id: https://orcid.org/0000-0003-2821-2403
+      - name: Wanja Wolff
+        id: https://orcid.org/0000-0001-8130-0272
+      - name: Cleoputri Yusainy
+        id: https://orcid.org/0000-0002-6295-1050
+      - name: Oulmann Zerhouni
+        id: https://orcid.org/0000-0002-4026-1921
+      - name: Mirjam Zwienenberg
   - type: inproceedings
-    author: Mark, G., Gudith, D., & Klocke, U.
     title: "The Cost of Interrupted Work: More Speed and Stress"
     url: https://doi.org/10.1145/1357054.1357072
     year: 2008
     doi: 10.1145/1357054.1357072
-    booktitle: Proceedings of the SIGCHI Conference on Human Factors in Computing
-      Systems (CHI '08)
+    booktitle: Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '08)
     id: mark-2008-cost-interrupted
+    authors:
+      - name: Gloria Mark
+      - name: Daniela Gudith
+      - name: Ulrich Klocke
   - type: article
-    author: Sparrow, B., Liu, J., & Wegner, D. M.
-    title: "Google Effects on Memory: Cognitive Consequences of Having Information
-      at Our Fingertips"
+    title: "Google Effects on Memory: Cognitive Consequences of Having Information at Our Fingertips"
     url: https://doi.org/10.1126/science.1207745
     year: 2011
     doi: 10.1126/science.1207745
@@ -61,8 +166,11 @@ references:
     volume: "333"
     number: "6043"
     id: sparrow-2011-google-effects
+    authors:
+      - name: Betsy Sparrow
+      - name: Jenny Liu
+      - name: Daniel M. Wegner
   - type: article
-    author: Sweller, J.
     title: "Cognitive load during problem solving: Effects on learning"
     url: https://doi.org/10.1207/s15516709cog1202_4
     year: 1988
@@ -71,16 +179,16 @@ references:
     volume: "12"
     number: "2"
     id: sweller-1988-cognitive-load
+    authors:
+      - name: John Sweller
   - type: online
-    author: Dr. Georg Hackenberg
-    title: "Hinweis: Konkrete Software-Architekturen, Engineering-Muster und
-      Implementierungsansätze für solche Systeme behandeln wir im Folgebeitrag
-      [Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie
-      und Engineering-Paradigmen für den menschlichen
-      Geist](/posts/2026_09_02_mindful_it_calm_computing_software_architektur/)"
+    title: "Hinweis: Konkrete Software-Architekturen, Engineering-Muster und Implementierungsansätze für solche Systeme behandeln wir im Folgebeitrag [Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist](/posts/2026_09_02_mindful_it_calm_computing_software_architektur/)"
     url: https://hackenberg.tech
     siteName: "*"
     id: hackenberg-hinweis-konkrete
+    authors:
+      - name: Georg Hackenberg
+        id: https://hackenberg.tech/#person
 ---
 
 

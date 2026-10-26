@@ -142,7 +142,6 @@ export function buildAboutPageSchemas(params: {
         '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
         '@id': id,
         name: meta?.name || org.name,
-        ...(org.url ? { url: org.url } : {})
       });
     }
   }
@@ -156,7 +155,6 @@ export function buildAboutPageSchemas(params: {
         '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
         '@id': id,
         name: meta?.name || org.name,
-        ...(org.url ? { url: org.url } : {})
       });
     }
   }
@@ -388,26 +386,17 @@ export function buildCitationList(
         if (a && typeof a === 'object') {
           const isGeorg =
             a.id === PERSON_ID ||
-            a.orcid === '0000-0002-0096-2484' ||
+            a.id === 'https://orcid.org/0000-0002-0096-2484' ||
             /Georg Hackenberg/i.test(a.name);
           if (isGeorg) return PERSON_REF;
           const authorType = a.type || 'Person';
-          const sameAs = a.orcid ? `https://orcid.org/${a.orcid}` : a.wikidata ? a.wikidata : undefined;
           return {
             '@type': authorType,
             name: a.name,
-            ...(a.id ? { '@id': a.id } : {}),
-            ...(a.url ? { url: a.url } : {}),
-            ...(sameAs && sameAs !== a.id && sameAs !== a.url ? { sameAs } : {})
+            ...(a.id ? { sameAs: a.id } : {})
           };
         }
         return { '@type': 'Person', name: String(a) };
-      });
-    } else if (ref.author) {
-      authorList = ref.author.split(/,| and /).map((a) => {
-        const trimmed = a.trim();
-        const isGeorg = /Georg Hackenberg/i.test(trimmed);
-        return isGeorg ? PERSON_REF : { '@type': 'Person', name: trimmed };
       });
     }
 
@@ -473,14 +462,12 @@ export function buildPublicationSchema(params: {
   const mappedAuthors = pub.data.authors.map((a) => {
     const isGeorg =
       a.id === PERSON_ID ||
-      a.orcid === '0000-0002-0096-2484' ||
       /Georg Hackenberg/i.test(a.name);
     if (isGeorg) return PERSON_REF;
     return {
       '@type': a.type || 'Person',
       name: a.name,
-      ...(a.id ? { '@id': a.id } : {}),
-      ...(a.orcid ? { sameAs: `https://orcid.org/${a.orcid}` } : a.wikidata ? { sameAs: a.wikidata } : a.url ? { url: a.url } : {})
+      ...(a.id ? { sameAs: a.id } : {})
     };
   });
 

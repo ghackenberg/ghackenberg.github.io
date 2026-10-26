@@ -11,7 +11,6 @@ order: 13
 organization:
   name: "University of Mannheim"
   id: "https://www.wikidata.org/wiki/Q317070"
-  url: "https://www.uni-mannheim.de/"
 ---
 
 Optimizing database query performance for complex XML and SQL procedures. Designing and implementing dynamic programming algorithms for relational engines using high-performance C++.

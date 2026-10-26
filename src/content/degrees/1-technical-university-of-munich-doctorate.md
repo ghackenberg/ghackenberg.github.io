@@ -9,7 +9,6 @@ order: 1
 organization:
   name: "Technical University of Munich"
   id: "https://www.wikidata.org/wiki/Q157808"
-  url: "https://www.tum.de/"
 ---
 
 Focusing on model-based, test-driven, and agile development methodologies for cyber-physical systems. Investigating integrated engineering workflows, formal system modeling, and continuous verification across mechatronic and software domains.

@@ -1,24 +1,23 @@
 ---
-title: "Das Model Context Protocol (MCP)"
+title: Das Model Context Protocol (MCP)
 subtitle: "Werkzeuge für den Agenten: {cue:hl-sub-mcp-1001}Der Unified Analytics MCP Server im praktischen Einsatz{/cue}"
 number: "39"
-slideLayout: "split"
-voiceover: >
-  Wie greift ein autonomer KI-Entwickleragent auf Datenquellen und operative Werkzeuge zu?
-  {cue:sub} Über das Model Context Protocol als offenen Standard zur {cue:hl-sub-mcp-1001}Entkopplung von Intelligenz und Werkzeug-Ausführung{/cue}.
-  {cue:col-mcp-arch} MCP trennt die Sprachintelligenz in {cue:hl-mcp-hosts}Google Antigravity oder Claude{/cue} von der Umgebung, ermöglicht über JSON-RPC {cue:hl-mcp-jsonrpc}standardisierte Tool Discovery{/cue} und bindet lokale Server wie {cue:hl-mcp-servers}Lighthouse, Filesystem und Git{/cue} an.
-  {cue:col-mcp-tools} Unser Unified Analytics MCP Server führt {cue:hl-mcp-audit}GSC-Suchdaten und Plausible-Engagement in einem konsolidierten Audit{/cue} zusammen, identifiziert {cue:hl-mcp-opps}Striking-Distance-Keywords auf den Rängen vier bis fünfzehn{/cue} und bewertet {cue:hl-mcp-aio}Zitierfähigkeit in generativen Overviews vor dem Release{/cue}.
+slideLayout: split
+voiceover: |
+  Wie greift ein autonomer KI-Entwickleragent auf Datenquellen und operative Werkzeuge zu? {cue:sub} Über das Model Context Protocol als offenen Standard zur {cue:hl-sub-mcp-1001}Entkopplung von Intelligenz und Werkzeug-Ausführung{/cue}. {cue:col-mcp-arch} MCP trennt die Sprachintelligenz in {cue:hl-mcp-hosts}Google Antigravity oder Claude{/cue} von der Umgebung, ermöglicht über JSON-RPC {cue:hl-mcp-jsonrpc}standardisierte Tool Discovery{/cue} und bindet lokale Server wie {cue:hl-mcp-servers}Lighthouse, Filesystem und Git{/cue} an. {cue:col-mcp-tools} Unser Unified Analytics MCP Server führt {cue:hl-mcp-audit}GSC-Suchdaten und Plausible-Engagement in einem konsolidierten Audit{/cue} zusammen, identifiziert {cue:hl-mcp-opps}Striking-Distance-Keywords auf den Rängen vier bis fünfzehn{/cue} und bewertet {cue:hl-mcp-aio}Zitierfähigkeit in generativen Overviews vor dem Release{/cue}.
 notes: |
   - Zeit: 48:00 - 50:30 Min.
   - Den Entwicklern im Raum den Durchbruch erklären: Kein Vendor-Lockin mehr; jeder Entwickler kann eigene MCP-Tools schreiben!
 references:
   - type: online
-    id: "anthropic-2024-mcp"
-    author: "Anthropic"
-    title: "Model Context Protocol (MCP) Specification"
-    siteName: "Model Context Protocol Documentation"
+    id: anthropic-2024-mcp
+    title: Model Context Protocol (MCP) Specification
+    siteName: Model Context Protocol Documentation
     year: 2024
-    url: "https://modelcontextprotocol.io"
+    url: https://modelcontextprotocol.io
+    authors:
+      - name: Anthropic
+        type: Organization
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

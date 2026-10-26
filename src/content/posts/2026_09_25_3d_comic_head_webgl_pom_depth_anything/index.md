@@ -1,9 +1,7 @@
 ---
 title: Interaktives 3D-Comic-Gesicht mit WebGL POM und Depth Anything V2
 pubDate: 2026-09-25
-description: Wie wir ein reales Porträtfoto über Gemini, Inpainting und Depth
-  Anything V2 in ein lebendiges WebGL-POM-Gesicht mit adaptiver
-  Mimik-State-Machine verwandelt haben.
+description: Wie wir ein reales Porträtfoto über Gemini, Inpainting und Depth Anything V2 in ein lebendiges WebGL-POM-Gesicht mit adaptiver Mimik-State-Machine verwandelt haben.
 lang: de
 tags:
   - webgl
@@ -18,33 +16,40 @@ tags:
 icon:
   src: ./hero-georg-whiteboard-pom.jpg
   title: Dr. Georg Hackenberg erklärt WebGL POM am Whiteboard
-  description: Dr. Georg Hackenberg präsentiert die 3D-Raymarching-Architektur des
-    Parallax Occlusion Mappings am Whiteboard im Almtal Home Office
+  description: Dr. Georg Hackenberg präsentiert die 3D-Raymarching-Architektur des Parallax Occlusion Mappings am Whiteboard im Almtal Home Office
 references:
   - type: online
-    author: Khronos Group
     title: WebGL 1.0 Specification
     url: https://www.khronos.org/registry/webgl/specs/1.0/
     year: 2014
     siteName: Khronos WebGL Working Group
     id: group-2014-webgl
+    authors:
+      - name: Khronos Group
+        type: Organization
   - type: inproceedings
-    author: Tatarchuk, N.
     title: Dynamic Parallax Occlusion Mapping with Approximate Soft Shadows
     url: https://doi.org/10.1145/1111411.1111423
     year: 2006
     doi: 10.1145/1111411.1111423
-    booktitle: Proceedings of the 2006 Symposium on Interactive 3D Graphics and
-      Games (I3D '06)
+    booktitle: Proceedings of the 2006 Symposium on Interactive 3D Graphics and Games (I3D '06)
     id: tatarchuk-2006-parallax-occlusion
+    authors:
+      - name: Natalya Tatarchuk
   - type: article
-    author: Yang, L., Kang, B., Huang, Z., Xu, X., Feng, J., & Zhao, H.
-    title: "Depth Anything V2: A More Capable Monocular Depth Estimation Foundation
-      Model"
+    title: "Depth Anything V2: A More Capable Monocular Depth Estimation Foundation Model"
     url: https://arxiv.org/abs/2406.09414
     year: 2024
     journal: arXiv preprint arXiv:2406
     id: yang-2024-depth-anything
+    authors:
+      - name: Lihe Yang
+      - name: Bingyi Kang
+      - name: Zilong Huang
+      - name: Zhen Zhao
+      - name: Xiaogang Xu
+      - name: Jiashi Feng
+      - name: Hengshuang Zhao
 ---
 
 Das Zusammenspiel aus 2.5D WebGL Parallax Occlusion Mapping (POM) und Depth Anything V2 bietet eine mesh-freie, extrem leichtgewichtige Alternative zu rechenintensiven 3D-Polygon-Meshes im Browser. Durch hardwarebeschleunigtes Raymarching entlang monokular geschätzter Tiefenkarten erzeugt ein kompakter Fragment-Shader plastische räumliche Tiefe, dynamische Beleuchtung und natürliche Blickwinkel-Parallaxe – bei minimalen Ladezeiten und völlig ohne externe Framework-Laufzeiten oder aufwändige Geometrie-Pipelines.

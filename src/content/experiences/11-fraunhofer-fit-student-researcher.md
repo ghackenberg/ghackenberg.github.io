@@ -10,7 +10,6 @@ order: 10
 organization:
   name: "Fraunhofer FIT"
   id: "https://www.wikidata.org/wiki/Q1451984"
-  url: "https://www.fit.fraunhofer.de/"
 ---
 
 Implementing markerless 3D hand tracking algorithms and gesture recognition models. Leveraging OpenCV, OpenGL, and C++ to build high-speed computer vision systems for interactive environments.

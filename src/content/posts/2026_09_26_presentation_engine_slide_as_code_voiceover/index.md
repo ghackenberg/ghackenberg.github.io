@@ -1,9 +1,7 @@
 ---
 title: "Slide-as-Code: Interaktive Präsentationen mit Astro"
 pubDate: 2026-09-26
-description: Wie wir eine maßgeschneiderte Slide-as-Code Presentation Engine mit
-  synchronisiertem Neural-Voiceover, Astro-Integration und KI-Agenten-Workflows
-  bauten.
+description: Wie wir eine maßgeschneiderte Slide-as-Code Presentation Engine mit synchronisiertem Neural-Voiceover, Astro-Integration und KI-Agenten-Workflows bauten.
 lang: de
 tags:
   - astro
@@ -17,29 +15,34 @@ tags:
 icon:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg präsentiert die Slide-as-Code Presentation Engine
-  description: Präsentation der interaktiven Slide-as-Code Engine mit
-    Neural-Voiceover vor der beamergestützten Leinwand am FH OÖ Campus Wels
+  description: Präsentation der interaktiven Slide-as-Code Engine mit Neural-Voiceover vor der beamergestützten Leinwand am FH OÖ Campus Wels
 references:
   - type: online
-    author: Astro Core Team
     title: "Astro Documentation: Content Collections and Static Site Generation"
     url: https://docs.astro.build/
     year: 2024
     id: team-2024-astro
+    authors:
+      - name: Astro Core Team
+        type: Organization
   - type: online
-    author: Schema.org
     title: PresentationDigitalDocument
     url: https://schema.org/PresentationDigitalDocument
     year: 2024
     siteName: Schema.org Type Specification
     id: schema-org-2024-presentationdigitaldocument
+    authors:
+      - name: Schema.org
+        type: Organization
   - type: misc
-    author: W3C Speech Interface Working Group
     title: Speech Synthesis Markup Language (SSML) Version 1.1
     url: https://www.w3.org/TR/speech-synthesis11/
     year: 2010
     howpublished: W3C Recommendation
     id: w3c-2010-ssml
+    authors:
+      - name: W3C Speech Interface Working Group
+        type: Organization
 ---
 
 

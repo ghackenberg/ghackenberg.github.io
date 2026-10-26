@@ -63,41 +63,15 @@ const coverImageSchema = ({ image }: { image: ImageFunction }) =>
 export const organizationRefSchema = z.object({
   id: z.url(),
   name: z.string().min(1),
-  url: z.url(),
 });
 
 const baseReferenceFields = {
   id: z.string().min(1),
   label: z.string().optional(),
   authors: z.array(authorEntrySchema).min(1),
-  author: z.string().optional(),
   title: z.string().min(1),
   url: z.url(),
   doi: z.string().optional(),
-};
-
-interface RawReferenceInput {
-  author?: string;
-  authors?: Array<{ name: string; type?: 'Person' | 'Organization'; id?: string; url?: string }>;
-  [key: string]: string | number | boolean | Array<{ name: string; type?: 'Person' | 'Organization'; id?: string; url?: string }> | undefined;
-}
-
-const preprocessReference = (val: RawReferenceInput | undefined) => {
-  if (val && typeof val === 'object' && !Array.isArray(val)) {
-    const obj = { ...val };
-    if (!obj.authors && typeof obj.author === 'string') {
-      const authorStr = obj.author.trim();
-      if (authorStr.includes(',') && !authorStr.includes(' and ') && !authorStr.includes('&')) {
-        const [last, first] = authorStr.split(',').map((s) => s.trim());
-        obj.authors = [{ name: first ? `${first} ${last}` : last, type: 'Person' }];
-      } else {
-        const parts = authorStr.split(/[,;&]|\band\b/i).map((s) => s.trim()).filter(Boolean);
-        obj.authors = parts.length > 0 ? parts.map((name) => ({ name, type: 'Person' })) : [{ name: authorStr, type: 'Person' }];
-      }
-    }
-    return obj;
-  }
-  return val;
 };
 
 const rawReferenceSchema = z.discriminatedUnion('type', [
@@ -142,7 +116,7 @@ const rawReferenceSchema = z.discriminatedUnion('type', [
   }),
 ]);
 
-export const referenceSchema = z.preprocess(preprocessReference, rawReferenceSchema);
+export const referenceSchema = rawReferenceSchema;
 
 export const slideReferenceSchema = referenceSchema;
 export type Reference = z.infer<typeof referenceSchema>;
@@ -172,31 +146,17 @@ const publications = defineCollection({
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) =>
-    z.preprocess(
-      (val: RawReferenceInput | undefined) => {
-        if (val && typeof val === 'object' && !Array.isArray(val)) {
-          const obj = { ...val };
-          if (!obj.authors && typeof obj.author === 'string') {
-            const parts = obj.author.split(/[,;&]|\band\b/i).map((s) => s.trim()).filter(Boolean);
-            obj.authors = parts.map((name) => ({ name, type: 'Person' }));
-          }
-          return obj;
-        }
-        return val;
-      },
-      z.object({
-        title: z.string(),
-        pubDate: z.coerce.date(),
-        book: z.string().optional(),
-        author: z.string().optional(),
-        authors: z.array(authorEntrySchema).min(1),
-        abstract: z.string().optional(),
-        tags: z.array(tagReference).default([]),
-        bibtex: z.string().optional(),
-        image: image().optional(),
-        publisherUrl: z.string().optional(),
-      })
-    ),
+    z.object({
+      title: z.string(),
+      pubDate: z.coerce.date(),
+      book: z.string().optional(),
+      authors: z.array(authorEntrySchema).min(1),
+      abstract: z.string().optional(),
+      tags: z.array(tagReference).default([]),
+      bibtex: z.string().optional(),
+      image: image().optional(),
+      publisherUrl: z.string().optional(),
+    }),
 });
 
 const visualizations = defineCollection({

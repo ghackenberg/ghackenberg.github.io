@@ -1,8 +1,8 @@
 ---
 title: "Consent-Free Visitor Flows: Reconstructing Multi-Step Navigation via Same-Origin Referrers and First-Order Markov Chains in Plausible"
 pubDate: 2026-10-18
-description: "How we replaced sessionStorage flow_id tokens and consent banners with stateless document.referrer telemetry and 1st-order Markov visitor flows."
-lang: "en"
+description: How we replaced sessionStorage flow_id tokens and consent banners with stateless document.referrer telemetry and 1st-order Markov visitor flows.
+lang: en
 tags:
   - web-development
   - typescript
@@ -15,70 +15,83 @@ tags:
   - optimization
   - systems-analysis
 icon:
-  src: "./hero.jpg"
-  title: "First-Order Markov Chain Matrix and Consent-Free Sankey Flow on Timber Office Whiteboard"
-  description: "Close-up illustration of a magnetic whiteboard on a pine timber wall in Grünau im Almtal displaying a first-order Markov state transition matrix and multi-column visitor flow graph with zero cookies"
+  src: ./hero.jpg
+  title: First-Order Markov Chain Matrix and Consent-Free Sankey Flow on Timber Office Whiteboard
+  description: Close-up illustration of a magnetic whiteboard on a pine timber wall in Grünau im Almtal displaying a first-order Markov state transition matrix and multi-column visitor flow graph with zero cookies
 references:
-  - id: "deshpande-2004-selective-markov"
-    type: "article"
-    author: "Deshpande, Mukund and Karypis, George"
-    title: "Selective Markov Models for Predicting Web Page Accesses"
-    journal: "ACM Transactions on Internet Technology (TOIT)"
+  - id: deshpande-2004-selective-markov
+    type: article
+    title: Selective Markov Models for Predicting Web Page Accesses
+    journal: ACM Transactions on Internet Technology (TOIT)
     year: 2004
     volume: "4"
     number: "2"
-    pages: "163--184"
-    doi: "10.1145/990301.990304"
-    url: "https://doi.org/10.1145/990301.990304"
-  - id: "borges-2000-navigation-patterns"
-    type: "inproceedings"
-    author: "Borges, José and Levene, Mark"
-    title: "Data Mining of User Navigation Patterns"
-    booktitle: "Web Usage Analysis and User Profiling (WEBKDD 1999), Lecture Notes in Computer Science, vol. 1836"
+    pages: 163--184
+    doi: 10.1145/990301.990304
+    url: https://doi.org/10.1145/990301.990304
+    authors:
+      - name: Mukund Deshpande
+      - name: George Karypis
+  - id: borges-2000-navigation-patterns
+    type: inproceedings
+    title: Data Mining of User Navigation Patterns
+    booktitle: Web Usage Analysis and User Profiling (WEBKDD 1999), Lecture Notes in Computer Science, vol. 1836
     year: 2000
-    pages: "92--112"
-    doi: "10.1007/3-540-44934-5_6"
-    url: "https://doi.org/10.1007/3-540-44934-5_6"
-  - id: "sarukkai-2000-markov-link-prediction"
-    type: "article"
-    author: "Sarukkai, Ramesh R."
-    title: "Link Prediction and Path Analysis Using Markov Chains"
-    journal: "Computer Networks"
+    pages: 92--112
+    doi: 10.1007/3-540-44934-5_6
+    url: https://doi.org/10.1007/3-540-44934-5_6
+    authors:
+      - name: José Borges
+      - name: Mark Levene
+  - id: sarukkai-2000-markov-link-prediction
+    type: article
+    title: Link Prediction and Path Analysis Using Markov Chains
+    journal: Computer Networks
     year: 2000
     volume: "33"
-    number: "1-6"
-    pages: "377--386"
-    doi: "10.1016/S1389-1286(00)00044-X"
-    url: "https://doi.org/10.1016/S1389-1286(00)00044-X"
-  - id: "edpb-2023-art53-technical-scope"
-    type: "online"
-    author: "European Data Protection Board (EDPB)"
-    title: "Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive"
+    number: 1-6
+    pages: 377--386
+    doi: 10.1016/S1389-1286(00)00044-X
+    url: https://doi.org/10.1016/S1389-1286(00)00044-X
+    authors:
+      - name: Ramesh R. Sarukkai
+  - id: edpb-2023-art53-technical-scope
+    type: online
+    title: Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive
     year: 2024
-    siteName: "European Data Protection Board"
-    url: "https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines/guidelines-22023-technical-scope-art-53-eprivacy-directive_en"
-  - id: "w3c-2017-referrer-policy"
-    type: "online"
-    author: "Eisinger, Jochen and Stark, Emily"
-    title: "Referrer Policy — W3C Candidate Recommendation"
+    siteName: European Data Protection Board
+    url: https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines/guidelines-22023-technical-scope-art-53-eprivacy-directive_en
+    authors:
+      - name: European Data Protection Board (EDPB)
+        type: Organization
+  - id: w3c-2017-referrer-policy
+    type: online
+    title: Referrer Policy — W3C Candidate Recommendation
     year: 2017
-    siteName: "World Wide Web Consortium (W3C)"
-    url: "https://www.w3.org/TR/referrer-policy/"
-  - id: "balinski-1982-fair-representation"
-    type: "book"
-    author: "Balinski, Michel L. and Young, H. Peyton"
+    siteName: World Wide Web Consortium (W3C)
+    url: https://www.w3.org/TR/referrer-policy/
+    authors:
+      - name: Jochen Eisinger
+      - name: Emily Stark
+  - id: balinski-1982-fair-representation
+    type: book
     title: "Fair Representation: Meeting the Ideal of One Man, One Vote"
-    publisher: "Yale University Press"
+    publisher: Yale University Press
     year: 1982
-    doi: "10.2307/1288706"
-    url: "https://doi.org/10.2307/1288706"
-  - id: "plausible-2024-stats-api"
-    type: "online"
-    author: "Plausible Insights OÜ"
-    title: "Plausible Stats API Documentation"
+    doi: 10.2307/1288706
+    url: https://doi.org/10.2307/1288706
+    authors:
+      - name: Michel L. Balinski
+      - name: Hobart Peyton Young
+  - id: plausible-2024-stats-api
+    type: online
+    title: Plausible Stats API Documentation
     year: 2024
-    siteName: "Plausible Analytics"
-    url: "https://plausible.io/docs/stats-api"
+    siteName: Plausible Analytics
+    url: https://plausible.io/docs/stats-api
+    authors:
+      - name: Plausible Insights OÜ
+        type: Organization
 ---
 
 Consent-free visitor flow reconstruction is a stateless web telemetry architecture that captures multi-step internal navigation paths without cookies, `localStorage`, `sessionStorage`, or persistent session identifiers. By combining ephemeral same-origin `document.referrer` step transitions (`prev_page`) with first-order Markov chain models and Hamilton Largest Remainder apportionment, engineering teams achieve 100% ePrivacy-compliant path analytics without consent banners.

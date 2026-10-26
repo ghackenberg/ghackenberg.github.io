@@ -2,36 +2,45 @@
 title: "Grenzen von Vektoren: Das Multi-Hop-Dilemma"
 subtitle: "Semantische Ähnlichkeit reicht nicht: {cue:hl-sub-multihop-1001}Fragmentierte Chunks und fehlende Kausalitätslogik{/cue}"
 number: "12"
-slideLayout: "split"
-voiceover: >
-  Obwohl Vektoren Bedeutungen meisterhaft abbilden, stoßen reine Vektor-RAG-Systeme in der B2B-Praxis an fundamentale logische Grenzen.
-  {cue:sub} Das Kernproblem liegt im {cue:hl-sub-multihop-1001}Multi-Hop-Dilemma und der Kausalitätsblindheit statistischer Vektoren{/cue}.
-  {cue:col-vector-limits} Ein rein Vektor-basiertes Top-K-Retrieval {cue:hl-callout-vector-limits}zerlegt Fachdokumente in isolierte Textfragmente{/cue}: Weil Vektoren keine Prädikate kennen, {cue:hl-vector-causality}liegen Kooperation und gerichtliche Klage im Vektorraum oft gefährlich nah beieinander{/cue}, während {cue:hl-vector-fragments}wichtige Provenienz- und Kontextstrukturen verloren gehen{/cue}, da nach Gary Marcus {cue:hl-vector-stochastic}rein statistische Wahrscheinlichkeiten keine logische Widerspruchsfreiheit garantieren{/cue}.
-  {cue:col-multihop-b2b} Besonders akut wird dies bei komplexen B2B-Anfragen: {cue:hl-callout-multihop-example}Wenn ein Kunde nach IEC-zertifizierten Komponenten eines Zulieferers fragt{/cue}, erfordert die Antwort {cue:hl-multihop-chain}eine relationale Schlussfolgerungskette über mehrere Dokumente hinweg{/cue}. Reine Vektorsuche {cue:hl-multihop-failure}kann diese Kanten nicht prüfen und rät ins Blaue hinein{/cue}. Nach Pan et al. ist klar: {cue:hl-multihop-solution}Wir brauchen symbolische Wissensgraphen als verlässliches Fundament{/cue}!
+slideLayout: split
+voiceover: |
+  Obwohl Vektoren Bedeutungen meisterhaft abbilden, stoßen reine Vektor-RAG-Systeme in der B2B-Praxis an fundamentale logische Grenzen. {cue:sub} Das Kernproblem liegt im {cue:hl-sub-multihop-1001}Multi-Hop-Dilemma und der Kausalitätsblindheit statistischer Vektoren{/cue}. {cue:col-vector-limits} Ein rein Vektor-basiertes Top-K-Retrieval {cue:hl-callout-vector-limits}zerlegt Fachdokumente in isolierte Textfragmente{/cue}: Weil Vektoren keine Prädikate kennen, {cue:hl-vector-causality}liegen Kooperation und gerichtliche Klage im Vektorraum oft gefährlich nah beieinander{/cue}, während {cue:hl-vector-fragments}wichtige Provenienz- und Kontextstrukturen verloren gehen{/cue}, da nach Gary Marcus {cue:hl-vector-stochastic}rein statistische Wahrscheinlichkeiten keine logische Widerspruchsfreiheit garantieren{/cue}. {cue:col-multihop-b2b} Besonders akut wird dies bei komplexen B2B-Anfragen: {cue:hl-callout-multihop-example}Wenn ein Kunde nach IEC-zertifizierten Komponenten eines Zulieferers fragt{/cue}, erfordert die Antwort {cue:hl-multihop-chain}eine relationale Schlussfolgerungskette über mehrere Dokumente hinweg{/cue}. Reine Vektorsuche {cue:hl-multihop-failure}kann diese Kanten nicht prüfen und rät ins Blaue hinein{/cue}. Nach Pan et al. ist klar: {cue:hl-multihop-solution}Wir brauchen symbolische Wissensgraphen als verlässliches Fundament{/cue}!
 notes: |
   - Zeit: 18:30 - 21:00 Min.
   - Gary Marcus (2020) & Shirui Pan et al. (IEEE TKDE 2024) zitieren.
   - Kernaussage für Industrie-Entscheider: Vektoren sind wie ein Wörterbuch für Synonyme; Wissensgraphen sind das logische Beziehungsgeflecht der Fabrik.
 references:
   - type: article
-    id: "marcus-2020-neurosymbolic"
-    author: "Marcus, Gary"
+    id: marcus-2020-neurosymbolic
     title: "The Next Decades in AI: Four Steps Towards Robust Artificial Intelligence"
-    journal: "arXiv preprint arXiv:2002.06177"
+    journal: arXiv preprint arXiv:2002.06177
     year: 2020
-    doi: "10.48550/arXiv.2002.06177"
-    url: "https://arxiv.org/abs/2002.06177"
+    doi: 10.48550/arXiv.2002.06177
+    url: https://arxiv.org/abs/2002.06177
+    authors:
+      - name: Gary Marcus
   - type: article
-    id: "pan-2024-unifying-llm-kg"
-    author: "Pan, Shirui and Luo, Linhao and Wang, Yewei and Chen, Chen and Wang, Jiapu and Wu, Xindong"
+    id: pan-2024-unifying-llm-kg
     title: "Unifying Large Language Models and Knowledge Graphs: A Roadmap"
-    journal: "IEEE Transactions on Knowledge and Data Engineering"
+    journal: IEEE Transactions on Knowledge and Data Engineering
     volume: "36"
     number: "7"
-    pages: "3581-3599"
+    pages: 3581-3599
     year: 2024
-    doi: "10.1109/TKDE.2024.3352100"
-    url: "https://doi.org/10.1109/TKDE.2024.3352100"
+    doi: 10.1109/TKDE.2024.3352100
+    url: https://doi.org/10.1109/TKDE.2024.3352100
+    authors:
+      - name: Shirui Pan
+        id: https://orcid.org/0000-0003-0794-527X
+      - name: Linhao Luo
+        id: https://orcid.org/0000-0003-0027-942X
+      - name: Yufei Wang
+      - name: Chen Chen
+        id: https://orcid.org/0000-0002-4637-9250
+      - name: Jiapu Wang
+        id: https://orcid.org/0000-0001-7639-5289
+      - name: Xindong Wu
+        id: https://orcid.org/0000-0003-2396-1704
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

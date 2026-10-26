@@ -1,9 +1,7 @@
 ---
 title: "Agentenbasierte SEO, GEO & AIO: Praxisbericht mit eigenem MCP"
 pubDate: 2026-09-24
-description: Wie wir mit einem Custom MCP Server für Google Search Console und
-  Plausible Analytics eine geschlossene Agenten-Optimierungs-Schleife für GEO
-  und AIO bauten.
+description: Wie wir mit einem Custom MCP Server für Google Search Console und Plausible Analytics eine geschlossene Agenten-Optimierungs-Schleife für GEO und AIO bauten.
 lang: de
 tags:
   - agentic-ai
@@ -15,32 +13,35 @@ tags:
   - typescript
 icon:
   src: ./hero.jpg
-  title: Dr. Georg Hackenberg präsentiert den Agentic SEO/GEO/AIO MCP Server im
-    Design Thinking Lab
-  description: Präsentation des agentenbasierten Analyse- und
-    Optimierungs-Workflows an der Projektionswand im Design Thinking Lab am FH
-    OÖ Campus Wels
+  title: Dr. Georg Hackenberg präsentiert den Agentic SEO/GEO/AIO MCP Server im Design Thinking Lab
+  description: Präsentation des agentenbasierten Analyse- und Optimierungs-Workflows an der Projektionswand im Design Thinking Lab am FH OÖ Campus Wels
 references:
   - type: online
-    author: Anthropic
     title: Building Effective Agents
     url: https://www.anthropic.com/research/building-effective-agents
     year: 2024
     siteName: Anthropic Research & Engineering
     id: anthropic-2024-building-effective
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: online
-    author: Anthropic
     title: Model Context Protocol (MCP) Specification
     url: https://modelcontextprotocol.io/
     year: 2024
     id: anthropic-2024-mcp
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: online
-    author: Google Search Central
     title: Creating helpful, reliable, people-first content
     url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
     year: 2024
     siteName: Google Documentation
     id: google-2024-creating-helpful
+    authors:
+      - name: Google Search Central
+        type: Organization
 ---
 
 Unter Agentic SEO/GEO verstehen wir eine geschlossene Regelkreis-Automatisierung, die Echtzeit-Telemetrie aus Suchmaschinen und Web-Analytics unmittelbar mit git-gestützten Refactorings des lokalen Markdown-ASTs verzahnt. Autonome Coding-Agenten analysieren Klickdaten, Suchintentionen sowie ungenutzte Ranking-Potenziale und überführen erkannte Inhaltslücken programmatisch in semantisch optimierte Quellcode-Commits – stets flankiert von deterministischen Qualitätsprüfungen und strikten menschlichen Freigabe-Gates.

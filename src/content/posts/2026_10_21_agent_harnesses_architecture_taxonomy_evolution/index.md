@@ -1,7 +1,7 @@
 ---
 title: "Agent Harnesses: Architecture, Taxonomy, and Evolution from Test Drivers to Protocol Buses"
 pubDate: 2026-10-21
-description: "A technical survey and architectural taxonomy of AI agent harnesses—tracing their evolution from classical test drivers and RL environments to Agent-Computer Interfaces, isolated sandboxes, and Model Context Protocol buses."
+description: A technical survey and architectural taxonomy of AI agent harnesses—tracing their evolution from classical test drivers and RL environments to Agent-Computer Interfaces, isolated sandboxes, and Model Context Protocol buses.
 lang: en
 tags:
   - agentic-ai
@@ -12,78 +12,164 @@ tags:
 icon:
   src: ./hero.jpg
   title: "Agent Harness Architecture: ACI, Execution Sandboxes, and Verification Loops"
-  description: "Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying an architectural schematic of an AI Agent Harness with an Agent-Computer Interface, container sandbox, context compaction engine, and Model Context Protocol bus"
+  description: Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying an architectural schematic of an AI Agent Harness with an Agent-Computer Interface, container sandbox, context compaction engine, and Model Context Protocol bus
 references:
   - id: brockman-2016-openai-gym
     type: misc
-    author: "Brockman, Greg and Cheung, Vicki and Pettersson, Ludwig and Schneider, Jonas and Schulman, John and Tang, Jie and Zaremba, Wojciech"
-    title: "OpenAI Gym"
+    title: OpenAI Gym
     year: 2016
-    howpublished: "arXiv preprint arXiv:1606.01540"
-    url: "https://arxiv.org/abs/1606.01540"
+    howpublished: arXiv preprint arXiv:1606.01540
+    url: https://arxiv.org/abs/1606.01540
+    authors:
+      - name: Greg Brockman
+      - name: Vicki Cheung
+      - name: Ludwig Pettersson
+      - name: Jonas Schneider
+      - name: John Schulman
+      - name: Jie Tang
+      - name: Wojciech Zaremba
   - id: yao-2023-react
     type: inproceedings
-    author: "Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan"
     title: "ReAct: Synergizing Reasoning and Acting in Language Models"
-    booktitle: "International Conference on Learning Representations (ICLR 2023)"
+    booktitle: International Conference on Learning Representations (ICLR 2023)
     year: 2023
-    url: "https://arxiv.org/abs/2210.03629"
+    url: https://arxiv.org/abs/2210.03629
+    authors:
+      - name: Shunyu Yao
+      - name: Jeffrey Zhao
+      - name: Dian Yu
+      - name: Nan Du
+      - name: Izhak Shafran
+      - name: Karthik Narasimhan
+      - name: Yuan Cao
   - id: schick-2023-toolformer
     type: inproceedings
-    author: "Schick, Timo and Dwivedi-Yu, Jane and Dessì, Roberto and Raileanu, Roberta and Lomeli, Maria and Hambro, Eric and Zettlemoyer, Luke and Cancedda, Nicola and Scialom, Thomas"
     title: "Toolformer: Language Models Can Teach Themselves to Use Tools"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2023)"
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2023)
     year: 2023
-    url: "https://arxiv.org/abs/2302.04761"
+    url: https://arxiv.org/abs/2302.04761
+    authors:
+      - name: Timo Schick
+      - name: Jane Dwivedi-Yu
+      - name: Roberto Dessì
+      - name: Roberta Raileanu
+      - name: Maria Lomeli
+      - name: Eric Hambro
+      - name: Luke Zettlemoyer
+      - name: Nicola Cancedda
+      - name: Thomas Scialom
   - id: jimenez-2024-swebench
     type: inproceedings
-    author: "Jimenez, Carlos E. and Yang, John and Wettig, Alexander and Yao, Shunyu and Pei, Kexin and Press, Ofir and Narasimhan, Karthik"
     title: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?"
-    booktitle: "International Conference on Learning Representations (ICLR 2024)"
+    booktitle: International Conference on Learning Representations (ICLR 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2310.06770"
+    url: https://arxiv.org/abs/2310.06770
+    authors:
+      - name: Carlos E. Jimenez
+      - name: John Yang
+      - name: Alexander Wettig
+      - name: Shunyu Yao
+      - name: Kexin Pei
+      - name: Ofir Press
+      - name: Karthik Narasimhan
   - id: yang-2024-sweagent
     type: inproceedings
-    author: "Yang, John and Jimenez, Carlos E. and Wettig, Alexander and Lieret, Kilian and Yao, Shunyu and Narasimhan, Karthik and Press, Ofir"
     title: "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2024)"
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2405.15793"
+    url: https://arxiv.org/abs/2405.15793
+    authors:
+      - name: John Yang
+      - name: Carlos E. Jimenez
+      - name: Alexander Wettig
+      - name: Kilian Lieret
+      - name: Shunyu Yao
+      - name: Karthik Narasimhan
+      - name: Ofir Press
   - id: xia-2024-agentless
     type: misc
-    author: "Xia, Chunqiu Steven and Deng, Yinlin and Dunn, Soren and Zhang, Lingming"
     title: "Agentless: Demystifying LLM-based Software Engineering Agents"
     year: 2024
-    howpublished: "arXiv preprint arXiv:2407.01489"
-    url: "https://arxiv.org/abs/2407.01489"
+    howpublished: arXiv preprint arXiv:2407.01489
+    url: https://arxiv.org/abs/2407.01489
+    authors:
+      - name: Chunqiu Steven Xia
+      - name: Yinlin Deng
+      - name: Soren Dunn
+      - name: Lingming Zhang
   - id: xie-2024-osworld
     type: inproceedings
-    author: "Xie, Tianbao and Zhang, Danyang and Chen, Jixuan and Li, Xiaochuan and Zhao, Siheng and Cao, Ruisheng and Hua, Toh Jing and Cheng, Zhoujun and Shin, Dongchan and Lei, Fangyu and Liu, Yitao and Xu, Yiheng and Zhou, Shuyan and Savarese, Silvio and Xiong, Caiming and Zhong, Victor and Yu, Tao"
     title: "OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2024)"
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2404.07972"
+    url: https://arxiv.org/abs/2404.07972
+    authors:
+      - name: Tianbao Xie
+      - name: Danyang Zhang
+      - name: Jixuan Chen
+      - name: Xiaochuan Li
+      - name: Siheng Zhao
+      - name: Ruisheng Cao
+      - name: Toh Jing Hua
+      - name: Zhoujun Cheng
+      - name: Dongchan Shin
+      - name: Fangyu Lei
+      - name: Yitao Liu
+      - name: Yiheng Xu
+      - name: Shuyan Zhou
+      - name: Silvio Savarese
+      - name: Caiming Xiong
+      - name: Victor Zhong
+      - name: Tao Yu
   - id: wang-2025-openhands
     type: inproceedings
-    author: "Wang, Xingyao and Li, Boxuan and Song, Yufan and Xu, Frank F. and Tang, Xiangru and Zhuge, Mingchen and Pan, Jiayi and Song, Yueqi and Li, Bowen and Singh, Jaskirat and Tran, Hoang H. and Li, Fuqiang and Ma, Ren and Zheng, Mingzhang and Qian, Bill and Shao, Yanjun and Muennighoff, Niklas and Zhang, Yizhe and Hui, Binyuan and Lin, Junyang and Brennan, Robert and Peng, Hao and Ji, Heng and Neubig, Graham"
     title: "OpenHands: An Open Platform for AI Software Developers as Generalist Agents"
-    booktitle: "International Conference on Learning Representations (ICLR 2025)"
+    booktitle: International Conference on Learning Representations (ICLR 2025)
     year: 2025
-    url: "https://arxiv.org/abs/2407.16741"
+    url: https://arxiv.org/abs/2407.16741
+    authors:
+      - name: Xingyao Wang
+      - name: Boxuan Li
+      - name: Yufan Song
+      - name: Frank F. Xu
+      - name: Xiangru Tang
+      - name: Mingchen Zhuge
+      - name: Jiayi Pan
+      - name: Yueqi Song
+      - name: Bowen Li
+      - name: Jaskirat Singh
+      - name: Hoang H. Tran
+      - name: Fuqiang Li
+      - name: Ren Ma
+      - name: Mingzhang Zheng
+      - name: Bill Qian
+      - name: Yanjun Shao
+      - name: Niklas Muennighoff
+      - name: Yizhe Zhang
+      - name: Binyuan Hui
+      - name: Junyang Lin
+      - name: Robert Brennan
+      - name: Hao Peng
+      - name: Heng Ji
+      - name: Graham Neubig
   - id: schluntz-2024-effective-agents
     type: online
-    author: "Schluntz, Erik and Zhang, Barry"
-    title: "Building Effective Agents"
+    title: Building Effective Agents
     year: 2024
-    siteName: "Anthropic Engineering"
-    url: "https://www.anthropic.com/engineering/building-effective-agents"
+    siteName: Anthropic Engineering
+    url: https://www.anthropic.com/engineering/building-effective-agents
+    authors:
+      - name: Erik Schluntz
+      - name: Barry Zhang
   - id: mcp-specification-2024
     type: online
-    author: "Anthropic"
-    title: "Model Context Protocol Specification"
+    title: Model Context Protocol Specification
     year: 2024
-    siteName: "Model Context Protocol"
-    url: "https://modelcontextprotocol.io/specification"
+    siteName: Model Context Protocol
+    url: https://modelcontextprotocol.io/specification
+    authors:
+      - name: Anthropic
+        type: Organization
 ---
 
 An **agent harness** is the deterministic runtime execution loop, environment abstraction, state and context manager, tool protocol bus, and verification scaffolding that wraps a foundation model to transform probabilistic token predictions into bounded, reproducible system actions across operating systems, codebases, and external interfaces.

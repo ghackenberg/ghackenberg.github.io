@@ -1208,8 +1208,7 @@ async function verifyExternalAuthorities() {
         const data = (await res.json()) as OrcidApiResponse;
         const givenName = data.name?.['given-names']?.value;
         const familyName = data.name?.['family-name']?.value;
-        const valid = /Georg/i.test(givenName || '') && /Hackenberg/i.test(familyName || '');
-        cache.orcid[orcidId] = { valid, checksumValid: true, givenName, familyName };
+        cache.orcid[orcidId] = { valid: true, checksumValid: true, givenName, familyName };
       } else {
         cache.orcid[orcidId] = { valid: false, checksumValid: true };
       }
@@ -1224,8 +1223,21 @@ async function verifyExternalAuthorities() {
     if (!cached) continue;
     if (!cached.checksumValid) {
       addViolation(6, 'Gate 6d: Invalid ORCID Checksum', cand.relPath, `ORCID "${cand.orcidId}" failed ISO 7064 Mod 11,2 checksum verification.`);
-    } else if (!cached.valid) {
-      addViolation(6, 'Gate 6d: ORCID Identity Mismatch', cand.relPath, `ORCID "${cand.orcidId}" did not match expected person name "Georg Hackenberg".`);
+      continue;
+    }
+    const isSiteAuthor = cand.node['@id'] === 'https://hackenberg.tech/#person' || /Georg Hackenberg/i.test(String(cand.node['name'] || ''));
+    if (isSiteAuthor) {
+      const isGeorg = /Georg/i.test(cached.givenName || '') && /Hackenberg/i.test(cached.familyName || '');
+      if (!isGeorg) {
+        addViolation(6, 'Gate 6d: ORCID Identity Mismatch', cand.relPath, `ORCID "${cand.orcidId}" did not match expected person name "Georg Hackenberg".`);
+      }
+    } else if (cand.node['name']) {
+      const expectedName = String(cand.node['name']);
+      const familyName = cached.familyName || '';
+      const givenName = cached.givenName || '';
+      if (familyName && !new RegExp(familyName.replace(/[^a-zA-Z]/g, ''), 'i').test(expectedName.replace(/[^a-zA-Z]/g, ''))) {
+        addViolation(6, 'Gate 6d: ORCID Identity Mismatch', cand.relPath, `ORCID "${cand.orcidId}" (${givenName} ${familyName}) did not match expected author name "${expectedName}".`);
+      }
     }
   }
 

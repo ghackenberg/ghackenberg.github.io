@@ -2,26 +2,35 @@
 title: "KDD 2024: Studiendesign & Limitationen"
 subtitle: "Kritische Würdigung der GEO-bench: {cue:hl-sub-kddlimits-1001}Versuchsaufbau, Metriken und Gültigkeitsgrenzen{/cue}"
 number: "22"
-slideLayout: "split"
-voiceover: >
-  Als Wissenschaftler ist mir wichtig, nicht nur Erfolgszahlen zu feiern, sondern die Methodik kritisch zu hinterfragen.
-  {cue:sub} Betrachten wir das Studiendesign der KDD-Studie, {cue:hl-sub-kddlimits-1001}ihren Versuchsaufbau, Metriken und Gültigkeitsgrenzen{/cue}.
-  {cue:col-kdd-design} Das GEO-bench-Testbed nutzte {cue:hl-kddlimits-dataset}zehntausend Suchanfragen mit exponentiell gewichteter Zitationsmetrik{/cue}. Das zweistufige RAG-Setup koppelte {cue:hl-kddlimits-twostep}Google Top-5 Retrieval mit GPT-3.5 Synthese{/cue}, validierte {cue:hl-kddlimits-perplex}Zitationsgewinne im realen Web auf Perplexity{/cue} und zeigte {cue:hl-kddlimits-rank5}einhundertfünfzehn Prozent Zitationssprung auf SERP-Rang fünf{/cue}.
-  {cue:col-kdd-limits} Für die Praxis gelten drei wesentliche Einschränkungen: {cue:hl-kddlimits-serp}GEO manipuliert nicht das Google-Web-Ranking selbst{/cue}, die Daten basieren auf {cue:hl-kddlimits-static}statischen Momentaufnahmen ohne Live-Algorithmen{/cue}, flächendeckender Einsatz führt zu {cue:hl-kddlimits-armsrace}Sättigungseffekten und abnehmendem Grenznutzen{/cue}, und {cue:hl-kddlimits-prompts}individuelle System-Prompts beeinflussen die Heuristik{/cue}.
+slideLayout: split
+voiceover: |
+  Als Wissenschaftler ist mir wichtig, nicht nur Erfolgszahlen zu feiern, sondern die Methodik kritisch zu hinterfragen. {cue:sub} Betrachten wir das Studiendesign der KDD-Studie, {cue:hl-sub-kddlimits-1001}ihren Versuchsaufbau, Metriken und Gültigkeitsgrenzen{/cue}. {cue:col-kdd-design} Das GEO-bench-Testbed nutzte {cue:hl-kddlimits-dataset}zehntausend Suchanfragen mit exponentiell gewichteter Zitationsmetrik{/cue}. Das zweistufige RAG-Setup koppelte {cue:hl-kddlimits-twostep}Google Top-5 Retrieval mit GPT-3.5 Synthese{/cue}, validierte {cue:hl-kddlimits-perplex}Zitationsgewinne im realen Web auf Perplexity{/cue} und zeigte {cue:hl-kddlimits-rank5}einhundertfünfzehn Prozent Zitationssprung auf SERP-Rang fünf{/cue}. {cue:col-kdd-limits} Für die Praxis gelten drei wesentliche Einschränkungen: {cue:hl-kddlimits-serp}GEO manipuliert nicht das Google-Web-Ranking selbst{/cue}, die Daten basieren auf {cue:hl-kddlimits-static}statischen Momentaufnahmen ohne Live-Algorithmen{/cue}, flächendeckender Einsatz führt zu {cue:hl-kddlimits-armsrace}Sättigungseffekten und abnehmendem Grenznutzen{/cue}, und {cue:hl-kddlimits-prompts}individuelle System-Prompts beeinflussen die Heuristik{/cue}.
 notes: |
   - Zeit: 28:00 - 30:30 Min.
   - Akademische Glaubwürdigkeit: Klare Trennung zwischen "Was die Studie beweist" und "Was man nicht hineininterpretieren darf".
 references:
   - type: inproceedings
-    id: "aggarwal-2024-geo"
-    author: "Aggarwal, Pranjal and Murahari, Vishvak and Rajpurohit, Tanmay and Kalyan, Ashwin and Narasimhan, Karthik and Deshpande, Ameet"
+    id: aggarwal-2024-geo
     title: "GEO: Generative Engine Optimization"
-    booktitle: "Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)"
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)
     year: 2024
-    pages: "5–16"
-    publisher: "Association for Computing Machinery"
-    doi: "10.1145/3637528.3671900"
-    url: "https://doi.org/10.1145/3637528.3671900"
+    pages: 5–16
+    publisher: Association for Computing Machinery
+    doi: 10.1145/3637528.3671900
+    url: https://doi.org/10.1145/3637528.3671900
+    authors:
+      - name: Pranjal Aggarwal
+        id: https://orcid.org/0000-0002-2962-1535
+      - name: Vishvak Murahari
+        id: https://orcid.org/0009-0008-9304-0701
+      - name: Tanmay Rajpurohit
+        id: https://orcid.org/0000-0001-9302-4244
+      - name: Ashwin Kalyan
+        id: https://orcid.org/0009-0006-3448-3305
+      - name: Karthik Narasimhan
+        id: https://orcid.org/0000-0001-9894-9983
+      - name: Ameet Deshpande
+        id: https://orcid.org/0000-0001-9885-0385
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
