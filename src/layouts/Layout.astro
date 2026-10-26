@@ -26,7 +26,6 @@ import { getFileContentHash, getHashedFilename } from "@commons/server/content-h
 import Background from "@components/Background.astro";
 import Container from "@components/Container.astro";
 import JsonLd from "@components/JsonLd.astro";
-import PrivacyModal from "@components/PrivacyModal.astro";
 import AnalyticsDevOverlay from "@components/dev/AnalyticsDevOverlay.astro";
 import DevStudioShell from "@components/dev/DevStudioShell.astro";
 import PreviewMediaBoot from "@components/PreviewMediaBoot.astro";
@@ -622,10 +621,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
       </footer>
     </div>
 
-    <!-- Privacy & Settings Modal -->
-    <PrivacyModal />
-
-    <!-- Page Modals (e.g. SlideReferencesModal) -->
+    <!-- Page Modals (e.g. SlideReferencesModal, PrivacyModal) -->
     <slot name="modals" />
     {isDev && (
       <>

@@ -369,19 +369,6 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
           </svg>
         </button>
 
-        <!-- Privacy Settings Button Desktop -->
-        <button 
-          type="button"
-          data-open-privacy-modal
-          class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-90"
-          aria-label="Privacy Settings"
-          title="Privacy Settings"
-        >
-          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-          </svg>
-        </button>
-
         <!-- Contact CTA Button (Far Right of Actions Group) -->
         <a 
           href="/contact/" 
@@ -398,7 +385,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
         </a>
       </div>
 
-      <!-- Mobile Actions (Theme, Privacy, Burger Button) -->
+      <!-- Mobile Actions (Theme, Burger Button) -->
       <div id="mobile-actions" class="flex items-center space-x-1 ml-auto">
         <!-- Theme Cycle Button Mobile -->
         <button 
@@ -415,19 +402,6 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
           </svg>
           <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
-
-        <!-- Privacy Settings Button Mobile -->
-        <button 
-          type="button"
-          data-open-privacy-modal
-          class="w-10 h-10 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-90"
-          aria-label="Privacy Settings"
-          title="Privacy Settings"
-        >
-          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
         </button>
 
@@ -464,7 +438,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
           var containerWidth = container.clientWidth || w;
           var brandWidth = brand ? brand.offsetWidth : 280;
-          var actionsWidth = actions ? actions.offsetWidth : 218;
+          var actionsWidth = actions ? actions.offsetWidth : 176;
           var minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
           var navActionsGap = 20;
 
@@ -696,7 +670,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       rafId = requestAnimationFrame(() => {
         const containerWidth = container.clientWidth;
         const brandWidth = brand.offsetWidth;
-        const actionsWidth = desktopActions.offsetWidth || 218;
+        const actionsWidth = desktopActions.offsetWidth || 176;
 
         const availableWidth = containerWidth - brandWidth - actionsWidth - minLogoGap - navActionsGap;
 

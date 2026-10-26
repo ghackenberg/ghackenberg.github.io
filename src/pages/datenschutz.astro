@@ -3,6 +3,7 @@ import Layout from "@layouts/Layout.astro";
 import { buildLegalWebPageSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import PrivacyModal from "@components/PrivacyModal.astro";
 
 const legalSchema = buildLegalWebPageSchema({ path: 'datenschutz', name: 'Datenschutzerklärung', description: 'Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO), TDDDG und TKG 2021.' });
 ---
@@ -22,19 +23,6 @@ const legalSchema = buildLegalWebPageSchema({ path: 'datenschutz', name: 'Datens
       <p class="text-gray-400 text-sm md:text-base max-w-xl font-normal leading-relaxed">
         Informationen darüber, wie wir personenbezogene Daten auf dieser Website verarbeiten, schützen und welche Rechte Ihnen gemäß DSGVO, TDDDG und TKG 2021 zustehen.
       </p>
-
-      <div class="mt-5">
-        <button 
-          type="button" 
-          data-open-privacy-modal 
-          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-brand-primary/40 text-text-subtle hover:text-text-main text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shadow-sm"
-        >
-          <svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-          </svg>
-          <span>Privatsphäre-Einstellungen anpassen</span>
-        </button>
-      </div>
     </div>
 
     <!-- Main Content Panel -->
@@ -123,7 +111,7 @@ const legalSchema = buildLegalWebPageSchema({ path: 'datenschutz', name: 'Datens
           </li>
         </ul>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>Löschbarkeit &amp; Deaktivierung:</strong> Sie können die lokalen Einstellungen jederzeit über das Schutzschild-Symbol in der Navigationsleiste („Privacy Settings“) verwalten oder die Daten jederzeit über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
+          <strong>Löschbarkeit &amp; Deaktivierung:</strong> Sie können die lokalen Einstellungen jederzeit über die Privatsphäre-Einstellungen auf dieser Seite (siehe Abschnitt 3) verwalten oder die Daten jederzeit über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
         </p>
       </div>
 
@@ -223,4 +211,6 @@ const legalSchema = buildLegalWebPageSchema({ path: 'datenschutz', name: 'Datens
       </div>
     </div>
   </Container>
+
+  <PrivacyModal slot="modals" />
 </Layout>
