@@ -185,6 +185,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     id="site-header"
     class="transition-all duration-300 w-full py-4 relative"
     data-nav-mode="desktop"
+    data-brand-mode="full"
     data-nav-count="10"
     data-active-priority={activePriority}
     style={`--active-nav-color: ${activeNavCssVar};`}
@@ -194,14 +195,14 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
     <Container as="div" size="wide" padding="none" class="relative flex items-center justify-between" id="nav-container">
       
-      <!-- Logo / Brand on the left (shrink-0 with dedicated minimum distance to nav) -->
-      <a href="/" class="flex items-center space-x-3 group shrink-0 mr-8 min-w-max" id="nav-brand">
+      <!-- Logo / Brand on the left (shrink-0 with script-driven visibility) -->
+      <a href="/" class="flex items-center gap-3 group shrink-0 min-w-max" id="nav-brand">
         <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-primary/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
           <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
             GH
           </span>
         </span>
-        <div class="flex flex-col nav-logo-name leading-tight shrink-0">
+        <div class="flex flex-col items-start nav-logo-name leading-tight shrink-0">
           <span class="nav-logo-title font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors whitespace-nowrap">
             Dr. Georg Hackenberg
           </span>
@@ -212,7 +213,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       </a>
 
       <!-- Desktop Navigation Links (Right-aligned, Priority+ Dynamic Container) -->
-      <nav id="desktop-nav" class="ml-auto flex items-center justify-end gap-4 lg:gap-5 transition-opacity duration-200">
+      <nav id="desktop-nav" class="ml-auto flex items-center justify-end gap-4 transition-opacity duration-200">
         <!-- 9 Direct Canonical Items -->
         {directNavItems.map(item => {
           const styles = NAV_DOMAIN_STYLES[item.id] || NAV_DOMAIN_STYLES.about;
@@ -350,7 +351,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       </nav>
 
       <!-- Desktop Actions Group at far right -->
-      <div id="desktop-actions" class="flex items-center space-x-1.5 shrink-0 ml-4 xl:ml-5">
+      <div id="desktop-actions" class="flex items-center space-x-1.5 shrink-0 ml-5">
         <!-- Theme Cycle Button Desktop -->
         <button 
           id="theme-cycle-btn-desktop"
@@ -428,21 +429,30 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
           var container = document.getElementById('nav-container');
           var brand = document.getElementById('nav-brand');
           var actions = document.getElementById('desktop-actions');
+          var mobileActions = document.getElementById('mobile-actions');
           if (!header || !container) return;
 
-          var w = window.innerWidth;
-          if (w < 820) {
-            header.setAttribute('data-nav-mode', 'burger');
-            return;
-          }
+          var cs = window.getComputedStyle(container);
+          var padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+          var innerWidth = (container.clientWidth || window.innerWidth) - padX;
 
-          var containerWidth = container.clientWidth || w;
-          var brandWidth = brand ? brand.offsetWidth : 280;
-          var actionsWidth = actions ? actions.offsetWidth : 176;
+          // Measure intrinsic brand lockup widths while data-brand-mode="full" is active
+          var titleEl = brand ? brand.querySelector('.nav-logo-title') : null;
+          var subtitleEl = brand ? brand.querySelector('.nav-logo-subtitle') : null;
+          var monoWidth = 40;
+          var brandGap = 12;
+          var titleW = Math.max(titleEl ? Math.ceil(titleEl.getBoundingClientRect().width || titleEl.offsetWidth) : 0, 150);
+          var subtitleW = Math.max(subtitleEl ? Math.ceil(subtitleEl.getBoundingClientRect().width || subtitleEl.offsetWidth) : 0, 205);
+          header.setAttribute('data-title-w', String(titleW));
+          header.setAttribute('data-subtitle-w', String(subtitleW));
+
+          var brandTitleWidth = monoWidth + brandGap + titleW;
+          var brandFullWidth = monoWidth + brandGap + Math.max(titleW, subtitleW);
+          var actionsWidth = (actions && actions.offsetWidth) ? actions.offsetWidth : 156;
           var minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
           var navActionsGap = 20;
 
-          var availableWidth = containerWidth - brandWidth - actionsWidth - minLogoGap - navActionsGap;
+          var availableWidth = innerWidth - brandFullWidth - actionsWidth - minLogoGap - navActionsGap;
 
           // Calibrated baseline item widths (About, Posts, Publications, Presentations, Courses, Projects, Services, Visualizations, Newsletters, Tags)
           var itemWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
@@ -464,8 +474,19 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
           if (availableWidth < needed[1]) {
             header.setAttribute('data-nav-mode', 'burger');
+            var mobileActionsWidth = (mobileActions && mobileActions.offsetWidth) ? mobileActions.offsetWidth : 84;
+            var minBurgerGap = 10;
+            var availableBrandWidth = innerWidth - mobileActionsWidth - minBurgerGap;
+            if (availableBrandWidth >= brandFullWidth) {
+              header.setAttribute('data-brand-mode', 'full');
+            } else if (availableBrandWidth >= brandTitleWidth) {
+              header.setAttribute('data-brand-mode', 'title');
+            } else {
+              header.setAttribute('data-brand-mode', 'compact');
+            }
           } else {
             header.setAttribute('data-nav-mode', 'desktop');
+            header.setAttribute('data-brand-mode', 'full');
             var chosen = 1;
             if (availableWidth >= needed[10]) {
               chosen = 10;
@@ -621,6 +642,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     const brand = document.getElementById('nav-brand');
     const desktopNav = document.getElementById('desktop-nav');
     const desktopActions = document.getElementById('desktop-actions');
+    const mobileActions = document.getElementById('mobile-actions');
     const moreTrigger = document.getElementById('more-dropdown-trigger');
     const menuEl = document.getElementById('mobile-menu');
     const hamburgerEl = document.getElementById('hamburger-icon');
@@ -629,6 +651,11 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     if (!header || !container || !brand || !desktopNav || !desktopActions) return;
 
     const activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
+    const titleEl = brand.querySelector<HTMLElement>('.nav-logo-title');
+    const subtitleEl = brand.querySelector<HTMLElement>('.nav-logo-subtitle');
+
+    let cachedTitleW = Math.max(parseInt(header.getAttribute('data-title-w') || '150', 10), 150);
+    let cachedSubtitleW = Math.max(parseInt(header.getAttribute('data-subtitle-w') || '205', 10), 205);
 
     // Query all 10 direct items in canonical sequence
     const itemIds = [
@@ -638,6 +665,9 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     const fallbackWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
     const minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
     const navActionsGap = 20;
+    const minBurgerGap = 10;
+    const monoWidth = 40;
+    const brandGap = 12;
     const gap = 16;
 
     const moreContainerEl = document.getElementById('more-dropdown-container');
@@ -668,11 +698,20 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     const updateNavPriority = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        const containerWidth = container.clientWidth;
-        const brandWidth = brand.offsetWidth;
-        const actionsWidth = desktopActions.offsetWidth || 176;
+        const cs = window.getComputedStyle(container);
+        const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+        const innerWidth = container.clientWidth - padX;
 
-        const availableWidth = containerWidth - brandWidth - actionsWidth - minLogoGap - navActionsGap;
+        const liveTitleW = titleEl ? Math.ceil(titleEl.getBoundingClientRect().width || titleEl.offsetWidth) : 0;
+        const liveSubtitleW = subtitleEl ? Math.ceil(subtitleEl.getBoundingClientRect().width || subtitleEl.offsetWidth) : 0;
+        if (liveTitleW > 0) cachedTitleW = liveTitleW;
+        if (liveSubtitleW > 0) cachedSubtitleW = liveSubtitleW;
+
+        const brandTitleWidth = monoWidth + brandGap + cachedTitleW;
+        const brandFullWidth = monoWidth + brandGap + Math.max(cachedTitleW, cachedSubtitleW);
+        const actionsWidth = desktopActions.offsetWidth || 156;
+
+        const availableWidth = innerWidth - brandFullWidth - actionsWidth - minLogoGap - navActionsGap;
 
         // Measure live widths of items or use calibrated fallbacks
         const measuredWidths = itemIds.map((id, index) => {
@@ -699,12 +738,23 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
         }
 
         let nextMode: 'burger' | 'desktop';
+        let nextBrandMode: 'full' | 'title' | 'compact' = 'full';
         let nextCount = 1;
 
-        if (availableWidth < needed[1] || containerWidth < 820) {
+        if (availableWidth < needed[1]) {
           nextMode = 'burger';
+          const mobileActionsWidth = (mobileActions && mobileActions.offsetWidth) ? mobileActions.offsetWidth : 84;
+          const availableBrandWidth = innerWidth - mobileActionsWidth - minBurgerGap;
+          if (availableBrandWidth >= brandFullWidth) {
+            nextBrandMode = 'full';
+          } else if (availableBrandWidth >= brandTitleWidth) {
+            nextBrandMode = 'title';
+          } else {
+            nextBrandMode = 'compact';
+          }
         } else {
           nextMode = 'desktop';
+          nextBrandMode = 'full';
           if (availableWidth >= needed[10]) {
             nextCount = 10;
           } else {
@@ -719,6 +769,9 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
         if (header.getAttribute('data-nav-mode') !== nextMode) {
           header.setAttribute('data-nav-mode', nextMode);
+        }
+        if (header.getAttribute('data-brand-mode') !== nextBrandMode) {
+          header.setAttribute('data-brand-mode', nextBrandMode);
         }
 
         if (nextMode === 'desktop') {
@@ -747,6 +800,12 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     };
 
     updateNavPriority();
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        updateNavPriority();
+      });
+    }
 
     window.addEventListener('resize', updateNavPriority, { passive: true });
 
@@ -889,6 +948,23 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 </script>
 
 <style is:global>
+  /* Priority+ Pre-Paint Brand Lockup Visibility States (Full vs Title-Only vs Compact Monogram) */
+  #site-header[data-brand-mode="compact"] .nav-logo-name {
+    display: none !important;
+  }
+  #site-header[data-brand-mode="title"] .nav-logo-name {
+    display: flex !important;
+  }
+  #site-header[data-brand-mode="title"] .nav-logo-subtitle {
+    display: none !important;
+  }
+  #site-header:not([data-brand-mode="compact"]):not([data-brand-mode="title"]) .nav-logo-name {
+    display: flex !important;
+  }
+  #site-header:not([data-brand-mode="compact"]):not([data-brand-mode="title"]) .nav-logo-subtitle {
+    display: block !important;
+  }
+
   /* Priority+ Pre-Paint Display States (Burger vs Desktop) */
   #site-header[data-nav-mode="burger"] #desktop-nav,
   #site-header[data-nav-mode="burger"] #desktop-actions {
