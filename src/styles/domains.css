@@ -1,15 +1,15 @@
 /* Canonical Domain Color Tokens and Utilities */
 
 @theme {
-  --color-domain-posts: var(--color-accent-2);          /* 2: Teal */
-  --color-domain-publications: var(--color-accent-3);   /* 3: Cyan */
-  --color-domain-presentations: var(--color-accent-4);  /* 4: Sky */
-  --color-domain-courses: var(--color-accent-5);        /* 5: Blue */
-  --color-domain-projects: var(--color-accent-6);       /* 6: Royal Blue */
-  --color-domain-services: var(--color-accent-7);       /* 7: Indigo */
-  --color-domain-newsletters: var(--color-accent-8);    /* 8: Indigo-Violet */
-  --color-domain-visualizations: var(--color-accent-9); /* 9: Violet */
-  --color-domain-tags: var(--color-accent-10);          /* 10: Purple */
+  --color-domain-posts: var(--color-accent-2);          /* 2: Misty Teal */
+  --color-domain-publications: var(--color-accent-3);   /* 3: Dusty Cyan */
+  --color-domain-presentations: var(--color-accent-4);  /* 4: Slate Sky */
+  --color-domain-courses: var(--color-accent-5);        /* 5: Dusty Blue */
+  --color-domain-projects: var(--color-accent-6);       /* 6: Periwinkle Slate */
+  --color-domain-services: var(--color-accent-7);       /* 7: Muted Indigo */
+  --color-domain-newsletters: var(--color-accent-8);    /* 8: Soft Iris */
+  --color-domain-visualizations: var(--color-accent-9); /* 9: Dusty Lavender */
+  --color-domain-tags: var(--color-accent-10);          /* 10: Muted Mauve */
 }
 
 :root.light, .light {
@@ -29,190 +29,190 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #14b8a6, #06b6d4);
+  background-image: linear-gradient(to right, #469b95, #47909e);
 }
 
 :root.light .heading-gradient-domain-posts,
 .light .heading-gradient-domain-posts {
-  background-image: linear-gradient(to right, #0d9488, #0891b2);
+  background-image: linear-gradient(to right, #4ea29c, #5097a5);
 }
 
 .heading-gradient-domain-publications {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #06b6d4, #0ea5e9);
+  background-image: linear-gradient(to right, #47909e, #4a81a5);
 }
 
 :root.light .heading-gradient-domain-publications,
 .light .heading-gradient-domain-publications {
-  background-image: linear-gradient(to right, #0891b2, #0284c7);
+  background-image: linear-gradient(to right, #5097a5, #5186a9);
 }
 
 .heading-gradient-domain-presentations {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #0ea5e9, #3b82f6);
+  background-image: linear-gradient(to right, #4a81a5, #4f76b0);
 }
 
 :root.light .heading-gradient-domain-presentations,
 .light .heading-gradient-domain-presentations {
-  background-image: linear-gradient(to right, #0284c7, #2563eb);
+  background-image: linear-gradient(to right, #5186a9, #5679ae);
 }
 
 .heading-gradient-domain-courses {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #3b82f6, #526bf4);
+  background-image: linear-gradient(to right, #4f76b0, #5a6cb5);
 }
 
 :root.light .heading-gradient-domain-courses,
 .light .heading-gradient-domain-courses {
-  background-image: linear-gradient(to right, #2563eb, #3b52e6);
+  background-image: linear-gradient(to right, #5679ae, #5a6baf);
 }
 
 .heading-gradient-domain-projects {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #526bf4, #6366f1);
+  background-image: linear-gradient(to right, #5a6cb5, #6161b8);
 }
 
 :root.light .heading-gradient-domain-projects,
 .light .heading-gradient-domain-projects {
-  background-image: linear-gradient(to right, #3b52e6, #4f46e5);
+  background-image: linear-gradient(to right, #5a6baf, #5d5db1);
 }
 
 .heading-gradient-domain-services {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #6366f1, #7c5bf3);
+  background-image: linear-gradient(to right, #6161b8, #7261b8);
 }
 
 :root.light .heading-gradient-domain-services,
 .light .heading-gradient-domain-services {
-  background-image: linear-gradient(to right, #4f46e5, #6540e2);
+  background-image: linear-gradient(to right, #5d5db1, #7161b3);
 }
 
 .heading-gradient-domain-newsletters {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #7c5bf3, #9353f7);
+  background-image: linear-gradient(to right, #7261b8, #8261b8);
 }
 
 :root.light .heading-gradient-domain-newsletters,
 .light .heading-gradient-domain-newsletters {
-  background-image: linear-gradient(to right, #6540e2, #7c3aed);
+  background-image: linear-gradient(to right, #7161b3, #8061b3);
 }
 
 .heading-gradient-domain-visualizations {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #9353f7, #a855f7);
+  background-image: linear-gradient(to right, #8261b8, #9261b8);
 }
 
 :root.light .heading-gradient-domain-visualizations,
 .light .heading-gradient-domain-visualizations {
-  background-image: linear-gradient(to right, #7c3aed, #9333ea);
+  background-image: linear-gradient(to right, #8061b3, #8f61b3);
 }
 
 .heading-gradient-domain-tags {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #a855f7, #10b981);
+  background-image: linear-gradient(to right, #9261b8, #469b84);
 }
 
 :root.light .heading-gradient-domain-tags,
 .light .heading-gradient-domain-tags {
-  background-image: linear-gradient(to right, #9333ea, #059669);
+  background-image: linear-gradient(to right, #8f61b3, #4ea28b);
 }
 
 /* Domain-Specific Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
 .bg-gradient-domain-posts {
-  background-image: linear-gradient(to right, #14b8a6, #06b6d4);
+  background-image: linear-gradient(to right, #469b95, #47909e);
 }
 
 :root.light .bg-gradient-domain-posts,
 .light .bg-gradient-domain-posts {
-  background-image: linear-gradient(to right, #0d9488, #0891b2);
+  background-image: linear-gradient(to right, #4ea29c, #5097a5);
 }
 
 .bg-gradient-domain-publications {
-  background-image: linear-gradient(to right, #06b6d4, #0ea5e9);
+  background-image: linear-gradient(to right, #47909e, #4a81a5);
 }
 
 :root.light .bg-gradient-domain-publications,
 .light .bg-gradient-domain-publications {
-  background-image: linear-gradient(to right, #0891b2, #0284c7);
+  background-image: linear-gradient(to right, #5097a5, #5186a9);
 }
 
 .bg-gradient-domain-presentations {
-  background-image: linear-gradient(to right, #0ea5e9, #3b82f6);
+  background-image: linear-gradient(to right, #4a81a5, #4f76b0);
 }
 
 :root.light .bg-gradient-domain-presentations,
 .light .bg-gradient-domain-presentations {
-  background-image: linear-gradient(to right, #0284c7, #2563eb);
+  background-image: linear-gradient(to right, #5186a9, #5679ae);
 }
 
 .bg-gradient-domain-courses {
-  background-image: linear-gradient(to right, #3b82f6, #526bf4);
+  background-image: linear-gradient(to right, #4f76b0, #5a6cb5);
 }
 
 :root.light .bg-gradient-domain-courses,
 .light .bg-gradient-domain-courses {
-  background-image: linear-gradient(to right, #2563eb, #3b52e6);
+  background-image: linear-gradient(to right, #5679ae, #5a6baf);
 }
 
 .bg-gradient-domain-projects {
-  background-image: linear-gradient(to right, #526bf4, #6366f1);
+  background-image: linear-gradient(to right, #5a6cb5, #6161b8);
 }
 
 :root.light .bg-gradient-domain-projects,
 .light .bg-gradient-domain-projects {
-  background-image: linear-gradient(to right, #3b52e6, #4f46e5);
+  background-image: linear-gradient(to right, #5a6baf, #5d5db1);
 }
 
 .bg-gradient-domain-services {
-  background-image: linear-gradient(to right, #6366f1, #7c5bf3);
+  background-image: linear-gradient(to right, #6161b8, #7261b8);
 }
 
 :root.light .bg-gradient-domain-services,
 .light .bg-gradient-domain-services {
-  background-image: linear-gradient(to right, #4f46e5, #6540e2);
+  background-image: linear-gradient(to right, #5d5db1, #7161b3);
 }
 
 .bg-gradient-domain-newsletters {
-  background-image: linear-gradient(to right, #7c5bf3, #9353f7);
+  background-image: linear-gradient(to right, #7261b8, #8261b8);
 }
 
 :root.light .bg-gradient-domain-newsletters,
 .light .bg-gradient-domain-newsletters {
-  background-image: linear-gradient(to right, #6540e2, #7c3aed);
+  background-image: linear-gradient(to right, #7161b3, #8061b3);
 }
 
 .bg-gradient-domain-visualizations {
-  background-image: linear-gradient(to right, #9353f7, #a855f7);
+  background-image: linear-gradient(to right, #8261b8, #9261b8);
 }
 
 :root.light .bg-gradient-domain-visualizations,
 .light .bg-gradient-domain-visualizations {
-  background-image: linear-gradient(to right, #7c3aed, #9333ea);
+  background-image: linear-gradient(to right, #8061b3, #8f61b3);
 }
 
 .bg-gradient-domain-tags {
-  background-image: linear-gradient(to right, #a855f7, #10b981);
+  background-image: linear-gradient(to right, #9261b8, #469b84);
 }
 
 :root.light .bg-gradient-domain-tags,
 .light .bg-gradient-domain-tags {
-  background-image: linear-gradient(to right, #9333ea, #059669);
+  background-image: linear-gradient(to right, #8f61b3, #4ea28b);
 }
 
 /* ==========================================================================

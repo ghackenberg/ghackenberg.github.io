@@ -54,17 +54,17 @@
   --color-element-border-hover: rgba(255, 255, 255, 0.2);
   --color-element-border-medium: rgba(255, 255, 255, 0.1);
   
-  /* Canonical Numbered Accent Palette (10-Stop Signature Brand Spectrum) */
-  --color-accent-1: #10b981; /* 1: Emerald (160°) */
-  --color-accent-2: #14b8a6; /* 2: Teal (173°)           - Posts */
-  --color-accent-3: #06b6d4; /* 3: Cyan (189°)           - Publications */
-  --color-accent-4: #0ea5e9; /* 4: Sky (199°)            - Presentations */
-  --color-accent-5: #3b82f6; /* 5: Blue (217°)           - Courses */
-  --color-accent-6: #526bf4; /* 6: Royal Blue (231°)     - Projects */
-  --color-accent-7: #6366f1; /* 7: Indigo (239°)         - Services */
-  --color-accent-8: #7c5bf3; /* 8: Indigo-Violet (253°)  - Newsletters */
-  --color-accent-9: #9353f7; /* 9: Violet (264°)         - Visualizations */
-  --color-accent-10: #a855f7; /* 10: Purple (271°)       - Tags */
+  /* Canonical Numbered Accent Palette (10-Stop Soft Nordic Pastel Spectrum) */
+  --color-accent-1: #469b84; /* 1: Soft Sage (164°)        - About / Brand Primary */
+  --color-accent-2: #469b95; /* 2: Misty Teal (176°)       - Posts */
+  --color-accent-3: #47909e; /* 3: Dusty Cyan (190°)       - Publications */
+  --color-accent-4: #4a81a5; /* 4: Slate Sky (204°)        - Presentations */
+  --color-accent-5: #4f76b0; /* 5: Dusty Blue (216°)       - Courses */
+  --color-accent-6: #5a6cb5; /* 6: Periwinkle Slate (228°) - Projects */
+  --color-accent-7: #6161b8; /* 7: Muted Indigo (240°)     - Services */
+  --color-accent-8: #7261b8; /* 8: Soft Iris (252°)        - Newsletters */
+  --color-accent-9: #8261b8; /* 9: Dusty Lavender (263°)   - Visualizations */
+  --color-accent-10: #9261b8; /* 10: Muted Mauve (274°)    - Tags */
 
   /* Presentation Slide Design Tokens (mapped to canonical accent palette) */
   --color-slide-bg: #020617;
@@ -148,17 +148,17 @@
   --color-gray-900: #f1f5f9;
   --color-gray-950: #ebf2f8;
 
-  /* Canonical Numbered Accent Palette (Light Mode Shifts) */
-  --color-accent-1: #059669; /* 1: Emerald 600 */
-  --color-accent-2: #0d9488; /* 2: Teal 600 */
-  --color-accent-3: #0891b2; /* 3: Cyan 600 */
-  --color-accent-4: #0284c7; /* 4: Sky 600 */
-  --color-accent-5: #2563eb; /* 5: Blue 600 */
-  --color-accent-6: #3b52e6; /* 6: Royal Blue 600 */
-  --color-accent-7: #4f46e5; /* 7: Indigo 600 */
-  --color-accent-8: #6540e2; /* 8: Indigo-Violet 600 */
-  --color-accent-9: #7c3aed; /* 9: Violet 600 */
-  --color-accent-10: #9333ea; /* 10: Purple 600 */
+  /* Canonical Numbered Accent Palette (Light Mode Shifts - Soft Nordic Pastel) */
+  --color-accent-1: #4ea28b; /* 1: Soft Sage */
+  --color-accent-2: #4ea29c; /* 2: Misty Teal */
+  --color-accent-3: #5097a5; /* 3: Dusty Cyan */
+  --color-accent-4: #5186a9; /* 4: Slate Sky */
+  --color-accent-5: #5679ae; /* 5: Dusty Blue */
+  --color-accent-6: #5a6baf; /* 6: Periwinkle Slate */
+  --color-accent-7: #5d5db1; /* 7: Muted Indigo */
+  --color-accent-8: #7161b3; /* 8: Soft Iris */
+  --color-accent-9: #8061b3; /* 9: Dusty Lavender */
+  --color-accent-10: #8f61b3; /* 10: Muted Mauve */
 
   /* Presentation Slide Design Tokens (Light Mode Shift) */
   --color-slide-bg: #ffffff;
@@ -216,22 +216,21 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #10b981, #06b6d4, #3b82f6, #a855f7);
+  background-image: linear-gradient(to right, #469b84, #4a81a5, #6161b8, #9261b8);
 }
 
 :root.light .heading-gradient-brand,
 .light .heading-gradient-brand {
-  background-image: linear-gradient(to right, #059669, #0891b2, #2563eb, #9333ea);
+  background-image: linear-gradient(to right, #4ea28b, #5186a9, #5d5db1, #8f61b3);
 }
 
 
 /* Unified Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
 .bg-gradient-brand {
-  background-image: linear-gradient(to right, #10b981, #06b6d4, #3b82f6, #a855f7);
+  background-image: linear-gradient(to right, #469b84, #4a81a5, #6161b8, #9261b8);
 }
 
 :root.light .bg-gradient-brand,
 .light .bg-gradient-brand {
-  background-image: linear-gradient(to right, #059669, #0891b2, #2563eb, #9333ea);
+  background-image: linear-gradient(to right, #4ea28b, #5186a9, #5d5db1, #8f61b3);
 }
-
