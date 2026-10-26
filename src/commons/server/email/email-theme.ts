@@ -1,15 +1,15 @@
 import type { CSSProperties } from 'react';
 
 export const EMAIL_BUTTON_INLINE_STYLE =
-  'background-color:#2563eb;border-radius:10px;color:#ffffff;display:inline-block;font-size:14px;font-weight:700;padding:12px 24px;text-decoration:none';
+  'background-color:#469b84;border-radius:10px;color:#ffffff;display:inline-block;font-size:14px;font-weight:700;padding:12px 24px;text-decoration:none';
 
 export const emailStyles = {
   // Layout & Shell
   body: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#ebf2f8',
     color: '#334155',
     fontFamily:
-      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     margin: '0',
     padding: '32px 16px',
   },
@@ -46,25 +46,28 @@ export const emailStyles = {
     height: '40px',
     lineHeight: '40px',
     textAlign: 'center',
-    backgroundColor: '#eff6ff',
-    border: '1px solid #bfdbfe',
+    backgroundColor: '#eef7f5',
+    border: '1px solid #c4e3db',
     borderRadius: '8px',
-    color: '#2563eb',
+    color: '#469b84',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontWeight: 800,
     fontSize: '15px',
     display: 'inline-block',
   },
   brandTitle: {
     color: '#0f172a',
-    fontWeight: 700,
-    fontSize: '15px',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontWeight: 600,
+    fontSize: '14px',
     lineHeight: '1.25',
+    letterSpacing: '0.025em',
     margin: '0',
     textDecoration: 'none',
   },
   brandSubtitle: {
     color: '#64748b',
-    fontSize: '12px',
+    fontSize: '11px',
     lineHeight: '1.35',
     margin: '2px 0 0 0',
   },
@@ -79,7 +82,7 @@ export const emailStyles = {
     margin: '0 0 6px 0',
   },
   footerLink: {
-    color: '#2563eb',
+    color: '#469b84',
     textDecoration: 'underline',
   },
 
@@ -96,7 +99,7 @@ export const emailStyles = {
     textAlign: 'right',
   },
   topBarDate: {
-    color: '#2563eb',
+    color: '#469b84',
     fontSize: '13px',
     fontWeight: 600,
   },
@@ -124,6 +127,7 @@ export const emailStyles = {
   },
   title: {
     color: '#0f172a',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontSize: '26px',
     fontWeight: 800,
     lineHeight: '1.25',
@@ -147,6 +151,7 @@ export const emailStyles = {
   },
   sectionHeading: {
     color: '#0f172a',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontSize: '18px',
     fontWeight: 800,
     letterSpacing: '-0.01em',
@@ -160,7 +165,7 @@ export const emailStyles = {
     marginBottom: '16px',
   },
   cardDomain: {
-    color: '#7c3aed',
+    color: '#6161b8',
     fontSize: '11px',
     fontWeight: 700,
     textTransform: 'uppercase',
@@ -169,6 +174,7 @@ export const emailStyles = {
   },
   cardTitle: {
     color: '#0f172a',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontSize: '17px',
     fontWeight: 700,
     lineHeight: '1.35',
@@ -181,7 +187,7 @@ export const emailStyles = {
     margin: '0 0 14px 0',
   },
   cardButton: {
-    backgroundColor: '#2563eb',
+    backgroundColor: '#469b84',
     borderRadius: '8px',
     color: '#ffffff',
     display: 'inline-block',
@@ -194,6 +200,7 @@ export const emailStyles = {
   // Transactional Content & Tables
   heading: {
     color: '#0f172a',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontSize: '22px',
     fontWeight: 800,
     letterSpacing: '-0.02em',
@@ -206,14 +213,14 @@ export const emailStyles = {
     margin: '0 0 16px 0',
   },
   inlineLink: {
-    color: '#2563eb',
+    color: '#469b84',
     textDecoration: 'underline',
   },
   buttonContainer: {
     margin: '28px 0',
   },
   button: {
-    backgroundColor: '#2563eb',
+    backgroundColor: '#469b84',
     borderRadius: '10px',
     color: '#ffffff',
     display: 'inline-block',
@@ -229,7 +236,7 @@ export const emailStyles = {
     margin: '0 0 12px 0',
   },
   codeUrl: {
-    color: '#2563eb',
+    color: '#469b84',
     fontSize: '12px',
     wordBreak: 'break-all',
     textDecoration: 'underline',
@@ -295,12 +302,14 @@ export const emailMarkdownStyles = {
   },
   h2: {
     color: '#0f172a',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontSize: '19px',
     fontWeight: 700,
     margin: '24px 0 10px 0',
   },
   h3: {
     color: '#0f172a',
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     fontSize: '16px',
     fontWeight: 700,
     margin: '20px 0 8px 0',
@@ -312,7 +321,7 @@ export const emailMarkdownStyles = {
     marginBottom: '6px',
   },
   link: {
-    color: '#2563eb',
+    color: '#469b84',
     textDecoration: 'underline',
   },
 } satisfies Record<string, CSSProperties>;

@@ -1,20 +1,21 @@
 /* hackenberg.tech — Lean Upgrade-Safe Listmonk Public Shell Stylesheet */
 :root {
   --bg-page: #030712;
-  --bg-glow-blue: rgba(59, 130, 246, 0.14);
-  --bg-glow-purple: rgba(168, 85, 247, 0.11);
+  --bg-glow-blue: rgba(70, 155, 132, 0.14);
+  --bg-glow-purple: rgba(146, 97, 184, 0.11);
   --bg-card: rgba(15, 23, 42, 0.82);
   --bg-elevated: rgba(30, 41, 59, 0.62);
   --bg-input: rgba(15, 23, 42, 0.9);
   --border-card: rgba(255, 255, 255, 0.10);
   --border-subtle: rgba(148, 163, 184, 0.16);
-  --border-focus: #3b82f6;
+  --border-focus: #469b84;
+  --focus-ring: rgba(70, 155, 132, 0.22);
   --text-heading: #f8fafc;
   --text-body: #cbd5e1;
   --text-muted: #94a3b8;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --link: #3b82f6;
+  --primary: #469b84;
+  --primary-hover: #3d8b75;
+  --link: #469b84;
   --danger-bg: rgba(239, 68, 68, 0.12);
   --danger-border: rgba(239, 68, 68, 0.35);
   --danger-text: #fca5a5;
@@ -37,21 +38,22 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg-page: #f8fafc;
-    --bg-glow-blue: rgba(59, 130, 246, 0.08);
-    --bg-glow-purple: rgba(168, 85, 247, 0.06);
+    --bg-page: #ebf2f8;
+    --bg-glow-blue: rgba(78, 162, 139, 0.08);
+    --bg-glow-purple: rgba(143, 97, 179, 0.06);
     --bg-card: rgba(255, 255, 255, 0.94);
     --bg-elevated: #f1f5f9;
     --bg-input: #ffffff;
     --border-card: #e2e8f0;
     --border-subtle: #e2e8f0;
-    --border-focus: #2563eb;
+    --border-focus: #4ea28b;
+    --focus-ring: rgba(78, 162, 139, 0.22);
     --text-heading: #0f172a;
     --text-body: #334155;
     --text-muted: #64748b;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --link: #2563eb;
+    --primary: #4ea28b;
+    --primary-hover: #418e79;
+    --link: #4ea28b;
     --danger-bg: #fef2f2;
     --danger-border: #fecaca;
     --danger-text: #b91c1c;
@@ -139,7 +141,7 @@ html, body {
 .brand-badge {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--border-subtle);
   background: var(--bg-elevated);
   display: inline-flex;
@@ -152,12 +154,20 @@ html, body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   background: linear-gradient(to right, #469b84 0%, #4a81a5 33%, #6161b8 67%, #9261b8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+}
+
+@media (prefers-color-scheme: light) {
+  .brand-gh {
+    background: linear-gradient(to right, #4ea28b 0%, #5186a9 33%, #5d5db1 67%, #8f61b3 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 }
 
 .brand-text {
@@ -170,12 +180,15 @@ html, body {
 .brand-title {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.025em;
   color: var(--text-heading);
 }
 
 .brand-subtitle {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 11px;
+  font-weight: 400;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -249,7 +262,7 @@ input[type="email"]:focus,
 input[type="password"]:focus,
 select:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 input::placeholder {
