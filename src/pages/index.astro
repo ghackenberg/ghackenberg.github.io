@@ -1577,7 +1577,9 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
         </p>
       </div>
 
-      <div class="glass-card rounded-3xl p-4 sm:p-8 md:p-10 border border-element-border-medium light:border-slate-200/80 shadow-2xl relative w-full">
+      <div class="rounded-3xl p-4 sm:p-8 md:p-10 relative w-full">
+        <!-- Background frosted glass layer (separated to avoid backdrop-root clipping on tag tooltips) -->
+        <div class="absolute inset-0 rounded-3xl glass-card border border-element-border-medium light:border-slate-200/80 shadow-2xl pointer-events-none -z-10"></div>
         <div
           id="bin-packing-stage"
           class="relative w-full flex flex-col items-center justify-center"
@@ -1588,7 +1590,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
           <div id="bin-packing-rows" class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 w-full">
             {visibleSlice.map((tag, idx) => (
               <div
-                class="bin-tag-node relative group/tag inline-block shrink-0"
+                class="bin-tag-node relative hover:z-50 focus-within:z-50 group/tag inline-block shrink-0"
                 data-rank={idx}
                 data-total={tag.totalCount}
               >
@@ -1603,7 +1605,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 </a>
 
                 <!-- Rich Hover Tooltip (Mouse only; hidden on touch viewports) -->
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200 shadow-2xl z-50 pointer-events-none min-w-[230px] sm:min-w-[260px] max-w-[300px] sm:max-w-[320px] transition-all">
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl glass-panel backdrop-blur-md border border-element-border-medium shadow-2xl z-50 pointer-events-none min-w-[230px] sm:min-w-[260px] max-w-[300px] sm:max-w-[320px] transition-all">
                   <div class="flex items-center justify-between gap-3 border-b border-element-border pb-2">
                     <span class="text-xs sm:text-sm font-extrabold text-white light:text-slate-900 truncate">#{tag.name}</span>
                     <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-domain-tags/20 text-domain-tags border border-domain-tags/30 whitespace-nowrap">
@@ -1695,7 +1697,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
             {restTagsCount > 0 && (
               <div
                 id="bin-overflow-node"
-                class="relative group/tag inline-block shrink-0"
+                class="relative hover:z-50 focus-within:z-50 group/tag inline-block shrink-0"
               >
                 <a
                   href="/tags/"
@@ -1708,7 +1710,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 </a>
 
                 <!-- Rich Hover Tooltip for Overflow Pill (Mouse only; hidden on touch viewports) -->
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200 shadow-2xl z-50 pointer-events-none min-w-[230px] sm:min-w-[260px] max-w-[300px] sm:max-w-[320px] transition-all">
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl glass-panel backdrop-blur-md border border-element-border-medium shadow-2xl z-50 pointer-events-none min-w-[230px] sm:min-w-[260px] max-w-[300px] sm:max-w-[320px] transition-all">
                   <div class="flex items-center justify-between gap-3 border-b border-element-border pb-2">
                     <span id="bin-overflow-tooltip-title" class="text-xs sm:text-sm font-extrabold text-white light:text-slate-900 truncate">+{restTagsCount} Remaining Tags</span>
                     <span id="bin-overflow-tooltip-count" class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-domain-tags/20 text-domain-tags border border-domain-tags/30 whitespace-nowrap">

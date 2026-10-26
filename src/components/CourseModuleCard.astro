@@ -34,11 +34,6 @@ const cardImg = module.data.image;
       <!-- Ambient overlay for depth & contrast in dark and light modes -->
       <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent block light:hidden pointer-events-none z-10"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent hidden light:block pointer-events-none z-10"></div>
-      <span 
-        class="unread-dot hidden badge-new badge-new-cyan badge-corner-tr"
-        data-item-url={href}
-        title="Unread module"
-      >UNREAD</span>
     </div>
   ) : (
     <div>
@@ -46,11 +41,6 @@ const cardImg = module.data.image;
         <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-domain-courses/10 border border-domain-courses/20 text-domain-courses">
           Module {module.data.moduleNumber || module.data.order}
         </span>
-        <span 
-          class="unread-dot hidden badge-new badge-new-cyan"
-          data-item-url={href}
-          title="Unread module"
-        >UNREAD</span>
       </div>
     </div>
   )}

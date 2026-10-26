@@ -564,8 +564,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       closeReferencesModal?: () => void;
       openPrivacyModal?: () => void;
       closePrivacyModal?: () => void;
-      openWhatsNewModal?: () => void;
-      closeWhatsNewModal?: () => void;
     }
   }
 
@@ -1070,7 +1068,6 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     const openReferencesModal = (targetRefId?: string | null) => {
       window.closePrivacyModal?.();
-      window.closeWhatsNewModal?.();
       syncModalPlacement();
 
       const idx = deck.getIndices().h;

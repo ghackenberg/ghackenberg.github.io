@@ -96,7 +96,6 @@ const DOMAIN_THEMES: Record<
     borderHover: string;
     titleHover: string;
     arrowHover: string;
-    badgeClass: string;
     tagChip: string;
     fallbackBg: string;
   }
@@ -105,7 +104,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-posts/50",
     titleHover: "group-hover:text-domain-posts",
     arrowHover: "group-hover:text-domain-posts",
-    badgeClass: "badge-new-violet",
     tagChip: "tag-chip-violet",
     fallbackBg: "bg-domain-posts/10 text-domain-posts",
   },
@@ -113,7 +111,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-publications/50",
     titleHover: "group-hover:text-domain-publications",
     arrowHover: "group-hover:text-domain-publications",
-    badgeClass: "badge-new-indigo",
     tagChip: "tag-chip-indigo",
     fallbackBg: "bg-domain-publications/10 text-domain-publications",
   },
@@ -121,7 +118,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-presentations/50",
     titleHover: "group-hover:text-domain-presentations",
     arrowHover: "group-hover:text-domain-presentations",
-    badgeClass: "badge-new-blue",
     tagChip: "tag-chip-blue",
     fallbackBg: "bg-domain-presentations/10 text-domain-presentations",
   },
@@ -129,7 +125,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-courses/50",
     titleHover: "group-hover:text-domain-courses",
     arrowHover: "group-hover:text-domain-courses",
-    badgeClass: "badge-new-cyan",
     tagChip: "tag-chip-cyan",
     fallbackBg: "bg-domain-courses/10 text-domain-courses",
   },
@@ -137,7 +132,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-projects/50",
     titleHover: "group-hover:text-domain-projects",
     arrowHover: "group-hover:text-domain-projects",
-    badgeClass: "badge-new-teal",
     tagChip: "tag-chip-teal",
     fallbackBg: "bg-domain-projects/10 text-domain-projects",
   },
@@ -145,7 +139,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-services/50",
     titleHover: "group-hover:text-domain-services",
     arrowHover: "group-hover:text-domain-services",
-    badgeClass: "badge-new-emerald",
     tagChip: "tag-chip-emerald",
     fallbackBg: "bg-domain-services/10 text-domain-services",
   },
@@ -153,7 +146,6 @@ const DOMAIN_THEMES: Record<
     borderHover: "hover:border-domain-visualizations/50",
     titleHover: "group-hover:text-domain-visualizations",
     arrowHover: "group-hover:text-domain-visualizations",
-    badgeClass: "badge-new-yellow",
     tagChip: "tag-chip-yellow",
     fallbackBg: "bg-domain-visualizations/10 text-domain-visualizations",
   },
@@ -257,13 +249,6 @@ const cardId = id || href.replace(/^\/[^/]+\//, '').replace(/\/$/, '') || title;
         <span role="img" aria-hidden="true">{fallbackIcon || defaultIcons[collection] || "📄"}</span>
       </div>
     )}
-
-    <!-- Unread tracking badge -->
-    <span
-      class={`unread-dot hidden badge-new ${colorTheme.badgeClass} badge-corner-tr`}
-      data-item-url={href}
-      title={`Unread ${collection}`}
-    >UNREAD</span>
   </div>
 
   <!-- Right: Min-w-0 flex-grow content with unified 4-row layout -->
@@ -325,25 +310,6 @@ const cardId = id || href.replace(/^\/[^/]+\//, '').replace(/\/$/, '') || title;
 </article>
 
 <style>
-  .compact-card .badge-corner-tr {
-    height: 1.15rem;
-    line-height: 1.15rem;
-    padding: 0 0.35rem;
-    font-size: 0.5rem;
-    letter-spacing: 0.05em;
-    border-top-right-radius: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
-  }
-
-  @media (min-width: 640px) {
-    .compact-card .badge-corner-tr {
-      height: 1.25rem;
-      line-height: 1.25rem;
-      padding: 0 0.45rem;
-      font-size: 0.5625rem;
-    }
-  }
-
   .compact-card .type-badge {
     min-height: 1.25rem;
     height: 1.25rem;

@@ -13,7 +13,7 @@ Initiativen, die das Zusammenspiel aus Frontend-Features auf `hackenberg.tech` u
 | **SYSTEM-001** | Slide-Engine MCP | Presentations | Hoch | `proposed` | [001-slide-engine-mcp.md](./system/001-slide-engine-mcp.md) |
 | **SYSTEM-002** | Visual Asset Graph MCP | Images / Content | Hoch | `proposed` | [002-visual-asset-graph-mcp.md](./system/002-visual-asset-graph-mcp.md) |
 | **SYSTEM-003** | Content Interview Gatekeeper | Content Creation | Mittel | `proposed` | [003-content-interview-gate.md](./system/003-content-interview-gate.md) |
-| **SYSTEM-004** | Content Manifest & Notification Linter | Data Integrity / CI | Hoch | `proposed` | [004-content-manifest-linter.md](./system/004-content-manifest-linter.md) |
+| **SYSTEM-004** | Content Manifest Integrity Linter | Data Integrity / CI | Hoch | `proposed` | [004-content-manifest-linter.md](./system/004-content-manifest-linter.md) |
 | **SYSTEM-005** | Semantisches Section-Visibility-Tracking | Analytics / UX | Hoch | `planned` | [005-semantic-section-tracking.md](./system/005-semantic-section-tracking.md) |
 | **SYSTEM-006** | Content Preview Image Rollout | Visual Design | Mittel | `planned` | [006-content-preview-image-rollout.md](./system/006-content-preview-image-rollout.md) |
 | **SYSTEM-007** | Design-Token & Layout Linter | CI/CD / QA | Mittel | `proposed` | [007-design-token-and-layout-linter.md](./system/007-design-token-and-layout-linter.md) |

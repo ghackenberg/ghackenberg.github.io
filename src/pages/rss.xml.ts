@@ -31,13 +31,28 @@ function formatTagsCustomData(tags?: string[]): string {
 }
 
 export async function GET(context: APIContext) {
-  const [posts, presentations, publications, courses, projects, visualizations] = await Promise.all([
+  const [
+    posts,
+    presentations,
+    publications,
+    courses,
+    courseModules,
+    projects,
+    services,
+    serviceModules,
+    visualizations,
+    newsletters,
+  ] = await Promise.all([
     getCollection('posts'),
     getCollection('presentations'),
     getCollection('publications'),
     getCollection('courses'),
+    getCollection('course-modules'),
     getCollection('projects'),
+    getCollection('services'),
+    getCollection('service-modules'),
     getCollection('visualizations'),
+    getCollection('newsletters'),
   ]);
 
   const items: (RSSFeedItem & { pubDate: Date })[] = [
@@ -73,6 +88,13 @@ export async function GET(context: APIContext) {
       categories: ['Course', ...(course.data.tags || [])],
       customData: formatTagsCustomData(course.data.tags),
     })),
+    ...courseModules.map((mod) => ({
+      title: mod.data.title,
+      pubDate: resolveItemDate(mod.id, mod.data.pubDate),
+      description: mod.data.description || '',
+      link: `/courses/${mod.data.courseId}/${mod.id.split('/').pop()}/`,
+      categories: ['Course Module'],
+    })),
     ...projects.map((project) => ({
       title: project.data.title,
       pubDate: resolveItemDate(project.id, project.data.pubDate),
@@ -80,6 +102,21 @@ export async function GET(context: APIContext) {
       link: `/projects/${project.id}/`,
       categories: ['Project', ...(project.data.tags || [])],
       customData: formatTagsCustomData(project.data.tags),
+    })),
+    ...services.map((s) => ({
+      title: s.data.title,
+      pubDate: resolveItemDate(s.id, s.data.pubDate),
+      description: s.data.description || '',
+      link: `/services/${s.id}/`,
+      categories: ['Service', ...(s.data.tags || [])],
+      customData: formatTagsCustomData(s.data.tags),
+    })),
+    ...serviceModules.map((m) => ({
+      title: m.data.title,
+      pubDate: resolveItemDate(m.id, m.data.pubDate),
+      description: m.data.description || '',
+      link: `/services/${m.data.serviceId}/${m.id.split('/').pop()}/`,
+      categories: ['Service Module'],
     })),
     ...visualizations.map((viz) => ({
       title: viz.data.title,
@@ -89,6 +126,14 @@ export async function GET(context: APIContext) {
       categories: ['Visualization', ...(viz.data.tags || [])],
       customData: formatTagsCustomData(viz.data.tags),
     })),
+    ...newsletters.map((n) => ({
+      title: n.data.title,
+      pubDate: resolveItemDate(n.id, n.data.pubDate),
+      description: n.data.description || '',
+      link: `/newsletters/${n.id}/`,
+      categories: ['Newsletter', ...(n.data.tags || [])],
+      customData: formatTagsCustomData(n.data.tags),
+    })),
   ];
 
   items.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
@@ -96,10 +141,9 @@ export async function GET(context: APIContext) {
   return rss({
     title: 'Dr. Georg Hackenberg | Updates & Publications',
     description:
-      'Latest blog posts, keynote presentations, academic publications, university courses, software projects, and interactive visualizations by Dr. Georg Hackenberg.',
+      'Latest blog posts, keynote presentations, academic publications, university courses, software projects, advisory services, newsletters, and interactive visualizations by Dr. Georg Hackenberg.',
     site: context.site || 'https://hackenberg.tech',
     items,
     customData: `<language>en-us</language>`,
   });
 }
-

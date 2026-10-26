@@ -1,5 +1,5 @@
 ---
-title: "Full Professor for Industrial Informatics"
+title: "Professor for Industrial Informatics"
 employmentType: "Full-time"
 startMonth: 10
 startYear: 2019

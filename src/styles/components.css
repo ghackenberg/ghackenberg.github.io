@@ -143,30 +143,6 @@ html {
   }
 }
 
-/* Premium Gradient "NEW" Badges */
-.badge-new {
-  align-items: center;
-  justify-content: center;
-  padding: 0.15rem 0.5rem;
-  font-size: 0.625rem; /* 10px */
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border-radius: 9999px;
-  white-space: nowrap;
-  vertical-align: middle;
-  transition: all 0.2s ease-in-out;
-}
-
-.badge-new:not(.hidden) {
-  display: inline-flex;
-}
-
-.badge-new.hidden {
-  display: none !important;
-}
-
 /* Centralized Preview Card Architecture */
 .preview-card {
   border-radius: 1rem; /* 16px (rounded-2xl) */
@@ -258,11 +234,11 @@ html {
   }
 }
 
-/* Card Corner Ribbon Badges (Top-Right & Top-Left) */
-.badge-corner-tr,
+/* Card Corner Ribbon Badge (Top-Left) */
 .badge-corner-tl {
   position: absolute;
   top: 0;
+  left: 0;
   z-index: 20;
   height: 1.75rem; /* 28px */
   padding: 0 0.85rem;
@@ -274,22 +250,6 @@ html {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
   user-select: none;
-}
-
-.badge-corner-tr {
-  right: 0;
-  border-top-right-radius: 1rem; /* 16px matching preview-card mobile */
-  border-bottom-left-radius: 1rem; /* 16px matching outer radius of preview-card */
-  border-top-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-left-width: 1px;
-  border-bottom-width: 1px;
-  border-top-width: 0;
-  border-right-width: 0;
-}
-
-.badge-corner-tl {
-  left: 0;
   border-top-left-radius: 1rem; /* 16px matching preview-card mobile */
   border-bottom-right-radius: 1rem; /* 16px matching outer radius of preview-card */
   border-top-right-radius: 0;
@@ -301,278 +261,15 @@ html {
 }
 
 @media (min-width: 768px) {
-  .badge-corner-tr,
   .badge-corner-tl {
     height: 2rem; /* 32px */
     line-height: 2rem;
     padding: 0 1rem;
     font-size: 0.6875rem; /* 11px */
-  }
-
-  .badge-corner-tr {
-    border-top-right-radius: 1.5rem; /* 24px matching preview-card desktop */
-    border-bottom-left-radius: 1.5rem; /* 24px matching outer radius of preview-card */
-  }
-
-  .badge-corner-tl {
     border-top-left-radius: 1.5rem; /* 24px matching preview-card desktop */
     border-bottom-right-radius: 1.5rem; /* 24px matching outer radius of preview-card */
   }
 }
-
-/* What's New Feed unread badge radius matches rounded-xl (0.75rem / 12px) preview containers */
-#whats-new-modal-container .badge-corner-tr,
-#whats-new-overlay .badge-corner-tr {
-  border-top-right-radius: 0.75rem;
-  border-bottom-left-radius: 0.75rem;
-}
-
-/* Gallery Marquee Corner Ribbon Badges */
-.gallery-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 20;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  text-transform: uppercase;
-  user-select: none;
-  border-top-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-left-width: 1px;
-  border-bottom-width: 1px;
-  border-top-width: 0;
-  border-right-width: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-}
-
-.gallery-badge.hidden {
-  display: none !important;
-}
-
-/* Gallery Row 1: Foreground (Largest Cards, rounded-2xl) */
-.gallery-track-1 .gallery-badge {
-  height: 1.35rem; /* 21.6px */
-  padding: 0 0.6rem;
-  font-size: 0.5625rem; /* 9px */
-  letter-spacing: 0.06em;
-  border-top-right-radius: 1rem; /* 16px matching row 1 card radius */
-  border-bottom-left-radius: 1rem;
-}
-
-/* Gallery Row 2: Midground (Medium Cards, rounded-xl) */
-.gallery-track-2 .gallery-badge {
-  height: 1.15rem; /* 18.4px */
-  padding: 0 0.5rem;
-  font-size: 0.5rem; /* 8px */
-  letter-spacing: 0.05em;
-  border-top-right-radius: 0.75rem; /* 12px matching row 2 card radius */
-  border-bottom-left-radius: 0.75rem;
-}
-
-/* Gallery Row 3: Background (Smallest Cards, rounded-lg) */
-.gallery-track-3 .gallery-badge {
-  height: 0.95rem; /* 15.2px */
-  padding: 0 0.4rem;
-  font-size: 0.4375rem; /* 7px */
-  letter-spacing: 0.04em;
-  border-top-right-radius: 0.5rem; /* 8px matching row 3 card radius */
-  border-bottom-left-radius: 0.5rem;
-}
-
-/* What's New Icon Highlight (Option A: Only the icon inside the circle is highlighted) */
-html.has-unread-notifications #whats-new-btn-desktop svg,
-html.has-unread-notifications #whats-new-btn-mobile svg,
-.whats-new-luminous svg {
-  color: var(--color-brand-primary) !important;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-brand-primary) 70%, transparent));
-  transition: color 0.3s ease, filter 0.3s ease;
-}
-
-html.light.has-unread-notifications #whats-new-btn-desktop svg,
-html.light.has-unread-notifications #whats-new-btn-mobile svg,
-html.light .whats-new-luminous svg {
-  color: var(--color-brand-primary) !important;
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-brand-primary) 45%, transparent));
-}
-
-/* Navigation Section Unread Notification Dot */
-.nav-badge {
-  width: 0.45rem;
-  height: 0.45rem;
-  min-width: 0.45rem;
-  min-height: 0.45rem;
-  padding: 0 !important;
-  border-radius: 9999px !important;
-  font-size: 0 !important;
-  line-height: 0 !important;
-  flex-shrink: 0;
-  vertical-align: middle;
-  transform: none !important;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.nav-badge:not(.hidden) {
-  display: inline-block !important;
-}
-
-.nav-badge.hidden {
-  display: none !important;
-}
-
-.badge-new-blue,
-.badge-new-presentations {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-presentations) 80%, black) 0%, var(--color-domain-presentations) 50%, color-mix(in srgb, var(--color-domain-presentations) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-presentations) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-presentations) 80%, black) 0%, var(--color-domain-presentations) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-presentations) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-presentations) 25%, transparent);
-  }
-}
-
-.badge-new-violet,
-.badge-new-posts {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-posts) 80%, black) 0%, var(--color-domain-posts) 50%, color-mix(in srgb, var(--color-domain-posts) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-posts) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-posts) 80%, black) 0%, var(--color-domain-posts) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-posts) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-posts) 25%, transparent);
-  }
-}
-
-.badge-new-indigo,
-.badge-new-publications {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-publications) 80%, black) 0%, var(--color-domain-publications) 50%, color-mix(in srgb, var(--color-domain-publications) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-publications) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-publications) 80%, black) 0%, var(--color-domain-publications) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-publications) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-publications) 25%, transparent);
-  }
-}
-
-.badge-new-teal,
-.badge-new-projects {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-projects) 80%, black) 0%, var(--color-domain-projects) 50%, color-mix(in srgb, var(--color-domain-projects) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-projects) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-projects) 80%, black) 0%, var(--color-domain-projects) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-projects) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-projects) 25%, transparent);
-  }
-}
-
-.badge-new-yellow,
-.badge-new-visualizations {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-visualizations) 80%, black) 0%, var(--color-domain-visualizations) 50%, color-mix(in srgb, var(--color-domain-visualizations) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-visualizations) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-visualizations) 80%, black) 0%, var(--color-domain-visualizations) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-visualizations) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-visualizations) 25%, transparent);
-  }
-}
-
-.badge-new-orange,
-.badge-new-tags {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 50%, color-mix(in srgb, var(--color-domain-tags) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-tags) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-tags) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-tags) 25%, transparent);
-  }
-}
-
-.badge-new-newsletters {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-newsletters) 80%, black) 0%, var(--color-domain-newsletters) 50%, color-mix(in srgb, var(--color-domain-newsletters) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-newsletters) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-newsletters) 80%, black) 0%, var(--color-domain-newsletters) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-newsletters) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-newsletters) 25%, transparent);
-  }
-}
-
-
-.badge-new-purple {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 50%, color-mix(in srgb, var(--color-domain-tags) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-tags) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-tags) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-tags) 25%, transparent);
-  }
-}
-
-.badge-new-green,
-.badge-new-emerald,
-.badge-new-services {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-services) 80%, black) 0%, var(--color-domain-services) 50%, color-mix(in srgb, var(--color-domain-services) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-services) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-services) 80%, black) 0%, var(--color-domain-services) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-services) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-services) 25%, transparent);
-  }
-}
-
-.badge-new-cyan,
-.badge-new-courses {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-courses) 80%, black) 0%, var(--color-domain-courses) 50%, color-mix(in srgb, var(--color-domain-courses) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-courses) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-courses) 80%, black) 0%, var(--color-domain-courses) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-courses) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-courses) 25%, transparent);
-  }
-}
-
 
 /* Timeline lifeline dashed SVG lines in light mode */
 .light [data-lifeline-dashed-top] stop[offset="0%"] {

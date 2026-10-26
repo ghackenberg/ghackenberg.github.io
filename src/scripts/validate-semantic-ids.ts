@@ -96,7 +96,7 @@ for (const file of htmlFiles) {
       relPath.includes('/print/') ||
       $('body.print-pdf, .print-pdf, .print-slide-page').length > 0 ||
       $el.closest(
-        'dialog, [role="dialog"], .modal, #whats-new-modal-container, #privacy-policy-modal-container, #dev-analytics-container, #dev-studio-root, nav, footer, #presentation-player, .slide-deck-container, .reveal, .reveal-viewport, [data-slide-id], [data-slide-index]'
+        'dialog, [role="dialog"], .modal, #privacy-policy-modal-container, #dev-analytics-container, #dev-studio-root, nav, footer, #presentation-player, .slide-deck-container, .reveal, .reveal-viewport, [data-slide-id], [data-slide-index]'
       ).length > 0;
 
     if (isExemptContext) {

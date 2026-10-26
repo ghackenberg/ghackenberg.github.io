@@ -707,7 +707,7 @@ export function buildProjectSchema(params: {
 
 export function buildServiceSchema(params: {
   service: CollectionEntry<'services'>;
-  modules: Array<CollectionEntry<'modules'>>;
+  modules: Array<CollectionEntry<'service-modules'>>;
   siteUrl?: string;
 }) {
   const { service, modules, siteUrl = 'https://hackenberg.tech' } = params;
@@ -747,7 +747,7 @@ export function buildServiceSchema(params: {
 
 export function buildServiceModuleSchema(params: {
   parentService: CollectionEntry<'services'>;
-  module: CollectionEntry<'modules'>;
+  module: CollectionEntry<'service-modules'>;
   siteUrl?: string;
 }) {
   const { parentService, module, siteUrl = 'https://hackenberg.tech' } = params;

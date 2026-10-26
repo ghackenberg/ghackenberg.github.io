@@ -46,45 +46,7 @@
 
     <!-- Scrollable Content Body -->
     <div class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-3 sm:space-y-4">
-      
-      <!-- Section 1: Local Preferences & Reading History (Opt-In) -->
-      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-element-border light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
-        <div class="flex items-start justify-between gap-3">
-          <div class="space-y-1 min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
-              <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Local Preferences</h3>
-              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-primary/15 text-brand-primary border border-brand-primary/30 shrink-0">
-                100% Client-Side
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
-              Highlights new and unread content with subtle indicator dots and ensures varied rotation for the homepage gallery across visits. Stored <strong>strictly locally in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-element-bg light:bg-slate-200/60 px-1.5 py-0.5 rounded">localStorage</code>)</strong>. No data is ever transmitted to a server.
-            </p>
-          </div>
-
-          <!-- Toggle Switch -->
-          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
-            <input type="checkbox" id="toggle-read-status" class="sr-only peer">
-            <div class="w-10 sm:w-11 h-5.5 sm:h-6 bg-gray-700 light:bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 light:after:border-slate-200 after:border after:rounded-full after:h-4.5 sm:after:h-5 after:w-4.5 sm:after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
-            <span class="sr-only">Enable local preferences and read status</span>
-          </label>
-        </div>
-
-        <!-- Action Row: Status & Clear History -->
-        <div id="reading-data-actions" class="pt-2 border-t border-element-border light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
-          <span id="reading-status-summary" class="text-gray-400 light:text-slate-500">
-            Status: <span id="reading-status-text" class="text-gray-300 light:text-slate-700 font-medium">Disabled (No local storage)</span>
-          </span>
-          <button 
-            id="clear-reading-data-btn"
-            class="hidden px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-callout-caution/30 bg-callout-caution/10 hover:bg-callout-caution/20 text-callout-caution transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto"
-          >
-            Clear local history
-          </button>
-        </div>
-      </div>
-
-      <!-- Section 2: Plausible Web Analytics -->
+      <!-- Plausible Web Analytics -->
       <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-element-border light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
@@ -128,36 +90,18 @@
     interface Window {
       openPrivacyModal?: () => void;
       closePrivacyModal?: () => void;
-      closeWhatsNewModal?: () => void;
       closeReferencesModal?: () => void;
     }
   }
 
   (function() {
-    const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
-    const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-    const GALLERY_STORAGE_KEY = 'gh_gallery_impressions';
     const PLAUSIBLE_IGNORE_KEY = 'plausible_ignore';
 
     const backdrop = document.getElementById('privacy-modal-backdrop');
     const container = document.getElementById('privacy-modal-container');
     const closeBtn = document.getElementById('privacy-modal-close-btn');
-    const toggleReadStatus = document.getElementById('toggle-read-status') as HTMLInputElement | null;
-    const readingStatusText = document.getElementById('reading-status-text');
-    const clearReadingDataBtn = document.getElementById('clear-reading-data-btn');
     const toggleAnalyticsBtn = document.getElementById('toggle-analytics-optout-btn');
     const analyticsBadge = document.getElementById('analytics-badge');
-
-    function isNotificationsEnabled() {
-      try {
-        const data = localStorage.getItem(NOTIF_STORAGE_KEY);
-        if (data) {
-          const parsed = JSON.parse(data);
-          return parsed.enabled === true;
-        }
-      } catch(e) {}
-      return false;
-    }
 
     function isAnalyticsOptedOut() {
       try {
@@ -168,26 +112,6 @@
     }
 
     function updateModalUI() {
-      // 1. Read status toggle
-      const enabled = isNotificationsEnabled();
-      if (toggleReadStatus) {
-        toggleReadStatus.checked = enabled;
-      }
-      if (readingStatusText) {
-        readingStatusText.textContent = enabled ? 'Enabled (Stored locally)' : 'Disabled (No local storage)';
-        readingStatusText.className = enabled 
-          ? 'text-brand-primary font-medium' 
-          : 'text-gray-400 light:text-slate-500 font-medium';
-      }
-      if (clearReadingDataBtn) {
-        if (enabled) {
-          clearReadingDataBtn.classList.remove('hidden');
-        } else {
-          clearReadingDataBtn.classList.add('hidden');
-        }
-      }
-
-      // 2. Analytics opt-out
       const optedOut = isAnalyticsOptedOut();
       if (toggleAnalyticsBtn) {
         toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
@@ -204,9 +128,6 @@
     }
 
     function openModal() {
-      if (typeof window.closeWhatsNewModal === 'function') {
-        window.closeWhatsNewModal();
-      }
       if (typeof window.closeReferencesModal === 'function') {
         window.closeReferencesModal();
       }
@@ -259,55 +180,6 @@
         closeModal();
       }
     });
-
-    // Toggle Read Status
-    if (toggleReadStatus) {
-      toggleReadStatus.addEventListener('change', function() {
-        const shouldEnable = toggleReadStatus.checked;
-        if (shouldEnable) {
-          const freshState = {
-            enabled: true,
-            firstVisitTime: Date.now(),
-            lastVisitedSections: {},
-            visitedItems: {}
-          };
-          localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(freshState));
-          window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: true } }));
-        } else {
-          // If disabled, delete all stored data
-          localStorage.removeItem(NOTIF_STORAGE_KEY);
-          localStorage.removeItem(MANIFEST_CACHE_KEY);
-          localStorage.removeItem(GALLERY_STORAGE_KEY);
-          window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: false } }));
-        }
-        updateModalUI();
-      });
-    }
-
-    // Clear reading data button
-    if (clearReadingDataBtn) {
-      clearReadingDataBtn.addEventListener('click', function() {
-        if (confirm('Do you really want to clear your locally stored preferences and history?')) {
-          const enabled = isNotificationsEnabled();
-          if (enabled) {
-            const emptyState = {
-              enabled: true,
-              firstVisitTime: Date.now(),
-              lastVisitedSections: {},
-              visitedItems: {}
-            };
-            localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(emptyState));
-            localStorage.removeItem(GALLERY_STORAGE_KEY);
-            window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: true, cleared: true } }));
-          } else {
-            localStorage.removeItem(NOTIF_STORAGE_KEY);
-            localStorage.removeItem(MANIFEST_CACHE_KEY);
-            localStorage.removeItem(GALLERY_STORAGE_KEY);
-          }
-          updateModalUI();
-        }
-      });
-    }
 
     // Toggle Analytics Opt-Out
     if (toggleAnalyticsBtn) {

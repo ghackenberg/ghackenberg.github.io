@@ -1,6 +1,6 @@
 ---
 interface Props {
-  variant?: 'footer' | 'modal' | 'card';
+  variant?: 'footer' | 'card';
   class?: string;
 }
 
@@ -8,44 +8,35 @@ const { variant = 'footer', class: className = '' } = Astro.props;
 const inputId = `newsletter-email-${variant}`;
 const headingId = `newsletter-heading-${variant}`;
 
-const variantContainerClasses: Record<'footer' | 'modal' | 'card', string> = {
+const variantContainerClasses: Record<'footer' | 'card', string> = {
   footer: 'w-full mb-12 md:mb-16 rounded-3xl glass-card border border-element-border relative overflow-hidden',
-  modal: 'shrink-0 border-t border-element-border light:border-slate-200/80 bg-white/[0.015] light:bg-slate-50/60 overflow-hidden',
   card: 'w-full mt-10 rounded-3xl glass-card border border-element-border relative overflow-hidden',
 };
 
-const variantTopSectionClasses: Record<'footer' | 'modal' | 'card', string> = {
+const variantTopSectionClasses: Record<'footer' | 'card', string> = {
   footer: 'p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center',
-  modal: 'px-4 sm:px-6 py-4 grid grid-cols-1 sm:grid-cols-12 gap-3.5 sm:gap-5 items-center',
   card: 'p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center',
 };
 
-const variantBottomBarClasses: Record<'footer' | 'modal' | 'card', string> = {
+const variantBottomBarClasses: Record<'footer' | 'card', string> = {
   footer: 'px-6 sm:px-8 py-3 bg-white/[0.025] light:bg-slate-100/80 border-t border-element-border flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap',
-  modal: 'px-4 sm:px-6 py-2.5 bg-white/[0.025] light:bg-slate-100/80 border-t border-element-border light:border-slate-200/80 flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap',
   card: 'px-6 sm:px-8 py-3 bg-white/[0.025] light:bg-slate-100/80 border-t border-element-border flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap',
 };
 
-const variantLeftColClasses: Record<'footer' | 'modal' | 'card', string> = {
+const variantLeftColClasses: Record<'footer' | 'card', string> = {
   footer: 'md:col-span-5 lg:col-span-6 space-y-1.5',
-  modal: 'sm:col-span-5 lg:col-span-6 space-y-1',
   card: 'md:col-span-5 lg:col-span-6 space-y-1.5',
 };
 
-const variantRightColClasses: Record<'footer' | 'modal' | 'card', string> = {
+const variantRightColClasses: Record<'footer' | 'card', string> = {
   footer: 'md:col-span-7 lg:col-span-6',
-  modal: 'sm:col-span-7 lg:col-span-6',
   card: 'md:col-span-7 lg:col-span-6',
 };
 
-const variantCopy: Record<'footer' | 'modal' | 'card', { title: string; description: string }> = {
+const variantCopy: Record<'footer' | 'card', { title: string; description: string }> = {
   footer: {
     title: 'Subscribe to My Newsletter',
     description: 'Get notified when new blog posts, presentations, courses, or publications are published.',
-  },
-  modal: {
-    title: 'Get Updates via Email',
-    description: 'Prefer email notifications? Subscribe to receive new releases directly in your inbox.',
   },
   card: {
     title: 'Enjoyed this post? Stay in the loop.',
@@ -139,7 +130,7 @@ const copy = variantCopy[variant];
         href="/newsletters/"
         class="inline-flex items-center gap-1 font-semibold text-brand-primary hover:text-brand-primary/80 hover:underline transition-colors shrink-0"
       >
-        <span>{variant !== 'modal' && <span class="hidden sm:inline">Browse past issues in the </span>}Archive</span>
+        <span><span class="hidden sm:inline">Browse past issues in the </span>Archive</span>
         <span aria-hidden="true">→</span>
       </a>
     </div>

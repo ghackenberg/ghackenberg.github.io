@@ -384,15 +384,15 @@ const SERVICE_MODULE_CARD = path.resolve(COMPONENTS_DIR, 'ServiceModuleCard.astr
 let moduleCardViolations = 0;
 if (fs.existsSync(COURSE_MODULE_CARD)) {
   const content = fs.readFileSync(COURSE_MODULE_CARD, 'utf8');
-  if (/\b(?:yellow|brand-yellow|badge-new-yellow)\b/i.test(content)) {
-    error('CourseModuleCard.astro must not contain yellow or brand-yellow color tokens. Must use domain-courses / badge-new-cyan.');
+  if (/\b(?:yellow|brand-yellow)\b/i.test(content)) {
+    error('CourseModuleCard.astro must not contain yellow or brand-yellow color tokens. Must use domain-courses.');
     moduleCardViolations++;
   }
 }
 if (fs.existsSync(SERVICE_MODULE_CARD)) {
   const content = fs.readFileSync(SERVICE_MODULE_CARD, 'utf8');
-  if (/\b(?:purple|brand-purple|badge-new-purple)\b/i.test(content)) {
-    error('ServiceModuleCard.astro must not contain purple or brand-purple color tokens. Must use domain-services / badge-new-emerald.');
+  if (/\b(?:purple|brand-purple)\b/i.test(content)) {
+    error('ServiceModuleCard.astro must not contain purple or brand-purple color tokens. Must use domain-services.');
     moduleCardViolations++;
   }
 }
@@ -501,14 +501,14 @@ const SERVICE_CARD = path.resolve(COMPONENTS_DIR, 'ServiceCard.astro');
 let servicesPurityViolations = 0;
 if (fs.existsSync(SERVICES_PAGE)) {
   const content = fs.readFileSync(SERVICES_PAGE, 'utf8');
-  if (/\b(?:purple|brand-purple|badge-new-purple)\b/i.test(content)) {
-    error('src/pages/services.astro must not contain purple, brand-purple, or badge-new-purple tokens. Services domain is Emerald.');
+  if (/\b(?:purple|brand-purple)\b/i.test(content)) {
+    error('src/pages/services.astro must not contain purple or brand-purple tokens. Services domain is Emerald.');
     servicesPurityViolations++;
   }
 }
 if (fs.existsSync(SERVICE_CARD)) {
   const content = fs.readFileSync(SERVICE_CARD, 'utf8');
-  if (/\b(?:purple|brand-purple|badge-new-purple)\b/i.test(content)) {
+  if (/\b(?:purple|brand-purple)\b/i.test(content)) {
     error('src/components/ServiceCard.astro must not contain purple or brand-purple tokens. Services domain is Emerald.');
     servicesPurityViolations++;
   }

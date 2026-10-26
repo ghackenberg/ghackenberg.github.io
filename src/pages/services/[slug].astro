@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 const { service } = Astro.props;
 const { Content } = await render(service);
 
-const allModules = await getCollection("modules");
+const allModules = await getCollection("service-modules");
 const serviceModules = allModules
   .filter((m) => m.data.serviceId === service.id)
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));

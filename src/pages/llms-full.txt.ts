@@ -9,11 +9,15 @@ export async function GET() {
   const allSlides = await getCollection("slides");
   const publications = await getCollection("publications");
   const courses = await getCollection("courses");
+  const courseModules = await getCollection("course-modules");
   const projects = await getCollection("projects");
   const services = await getCollection("services");
-  const modules = await getCollection("modules");
+  const serviceModules = await getCollection("service-modules");
+  const visualizations = await getCollection("visualizations");
+  const newsletters = await getCollection("newsletters");
   const tags = await getCollection("tags");
   const degrees = await getCollection("degrees");
+  const experiences = await getCollection("experiences");
   const profiles = await getCollection("profiles");
 
   // Sort posts, presentations, and publications by date descending
@@ -29,10 +33,18 @@ export async function GET() {
     return db - da;
   });
   const sortedDegrees = degrees.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedExperiences = experiences.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
+  const sortedCourseModules = courseModules.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedServiceModules = serviceModules.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
 
   const degreeLines = sortedDegrees
-    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.organization.name} (${d.data.startYear}-${d.data.endYear})`)
+    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.organization.name} (${d.data.startYear}-${d.data.endYear ?? 'Present'})`)
+    .join("\n");
+  const experienceLines = sortedExperiences
+    .map((e) => `- ${e.data.title} - ${e.data.organization.name} (${e.data.startYear}-${e.data.endYear ?? 'Present'})`)
     .join("\n");
   const profileLines = sortedProfiles
     .map((p) => `- ${p.data.name} (${p.data.handle}): ${p.data.url}`)
@@ -49,6 +61,9 @@ export async function GET() {
 ## 1. About Dr. Georg Hackenberg
 
 Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industrial Informatics at UAP – University of Applied Sciences Upper Austria (Technology Campus Wels). He holds a Doctor of Natural Sciences (Dr. rer. nat.) in Software and Systems Engineering from the Technical University of Munich (TUM), a Master of Science (M.Sc.) in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science (B.Sc.) in Software & Internet Technology from the University of Mannheim. His academic research and software engineering practice bridge model-based systems engineering, cyber-physical systems simulation, knowledge graph architectures, and sovereign agentic AI workflows. He is the founder and architect of software platforms including CADdrive (https://caddrive.com) and Mentawise (https://mentawise.com).
+
+### Professional Experience
+${experienceLines}
 
 ### Academic Degrees & Education
 ${degreeLines}
@@ -129,6 +144,23 @@ ${profileLines}
     output += `\n${course.body}\n\n---\n\n`;
   }
 
+  for (const mod of sortedCourseModules) {
+    output += `### Course Module: ${mod.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/courses/${mod.data.courseId}/${mod.id.split('/').pop()}/\n`;
+    output += `- Course: ${mod.data.courseId}\n`;
+    output += `- Description: ${mod.data.description}\n`;
+    if (mod.data.topics && mod.data.topics.length > 0) {
+      output += `- Topics: ${mod.data.topics.join(', ')}\n`;
+    }
+    if (mod.data.tools && mod.data.tools.length > 0) {
+      output += `- Tools: ${mod.data.tools.join(', ')}\n`;
+    }
+    if (mod.data.competencies && mod.data.competencies.length > 0) {
+      output += `- Competencies:\n  * ${mod.data.competencies.join('\n  * ')}\n`;
+    }
+    output += `\n${mod.body}\n\n---\n\n`;
+  }
+
   output += `## 6. Software Projects & Systems\n\n`;
   for (const project of projects) {
     output += `### ${project.data.title}\n`;
@@ -143,14 +175,23 @@ ${profileLines}
   }
 
   output += `## 7. Business Services & Modules\n\n`;
-  for (const service of services) {
+  for (const service of sortedServices) {
     output += `### Service: ${service.data.title}\n`;
     output += `- URL: https://hackenberg.tech/services/${service.id}/\n`;
-    output += `- Description: ${service.data.description}\n\n`;
+    output += `- Description: ${service.data.description}\n`;
+    if (service.data.tags && service.data.tags.length > 0) {
+      output += `- Tags: ${service.data.tags.join(', ')}\n`;
+    }
+    if (service.body) {
+      output += `\n${service.body}\n`;
+    }
+    output += `\n---\n\n`;
   }
 
-  for (const mod of modules) {
+  for (const mod of sortedServiceModules) {
     output += `### Module: ${mod.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/services/${mod.data.serviceId}/${mod.id.split('/').pop()}/\n`;
+    output += `- Service: ${mod.data.serviceId}\n`;
     output += `- Description: ${mod.data.description}\n`;
     if (mod.data.highlights && mod.data.highlights.length > 0) {
       output += `- Key Highlights:\n  * ${mod.data.highlights.join('\n  * ')}\n`;
@@ -158,7 +199,35 @@ ${profileLines}
     output += `\n${mod.body}\n\n---\n\n`;
   }
 
-  output += `## 8. Knowledge Index & Topic Tags\n\n`;
+  output += `## 8. Technical Newsletters\n\n`;
+  for (const nl of sortedNewsletters) {
+    const nlDate = nl.data.pubDate instanceof Date ? nl.data.pubDate.toISOString().split('T')[0] : String(nl.data.pubDate);
+    output += `### Issue #${nl.data.issueNumber}: ${nl.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/newsletters/${nl.id}/\n`;
+    if (nl.data.subtitle) output += `- Subtitle: ${nl.data.subtitle}\n`;
+    output += `- Date: ${nlDate}\n`;
+    output += `- Description: ${nl.data.description}\n`;
+    if (nl.data.tags && nl.data.tags.length > 0) {
+      output += `- Tags: ${nl.data.tags.join(', ')}\n`;
+    }
+    output += `\n${nl.body}\n\n---\n\n`;
+  }
+
+  output += `## 9. Interactive Visualizations\n\n`;
+  for (const viz of visualizations) {
+    output += `### ${viz.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/visualizations/${viz.id}/\n`;
+    output += `- Description: ${viz.data.description}\n`;
+    if (viz.data.tags && viz.data.tags.length > 0) {
+      output += `- Tags: ${viz.data.tags.join(', ')}\n`;
+    }
+    if (viz.data.specs) {
+      output += `- Specs: Backend=${viz.data.specs.renderingBackend}, Topology=${viz.data.specs.spatialTopology}, Capacity=${viz.data.specs.nodeCapacity}, Solver=${viz.data.specs.physicsSolver}, Complexity=${viz.data.specs.computationalComplexity}\n`;
+    }
+    output += `\n${viz.body}\n\n---\n\n`;
+  }
+
+  output += `## 10. Knowledge Index & Topic Tags\n\n`;
   const sortedTags = tags.sort((a, b) => a.data.title.localeCompare(b.data.title));
   for (const tag of sortedTags) {
     output += `### #${tag.data.title}\n`;

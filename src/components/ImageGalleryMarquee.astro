@@ -24,15 +24,11 @@ const initialRow1 = catalog.slice(0, 12);
 const initialRow2 = catalog.slice(12, 27);
 const initialRow3 = catalog.slice(27, 45);
 
-function getBadgeColor(href: string): string {
-  return `badge-new-${getDomainFromHref(href)}`;
-}
-
 function getDomainFromHref(href: string): string {
   const match = href.match(/^\/([^/]+)/);
   if (match) {
     const section = match[1];
-    if (['posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations'].includes(section)) {
+    if (['posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations', 'newsletters'].includes(section)) {
       return section;
     }
   }
@@ -77,11 +73,6 @@ function getDomainFromHref(href: string): string {
             decoding="async"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent opacity-95 pointer-events-none" />
-          <span
-            class={`gallery-badge unread-dot hidden badge-new ${getBadgeColor(item.href)}`}
-            data-item-url={item.href}
-            title="Unread"
-          >UNREAD</span>
           <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between pointer-events-none z-10">
             <div class="pr-3 min-w-0 flex-1">
               <h3 class="gallery-card-title text-sm sm:text-base font-bold text-white transition-colors duration-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] truncate" title={item.title}>
@@ -122,11 +113,6 @@ function getDomainFromHref(href: string): string {
             decoding="async"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent opacity-95 pointer-events-none" />
-          <span
-            class={`gallery-badge unread-dot hidden badge-new ${getBadgeColor(item.href)}`}
-            data-item-url={item.href}
-            title="Unread"
-          >UNREAD</span>
           <div class="absolute inset-x-0 bottom-0 p-3.5 sm:p-4 flex items-end justify-between pointer-events-none z-10">
             <div class="pr-2 min-w-0 flex-1">
               <h3 class="gallery-card-title text-xs sm:text-sm font-bold text-white transition-colors duration-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] truncate" title={item.title}>
@@ -162,11 +148,6 @@ function getDomainFromHref(href: string): string {
             decoding="async"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent opacity-95 pointer-events-none" />
-          <span
-            class={`gallery-badge unread-dot hidden badge-new ${getBadgeColor(item.href)}`}
-            data-item-url={item.href}
-            title="Unread"
-          >UNREAD</span>
           <div class="absolute inset-x-0 bottom-0 p-2.5 sm:p-3 flex items-end justify-between pointer-events-none z-10">
             <h3 class="gallery-card-title text-[11px] sm:text-xs font-semibold text-white transition-colors duration-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] truncate" title={item.title}>
               {item.title}
@@ -210,6 +191,7 @@ function getDomainFromHref(href: string): string {
   .gallery-card[data-domain="projects"] { --card-domain-color: var(--color-domain-projects); }
   .gallery-card[data-domain="services"] { --card-domain-color: var(--color-domain-services); }
   .gallery-card[data-domain="visualizations"] { --card-domain-color: var(--color-domain-visualizations); }
+  .gallery-card[data-domain="newsletters"] { --card-domain-color: var(--color-domain-newsletters); }
 
   /* Subtle domain-accent on hover while preserving high-contrast legibility over dark backdrop */
   .gallery-card:hover .gallery-card-title,
@@ -302,39 +284,11 @@ function getDomainFromHref(href: string): string {
 
   let activeAnimationId: number | null = null;
   let galleryObserver: IntersectionObserver | null = null;
-  let saveLedgerTimer: number | null = null;
-  let inMemorySeenLedger: Record<string, number> = {};
+  const inMemorySeenLedger: Record<string, number> = {};
   let abortController: AbortController | null = null;
-
-  function loadSeenLedger(): Record<string, number> {
-    if (!isOptedIn()) return {};
-    try {
-      const raw = localStorage.getItem('gh_gallery_impressions');
-      if (raw) {
-        return JSON.parse(raw);
-      }
-    } catch {
-      // Ignore localStorage access failures in restricted environments
-    }
-    return {};
-  }
-
-  function scheduleSaveLedger() {
-    if (!isOptedIn()) return;
-    if (saveLedgerTimer !== null) return;
-    saveLedgerTimer = window.setTimeout(() => {
-      saveLedgerTimer = null;
-      try {
-        localStorage.setItem('gh_gallery_impressions', JSON.stringify(inMemorySeenLedger));
-      } catch {
-        // Quota exceeded or private browsing
-      }
-    }, 1000);
-  }
 
   function recordSeen(id: string) {
     inMemorySeenLedger[id] = Date.now();
-    scheduleSaveLedger();
   }
 
   function pickNextItem(
@@ -389,61 +343,15 @@ function getDomainFromHref(href: string): string {
     return candidates[0];
   }
 
-  function getBadgeColor(href: string): string {
-    return `badge-new-${getDomainFromHref(href)}`;
-  }
-
   function getDomainFromHref(href: string): string {
     const match = href.match(/^\/([^/]+)/);
     if (match) {
       const section = match[1];
-      if (['posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations'].includes(section)) {
+      if (['posts', 'publications', 'presentations', 'courses', 'projects', 'services', 'visualizations', 'newsletters'].includes(section)) {
         return section;
       }
     }
     return 'posts';
-  }
-
-  function isOptedIn(): boolean {
-    try {
-      const raw = localStorage.getItem('gh_site_notifications_v1');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        return parsed && parsed.enabled === true;
-      }
-    } catch {
-      // Storage access failure
-    }
-    return false;
-  }
-
-  function getVisitedItems(): Record<string, number> {
-    try {
-      const raw = localStorage.getItem('gh_site_notifications_v1');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && parsed.enabled === true) {
-          return parsed.visitedItems || {};
-        }
-      }
-    } catch {
-      // Storage access failure
-    }
-    return {};
-  }
-
-  function isPathVisited(path: string, visitedMap: Record<string, number>): boolean {
-    let normalized = path.replace(/\/$/, '');
-    if (!normalized.startsWith('/')) {
-      normalized = '/' + normalized;
-    }
-    return !!visitedMap[normalized];
-  }
-
-  let visitedItemsCache: Record<string, number> = {};
-
-  function refreshVisitedItemsCache() {
-    visitedItemsCache = getVisitedItems();
   }
 
   function hydrateCard(card: HTMLElement, item: GalleryItem) {
@@ -479,27 +387,6 @@ function getDomainFromHref(href: string): string {
         tagline.style.display = 'none';
       }
     }
-
-    const badge = card.querySelector<HTMLElement>('.gallery-badge');
-    if (badge) {
-      Array.from(badge.classList).forEach(cls => {
-        if (cls.startsWith('badge-new-')) {
-          badge.classList.remove(cls);
-        }
-      });
-      badge.classList.add(getBadgeColor(item.href));
-
-      if (isOptedIn()) {
-        const isVisited = isPathVisited(item.href, visitedItemsCache);
-        if (!isVisited) {
-          badge.classList.remove('hidden');
-        } else {
-          badge.classList.add('hidden');
-        }
-      } else {
-        badge.classList.add('hidden');
-      }
-    }
   }
 
   function setupGalleryEngine() {
@@ -510,10 +397,6 @@ function getDomainFromHref(href: string): string {
     if (galleryObserver !== null) {
       galleryObserver.disconnect();
       galleryObserver = null;
-    }
-    if (saveLedgerTimer !== null) {
-      window.clearTimeout(saveLedgerTimer);
-      saveLedgerTimer = null;
     }
     if (abortController !== null) {
       abortController.abort();
@@ -536,9 +419,6 @@ function getDomainFromHref(href: string): string {
 
     abortController = new AbortController();
     const { signal } = abortController;
-
-    inMemorySeenLedger = loadSeenLedger();
-    refreshVisitedItemsCache();
 
     // 1. Full Client-Side Rehydration:
     const inUseIds = new Set<string>();
@@ -759,11 +639,10 @@ function getDomainFromHref(href: string): string {
     };
     motionQuery.addEventListener('change', handleMotionChange, { signal });
 
-    // Tab visibility handler & storage sync
+    // Tab visibility handler
     const handleVisibilityChange = () => {
       isDocumentHidden = document.hidden;
       if (!isDocumentHidden) {
-        refreshVisitedItemsCache();
         lastTime = null;
         if (isInView && activeAnimationId === null) {
           activeAnimationId = requestAnimationFrame(tick);
@@ -771,7 +650,6 @@ function getDomainFromHref(href: string): string {
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange, { signal });
-    window.addEventListener('storage', refreshVisitedItemsCache, { signal, passive: true });
 
     // 2. Horizontal Scrolling: Apple Touchpad & Classic Mouse Wheel (with Shift or tilt)
     viewport.addEventListener(
@@ -1054,7 +932,6 @@ function getDomainFromHref(href: string): string {
   // Support Astro View Transitions and initial load
   setupGalleryEngine();
   document.addEventListener('astro:page-load', setupGalleryEngine);
-  window.addEventListener('gh-notifications-toggle', setupGalleryEngine);
   document.addEventListener('astro:before-swap', () => {
     if (activeAnimationId !== null) {
       cancelAnimationFrame(activeAnimationId);
@@ -1063,10 +940,6 @@ function getDomainFromHref(href: string): string {
     if (galleryObserver !== null) {
       galleryObserver.disconnect();
       galleryObserver = null;
-    }
-    if (saveLedgerTimer !== null) {
-      window.clearTimeout(saveLedgerTimer);
-      saveLedgerTimer = null;
     }
     if (abortController !== null) {
       abortController.abort();

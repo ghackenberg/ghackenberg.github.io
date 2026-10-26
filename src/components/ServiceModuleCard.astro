@@ -4,7 +4,7 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   serviceId: string;
-  module: CollectionEntry<'modules'>;
+  module: CollectionEntry<'service-modules'>;
 }
 
 const { serviceId, module } = Astro.props;
@@ -16,7 +16,6 @@ const colorClasses = {
   text: 'text-domain-services',
   hoverText: 'group-hover:text-domain-services',
   cardBtnBg: 'bg-domain-services/12 group-hover:bg-domain-services/25 border border-domain-services/20 group-hover:border-domain-services/45 text-domain-services',
-  dot: 'badge-new badge-new-emerald'
 };
 ---
 
@@ -43,13 +42,6 @@ const colorClasses = {
     <!-- Ambient overlay for depth & contrast in dark and light modes -->
     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent block light:hidden pointer-events-none z-10"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent hidden light:block pointer-events-none z-10"></div>
-
-    <!-- Unread badge -->
-    <span 
-      class={`unread-dot hidden ${colorClasses.dot} badge-corner-tr`}
-      data-item-url={href}
-      title="Unread module"
-    >UNREAD</span>
   </div>
   
   <!-- Info Body (Below) -->

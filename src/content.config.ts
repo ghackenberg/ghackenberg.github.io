@@ -327,7 +327,7 @@ const services = defineCollection({
   }).strict()
 });
 
-const modules = defineCollection({
+const serviceModules = defineCollection({
   loader: glob({
     base: './src/content/services',
     pattern: '*/modules/*/index.{md,mdx}',
@@ -552,7 +552,7 @@ export const collections = {
   'courses': courses,
   'course-modules': courseModules,
   'services': services,
-  'modules': modules,
+  'service-modules': serviceModules,
   'tags': tags,
   'characters': characters,
   'objects': objects,

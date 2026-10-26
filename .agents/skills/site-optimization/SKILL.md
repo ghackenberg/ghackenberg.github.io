@@ -10,7 +10,7 @@ This skill governs search engine optimization (SEO), Generative Engine Optimizat
 ## 1. Scope & Primary Artefacts
 - Structured Data: Schema.org JSON-LD scripts (`BreadcrumbList`, `Article`, `Course`, `Person`, `SoftwareSourceCode`, `Event`).
 - OpenGraph & Social Metadata: Canonical URLs, OpenGraph (`og:*`), Twitter Cards (`twitter:*`).
-- AI & LLM Manifests: `public/llms.txt`.
+- AI & LLM Manifests: `src/pages/llms.txt.ts`, `src/pages/llms-full.txt.ts`.
 - Sitemap & Robots: `@astrojs/sitemap`, `public/robots.txt`.
 - Performance: Core Web Vitals, Lighthouse CLI audits, image optimization.
 
@@ -18,7 +18,7 @@ This skill governs search engine optimization (SEO), Generative Engine Optimizat
 Maximize citation probability and ground truth extraction by AI search engines (Perplexity, ChatGPT Search, Google Gemini):
 - **Answer-First Definition Blocks**: Position a concise 40–55 word synthesized summary directly under the top heading (`h1` or primary `h2`).
 - **High-Density Markdown**: Use markdown tables (`| Parameter | Value | Description |`) and bulleted feature manifests instead of sprawling prose.
-- **Machine-Readable LLMs Manifest (`public/llms.txt`)**:
+- **Machine-Readable LLMs Manifest (`src/pages/llms.txt.ts` & `src/pages/llms-full.txt.ts`)**:
   - Keep `llms.txt` concise and structured as a curated index for AI agents.
   - Link directly to markdown sources, primary API endpoints, and core topic hubs.
   - Use `scan_aio_readiness` and `evaluate_aio_extractability` via `unified-analytics` to audit drafted markdown.

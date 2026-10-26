@@ -110,6 +110,7 @@ interface ContentManifestPayload {
   publications?: ContentManifestItem[];
   visualizations?: ContentManifestItem[];
   services?: ContentManifestItem[];
+  newsletters?: ContentManifestItem[];
   tags?: ContentManifestItem[];
 }
 
@@ -197,6 +198,11 @@ const STATIC_PAGE_METADATA: Record<string, SankeyPageMetadata> = {
     title: 'Interactive Visualizations',
   },
   '/services/': { emoji: '💼', typeLabel: 'Services Index', title: 'AI & Engineering Services' },
+  '/newsletters/': {
+    emoji: '✉️',
+    typeLabel: 'Newsletters Index',
+    title: 'Technical Newsletters',
+  },
   '/tags/': { emoji: '🏷️', typeLabel: 'Tags Index', title: 'Content Topic Tags' },
   '/impressum/': { emoji: '⚖️', typeLabel: 'Legal', title: 'Impressum & Legal Disclosure' },
   '/imprint/': { emoji: '⚖️', typeLabel: 'Legal', title: 'Impressum & Legal Disclosure' },
@@ -230,6 +236,8 @@ function resolvePageDomainTheme(rawPath: string): SankeyDomainTheme {
     emoji = '💼';
   } else if (norm.startsWith('/visualizations/')) {
     emoji = '🌐';
+  } else if (norm.startsWith('/newsletters/')) {
+    emoji = '✉️';
   } else if (norm.startsWith('/tags/')) {
     emoji = '🏷️';
   } else if (norm === '/datenschutz/' || norm === '/privacy/') {
@@ -294,28 +302,12 @@ function ingestManifestPayload(manifest: ContentManifestPayload | null | undefin
   registerGroup(manifest.publications, '📚', 'Publication');
   registerGroup(manifest.visualizations, '🌐', 'Visualization');
   registerGroup(manifest.services, '💼', 'Service');
+  registerGroup(manifest.newsletters, '✉️', 'Newsletter');
   registerGroup(manifest.tags, '🏷️', 'Tag');
   isManifestPopulated = true;
 }
 
-function trySeedManifestFromLocalStorage(): void {
-  if (isManifestPopulated) return;
-  try {
-    const raw = localStorage.getItem('gh_content_manifest_cache');
-    if (!raw) return;
-    const parsed = JSON.parse(raw) as { data?: ContentManifestPayload } | ContentManifestPayload;
-    const payload =
-      parsed && typeof parsed === 'object' && 'data' in parsed && parsed.data
-        ? parsed.data
-        : (parsed as ContentManifestPayload);
-    ingestManifestPayload(payload);
-  } catch {
-    // ignore storage read errors
-  }
-}
-
 async function ensureContentManifestLoaded(): Promise<void> {
-  trySeedManifestFromLocalStorage();
   if (isManifestPopulated) return;
   if (inFlightManifestPromise) return inFlightManifestPromise;
 
@@ -336,7 +328,6 @@ async function ensureContentManifestLoaded(): Promise<void> {
 }
 
 function resolvePageMetadata(rawPath: string): SankeyPageMetadata {
-  trySeedManifestFromLocalStorage();
   const norm = normalizePath(rawPath);
 
   if (STATIC_PAGE_METADATA[norm]) {

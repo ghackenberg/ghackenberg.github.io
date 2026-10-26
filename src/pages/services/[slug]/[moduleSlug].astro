@@ -9,7 +9,7 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
-  const modules = await getCollection("modules");
+  const modules = await getCollection("service-modules");
   const services = await getCollection("services");
   
   return modules.map((module) => {
@@ -24,7 +24,7 @@ export async function getStaticPaths() {
 }
 
 interface Props {
-  module: CollectionEntry<"modules">;
+  module: CollectionEntry<"service-modules">;
   parentService: CollectionEntry<"services">;
 }
 
