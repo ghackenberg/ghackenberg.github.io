@@ -82,28 +82,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save Branding & OG Assets Cache
-        if: always() && steps.cache-branding.outputs.cache-hit != 'true'
+        if: steps.cache-branding.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: .cache/branding
           key: ${{ steps.cache-branding.outputs.cache-primary-key }}
 
       - name: Save Presentation Audio & Cue Timings Cache
-        if: always() && steps.cache-audio.outputs.cache-hit != 'true'
+        if: steps.cache-audio.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: .cache/slides-audio
           key: ${{ steps.cache-audio.outputs.cache-primary-key }}
 
       - name: Save Presentation PDF Handouts Cache
-        if: always() && steps.cache-pdf.outputs.cache-hit != 'true'
+        if: steps.cache-pdf.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: .cache/slides-pdf
           key: ${{ steps.cache-pdf.outputs.cache-primary-key }}
 
       - name: Save JSON-LD Authorities Cache
-        if: always() && steps.cache-jsonld.outputs.cache-hit != 'true'
+        if: steps.cache-jsonld.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: .cache/jsonld-authorities.json
