@@ -13,7 +13,7 @@ tags:
   - prompt-engineering
   - software-architecture
   - wikiskills
-icon:
+image:
   src: ./hero.jpg
   title: Hermes Agent
   description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"

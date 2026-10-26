@@ -3,7 +3,7 @@ title: "SE4SG Workshop Report"
 pubDate: "2012-06-03"
 description: "Yesterday the ICSE workshop on software engineering challenges for the smart grid was held at the University of Zurich. It was a great event providing fertile g..."
 tags: ["conference", "energy-systems", "software-systems", "systems-engineering"]
-icon:
+image:
   src: "./photo.jpg"
   title: "SE4SG Workshop Report - Photo illustration"
   description: "Photo illustration from SE4SG Workshop Report"

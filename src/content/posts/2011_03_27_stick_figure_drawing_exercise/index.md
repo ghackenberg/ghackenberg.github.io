@@ -3,7 +3,7 @@ title: "Stick Figure Drawing Exercise"
 pubDate: "2011-03-26"
 description: "To improve my drawing skills recently I bought a book about stick figure drawing. Here is the result of my first exercise, but don't have too high expections ju..."
 tags: ["drawing"]
-icon:
+image:
   src: "./draft.png"
   title: "Stick Figure Drawing Exercise - Draft illustration"
   description: "Draft illustration from Stick Figure Drawing Exercise"

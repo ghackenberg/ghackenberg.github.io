@@ -32,7 +32,7 @@ const optimizedMainScreenshot = mainScreenshotImg ? await getImage({
 
 const optimizedScreenshots = await Promise.all(
   (project.data.screenshots || []).map(async (shot) => {
-    const shotImg = shot.src || shot.image;
+    const shotImg = shot.src;
     const opt = await getImage({
       src: shotImg,
       format: 'webp',

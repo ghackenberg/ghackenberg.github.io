@@ -3,10 +3,10 @@ title: "SEO im Zeitalter von KI: Strategien für SEO, GEO, AIO und AEO"
 subtitle: "Von Suchmaschinen zu generativen Antwortsystemen – Paradigmenwechsel für Industrie und B2B-Mittelstand"
 pubDate: "2026-10-01"
 audience: "Geschäftsführer, IT-Leiter und Marketingverantwortliche aus Industrie und B2B"
-lang: "de"
+inLanguage: "de"
 description: "Umfassende Keynote zur Transformation von traditioneller Suchmaschinenoptimierung hin zu Generative Engine Optimization (GEO), RAG-Architekturen, Schema.org-Wissensgraphen, B2B Social Media und agentengestütztem Web-Publishing."
 tags: ["seo", "geo", "aio", "aeo", "rag", "mcp", "knowledge-graphs", "enterprise-ai", "social-media"]
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert 'SEO im Zeitalter von KI'"
   description: "Fachvortrag über Generative Engine Optimization, Wissensgraphen und KI-Antwortsysteme für Industrie und B2B"

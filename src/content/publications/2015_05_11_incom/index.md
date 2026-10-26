@@ -37,7 +37,10 @@ bibtex: "@article{\r
   \tauthor = \"Sabine Teufl and Georg Hackenberg\"\r
 
   }"
-icon: ./pre_selection.png
+image:
+  src: "./pre_selection.png"
+  title: "Requirement Change Impact Pre-Selection Matrix"
+  description: "Filtering matrix identifying candidate manufacturing modules affected by engineering change orders."
 publisherUrl: https://doi.org/10.1016/j.ifacol.2015.06.296
 authors:
   - name: Sabine Teufl

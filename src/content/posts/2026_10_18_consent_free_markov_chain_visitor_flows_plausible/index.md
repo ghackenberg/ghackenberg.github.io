@@ -2,7 +2,7 @@
 title: "Consent-Free Visitor Flows: Reconstructing Multi-Step Navigation via Same-Origin Referrers and First-Order Markov Chains in Plausible"
 pubDate: 2026-10-18
 description: How we replaced sessionStorage flow_id tokens and consent banners with stateless document.referrer telemetry and 1st-order Markov visitor flows.
-lang: en
+inLanguage: en
 tags:
   - web-development
   - typescript
@@ -14,7 +14,7 @@ tags:
   - mcp
   - optimization
   - systems-analysis
-icon:
+image:
   src: ./hero.jpg
   title: First-Order Markov Chain Matrix and Consent-Free Sankey Flow on Timber Office Whiteboard
   description: Close-up illustration of a magnetic whiteboard on a pine timber wall in Grünau im Almtal displaying a first-order Markov state transition matrix and multi-column visitor flow graph with zero cookies

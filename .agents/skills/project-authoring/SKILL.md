@@ -26,10 +26,6 @@ Every project lives in its own directory under `src/content/projects/<slug>/`:
     src: "./screenshot-dark.png"
     title: "Steward Dashboard Dark Mode"
     description: "Visuelle Übersicht der Agenten-Ausführungspipeline im Dark Theme"
-  imageLight:
-    src: "./screenshot-light.png"
-    title: "Steward Dashboard Light Mode"
-    description: "Visuelle Übersicht der Agenten-Ausführungspipeline im Light Theme"
   screenshots: []
   pubDate: 2026-09-15
   ```
@@ -43,7 +39,6 @@ Structure project descriptions into a rigorous engineering case study:
 
 ## 3. Visual Assets & Screenshots
 - **Aspect Ratio**: 16:9 widescreen format for all screenshots.
-- **Theme Parity**: Provide both dark (`image`) and light (`imageLight`) captures when available to match user system preferences.
 - **Asset Co-location**: Store screenshot images directly within `src/content/projects/<slug>/`.
 
 ## 4. Verification Gate

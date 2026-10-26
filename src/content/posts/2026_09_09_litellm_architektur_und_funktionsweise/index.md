@@ -14,7 +14,7 @@ tags:
   - vllm
   - devops
   - python
-icon:
+image:
   src: ./hero.jpg
   title: LiteLLM
   description: "LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem"

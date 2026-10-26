@@ -37,7 +37,10 @@ bibtex: "@incollection{\r
   \tlanguage={English}\r
 
   }"
-icon: ./approach.png
+image:
+  src: "./approach.png"
+  title: "Formal Production Process Verification Architecture"
+  description: "Formal technical process specification methodology and model checking workflow for automated manufacturing systems."
 publisherUrl: https://doi.org/10.1007/978-3-319-11743-0_20
 authors:
   - name: Georg Hackenberg

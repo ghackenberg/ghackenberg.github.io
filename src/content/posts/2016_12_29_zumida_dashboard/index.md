@@ -3,7 +3,7 @@ title: "Explaining the new zumida dashboard"
 pubDate: "2016-12-28"
 description: "Recently I have been working on the zumida dashboard. The dasboard provides an overview of the information managed with zumida. From there you can dive into the..."
 tags: ["data-visualization", "hyperkit-software", "knowledge-management", "user-interface", "ux-design", "zumida"]
-icon:
+image:
   src: "./screenshot_enter.png"
   title: "Explaining the new zumida dashboard - Screenshot enter illustration"
   description: "Screenshot enter illustration from Explaining the new zumida dashboard"

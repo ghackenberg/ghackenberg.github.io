@@ -10,7 +10,6 @@ interface Props {
   activeTag?: string | string[];
   showTags?: boolean;
   image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
-  previewImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   ctaText?: string;
 }
 
@@ -22,21 +21,19 @@ const {
   activeTag,
   showTags,
   image,
-  previewImage,
   ctaText = "Read More",
 } = Astro.props;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
-const effImg = image || previewImage;
-const isPreviewObj = Boolean(effImg && typeof effImg === 'object' && 'src' in effImg && effImg.src);
-const previewImg = isPreviewObj ? (effImg as { src: ImageMetadata }).src : (effImg as ImageMetadata | undefined);
-const previewTitle = isPreviewObj ? (effImg as { title: string }).title : title;
-const previewDesc = isPreviewObj ? (effImg as { description: string }).description : (description ? `${title} – ${description}` : `Service overview for ${title}`);
+const isImageObj = Boolean(image && typeof image === 'object' && 'src' in image && image.src);
+const imageImg = isImageObj ? (image as { src: ImageMetadata }).src : (image as ImageMetadata | undefined);
+const imageTitle = isImageObj ? (image as { title: string }).title : title;
+const imageDesc = isImageObj ? (image as { description: string }).description : (description ? `${title} – ${description}` : `Service overview for ${title}`);
 
-const optimizedImage = previewImg ? await getImage({
-  src: previewImg,
+const optimizedImage = imageImg ? await getImage({
+  src: imageImg,
   format: 'webp',
   width: 800,
   quality: 80
@@ -53,13 +50,13 @@ const optimizedImage = previewImg ? await getImage({
 
   <!-- Preview Image Column (Top) -->
   <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
-    {previewImg && optimizedImage ? (
+    {imageImg && optimizedImage ? (
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
-        viewBox={`0 0 ${previewImg.width || 800} ${previewImg.height || 450}`} 
+        viewBox={`0 0 ${imageImg.width || 800} ${imageImg.height || 450}`} 
         preserveAspectRatio="xMidYMid slice" 
         role="img" 
-        aria-label={previewDesc}
+        aria-label={imageDesc}
       >
         <defs>
           <linearGradient id={`grad-service-dark-${id}`} x1="0" y1="0" x2="0" y2="1">
@@ -78,25 +75,25 @@ const optimizedImage = previewImg ? await getImage({
           href={optimizedImage.src} 
           x="0" 
           y="0" 
-          width={previewImg.width || 800} 
-          height={previewImg.height || 450} 
+          width={imageImg.width || 800} 
+          height={imageImg.height || 450} 
           preserveAspectRatio="xMidYMid slice" 
-          {...{ title: previewTitle }}
-          aria-label={previewDesc}
+          {...{ title: imageTitle }}
+          aria-label={imageDesc}
         />
         <rect 
           x="0" 
           y="0" 
-          width={previewImg.width || 800} 
-          height={(previewImg.height || 450) + 0.5} 
+          width={imageImg.width || 800} 
+          height={(imageImg.height || 450) + 0.5} 
           class="block light:hidden"
           fill={`url(#grad-service-dark-${id})`} 
         />
         <rect 
           x="0" 
           y="0" 
-          width={previewImg.width || 800} 
-          height={(previewImg.height || 450) + 0.5} 
+          width={imageImg.width || 800} 
+          height={(imageImg.height || 450) + 0.5} 
           class="hidden light:block"
           fill={`url(#grad-service-light-${id})`} 
         />

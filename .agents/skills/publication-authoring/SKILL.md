@@ -35,8 +35,10 @@ Every publication lives under `src/content/publications/<slug>/`:
       pages     = {102--115},
       doi       = {10.1109/ICSE.2026.12345}
     }
-  slides: "https://hackenberg.tech/presentations/2026_06_15_formal_verification/" # Optional link to presentation
-  image: "./preview.jpg" # Optional preview image (Astro image helper) or original diagram
+  image:
+    src: "./preview.jpg" # Mandatory preview image (Astro image helper) or diagram
+    title: "Formal Verification Framework Architecture" # Concise, specific figure title (distinct from description)
+    description: "Multi-tier architecture linking asynchronous multi-agent coordination with model checking verifiers." # Descriptive caption
   ```
 
 ## 2. Core Language & Metadata Rules

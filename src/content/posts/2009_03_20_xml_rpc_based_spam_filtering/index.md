@@ -3,7 +3,7 @@ title: "XML-RPC based Spam Filtering."
 pubDate: "2009-03-19"
 description: "To prevent my blog from being spammed, I recently integrated a spam filtering service. The service is offered by blogspam (dot) net, it's entirely open source a..."
 tags: ["blog", "software-systems", "web-development"]
-icon:
+image:
   src: "./http_post.png"
   title: "XML-RPC based Spam Filtering - Http post illustration"
   description: "Http post illustration from XML-RPC based Spam Filtering."

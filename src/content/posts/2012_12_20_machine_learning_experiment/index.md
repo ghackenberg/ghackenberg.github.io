@@ -3,7 +3,7 @@ title: "Machine Learning: Model and Trace"
 pubDate: "2012-12-19"
 description: "The machine learning approach is progressing: This article provides a glance into one of our machine learning models as well as behavior after training. The res..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "machine-learning"]
-icon:
+image:
   src: "./model.png"
   title: "Machine Learning: Model and Trace - Model illustration"
   description: "Model illustration from Machine Learning: Model and Trace"

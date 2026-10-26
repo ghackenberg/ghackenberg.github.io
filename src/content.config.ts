@@ -1,6 +1,5 @@
 import { defineCollection, reference, type ImageFunction } from 'astro:content';
 import { authorEntrySchema } from '@commons/shared/authors';
-import type { ImageMetadata } from 'astro';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import fs from 'node:fs';
@@ -35,30 +34,13 @@ const tagReference = z.string().superRefine((tagId, ctx) => {
 });
 
 const coverImageSchema = ({ image }: { image: ImageFunction }) =>
-  z.preprocess((val) => {
-    if (val && typeof val === 'object' && !Array.isArray(val)) {
-      const obj = { ...val } as {
-        src?: string | ImageMetadata;
-        image?: string | ImageMetadata;
-        caption?: string;
-        description?: string;
-        title?: string;
-      };
-      if (typeof obj.image !== 'undefined' && !obj.src) obj.src = obj.image;
-      if (typeof obj.caption !== 'undefined' && !obj.description) obj.description = obj.caption;
-      return obj;
-    }
-    return val;
-  }, z.object({
+  z.object({
     src: image(),
     title: z.string().min(3, "Image title must be at least 3 characters"),
     description: z.string().min(3, "Image description must be at least 3 characters"),
-  }).transform((data) => ({
-    ...data,
-    image: data.src,
-  })).refine((data) => data.title.trim().toLowerCase() !== data.description.trim().toLowerCase(), {
+  }).refine((data) => data.title.trim().toLowerCase() !== data.description.trim().toLowerCase(), {
     message: "Image title and description must be distinct (no duplicate fallbacks)",
-  }));
+  });
 
 export const organizationRefSchema = z.object({
   id: z.url(),
@@ -134,9 +116,9 @@ const posts = defineCollection({
     description: z.string().optional(),
     inLanguage: z.enum(['de', 'en']).default('de'),
     tags: z.array(tagReference).default([]),
-    image: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }),
     references: z.array(referenceSchema).default([]),
-  }),
+  }).strict(),
 });
 
 const publications = defineCollection({
@@ -154,9 +136,9 @@ const publications = defineCollection({
       abstract: z.string().optional(),
       tags: z.array(tagReference).default([]),
       bibtex: z.string().optional(),
-      image: image().optional(),
+      image: coverImageSchema({ image }),
       publisherUrl: z.string().optional(),
-    }),
+    }).strict(),
 });
 
 const visualizations = defineCollection({
@@ -168,7 +150,7 @@ const visualizations = defineCollection({
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
-    image: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }),
     pubDate: z.coerce.date().optional(),
     tags: z.array(tagReference).default([]),
     specs: z.object({
@@ -180,8 +162,8 @@ const visualizations = defineCollection({
       primaryStrength: z.string(),
       tradeOff: z.string(),
       bestUseCase: z.string(),
-    }),
-  }),
+    }).strict(),
+  }).strict(),
 });
 
 const experiences = defineCollection({
@@ -198,7 +180,7 @@ const experiences = defineCollection({
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().optional(),
     occupationalCategory: z.string().optional(),
-  }),
+  }).strict(),
 });
 
 const degrees = defineCollection({
@@ -212,7 +194,7 @@ const degrees = defineCollection({
     location: z.string().optional(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().optional(),
-  }),
+  }).strict(),
 });
 
 const profiles = defineCollection({
@@ -223,7 +205,7 @@ const profiles = defineCollection({
     url: z.url(),
     icon: z.enum(['github', 'linkedin', 'youtube', 'scholar', 'orcid', 'wikidata']),
     order: z.number().default(0),
-  }),
+  }).strict(),
 });
 
 const projects = defineCollection({
@@ -241,8 +223,7 @@ const projects = defineCollection({
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
     repoName: z.string().optional(),
-    image: coverImageSchema({ image }).optional(),
-    imageLight: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }),
     screenshots: z.array(coverImageSchema({ image })).default([]),
     pubDate: z.coerce.date().optional(),
     challenge: z.string().optional(),
@@ -257,7 +238,7 @@ const projects = defineCollection({
       technologies: z.array(z.string()),
     })).default([]),
     outcomes: z.array(z.string()).default([]),
-  }),
+  }).strict(),
 });
 
 const courses = defineCollection({
@@ -273,7 +254,7 @@ const courses = defineCollection({
     learningGoals: z.array(z.string()).default([]),
     terms: z.array(z.string()).default([]),
     inLanguage: z.enum(['de', 'en']).default('de'),
-    image: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
     overview: z.string().optional(),
@@ -291,7 +272,7 @@ const courses = defineCollection({
       topics: z.array(z.string()).default([]),
       tools: z.array(z.string()).default([]),
     })).default([]),
-  }),
+  }).strict(),
 });
 
 const courseModules = defineCollection({
@@ -313,7 +294,7 @@ const courseModules = defineCollection({
     competencies: z.array(z.string()).default([]),
     image: coverImageSchema({ image }).optional(),
     pubDate: z.coerce.date().optional(),
-  })
+  }).strict()
 });
 
 const services = defineCollection({
@@ -329,7 +310,7 @@ const services = defineCollection({
     ctaText: z.string().default('Inquire Now'),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
-    image: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }),
     targetAudience: z.array(z.string()).default([]),
     guidingPrinciples: z.array(z.object({
       title: z.string(),
@@ -343,7 +324,7 @@ const services = defineCollection({
       description: z.string(),
     })).optional(),
     keyOutcomes: z.array(z.string()).optional(),
-  })
+  }).strict()
 });
 
 const modules = defineCollection({
@@ -373,7 +354,7 @@ const modules = defineCollection({
     order: z.number().default(0),
     pubDate: z.coerce.date().optional(),
     image: coverImageSchema({ image }).optional(),
-  })
+  }).strict()
 });
 
 const tags = defineCollection({
@@ -385,7 +366,7 @@ const tags = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-  }),
+  }).strict(),
 });
 
 const characters = defineCollection({
@@ -513,8 +494,8 @@ const presentations = defineCollection({
     inLanguage: z.enum(['de', 'en']).default('de'),
     description: z.string().optional(),
     tags: z.array(tagReference).default([]),
-    image: coverImageSchema({ image }).optional(),
-  }),
+    image: coverImageSchema({ image }),
+  }).strict(),
 });
 
 
@@ -534,7 +515,7 @@ const slides = defineCollection({
     notes: z.string().default(''),
     references: z.array(slideReferenceSchema).default([]),
     durationSec: z.number().optional(),
-  }),
+  }).strict(),
 });
 
 const newsletters = defineCollection({
@@ -557,7 +538,7 @@ const newsletters = defineCollection({
     featuredCourses: z.array(reference('courses')).default([]),
     featuredProjects: z.array(reference('projects')).default([]),
     featuredVisualizations: z.array(reference('visualizations')).default([]),
-  }),
+  }).strict(),
 });
 
 export const collections = {

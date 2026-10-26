@@ -3,7 +3,7 @@ title: "JavaScript Physics Simulation"
 pubDate: "2011-04-13"
 description: "Some time ago I was testing the capabilities of JavaScript and vector graphics toolkits such as SVG (Mozilla Firefox, Opera, Safari) and VML (Microsoft Internet..."
 tags: ["data-visualization", "hyperkit-software", "javascript", "simulation", "youtube-video", "zumida"]
-icon:
+image:
   src: "./bounce_four.png"
   title: "JavaScript Physics Simulation - Bounce four illustration"
   description: "Bounce four illustration from JavaScript Physics Simulation"

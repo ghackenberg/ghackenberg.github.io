@@ -12,7 +12,7 @@ tags:
   - industrial-informatics
   - seo
   - web-development
-icon:
+image:
   src: ./hero.jpg
   title: Das B2B ROI Paradoxon im Enterprise Boardroom
   description: Dr. Georg Hackenberg präsentiert die Auswirkungen von Zero-Click-Zitaten und synthetischer B2B-Recherche vor Führungskräften

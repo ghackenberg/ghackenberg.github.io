@@ -3,7 +3,7 @@ title: "Collective Learning - A New Approach"
 pubDate: "2012-11-22"
 description: "In the past weeks we have been working on a first prototype for collective learning. The idea behind the approach is to make individuals collaborate with respec..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "machine-learning"]
-icon:
+image:
   src: "./screenshot.png"
   title: "Collective Learning - A New Approach - Screenshot illustration"
   description: "Screenshot illustration from Collective Learning - A New Approach"

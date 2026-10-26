@@ -12,7 +12,7 @@ image:
   title: "Welding Process Diagnostics Dashboard"
   description: "Synchronous multi-panel view displaying electrical voltage and current timeseries alongside dynamic arc phase cyclograms and probability density functions."
 screenshots:
-  - image: "./screenshot.png"
+  - src: "./screenshot.png"
     title: "Welding Process Waveform & Phase Cyclogram Dashboard"
     description: "High-resolution desktop interface visualizing synchronized voltage and current curves, arc phase diagrams, and statistical distribution histograms."
 challenge: "Modern industrial arc welding processes produce high-frequency electrical sensor streams at tens of kilohertz. Generic spreadsheet software and standard charting libraries choke on multi-million-point timeseries, while commercial proprietary analysis suites lack flexibility for custom mathematical transformations, rate-of-change derivatives, and phase-space cyclograms."

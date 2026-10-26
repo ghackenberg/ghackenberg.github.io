@@ -2,14 +2,14 @@
 title: "Agent Harnesses: Architecture, Taxonomy, and Evolution from Test Drivers to Protocol Buses"
 pubDate: 2026-10-21
 description: A technical survey and architectural taxonomy of AI agent harnesses—tracing their evolution from classical test drivers and RL environments to Agent-Computer Interfaces, isolated sandboxes, and Model Context Protocol buses.
-lang: en
+inLanguage: en
 tags:
   - agentic-ai
   - software-architecture
   - software-engineering
   - mcp
   - systems-verification
-icon:
+image:
   src: ./hero.jpg
   title: "Agent Harness Architecture: ACI, Execution Sandboxes, and Verification Loops"
   description: Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying an architectural schematic of an AI Agent Harness with an Agent-Computer Interface, container sandbox, context compaction engine, and Model Context Protocol bus

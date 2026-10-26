@@ -3,7 +3,7 @@ title: "Managing Our Team Roadmap with MediaWiki"
 pubDate: "2012-01-16"
 description: "Recently, a few colleagues and I founded a working group around the topic of software engineering for future energy systems (also called smart grids). To coordi..."
 tags: ["collaborative-software", "hyperkit-software", "knowledge-management", "task-management"]
-icon:
+image:
   src: "./editor.png"
   title: "Managing Our Team Roadmap with MediaWiki - Editor illustration"
   description: "Editor illustration from Managing Our Team Roadmap with MediaWiki"

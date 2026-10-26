@@ -2,7 +2,7 @@
 title: "WebMCP Explained: W3C Standard Architecture, Agent Bridging, Use Cases, and the Realistic Future of Cooperative Browser Agents"
 pubDate: 2026-10-23
 description: An architectural analysis of W3C WebMCP (document.modelContext)—covering its history, normative WebIDL and declarative HTML form APIs, CDP and WebSocket agent bridges, empirical GUI vs. schema benchmarks, and security trade-offs.
-lang: en
+inLanguage: en
 tags:
   - mcp
   - agentic-ai
@@ -10,7 +10,7 @@ tags:
   - software-architecture
   - cybersecurity
   - human-computer-interaction
-icon:
+image:
   src: ./hero.jpg
   title: "W3C WebMCP Architecture: In-Browser Model Context Protocol & Cooperative Agent Bridging"
   description: Close-up wall-mounted magnetic whiteboard in the Grünau im Almtal timber studio displaying the W3C WEBMCP architecture diagram with color-coded geometric nodes and magnetic markers

@@ -1,7 +1,7 @@
 ---
 title: "Vision Campus Almtal 2035: Dezentraler Innovationsraum"
 pubDate: 2026-08-09
-lang: de
+inLanguage: de
 description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im Wandel."
 tags:
   - education
@@ -9,7 +9,7 @@ tags:
   - regional-development
   - sustainability
   - almtal
-icon:
+image:
   src: ./icon.jpg
   title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum dezentralen Innovationsraum"
   description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural Sciences & Applications."

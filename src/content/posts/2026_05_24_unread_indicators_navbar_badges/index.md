@@ -9,7 +9,7 @@ tags:
   - localstorage
   - ux-design
   - state-management
-icon:
+image:
   src: ./icon.png
   title: "Cover illustration: Designing a Flicker-Free Client-Side Unread Content System in Astro"
   description: How we implemented a client-side localStorage notification system for unread content, using cached Astro static content manifests and synchronous scripting to eliminate visual flickering.

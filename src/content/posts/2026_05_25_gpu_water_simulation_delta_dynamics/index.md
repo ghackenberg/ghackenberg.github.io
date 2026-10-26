@@ -1,7 +1,7 @@
 ---
 title: GPU Water Flow & Hydrology Shaders in Delta Dynamics
 pubDate: 2026-05-25
-lang: en
+inLanguage: en
 description: Real-time shallow water and groundwater simulation shaders on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong texture computation.
 tags:
   - computer-graphics
@@ -11,7 +11,7 @@ tags:
   - simulation
   - threejs
   - webgl
-icon:
+image:
   src: ./icon.png
   title: "Titelgrafik: GPU-Accelerated Water Flow and Subsurface Hydrology Shaders in Delta Dynamics"
   description: How we implemented a high-performance, discrete grid-based shallow water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong textures.

@@ -11,7 +11,7 @@ tags:
   - knowledge-graphs
   - mcp
   - software-engineering
-icon:
+image:
   src: ./hero.jpg
   title: Procedural Graphs mit Mastra
   description: "Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen"

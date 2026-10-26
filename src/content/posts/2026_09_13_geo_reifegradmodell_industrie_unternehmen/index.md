@@ -13,7 +13,7 @@ tags:
   - seo
   - software-architecture
   - web-development
-icon:
+image:
   src: ./hero.jpg
   title: Das fünfstufige GEO-Reifegradmodell für Industrieunternehmen
   description: Das GEO-Reifegradmodell im industriellen Kontrollraum

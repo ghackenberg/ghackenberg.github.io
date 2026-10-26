@@ -1,7 +1,10 @@
 ---
 title: First experiences from using CADdrive with digital LEGO for product design and systems engineering education
 pubDate: 2025-08-11
-icon: ./preview.jpg
+image:
+  src: "./preview.jpg"
+  title: "CADdrive Digital LEGO Systems Engineering Platform"
+  description: "Cloud-based collaborative CAD and Git platform deployed for digital LEGO systems engineering education at FH OÖ Wels."
 book: Proceedings of the Design Society 5, pp. 1823-1832
 abstract: Due to rising product and system complexities, design and engineering have become a team effort that requires well planned and synchronized activities to achieve a high degree of process efficiency and effectiveness. Inspiring high school children to pursue a carreer in this field and preparing undergraduate as well as graduate students for what they will face in practice remains a challenge for societies and institutions worldwide. To overcome this situation, in this paper we present our experience from conducting two courses for Master students and one workshop for high school children based on an online collaboration platform and the digital LEGO framework. We provide insights into the organization of the different formats, the various backgrounds and profiles of their participants, the work results produced by the individual teams, as well as the participants’ learning experience.
 tags:

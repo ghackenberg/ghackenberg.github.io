@@ -1,7 +1,10 @@
 ---
 title: Digital twin and digital thread within the product lifecycle management
 pubDate: 2024-01-01
-icon: ./preview.jpg
+image:
+  src: "./preview.jpg"
+  title: "Digital Twin and Thread PLM Architecture"
+  description: "Enterprise lifecycle model integrating digital thread traceability and digital twins across product design and operations."
 book: Procedia Computer Science 232, pp. 2875-2886
 abstract: This research explores Digital Twins (DT) and Digital Threads (DTH) in Product Lifecycle Management (PLM) for Industry 4.0, resolving data loss and audit complexity. In today's VUCA-defined age, accelerated by rapid digital transformation, the manufacturing sector requires seamless data flow across the product lifecycle. This paper highlights the growing potential of Industry 4.0, addressing practical guidelines for digital twin prototypes and continuous quality audits.
 tags:

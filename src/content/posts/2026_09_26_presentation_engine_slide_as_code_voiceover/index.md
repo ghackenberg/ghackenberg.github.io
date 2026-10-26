@@ -2,7 +2,7 @@
 title: "Slide-as-Code: Interaktive Präsentationen mit Astro"
 pubDate: 2026-09-26
 description: Wie wir eine maßgeschneiderte Slide-as-Code Presentation Engine mit synchronisiertem Neural-Voiceover, Astro-Integration und KI-Agenten-Workflows bauten.
-lang: de
+inLanguage: de
 tags:
   - astro
   - agentic-ai
@@ -12,7 +12,7 @@ tags:
   - content-engineering
   - ux-design
   - open-source
-icon:
+image:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg präsentiert die Slide-as-Code Presentation Engine
   description: Präsentation der interaktiven Slide-as-Code Engine mit Neural-Voiceover vor der beamergestützten Leinwand am FH OÖ Campus Wels

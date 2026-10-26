@@ -1,7 +1,10 @@
 ---
 title: "Quality assurance of digital twins: an experience report in the automotive industry"
 pubDate: 2023-09-11
-icon: ./preview.jpg
+image:
+  src: "./preview.jpg"
+  title: "Automotive Digital Twin Quality Assurance Pipeline"
+  description: "Empirical quality assurance framework evaluating fidelity, latency, and verification gates for automotive digital twins."
 book: International Conference on the Quality of Information and Communications Technology, pp. 15-29
 abstract: Digital twins are becoming increasingly important for the efficient and effective development and operation of cyber-physical systems. However, digital twins are only useful if they reflect the real-world system accurately enough, i.e. their quality is high enough. This claim entails the question, of what the term quality in the context of digital twins means and how it can be measured. In this article, the authors presented their experience with the quality assurance of a digital twin for an assembly line in the automotive industry. Authors explained the preliminary definition of digital twin quality, which authors derived from classical quality models for general software systems. Furthermore, authors described quality issues, which they were able to detect in a digital twin of an assembly line in the automotive industry. Finally, authors concluded how to leverage their experience in different contexts and how to generalize the …
 tags:

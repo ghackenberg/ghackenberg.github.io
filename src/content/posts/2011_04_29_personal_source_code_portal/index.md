@@ -3,7 +3,7 @@ title: "Personal Source Code Portal"
 pubDate: "2011-04-28"
 description: "Since I have been asked for the code behind some articles, I decided to put online a separate website for public tracking and distributing the software projects..."
 tags: ["hyperkit-software", "software-systems", "web-development"]
-icon:
+image:
   src: "./dashboard.png"
   title: "Personal Source Code Portal - Dashboard illustration"
   description: "Dashboard illustration from Personal Source Code Portal"

@@ -13,7 +13,7 @@ tags:
   - software-architecture
   - task-management
   - optimization
-icon:
+image:
   src: ./hero.jpg
   title: Procedural Graphs in der Praxis
   description: "Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird"

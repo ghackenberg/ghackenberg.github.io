@@ -28,7 +28,10 @@ bibtex: "@INPROCEEDINGS{Richter2015, \r
   \tmonth = {Dec}\r
 
   }"
-icon: ./meta_model_analysis.jpg
+image:
+  src: "./meta_model_analysis.jpg"
+  title: "Integrated Requirements Engineering Metamodel"
+  description: "UML metamodel establishing formal traceability links between natural language requirements and system architecture elements."
 publisherUrl: https://doi.org/10.1109/DeSE.2015.43
 authors:
   - name: Christoph Richter

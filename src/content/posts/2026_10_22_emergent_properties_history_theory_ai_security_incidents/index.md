@@ -2,14 +2,14 @@
 title: "Emergent Properties: History, Scaling Theory, and Why AI Security Incidents Are Control-Loop Failures"
 pubDate: 2026-10-22
 description: An interdisciplinary analysis of emergent properties—from Mill, Broad, and Anderson's symmetry breaking to LLM scaling mirages, Nancy Leveson's STAMP/STPA-Sec control theory, and frontier AI security incidents.
-lang: en
+inLanguage: en
 tags:
   - cybersecurity
   - agentic-ai
   - artificial-intelligence
   - systems-engineering
   - systems-verification
-icon:
+image:
   src: ./hero.jpg
   title: Emergent Properties & STAMP/STPA-Sec AI Security Control Boundaries
   description: Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a mathematical phase-transition curve alongside Nancy Leveson's STAMP/STPA-Sec closed-loop AI harness security architecture

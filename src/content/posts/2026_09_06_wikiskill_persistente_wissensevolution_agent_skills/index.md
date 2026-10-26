@@ -10,7 +10,7 @@ tags:
   - machine-learning
   - benchmarks
   - prompt-engineering
-icon:
+image:
   src: ./icon.jpg
   title: "Titelgrafik: Persistente Wissensevolution für autonome Agenten: Das Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
   description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der 'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die Effektivität belegen."

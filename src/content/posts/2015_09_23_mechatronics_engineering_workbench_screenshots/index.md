@@ -3,7 +3,7 @@ title: "First mechatronics engineering workbench screenshots!"
 pubDate: "2015-09-22"
 description: "After three years of work I am happy to show you the first screenshots of the mechatronics engineering workbench. The workbench represents the core of my disser..."
 tags: ["manufacturing-engineering", "mechatronic-systems", "systems-engineering", "user-interface"]
-icon:
+image:
   src: "./screenshot.png"
   title: "First mechatronics engineering workbench screenshots! - Screenshot illustration"
   description: "Screenshot illustration from First mechatronics engineering workbench screenshots!"

@@ -3,7 +3,7 @@ title: "Software logo sketches with graphics tablet/pen."
 pubDate: "2012-04-23"
 description: "In a previous article I showcased some logo ideas I created with Inkscape and Gimp. In the mean time I bought a Tablet PC with Stylus and discovered a little to..."
 tags: ["drawing"]
-icon:
+image:
   src: "./cpp-interpolate.png"
   title: "Software logo sketches with graphics tablet/pen - Cpp interpolate illustration"
   description: "Cpp interpolate illustration from Software logo sketches with graphics tablet/pen."

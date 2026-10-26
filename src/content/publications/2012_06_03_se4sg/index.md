@@ -25,7 +25,10 @@ bibtex: "@INPROCEEDINGS{ \r
   \tpages={50-56}\r
 
   }"
-icon: ./electric_model.png
+image:
+  src: "./electric_model.png"
+  title: "Formal Smart Grid Electrical Model"
+  description: "Software engineering metamodel and statechart semantics capturing electrical grid topology and automated power routing."
 publisherUrl: https://doi.org/10.1109/SE4SG.2012.6225719
 authors:
   - name: Georg Hackenberg

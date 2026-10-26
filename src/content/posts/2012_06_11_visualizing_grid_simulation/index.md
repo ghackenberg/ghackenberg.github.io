@@ -3,7 +3,7 @@ title: "Visualizing our Smart Grid Simulation"
 pubDate: "2012-06-10"
 description: "At ICSE I presented our initial model for simulating the smart grid including both physical and software components. To help developers analyse their systems we..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation", "youtube-video"]
-icon:
+image:
   src: "./screenshot.png"
   title: "Cover illustration: Visualizing our Smart Grid Simulation"
   description: "At ICSE I presented our initial model for simulating the smart grid including both physical and software components. To help developers analyse their systems we..."

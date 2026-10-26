@@ -3,10 +3,10 @@ title: "Wie promptet man richtig? Systematisches Prompt Engineering für Unterne
 subtitle: "Von heuristischen Faustregeln zu deterministischen Schnittstellen: Wissenschaftlich fundierte Methoden für verlässliche KI-Systeme"
 pubDate: "2026-10-05"
 audience: "Führungskräfte, Ingenieure, Produktmanager und Fachanwender mit technischer Affinität"
-lang: "de"
+inLanguage: "de"
 description: "Wissenschaftlich fundierter Deep Dive in systematisches Prompt Engineering für Unternehmen: Stochastische Grundlagen, empirische Studien (Harvard/BCG, Stanford), Reasoning-Taxonomien, XML-Kapselung, Structured Outputs, Evals und defensive Architekturen."
 tags: ["prompt-engineering", "enterprise-ai", "generative-ai", "agentic-ai", "rag", "benchmarks", "software-engineering"]
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert 'Wie promptet man richtig?'"
   description: "Deep Dive zu systematischem Prompt Engineering und deterministischen Schnittstellen für Unternehmen"

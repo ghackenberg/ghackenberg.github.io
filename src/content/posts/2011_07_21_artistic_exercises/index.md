@@ -3,7 +3,7 @@ title: "Artistic Exercises"
 pubDate: "2011-07-20"
 description: "Last weekend I was visiting friends in Berlin. Many of them work in the creative domain being photographers, journalists, and artists. It has been an interestin..."
 tags: ["drawing"]
-icon:
+image:
   src: "./freedom.jpg"
   title: "Artistic Exercises - Freedom illustration"
   description: "Freedom illustration from Artistic Exercises"

@@ -11,7 +11,7 @@ tags:
   - agentic-ai
   - digital-engineering
   - design-systems
-icon:
+image:
   src: ./hero.jpg
   title: Visual Systems Engineering
   description: "Visual Systems Engineering: Reproduzierbare Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern"

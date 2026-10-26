@@ -3,7 +3,7 @@ title: "Pen Sketches with MyPaint"
 pubDate: "2011-03-09"
 description: "For a long time I have been searching for a sketching program to use with my Tablet PC Pen during the development of software systems. Recently I discovered a l..."
 tags: ["drawing"]
-icon:
+image:
   src: "./book.png"
   title: "Pen Sketches with MyPaint - Book illustration"
   description: "Book illustration from Pen Sketches with MyPaint"

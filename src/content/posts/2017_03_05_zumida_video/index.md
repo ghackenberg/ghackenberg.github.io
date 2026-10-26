@@ -3,7 +3,7 @@ title: "A new zumida video is out on YouTube!"
 pubDate: "2017-03-04"
 description: "Now, that zumida has emerged into a mature platform, it is time to present the first public video. See zumida in action, from registration to content creation a..."
 tags: ["data-visualization", "hyperkit-software", "knowledge-management", "user-interface", "youtube-video", "zumida"]
-icon:
+image:
   src: "./intro.png"
   title: "Titelgrafik: A new zumida video is out on YouTube!"
   description: "Now, that zumida has emerged into a mature platform, it is time to present the first public video. See zumida in action, from registration to content creation a..."

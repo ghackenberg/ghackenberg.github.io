@@ -2,7 +2,7 @@
 title: 2D Elliptical Bin-Packing for Responsive DOM Tag Clouds
 pubDate: 2026-10-17
 description: How we engineered a deterministic 2D elliptical bin-packing layout engine in TypeScript that shapes interactive DOM tag clouds with zero layout shift.
-lang: en
+inLanguage: en
 tags:
   - web-development
   - typescript
@@ -12,7 +12,7 @@ tags:
   - user-interface
   - performance
   - astro
-icon:
+image:
   src: ./hero.jpg
   title: 2D Elliptical Bin-Packing Blueprint for Responsive Tag Cloud Layouts
   description: Top-down architectural blueprint on a pine timber desk in Grünau im Almtal illustrating concentric elliptical envelope curves and center-heavy pendulum bin-packing of tag pills

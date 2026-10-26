@@ -3,7 +3,7 @@ title: "Animated Article Tiles"
 pubDate: "2011-06-28"
 description: "In my previous posts Blog Calender Interface and Blog Timeline Widget I demonstrated how to use the time information to build navigation controls for blogs. In ..."
 tags: ["blog", "data-visualization", "user-interface"]
-icon:
+image:
   src: "./screenshot.png"
   title: "Animated Article Tiles - Screenshot illustration"
   description: "Screenshot illustration from Animated Article Tiles"

@@ -1,7 +1,7 @@
 ---
 title: "Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared"
 pubDate: 2026-05-27
-lang: en
+inLanguage: en
 description: Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts.
 tags:
   - astro
@@ -13,7 +13,7 @@ tags:
   - threejs
   - visjs
   - webgl
-icon:
+image:
   src: ./icon.png
   title: "Cover illustration: Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared"
   description: Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts.

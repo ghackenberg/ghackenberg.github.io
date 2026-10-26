@@ -2,7 +2,7 @@
 title: "Agentenbasierte SEO, GEO & AIO: Praxisbericht mit eigenem MCP"
 pubDate: 2026-09-24
 description: Wie wir mit einem Custom MCP Server für Google Search Console und Plausible Analytics eine geschlossene Agenten-Optimierungs-Schleife für GEO und AIO bauten.
-lang: de
+inLanguage: de
 tags:
   - agentic-ai
   - mcp
@@ -11,7 +11,7 @@ tags:
   - aio
   - software-architecture
   - typescript
-icon:
+image:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg präsentiert den Agentic SEO/GEO/AIO MCP Server im Design Thinking Lab
   description: Präsentation des agentenbasierten Analyse- und Optimierungs-Workflows an der Projektionswand im Design Thinking Lab am FH OÖ Campus Wels

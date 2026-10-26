@@ -41,7 +41,10 @@ bibtex: "@inproceedings{\r
   \taddress = {New York, NY, USA}\r
 
   }"
-icon: ./trace.png
+image:
+  src: "./trace.png"
+  title: "Behavior Space Exploration Trace Analysis"
+  description: "Simulation execution traces showing emergent state space trajectories and multi-objective Pareto frontiers."
 publisherUrl: https://doi.org/10.1145/2467307.2467315
 authors:
   - name: Georg Hackenberg

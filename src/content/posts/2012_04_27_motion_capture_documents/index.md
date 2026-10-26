@@ -3,7 +3,7 @@ title: "3D Motion Capture Documents from my PhD Studies at EPFL."
 pubDate: "2012-04-26"
 description: "Recently while browsing some folders on my hard disk I discovered relicts from my time in Lausanne, Switzerland. Somehow, for me this is an interesting and exci..."
 tags: ["computer-vision", "gesture-recognition", "motion-capture"]
-icon:
+image:
   src: "./interface_list.png"
   title: "3D Motion Capture Documents from my PhD Studies at EPFL - Interface list illustration"
   description: "Interface list illustration from 3D Motion Capture Documents from my PhD Studies at EPFL."

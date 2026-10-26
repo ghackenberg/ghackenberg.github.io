@@ -3,7 +3,7 @@ title: "Using Solar Energy to Power Refrigerators"
 pubDate: "2012-07-12"
 description: "Here are some recent results on using solar energy for powering refrigerators. In the experimental setup we study how to control the cooling process of 20 refri..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
-icon:
+image:
   src: "./diagram.png"
   title: "Using Solar Energy to Power Refrigerators - Diagram illustration"
   description: "Diagram illustration from Using Solar Energy to Power Refrigerators"

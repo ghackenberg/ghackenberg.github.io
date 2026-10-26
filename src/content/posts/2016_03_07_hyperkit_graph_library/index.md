@@ -3,7 +3,7 @@ title: "The Hyperkit Software graph library in action"
 pubDate: "2016-03-06"
 description: "At Hyperkit Software we also develop JavaScript graph visualization algorithms. However, we focus on touch-based interaction and physics-based animation to make..."
 tags: ["data-visualization", "hyperkit-software", "javascript", "knowledge-graphs", "zumida"]
-icon:
+image:
   src: "./computer.png"
   title: "The Hyperkit Software graph library in action - Computer illustration"
   description: "Computer illustration from The Hyperkit Software graph library in action"

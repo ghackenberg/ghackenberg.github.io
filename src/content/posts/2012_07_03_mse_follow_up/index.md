@@ -3,7 +3,7 @@ title: "Follow-Up on Denis' MSE Article"
 pubDate: "2012-07-02"
 description: "This is only a short/quick supplement to Denis' previous article about the Munich School of Engineering (MSE) colloquium. I uploaded my poster to show people so..."
 tags: ["conference", "energy-systems", "systems-engineering"]
-icon:
+image:
   src: "./poster.png"
   title: "Follow-Up on Denis' MSE Article - Poster illustration"
   description: "Poster illustration from Follow-Up on Denis' MSE Article"

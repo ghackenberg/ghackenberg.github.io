@@ -3,7 +3,7 @@ title: "Using Energy Storage"
 pubDate: "2012-08-19"
 description: "After adding the powerhouse in the previous example we now integrate a model of energy storage components into the picture. This first study explores the behavi..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
-icon:
+image:
   src: "./diagram.png"
   title: "Using Energy Storage - Diagram illustration"
   description: "Diagram illustration from Using Energy Storage"

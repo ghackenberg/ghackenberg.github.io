@@ -3,7 +3,7 @@ title: "Blog Timeline Widget"
 pubDate: "2011-06-26"
 description: "The main purpose of a blog is to provide access to articles (HTML documents) organized by date. To reflect this idea I designed a timeline that visualizes the t..."
 tags: ["blog", "data-visualization", "user-interface", "youtube-video"]
-icon:
+image:
   src: "./bubble.png"
   title: "Blog Timeline Widget - Bubble illustration"
   description: "Bubble illustration from Blog Timeline Widget"

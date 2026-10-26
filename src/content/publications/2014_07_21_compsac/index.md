@@ -28,7 +28,10 @@ bibtex: "@INPROCEEDINGS{ \r
   \tdoi={10.1109/COMPSACW.2014.100},\r
 
   }"
-icon: ./workflow_revised.png
+image:
+  src: "./workflow_revised.png"
+  title: "Partial System Prototyping Workflow"
+  description: "Rapid prototyping development process using partial behavioral models to evaluate decentralized smart energy systems."
 publisherUrl: https://doi.org/10.1109/COMPSACW.2014.100
 authors:
   - name: Georg Hackenberg

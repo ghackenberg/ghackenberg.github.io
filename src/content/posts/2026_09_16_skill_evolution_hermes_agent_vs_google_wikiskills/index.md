@@ -14,7 +14,7 @@ tags:
   - prompt-engineering
   - software-architecture
   - wikiskills
-icon:
+image:
   src: ./hero.jpg
   title: "Vergleichsarchitektur: Hermes Agent vs. Google WikiSkills"
   description: "Skill Evolution im Vergleich: Dr. Georg Hackenberg analysiert die modulare Runtime-Kuratierung des Hermes Agent und das kristalline Wissensarchiv von Google WikiSkills"

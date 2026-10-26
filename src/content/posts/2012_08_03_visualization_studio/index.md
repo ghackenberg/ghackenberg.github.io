@@ -3,7 +3,7 @@ title: "Visualization Studio for Systems Engineers"
 pubDate: "2012-08-02"
 description: "Seeing is understanding. This is especially true when engineering the structure and behavior of complex systems. Understanding whatever models you built is the ..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "systems-engineering", "youtube-video"]
-icon:
+image:
   src: "./screenshot.png"
   title: "Titelgrafik: Visualization Studio for Systems Engineers"
   description: "Seeing is understanding. This is especially true when engineering the structure and behavior of complex systems. Understanding whatever models you built is the ..."

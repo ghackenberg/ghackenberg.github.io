@@ -16,7 +16,7 @@ tags:
   - typescript
   - web-development
   - wikiskills
-icon:
+image:
   src: ./hero.jpg
   title: Architektur-Leitfaden für Google WikiSkill
   description: "Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph"

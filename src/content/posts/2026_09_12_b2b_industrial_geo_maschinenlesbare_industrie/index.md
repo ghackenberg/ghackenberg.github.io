@@ -13,7 +13,7 @@ tags:
   - manufacturing-systems
   - seo
   - web-development
-icon:
+image:
   src: ./hero.jpg
   title: B2B Industrial GEO in der Fertigung
   description: Dr. Georg Hackenberg analysiert semantische Wissensgraphen für generative Industrie-Suchmaschinen in einer modernen Fertigungsumgebung

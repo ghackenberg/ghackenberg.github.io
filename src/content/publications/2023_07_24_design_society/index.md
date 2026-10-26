@@ -1,7 +1,10 @@
 ---
 title: GITHUB FOR PRODUCT DEVELOPMENT-HOW COULD THAT LOOK LIKE?
 pubDate: 2023-07-24
-icon: ./preview.jpg
+image:
+  src: "./preview.jpg"
+  title: "Git-Based Product Development Architecture"
+  description: "Conceptual blueprint adapting Git version control concepts, branching, and pull requests to multidisciplinary hardware engineering."
 book: Proceedings of the Design Society 3, pp. 2055-2064
 abstract: Product development is facing new challenges due to increasingly complex and individualized products in small batch sizes and short time to markets at high quality standards. Integrated product data management along with systematic requirements engineering and early stakeholder involvement are known to be key enablers for the success of future product development. In software development, established platforms such as GitHub exist, which have been shown to improve stakeholder communication, requirements elicitation, and software design decisions. In product development, similar platforms exist with impressive functionality, but which have some drawbacks such as closed source licenses, vendor-specific data formats, and expert-level user interfaces. To overcome the current situation, we study how the ideas of GitHub can be translated to an open source solution for product development and which …
 tags:

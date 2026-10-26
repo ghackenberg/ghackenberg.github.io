@@ -3,7 +3,7 @@ title: "Blog Cover Interface"
 pubDate: "2011-06-29"
 description: "In the previous post I demonstrated Animated Article Tiles, a new type of interface for blogs. One problem people had using the interface was that the images/ti..."
 tags: ["blog", "data-visualization", "user-interface"]
-icon:
+image:
   src: "./screenshot_one.png"
   title: "Blog Cover Interface - Screenshot one illustration"
   description: "Screenshot one illustration from Blog Cover Interface"

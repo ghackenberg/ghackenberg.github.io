@@ -11,7 +11,7 @@ tags:
   - geo
   - aio
   - data-visualization
-icon:
+image:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg im Almtal Home Office
   description: Dr. Georg Hackenberg am höhenverstellbaren Massivholz-Schreibtisch vor dem Ultrawide-Monitor mit Blick auf die Almtaler Berglandschaft

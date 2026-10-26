@@ -3,7 +3,7 @@ title: "Master Thesis Video."
 pubDate: "2010-06-26"
 description: "After finally completing my Master Thesis project at Fraunhofer FIT me and some friends took some time to prepare a demonstration video. The video is now availa..."
 tags: ["youtube-video", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon:
+image:
   src: "./screenshot.png"
   title: "Cover illustration: Master Thesis Video."
   description: "After finally completing my Master Thesis project at Fraunhofer FIT me and some friends took some time to prepare a demonstration video. The video is now availa..."

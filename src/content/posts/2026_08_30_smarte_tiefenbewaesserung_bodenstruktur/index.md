@@ -10,7 +10,7 @@ tags:
   - civil-engineering
   - sustainability
   - industrial-informatics
-icon:
+image:
   src: ./hero.jpg
   title: Smarte Tiefenbewässerung im Wurzelbereich mit
   description: Smarte Tiefenbewässerung im Wurzelbereich mit Bodenfeuchtesensorik

@@ -15,7 +15,7 @@ tags:
   - software-architecture
   - typescript
   - web-development
-icon:
+image:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg am Flipchart auf der Almtal-Terrasse
   description: Dr. Georg Hackenberg präsentiert die Architektur des Unified Analytics MCP Servers am Flipchart auf der Holzterrasse in Grünau im Almtal

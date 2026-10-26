@@ -8,7 +8,6 @@ interface Props {
   href: string;
   engineId?: string;
   image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
-  screenshot?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags?: string[];
   activeTag?: string | string[];
   showTags?: boolean;
@@ -19,7 +18,6 @@ const {
   description, 
   href, 
   image,
-  screenshot,
   tags = [],
   activeTag,
   showTags
@@ -28,14 +26,13 @@ const {
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
-const effImg = image || screenshot;
-const isScreenshotObj = Boolean(effImg && typeof effImg === 'object' && 'src' in effImg && effImg.src);
-const screenshotImg = isScreenshotObj ? (effImg as { src: ImageMetadata }).src : (effImg as ImageMetadata | undefined);
-const screenshotTitle = isScreenshotObj ? (effImg as { title: string }).title : title;
-const screenshotDesc = isScreenshotObj ? (effImg as { description: string }).description : (description ? `${title} – ${description}` : `Interactive network diagram preview for ${title}`);
+const isImageObj = Boolean(image && typeof image === 'object' && 'src' in image && image.src);
+const imageImg = isImageObj ? (image as { src: ImageMetadata }).src : (image as ImageMetadata | undefined);
+const imageTitle = isImageObj ? (image as { title: string }).title : title;
+const imageDesc = isImageObj ? (image as { description: string }).description : (description ? `${title} – ${description}` : `Interactive network diagram preview for ${title}`);
 
-const optimizedScreenshot = screenshotImg ? await getImage({
-  src: screenshotImg,
+const optimizedImage = imageImg ? await getImage({
+  src: imageImg,
   format: 'webp',
   width: 640,
   quality: 80
@@ -50,13 +47,13 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
 
   <!-- Screenshot -->
   <div class="aspect-video w-full shrink-0 overflow-hidden bg-gray-900 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
-    {screenshot && (
+    {image && (
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
         viewBox="0 0 160 90" 
         preserveAspectRatio="none" 
         role="img" 
-        aria-label={screenshotDesc}
+        aria-label={imageDesc}
       >
         <defs>
           <linearGradient id={`grad-vis-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
@@ -72,14 +69,14 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
         </defs>
         <image 
           role="img"
-          href={optimizedScreenshot ? optimizedScreenshot.src : (screenshotImg ? screenshotImg.src : '')} 
+          href={optimizedImage ? optimizedImage.src : (imageImg ? imageImg.src : '')} 
           x="0" 
           y="0" 
           width="160" 
           height="90" 
           preserveAspectRatio="xMidYMid slice" 
-          {...{ title: screenshotTitle }}
-          aria-label={screenshotDesc}
+          {...{ title: imageTitle }}
+          aria-label={imageDesc}
         />
         <rect 
           x="0" 

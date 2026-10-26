@@ -2,7 +2,7 @@
 title: Zeilenexakte Text-Geometrie & 2D-SDF-Gitter mit TreeWalker im Hero-Layout
 pubDate: 2026-10-14
 description: Wie wir mit TreeWalker, Range.getClientRects() und 2D Signed Distance Fields (Quilez smin) ein kollisionsfreies Hero-Layout mit 60 FPS Canvas-Batching bauten.
-lang: de
+inLanguage: de
 tags:
   - web-development
   - typescript
@@ -14,7 +14,7 @@ tags:
   - optimization
   - astro
   - software-architecture
-icon:
+image:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg entwickelt die TreeWalker- und 2D-SDF-Hero-Engine im Almtal Home Office
   description: Dr. Georg Hackenberg analysiert am Ultrawide-Monitor im Almtal Home Office die zeilenexakte TreeWalker-Textkontur und das 2D-Signed-Distance-Field-Punktraster

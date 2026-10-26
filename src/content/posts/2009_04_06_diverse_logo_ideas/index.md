@@ -3,7 +3,7 @@ title: "Diverse Logo Ideas."
 pubDate: "2009-04-05"
 description: "Since I haven't published any article for a while, I thought it would be a good idea to get some new work impressions out. Here are some logos I developed over ..."
 tags: ["drawing"]
-icon:
+image:
   src: "./eduride.png"
   title: "Diverse Logo Ideas - Eduride illustration"
   description: "Eduride illustration from Diverse Logo Ideas."

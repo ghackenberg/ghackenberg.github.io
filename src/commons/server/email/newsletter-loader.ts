@@ -7,7 +7,7 @@ import type {
   NewsletterIssueEmailProps,
 } from './NewsletterIssueEmail';
 
-export interface RawNewsletterIcon {
+export interface RawNewsletterImage {
   src?: string;
   image?: string;
   title?: string;
@@ -21,8 +21,7 @@ export interface RawNewsletterFrontmatter {
   description?: string;
   issueNumber?: number;
   pubDate?: string | Date;
-  image?: RawNewsletterIcon;
-  icon?: RawNewsletterIcon;
+  image?: RawNewsletterImage;
   featuredPosts?: string[];
   featuredPresentations?: string[];
   featuredPublications?: string[];
@@ -163,12 +162,12 @@ function resolveIssueHeroImageUrl(
   slug: string,
   issueDir: string,
   rootDir: string,
-  icon?: RawNewsletterIcon
+  image?: RawNewsletterImage
 ): string {
-  const relImgPath = icon?.src || icon?.image;
+  const relImgPath = image?.src;
   if (!relImgPath) {
     throw new Error(
-      `Newsletter issue "${slug}" is missing required frontmatter field "icon.src".`
+      `Newsletter issue "${slug}" is missing required frontmatter field "image.src".`
     );
   }
 
@@ -212,11 +211,11 @@ export async function loadNewsletterIssue(
   const { yamlBlock, markdownBody } = splitMarkdownFrontmatter(rawContent);
   const frontmatter = YAML.parse(yamlBlock) as RawNewsletterFrontmatter;
 
-  const effImage = frontmatter.image || frontmatter.icon;
+  const effImage = frontmatter.image;
 
   if (!frontmatter.title || !frontmatter.description || !frontmatter.issueNumber || !frontmatter.pubDate || !effImage) {
     throw new Error(
-      `Newsletter issue "${slug}" is missing required frontmatter fields (title, description, issueNumber, pubDate, icon).`
+      `Newsletter issue "${slug}" is missing required frontmatter fields (title, description, issueNumber, pubDate, image).`
     );
   }
 

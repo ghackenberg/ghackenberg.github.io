@@ -1,7 +1,7 @@
 ---
 title: "Massivholz-Kühldock: Minimalistischer Laptopständer"
 pubDate: 2026-08-31
-lang: de
+inLanguage: de
 description: "Leichtgewichtiger Holz-Laptopständer mit Kamineffekt: Passive Kühlung für anspruchsvolle GPU-Workstations im eleganten, minimalistischen Naturdesign."
 tags:
   - hardware
@@ -11,7 +11,7 @@ tags:
   - cad
   - smart-workplace
   - industrial-informatics
-icon:
+image:
   src: ./hero.jpg
   title: Minimalistischer Holz-Laptopständer für GPU- und
   description: Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht

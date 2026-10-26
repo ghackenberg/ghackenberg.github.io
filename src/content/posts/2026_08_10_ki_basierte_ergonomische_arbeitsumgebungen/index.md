@@ -11,7 +11,7 @@ tags:
   - industrial-informatics
   - iot
   - smart-workplace
-icon:
+image:
   src: ./icon.jpg
   title: Icon
   description: KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht

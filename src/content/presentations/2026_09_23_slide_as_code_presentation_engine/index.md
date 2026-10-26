@@ -3,10 +3,10 @@ title: "Interactive Presentations: Unsere Slide-as-Code Engine"
 subtitle: "Motivation, Content-Strategie und technische Umsetzung interaktiver Web-Keynotes mit Neural-Voiceover"
 pubDate: "2026-09-23"
 audience: "Software-Architekten, Web-Entwickler, Dozierende und Technologie-Entscheider"
-lang: "de"
+inLanguage: "de"
 description: "Strategischer Leitfaden und Architektur-Briefing zur Slide-as-Code Presentation Engine: Motivation für den neuen Webseitenbereich, Einbettung in das wissenschaftliche Content-Ökosystem, evaluierte Alternativen und technische Realisierung mit Astro SSG und Edge TTS."
 tags: ["astro", "agentic-ai", "software-architecture", "web-development", "typescript", "content-engineering", "ux-design", "open-source"]
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert die Slide-as-Code Presentation Engine"
   description: "Architektur-Präsentation der interaktiven Slide-as-Code Engine mit Neural-Voiceover"

@@ -11,7 +11,7 @@ tags:
   - rag
   - knowledge-graphs
   - benchmarks
-icon:
+image:
   src: ./icon.jpg
   title: "Titelgrafik: Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und naive RAG scheitern – Problem, Architektur und empirische Evaluation von Mem0"
   description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur stützen."

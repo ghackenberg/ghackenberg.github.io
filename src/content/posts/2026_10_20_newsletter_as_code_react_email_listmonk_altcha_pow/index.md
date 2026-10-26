@@ -2,7 +2,7 @@
 title: Sovereign Newsletter-as-Code with React Email, Listmonk & Zero-Allocation ALTCHA Proof-of-Work
 pubDate: 2026-10-20
 description: How we engineered a Git-native Newsletter-as-Code pipeline with dual-target React Email compilation, an upgrade-safe Listmonk v6.2.0 shell, and an Int32Array SHA-256 Proof-of-Work Web Worker.
-lang: en
+inLanguage: en
 tags:
   - software-architecture
   - web-development
@@ -11,7 +11,7 @@ tags:
   - astro
   - devops
   - performance
-icon:
+image:
   src: ./hero.jpg
   title: Newsletter-as-Code Pipeline with React Email, Listmonk, and SHA-256 Proof-of-Work
   description: Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a React Email and Listmonk dispatch pipeline alongside a 32-bit integer SHA-256 Proof-of-Work cryptographic grid

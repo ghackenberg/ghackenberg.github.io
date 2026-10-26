@@ -3,7 +3,7 @@ title: "IEEE VR 2011 in Singapore"
 pubDate: "2011-03-23"
 description: "Last week I went to Singapore to present the results of my Master thesis at IEEE VR 2011, one of the world's most prestigeous virtual reality conferences. It wa..."
 tags: ["conference", "slideshare-presentation", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon:
+image:
   src: "./esplanade.jpg"
   title: "IEEE VR 2011 in Singapore - Esplanade illustration"
   description: "Esplanade illustration from IEEE VR 2011 in Singapore"

@@ -46,7 +46,10 @@ bibtex: "@article{Hackenberg2016,\r
   \tkeywords = \"testing \"\r
 
   }"
-icon: ./element_transition.png
+image:
+  src: "./element_transition.png"
+  title: "MaCon Element Transition Statechart"
+  description: "Formal statechart semantics governing consistent cross-disciplinary conception and evolution of manufacturing systems."
 publisherUrl: https://doi.org/10.1016/j.ifacol.2016.07.665
 authors:
   - name: Georg Hackenberg

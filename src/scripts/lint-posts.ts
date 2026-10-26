@@ -14,12 +14,6 @@ interface PostFrontmatter {
   title?: string;
   pubDate?: string | Date;
   description?: string;
-  lang?: string;
-  icon?: {
-    src?: string;
-    title?: string;
-    description?: string;
-  };
 }
 
 interface MermaidFrontmatter {
@@ -221,7 +215,7 @@ function run(): void {
     }
 
     // 1a(ii) Unique Cover Image Hash (SHA-256 of icon.src)
-    const postImg = fm.image || fm.icon;
+    const postImg = fm.image;
     if (!postImg?.src) {
       violations.push(`[${relPath}] Missing frontmatter image.src.`);
     } else {

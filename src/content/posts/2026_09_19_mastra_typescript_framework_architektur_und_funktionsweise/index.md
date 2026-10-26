@@ -12,7 +12,7 @@ tags:
   - enterprise-ai
   - mcp
   - software-engineering
-icon:
+image:
   src: ./hero.jpg
   title: Mastra TypeScript Framework Architektur-Schaltbild
   description: "Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die Architektur aus autonomen Agenten, deterministischen Workflows und MCP-Gateway"

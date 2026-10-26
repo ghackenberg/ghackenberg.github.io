@@ -3,7 +3,7 @@ title: "A complete MaCon project in 4:30 minutes"
 pubDate: "2015-12-16"
 description: "The MaCon approach covers a wide range of engineering tasks for manufacturing systems, from requirements analysis, to system design, to component and system tes..."
 tags: ["manufacturing-engineering", "manufacturing-systems", "mechatronic-systems", "systems-engineering", "user-interface", "youtube-video"]
-icon:
+image:
   src: "./screenshot.png"
   title: "Cover illustration: A complete MaCon project in 4:30 minutes"
   description: "The MaCon approach covers a wide range of engineering tasks for manufacturing systems, from requirements analysis, to system design, to component and system tes..."

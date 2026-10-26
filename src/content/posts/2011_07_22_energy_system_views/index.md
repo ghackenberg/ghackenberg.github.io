@@ -3,7 +3,7 @@ title: "View onto the Energy System"
 pubDate: "2011-07-21"
 description: "Lately I got interested in the domain of energy supply systems for human society. It is currently one of the hottest topics all in politics, science, research &..."
 tags: ["drawing", "energy-systems", "systems-engineering"]
-icon:
+image:
   src: "./bus.jpg"
   title: "View onto the Energy System - Bus illustration"
   description: "Bus illustration from View onto the Energy System"

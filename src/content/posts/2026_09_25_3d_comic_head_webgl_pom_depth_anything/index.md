@@ -2,7 +2,7 @@
 title: Interaktives 3D-Comic-Gesicht mit WebGL POM und Depth Anything V2
 pubDate: 2026-09-25
 description: Wie wir ein reales Porträtfoto über Gemini, Inpainting und Depth Anything V2 in ein lebendiges WebGL-POM-Gesicht mit adaptiver Mimik-State-Machine verwandelt haben.
-lang: de
+inLanguage: de
 tags:
   - webgl
   - shaders
@@ -13,7 +13,7 @@ tags:
   - software-architecture
   - computer-graphics
   - ux-design
-icon:
+image:
   src: ./hero-georg-whiteboard-pom.jpg
   title: Dr. Georg Hackenberg erklärt WebGL POM am Whiteboard
   description: Dr. Georg Hackenberg präsentiert die 3D-Raymarching-Architektur des Parallax Occlusion Mappings am Whiteboard im Almtal Home Office

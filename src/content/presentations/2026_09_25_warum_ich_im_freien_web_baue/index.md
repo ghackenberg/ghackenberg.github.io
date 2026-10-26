@@ -3,10 +3,10 @@ title: "Vom Web-Pionier zum Informatik-Professor: 25 Jahre im Code"
 subtitle: "Mein Weg zwischen autodidaktischen Web-Ursprüngen, Spitzenforschung, Industrie-Leadership und Hochschullehre"
 pubDate: "2026-09-25"
 audience: "Studierende, Entwickler, R&D-Partner und Technologie-Entscheider aus der Industrie"
-lang: "de"
+inLanguage: "de"
 description: "Persönliche Keynote von Dr. Georg Hackenberg: 25 Jahre im Code zwischen autodidaktischen Web-Ursprüngen, Spitzenforschung, Industrie-IoT-Leadership und offener Hochschullehre."
 tags: ["open-source", "web-development", "education", "teaching", "industrial-informatics", "software-architecture", "software-engineering", "iot"]
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert 'Vom Web-Pionier zum Informatik-Professor'"
   description: "Persönliche Keynote und Tech-Biografie über 25 Jahre Code, Forschung, Leadership und Lehre"

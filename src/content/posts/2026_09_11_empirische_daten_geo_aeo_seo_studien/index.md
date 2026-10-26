@@ -13,7 +13,7 @@ tags:
   - rag
   - seo
   - web-development
-icon:
+image:
   src: ./hero.jpg
   title: GEO & AEO empirische Forschung
   description: GEO & AEO empirische Forschung im Labor

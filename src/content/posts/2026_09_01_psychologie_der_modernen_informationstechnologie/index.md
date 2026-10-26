@@ -1,7 +1,7 @@
 ---
 title: Psychologie der modernen Informationstechnologie
 pubDate: 2026-09-01
-lang: de
+inLanguage: de
 description: "Interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Dopamin-Schleifen und Aufmerksamkeitsökonomie moderne Software-Architekturen prägen."
 tags:
   - psychology
@@ -11,7 +11,7 @@ tags:
   - software-architecture
   - human-computer-interaction
   - social-media
-icon:
+image:
   src: ./icon.jpg
   title: "Titelgrafik: Psychologie der modernen Informationstechnologie: Stand der Wissenschaft und Stand der Technik"
   description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."

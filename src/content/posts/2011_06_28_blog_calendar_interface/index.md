@@ -3,7 +3,7 @@ title: "Blog Calendar Interface"
 pubDate: "2011-06-27"
 description: "In my last post Blog Timeline Widget I demonstrated how to provide a timeline for navigating your blog posts. In this article I show a modified version of the i..."
 tags: ["blog", "data-visualization", "user-interface"]
-icon:
+image:
   src: "./bubble.png"
   title: "Blog Calendar Interface - Bubble illustration"
   description: "Bubble illustration from Blog Calendar Interface"

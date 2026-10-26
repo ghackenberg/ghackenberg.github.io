@@ -3,7 +3,7 @@ title: "The new website goes online!"
 pubDate: "2014-09-23"
 description: "I am happy to announce the launch of my new website. This is the fourth edition of the website, where I try to go back to the original idea of providing easy to..."
 tags: ["blog", "web-development"]
-icon:
+image:
   src: "./screenshot.png"
   title: "The new website goes online! - Screenshot illustration"
   description: "Screenshot illustration from The new website goes online!"

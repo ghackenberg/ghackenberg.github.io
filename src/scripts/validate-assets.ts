@@ -553,6 +553,41 @@ for (const file of htmlFiles) {
   }
 }
 
+// -------------------------------------------------------------
+// Assertion 6: Preview Card Rendered Image Parity
+// -------------------------------------------------------------
+let totalPreviewCardsChecked = 0;
+let assertion6Errors = 0;
+
+for (const file of htmlFiles) {
+  const content = fs.readFileSync(file, 'utf8');
+  if (!content.includes('preview-card')) continue;
+  const $ = cheerio.load(content);
+  const relPath = path.relative(distDir, file).replace(/\\/g, '/');
+
+  $('.preview-card[data-collection]').each((_, el) => {
+    totalPreviewCardsChecked++;
+    const $card = $(el);
+    const collection = $card.attr('data-collection') || 'unknown';
+    const cardId = $card.attr('data-card-id') || 'unknown';
+
+    // Must contain either an <img> with non-empty src OR an <svg><image> with non-empty href
+    const hasImg = $card.find('img[src]').filter((_, img) => Boolean($(img).attr('src')?.trim())).length > 0;
+    const hasSvgImage = $card.find('svg image').filter((_, svgImg) => {
+      const href = $(svgImg).attr('href') || $(svgImg).attr('xlink:href');
+      return Boolean(href?.trim());
+    }).length > 0;
+
+    if (!hasImg && !hasSvgImage) {
+      console.error(
+        `[validate-assets] ❌ Assertion 6 Failed: In ${relPath}, .preview-card[data-collection="${collection}"] (id: "${cardId}") is missing a rendered image or svg image element.`
+      )
+      errorsCount++;
+      assertion6Errors++;
+    }
+  });
+}
+
 if (verbose || errorsCount > 0) {
   console.log(`\n[validate-assets] Scan summary:`);
   console.log(`  - Scanned HTML files:            ${htmlFiles.length}`);
@@ -572,7 +607,7 @@ if (errorsCount > 0) {
   process.exit(1);
 } else {
   console.log(
-    `✅ [validate-assets] All ${htmlFiles.length} HTML pages, ${rasterImages.length} images, ${audioFiles.length} audio files & ${totalImageObjectsVerified} ImageObjects passed asset integrity checks.`
+    `✅ [validate-assets] All ${htmlFiles.length} HTML pages, ${rasterImages.length} images, ${audioFiles.length} audio files, ${totalImageObjectsVerified} ImageObjects & ${totalPreviewCardsChecked} preview cards passed asset integrity checks.`
   );
   process.exit(0);
 }

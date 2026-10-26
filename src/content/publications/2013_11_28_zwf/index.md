@@ -1,7 +1,10 @@
 ---
 title: Modellbasierte entwicklungsmethode für modulare maschinen und anlagen
 pubDate: 2013-11-28
-icon: ./preview.jpg
+image:
+  src: "./preview.jpg"
+  title: "Modellbasierte Entwicklung modularer Anlagen"
+  description: "Integrierte mechatronische Entwicklungsmethodik zur durchgängigen Spezifikation modularer Maschinen und Anlagen."
 book: Zeitschrift für wirtschaftlichen Fabrikbetrieb 108 (11), pp. 818-822
 abstract: Die Modularisierung von Maschinen und Anlagen wird auf Grund einer wachsenden Kundenindividualität und Variantenvielfalt zu einem entscheidenden Faktor, um an globalisierten Märkten erfolgreich zu sein. Während disziplinspezifische Modularisierungsansätze, die beispielsweise eine Wiederverwendung mechanischer Baugruppen ermöglichen, bereits etabliert sind, mangelt es noch an einer ganzheitlichen mechatronischen Modularisierung. Diese ist allerdings erforderlich, um dem zunehmend mechatronischen Charakter von Maschinen und Anlagen gerecht zu werden. Im folgenden Beitrag wird eine Methode vorgestellt, mit der mechatronische Module durch den Aufbau eines interdisziplinären Maschinenmodells entwickelt werden können.
 tags:

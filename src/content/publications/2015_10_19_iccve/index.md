@@ -30,7 +30,10 @@ bibtex: "@INPROCEEDINGS{Ascher2015, \r
   \tmonth={Oct}\r
 
   }"
-icon: ./model.png
+image:
+  src: "./model.png"
+  title: "Coupled Transportation and Power Grid Metamodel"
+  description: "Co-simulation metamodel linking vehicle routing dynamics with spatial electric power distribution networks."
 publisherUrl: https://doi.org/10.1109/ICCVE.2015.23
 authors:
   - name: Dominik Ascher

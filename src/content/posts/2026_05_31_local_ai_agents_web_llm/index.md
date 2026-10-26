@@ -11,7 +11,7 @@ tags:
   - typescript
   - web-llm
   - webgpu
-icon:
+image:
   src: ./icon.png
   title: "Cover illustration: Running Local AI Agents in the Browser: Integrating Web-LLM into Delta Dynamics"
   description: A deep dive into bringing decentralized, client-side LLM-driven AI behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and asynchronous web workers.

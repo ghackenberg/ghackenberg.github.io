@@ -3,7 +3,7 @@ title: "Visualizing Software Systems"
 pubDate: "2011-06-07"
 description: "One problem computer science has compared to many other technical disciplines such as physics or architecture is to create and communicate mental pictures of th..."
 tags: ["data-visualization", "drawing", "software-architecture", "software-systems"]
-icon:
+image:
   src: "./crawler.png"
   title: "Visualizing Software Systems - Crawler illustration"
   description: "Crawler illustration from Visualizing Software Systems"

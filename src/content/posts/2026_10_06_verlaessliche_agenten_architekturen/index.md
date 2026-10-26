@@ -2,11 +2,11 @@
 title: "Verlässliche Agenten-Architekturen im Enterprise-Einsatz: ReAct-Loops, Statecharts und Procedural Graphs im Vergleich"
 pubDate: 2026-10-06
 description: ReAct-Loops, Statecharts oder Procedural Graphs? Ein Architekturvergleich für verlässliche Enterprise-Agenten mit Simplex-Safety-Envelopes und Audit-Garantien.
-lang: de
+inLanguage: de
 tags:
   - agentic-ai
   - software-architecture
-icon:
+image:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg präsentiert verlässliche Agenten-Architekturen im Design Thinking Lab
   description: Präsentation von Simplex Safety Envelopes, Statecharts und Procedural Graphs an der Projektionswand im Design Thinking Lab am FH OÖ Campus Wels

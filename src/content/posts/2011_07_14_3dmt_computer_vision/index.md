@@ -3,7 +3,7 @@ title: "3D Multi-Touch with Computer Vision"
 pubDate: "2011-07-13"
 description: "Some time ago I was working on free hand 3D gesture interfaces similar to Microsoft Kinect. What this work essentially means is collecting digital camera images..."
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon:
+image:
   src: "./candidates.png"
   title: "Cover illustration: 3D Multi-Touch with Computer Vision"
   description: "Some time ago I was working on free hand 3D gesture interfaces similar to Microsoft Kinect. What this work essentially means is collecting digital camera images..."

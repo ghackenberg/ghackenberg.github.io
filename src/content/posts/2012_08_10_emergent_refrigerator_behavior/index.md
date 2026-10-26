@@ -3,7 +3,7 @@ title: "True Emergent Refrigerator Behavior"
 pubDate: "2012-08-09"
 description: "We are moving towards larger scale problems! In the past we worked on modeling, optimizing and exploring behavior of up to 20 refrigerators. Computational bound..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation"]
-icon:
+image:
   src: "./diagram.png"
   title: "True Emergent Refrigerator Behavior - Diagram illustration"
   description: "Diagram illustration from True Emergent Refrigerator Behavior"

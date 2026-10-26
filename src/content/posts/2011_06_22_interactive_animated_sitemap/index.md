@@ -3,7 +3,7 @@ title: "Interactive Animated Sitemap"
 pubDate: "2011-06-21"
 description: "Last summer I had the chance to develop an innovative sitemap widget for the company Le-Tex, which was intended for use at the international book fair in Frankf..."
 tags: ["hyperkit-software", "zumida", "knowledge-management", "data-visualization", "user-interface", "youtube-video"]
-icon:
+image:
   src: "./version_1.png"
   title: "Interactive Animated Sitemap - Version 1 illustration"
   description: "Version 1 illustration from Interactive Animated Sitemap"

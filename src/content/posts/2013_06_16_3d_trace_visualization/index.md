@@ -3,7 +3,7 @@ title: "3D Trace Visualization"
 pubDate: "2013-05-15"
 description: "To better understand the behavior space and its heuristic exploration using our tool Xtream we developed a proprietary 3D visualization. The visualization shows..."
 tags: ["computer-graphics", "data-visualization", "dynamic-programming", "simulation"]
-icon:
+image:
   src: "./rendering.png"
   title: "3D Trace Visualization - Rendering illustration"
   description: "Rendering illustration from 3D Trace Visualization"

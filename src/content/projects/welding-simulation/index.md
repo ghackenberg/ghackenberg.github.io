@@ -12,7 +12,7 @@ image:
   title: "Welding Simulation: 3D-Temperaturfeld & Schweißnaht-Geometrie"
   description: "Interaktive OpenGL-Visualisierung des räumlichen Temperaturfelds und der Schmelzbad-Isothermen mit orthogonalen 2D-Schnittansichten"
 screenshots:
-  - image: "./screenshot.png"
+  - src: "./screenshot.png"
     title: "Welding Simulation Desktop Workspace"
     description: "Multi-dock Swing GUI showing 3D OpenGL thermal contours, orthogonal 2D heat cross-sections, and dynamic parameter tuning."
 pubDate: 2024-07-31

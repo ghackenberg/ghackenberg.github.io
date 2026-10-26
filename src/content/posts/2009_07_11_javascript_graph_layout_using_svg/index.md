@@ -3,7 +3,7 @@ title: "JavaScript Graph Layout using SVG."
 pubDate: "2009-07-10"
 description: "Nowadays, it is not a simple task to integrate interactive graphs into Web applications. Graphs could be used in various ways from presenting overviews to prese..."
 tags: ["data-visualization", "hyperkit-software", "javascript", "knowledge-graphs", "zumida"]
-icon:
+image:
   src: "./svg.png"
   title: "JavaScript Graph Layout using SVG - Svg illustration"
   description: "Svg graph layout illustration from JavaScript Graph Layout using SVG."

@@ -1,7 +1,10 @@
 ---
 title: Test-driven conceptual design of cyber-physical manufacturing systems
 pubDate: 2018-11-14
-icon: ./preview.jpg
+image:
+  src: "./preview.jpg"
+  title: "Test-Driven Cyber-Physical Design Methodology"
+  description: "Doctoral dissertation framework introducing test-driven conceptual design for cyber-physical manufacturing systems."
 book: Technische Universität München
 abstract: "Today, manufacturing system engineering companies face three major trends: First, the systems have to implement more functions and, hence, grow in complexity. Then, besides mechanical engineering discipline the electrical and software engineering disciplines contribute more and more to the functionality of the system and, hence, require increasing efforts. And finally, the integration of the components from the individual engineering disciplines has become a costly task taking up to 25% of the p...»"
 tags:

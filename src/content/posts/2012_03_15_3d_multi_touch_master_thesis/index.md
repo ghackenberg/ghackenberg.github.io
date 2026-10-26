@@ -3,7 +3,7 @@ title: "3D Multi-Touch Master Thesis"
 pubDate: "2012-03-14"
 description: "Due to the overwhelming response from the research community over the past 2 years I decided to put online my Master Thesis written at Fraunhofer FIT. I hope my..."
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon:
+image:
   src: "./data_model.png"
   title: "Cover illustration: 3D Multi-Touch Master Thesis"
   description: "Due to the overwhelming response from the research community over the past 2 years I decided to put online my Master Thesis written at Fraunhofer FIT. I hope my..."

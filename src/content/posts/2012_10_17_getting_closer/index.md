@@ -3,7 +3,7 @@ title: "Getting Closer to Actual Balance"
 pubDate: "2012-10-16"
 description: "After extending our models and testing our tool chain we finally get some results that are really close to actual balance. The results are an important step tow..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation"]
-icon:
+image:
   src: "./level.png"
   title: "Getting Closer to Actual Balance - Level illustration"
   description: "Level illustration from Getting Closer to Actual Balance"

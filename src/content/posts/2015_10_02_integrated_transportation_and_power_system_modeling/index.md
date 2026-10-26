@@ -3,7 +3,7 @@ title: "Integrated transportation and power systems modeling"
 pubDate: "2015-10-01"
 description: "Here is another interesting piece of work I was doing over the past three years with Dominik Ascher: Integrated transportation and power systems modeling to hel..."
 tags: ["dynamic-programming", "energy-systems", "simulation", "systems-engineering", "traffic-control", "transportation-systems"]
-icon:
+image:
   src: "./model.png"
   title: "Integrated transportation and power systems modeling - Model illustration"
   description: "Model illustration from Integrated transportation and power systems modeling"

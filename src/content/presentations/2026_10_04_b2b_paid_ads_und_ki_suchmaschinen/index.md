@@ -3,10 +3,10 @@ title: "B2B Paid Ads & KI-Suchmaschinen: Ökonomie und Strategie"
 subtitle: "Zwischen algorithmischen Auktionen, kognitiver Werbeblindheit und nachhaltiger B2B-Full-Funnel-Strategie"
 pubDate: "2026-10-04"
 audience: "Geschäftsführer, CMOs, Marketingleiter und Vertriebsstrategen aus Industrie und B2B"
-lang: "de"
+inLanguage: "de"
 description: "Analytischer Deep Dive zur Systemik bezahlter Kanäle: Auktionsalgorithmen, Werbeblindheit, generative Werbeformate in KI-Suchmaschinen und B2B-Full-Funnel-Orchestrierung."
 tags: ["seo", "geo", "aio", "aeo", "social-media", "enterprise-ai", "benchmarks", "psychology", "cognitive-science"]
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert 'B2B Paid Ads & KI-Suchmaschinen'"
   description: "Architektur und Ökonomie von Paid Ads: Auktionsalgorithmen, Werbeblindheit, KI-Antwortsysteme und B2B-Full-Funnel-Strategie"

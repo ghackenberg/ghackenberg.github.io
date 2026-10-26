@@ -2,7 +2,7 @@
 title: Website Relaunch with Astro & TypeScript on GitHub Pages
 pubDate: 2026-05-23
 description: "Learn how to build a static portfolio on GitHub Pages with Astro, TypeScript & AI agents: Automated migration, sub-second loads, and full type safety."
-lang: en
+inLanguage: en
 tags:
   - web-development
   - astro
@@ -10,7 +10,7 @@ tags:
   - gemini
   - ai-migration
   - github-pages
-icon:
+image:
   src: ./icon.png
   title: "Cover illustration: Relaunching my personal website on GitHub Pages with Astro and TypeScript"
   description: Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration.

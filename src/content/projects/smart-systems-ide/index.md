@@ -22,7 +22,7 @@ image:
   title: "XTREAM Dynamic Optimization Workbench & Hydro Power Plant Simulation"
   description: "Multi-chart engineering dashboard displaying inflow, price signals, net power production, and cascaded water reservoir levels."
 screenshots:
-  - image: "./screenshot.png"
+  - src: "./screenshot.png"
     title: "Hydro Power Storage Simulation Dashboard"
     description: "Interactive Swing workbench visualizing optimal turbine dispatch, water storage dynamics, and revenue curves."
 pubDate: 2024-07-31

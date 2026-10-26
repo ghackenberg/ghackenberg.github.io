@@ -12,7 +12,7 @@ tags:
   - knowledge-graphs
   - seo
   - web-development
-icon:
+image:
   src: ./diagram.jpg
   title: SEO, GEO, AEO & AIO
   description: SEO, GEO, AEO & AIO Optimierungsmodell

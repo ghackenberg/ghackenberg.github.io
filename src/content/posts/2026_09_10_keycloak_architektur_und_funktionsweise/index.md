@@ -1,7 +1,7 @@
 ---
 title: Keycloak Architektur & Funktionsweise im AI Tech Stack
 pubDate: 2026-09-10
-lang: de
+inLanguage: de
 description: "Softwaretechnische Analyse von Keycloak: Cloud-native Quarkus-Laufzeit, Token Exchange (RFC 8693) für KI-Agenten, UMA 2.0 und Zero-Trust-Governance."
 tags:
   - keycloak
@@ -15,7 +15,7 @@ tags:
   - open-source
   - vllm
   - langgraph
-icon:
+image:
   src: ./hero.jpg
   title: Keycloak
   description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack"

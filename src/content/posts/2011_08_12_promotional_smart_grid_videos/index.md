@@ -3,7 +3,7 @@ title: "Promotional Smart Grid Videos"
 pubDate: "2011-08-11"
 description: "Currently I am working hard to understand ongoing efforts for revolutionizing the energy supply systems across the globe. In a recent article - a View onto the ..."
 tags: ["drawing", "energy-systems", "youtube-video"]
-icon:
+image:
   src: "./youtube_research.jpg"
   title: "Promotional Smart Grid Videos - Youtube research illustration"
   description: "Youtube research illustration from Promotional Smart Grid Videos"

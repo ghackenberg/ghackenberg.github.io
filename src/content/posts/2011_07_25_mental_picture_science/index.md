@@ -3,7 +3,7 @@ title: "A Mental Picture of Science."
 pubDate: "2011-07-24"
 description: "Having worked for some time both in research and development and on my PhD, I started to reflect on my work to gain an observer's perspective. In this article I..."
 tags: ["drawing"]
-icon:
+image:
   src: "./whiteboard.jpg"
   title: "A Mental Picture of Science - Whiteboard illustration"
   description: "Whiteboard illustration from A Mental Picture of Science."

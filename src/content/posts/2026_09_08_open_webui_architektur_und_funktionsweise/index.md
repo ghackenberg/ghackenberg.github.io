@@ -15,7 +15,7 @@ tags:
   - user-interface
   - ux-design
   - vllm
-icon:
+image:
   src: ./hero.jpg
   title: Open WebUI
   description: "Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem"

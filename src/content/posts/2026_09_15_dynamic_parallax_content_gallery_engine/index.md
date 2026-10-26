@@ -1,8 +1,7 @@
 ---
 title: "Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
 pubDate: 2026-09-15
-lang: en
-language: en
+inLanguage: en
 description: How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking.
 tags:
   - web-development
@@ -12,7 +11,7 @@ tags:
   - ux-design
   - user-interface
   - software-architecture
-icon:
+image:
   src: ./icon.jpg
   title: "Cover illustration: Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
   description: How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking.

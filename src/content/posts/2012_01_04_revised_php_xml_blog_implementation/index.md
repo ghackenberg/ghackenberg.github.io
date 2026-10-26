@@ -3,7 +3,7 @@ title: "Revised PHP/XML Blog Implementation"
 pubDate: "2012-01-03"
 description: "After another year of up-time it was time to revise some parts of the blog implementation. Originally, I did not pay much attention to the file structure. Howev..."
 tags: ["blog", "data-visualization", "software-systems", "web-development"]
-icon:
+image:
   src: "./content.png"
   title: "Revised PHP/XML Blog Implementation - Content illustration"
   description: "Content illustration from Revised PHP/XML Blog Implementation"

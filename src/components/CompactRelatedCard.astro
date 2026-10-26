@@ -13,7 +13,6 @@ interface Props {
   collection: ContentCollectionName;
   color?: string;
   image?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
-  icon?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
   fallbackIcon?: string;
   tags?: string[];
   activeTag?: string | string[];
@@ -28,7 +27,6 @@ const {
   date,
   collection,
   image,
-  icon,
   fallbackIcon,
   tags = [],
   activeTag,
@@ -186,7 +184,7 @@ interface CoverImageObject {
 }
 
 // Image resolution & optimization
-const rawImage = image || icon;
+const rawImage = image;
 const isCoverObj = Boolean(rawImage && typeof rawImage === 'object' && 'src' in rawImage && (rawImage as CoverImageObject).src);
 const imageSrcObj = isCoverObj ? (rawImage as CoverImageObject).src : (rawImage as ImageMetadata | string | undefined);
 const isImageMetadata = Boolean(imageSrcObj && typeof imageSrcObj === 'object' && 'src' in imageSrcObj);

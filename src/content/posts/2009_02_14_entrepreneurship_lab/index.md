@@ -3,7 +3,7 @@ title: "Entrepreneurship Lab Screenshots."
 pubDate: "2009-02-13"
 description: "This term I participated in the lab for Entrepreneurship and New Media. The students were split into groups and assigned to an industry partner. Then, a softwar..."
 tags: ["product-design", "software-systems", "user-interface"]
-icon:
+image:
   src: "./contact.png"
   title: "Entrepreneurship Lab Screenshots - Contact illustration"
   description: "Contact illustration from Entrepreneurship Lab Screenshots."

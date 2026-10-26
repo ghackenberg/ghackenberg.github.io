@@ -3,7 +3,7 @@ title: "Personal Study Management."
 pubDate: "2009-02-21"
 description: "Ein strukturiertes System zur Organisation von Prüfungsvorbereitungen mit XML-basierten Lernplänen und automatischer Fortschrittsberechnung."
 tags: ["data-visualization", "education", "hyperkit-software", "task-management"]
-icon:
+image:
   src: "./plan.png"
   title: "Strukturierter Lernplan für das Prüfungsmanagement"
   description: "Over my past years of study, I developed a system for organizing my learning. It helps me staying focused and having an overview over my progress. In this artic..."
