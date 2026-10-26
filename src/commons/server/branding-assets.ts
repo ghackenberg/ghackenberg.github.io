@@ -2,6 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import zlib from 'node:zlib';
 import type { AddressInfo } from 'node:net';
 import puppeteer from 'puppeteer';
 
@@ -33,6 +34,7 @@ const MANIFEST_PATH = path.join(BRANDING_CACHE_DIR, '.manifest.json');
 const OG_ASTRO_PATH = path.resolve('src/pages/_internal/og.astro');
 const ICON_ASTRO_PATH = path.resolve('src/pages/_internal/icon.astro');
 const SELF_PATH = path.resolve('src/commons/server/branding-assets.ts');
+const OUTFIT_800_WOFF_PATH = path.resolve('node_modules/@fontsource/outfit/files/outfit-latin-800-normal.woff');
 
 const FONT_ROUTES: Record<string, string> = {
   '/fonts/outfit-700.woff2': path.resolve('node_modules/@fontsource/outfit/files/outfit-latin-700-normal.woff2'),
@@ -142,6 +144,212 @@ function renderIconTemplateHtml(): string {
     .replace('<script is:inline>', '<script>');
 }
 
+interface GlyphPoint {
+  x: number;
+  y: number;
+  onCurve: boolean;
+}
+
+/**
+ * Zero-dependency WOFF1 TrueType glyph outline compiler.
+ * Converts the <text> monogram from src/pages/_internal/icon.astro into an exact
+ * SVG <path> using the Outfit 800 font tables (head, hhea, cmap, hmtx, loca, glyf).
+ * This avoids embedding a 19 KB Base64 @font-face inside favicon.svg, which causes
+ * synchronous FOIT (transparent/blank tab icons) in Chromium's blink::WebImage::FromData.
+ */
+function convertTextToOutfit800SvgPath(
+  text: string,
+  fontSizePx: number,
+  letterSpacingPx: number,
+  viewBoxWidth: number,
+  viewBoxHeight: number
+): string {
+  const woff = fs.readFileSync(OUTFIT_800_WOFF_PATH);
+  const numTables = woff.readUInt16BE(12);
+  const tables: Record<string, Buffer> = {};
+  for (let i = 0; i < numTables; i++) {
+    const base = 44 + i * 20;
+    const tag = woff.toString('ascii', base, base + 4);
+    const offset = woff.readUInt32BE(base + 4);
+    const compLength = woff.readUInt32BE(base + 8);
+    const origLength = woff.readUInt32BE(base + 12);
+    const slice = woff.subarray(offset, offset + compLength);
+    tables[tag] = compLength < origLength ? zlib.inflateSync(slice) : slice;
+  }
+
+  const head = tables['head'];
+  const hhea = tables['hhea'];
+  const cmap = tables['cmap'];
+  const hmtx = tables['hmtx'];
+  const loca = tables['loca'];
+  const glyf = tables['glyf'];
+
+  const unitsPerEm = head.readUInt16BE(18);
+  const indexToLocFormat = head.readInt16BE(50);
+  const ascent = hhea.readInt16BE(4);
+  const descent = hhea.readInt16BE(6);
+  const numOfLongHorMetrics = hhea.readUInt16BE(34);
+
+  const lookupGlyphId = (codePoint: number): number => {
+    const numSubtables = cmap.readUInt16BE(2);
+    for (let i = 0; i < numSubtables; i++) {
+      const subOffset = cmap.readUInt32BE(4 + i * 8 + 4);
+      const format = cmap.readUInt16BE(subOffset);
+      if (format === 4) {
+        const segCount = cmap.readUInt16BE(subOffset + 6) / 2;
+        const endCodes = subOffset + 14;
+        const startCodes = endCodes + segCount * 2 + 2;
+        const idDeltas = startCodes + segCount * 2;
+        const idRangeOffsets = idDeltas + segCount * 2;
+        for (let s = 0; s < segCount; s++) {
+          const end = cmap.readUInt16BE(endCodes + s * 2);
+          const start = cmap.readUInt16BE(startCodes + s * 2);
+          if (codePoint >= start && codePoint <= end) {
+            const delta = cmap.readInt16BE(idDeltas + s * 2);
+            const rangeOffset = cmap.readUInt16BE(idRangeOffsets + s * 2);
+            if (rangeOffset === 0) return (codePoint + delta) & 0xffff;
+            const glyphOffset = idRangeOffsets + s * 2 + rangeOffset + (codePoint - start) * 2;
+            return cmap.readUInt16BE(glyphOffset);
+          }
+        }
+      }
+    }
+    return 0;
+  };
+
+  const getAdvanceWidth = (gid: number): number =>
+    hmtx.readUInt16BE(Math.min(gid, numOfLongHorMetrics - 1) * 4);
+
+  const getGlyphOffset = (gid: number): number =>
+    indexToLocFormat === 0 ? loca.readUInt16BE(gid * 2) * 2 : loca.readUInt32BE(gid * 4);
+
+  const decodeGlyphContours = (gid: number): GlyphPoint[][] => {
+    const off = getGlyphOffset(gid);
+    const nextOff = getGlyphOffset(gid + 1);
+    if (off === nextOff) return [];
+    const g = glyf.subarray(off, nextOff);
+    const numContours = g.readInt16BE(0);
+    if (numContours <= 0) return [];
+
+    const endPtsOfContours: number[] = [];
+    for (let i = 0; i < numContours; i++) {
+      endPtsOfContours.push(g.readUInt16BE(10 + i * 2));
+    }
+    const numPoints = endPtsOfContours[endPtsOfContours.length - 1] + 1;
+    const instrLen = g.readUInt16BE(10 + numContours * 2);
+    let p = 10 + numContours * 2 + 2 + instrLen;
+
+    const flags: number[] = [];
+    while (flags.length < numPoints) {
+      const f = g[p++];
+      flags.push(f);
+      if (f & 8) {
+        const repeat = g[p++];
+        for (let r = 0; r < repeat; r++) flags.push(f);
+      }
+    }
+
+    const xs: number[] = [];
+    let x = 0;
+    for (let i = 0; i < numPoints; i++) {
+      const f = flags[i];
+      if (f & 2) {
+        const dx = g[p++];
+        x += f & 16 ? dx : -dx;
+      } else if (!(f & 16)) {
+        x += g.readInt16BE(p);
+        p += 2;
+      }
+      xs.push(x);
+    }
+
+    const ys: number[] = [];
+    let y = 0;
+    for (let i = 0; i < numPoints; i++) {
+      const f = flags[i];
+      if (f & 4) {
+        const dy = g[p++];
+        y += f & 32 ? dy : -dy;
+      } else if (!(f & 32)) {
+        y += g.readInt16BE(p);
+        p += 2;
+      }
+      ys.push(y);
+    }
+
+    const contours: GlyphPoint[][] = [];
+    let start = 0;
+    for (const end of endPtsOfContours) {
+      const pts: GlyphPoint[] = [];
+      for (let i = start; i <= end; i++) {
+        pts.push({ x: xs[i], y: ys[i], onCurve: Boolean(flags[i] & 1) });
+      }
+      contours.push(pts);
+      start = end + 1;
+    }
+    return contours;
+  };
+
+  const contourToSvgSubpath = (pts: GlyphPoint[], scale: number, offsetX: number, baselineY: number): string => {
+    const tx = (x: number): number => +(offsetX + x * scale).toFixed(2);
+    const ty = (y: number): number => +(baselineY - y * scale).toFixed(2);
+
+    const expanded: GlyphPoint[] = [];
+    const n = pts.length;
+    for (let i = 0; i < n; i++) {
+      const curr = pts[i];
+      const next = pts[(i + 1) % n];
+      expanded.push(curr);
+      if (!curr.onCurve && !next.onCurve) {
+        expanded.push({
+          x: (curr.x + next.x) / 2,
+          y: (curr.y + next.y) / 2,
+          onCurve: true,
+        });
+      }
+    }
+
+    const startIdx = Math.max(0, expanded.findIndex((pt) => pt.onCurve));
+    const ordered = [...expanded.slice(startIdx), ...expanded.slice(0, startIdx)];
+
+    const cmds = [`M${tx(ordered[0].x)} ${ty(ordered[0].y)}`];
+    let i = 1;
+    while (i < ordered.length) {
+      const pt = ordered[i];
+      if (pt.onCurve) {
+        cmds.push(`L${tx(pt.x)} ${ty(pt.y)}`);
+        i++;
+      } else {
+        const next = ordered[(i + 1) % ordered.length];
+        cmds.push(`Q${tx(pt.x)} ${ty(pt.y)} ${tx(next.x)} ${ty(next.y)}`);
+        i += 2;
+      }
+    }
+    cmds.push('Z');
+    return cmds.join(' ');
+  };
+
+  const scale = fontSizePx / unitsPerEm;
+  const chars = Array.from(text);
+  const glyphIds = chars.map((ch) => lookupGlyphId(ch.codePointAt(0) || 0));
+  const advancesPx = glyphIds.map((gid) => getAdvanceWidth(gid) * scale + letterSpacingPx);
+  const totalAdvancePx = advancesPx.reduce((sum, adv) => sum + adv, 0);
+
+  let cursorX = viewBoxWidth / 2 - totalAdvancePx / 2;
+  const centralBaselineY = viewBoxHeight / 2 + ((ascent + descent) / 2) * scale;
+
+  const subpaths: string[] = [];
+  for (let i = 0; i < glyphIds.length; i++) {
+    const contours = decodeGlyphContours(glyphIds[i]);
+    for (const contour of contours) {
+      subpaths.push(contourToSvgSubpath(contour, scale, cursorX, centralBaselineY));
+    }
+    cursorX += advancesPx[i];
+  }
+
+  return subpaths.join(' ');
+}
+
 function renderStandaloneFaviconSvg(): string {
   const raw = fs.readFileSync(ICON_ASTRO_PATH, 'utf8');
   const svgMatch = raw.match(/<svg[\s\S]*?<\/svg>/);
@@ -149,32 +357,35 @@ function renderStandaloneFaviconSvg(): string {
     throw new Error('Could not extract <svg> template from src/pages/_internal/icon.astro');
   }
 
-  const outfit800Path = FONT_ROUTES['/fonts/outfit-800.woff2'];
-  const outfit800Base64 = fs.readFileSync(outfit800Path).toString('base64');
-  const inlineFontFace = `@font-face {
-      font-family: 'Outfit';
-      font-style: normal;
-      font-weight: 800;
-      src: url('data:font/woff2;base64,${outfit800Base64}') format('woff2');
-    }`;
+  const viewBoxMatch = svgMatch[0].match(/viewBox="0\s+0\s+(\d+)\s+(\d+)"/);
+  const viewBoxWidth = viewBoxMatch ? Number(viewBoxMatch[1]) : 128;
+  const viewBoxHeight = viewBoxMatch ? Number(viewBoxMatch[2]) : 128;
+
+  const textMatch = svgMatch[0].match(/<text[^>]*>([\s\S]*?)<\/text>/);
+  const logoText = textMatch ? textMatch[1].trim() : 'GH';
+
+  const fontSizeMatch = raw.match(/\.icon-wrapper\.mode-transparent\s+\.text-logo\s*\{[\s\S]*?font-size:\s*([-\d.]+)px/);
+  const letterSpacingMatch = raw.match(/\.icon-wrapper\.mode-transparent\s+\.text-logo\s*\{[\s\S]*?letter-spacing:\s*([-\d.]+)px/);
+  const fontSizePx = fontSizeMatch ? Number(fontSizeMatch[1]) : 78;
+  const letterSpacingPx = letterSpacingMatch ? Number(letterSpacingMatch[1]) : -3;
+
+  const pathData = convertTextToOutfit800SvgPath(
+    logoText,
+    fontSizePx,
+    letterSpacingPx,
+    viewBoxWidth,
+    viewBoxHeight
+  );
 
   let svg = svgMatch[0]
     .replace(
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">',
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">'
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewBoxWidth} ${viewBoxHeight}">`,
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewBoxWidth} ${viewBoxHeight}" width="${viewBoxWidth}" height="${viewBoxHeight}">`
     )
+    .replace(/\s*<style>[\s\S]*?<\/style>/, '')
     .replace(
-      /<style>[\s\S]*?<\/style>/,
-      `<style>
-      ${inlineFontFace}
-      .text-logo {
-        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-weight: 800;
-        font-size: 78px;
-        letter-spacing: -3px;
-        fill: url(#gh-gradient);
-      }
-    </style>`
+      /<text[^>]*>[\s\S]*?<\/text>/,
+      `<path fill="url(#gh-gradient)" d="${pathData}" />`
     );
 
   // Dedent 6 leading spaces from icon.astro indentation
