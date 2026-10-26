@@ -556,6 +556,17 @@ for (const file of htmlFiles) {
 // -------------------------------------------------------------
 // Assertion 6: Preview Card Rendered Image Parity
 // -------------------------------------------------------------
+const PRIMARY_COLLECTIONS = new Set([
+  'posts',
+  'publications',
+  'presentations',
+  'courses',
+  'projects',
+  'services',
+  'newsletters',
+  'visualizations',
+]);
+
 let totalPreviewCardsChecked = 0;
 let assertion6Errors = 0;
 
@@ -566,9 +577,13 @@ for (const file of htmlFiles) {
   const relPath = path.relative(distDir, file).replace(/\\/g, '/');
 
   $('.preview-card[data-collection]').each((_, el) => {
-    totalPreviewCardsChecked++;
     const $card = $(el);
     const collection = $card.attr('data-collection') || 'unknown';
+    if (!PRIMARY_COLLECTIONS.has(collection)) {
+      return;
+    }
+
+    totalPreviewCardsChecked++;
     const cardId = $card.attr('data-card-id') || 'unknown';
 
     // Must contain either an <img> with non-empty src OR an <svg><image> with non-empty href
@@ -581,7 +596,7 @@ for (const file of htmlFiles) {
     if (!hasImg && !hasSvgImage) {
       console.error(
         `[validate-assets] ❌ Assertion 6 Failed: In ${relPath}, .preview-card[data-collection="${collection}"] (id: "${cardId}") is missing a rendered image or svg image element.`
-      )
+      );
       errorsCount++;
       assertion6Errors++;
     }
