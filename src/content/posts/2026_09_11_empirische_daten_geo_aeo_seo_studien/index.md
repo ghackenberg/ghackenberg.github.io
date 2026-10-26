@@ -1,11 +1,7 @@
 ---
-title: "Empirische Daten zu GEO, AEO & SEO: Was Peer-Reviewed Studien und
-  Industrie-Benchmarks zeigen"
+title: "Empirische Daten zu GEO, AEO & SEO: Was Peer-Reviewed Studien und Industrie-Benchmarks zeigen"
 pubDate: 2026-09-11
-description: "Wissenschaftlich fundierte Synthese empirischer
-  Forschungsergebnisse zu Generative Engine Optimization (GEO) und Answer Engine
-  Optimization (AEO): Peer-Reviewed vs. Non-Peer-Reviewed im kritischen
-  Qualitäts- und Glaubwürdigkeitsvergleich."
+description: "Wissenschaftlich fundierte Synthese empirischer Forschungsergebnisse zu Generative Engine Optimization (GEO) und Answer Engine Optimization (AEO): Peer-Reviewed vs. Non-Peer-Reviewed im kritischen Qualitäts- und Glaubwürdigkeitsvergleich."
 tags:
   - aeo
   - agentic-ai
@@ -23,30 +19,43 @@ icon:
   description: GEO & AEO empirische Forschung im Labor
 references:
   - type: inproceedings
-    author: Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K.,
-      & Deshpande, A.
     title: "GEO: Generative Engine Optimization"
     url: https://doi.org/10.1145/3637528.3671900
     year: 2024
     doi: 10.1145/3637528.3671900
-    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery
-      and Data Mining (KDD '24)
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)
     id: aggarwal-2024-geo
+    authors:
+      - name: Pranjal Aggarwal
+        id: https://orcid.org/0000-0002-2962-1535
+      - name: Vishvak Murahari
+        id: https://orcid.org/0009-0008-9304-0701
+      - name: Tanmay Rajpurohit
+        id: https://orcid.org/0000-0001-9302-4244
+      - name: Ashwin Kalyan
+        id: https://orcid.org/0009-0006-3448-3305
+      - name: Karthik Narasimhan
+        id: https://orcid.org/0000-0001-9894-9983
+      - name: Ameet Deshpande
+        id: https://orcid.org/0000-0001-9885-0385
   - type: online
-    author: Fishkin, R.
-    title: "2024 Zero-Click Search Study: For every 1,000 Google searches, only 360
-      clicks go to the open web"
+    title: "2024 Zero-Click Search Study: For every 1,000 Google searches, only 360 clicks go to the open web"
     url: https://sparktoro.com/blog/2024-zero-click-search-study/
     year: 2024
     siteName: SparkToro
     id: fishkin-2024-zero-click
+    authors:
+      - name: Rand Fishkin
   - type: article
-    author: Liu, N. F., Zhang, T., & Liang, P.
     title: Evaluating Verifiability in Generative Search Engines
     url: https://arxiv.org/abs/2304.09848
     year: 2023
     journal: "Findings of the Association for Computational Linguistics: EMNLP 2023"
     id: liu-2023-evaluating-verifiability
+    authors:
+      - name: Nelson F. Liu
+      - name: Tianyi Zhang
+      - name: Percy Liang
 ---
 
 

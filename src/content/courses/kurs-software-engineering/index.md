@@ -8,8 +8,8 @@ learningGoals:
   - "Qualitätssicherung durch automatisiertes Testen (Unit Tests, Integrationstests) in C#."
 terms:
   - "Summer Term 2025"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Software Engineering: Anforderungsanalyse & UML-Modellierung"
   description: "Orthogonale Schautafel des Software-Designs mit Anforderungsspezifikation, UML-Klassendiagramm und UML-Sequenzdiagramm"

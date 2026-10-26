@@ -8,8 +8,8 @@ learningGoals:
   - "Erstellung und Bereitstellung interaktiver Single-Page-Anwendungen (SPAs) auf Firebase Hosting."
 terms:
   - "Winter Term 2024/25"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Web-Programmierung: TypeScript Frontend & Firebase Cloud-Sync"
   description: "Orthogonale Schautafel eines typisierten Web-Browser-Frontends mit UI-Komponenten und synchronisierter Cloud-Dokumentendatenbank"

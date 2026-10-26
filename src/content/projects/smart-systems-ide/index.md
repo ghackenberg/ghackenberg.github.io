@@ -16,8 +16,8 @@ tags:
   - "transportation-systems"
 accentColor: "blue"
 order: 7
-repoName: "ghackenberg/Smart-Systems-IDE"
-screenshot:
+repoName: "Smart-Systems-IDE"
+image:
   src: "./screenshot.png"
   title: "XTREAM Dynamic Optimization Workbench & Hydro Power Plant Simulation"
   description: "Multi-chart engineering dashboard displaying inflow, price signals, net power production, and cascaded water reservoir levels."

@@ -8,8 +8,8 @@ learningGoals:
   - "Implement custom simulations and plot high-quality engineering visualizations."
 terms:
   - "Winter Term 2025/26"
-language: "en"
-screenshot:
+inLanguage: "en"
+image:
   src: "./preview.jpg"
   title: "Python for Engineers: Programming Fundamentals & Data Processing"
   description: "Orthogonal schematic of learning foundational programming in Python, featuring code editor, Python emblem, numerical array processing, and engineering curve output"

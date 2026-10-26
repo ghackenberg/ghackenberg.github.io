@@ -11,6 +11,7 @@ interface Props {
   pubDate: Date;
   readingTime?: string;
   icon?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags: string[];
   activeTag?: string | string[];
   showTags?: boolean;
@@ -24,6 +25,7 @@ const {
   pubDate, 
   readingTime,
   icon, 
+  image, 
   tags, 
   activeTag,
   showTags,
@@ -35,10 +37,11 @@ const displayReadingTime = readingTime ?? getPostReadingTime(id).text;
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
-const isCoverObj = Boolean(icon && typeof icon === 'object' && 'src' in icon && icon.src);
-const iconImg = isCoverObj ? (icon as { src: ImageMetadata }).src : (icon as ImageMetadata | undefined);
-const iconTitle = isCoverObj ? (icon as { title: string }).title : title;
-const iconDesc = isCoverObj ? (icon as { description: string }).description : (description || `Preview for ${title}`);
+const effIcon = image || icon;
+const isCoverObj = Boolean(effIcon && typeof effIcon === 'object' && 'src' in effIcon && effIcon.src);
+const iconImg = isCoverObj ? (effIcon as { src: ImageMetadata }).src : (effIcon as ImageMetadata | undefined);
+const iconTitle = isCoverObj ? (effIcon as { title: string }).title : title;
+const iconDesc = isCoverObj ? (effIcon as { description: string }).description : (description || `Preview for ${title}`);
 
 const isSvg = iconImg && typeof iconImg === 'object' && 'format' in iconImg && iconImg.format === 'svg';
 
@@ -62,7 +65,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
 <article class={articleClass} data-card-id={id} data-collection="posts">
   {featured && (
-    <div class="absolute inset-0 bg-gradient-to-br from-domain-posts/15 via-transparent to-brand-purple/15 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-domain-posts/15 via-transparent to-domain-posts/5 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
   )}
 
   <!-- Image panel -->

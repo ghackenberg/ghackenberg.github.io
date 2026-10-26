@@ -5,7 +5,7 @@ description: "High-discipline implementation practices adhering to Clean Code st
 ctaText: "Inquire about Software Construction"
 order: 3
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Software Construction & Clean Code"
   description: "Verzahnte modulare Code-Syntax-Bausteine mit automatischer Linter-Prüfschiene zur Durchsetzung von Clean-Code-Standards"

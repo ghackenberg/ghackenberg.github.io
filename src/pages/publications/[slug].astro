@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildPublicationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -8,6 +9,7 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
 import { getCollection } from "astro:content";
 import { formatDate } from "@commons/shared/format";
+import { formatAuthorsHtml } from "@commons/shared/authors";
 
 export async function getStaticPaths() {
   const pubs = await getCollection("publications");
@@ -52,79 +54,19 @@ const seoDescription = cleanAbstract.length > 156
   ? `${cleanAbstract.substring(0, 153)}...` 
   : cleanAbstract || `Academic research publication by Dr. Georg Hackenberg: "${pub.data.title}"`;
 
-const pubUrl = `https://hackenberg.tech/publications/${pub.id}/`;
 
-const iconSrc = typeof pub.data.icon === 'object' && pub.data.icon !== null && 'src' in pub.data.icon ? pub.data.icon.src : pub.data.icon;
 
-const scholarlyArticleSchema = {
-  "@context": "https://schema.org",
-  "@type": "ScholarlyArticle",
-  "@id": `${pubUrl}#article`,
-  "headline": pub.data.title,
-  "name": pub.data.title,
-  "url": pubUrl,
-  "author": pub.data.author.split(/,| and /).map(a => {
-    const trimmed = a.trim();
-    const isGeorg = /Georg Hackenberg/i.test(trimmed);
-    return {
-      "@type": "Person",
-      "name": trimmed,
-      ...(isGeorg ? {
-        "url": "https://hackenberg.tech",
-        "sameAs": "https://www.wikidata.org/wiki/Q141537961"
-      } : {})
-    };
-  }),
-  "datePublished": pub.data.pubDate.toISOString(),
-  "description": cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
-  "publication": pub.data.book ? {
-    "@type": "PublicationEvent",
-    "name": pub.data.book
-  } : undefined,
-  "image": iconSrc ? new URL(iconSrc, Astro.site).href : undefined,
-  "sameAs": pub.data.publisherUrl || undefined,
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": pubUrl
-  }
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Publications",
-      "item": "https://hackenberg.tech/publications/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": pub.data.title,
-      "item": pubUrl
-    }
-  ]
-};
-
-const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
+const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
   title={`${pub.data.title} | Dr. Georg Hackenberg`} 
   description={seoDescription}
-  image={pub.data.icon}
+  image={pub.data.image}
   type="article"
   pubDate={pub.data.pubDate}
   tags={pub.data.tags}
-  jsonLd={pubJsonLd}
+  jsonLd={[publicationSchema]}
 >
   <Navbar />
 
@@ -147,7 +89,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
       </h1>
 
       <p class="text-gray-300 text-base md:text-lg mb-4 font-normal">
-        <span set:html={pub.data.author} />
+        <span set:html={formatAuthorsHtml(pub.data.authors)} />
       </p>
 
       <p class="text-gray-400 text-sm mb-6 font-normal italic">
@@ -235,12 +177,12 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         // Visual feedback
         copyBtnText.textContent = 'Copied!';
         copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+        copyBtn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
         
         // Reset after 2.5 seconds
         setTimeout(() => {
           copyBtnText.textContent = 'Copy Citation';
-          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+          copyBtn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
           copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
         }, 2500);
       }).catch(err => {

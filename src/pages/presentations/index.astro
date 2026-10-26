@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import PresentationCard from "@components/PresentationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 import { getCollection } from "astro:content";
 
 const allPresentations = await getCollection("presentations");
@@ -24,33 +25,15 @@ for (const presentation of presentations) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = presentations.map(p => (p.data.tags || []).map(t => t.toLowerCase()));
 
-const pagePreviewImage = presentations.find(t => t.data.previewImage || t.data.icon)?.data.previewImage || presentations.find(t => t.data.previewImage || t.data.icon)?.data.icon;
+const pagePreviewImage = presentations.find(t => t.data.image)?.data.image;
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Interactive Presentations",
-      "item": "https://hackenberg.tech/presentations/"
-    }
-  ]
-};
 ---
 
 <Layout
   title="Interactive Presentations | Dr. Georg Hackenberg"
   description="Explore interactive presentations, keynote slide decks, and executive briefings by Dr. Georg Hackenberg on AI, search engines, knowledge graphs, and software architecture."
   image={pagePreviewImage}
-  jsonLd={breadcrumbSchema}
+  jsonLd={buildCollectionPageSchema("presentations", presentations.map((p) => ({ id: `https://hackenberg.tech/presentations/${p.id}/#presentation` })))}
   lang="en"
 >
   <Navbar />
@@ -117,7 +100,7 @@ const breadcrumbSchema = {
                   subtitle={presentation.data.subtitle}
                   description={presentation.data.description}
                   pubDate={presentation.data.pubDate}
-                  icon={presentation.data.previewImage || presentation.data.icon}
+                  image={presentation.data.image}
                   tags={presentation.data.tags || []}
                 />
               </div>

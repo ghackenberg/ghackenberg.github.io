@@ -1,8 +1,7 @@
 ---
 title: Smarte Tiefenbewässerung & urbanes Wurzelzonen-Management
 pubDate: 2026-08-30
-description: Symbiose aus überbaubarem Baumsubstrat, Tiefenbewässerung und
-  smarter IoT-Sensorik für gesunde Stadtbäume auf versiegelten Pflasterflächen.
+description: Symbiose aus überbaubarem Baumsubstrat, Tiefenbewässerung und smarter IoT-Sensorik für gesunde Stadtbäume auf versiegelten Pflasterflächen.
 tags:
   - smart-home
   - iot
@@ -17,38 +16,45 @@ icon:
   description: Smarte Tiefenbewässerung im Wurzelbereich mit Bodenfeuchtesensorik
 references:
   - type: online
-    author: Allen, R. G., Pereira, L. S., Raes, D., & Smith, M.
     title: "Crop evapotranspiration: Guidelines for computing crop water requirements"
     url: https://www.fao.org/4/x0490e/x0490e00.htm
     year: 1998
-    siteName: FAO Irrigation and Drainage Paper No. 56, Food and Agriculture
-      Organization of the United Nations (FAO), Rome
+    siteName: FAO Irrigation and Drainage Paper No. 56, Food and Agriculture Organization of the United Nations (FAO), Rome
     id: allen-1998-crop-evapotranspiration
+    authors:
+      - name: Richard G. Allen
+      - name: Luis S. Pereira
+      - name: Dirk Raes
+      - name: Martin Smith
   - type: book
-    author: DIN Deutsches Institut für Normung e.V.
-    title: "DIN 18916: Vegetationstechnik im Landschaftsbau – Pflanzen und
-      Pflanzarbeiten"
+    title: "DIN 18916: Vegetationstechnik im Landschaftsbau – Pflanzen und Pflanzarbeiten"
     url: https://www.din.de/de/meta/suche/62730!search?query=18916
     year: 2016
     publisher: Beuth Verlag
     id: din-18916
+    authors:
+      - name: DIN Deutsches Institut für Normung e.V.
+        type: Organization
   - type: misc
-    author: FLL – Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.
-    title: "Empfehlungen für Baumpflanzungen – Teil 2: Standortvorbereitungen für
-      Neupflanzungen; Pflanzgruben und Wurzelraumerweiterung, Bauweisen und
-      Substrate"
+    title: "Empfehlungen für Baumpflanzungen – Teil 2: Standortvorbereitungen für Neupflanzungen; Pflanzgruben und Wurzelraumerweiterung, Bauweisen und Substrate"
     url: https://www.fll.de/
     year: 2015
     howpublished: FLL-Regelwerk
     id: ev-2015-empfehlungen-baumpflanzungen
+    authors:
+      - name: FLL – Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.
+        type: Organization
   - type: book
-    author: Lamm, F. R., Ayars, J. E., & Nakayama, F. S. (Eds.)
     title: "Microirrigation for Crop Production: Design, Operation, and Management"
     publisher: Elsevier
     year: 2007
     isbn: 978-0-444-50607-8
     url: https://books.google.com/books?vid=ISBN9780444506078
     id: lamm-2007-microirrigation-crop
+    authors:
+      - name: Freddie R. Lamm
+      - name: James E. Ayars
+      - name: Francis S. Nakayama
 ---
 
 

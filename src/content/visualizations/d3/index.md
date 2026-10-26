@@ -1,7 +1,7 @@
 ---
 title: "D3.js: Force-Directed Network Graph"
 description: "Inspect interconnected topics and content nodes through a crisp, vector-based force simulation powered by D3.js and velocity Verlet numerical integration."
-screenshot:
+image:
   src: "./d3.png"
   title: "D3 Physics-Based Force Graph"
   description: "Physics-driven network diagram featuring centrifugally organized topic clusters and fine link lines on a dark background"

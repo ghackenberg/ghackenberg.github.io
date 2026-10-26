@@ -8,8 +8,8 @@ learningGoals:
   - "Statistische Auswertung und kritische Analyse von Simulationsergebnissen."
 terms:
   - "Winter Term 2025/26"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Computer-Simulation: Taxonomie der Simulationsmodelle"
   description: "Hierarchischer Taxonomie-Baum von Simulationsmodellen: Statisch vs. dynamisch, kontinuierlich vs. diskret sowie Fixed-Step vs. Next-Event Time Advance mit thematischen Icons"

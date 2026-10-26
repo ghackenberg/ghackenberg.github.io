@@ -31,7 +31,7 @@ An expressive, artistic studio sketchnote and bold engineering concept drawing t
 * **Format & Aspect Ratio**: `AspectRatio: "16:9"`.
 * **Path**: Saved as `preview.jpg` inside the corresponding publication directory:
   `src/content/publications/<pub_directory>/preview.jpg`
-* **Frontmatter Link**: Referenced via `icon: "./preview.jpg"` in `src/content/publications/<pub_directory>/index.md`.
+* **Frontmatter Link**: Referenced via `image: "./preview.jpg"` in `src/content/publications/<pub_directory>/index.md`.
 
 ## 7. Canonical Prompt Template
 

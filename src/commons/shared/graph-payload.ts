@@ -81,7 +81,7 @@ export const GRAPH_GROUP_NAMES = [
   'Course',
   'Project',
   'Service',
-  'Interest',
+  'Newsletter',
   'Visualization'
 ] as const;
 
@@ -94,7 +94,7 @@ export const GRAPH_COLORS = {
     DOMAIN_METADATA.courses.colors.dark,        // 4: Course
     DOMAIN_METADATA.projects.colors.dark,       // 5: Project
     DOMAIN_METADATA.services.colors.dark,       // 6: Service
-    DOMAIN_METADATA.interests.colors.dark,      // 7: Interest
+    DOMAIN_METADATA.newsletters.colors.dark,    // 7: Newsletter
     DOMAIN_METADATA.visualizations.colors.dark  // 8: Visualization
   ],
   light: [
@@ -105,7 +105,7 @@ export const GRAPH_COLORS = {
     DOMAIN_METADATA.courses.colors.light,        // 4: Course
     DOMAIN_METADATA.projects.colors.light,       // 5: Project
     DOMAIN_METADATA.services.colors.light,       // 6: Service
-    DOMAIN_METADATA.interests.colors.light,      // 7: Interest
+    DOMAIN_METADATA.newsletters.colors.light,    // 7: Newsletter
     DOMAIN_METADATA.visualizations.colors.light  // 8: Visualization
   ]
 };
@@ -117,7 +117,7 @@ export interface TagCounts {
   courses: Record<string, number>;
   projects: Record<string, number>;
   services: Record<string, number>;
-  interests: Record<string, number>;
+  newsletters: Record<string, number>;
   visualizations: Record<string, number>;
   allTags: string[];
 }
@@ -153,6 +153,8 @@ interface RawEntity {
     description?: string;
     pubDate?: string | Date;
     tags?: string[];
+    image?: ImageSource;
+    imageLight?: ImageSource;
     icon?: ImageSource;
     screenshot?: ImageSource;
     screenshotLight?: ImageSource;
@@ -180,8 +182,8 @@ export function calculateTagCounts(options: {
   courses: RawEntity[];
   projects: RawEntity[];
   services: RawEntity[];
-  interests?: RawEntity[];
   visualizations?: RawEntity[];
+  newsletters?: RawEntity[];
 }): TagCounts {
   const tagPosts: Record<string, number> = {};
   options.posts.forEach(p => {
@@ -237,20 +239,20 @@ export function calculateTagCounts(options: {
     }
   });
 
-  const tagInterests: Record<string, number> = {};
-  (options.interests || []).forEach(i => {
-    if (i.data.tags) {
-      new Set(i.data.tags).forEach(t => {
-        tagInterests[t] = (tagInterests[t] || 0) + 1;
-      });
-    }
-  });
-
   const tagVis: Record<string, number> = {};
   (options.visualizations || []).forEach(v => {
     if (v.data.tags) {
       new Set(v.data.tags).forEach(t => {
         tagVis[t] = (tagVis[t] || 0) + 1;
+      });
+    }
+  });
+
+  const tagNewsletters: Record<string, number> = {};
+  (options.newsletters || []).forEach(n => {
+    if (n.data.tags) {
+      new Set(n.data.tags).forEach(t => {
+        tagNewsletters[t] = (tagNewsletters[t] || 0) + 1;
       });
     }
   });
@@ -262,7 +264,7 @@ export function calculateTagCounts(options: {
     ...Object.keys(tagCourses),
     ...Object.keys(tagProjects),
     ...Object.keys(tagServices),
-    ...Object.keys(tagInterests),
+    ...Object.keys(tagNewsletters),
     ...Object.keys(tagVis)
   ]));
 
@@ -273,7 +275,7 @@ export function calculateTagCounts(options: {
     courses: tagCourses,
     projects: tagProjects,
     services: tagServices,
-    interests: tagInterests,
+    newsletters: tagNewsletters,
     visualizations: tagVis,
     allTags
   };
@@ -286,7 +288,7 @@ export async function buildGraphPayload(options: {
   courses: RawEntity[];
   projects: RawEntity[];
   services: RawEntity[];
-  interests?: RawEntity[];
+  newsletters?: RawEntity[];
   visualizations?: RawEntity[];
   tags: RawTag[];
   getImage?: typeof getImage;
@@ -305,8 +307,8 @@ export async function buildGraphPayload(options: {
       (tagCounts.courses[tag] || 0) +
       (tagCounts.projects[tag] || 0) +
       (tagCounts.services[tag] || 0) +
-      (tagCounts.interests[tag] || 0) +
-      (tagCounts.visualizations[tag] || 0);
+      (tagCounts.visualizations[tag] || 0) +
+      (tagCounts.newsletters[tag] || 0);
 
     const tagEntry = tagMap.get(tag);
     const title = tagEntry?.data.title ?? tag;
@@ -324,7 +326,7 @@ export async function buildGraphPayload(options: {
   for (const post of options.posts) {
     const path = `/posts/${post.id}/`;
     let imageSrc: string | undefined = undefined;
-    const postImg = extractImageSrc(post.data.icon);
+    const postImg = extractImageSrc(post.data.image || post.data.icon);
     if (postImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: postImg, format: "webp", width: 240, quality: 75 });
@@ -375,7 +377,7 @@ export async function buildGraphPayload(options: {
   for (const pres of options.presentations || []) {
     const path = `/presentations/${pres.id}/`;
     let imageSrc: string | undefined = undefined;
-    const presImg = extractImageSrc(pres.data.previewImage || pres.data.icon);
+    const presImg = extractImageSrc(pres.data.image || pres.data.previewImage || pres.data.icon);
     if (presImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: presImg, format: "webp", width: 240, quality: 75 });
@@ -406,7 +408,7 @@ export async function buildGraphPayload(options: {
   for (const course of options.courses) {
     const path = `/courses/${course.id}/`;
     let imageSrc: string | undefined = undefined;
-    const courseImg = extractImageSrc(course.data.screenshot);
+    const courseImg = extractImageSrc(course.data.image || course.data.screenshot);
     if (courseImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: courseImg, format: "webp", width: 240, quality: 75 });
@@ -437,7 +439,7 @@ export async function buildGraphPayload(options: {
   for (const project of options.projects) {
     const path = `/projects/${project.id}/`;
     let imageSrc: string | undefined = undefined;
-    const projectImg = extractImageSrc(project.data.screenshot || project.data.screenshotLight);
+    const projectImg = extractImageSrc(project.data.image || project.data.screenshot || project.data.imageLight || project.data.screenshotLight);
     if (projectImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
@@ -468,7 +470,7 @@ export async function buildGraphPayload(options: {
   for (const service of options.services) {
     const path = `/services/${service.id}/`;
     let imageSrc: string | undefined = undefined;
-    const serviceImg = extractImageSrc(service.data.previewImage);
+    const serviceImg = extractImageSrc(service.data.image || service.data.previewImage);
     if (serviceImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: serviceImg, format: "webp", width: 240, quality: 75 });
@@ -495,32 +497,62 @@ export async function buildGraphPayload(options: {
     }
   }
 
-  // Group 7: Interests
-  for (const interest of options.interests || []) {
-    const path = `/interests/${interest.id}/`;
+  // Group 7: Newsletters
+  for (const nl of options.newsletters || []) {
+    const path = `/newsletters/${nl.id}/`;
     let imageSrc: string | undefined = undefined;
-    const interestImg = extractImageSrc(interest.data.heroImage);
-    if (interestImg && options.getImage) {
+    const nlImg = extractImageSrc(nl.data.image || nl.data.icon);
+    if (nlImg && options.getImage) {
       try {
-        const opt = await options.getImage({ src: interestImg, format: "webp", width: 240, quality: 75 });
+        const opt = await options.getImage({ src: nlImg, format: "webp", width: 240, quality: 75 });
         imageSrc = opt.src;
-      } catch (e) {
-        console.warn("Failed to optimize interest hero image", e);
+      } catch (e) { 
+        console.warn("Failed to optimize newsletter icon", e);
       }
     }
     visNodes.push({
       id: path,
-      name: interest.data.title,
-      size: 1.25,
+      name: nl.data.title,
+      size: 1.1,
       group: 7,
-      typeLabel: "Interest",
-      description: interest.data.description,
-      date: interest.data.pubDate ? formatDate(interest.data.pubDate, 'short') : undefined,
+      typeLabel: "Newsletter",
+      description: nl.data.description,
+      date: nl.data.pubDate ? formatDate(nl.data.pubDate, "short") : undefined,
       image: imageSrc,
-      tags: interest.data.tags ? interest.data.tags.slice(0, 3) : []
+      tags: nl.data.tags ? nl.data.tags.slice(0, 3) : []
     });
-    if (interest.data.tags) {
-      interest.data.tags.forEach(tag => {
+    if (nl.data.tags) {
+      nl.data.tags.forEach(tag => {
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
+      });
+    }
+  }
+
+  // Group 8: Visualizations
+  for (const vis of options.visualizations || []) {
+    const path = `/visualizations/${vis.id}/`;
+    let imageSrc: string | undefined = undefined;
+    const visImg = extractImageSrc(vis.data.image || vis.data.screenshot);
+    if (visImg && options.getImage) {
+      try {
+        const opt = await options.getImage({ src: visImg, format: "webp", width: 240, quality: 75 });
+        imageSrc = opt.src;
+      } catch (e) { 
+        console.warn("Failed to optimize visualization screenshot", e);
+      }
+    }
+    visNodes.push({
+      id: path,
+      name: vis.data.title,
+      size: 1.1,
+      group: 8,
+      typeLabel: "Visualization",
+      description: vis.data.description,
+      image: imageSrc,
+      tags: vis.data.tags ? vis.data.tags.slice(0, 3) : []
+    });
+    if (vis.data.tags) {
+      vis.data.tags.forEach(tag => {
         visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }

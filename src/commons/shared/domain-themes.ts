@@ -4,15 +4,28 @@
  */
 
 export type ContentDomain =
-  | 'interests'
   | 'posts'
   | 'publications'
   | 'presentations'
   | 'courses'
   | 'projects'
   | 'services'
+  | 'newsletters'
   | 'visualizations'
   | 'tags';
+
+export const ARTIFACT_DOMAINS = [
+  'posts',
+  'publications',
+  'presentations',
+  'courses',
+  'projects',
+  'services',
+  'newsletters',
+  'visualizations',
+] as const;
+
+export type ArtifactDomain = typeof ARTIFACT_DOMAINS[number];
 
 export interface DomainColorTokens {
   dark: string;
@@ -22,9 +35,14 @@ export interface DomainColorTokens {
 export interface DomainMetadata {
   id: ContentDomain;
   label: string;
+  singularLabel: string;
   emoji: string;
+  href: string;
+  navDescription: string;
   cssVar: string;
   colors: DomainColorTokens;
+  bgClass: string;
+  textClass: string;
   headingGradientClass: string;
   bgGradientClass: string;
   badgeClasses: string;
@@ -34,160 +52,205 @@ export interface DomainMetadata {
 }
 
 export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
-  interests: {
-    id: 'interests',
-    label: 'Interests',
-    emoji: '🎯',
-    cssVar: '--color-domain-interests',
-    colors: {
-      dark: '#f43f5e',
-      light: '#e11d48',
-    },
-    headingGradientClass: 'heading-gradient-domain-interests',
-    bgGradientClass: 'bg-gradient-domain-interests',
-    badgeClasses: 'bg-domain-interests/10 text-domain-interests border-domain-interests/20',
-    borderHoverClass: 'hover:border-domain-interests/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(244,63,94,0.25)]',
-    radialGlowClass: 'bg-domain-interests/10',
-  },
   posts: {
     id: 'posts',
     label: 'Posts',
+    singularLabel: 'Post',
     emoji: '📝',
+    href: '/posts/',
+    navDescription: 'Articles, deep-dives & architecture guides',
     cssVar: '--color-domain-posts',
     colors: {
-      dark: '#8b5cf6',
-      light: '#7c3aed',
+      dark: '#14b8a6',
+      light: '#0d9488',
     },
+    bgClass: 'bg-domain-posts',
+    textClass: 'text-domain-posts',
     headingGradientClass: 'heading-gradient-domain-posts',
     bgGradientClass: 'bg-gradient-domain-posts',
     badgeClasses: 'bg-domain-posts/10 text-domain-posts border-domain-posts/20',
     borderHoverClass: 'hover:border-domain-posts/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(139,92,246,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(99,102,241,0.25)]',
     radialGlowClass: 'bg-domain-posts/10',
   },
   publications: {
     id: 'publications',
     label: 'Publications',
+    singularLabel: 'Publication',
     emoji: '📄',
+    href: '/publications/',
+    navDescription: 'Peer-reviewed papers & journal articles',
     cssVar: '--color-domain-publications',
     colors: {
-      dark: '#6366f1',
-      light: '#4f46e5',
+      dark: '#06b6d4',
+      light: '#0891b2',
     },
+    bgClass: 'bg-domain-publications',
+    textClass: 'text-domain-publications',
     headingGradientClass: 'heading-gradient-domain-publications',
     bgGradientClass: 'bg-gradient-domain-publications',
     badgeClasses: 'bg-domain-publications/10 text-domain-publications border-domain-publications/20',
     borderHoverClass: 'hover:border-domain-publications/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(99,102,241,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(139,92,246,0.25)]',
     radialGlowClass: 'bg-domain-publications/10',
   },
   presentations: {
     id: 'presentations',
     label: 'Presentations',
+    singularLabel: 'Presentation',
     emoji: '🎙️',
+    href: '/presentations/',
+    navDescription: 'Conference keynotes & slide decks with audio',
     cssVar: '--color-domain-presentations',
     colors: {
-      dark: '#3b82f6',
-      light: '#2563eb',
+      dark: '#0ea5e9',
+      light: '#0284c7',
     },
+    bgClass: 'bg-domain-presentations',
+    textClass: 'text-domain-presentations',
     headingGradientClass: 'heading-gradient-domain-presentations',
     bgGradientClass: 'bg-gradient-domain-presentations',
     badgeClasses: 'bg-domain-presentations/10 text-domain-presentations border-domain-presentations/20',
     borderHoverClass: 'hover:border-domain-presentations/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(59,130,246,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(168,85,247,0.25)]',
     radialGlowClass: 'bg-domain-presentations/10',
   },
   courses: {
     id: 'courses',
     label: 'Courses',
+    singularLabel: 'Course',
     emoji: '🎓',
+    href: '/courses/',
+    navDescription: 'University lectures, syllabi & curricula',
     cssVar: '--color-domain-courses',
     colors: {
-      dark: '#06b6d4',
-      light: '#0891b2',
+      dark: '#3b82f6',
+      light: '#2563eb',
     },
+    bgClass: 'bg-domain-courses',
+    textClass: 'text-domain-courses',
     headingGradientClass: 'heading-gradient-domain-courses',
     bgGradientClass: 'bg-gradient-domain-courses',
     badgeClasses: 'bg-domain-courses/10 text-domain-courses border-domain-courses/20',
     borderHoverClass: 'hover:border-domain-courses/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(6,182,212,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(192,97,235,0.25)]',
     radialGlowClass: 'bg-domain-courses/10',
   },
   projects: {
     id: 'projects',
     label: 'Projects',
+    singularLabel: 'Project',
     emoji: '🚀',
+    href: '/projects/',
+    navDescription: 'Open-source software, platforms & systems',
     cssVar: '--color-domain-projects',
     colors: {
-      dark: '#14b8a6',
-      light: '#0d9488',
+      dark: '#526bf4',
+      light: '#3b52e6',
     },
+    bgClass: 'bg-domain-projects',
+    textClass: 'text-domain-projects',
     headingGradientClass: 'heading-gradient-domain-projects',
     bgGradientClass: 'bg-gradient-domain-projects',
     badgeClasses: 'bg-domain-projects/10 text-domain-projects border-domain-projects/20',
     borderHoverClass: 'hover:border-domain-projects/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(20,184,166,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(214,109,168,0.25)]',
     radialGlowClass: 'bg-domain-projects/10',
   },
   services: {
     id: 'services',
     label: 'Services',
+    singularLabel: 'Service',
     emoji: '💼',
+    href: '/services/',
+    navDescription: 'B2B engineering advisory & pipelines',
     cssVar: '--color-domain-services',
     colors: {
-      dark: '#10b981',
-      light: '#059669',
+      dark: '#6366f1',
+      light: '#4f46e5',
     },
+    bgClass: 'bg-domain-services',
+    textClass: 'text-domain-services',
     headingGradientClass: 'heading-gradient-domain-services',
     bgGradientClass: 'bg-gradient-domain-services',
     badgeClasses: 'bg-domain-services/10 text-domain-services border-domain-services/20',
     borderHoverClass: 'hover:border-domain-services/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(16,185,129,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(230,124,107,0.25)]',
     radialGlowClass: 'bg-domain-services/10',
+  },
+  newsletters: {
+    id: 'newsletters',
+    label: 'Newsletters',
+    singularLabel: 'Newsletter',
+    emoji: '✉️',
+    href: '/newsletters/',
+    navDescription: 'Curated updates & engineering insights',
+    cssVar: '--color-domain-newsletters',
+    colors: {
+      dark: '#7c5bf3',
+      light: '#6540e2',
+    },
+    bgClass: 'bg-domain-newsletters',
+    textClass: 'text-domain-newsletters',
+    headingGradientClass: 'heading-gradient-domain-newsletters',
+    bgGradientClass: 'bg-gradient-domain-newsletters',
+    badgeClasses: 'bg-domain-newsletters/10 text-domain-newsletters border-domain-newsletters/20',
+    borderHoverClass: 'hover:border-domain-newsletters/40',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(237,135,72,0.25)]',
+    radialGlowClass: 'bg-domain-newsletters/10',
   },
   visualizations: {
     id: 'visualizations',
     label: 'Visualizations',
+    singularLabel: 'Visualization',
     emoji: '📊',
+    href: '/visualizations/',
+    navDescription: 'Interactive 3D, WebGL & graph visualizers',
     cssVar: '--color-domain-visualizations',
     colors: {
-      dark: '#eab308',
-      light: '#ca8a04',
+      dark: '#9353f7',
+      light: '#7c3aed',
     },
+    bgClass: 'bg-domain-visualizations',
+    textClass: 'text-domain-visualizations',
     headingGradientClass: 'heading-gradient-domain-visualizations',
     bgGradientClass: 'bg-gradient-domain-visualizations',
     badgeClasses: 'bg-domain-visualizations/10 text-domain-visualizations border-domain-visualizations/20',
     borderHoverClass: 'hover:border-domain-visualizations/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(234,179,8,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(242,147,37,0.25)]',
     radialGlowClass: 'bg-domain-visualizations/10',
   },
   tags: {
     id: 'tags',
     label: 'Tags',
+    singularLabel: 'Tag',
     emoji: '🏷️',
+    href: '/tags/',
+    navDescription: 'Topic taxonomy & cross-domain index',
     cssVar: '--color-domain-tags',
     colors: {
-      dark: '#f97316',
-      light: '#ea580c',
+      dark: '#a855f7',
+      light: '#9333ea',
     },
+    bgClass: 'bg-domain-tags',
+    textClass: 'text-domain-tags',
     headingGradientClass: 'heading-gradient-domain-tags',
     bgGradientClass: 'bg-gradient-domain-tags',
     badgeClasses: 'bg-domain-tags/10 text-domain-tags border-domain-tags/20',
     borderHoverClass: 'hover:border-domain-tags/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(249,115,22,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(245,158,11,0.25)]',
     radialGlowClass: 'bg-domain-tags/10',
   },
 };
 
 export const CONTENT_DOMAINS: readonly ContentDomain[] = [
-  'interests',
   'posts',
   'publications',
   'presentations',
   'courses',
   'projects',
   'services',
+  'newsletters',
   'visualizations',
   'tags',
 ] as const;

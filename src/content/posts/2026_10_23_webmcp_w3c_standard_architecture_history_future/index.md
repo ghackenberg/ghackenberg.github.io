@@ -1,7 +1,7 @@
 ---
 title: "WebMCP Explained: W3C Standard Architecture, Agent Bridging, Use Cases, and the Realistic Future of Cooperative Browser Agents"
 pubDate: 2026-10-23
-description: "An architectural analysis of W3C WebMCP (document.modelContext)—covering its history, normative WebIDL and declarative HTML form APIs, CDP and WebSocket agent bridges, empirical GUI vs. schema benchmarks, and security trade-offs."
+description: An architectural analysis of W3C WebMCP (document.modelContext)—covering its history, normative WebIDL and declarative HTML form APIs, CDP and WebSocket agent bridges, empirical GUI vs. schema benchmarks, and security trade-offs.
 lang: en
 tags:
   - mcp
@@ -13,67 +13,134 @@ tags:
 icon:
   src: ./hero.jpg
   title: "W3C WebMCP Architecture: In-Browser Model Context Protocol & Cooperative Agent Bridging"
-  description: "Close-up wall-mounted magnetic whiteboard in the Grünau im Almtal timber studio displaying the W3C WEBMCP architecture diagram with color-coded geometric nodes and magnetic markers"
+  description: Close-up wall-mounted magnetic whiteboard in the Grünau im Almtal timber studio displaying the W3C WEBMCP architecture diagram with color-coded geometric nodes and magnetic markers
 references:
   - id: walderman-2026-webmcp
     type: online
-    author: "Walderman, Brandon and Sagar, Khushal and Farolino, Dominic and Dallstream, Samuel"
     title: "WebMCP: Draft Community Group Report"
     year: 2026
-    siteName: "W3C Web Machine Learning Community Group"
-    url: "https://webmachinelearning.github.io/webmcp/"
+    siteName: W3C Web Machine Learning Community Group
+    url: https://webmachinelearning.github.io/webmcp/
+    authors:
+      - name: Brandon Walderman
+      - name: Khushal Sagar
+      - name: Dominic Farolino
+      - name: Samuel Dallstream
   - id: mcp-specification-2024
     type: online
-    author: "Anthropic"
-    title: "Model Context Protocol Specification"
+    title: Model Context Protocol Specification
     year: 2024
-    siteName: "Model Context Protocol"
-    url: "https://modelcontextprotocol.io/specification"
+    siteName: Model Context Protocol
+    url: https://modelcontextprotocol.io/specification
+    authors:
+      - name: Anthropic
+        type: Organization
   - id: zhou-2024-webarena
     type: inproceedings
-    author: "Zhou, Shuyan and Xu, Frank F. and Zhu, Hao and Zhou, Xuhui and Lo, Robert and Sridhar, Abishek and Cheng, Xianyi and Ou, Tianyue and Bisk, Yonatan and Fried, Daniel and Alon, Uri and Neubig, Graham"
     title: "WebArena: A Realistic Web Environment for Building Autonomous Agents"
-    booktitle: "International Conference on Learning Representations (ICLR 2024)"
+    booktitle: International Conference on Learning Representations (ICLR 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2307.13854"
+    url: https://arxiv.org/abs/2307.13854
+    authors:
+      - name: Shuyan Zhou
+      - name: Frank F. Xu
+      - name: Hao Zhu
+      - name: Xuhui Zhou
+      - name: Robert Lo
+      - name: Abishek Sridhar
+      - name: Xianyi Cheng
+      - name: Tianyue Ou
+      - name: Yonatan Bisk
+      - name: Daniel Fried
+      - name: Uri Alon
+      - name: Graham Neubig
   - id: deng-2023-mind2web
     type: inproceedings
-    author: "Deng, Xiang and Gu, Yu and Zheng, Boyuan and Chen, Shijie and Stevens, Samuel and Wang, Boshi and Sun, Huan and Su, Yu"
     title: "Mind2Web: Towards a Generalist Agent for the Web"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2023)"
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2023)
     year: 2023
-    url: "https://arxiv.org/abs/2306.06070"
+    url: https://arxiv.org/abs/2306.06070
+    authors:
+      - name: Xiang Deng
+      - name: Yu Gu
+      - name: Boyuan Zheng
+      - name: Shijie Chen
+      - name: Samuel Stevens
+      - name: Boshi Wang
+      - name: Huan Sun
+      - name: Yu Su
   - id: patil-2024-gorilla
     type: inproceedings
-    author: "Patil, Shishir G. and Zhang, Tianjun and Wang, Xin and Gonzalez, Joseph E."
     title: "Gorilla: Large Language Model Connected with Massive APIs"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2024)"
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2305.15334"
+    url: https://arxiv.org/abs/2305.15334
+    authors:
+      - name: Shishir G. Patil
+      - name: Tianjun Zhang
+      - name: Xin Wang
+      - name: Joseph E. Gonzalez
   - id: qin-2024-toolllm
     type: inproceedings
-    author: "Qin, Yujia and Liang, Shihao and Ye, Yining and Zhu, Kunlun and Yan, Lan and Lu, Yaxi and Lin, Yankai and Cong, Xin and Tang, Xiangru and Qian, Bill and Zhao, Sihan and Hong, Lauren and Tian, Runchu and Xie, Ruobing and Zhou, Jie and Gerstein, Mark and Li, Dahai and Liu, Zhiyuan and Sun, Maosong"
     title: "ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs"
-    booktitle: "International Conference on Learning Representations (ICLR 2024)"
+    booktitle: International Conference on Learning Representations (ICLR 2024)
     year: 2024
-    url: "https://arxiv.org/abs/2307.16789"
+    url: https://arxiv.org/abs/2307.16789
+    authors:
+      - name: Yujia Qin
+      - name: Shihao Liang
+      - name: Yining Ye
+      - name: Kunlun Zhu
+      - name: Lan Yan
+      - name: Yaxi Lu
+      - name: Yankai Lin
+      - name: Xin Cong
+      - name: Xiangru Tang
+      - name: Bill Qian
+      - name: Sihan Zhao
+      - name: Lauren Hong
+      - name: Runchu Tian
+      - name: Ruobing Xie
+      - name: Jie Zhou
+      - name: Mark Gerstein
+      - name: Dahai Li
+      - name: Zhiyuan Liu
+      - name: Maosong Sun
   - id: greshake-2023-indirect-prompt-injection
     type: inproceedings
-    author: "Greshake, Kai and Abdelnabi, Sahar and Mishra, Shailesh and Endres, Christoph and Holz, Thorsten and Fritz, Mario"
     title: "Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
-    booktitle: "Proceedings of the 16th ACM Workshop on Artificial Intelligence and Security (AISec '23)"
-    publisher: "ACM"
+    booktitle: Proceedings of the 16th ACM Workshop on Artificial Intelligence and Security (AISec '23)
+    publisher: ACM
     year: 2023
-    pages: "79--90"
-    doi: "10.1145/3605764.3623985"
-    url: "https://doi.org/10.1145/3605764.3623985"
+    pages: 79--90
+    doi: 10.1145/3605764.3623985
+    url: https://doi.org/10.1145/3605764.3623985
+    authors:
+      - name: Kai Greshake
+        id: https://orcid.org/0009-0005-0460-5327
+      - name: Sahar Abdelnabi
+        id: https://orcid.org/0009-0000-5269-951X
+      - name: Shailesh Mishra
+        id: https://orcid.org/0009-0003-7330-1912
+      - name: Christoph Endres
+        id: https://orcid.org/0009-0005-7653-4417
+      - name: Thorsten Holz
+        id: https://orcid.org/0000-0002-2783-1264
+      - name: Mario Fritz
+        id: https://orcid.org/0000-0001-8949-9896
   - id: hines-2024-spotlighting
     type: misc
-    author: "Hines, Keegan and Lopez, Gary and Hall, Matthew and Zarfati, Federico and Zunger, Yonatan and Kiciman, Emre"
-    title: "Defending Against Indirect Prompt Injection Attacks With Spotlighting"
+    title: Defending Against Indirect Prompt Injection Attacks With Spotlighting
     year: 2024
-    howpublished: "arXiv preprint arXiv:2403.14720"
-    url: "https://arxiv.org/abs/2403.14720"
+    howpublished: arXiv preprint arXiv:2403.14720
+    url: https://arxiv.org/abs/2403.14720
+    authors:
+      - name: Keegan Hines
+      - name: Gary Lopez
+      - name: Matthew Hall
+      - name: Federico Zarfati
+      - name: Yonatan Zunger
+      - name: Emre Kiciman
 ---
 
 **WebMCP** is a W3C Web Machine Learning Community Group specification [@walderman-2026-webmcp] that exposes structured, JSON-Schema-validated Model Context Protocol tools directly inside live browser documents via `document.modelContext` and declarative HTML forms. It enables AI agents to execute deterministic functions within an authenticated user's active tab without fragile DOM scraping.

@@ -19,7 +19,7 @@ methodologyPhases:
   - title: "Evaluation Benchmarking"
     description: "Measuring retrieval precision, recall, and context relevance against test query suites."
 order: 2
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Hybrid Retrieval & RAG"
   description: "Duale 3D-Retrieval-Architektur mit dichter Vektoreinbettung, strukturierter Textindizierung und Cross-Encoder-Reranking"

@@ -1,13 +1,7 @@
 ---
-title: "Architektur und Funktionsweise von Open WebUI: Entkoppelte
-  Human-in-the-Loop Orchestrierung, In-Process Functions, hybrides RAG und
-  Enterprise Governance"
+title: "Architektur und Funktionsweise von Open WebUI: Entkoppelte Human-in-the-Loop Orchestrierung, In-Process Functions, hybrides RAG und Enterprise Governance"
 pubDate: 2026-09-08
-description: "Eine softwaretechnische Tiefenanalyse von Open WebUI: Wie die
-  Entkopplung von SvelteKit und FastAPI echte Multi-Model-Souveränität schafft,
-  warum In-Process Functions externe Pipelines ablösen, wie hybrides RAG mit
-  BM25 und Cross-Encoder Präzision garantiert und welche Rolle die Plattform in
-  Lehre, Forschung und Unternehmen einnimmt."
+description: "Eine softwaretechnische Tiefenanalyse von Open WebUI: Wie die Entkopplung von SvelteKit und FastAPI echte Multi-Model-Souveränität schafft, warum In-Process Functions externe Pipelines ablösen, wie hybrides RAG mit BM25 und Cross-Encoder Präzision garantiert und welche Rolle die Plattform in Lehre, Forschung und Unternehmen einnimmt."
 tags:
   - open-webui
   - agentic-ai
@@ -24,34 +18,36 @@ tags:
 icon:
   src: ./hero.jpg
   title: Open WebUI
-  description: "Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative
-    Kontrollzentrale für das souveräne KI-Ökosystem"
+  description: "Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem"
 references:
   - type: inproceedings
-    author: Cormack, G. V., Clarke, C. L., & Buettcher, S.
-    title: Reciprocal rank fusion outperforms condorcet and individual rank learning
-      methods
+    title: Reciprocal rank fusion outperforms condorcet and individual rank learning methods
     url: https://doi.org/10.1145/1571941.1572114
     year: 2009
     doi: 10.1145/1571941.1572114
-    booktitle: Proceedings of the 32nd International ACM SIGIR Conference on
-      Research and Development in Information Retrieval (SIGIR '09)
+    booktitle: Proceedings of the 32nd International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR '09)
     id: cormack-2009-rrf
+    authors:
+      - name: Gordon V. Cormack
+      - name: Charles L A Clarke
+      - name: Stefan Buettcher
   - type: article
-    author: Nogueira, R., & Cho, K.
     title: Passage Re-ranking with BERT
     url: https://arxiv.org/abs/1901.04085
     year: 2019
     journal: arXiv preprint arXiv:1901
     id: nogueira-2019-passage-reranking
+    authors:
+      - name: Rodrigo Nogueira
+      - name: Kyunghyun Cho
   - type: online
-    author: Tiangolo, S.
-    title: "FastAPI: High performance, easy to learn, fast to code, ready for
-      production"
+    title: "FastAPI: High performance, easy to learn, fast to code, ready for production"
     url: https://fastapi.tiangolo.com/
     year: 2018
     siteName: FastAPI Documentation
     id: tiangolo-2018-fastapi
+    authors:
+      - name: Sebastián Ramírez
 ---
 
 

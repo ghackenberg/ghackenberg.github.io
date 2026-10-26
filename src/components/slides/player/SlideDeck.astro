@@ -265,7 +265,7 @@ const currentDeckId = presentationId || talkId || "presentation";
                     <li class="text-[11px] text-slate-400 light:text-slate-600 leading-snug flex items-baseline gap-1.5">
                       <span class="text-domain-publications font-mono font-bold shrink-0">•</span>
                       <span class="min-w-0">
-                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.author}</span>
+                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.authors ? ref.authors.map(a => (typeof a === 'string' ? a : a.name)).join(', ') : ''}</span>
                         {ref.year && <span> ({ref.year})</span>}:{" "}
                         {ref.url ? (
                           <a
@@ -990,7 +990,7 @@ const currentDeckId = presentationId || talkId || "presentation";
             ${ref.type ? `<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-element-bg light:bg-slate-200 text-text-subtle light:text-slate-700 border border-element-border-medium light:border-slate-300">${escapeHtml(ref.type)}</span>` : ''}
           </div>
           <div class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-domain-publications/50">
-            <span class="font-bold text-white light:text-slate-900">${escapeHtml(ref.author)}</span>
+            <span class="font-bold text-white light:text-slate-900">${escapeHtml(ref.authors ? ref.authors.map(a => a.name).join(', ') : (ref.author || ''))}</span>
             ${ref.year ? `<span class="text-text-subtle light:text-slate-500"> (${escapeHtml(String(ref.year))})</span>` : ''}:
             <span class="italic text-gray-200 light:text-slate-800"> "${escapeHtml(ref.title)}"</span>.
             <span class="text-text-subtle light:text-slate-500 block sm:inline">${pubDetails}</span>
@@ -2541,53 +2541,55 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   /* Ton-in-Ton Bullet Badges per Container Accent (Canonical 9 Accents + Aliases + Numbers) */
-  .reveal [data-accent="rose"] .bullet-badge,
-  .reveal [data-accent="red"] .bullet-badge,
-  .reveal [data-accent="1"] .bullet-badge {
-    background-color: var(--color-slide-accent-rose);
-    color: white;
-  }
-  .reveal [data-accent="purple"] .bullet-badge,
-  .reveal [data-accent="violet"] .bullet-badge,
-  .reveal [data-accent="2"] .bullet-badge {
-    background-color: var(--color-slide-accent-purple);
-    color: white;
-  }
-  .reveal [data-accent="indigo"] .bullet-badge,
-  .reveal [data-accent="3"] .bullet-badge {
-    background-color: var(--color-slide-accent-indigo);
-    color: white;
-  }
   .reveal [data-accent="blue"] .bullet-badge,
-  .reveal [data-accent="4"] .bullet-badge {
+  .reveal [data-accent="1"] .bullet-badge {
     background-color: var(--color-slide-accent-blue);
     color: white;
   }
+  .reveal [data-accent="indigo"] .bullet-badge,
+  .reveal [data-accent="2"] .bullet-badge {
+    background-color: var(--color-slide-accent-indigo);
+    color: white;
+  }
+  .reveal [data-accent="violet"] .bullet-badge,
+  .reveal [data-accent="3"] .bullet-badge {
+    background-color: var(--color-slide-accent-violet);
+    color: white;
+  }
+  .reveal [data-accent="purple"] .bullet-badge,
+  .reveal [data-accent="4"] .bullet-badge {
+    background-color: var(--color-slide-accent-purple);
+    color: white;
+  }
+  .reveal [data-accent="fuchsia"] .bullet-badge,
   .reveal [data-accent="cyan"] .bullet-badge,
   .reveal [data-accent="5"] .bullet-badge {
-    background-color: var(--color-slide-accent-cyan);
+    background-color: var(--color-slide-accent-fuchsia);
     color: white;
   }
+  .reveal [data-accent="pink"] .bullet-badge,
   .reveal [data-accent="teal"] .bullet-badge,
   .reveal [data-accent="6"] .bullet-badge {
-    background-color: var(--color-slide-accent-teal);
+    background-color: var(--color-slide-accent-pink);
     color: white;
   }
+  .reveal [data-accent="rose"] .bullet-badge,
+  .reveal [data-accent="red"] .bullet-badge,
   .reveal [data-accent="emerald"] .bullet-badge,
   .reveal [data-accent="green"] .bullet-badge,
   .reveal [data-accent="7"] .bullet-badge {
-    background-color: var(--color-slide-accent-emerald);
+    background-color: var(--color-slide-accent-rose);
+    color: white;
+  }
+  .reveal [data-accent="orange"] .bullet-badge,
+  .reveal [data-accent="8"] .bullet-badge {
+    background-color: var(--color-slide-accent-orange);
     color: white;
   }
   .reveal [data-accent="amber"] .bullet-badge,
   .reveal [data-accent="yellow"] .bullet-badge,
-  .reveal [data-accent="8"] .bullet-badge {
-    background-color: var(--color-slide-accent-amber);
-    color: white;
-  }
-  .reveal [data-accent="orange"] .bullet-badge,
   .reveal [data-accent="9"] .bullet-badge {
-    background-color: var(--color-slide-accent-orange);
+    background-color: var(--color-slide-accent-amber);
     color: white;
   }
   .reveal [data-accent="neutral"] .bullet-badge {
@@ -2614,140 +2616,144 @@ const currentDeckId = presentationId || talkId || "presentation";
     color: var(--color-slide-text);
   }
 
+  .reveal [data-accent="blue"] .callout-box,
+  .reveal [data-accent="1"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
+  }
+  .light .reveal [data-accent="blue"] .callout-box,
+  .light .reveal [data-accent="1"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 25%, transparent);
+    color: var(--color-slide-accent-blue);
+  }
+
+  .reveal [data-accent="indigo"] .callout-box,
+  .reveal [data-accent="2"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+  }
+  .light .reveal [data-accent="indigo"] .callout-box,
+  .light .reveal [data-accent="2"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 25%, transparent);
+    color: var(--color-slide-accent-indigo);
+  }
+
+  .reveal [data-accent="violet"] .callout-box,
+  .reveal [data-accent="3"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-violet) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-violet) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-violet) 35%, white);
+  }
+  .light .reveal [data-accent="violet"] .callout-box,
+  .light .reveal [data-accent="3"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-violet) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-violet) 25%, transparent);
+    color: var(--color-slide-accent-violet);
+  }
+
+  .reveal [data-accent="purple"] .callout-box,
+  .reveal [data-accent="4"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+  }
+  .light .reveal [data-accent="purple"] .callout-box,
+  .light .reveal [data-accent="4"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 25%, transparent);
+    color: var(--color-slide-accent-purple);
+  }
+
+  .reveal [data-accent="fuchsia"] .callout-box,
+  .reveal [data-accent="cyan"] .callout-box,
+  .reveal [data-accent="5"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 35%, white);
+  }
+  .light .reveal [data-accent="fuchsia"] .callout-box,
+  .light .reveal [data-accent="cyan"] .callout-box,
+  .light .reveal [data-accent="5"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-fuchsia) 25%, transparent);
+    color: var(--color-slide-accent-fuchsia);
+  }
+
+  .reveal [data-accent="pink"] .callout-box,
+  .reveal [data-accent="teal"] .callout-box,
+  .reveal [data-accent="6"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-pink) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-pink) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-pink) 35%, white);
+  }
+  .light .reveal [data-accent="pink"] .callout-box,
+  .light .reveal [data-accent="teal"] .callout-box,
+  .light .reveal [data-accent="6"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-pink) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-pink) 25%, transparent);
+    color: var(--color-slide-accent-pink);
+  }
+
   .reveal [data-accent="rose"] .callout-box,
   .reveal [data-accent="red"] .callout-box,
-  .reveal [data-accent="1"] .callout-box {
+  .reveal [data-accent="emerald"] .callout-box,
+  .reveal [data-accent="green"] .callout-box,
+  .reveal [data-accent="7"] .callout-box {
     background-color: color-mix(in srgb, var(--color-slide-accent-rose) 12%, transparent);
     border-color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, transparent);
     color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
   }
   .light .reveal [data-accent="rose"] .callout-box,
   .light .reveal [data-accent="red"] .callout-box,
-  .light .reveal [data-accent="1"] .callout-box {
+  .light .reveal [data-accent="emerald"] .callout-box,
+  .light .reveal [data-accent="green"] .callout-box,
+  .light .reveal [data-accent="7"] .callout-box {
     background-color: color-mix(in srgb, var(--color-slide-accent-rose) 6%, white);
     border-color: color-mix(in srgb, var(--color-slide-accent-rose) 25%, transparent);
     color: var(--color-slide-accent-rose);
   }
 
-  .reveal [data-accent="purple"] .callout-box,
-  .reveal [data-accent="violet"] .callout-box,
-  .reveal [data-accent="2"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+  .reveal [data-accent="orange"] .callout-box,
+  .reveal [data-accent="8"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
   }
-  .light .reveal [data-accent="purple"] .callout-box,
-  .light .reveal [data-accent="violet"] .callout-box,
-  .light .reveal [data-accent="2"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 25%, transparent);
-    color: var(--color-slide-accent-purple);
-  }
-
-  .reveal [data-accent="indigo"] .callout-box,
-  .reveal [data-accent="3"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
-  }
-  .light .reveal [data-accent="indigo"] .callout-box,
-  .light .reveal [data-accent="3"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 25%, transparent);
-    color: var(--color-slide-accent-indigo);
-  }
-
-  .reveal [data-accent="blue"] .callout-box,
-  .reveal [data-accent="4"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
-  }
-  .light .reveal [data-accent="blue"] .callout-box,
-  .light .reveal [data-accent="4"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 25%, transparent);
-    color: var(--color-slide-accent-blue);
-  }
-
-  .reveal [data-accent="cyan"] .callout-box,
-  .reveal [data-accent="5"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
-  }
-  .light .reveal [data-accent="cyan"] .callout-box,
-  .light .reveal [data-accent="5"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 25%, transparent);
-    color: var(--color-slide-accent-cyan);
-  }
-
-  .reveal [data-accent="teal"] .callout-box,
-  .reveal [data-accent="6"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
-  }
-  .light .reveal [data-accent="teal"] .callout-box,
-  .light .reveal [data-accent="6"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 25%, transparent);
-    color: var(--color-slide-accent-teal);
-  }
-
-  .reveal [data-accent="emerald"] .callout-box,
-  .reveal [data-accent="green"] .callout-box,
-  .reveal [data-accent="7"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
-  }
-  .light .reveal [data-accent="emerald"] .callout-box,
-  .light .reveal [data-accent="green"] .callout-box,
-  .light .reveal [data-accent="7"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 25%, transparent);
-    color: var(--color-slide-accent-emerald);
+  .light .reveal [data-accent="orange"] .callout-box,
+  .light .reveal [data-accent="8"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 25%, transparent);
+    color: var(--color-slide-accent-orange);
   }
 
   .reveal [data-accent="amber"] .callout-box,
   .reveal [data-accent="yellow"] .callout-box,
-  .reveal [data-accent="8"] .callout-box {
+  .reveal [data-accent="9"] .callout-box {
     background-color: color-mix(in srgb, var(--color-slide-accent-amber) 12%, transparent);
     border-color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, transparent);
     color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
   }
   .light .reveal [data-accent="amber"] .callout-box,
   .light .reveal [data-accent="yellow"] .callout-box,
-  .light .reveal [data-accent="8"] .callout-box {
+  .light .reveal [data-accent="9"] .callout-box {
     background-color: color-mix(in srgb, var(--color-slide-accent-amber) 6%, white);
     border-color: color-mix(in srgb, var(--color-slide-accent-amber) 25%, transparent);
     color: var(--color-slide-accent-amber);
   }
 
-  .reveal [data-accent="orange"] .callout-box,
-  .reveal [data-accent="9"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, transparent);
-    color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
-  }
-  .light .reveal [data-accent="orange"] .callout-box,
-  .light .reveal [data-accent="9"] .callout-box {
-    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 6%, white);
-    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 25%, transparent);
-    color: var(--color-slide-accent-orange);
-  }
-
   .reveal [data-accent="neutral"] .callout-box {
-    background-color: var(--color-slide-card-bg);
-    border-color: var(--color-slide-card-border);
-    color: var(--color-slide-text);
+    background-color: color-mix(in srgb, var(--color-gray-800) 40%, transparent);
+    border-color: color-mix(in srgb, var(--color-gray-700) 50%, transparent);
+    color: var(--color-gray-300);
   }
   .light .reveal [data-accent="neutral"] .callout-box {
-    background-color: var(--color-slide-card-bg);
-    border-color: var(--color-slide-card-border);
-    color: var(--color-slide-text);
+    background-color: color-mix(in srgb, var(--color-gray-200) 60%, white);
+    border-color: color-mix(in srgb, var(--color-gray-300) 80%, transparent);
+    color: var(--color-gray-700);
   }
 
   /* ==========================================================================
@@ -2805,101 +2811,106 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   /* Container-driven Highlight: 1 (Rose / Red) */
-  .reveal [data-accent="rose"] mark,
-  .reveal [data-accent="rose"] .highlight-marker,
-  .reveal [data-accent="red"] mark,
-  .reveal [data-accent="red"] .highlight-marker,
-  .reveal [data-accent="1"] mark,
-  .reveal [data-accent="1"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-rose);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
-    --hl-text-light: var(--color-slide-accent-rose);
-  }
-
-  /* Container-driven Highlight: 2 (Purple / Violet) */
-  .reveal [data-accent="purple"] mark,
-  .reveal [data-accent="purple"] .highlight-marker,
-  .reveal [data-accent="violet"] mark,
-  .reveal [data-accent="violet"] .highlight-marker,
-  .reveal [data-accent="2"] mark,
-  .reveal [data-accent="2"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-purple);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
-    --hl-text-light: var(--color-slide-accent-purple);
-  }
-
-  /* Container-driven Highlight: 3 (Indigo) */
-  .reveal [data-accent="indigo"] mark,
-  .reveal [data-accent="indigo"] .highlight-marker,
-  .reveal [data-accent="3"] mark,
-  .reveal [data-accent="3"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-indigo);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
-    --hl-text-light: var(--color-slide-accent-indigo);
-  }
-
-  /* Container-driven Highlight: 4 (Blue) */
+  /* Container-driven Highlight: 1 (Blue) */
   .reveal [data-accent="blue"] mark,
   .reveal [data-accent="blue"] .highlight-marker,
-  .reveal [data-accent="4"] mark,
-  .reveal [data-accent="4"] .highlight-marker {
+  .reveal [data-accent="1"] mark,
+  .reveal [data-accent="1"] .highlight-marker {
     --hl-color: var(--color-slide-accent-blue);
     --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
     --hl-text-light: var(--color-slide-accent-blue);
   }
 
-  /* Container-driven Highlight: 5 (Cyan) */
+  /* Container-driven Highlight: 2 (Indigo) */
+  .reveal [data-accent="indigo"] mark,
+  .reveal [data-accent="indigo"] .highlight-marker,
+  .reveal [data-accent="2"] mark,
+  .reveal [data-accent="2"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-indigo);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+    --hl-text-light: var(--color-slide-accent-indigo);
+  }
+
+  /* Container-driven Highlight: 3 (Violet) */
+  .reveal [data-accent="violet"] mark,
+  .reveal [data-accent="violet"] .highlight-marker,
+  .reveal [data-accent="3"] mark,
+  .reveal [data-accent="3"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-violet);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-violet) 35%, white);
+    --hl-text-light: var(--color-slide-accent-violet);
+  }
+
+  /* Container-driven Highlight: 4 (Purple) */
+  .reveal [data-accent="purple"] mark,
+  .reveal [data-accent="purple"] .highlight-marker,
+  .reveal [data-accent="4"] mark,
+  .reveal [data-accent="4"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-purple);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+    --hl-text-light: var(--color-slide-accent-purple);
+  }
+
+  /* Container-driven Highlight: 5 (Fuchsia / Cyan) */
+  .reveal [data-accent="fuchsia"] mark,
+  .reveal [data-accent="fuchsia"] .highlight-marker,
   .reveal [data-accent="cyan"] mark,
   .reveal [data-accent="cyan"] .highlight-marker,
   .reveal [data-accent="5"] mark,
   .reveal [data-accent="5"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-cyan);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
-    --hl-text-light: var(--color-slide-accent-cyan);
+    --hl-color: var(--color-slide-accent-fuchsia);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-fuchsia) 35%, white);
+    --hl-text-light: var(--color-slide-accent-fuchsia);
   }
 
-  /* Container-driven Highlight: 6 (Teal) */
+  /* Container-driven Highlight: 6 (Pink / Teal) */
+  .reveal [data-accent="pink"] mark,
+  .reveal [data-accent="pink"] .highlight-marker,
   .reveal [data-accent="teal"] mark,
   .reveal [data-accent="teal"] .highlight-marker,
   .reveal [data-accent="6"] mark,
   .reveal [data-accent="6"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-teal);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
-    --hl-text-light: var(--color-slide-accent-teal);
+    --hl-color: var(--color-slide-accent-pink);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-pink) 35%, white);
+    --hl-text-light: var(--color-slide-accent-pink);
   }
 
-  /* Container-driven Highlight: 7 (Emerald / Green) */
+  /* Container-driven Highlight: 7 (Rose / Red / Emerald / Green) */
+  .reveal [data-accent="rose"] mark,
+  .reveal [data-accent="rose"] .highlight-marker,
+  .reveal [data-accent="red"] mark,
+  .reveal [data-accent="red"] .highlight-marker,
   .reveal [data-accent="emerald"] mark,
   .reveal [data-accent="emerald"] .highlight-marker,
   .reveal [data-accent="green"] mark,
   .reveal [data-accent="green"] .highlight-marker,
   .reveal [data-accent="7"] mark,
   .reveal [data-accent="7"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-emerald);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
-    --hl-text-light: var(--color-slide-accent-emerald);
+    --hl-color: var(--color-slide-accent-rose);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
+    --hl-text-light: var(--color-slide-accent-rose);
   }
 
-  /* Container-driven Highlight: 8 (Amber / Yellow) */
+  /* Container-driven Highlight: 8 (Orange) */
+  .reveal [data-accent="orange"] mark,
+  .reveal [data-accent="orange"] .highlight-marker,
+  .reveal [data-accent="8"] mark,
+  .reveal [data-accent="8"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-orange);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
+    --hl-text-light: var(--color-slide-accent-orange);
+  }
+
+  /* Container-driven Highlight: 9 (Amber / Yellow) */
   .reveal [data-accent="amber"] mark,
   .reveal [data-accent="amber"] .highlight-marker,
   .reveal [data-accent="yellow"] mark,
   .reveal [data-accent="yellow"] .highlight-marker,
-  .reveal [data-accent="8"] mark,
-  .reveal [data-accent="8"] .highlight-marker {
+  .reveal [data-accent="9"] mark,
+  .reveal [data-accent="9"] .highlight-marker {
     --hl-color: var(--color-slide-accent-amber);
     --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
     --hl-text-light: var(--color-slide-accent-amber);
-  }
-
-  /* Container-driven Highlight: 9 (Orange) */
-  .reveal [data-accent="orange"] mark,
-  .reveal [data-accent="orange"] .highlight-marker,
-  .reveal [data-accent="9"] mark,
-  .reveal [data-accent="9"] .highlight-marker {
-    --hl-color: var(--color-slide-accent-orange);
-    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
-    --hl-text-light: var(--color-slide-accent-orange);
   }
 
   /* Container-driven Highlight: Neutral (falls back cleanly to slide accent) */

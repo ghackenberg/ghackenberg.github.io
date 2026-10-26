@@ -16,19 +16,21 @@ Every post lives in its own directory under `src/content/posts/<slug>/` where `<
   title: "Sovereign Newsletter-as-Code with React Email, Listmonk & ALTCHA PoW"
   pubDate: 2026-10-20
   description: "How we engineered a Git-native Newsletter-as-Code pipeline with dual-target React Email compilation and an Int32Array SHA-256 Proof-of-Work Web Worker."
-  lang: "en"
+  inLanguage: "en"
   tags:
     - software-architecture
     - web-development
     - typescript
-  icon:
+  image:
     src: "./hero.jpg"
     title: "Newsletter-as-Code Pipeline with React Email and SHA-256 Proof-of-Work"
     description: "Close-up engineering workstation monitor in the Grünau im Almtal timber office displaying a React Email pipeline alongside a 32-bit SHA-256 Proof-of-Work grid"
   references:
     - id: "dwork-1992-pricing-via-processing"
       type: "inproceedings"
-      author: "Dwork, Cynthia and Naor, Moni"
+      authors:
+        - name: "Cynthia Dwork"
+        - name: "Moni Naor"
       title: "Pricing via Processing or Combatting Junk Mail"
       booktitle: "Advances in Cryptology — CRYPTO '92 (LNCS, vol. 740)"
       year: 1992

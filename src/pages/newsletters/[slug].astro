@@ -1,5 +1,6 @@
 ---
-import Layout from '@layouts/Layout.astro';
+import Layout from "@layouts/Layout.astro";
+import { buildNewsletterIssueSchema } from "@commons/server/json-ld";
 import Navbar from '@components/Navbar.astro';
 import Container from '@components/Container.astro';
 import Section from '@components/Section.astro';
@@ -10,6 +11,7 @@ import PublicationCard from '@components/PublicationCard.astro';
 import CourseCard from '@components/CourseCard.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 import VisualizationCard from '@components/VisualizationCard.astro';
+import TagChip from '@components/TagChip.astro';
 import { getCollection, getEntries, render } from 'astro:content';
 import { formatDate } from '@commons/shared/format';
 
@@ -24,7 +26,7 @@ export async function getStaticPaths() {
 const { issue } = Astro.props;
 const { Content } = await render(issue);
 
-const ogImage = issue.data.icon.src;
+const ogImage = issue.data.image.src;
 
 const [
   featuredPosts,
@@ -55,58 +57,18 @@ const [
 ]);
 
 const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Dr. Georg Hackenberg`;
-const issueUrl = `https://hackenberg.tech/newsletters/${issue.id}/`;
-const schemaImage = ogImage?.src ? new URL(ogImage.src, Astro.site).href : undefined;
-
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  '@id': `${issueUrl}#article`,
-  headline: issue.data.title,
-  description: issue.data.description,
-  image: schemaImage,
-  url: issueUrl,
-  datePublished: issue.data.pubDate.toISOString(),
-  author: {
-    '@type': 'Person',
-    name: 'Dr. Georg Hackenberg',
-    url: 'https://hackenberg.tech',
-  },
-  publisher: {
-    '@type': 'Person',
-    name: 'Dr. Georg Hackenberg',
-    url: 'https://hackenberg.tech',
-  },
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': issueUrl,
-  },
-};
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: 'https://hackenberg.tech',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Newsletters',
-      item: 'https://hackenberg.tech/newsletters/',
-    },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: issue.data.title,
-      item: issueUrl,
-    },
+const newsletterSchema = buildNewsletterIssueSchema({
+  issue,
+  mentions: [
+    ...featuredPosts.map((p) => ({ '@id': `https://hackenberg.tech/posts/${p.id}/#article` })),
+    ...featuredPresentations.map((p) => ({ '@id': `https://hackenberg.tech/presentations/${p.id}/#presentation` })),
+    ...featuredPublications.map((p) => ({ '@id': `https://hackenberg.tech/publications/${p.id}/#article` })),
+    ...featuredCourses.map((c) => ({ '@id': `https://hackenberg.tech/courses/${c.id}/#course` })),
+    ...featuredProjects.map((p) => ({ '@id': `https://hackenberg.tech/projects/${p.id}/#software` })),
+    ...featuredVisualizations.map((v) => ({ '@id': `https://hackenberg.tech/visualizations/${v.id}/#visualization` })),
   ],
-};
+  siteUrl: Astro.site?.origin || 'https://hackenberg.tech'
+});
 ---
 
 <Layout
@@ -115,8 +77,9 @@ const breadcrumbSchema = {
   image={ogImage}
   type="article"
   pubDate={issue.data.pubDate}
-  jsonLd={[articleSchema, breadcrumbSchema]}
+  jsonLd={newsletterSchema}
   lang="en"
+  tags={issue.data.tags}
 >
   <Navbar />
 
@@ -128,12 +91,12 @@ const breadcrumbSchema = {
           { label: 'Newsletters', href: '/newsletters/' },
           { label: issue.data.title },
         ]}
-        domain="posts"
+        domain="newsletters"
       />
 
       <header class="mb-10">
         <div class="flex flex-wrap items-center gap-3 mb-4">
-          <time class="text-sm font-semibold text-domain-posts" datetime={issue.data.pubDate.toISOString()}>
+          <time class="text-sm font-semibold text-domain-newsletters" datetime={issue.data.pubDate.toISOString()}>
             {formatDate(issue.data.pubDate, 'long', 'en-US')}
           </time>
           <span class="text-gray-500">•</span>
@@ -145,11 +108,19 @@ const breadcrumbSchema = {
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
           {issue.data.title}
         </h1>
+
+        {issue.data.tags && issue.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {issue.data.tags.map((tag) => (
+              <TagChip tag={tag} />
+            ))}
+          </div>
+        )}
       </header>
 
       {issue.data.description && (
-        <aside class="mb-10 p-6 rounded-2xl bg-domain-posts/5 border border-domain-posts/20 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways / Executive Summary">
-          <div class="text-xs font-bold text-domain-posts uppercase tracking-wider mb-2 flex items-center gap-2">
+        <aside class="mb-10 p-6 rounded-2xl bg-domain-newsletters/5 border border-domain-newsletters/20 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways / Executive Summary">
+          <div class="text-xs font-bold text-domain-newsletters uppercase tracking-wider mb-2 flex items-center gap-2">
             <span class="text-base">⚡</span>
             <span>Key Takeaways / Executive Summary</span>
           </div>
@@ -184,7 +155,7 @@ const breadcrumbSchema = {
               title={post.data.title}
               description={post.data.description}
               pubDate={post.data.pubDate}
-              icon={post.data.icon}
+              image={post.data.image}
               tags={post.data.tags}
             />
           ))}
@@ -213,8 +184,8 @@ const breadcrumbSchema = {
               subtitle={pres.data.subtitle}
               description={pres.data.description}
               pubDate={pres.data.pubDate}
-              icon={pres.data.icon}
-              previewImage={pres.data.previewImage}
+              image={pres.data.image}
+              image={pres.data.image}
               tags={pres.data.tags}
             />
           ))}
@@ -240,12 +211,12 @@ const breadcrumbSchema = {
             <PublicationCard
               id={pub.id}
               title={pub.data.title}
-              author={pub.data.author}
+              authors={pub.data.authors}
               pubDate={pub.data.pubDate}
               book={pub.data.book}
               tags={pub.data.tags}
               publisherUrl={pub.data.publisherUrl}
-              icon={pub.data.icon}
+              image={pub.data.image}
             />
           ))}
         </div>
@@ -271,8 +242,8 @@ const breadcrumbSchema = {
               title={course.data.title}
               description={course.data.description}
               href={`/courses/${course.id}/`}
-              language={course.data.language}
-              screenshot={course.data.screenshot}
+              inLanguage={course.data.inLanguage}
+              image={course.data.image}
               tags={course.data.tags}
             />
           ))}
@@ -301,8 +272,8 @@ const breadcrumbSchema = {
               description={project.data.description}
               href={`/projects/${project.id}/`}
               tags={project.data.tags}
-              screenshot={project.data.screenshot}
-              screenshotLight={project.data.screenshotLight}
+              image={project.data.image}
+              imageLight={project.data.imageLight}
             />
           ))}
         </div>
@@ -328,7 +299,7 @@ const breadcrumbSchema = {
               title={vis.data.title}
               description={vis.data.description}
               href={`/visualizations/${vis.id}/`}
-              screenshot={vis.data.screenshot}
+              image={vis.data.image}
               tags={vis.data.tags}
             />
           ))}
@@ -386,7 +357,7 @@ const breadcrumbSchema = {
     margin-bottom: 0;
   }
   .post-body :global(a:not(.citation):not(.tag-chip):not([class*="bg-"])) {
-    color: var(--color-current-domain, var(--color-domain-posts));
+    color: var(--color-current-domain, var(--color-domain-newsletters));
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: opacity 0.2s;

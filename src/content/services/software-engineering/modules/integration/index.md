@@ -5,7 +5,7 @@ description: "Contract-first API engineering, high-throughput event streaming, r
 ctaText: "Inquire about API Integration"
 order: 4
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: API Integration & System-Kopplung"
   description: "Standardisierte API-Brücke mit physischen Steckverbindern und transparentem Datenkanal zur Kopplung verteilter Systeme"

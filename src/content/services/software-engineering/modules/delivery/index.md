@@ -5,7 +5,7 @@ description: "Automated continuous delivery pipelines, immutable container packa
 ctaText: "Inquire about Release Engineering"
 order: 6
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: CI/CD & Release-Straße"
   description: "Automatisierte Deployment-Förderstrecke vom geprüften Code-Artefakt bis zum versandbereiten Frachtcontainer mit Release-Antrieb"

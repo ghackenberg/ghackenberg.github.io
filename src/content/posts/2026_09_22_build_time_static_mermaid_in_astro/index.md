@@ -1,11 +1,7 @@
 ---
-title: "Zero-JS Mermaid in Astro: Warum wir Diagramme statisch vorrendern und
-  wie Build-Time-SVGs für SEO, AIO und Core Web Vitals optimieren"
+title: "Zero-JS Mermaid in Astro: Warum wir Diagramme statisch vorrendern und wie Build-Time-SVGs für SEO, AIO und Core Web Vitals optimieren"
 pubDate: 2026-09-22
-description: "Technische Schaubilder ohne Client-Overhead: Warum clientseitiges
-  Mermaid das Web verlangsamt, wie unsere Build-Time-Pipeline mit Puppeteer und
-  Astro Remark funktioniert, und wie maschinenlesbare Topologien modernen
-  KI-Suchmaschinen (GEO/AIO) den Weg weisen."
+description: "Technische Schaubilder ohne Client-Overhead: Warum clientseitiges Mermaid das Web verlangsamt, wie unsere Build-Time-Pipeline mit Puppeteer und Astro Remark funktioniert, und wie maschinenlesbare Topologien modernen KI-Suchmaschinen (GEO/AIO) den Weg weisen."
 tags:
   - astro
   - software-architecture
@@ -18,30 +14,31 @@ tags:
 icon:
   src: ./hero.jpg
   title: Dr. Georg Hackenberg im Almtal Home Office
-  description: Dr. Georg Hackenberg am höhenverstellbaren Massivholz-Schreibtisch
-    vor dem Ultrawide-Monitor mit Blick auf die Almtaler Berglandschaft
+  description: Dr. Georg Hackenberg am höhenverstellbaren Massivholz-Schreibtisch vor dem Ultrawide-Monitor mit Blick auf die Almtaler Berglandschaft
 references:
   - type: online
-    author: Sveidqvist, K., et al.
-    title: "Mermaid: Generation of diagrams and flowcharts from text in a similar
-      manner as markdown"
+    title: "Mermaid: Generation of diagrams and flowcharts from text in a similar manner as markdown"
     url: https://mermaid.js.org/
     year: 2024
     id: sveidqvist-2024-mermaid
+    authors:
+      - name: Knut Sveidqvist
   - type: online
-    author: Titus, W., et al.
-    title: "Unified: Pluggable text processing powered by syntax trees (Remark &
-      Rehype)"
+    title: "Unified: Pluggable text processing powered by syntax trees (Remark & Rehype)"
     url: https://unifiedjs.com/
     year: 2024
     id: titus-2024-unified
+    authors:
+      - name: Titus Wormer
   - type: misc
-    author: W3C SVG Working Group
     title: Scalable Vector Graphics (SVG) 2
     url: https://www.w3.org/TR/SVG2/
     year: 2018
     howpublished: W3C Candidate Recommendation
     id: w3c-2018-svg2
+    authors:
+      - name: W3C SVG Working Group
+        type: Organization
 ---
 
 

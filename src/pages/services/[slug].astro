@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildServiceSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -25,59 +26,16 @@ const serviceModules = allModules
   .filter((m) => m.data.serviceId === service.id)
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
-const serviceUrl = `https://hackenberg.tech/services/${service.id}/`;
 
-const serviceSchema = {
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "@id": `${serviceUrl}#service`,
-  "name": service.data.title,
-  "serviceType": service.data.title,
-  "description": service.data.description,
-  "image": service.data.previewImage ? new URL(service.data.previewImage.src.src, Astro.site).href : undefined,
-  "url": serviceUrl,
-  "provider": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
-  },
-  "areaServed": "Global"
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Services",
-      "item": "https://hackenberg.tech/services/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": service.data.title,
-      "item": serviceUrl
-    }
-  ]
-};
-
-const serviceJsonLd = [serviceSchema, breadcrumbSchema];
+const serviceSchema = buildServiceSchema({ service, modules: serviceModules, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
   title={`${service.data.title} | Dr. Georg Hackenberg`} 
   description={service.data.description}
-  image={service.data.previewImage}
+  image={service.data.image}
   tags={service.data.tags}
-  jsonLd={serviceJsonLd}
+  jsonLd={serviceSchema}
 >
   <Navbar />
 

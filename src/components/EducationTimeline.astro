@@ -1,0 +1,253 @@
+---
+import { getCollection, render } from 'astro:content';
+
+const degrees = await getCollection('degrees');
+
+// Sort degrees newest first (by endYear descending, or order ascending)
+const sortedDegrees = degrees.sort((a, b) => {
+  if (a.data.order !== undefined && b.data.order !== undefined) {
+    return a.data.order - b.data.order;
+  }
+  const endA = a.data.endYear ?? 9999;
+  const endB = b.data.endYear ?? 9999;
+  if (endA !== endB) {
+    return endB - endA;
+  }
+  return b.data.startYear - a.data.startYear;
+});
+
+// Compile markdown body Content for each degree entry
+const processedDegrees = await Promise.all(sortedDegrees.map(async (entry) => {
+  const { Content } = await render(entry);
+  return {
+    ...entry.data,
+    id: entry.id,
+    Content,
+  };
+}));
+
+const cardBorderColors = {
+  blue: 'hover:border-brand-primary/30 border-element-border',
+  yellow: 'hover:border-brand-primary/30 border-element-border',
+  purple: 'hover:border-brand-primary/30 border-element-border',
+  green: 'hover:border-brand-primary/30 border-element-border'
+};
+
+const cardGlows = {
+  blue: 'bg-brand-primary/5',
+  yellow: 'bg-brand-primary/5',
+  purple: 'bg-brand-primary/5',
+  green: 'bg-brand-primary/5'
+};
+
+const roleDotColors = {
+  blue: 'border-brand-primary group-hover/role:ring-4 group-hover/role:ring-brand-primary/20',
+  yellow: 'border-brand-primary group-hover/role:ring-4 group-hover/role:ring-brand-primary/20',
+  purple: 'border-brand-primary group-hover/role:ring-4 group-hover/role:ring-brand-primary/20',
+  green: 'border-brand-primary group-hover/role:ring-4 group-hover/role:ring-brand-primary/20'
+};
+
+const roleTitleColors = {
+  blue: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary',
+  yellow: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary',
+  purple: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary',
+  green: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary'
+};
+
+const institutionTitleColors = {
+  blue: 'group-hover:text-brand-primary light:group-hover:text-brand-primary',
+  yellow: 'group-hover:text-brand-primary light:group-hover:text-brand-primary',
+  purple: 'group-hover:text-brand-primary light:group-hover:text-brand-primary',
+  green: 'group-hover:text-brand-primary light:group-hover:text-brand-primary'
+};
+
+const colors = {
+  blue: 'var(--color-brand-primary)',
+  yellow: 'var(--color-brand-primary)',
+  purple: 'var(--color-brand-primary)',
+  green: 'var(--color-brand-primary)'
+};
+
+function getFallbackGradient(groupColor: string, isFirstCard: boolean = false, isLastCard: boolean = false) {
+  const color = colors[groupColor as keyof typeof colors] || 'var(--color-brand-primary)';
+  
+  if (isFirstCard && isLastCard) {
+    return `linear-gradient(to bottom, ${color} 0%, ${color} 100%)`;
+  }
+  if (isFirstCard) {
+    return `linear-gradient(to bottom, ${color} 0%, rgba(255, 255, 255, 0.8) 100%)`;
+  }
+  if (isLastCard) {
+    return `linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, ${color} 100%)`;
+  }
+  
+  return `linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, ${color} 40%, rgba(255, 255, 255, 0.8) 100%)`;
+}
+---
+
+<div data-timeline-container class="relative space-y-8 py-2">
+  <!-- Continuous background line -->
+  <div class="absolute left-[41px] sm:left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-element-border-medium z-0 pointer-events-none rounded-full"></div>
+
+  {processedDegrees.map((entry, index) => {
+    const instName = entry.organization.name;
+    const instLower = instName.toLowerCase();
+    
+    let svgContent = '';
+    if (instLower.includes('münchen') || instLower.includes('tum') || instLower.includes('munich')) {
+      svgContent = `
+        <defs>
+          <linearGradient id="edu-${index}-tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="dodgerblue" />
+            <stop offset="100%" stop-color="royalblue" />
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-tumGrad)" />
+        <text x="50" y="64" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="34" fill="white" text-anchor="middle" letter-spacing="-1">TUM</text>
+      `;
+    } else if (instLower.includes('rwth') || instLower.includes('aachen')) {
+      svgContent = `
+        <defs>
+          <linearGradient id="edu-${index}-rwthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="mediumblue" />
+            <stop offset="100%" stop-color="navy" />
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-rwthGrad)" />
+        <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="30" fill="white" text-anchor="middle" letter-spacing="-1.5">RWTH</text>
+      `;
+    } else if (instLower.includes('mannheim')) {
+      svgContent = `
+        <defs>
+          <linearGradient id="edu-${index}-mannheimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="navy" />
+            <stop offset="100%" stop-color="midnightblue" />
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-mannheimGrad)" />
+        <path d="M30 45 L50 35 L70 45 L70 65 L30 65 Z" fill="none" stroke="gold" stroke-width="4" stroke-linejoin="round" />
+        <path d="M40 65 L40 55 L60 55 L60 65" fill="none" stroke="gold" stroke-width="4" />
+        <text x="50" y="82" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="800" font-size="14" fill="gold" text-anchor="middle">UNI MA</text>
+      `;
+    } else {
+      svgContent = `
+        <defs>
+          <linearGradient id="edu-${index}-defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="gray" />
+            <stop offset="100%" stop-color="darkslategray" />
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-defaultGrad)" />
+        <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="none" stroke="white" stroke-width="4" />
+        <path d="M30 45 V65 C30 70, 50 75, 50 75 C50 75, 70 70, 70 65 V45" fill="none" stroke="white" stroke-width="4" />
+      `;
+    }
+
+    const periodStr = entry.endYear 
+      ? `${entry.startYear} - ${entry.endYear}` 
+      : `${entry.startYear} - Present`;
+
+    const colorKey = entry.color || 'blue';
+
+    return (
+      <div class="relative group rounded-2xl">
+        <!-- Interactive Glow Element -->
+        <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${cardGlows[colorKey]}`}></div>
+        
+        <div class={`glass-card relative p-4 sm:p-6 rounded-2xl border transition-all duration-300 ${cardBorderColors[colorKey]}`}>
+          <!-- Continuous Lifeline Segment -->
+          {index === 0 && (
+            <svg
+              data-lifeline-dashed-top
+              class="absolute left-[40px] sm:left-[48px] -translate-x-1/2 top-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
+              style="height: 104px;"
+            >
+              <defs>
+                <linearGradient id="edu-dash-grad-top" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="rgba(255, 255, 255, 0.8)" />
+                  <stop offset="100%" stop-color={colors[colorKey as keyof typeof colors] || 'var(--color-brand-primary)'} />
+                </linearGradient>
+              </defs>
+              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#edu-dash-grad-top)" stroke-width="2" stroke-dasharray="4,4" />
+            </svg>
+          )}
+          <div 
+            data-lifeline-segment
+            data-color={colorKey}
+            style={`top: ${index === 0 ? '104px' : '0px'}; bottom: ${index === processedDegrees.length - 1 ? '104px' : '0px'}; background: ${getFallbackGradient(colorKey, index === 0, index === processedDegrees.length - 1)}`}
+            class="absolute left-[40px] sm:left-[48px] -translate-x-1/2 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+          {index === processedDegrees.length - 1 && (
+            <svg
+              data-lifeline-dashed-bottom
+              class="absolute left-[40px] sm:left-[48px] -translate-x-1/2 bottom-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
+              style="height: 104px;"
+            >
+              <defs>
+                <linearGradient id="edu-dash-grad-bottom" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color={colors[colorKey as keyof typeof colors] || 'var(--color-brand-primary)'} />
+                  <stop offset="100%" stop-color="rgba(255, 255, 255, 0.8)" />
+                </linearGradient>
+              </defs>
+              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#edu-dash-grad-bottom)" stroke-width="2" stroke-dasharray="4,4" />
+            </svg>
+          )}
+
+          <div>
+            <!-- Institution Header -->
+            <div class="flex gap-5 items-start mb-6">
+              <!-- Logo Container -->
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-950 border border-element-border-medium shrink-0 overflow-hidden shadow-inner relative z-20 timeline-logo-container">
+                <svg viewBox="0 0 100 100" class="w-full h-full" set:html={svgContent}></svg>
+              </div>
+              
+              <div class="min-w-0">
+                <h3 class={`text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 tracking-tight mb-1 ${institutionTitleColors[colorKey as keyof typeof institutionTitleColors] || 'group-hover:text-brand-primary light:group-hover:text-brand-primary'} transition-colors duration-200`}>
+                  {entry.organization.name}
+                </h3>
+                <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs font-semibold text-gray-400">
+                  <span class="px-2.5 py-0.5 rounded-full bg-element-bg border border-element-border-medium text-gray-300">
+                    {periodStr}
+                  </span>
+                  {entry.location && (
+                    <span class="text-gray-400 light:text-slate-600 font-medium flex items-center">
+                      <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                      {entry.location}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <!-- Nested Degree Node -->
+            <div class="relative pl-7 ml-4 sm:pl-7 sm:ml-6">
+              <div class="relative group/role">
+                <!-- Inline node dot on nested timeline -->
+                <span 
+                  data-role-dot
+                  data-color={colorKey}
+                  class={`absolute -left-[27px] sm:-left-[35px] top-1.5 w-3.5 h-3.5 rounded-full bg-gray-900 light:bg-white border-2 z-20 transition-all duration-300 group-hover/role:scale-110 ${roleDotColors[colorKey]}`}
+                ></span>
+                
+                <div class="w-full min-w-0">
+                  <h4 class={`text-base font-bold text-gray-100 light:text-slate-900 mb-1 ${roleTitleColors[colorKey as keyof typeof roleTitleColors] || 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary'} transition-colors duration-200`}>
+                    {entry.degree}
+                  </h4>
+                  <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-400 light:text-slate-600 font-semibold mb-3">
+                    <span class="text-gray-300 light:text-slate-700">{entry.program}</span>
+                  </div>
+                  <div class="text-gray-400 text-sm md:text-base leading-relaxed font-normal prose prose-invert max-w-none">
+                    <entry.Content />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>

@@ -7,8 +7,7 @@ export type ContentCollectionName =
   | "courses"
   | "projects"
   | "services"
-  | "visualizations"
-  | "interests";
+  | "visualizations";
 
 export interface ScoredItem<T> {
   item: T;
@@ -16,7 +15,6 @@ export interface ScoredItem<T> {
 }
 
 export type UnifiedRelatedItem =
-  | { collection: "interests"; item: CollectionEntry<"interests">; overlapCount: number }
   | { collection: "posts"; item: CollectionEntry<"posts">; overlapCount: number }
   | { collection: "publications"; item: CollectionEntry<"publications">; overlapCount: number }
   | { collection: "presentations"; item: CollectionEntry<"presentations">; overlapCount: number }
@@ -27,7 +25,6 @@ export type UnifiedRelatedItem =
 
 export interface RelatedContentResults {
   ranked: UnifiedRelatedItem[];
-  interests: CollectionEntry<"interests">[];
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
   presentations: CollectionEntry<"presentations">[];
@@ -41,7 +38,6 @@ export interface GetRelatedContentOptions {
   currentCollection: ContentCollectionName;
   currentId: string;
   tags?: string[];
-  allInterests?: CollectionEntry<"interests">[];
   allPosts?: CollectionEntry<"posts">[];
   allPublications?: CollectionEntry<"publications">[];
   allPresentations?: CollectionEntry<"presentations">[];
@@ -51,7 +47,6 @@ export interface GetRelatedContentOptions {
   allVisualizations?: CollectionEntry<"visualizations">[];
   limits?: {
     total?: number;
-    interests?: number;
     posts?: number;
     publications?: number;
     presentations?: number;
@@ -103,7 +98,7 @@ function compareUnifiedItems(a: UnifiedRelatedItem, b: UnifiedRelatedItem): numb
     if (recB !== recA) return recB - recA;
   }
 
-  // 3. Secondary for ordered collections (interests, projects, services)
+  // 3. Secondary for ordered collections (projects, services)
   const orderA = "order" in a.item.data ? ((a.item.data as { order?: number }).order ?? 0) : 0;
   const orderB = "order" in b.item.data ? ((b.item.data as { order?: number }).order ?? 0) : 0;
   if (orderA !== orderB) {
@@ -126,7 +121,6 @@ export async function getRelatedContent(
 
   const maxTotal = limits.total ?? 6;
 
-  const maxInterests = limits.interests ?? 4;
   const maxPosts = limits.posts ?? 3;
   const maxPubs = limits.publications ?? 3;
   const maxPres = limits.presentations ?? 2;
@@ -137,7 +131,6 @@ export async function getRelatedContent(
 
   // Load collections concurrently if not passed in
   const [
-    interestsCol,
     postsCol,
     pubsCol,
     presCol,
@@ -146,7 +139,6 @@ export async function getRelatedContent(
     servicesCol,
     visCol,
   ] = await Promise.all([
-    options.allInterests ?? getCollection("interests"),
     options.allPosts ?? getCollection("posts"),
     options.allPublications ?? getCollection("publications"),
     options.allPresentations ?? getCollection("presentations"),
@@ -155,22 +147,6 @@ export async function getRelatedContent(
     options.allServices ?? getCollection("services"),
     options.allVisualizations ?? getCollection("visualizations"),
   ]);
-
-  // 0. Professional Interests
-  const isSelfInterests = currentCollection === "interests";
-  const scoredInterests: ScoredItem<CollectionEntry<"interests">>[] = interestsCol
-    .filter((i) => !(isSelfInterests && i.id === currentId))
-    .map((i) => ({
-      item: i,
-      overlapCount: countTagOverlap(tags, i.data.tags),
-    }))
-    .filter((scored) => scored.overlapCount > 0)
-    .sort(
-      (a, b) =>
-        b.overlapCount - a.overlapCount ||
-        (a.item.data.order ?? 0) - (b.item.data.order ?? 0)
-    );
-  const relatedInterests = scoredInterests.slice(0, maxInterests).map((s) => s.item);
 
   // 1. Posts
   const isSelfPosts = currentCollection === "posts";
@@ -287,7 +263,6 @@ export async function getRelatedContent(
 
   // 8. Unified cross-collection ranking
   const allScored: UnifiedRelatedItem[] = [
-    ...scoredInterests.map((s) => ({ collection: "interests" as const, item: s.item, overlapCount: s.overlapCount })),
     ...scoredPosts.map((s) => ({ collection: "posts" as const, item: s.item, overlapCount: s.overlapCount })),
     ...scoredPubs.map((s) => ({ collection: "publications" as const, item: s.item, overlapCount: s.overlapCount })),
     ...scoredPres.map((s) => ({ collection: "presentations" as const, item: s.item, overlapCount: s.overlapCount })),
@@ -303,7 +278,6 @@ export async function getRelatedContent(
 
   return {
     ranked,
-    interests: relatedInterests,
     posts: relatedPosts,
     publications: relatedPublications,
     presentations: relatedPresentations,

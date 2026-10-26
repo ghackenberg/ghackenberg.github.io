@@ -1,12 +1,7 @@
 ---
-title: "B2B & Industrial GEO: Warum klassisches Industrie-Marketing an
-  KI-Agenten scheitert – und wie technische B2B-Unternehmen maschinenlesbar
-  werden"
+title: "B2B & Industrial GEO: Warum klassisches Industrie-Marketing an KI-Agenten scheitert – und wie technische B2B-Unternehmen maschinenlesbar werden"
 pubDate: 2026-09-12
-description: Warum Gated Whitepapers, unstrukturierte PDFs und Werbefloskeln
-  Industrieunternehmen im KI-Zeitalter unsichtbar machen – und wie technische
-  B2B-Anbieter ihre Spezifikationen maschinenlesbar für KI-Einkaufsagenten
-  strukturieren.
+description: Warum Gated Whitepapers, unstrukturierte PDFs und Werbefloskeln Industrieunternehmen im KI-Zeitalter unsichtbar machen – und wie technische B2B-Anbieter ihre Spezifikationen maschinenlesbar für KI-Einkaufsagenten strukturieren.
 tags:
   - aeo
   - agentic-ai
@@ -21,41 +16,55 @@ tags:
 icon:
   src: ./hero.jpg
   title: B2B Industrial GEO in der Fertigung
-  description: Dr. Georg Hackenberg analysiert semantische Wissensgraphen für
-    generative Industrie-Suchmaschinen in einer modernen Fertigungsumgebung
+  description: Dr. Georg Hackenberg analysiert semantische Wissensgraphen für generative Industrie-Suchmaschinen in einer modernen Fertigungsumgebung
 references:
   - type: inproceedings
-    author: Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K.,
-      & Deshpande, A.
     title: "GEO: Generative Engine Optimization"
     url: https://doi.org/10.1145/3637528.3671900
     year: 2024
     doi: 10.1145/3637528.3671900
-    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery
-      and Data Mining (KDD '24)
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)
     id: aggarwal-2024-geo
+    authors:
+      - name: Pranjal Aggarwal
+        id: https://orcid.org/0000-0002-2962-1535
+      - name: Vishvak Murahari
+        id: https://orcid.org/0009-0008-9304-0701
+      - name: Tanmay Rajpurohit
+        id: https://orcid.org/0000-0001-9302-4244
+      - name: Ashwin Kalyan
+        id: https://orcid.org/0009-0006-3448-3305
+      - name: Karthik Narasimhan
+        id: https://orcid.org/0000-0001-9894-9983
+      - name: Ameet Deshpande
+        id: https://orcid.org/0000-0001-9885-0385
   - type: online
-    author: Forrester Research
     title: The State Of B2B Purchasing
     url: https://www.forrester.com/report/the-state-of-b2b-purchasing/RES179577
     year: 2023
     siteName: Forrester Research Reports
     id: research-2023-state-purchasing
+    authors:
+      - name: Forrester Research
+        type: Organization
   - type: online
-    author: Gartner
     title: "The B2B Buying Journey: How Buyers Buy in the Age of Generative AI"
     url: https://www.gartner.com/en/sales/insights/b2b-buying-journey
     year: 2024
     siteName: Gartner Research
     id: gartner-2024-buying-journey
+    authors:
+      - name: Gartner
+        type: Organization
   - type: online
-    author: Plattform Industrie 4.0
-    title: "Details of the Asset Administration Shell: Part 1 – The exchange of
-      information between partners in the value chain of Industrie 4.0"
+    title: "Details of the Asset Administration Shell: Part 1 – The exchange of information between partners in the value chain of Industrie 4.0"
     url: https://www.plattform-i40.de/IP/Redaktion/EN/Downloads/Publikation/Details_of_the_Asset_Administration_Shell_Part1_V3.html
     year: 2020
     siteName: BMWi
     id: plattform-i40-2020-aas
+    authors:
+      - name: Plattform Industrie 4.0
+        type: Organization
 ---
 
 

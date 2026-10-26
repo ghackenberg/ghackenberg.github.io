@@ -1,4 +1,5 @@
 import { defineCollection, reference, type ImageFunction } from 'astro:content';
+import { authorEntrySchema } from '@commons/shared/authors';
 import type { ImageMetadata } from 'astro';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
@@ -59,86 +60,21 @@ const coverImageSchema = ({ image }: { image: ImageFunction }) =>
     message: "Image title and description must be distinct (no duplicate fallbacks)",
   }));
 
-const linkedinPosts = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/linkedin/posts',
-    pattern: '**/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
-    likes: z.number().default(0),
-    comments: z.number().default(0),
-    shares: z.number().default(0),
-    image: image().nullable().optional(),
-  }),
-});
-
-const linkedinProfile = defineCollection({
-  loader: glob({ base: './src/content/feeds/linkedin', pattern: 'profile.json' }),
-  schema: z.object({
-    followers: z.string().optional(),
-    postIds: z.array(z.string()).optional(),
-  }),
-});
-
-const githubProfile = defineCollection({
-  loader: glob({ base: './src/content/feeds/github', pattern: 'profile.json' }),
-  schema: z.object({
-    followers: z.number(),
-  }),
-});
-
-const githubRepos = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/github/repositories',
-    pattern: '**/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    description: z.string(),
-    url: z.string(),
-    stars: z.number(),
-    language: z.string(),
-    image: image().nullable().optional(),
-    pubDate: z.coerce.date(),
-    pushDate: z.coerce.date(),
-  }),
-});
-
-const youtubeProfile = defineCollection({
-  loader: glob({ base: './src/content/feeds/youtube', pattern: 'profile.json' }),
-  schema: z.object({
-    subscribers: z.string(),
-  }),
-});
-
-const youtubeVideos = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/youtube/videos',
-    pattern: '**/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
-    image: image().nullable().optional(),
-    description: z.string().optional().nullable().default(''),
-    views: z.number().default(0),
-    likes: z.number().default(0),
-  }),
+export const organizationRefSchema = z.object({
+  id: z.url(),
+  name: z.string().min(1),
 });
 
 const baseReferenceFields = {
   id: z.string().min(1),
   label: z.string().optional(),
-  author: z.string().min(1),
+  authors: z.array(authorEntrySchema).min(1),
   title: z.string().min(1),
   url: z.url(),
   doi: z.string().optional(),
 };
 
-export const referenceSchema = z.discriminatedUnion('type', [
+const rawReferenceSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('inproceedings'),
     ...baseReferenceFields,
@@ -180,6 +116,8 @@ export const referenceSchema = z.discriminatedUnion('type', [
   }),
 ]);
 
+export const referenceSchema = rawReferenceSchema;
+
 export const slideReferenceSchema = referenceSchema;
 export type Reference = z.infer<typeof referenceSchema>;
 export type SlideReference = Reference;
@@ -194,9 +132,9 @@ const posts = defineCollection({
     title: z.string(),
     pubDate: z.coerce.date(),
     description: z.string().optional(),
-    lang: z.enum(['de', 'en']).default('de').optional(),
+    inLanguage: z.enum(['de', 'en']).default('de'),
     tags: z.array(tagReference).default([]),
-    icon: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }).optional(),
     references: z.array(referenceSchema).default([]),
   }),
 });
@@ -207,17 +145,18 @@ const publications = defineCollection({
     pattern: '**/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    pubDate: z.coerce.date(),
-    book: z.string().optional(),
-    author: z.string(),
-    abstract: z.string().optional(),
-    tags: z.array(tagReference).default([]),
-    bibtex: z.string().optional(),
-    icon: image().optional(),
-    publisherUrl: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      pubDate: z.coerce.date(),
+      book: z.string().optional(),
+      authors: z.array(authorEntrySchema).min(1),
+      abstract: z.string().optional(),
+      tags: z.array(tagReference).default([]),
+      bibtex: z.string().optional(),
+      image: image().optional(),
+      publisherUrl: z.string().optional(),
+    }),
 });
 
 const visualizations = defineCollection({
@@ -229,7 +168,7 @@ const visualizations = defineCollection({
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
-    screenshot: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }).optional(),
     pubDate: z.coerce.date().optional(),
     tags: z.array(tagReference).default([]),
     specs: z.object({
@@ -249,7 +188,7 @@ const experiences = defineCollection({
   loader: glob({ base: './src/content/experiences', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     title: z.string(),
-    company: z.string(),
+    organization: organizationRefSchema,
     employmentType: z.string().optional(),
     startMonth: z.number(),
     startYear: z.number(),
@@ -258,6 +197,32 @@ const experiences = defineCollection({
     location: z.string().optional(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().optional(),
+    occupationalCategory: z.string().optional(),
+  }),
+});
+
+const degrees = defineCollection({
+  loader: glob({ base: './src/content/degrees', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    degree: z.string(),
+    program: z.string(),
+    organization: organizationRefSchema,
+    startYear: z.number(),
+    endYear: z.number().nullable().optional(),
+    location: z.string().optional(),
+    color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
+    order: z.number().optional(),
+  }),
+});
+
+const profiles = defineCollection({
+  loader: glob({ base: './src/content/profiles', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    name: z.string(),
+    handle: z.string(),
+    url: z.url(),
+    icon: z.enum(['github', 'linkedin', 'youtube', 'scholar', 'orcid', 'wikidata']),
+    order: z.number().default(0),
   }),
 });
 
@@ -276,8 +241,8 @@ const projects = defineCollection({
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
     repoName: z.string().optional(),
-    screenshot: coverImageSchema({ image }).optional(),
-    screenshotLight: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }).optional(),
+    imageLight: coverImageSchema({ image }).optional(),
     screenshots: z.array(coverImageSchema({ image })).default([]),
     pubDate: z.coerce.date().optional(),
     challenge: z.string().optional(),
@@ -307,8 +272,8 @@ const courses = defineCollection({
     repoName: z.string(),
     learningGoals: z.array(z.string()).default([]),
     terms: z.array(z.string()).default([]),
-    language: z.enum(['de', 'en']).default('de'),
-    screenshot: coverImageSchema({ image }).optional(),
+    inLanguage: z.enum(['de', 'en']).default('de'),
+    image: coverImageSchema({ image }).optional(),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
     overview: z.string().optional(),
@@ -346,7 +311,7 @@ const courseModules = defineCollection({
     topics: z.array(z.string()).default([]),
     tools: z.array(z.string()).default([]),
     competencies: z.array(z.string()).default([]),
-    previewImage: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }).optional(),
     pubDate: z.coerce.date().optional(),
   })
 });
@@ -364,7 +329,7 @@ const services = defineCollection({
     ctaText: z.string().default('Inquire Now'),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
-    previewImage: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }).optional(),
     targetAudience: z.array(z.string()).default([]),
     guidingPrinciples: z.array(z.object({
       title: z.string(),
@@ -407,25 +372,7 @@ const modules = defineCollection({
     })).optional(),
     order: z.number().default(0),
     pubDate: z.coerce.date().optional(),
-    previewImage: coverImageSchema({ image }).optional(),
-  })
-});
-
-const interests = defineCollection({
-  loader: glob({
-    base: './src/content/interests',
-    pattern: '*/index.{md,mdx}',
-    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
-  }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    tags: z.array(tagReference),
-    color: z.enum(['blue', 'yellow', 'purple', 'green']),
-    icon: z.string(),
-    heroImage: coverImageSchema({ image }),
-    order: z.number().default(0),
-    pubDate: z.coerce.date().optional(),
+    image: coverImageSchema({ image }).optional(),
   })
 });
 
@@ -563,11 +510,10 @@ const presentations = defineCollection({
     subtitle: z.string().optional(),
     pubDate: z.coerce.date(),
     audience: z.string().optional(),
-    lang: z.enum(['de', 'en']).default('de'),
+    inLanguage: z.enum(['de', 'en']).default('de'),
     description: z.string().optional(),
     tags: z.array(tagReference).default([]),
-    icon: coverImageSchema({ image }).optional(),
-    previewImage: coverImageSchema({ image }).optional(),
+    image: coverImageSchema({ image }).optional(),
   }),
 });
 
@@ -603,7 +549,8 @@ const newsletters = defineCollection({
     subtitle: z.string().optional(),
     description: z.string(),
     pubDate: z.coerce.date(),
-    icon: coverImageSchema({ image }),
+    image: coverImageSchema({ image }),
+    tags: z.array(tagReference).default([]),
     featuredPosts: z.array(reference('posts')).default([]),
     featuredPresentations: z.array(reference('presentations')).default([]),
     featuredPublications: z.array(reference('publications')).default([]),
@@ -614,22 +561,17 @@ const newsletters = defineCollection({
 });
 
 export const collections = {
-  'linkedin-posts': linkedinPosts,
-  'linkedin-profile': linkedinProfile,
-  'github-profile': githubProfile,
-  'github-repos': githubRepos,
-  'youtube-profile': youtubeProfile,
-  'youtube-videos': youtubeVideos,
   'posts': posts,
   'publications': publications,
   'visualizations': visualizations,
   'experiences': experiences,
+  'degrees': degrees,
+  'profiles': profiles,
   'projects': projects,
   'courses': courses,
   'course-modules': courseModules,
   'services': services,
   'modules': modules,
-  'interests': interests,
   'tags': tags,
   'characters': characters,
   'objects': objects,

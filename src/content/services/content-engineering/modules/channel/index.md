@@ -20,7 +20,7 @@ methodologyPhases:
     description: "Aligning topic taxonomies, cross-channel link conventions, and tracking parameter schemas."
 order: 2
 pubDate: 2026-09-11
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Channel Architecture Syndikations-Hub"
   description: "Zentraler Content-Hub mit fünf synchronisierten Distributionskanälen für Web, RSS, Social und REST-APIs im Comic-Stil."

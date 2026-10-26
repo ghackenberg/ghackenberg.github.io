@@ -5,6 +5,12 @@ import YAML from 'yaml';
 import { CITATION_GROUP_REGEX } from '@commons/shared/citations.js';
 
 interface PostFrontmatter {
+  inLanguage?: string;
+  image?: {
+    src?: string;
+    title?: string;
+    description?: string;
+  };
   title?: string;
   pubDate?: string | Date;
   description?: string;
@@ -215,12 +221,13 @@ function run(): void {
     }
 
     // 1a(ii) Unique Cover Image Hash (SHA-256 of icon.src)
-    if (!fm.icon?.src) {
-      violations.push(`[${relPath}] Missing frontmatter icon.src.`);
+    const postImg = fm.image || fm.icon;
+    if (!postImg?.src) {
+      violations.push(`[${relPath}] Missing frontmatter image.src.`);
     } else {
-      const imgPath = path.resolve(path.dirname(postFile), fm.icon.src);
+      const imgPath = path.resolve(path.dirname(postFile), postImg.src);
       if (!fs.existsSync(imgPath)) {
-        violations.push(`[${relPath}] Cover image "${fm.icon.src}" does not exist on disk.`);
+        violations.push(`[${relPath}] Cover image "${postImg.src}" does not exist on disk.`);
       } else {
         const imgBuffer = fs.readFileSync(imgPath);
         const hash = crypto.createHash('sha256').update(imgBuffer).digest('hex');

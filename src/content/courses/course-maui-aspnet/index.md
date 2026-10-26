@@ -9,8 +9,8 @@ learningGoals:
 terms:
   - "Summer Term 2024"
   - "Summer Term 2025"
-language: "en"
-screenshot:
+inLanguage: "en"
+image:
   src: "./preview.jpg"
   title: "Mobile & Cloud: Full-Stack Client-Server Architecture"
   description: "Orthogonal schematic of a cross-platform mobile client connected to an ASP.NET Core cloud backend via bidirectional REST API endpoints"

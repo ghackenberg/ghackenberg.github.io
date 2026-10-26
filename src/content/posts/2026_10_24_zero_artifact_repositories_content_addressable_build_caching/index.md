@@ -1,7 +1,7 @@
 ---
 title: "Zero-Artifact Git Repositories: Content-Addressable Build Caching, Zero-Dependency Edge-TTS & Deterministic Asset Synthesis"
 pubDate: 2026-10-24
-description: "Why committing derived MP3, PDF, and PNG build outputs breaks Git RFC 3284 VCDIFF delta compression—and how we eliminated 229.89 MiB (241.05 MB) across 601 files using constructive traces with early cutoff, a zero-dependency Sec-MS-GEC v2 Edge-TTS WebSocket client, and deterministic Park-Miller LCG asset synthesis."
+description: Why committing derived MP3, PDF, and PNG build outputs breaks Git RFC 3284 VCDIFF delta compression—and how we eliminated 229.89 MiB (241.05 MB) across 601 files using constructive traces with early cutoff, a zero-dependency Sec-MS-GEC v2 Edge-TTS WebSocket client, and deterministic Park-Miller LCG asset synthesis.
 lang: en
 tags:
   - software-architecture
@@ -13,100 +13,127 @@ tags:
   - performance
 icon:
   src: ./hero.jpg
-  title: "Zero-Artifact Git Architecture & Three-Tier Content-Addressable Build Cache"
-  description: "Architectural timber drafting table in the Grünau im Almtal studio displaying a blueprint of the SHA-256 content-addressable build cache pipeline with early-cutoff visual hashing, Edge-TTS audio synthesis, and deterministic branding generation"
+  title: Zero-Artifact Git Architecture & Three-Tier Content-Addressable Build Cache
+  description: Architectural timber drafting table in the Grünau im Almtal studio displaying a blueprint of the SHA-256 content-addressable build cache pipeline with early-cutoff visual hashing, Edge-TTS audio synthesis, and deterministic branding generation
 references:
   - id: mokhov-2018-build-systems-a-la-carte
     type: article
-    author: "Mokhov, Andrey and Mitchell, Neil and Peyton Jones, Simon"
-    title: "Build Systems à la Carte"
-    journal: "Proceedings of the ACM on Programming Languages (PACMPL / ICFP)"
+    title: Build Systems à la Carte
+    journal: Proceedings of the ACM on Programming Languages (PACMPL / ICFP)
     year: 2018
     volume: "2"
-    number: "ICFP"
-    pages: "79:1--79:29"
-    doi: "10.1145/3236774"
-    url: "https://doi.org/10.1145/3236774"
+    number: ICFP
+    pages: 79:1--79:29
+    doi: 10.1145/3236774
+    url: https://doi.org/10.1145/3236774
+    authors:
+      - name: Andrey Mokhov
+      - name: Neil Mitchell
+      - name: Simon Peyton Jones
   - id: dolstra-2004-nix-safe-deployment
     type: inproceedings
-    author: "Dolstra, Eelco and de Jonge, Merijn and Visser, Eelco"
     title: "Nix: A Safe and Policy-Free System for Software Deployment"
-    booktitle: "Proceedings of the 18th USENIX Large Installation System Administration Conference (LISA '04)"
+    booktitle: Proceedings of the 18th USENIX Large Installation System Administration Conference (LISA '04)
     year: 2004
-    pages: "79--92"
-    publisher: "USENIX Association"
-    url: "https://www.usenix.org/legacy/publications/library/proceedings/lisa04/tech/full_papers/dolstra/dolstra.pdf"
+    pages: 79--92
+    publisher: USENIX Association
+    url: https://www.usenix.org/legacy/publications/library/proceedings/lisa04/tech/full_papers/dolstra/dolstra.pdf
+    authors:
+      - name: Eelco Dolstra
+      - name: Merijn de Jonge
+      - name: Eelco Visser
   - id: potvin-2016-google-monorepo
     type: article
-    author: "Potvin, Rachel and Levenberg, Josh"
-    title: "Why Google Stores Billions of Lines of Code in a Single Repository"
-    journal: "Communications of the ACM"
+    title: Why Google Stores Billions of Lines of Code in a Single Repository
+    journal: Communications of the ACM
     year: 2016
     volume: "59"
     number: "7"
-    pages: "78--87"
-    doi: "10.1145/2854146"
-    url: "https://doi.org/10.1145/2854146"
+    pages: 78--87
+    doi: 10.1145/2854146
+    url: https://doi.org/10.1145/2854146
+    authors:
+      - name: Rachel Potvin
+      - name: Josh Levenberg
   - id: korn-2002-rfc3284-vcdiff
     type: misc
-    author: "Korn, David G. and MacDonald, Joshua P. and Mogul, Jeffrey C. and Vo, Kiem-Phong"
     title: "RFC 3284: The VCDIFF Generic Differencing and Compression Data Format"
     year: 2002
-    howpublished: "Internet Engineering Task Force (IETF) Request for Comments"
-    doi: "10.17487/RFC3284"
-    url: "https://doi.org/10.17487/RFC3284"
+    howpublished: Internet Engineering Task Force (IETF) Request for Comments
+    doi: 10.17487/RFC3284
+    url: https://doi.org/10.17487/RFC3284
+    authors:
+      - name: David Korn
+      - name: Joshua MacDonald
+      - name: Jeffrey Mogul
+      - name: Kiem-Phong Vo
   - id: bird-2009-promises-perils-mining-git
     type: inproceedings
-    author: "Bird, Christian and Rigby, Peter C. and Barr, Earl T. and Hamilton, David J. and German, Daniel M. and Devanbu, Premkumar"
-    title: "The Promises and Perils of Mining Git"
-    booktitle: "Proceedings of the 6th IEEE International Working Conference on Mining Software Repositories (MSR 2009)"
+    title: The Promises and Perils of Mining Git
+    booktitle: Proceedings of the 6th IEEE International Working Conference on Mining Software Repositories (MSR 2009)
     year: 2009
-    pages: "1--10"
-    publisher: "IEEE"
-    doi: "10.1109/MSR.2009.5069475"
-    url: "https://doi.org/10.1109/MSR.2009.5069475"
+    pages: 1--10
+    publisher: IEEE
+    doi: 10.1109/MSR.2009.5069475
+    url: https://doi.org/10.1109/MSR.2009.5069475
+    authors:
+      - name: Christian Bird
+      - name: Peter C. Rigby
+      - name: Earl T. Barr
+      - name: David J. Hamilton
+      - name: Daniel M. German
+      - name: Prem Devanbu
   - id: nist-2015-fips180-4
     type: misc
-    author: "National Institute of Standards and Technology"
     title: "FIPS PUB 180-4: Secure Hash Standard (SHS)"
     year: 2015
-    howpublished: "Federal Information Processing Standards Publication"
-    doi: "10.6028/NIST.FIPS.180-4"
-    url: "https://doi.org/10.6028/NIST.FIPS.180-4"
+    howpublished: Federal Information Processing Standards Publication
+    doi: 10.6028/NIST.FIPS.180-4
+    url: https://doi.org/10.6028/NIST.FIPS.180-4
+    authors:
+      - name: National Institute of Standards and Technology (US)
+        type: Organization
   - id: fette-2011-rfc6455-websocket
     type: misc
-    author: "Fette, Ian and Melnikov, Alexey"
     title: "RFC 6455: The WebSocket Protocol"
     year: 2011
-    howpublished: "Internet Engineering Task Force (IETF) Request for Comments"
-    doi: "10.17487/RFC6455"
-    url: "https://doi.org/10.17487/RFC6455"
+    howpublished: Internet Engineering Task Force (IETF) Request for Comments
+    doi: 10.17487/RFC6455
+    url: https://doi.org/10.17487/RFC6455
+    authors:
+      - name: Ian Fette
+      - name: Alexey Melnikov
   - id: burnett-2010-w3c-ssml11
     type: online
-    author: "Burnett, Daniel C. and Shuang, Zhi Wei et al."
-    title: "Speech Synthesis Markup Language (SSML) Version 1.1 — W3C Recommendation"
+    title: Speech Synthesis Markup Language (SSML) Version 1.1 — W3C Recommendation
     year: 2010
-    siteName: "World Wide Web Consortium (W3C)"
-    url: "https://www.w3.org/TR/speech-synthesis11/"
+    siteName: World Wide Web Consortium (W3C)
+    url: https://www.w3.org/TR/speech-synthesis11/
+    authors:
+      - name: Daniel C. Burnett
+      - name: Zhi Wei Shuang
   - id: park-1988-random-number-generators
     type: article
-    author: "Park, Stephen K. and Miller, Keith W."
     title: "Random Number Generators: Good Ones Are Hard to Find"
-    journal: "Communications of the ACM"
+    journal: Communications of the ACM
     year: 1988
     volume: "31"
     number: "10"
-    pages: "1192--1201"
-    doi: "10.1145/63039.63042"
-    url: "https://doi.org/10.1145/63039.63042"
+    pages: 1192--1201
+    doi: 10.1145/63039.63042
+    url: https://doi.org/10.1145/63039.63042
+    authors:
+      - name: Stephen K. Park
+      - name: Keith W. Miller
   - id: boutell-1997-rfc2083-png
     type: misc
-    author: "Boutell, Thomas et al."
     title: "RFC 2083: PNG (Portable Network Graphics) Specification Version 1.0"
     year: 1997
-    howpublished: "Internet Engineering Task Force (IETF) Request for Comments"
-    doi: "10.17487/RFC2083"
-    url: "https://doi.org/10.17487/RFC2083"
+    howpublished: Internet Engineering Task Force (IETF) Request for Comments
+    doi: 10.17487/RFC2083
+    url: https://doi.org/10.17487/RFC2083
+    authors:
+      - name: Thomas Boutell
 ---
 
 A **Zero-Artifact Git Repository** enforces a strict Hermetic Source-Only Invariant [@potvin-2016-google-monorepo; @dolstra-2004-nix-safe-deployment]: version control tracks exclusively human-authored source files while deterministic build pipelines synthesize, fingerprint, and cache derived binary artifacts (`MP3`, `PDF`, `PNG`, `WebP`) out-of-tree in content-addressable stores [@mokhov-2018-build-systems-a-la-carte] without polluting `.git/objects/pack` history [@korn-2002-rfc3284-vcdiff].

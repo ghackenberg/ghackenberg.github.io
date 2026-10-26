@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
@@ -24,8 +25,8 @@ const optimizedServices = await Promise.all(
   sortedServices.map(async (service) => {
     let optimizedImageSrc = undefined;
 
-    if (service.data.previewImage) {
-      const img = service.data.previewImage.src;
+    if (service.data.image) {
+      const img = service.data.image.src;
       const optimized = await getImage({
         src: img,
         format: "webp",
@@ -42,44 +43,12 @@ const optimizedServices = await Promise.all(
   })
 );
 
-const servicesJsonLd = sortedServices.map(s => ({
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "@id": `https://hackenberg.tech/services/#${s.id}`,
-  "name": s.data.title,
-  "serviceType": s.data.title,
-  "description": s.data.description,
-  "url": `https://hackenberg.tech/services/${s.id}/`,
-  "provider": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
-  },
-  "areaServed": "Global"
-}));
 
-const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewImage;
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Services",
-      "item": "https://hackenberg.tech/services/"
-    }
-  ]
-};
+const firstServiceImage = services.find(s => s.data.image)?.data.image;
 
-const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
+const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) => ({ id: `https://hackenberg.tech/services/${s.id}/#service` })));
+
 ---
 
 <Layout 
@@ -153,10 +122,10 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
 
                   <!-- Preview Image Column (Top) -->
                   <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
-                    {service.data.previewImage && (() => {
-                      const img = service.data.previewImage.src;
-                      const title = service.data.previewImage.title;
-                      const desc = service.data.previewImage.description;
+                    {service.data.image && (() => {
+                      const img = service.data.image.src;
+                      const title = service.data.image.title;
+                      const desc = service.data.image.description;
                       return (
                       <svg 
                         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
@@ -220,7 +189,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                   <div class="preview-card-body flex flex-col flex-grow justify-between">
                     <div>
                       <!-- Header -->
-                      <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 tracking-tight leading-snug transition-colors group-hover:text-domain-services line-clamp-1 min-h-[1lh]" title={service.data.title}>
+                      <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 tracking-tight leading-snug transition-colors group-hover:text-domain-services light:group-hover:text-domain-services line-clamp-1 min-h-[1lh]" title={service.data.title}>
                         <span>{service.data.title}</span>
                       </h2>
 

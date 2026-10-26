@@ -5,7 +5,7 @@ description: "Cloud-native infrastructure orchestration, distributed observabili
 ctaText: "Inquire about Cloud Operations"
 order: 7
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Cloud Operations & Telemetrie"
   description: "Kompaktes Blade-Server-Rack mit Telemetrie-Display, Uptime-Monitoring und Hardware-Messuhren für stabilen Cloud-Betrieb"

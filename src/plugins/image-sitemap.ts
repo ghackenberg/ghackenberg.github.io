@@ -387,11 +387,8 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
   let totalHtmlEnriched = 0;
   let totalImageObjectsCreated = 0;
 
-  const personEntity = {
-    '@type': 'Person',
+  const personRef = {
     '@id': 'https://hackenberg.tech/#person',
-    name: 'Dr. Georg Hackenberg',
-    url: 'https://hackenberg.tech',
   };
 
   const targetArticleTypes = new Set([
@@ -421,7 +418,11 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       if (rawText) {
         try {
           const parsed = JSON.parse(rawText);
-          jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+          if (parsed && typeof parsed === 'object' && Array.isArray(parsed['@graph'])) {
+            jsonLdData = parsed['@graph'];
+          } else {
+            jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+          }
         } catch (err) {
           console.warn(`[image-enforcer] Failed to parse JSON-LD in ${htmlFile}:`, err);
           jsonLdData = [];
@@ -471,6 +472,25 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
     }
 
+    // Determine the primary entity ID on this page (e.g. #article, #presentation, #course, etc.)
+    let primaryPageEntityId = canonicalPageUrl;
+    for (const node of candidateNodes) {
+      const nodeType = node['@type'];
+      const matches = Array.isArray(nodeType)
+        ? nodeType.some((t: string) => targetArticleTypes.has(t) || t === 'WebPage' || t === 'ProfilePage' || t === 'CollectionPage' || t === 'ContactPage' || t === 'WebSite')
+        : typeof nodeType === 'string' && (targetArticleTypes.has(nodeType) || nodeType === 'WebPage' || nodeType === 'ProfilePage' || nodeType === 'CollectionPage' || nodeType === 'ContactPage' || nodeType === 'WebSite');
+      if (matches && typeof node['@id'] === 'string' && node['@id'].startsWith(canonicalPageUrl)) {
+        primaryPageEntityId = node['@id'];
+        break;
+      }
+    }
+    if (primaryPageEntityId === canonicalPageUrl) {
+      const fallbackNode = candidateNodes.find((n) => n['@type'] !== 'ImageObject' && n['@type'] !== 'BreadcrumbList' && typeof n['@id'] === 'string' && n['@id'].startsWith(canonicalPageUrl));
+      if (fallbackNode && typeof fallbackNode['@id'] === 'string') {
+        primaryPageEntityId = fallbackNode['@id'];
+      }
+    }
+
     // Construct standard-compliant Schema.org ImageObject for each extracted image
     const imageObjects = images.map((img) => {
       const baseSlug = extractSemanticSlug(img.src, img.title);
@@ -479,7 +499,6 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       const mimeType = getMimeType(img.url);
 
       return {
-        '@context': 'https://schema.org',
         '@type': 'ImageObject',
         '@id': entityId,
         url: entityId,
@@ -492,10 +511,10 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         acquireLicensePage: 'https://hackenberg.tech/impressum/#kontakt',
         creditText: 'Dr. Georg Hackenberg',
         copyrightNotice: '© Dr. Georg Hackenberg. All rights reserved.',
-        author: { ...personEntity },
-        creator: { ...personEntity },
-        copyrightHolder: { ...personEntity },
-        isPartOf: { '@id': canonicalPageUrl },
+        author: personRef,
+        creator: personRef,
+        copyrightHolder: personRef,
+        isPartOf: { '@id': primaryPageEntityId },
       };
     });
 
@@ -527,8 +546,15 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       return true;
     });
 
-    // Append ImageObject nodes to JSON-LD array
-    const enrichedJsonLd = [...filteredNodes, ...imageObjects];
+    // Clean redundant @context and wrap into single root @graph
+    const cleanNodes = filteredNodes.map((n: SchemaEntity) => {
+      const { '@context': _ctx, ...rest } = n;
+      return rest;
+    });
+    const enrichedJsonLd = {
+      '@context': 'https://schema.org',
+      '@graph': [...cleanNodes, ...imageObjects]
+    };
     const jsonString = JSON.stringify(enrichedJsonLd, null, 2);
 
     const scriptRegex = /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/i;

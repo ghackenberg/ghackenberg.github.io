@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildServiceModuleSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -30,67 +31,18 @@ interface Props {
 const { module, parentService } = Astro.props;
 const { Content } = await render(module);
 
-const moduleUrl = `https://hackenberg.tech/services/${parentService.id}/${module.id.split('/').pop()}/`;
 
-const activePreviewImage = module.data.previewImage || parentService.data.previewImage;
+const activePreviewImage = module.data.image || parentService.data.image;
 
-const moduleServiceSchema = {
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "@id": `${moduleUrl}#service`,
-  "name": module.data.title,
-  "serviceType": module.data.title,
-  "description": module.data.description,
-  "image": activePreviewImage ? new URL(activePreviewImage.src.src, Astro.site).href : undefined,
-  "url": moduleUrl,
-  "category": parentService.data.title,
-  "provider": {
-    "@type": "Person",
-    "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
-  },
-  "areaServed": "Global"
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Services",
-      "item": "https://hackenberg.tech/services/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": parentService.data.title,
-      "item": `https://hackenberg.tech/services/${parentService.id}/`
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
-      "name": module.data.title,
-      "item": moduleUrl
-    }
-  ]
-};
-
-const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
+const moduleSchema = buildServiceModuleSchema({ parentService, module, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
   title={`${module.data.title} | Dr. Georg Hackenberg`} 
   description={module.data.description}
   image={activePreviewImage}
-  jsonLd={moduleJsonLd}
+  breadcrumbParentTitle={parentService.data.title}
+  jsonLd={moduleSchema}
 >
   <Navbar />
 

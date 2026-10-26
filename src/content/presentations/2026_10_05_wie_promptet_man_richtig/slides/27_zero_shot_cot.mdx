@@ -2,24 +2,26 @@
 title: "Zero-Shot CoT: 'Schritt für Schritt'"
 subtitle: "Kojima et al. 2022: {cue:hl-sub-27}Wie vier Worte Benchmark-Sprünge von 17 auf 78 Prozent auslösten{/cue}"
 number: "27"
-slideLayout: "code"
-voiceover: >
-  Dass man für Chain-of-Thought nicht einmal aufwendige Beispiele vorformulieren muss, bewiesen Takeshi Kojima und sein Team an der Universität Tokio.
-  {cue:sub} Sie zeigten, {cue:hl-sub-27}wie vier Worte Benchmark-Sprünge von 17 auf 78 Prozent auslösten{/cue}.
-  {cue:col-code} Indem man an das Ende der Benutzerfrage schlicht {cue:hl-step-trigger}Let's think step by step{/cue} anhängt, schaltet das Modell von unüberlegter Assoziation in den Dekompositionsmodus.
-  {cue:col-explanation} Auf dem MultiArith-Benchmark gelang ein {cue:hl-multiarith-sprung}Genauigkeitssprung von 17,7 % auf 78,7 %{/cue}. Für Produktionssysteme nutzen wir {cue:hl-zwei-phasen-extraktion}einen Zwei-Phasen-Ansatz aus Reasoning-Schritt und Parsing-Schritt{/cue}, um {cue:hl-latente-muster}logische Zwischenzustände im latenten Raum zu aktivieren{/cue}.
+slideLayout: code
+voiceover: |
+  Dass man für Chain-of-Thought nicht einmal aufwendige Beispiele vorformulieren muss, bewiesen Takeshi Kojima und sein Team an der Universität Tokio. {cue:sub} Sie zeigten, {cue:hl-sub-27}wie vier Worte Benchmark-Sprünge von 17 auf 78 Prozent auslösten{/cue}. {cue:col-code} Indem man an das Ende der Benutzerfrage schlicht {cue:hl-step-trigger}Let's think step by step{/cue} anhängt, schaltet das Modell von unüberlegter Assoziation in den Dekompositionsmodus. {cue:col-explanation} Auf dem MultiArith-Benchmark gelang ein {cue:hl-multiarith-sprung}Genauigkeitssprung von 17,7 % auf 78,7 %{/cue}. Für Produktionssysteme nutzen wir {cue:hl-zwei-phasen-extraktion}einen Zwei-Phasen-Ansatz aus Reasoning-Schritt und Parsing-Schritt{/cue}, um {cue:hl-latente-muster}logische Zwischenzustände im latenten Raum zu aktivieren{/cue}.
 notes: |
   - Zeit: 52:00 - 54:00 Min.
   - Primärquelle: Kojima et al. (2022), NeurIPS 2022.
   - MultiArith: 17.7% → 78.7%; GSM8K: 10.4% → 40.7%.
 references:
   - type: inproceedings
-    id: "kojima-2022-large-language-models-zero-shot-reasoners"
-    author: "Kojima, T., et al."
-    title: "Large Language Models are Zero-Shot Reasoners"
-    booktitle: "NeurIPS 2022"
+    id: kojima-2022-large-language-models-zero-shot-reasoners
+    title: Large Language Models are Zero-Shot Reasoners
+    booktitle: NeurIPS 2022
     year: 2022
-    url: "https://arxiv.org/abs/2205.11916"
+    url: https://arxiv.org/abs/2205.11916
+    authors:
+      - name: Takeshi Kojima
+      - name: Shixiang Shane Gu
+      - name: Machel Reid
+      - name: Yutaka Matsuo
+      - name: Yusuke Iwasawa
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

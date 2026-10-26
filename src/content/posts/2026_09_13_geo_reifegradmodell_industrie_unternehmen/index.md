@@ -1,11 +1,7 @@
 ---
-title: "Das GEO-Reifegradmodell für Industrieunternehmen: Vom unsichtbaren
-  Webauftritt zur agentenfähigen Plattform"
+title: "Das GEO-Reifegradmodell für Industrieunternehmen: Vom unsichtbaren Webauftritt zur agentenfähigen Plattform"
 pubDate: 2026-09-13
-description: "Ein praxisorientiertes 4-Stufen-Reifegradmodell für
-  Industrieunternehmen und technische Mittelständler: Von klassischer
-  SEO-Crawlability über semantische Wissensgraphen bis zur autonomen Interaktion
-  mit KI-Agenten."
+description: "Ein praxisorientiertes 4-Stufen-Reifegradmodell für Industrieunternehmen und technische Mittelständler: Von klassischer SEO-Crawlability über semantische Wissensgraphen bis zur autonomen Interaktion mit KI-Agenten."
 tags:
   - aeo
   - agentic-ai
@@ -23,43 +19,60 @@ icon:
   description: Das GEO-Reifegradmodell im industriellen Kontrollraum
 references:
   - type: inproceedings
-    author: Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K.,
-      & Deshpande, A.
     title: "GEO: Generative Engine Optimization"
     url: https://doi.org/10.1145/3637528.3671900
     year: 2024
     doi: 10.1145/3637528.3671900
-    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery
-      and Data Mining (KDD '24)
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)
     id: aggarwal-2024-geo
+    authors:
+      - name: Pranjal Aggarwal
+        id: https://orcid.org/0000-0002-2962-1535
+      - name: Vishvak Murahari
+        id: https://orcid.org/0009-0008-9304-0701
+      - name: Tanmay Rajpurohit
+        id: https://orcid.org/0000-0001-9302-4244
+      - name: Ashwin Kalyan
+        id: https://orcid.org/0009-0006-3448-3305
+      - name: Karthik Narasimhan
+        id: https://orcid.org/0000-0001-9894-9983
+      - name: Ameet Deshpande
+        id: https://orcid.org/0000-0001-9885-0385
   - type: online
-    author: Plattform Industrie 4.0
-    title: "Details of the Asset Administration Shell: Part 1 – The exchange of
-      information between partners in the value chain of Industrie 4.0"
+    title: "Details of the Asset Administration Shell: Part 1 – The exchange of information between partners in the value chain of Industrie 4.0"
     url: https://www.plattform-i40.de/IP/Redaktion/EN/Downloads/Publikation/Details_of_the_Asset_Administration_Shell_Part1_V3.html
     year: 2020
     siteName: BMWi
     id: plattform-i40-2020-aas
+    authors:
+      - name: Plattform Industrie 4.0
+        type: Organization
   - type: online
-    author: Schema.org Community Group
     title: Schema.org Documentation and Type Specifications
     url: https://schema.org/
     year: 2024
     id: schema-org-2024-schemaorg-documentation
+    authors:
+      - name: Schema.org Community Group
+        type: Organization
   - type: misc
-    author: W3C RDF Working Group
     title: "JSON-LD 1.1: A JSON-based Serialization for Linked Data"
     url: https://www.w3.org/TR/json-ld11/
     year: 2020
     howpublished: W3C Recommendation
     id: w3c-2020-json-ld
+    authors:
+      - name: W3C RDF Working Group
+        type: Organization
   - type: online
-    author: Willison, S., Howard, J., et al.
     title: "The /llms.txt File Format Proposal: Helping AI models find content"
     url: https://llmstxt.org/
     year: 2024
     siteName: Answer.AI
     id: willison-2024-llms-txt
+    authors:
+      - name: Simon Willison
+      - name: Jeremy Howard
 ---
 
 

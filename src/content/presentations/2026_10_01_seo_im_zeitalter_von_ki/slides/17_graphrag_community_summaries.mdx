@@ -2,25 +2,32 @@
 title: "GraphRAG: Hierarchische Community Summaries"
 subtitle: "Microsoft Research: {cue:hl-sub-graphrag-1001}Wie Community Detection und Leiden-Clustering Vektoren schlagen{/cue}"
 number: "17"
-slideLayout: "story-hero"
-voiceover: >
-  Bei komplexen strategischen Fragestellungen stoßen herkömmliche RAG-Systeme an eine unüberwindbare Wand: das globale Sensemaking-Problem.
-  {cue:sub} Microsoft Research löst diesen Engpass durch {cue:hl-sub-graphrag-1001}GraphRAG und hierarchische Community Summaries auf Basis von Leiden-Clustering{/cue}.
-  {cue:vis-graphrag-clusters} Unsere Architektur-Visualisierung zeigt die Aufteilung des Unternehmensgraphen in farbige Themencluster.
-  {cue:card-graphrag-mechanics} Während naive Vektoren nur Punktfakten finden, {cue:hl-callout-graphrag-global}beantwortet GraphRAG globale Fragen über den gesamten Datenbestand{/cue}: Der Wissensgraph wird {cue:hl-graphrag-clustering}durch den Leiden-Algorithmus hierarchisch in dichte Wissensgemeinschaften zerlegt{/cue}, für jedes Cluster {cue:hl-graphrag-summaries}generiert ein LLM vorab eine vollständige semantische Zusammenfassung{/cue}, und {cue:hl-graphrag-mapreduce}bei der Anfrage liest das System nur diese Community Summaries statt zehntausender Text-Chunks{/cue} – das ist echte Skalierung!
+slideLayout: story-hero
+voiceover: |
+  Bei komplexen strategischen Fragestellungen stoßen herkömmliche RAG-Systeme an eine unüberwindbare Wand: das globale Sensemaking-Problem. {cue:sub} Microsoft Research löst diesen Engpass durch {cue:hl-sub-graphrag-1001}GraphRAG und hierarchische Community Summaries auf Basis von Leiden-Clustering{/cue}. {cue:vis-graphrag-clusters} Unsere Architektur-Visualisierung zeigt die Aufteilung des Unternehmensgraphen in farbige Themencluster. {cue:card-graphrag-mechanics} Während naive Vektoren nur Punktfakten finden, {cue:hl-callout-graphrag-global}beantwortet GraphRAG globale Fragen über den gesamten Datenbestand{/cue}: Der Wissensgraph wird {cue:hl-graphrag-clustering}durch den Leiden-Algorithmus hierarchisch in dichte Wissensgemeinschaften zerlegt{/cue}, für jedes Cluster {cue:hl-graphrag-summaries}generiert ein LLM vorab eine vollständige semantische Zusammenfassung{/cue}, und {cue:hl-graphrag-mapreduce}bei der Anfrage liest das System nur diese Community Summaries statt zehntausender Text-Chunks{/cue} – das ist echte Skalierung!
 notes: |
   - Zeit: 28:00 - 30:30 Min.
   - Darren Edge et al. (Microsoft Research 2024) zitieren.
   - Kernaussage für Entscheider: Wer nur isolierte Blogposts ins Web stellt, wird fragmentiert; wer strukturierte Themengraphen liefert, dominiert die Community Summaries.
 references:
   - type: article
-    id: "edge-2024-graphrag"
-    author: "Edge, Darren and Trinh, Ha and Cheng, Newman and Bradley, Joshua and Chao, Alex and Mody, Apurva and Truitt, Steven and Metropolitansky, Dasha and Ness, Robert Osazuwa and Larson, Jonathan"
+    id: edge-2024-graphrag
     title: "From Local to Global: A Graph RAG Approach to Query-Focused Summarization"
-    journal: "arXiv preprint arXiv:2404.16130"
+    journal: arXiv preprint arXiv:2404.16130
     year: 2024
-    doi: "10.48550/arXiv.2404.16130"
-    url: "https://arxiv.org/abs/2404.16130"
+    doi: 10.48550/arXiv.2404.16130
+    url: https://arxiv.org/abs/2404.16130
+    authors:
+      - name: Darren Edge
+      - name: Ha Trinh
+      - name: Newman Cheng
+      - name: Joshua Bradley
+      - name: Alex Chao
+      - name: Apurva Mody
+      - name: Steven Truitt
+      - name: Dasha Metropolitansky
+      - name: Robert Osazuwa Ness
+      - name: Jonathan Larson
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

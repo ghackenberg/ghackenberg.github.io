@@ -7,7 +7,7 @@ tags: ["cad", "collaborative-software", "education", "open-source", "product-des
 accentColor: "blue"
 order: 1
 repoName: "caddrive"
-screenshot:
+image:
   src: "./versions.png"
   title: "CADdrive Version History & 3D Assembly Viewer"
   description: "Interactive in-browser 3D CAD model viewer with chronological version tracking, commit metadata, and asset downloads"

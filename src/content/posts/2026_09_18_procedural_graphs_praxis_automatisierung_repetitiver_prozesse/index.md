@@ -1,14 +1,7 @@
 ---
-title: "Procedural Graphs in der Praxis: Wie Unternehmen repetitive Prozesse
-  zuverlässig automatisieren – ohne starre Workflows und unberechenbare Agenten"
+title: "Procedural Graphs in der Praxis: Wie Unternehmen repetitive Prozesse zuverlässig automatisieren – ohne starre Workflows und unberechenbare Agenten"
 pubDate: 2026-09-18
-description: "Über 80 % agentischer Pilotprojekte scheitern am Übergang in den
-  Produktivbetrieb: Entweder driften ungebundene LLM-Agenten bei repetitiven
-  Vorgängen ab, oder starre RPA-Workflows ersticken die Flexibilität. Eine
-  ingenieurwissenschaftliche Analyse des Google-Frameworks Procedural Graphs
-  (arXiv:2609.09153): Wie Unternehmen Standard Operating Procedures (SOPs) in
-  selbstlernende Wissensgraphen überführen, Qualität sichern, Kosten senken und
-  Mitarbeiter nachhaltig entlasten."
+description: "Über 80 % agentischer Pilotprojekte scheitern am Übergang in den Produktivbetrieb: Entweder driften ungebundene LLM-Agenten bei repetitiven Vorgängen ab, oder starre RPA-Workflows ersticken die Flexibilität. Eine ingenieurwissenschaftliche Analyse des Google-Frameworks Procedural Graphs (arXiv:2609.09153): Wie Unternehmen Standard Operating Procedures (SOPs) in selbstlernende Wissensgraphen überführen, Qualität sichern, Kosten senken und Mitarbeiter nachhaltig entlasten."
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -23,34 +16,39 @@ tags:
 icon:
   src: ./hero.jpg
   title: Procedural Graphs in der Praxis
-  description: "Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an
-    einer interaktiven Projektionswand, wie Prozesswissen in dynamischen
-    Wissensgraphen verankert wird"
+  description: "Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird"
 references:
   - type: online
-    author: Kumar, R., et al.
-    title: The Root Causes of Failure for Artificial Intelligence Projects and How
-      They Can Succeed
+    title: The Root Causes of Failure for Artificial Intelligence Projects and How They Can Succeed
     url: https://doi.org/10.7249/RRA2680-1
     year: 2024
     doi: 10.7249/RRA2680-1
-    siteName: "RAND Corporation Research Report RR-A2680-1. DOI:
-      [10.7249/RRA2680-1](https://doi.org/10.7249/RRA2680-1)"
+    siteName: "RAND Corporation Research Report RR-A2680-1. DOI: [10.7249/RRA2680-1](https://doi.org/10.7249/RRA2680-1)"
     id: kumar-2024-root-causes
+    authors:
+      - name: Ryseff, James
+      - name: De Bruhl, Brandon F.
+      - name: Newberry, Sydne J.
   - type: article
-    author: Lu, Y., Chen, Y., Wu, S., & Arık, S. Ö.
     title: "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents"
     url: https://arxiv.org/abs/2609.09153
     year: 2026
     journal: Google Cloud AI Research
     id: lu-2026-procedural-graphs
+    authors:
+      - name: Yuxing Lu
+      - name: Yicheng Chen
+      - name: Shanchan Wu
+      - name: Sercan Ö. Arık
   - type: misc
-    author: OMG
     title: Business Process Model and Notation (BPMN) Version 2.0
     url: https://www.omg.org/spec/BPMN/2.0/
     year: 2011
     howpublished: Object Management Group
     id: omg-2011-business-process
+    authors:
+      - name: OMG
+        type: Organization
 ---
 
 

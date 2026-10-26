@@ -1,32 +1,16 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildLegalWebPageSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Datenschutz",
-      "item": "https://hackenberg.tech/datenschutz/"
-    }
-  ]
-};
+const legalSchema = buildLegalWebPageSchema({ path: 'datenschutz', name: 'Datenschutzerklärung', description: 'Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO), TDDDG und TKG 2021.' });
 ---
 
 <Layout 
   title="Datenschutzerklärung | Dr. Georg Hackenberg" 
   description="Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO), TDDDG und TKG 2021."
-  jsonLd={breadcrumbSchema}
+  jsonLd={legalSchema}
 >
   <Navbar />
 
@@ -43,9 +27,9 @@ const breadcrumbSchema = {
         <button 
           type="button" 
           data-open-privacy-modal 
-          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-brand-purple/40 text-text-subtle hover:text-text-main text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shadow-sm"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-brand-primary/40 text-text-subtle hover:text-text-main text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shadow-sm"
         >
-          <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
           <span>Privatsphäre-Einstellungen anpassen</span>
@@ -57,14 +41,14 @@ const breadcrumbSchema = {
     <div class="glass-card rounded-3xl border border-element-border overflow-hidden p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8 relative">
       <!-- Section 1: Controller -->
       <div>
-        <h2 id="verantwortlicher" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple mb-3">1. Verantwortlicher</h2>
+        <h2 id="verantwortlicher" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-3">1. Verantwortlicher</h2>
         <div class="text-sm text-gray-300">
           <p class="font-semibold text-gray-100">Dr. rer. nat. Georg Hackenberg BSc MSc</p>
           <p>Edthof 13a</p>
           <p>4645 Grünau im Almtal, Österreich</p>
           <p class="mt-2 flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
             <span class="text-gray-500 font-medium">E-Mail:</span>
-            <a href="mailto:georg.hackenberg@fh-wels.at" class="text-brand-purple hover:underline font-mono break-all">georg.hackenberg@fh-wels.at</a>
+            <a href="mailto:georg.hackenberg@fh-wels.at" class="text-brand-primary hover:underline font-mono break-all">georg.hackenberg@fh-wels.at</a>
           </p>
         </div>
       </div>
@@ -73,7 +57,7 @@ const breadcrumbSchema = {
 
       <!-- Section 2: Web Hosting / Server Logs -->
       <div class="space-y-3">
-        <h2 id="webhosting" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">2. Webhosting & Server-Logfiles</h2>
+        <h2 id="webhosting" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">2. Webhosting & Server-Logfiles</h2>
         <p class="text-gray-300 text-sm leading-relaxed">
           Diese Website wird auf <strong>GitHub Pages</strong> (GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA) gehostet. Bei jedem Zugriff auf diese Website erfasst der Webserver automatisch Informationen, die Ihr Browser an uns übermittelt. Dies umfasst:
         </p>
@@ -93,7 +77,7 @@ const breadcrumbSchema = {
 
       <!-- Section 3: Analytics -->
       <div class="space-y-3">
-        <h2 id="analytics" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">3. Web-Analyse (Plausible Analytics)</h2>
+        <h2 id="analytics" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">3. Web-Analyse (Plausible Analytics)</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Wir nutzen auf dieser Website <strong>Plausible Analytics</strong>, einen datenschutzfreundlichen Webanalysedienst der Plausible Insights OÜ (Västriku tn 2, Tartu 50403, Estland). Die Erfassung erfolgt über eine europäische Server-Instanz (<code class="text-gray-300 font-mono text-xs">analytics.mentawise.com</code>) auf Servern innerhalb der Europäischen Union.
         </p>
@@ -111,7 +95,7 @@ const breadcrumbSchema = {
           <button 
             type="button" 
             data-open-privacy-modal 
-            class="text-xs text-brand-purple hover:underline font-medium inline-flex items-center gap-1 cursor-pointer pt-1"
+            class="text-xs text-brand-primary hover:underline font-medium inline-flex items-center gap-1 cursor-pointer pt-1"
           >
             <span>Plausible Opt-Out in den Privatsphäre-Einstellungen verwalten</span>
             <span>→</span>
@@ -123,7 +107,7 @@ const breadcrumbSchema = {
 
       <!-- Section 4: Local Storage & Read State / Gallery Ledger -->
       <div class="space-y-3">
-        <h2 id="local-storage" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Lokale Speicherung im Browser (Local Storage, Nutzereinstellungen & Komfortfunktionen)</h2>
+        <h2 id="local-storage" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">4. Lokale Speicherung im Browser (Local Storage, Nutzereinstellungen & Komfortfunktionen)</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Diese Website legt beim bloßen Aufruf keinerlei Einträge im lokalen Speicher (<code class="text-gray-300 font-mono text-xs">localStorage</code>) Ihres Browsers an. Eine lokale Speicherung auf Ihrem Endgerät erfolgt ausschließlich dann, wenn Sie selbst aktiv eine Funktion oder Einstellung auswählen (<strong>100 % Client-seitig</strong>, ohne Übermittlung an unsere Server oder Dritte):
         </p>
@@ -161,7 +145,7 @@ const breadcrumbSchema = {
 
       <!-- Section 5: Newsletter (Self-Hosted Listmonk & ALTCHA Proof-of-Work) -->
       <div class="space-y-3">
-        <h2 id="newsletter" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">5. Newsletter-Versand (Selbstgehostetes Listmonk &amp; ALTCHA-Spamschutz)</h2>
+        <h2 id="newsletter" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">5. Newsletter-Versand (Selbstgehostetes Listmonk &amp; ALTCHA-Spamschutz)</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Wenn Sie sich auf unserer Website für den englischsprachigen E-Mail-Newsletter eintragen, verarbeiten wir Ihre E-Mail-Adresse ausschließlich zu dem Zweck, Sie in unregelmäßigen Abständen in englischer Sprache über neu veröffentlichte Fachartikel, interaktive Vorlesungsfolien, Lehrveranstaltungen und wissenschaftliche Publikationen zu informieren.
         </p>
@@ -180,7 +164,7 @@ const breadcrumbSchema = {
 
       <!-- Section 6: E-Mail Inquiries -->
       <div class="space-y-3">
-        <h2 id="kontaktaufnahme" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">6. Kontaktaufnahme per E-Mail</h2>
+        <h2 id="kontaktaufnahme" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">6. Kontaktaufnahme per E-Mail</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Wenn Sie uns per E-Mail (z. B. für eine Projekt- oder Buchungsanfrage) kontaktieren, werden die von Ihnen gemachten Angaben (Name, E-Mail-Adresse sowie der Inhalt der Nachricht) zur Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert.
         </p>
@@ -193,7 +177,7 @@ const breadcrumbSchema = {
 
       <!-- Section 7: User Rights -->
       <div class="space-y-3">
-        <h2 id="rechte" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">7. Ihre Rechte gemäß DSGVO</h2>
+        <h2 id="rechte" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">7. Ihre Rechte gemäß DSGVO</h2>
         <p class="text-gray-300 text-sm leading-relaxed">
           Ihnen stehen als betroffene Person bezüglich Ihrer bei uns verarbeiteten Daten folgende gesetzliche Rechte zu:
         </p>
@@ -218,7 +202,7 @@ const breadcrumbSchema = {
           </div>
         </div>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed pt-2">
-          Zur Ausübung dieser Rechte kontaktieren Sie uns bitte per E-Mail unter <a href="mailto:georg.hackenberg@fh-wels.at" class="text-brand-purple hover:underline font-mono break-all">georg.hackenberg@fh-wels.at</a>. 
+          Zur Ausübung dieser Rechte kontaktieren Sie uns bitte per E-Mail unter <a href="mailto:georg.hackenberg@fh-wels.at" class="text-brand-primary hover:underline font-mono break-all">georg.hackenberg@fh-wels.at</a>. 
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Wenn Sie glauben, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstoßt oder Ihre datenschutzrechtlichen Ansprüche verletzt worden sind, haben Sie das Recht auf Beschwerde bei einer Aufsichtsbehörde. In Österreich ist dies die:
@@ -229,15 +213,15 @@ const breadcrumbSchema = {
           <p>Barichgasse 40-42, 1030 Wien</p>
           <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
             <span class="text-gray-500 font-medium">Telefon:</span>
-            <a href="tel:+431521520" class="hover:text-brand-purple transition-colors font-mono break-all">+43 1 52 152-0</a>
+            <a href="tel:+431521520" class="hover:text-brand-primary transition-colors font-mono break-all">+43 1 52 152-0</a>
           </p>
           <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
             <span class="text-gray-500 font-medium">E-Mail:</span>
-            <a href="mailto:dsb@dsb.gv.at" class="hover:text-brand-purple transition-colors font-mono break-all">dsb@dsb.gv.at</a>
+            <a href="mailto:dsb@dsb.gv.at" class="hover:text-brand-primary transition-colors font-mono break-all">dsb@dsb.gv.at</a>
           </p>
           <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
             <span class="text-gray-500 font-medium">Web:</span>
-            <a href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer" class="hover:text-brand-purple transition-colors font-mono break-all">www.dsb.gv.at</a>
+            <a href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer" class="hover:text-brand-primary transition-colors font-mono break-all">www.dsb.gv.at</a>
           </p>
         </div>
       </div>

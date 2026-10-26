@@ -2,9 +2,7 @@
 title: "Open-Source Agentic AI Tech Stack: Enterprise-Architektur"
 pubDate: 2026-09-03
 lang: de
-description: "Ingenieurwissenschaftliche Analyse unseres Open-Source Agentic AI
-  Stacks: vLLM, Hermes, LangGraph, Mem0, Neo4j, LiteLLM, Keycloak und Open
-  WebUI."
+description: "Ingenieurwissenschaftliche Analyse unseres Open-Source Agentic AI Stacks: vLLM, Hermes, LangGraph, Mem0, Neo4j, LiteLLM, Keycloak und Open WebUI."
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -20,46 +18,62 @@ tags:
   - vllm
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Ein standardisierter Open-Source Agentic AI Tech Stack:
-    Architektur, Komponenten und Governance für souveräne Enterprise-Agenten"
-  description: "Eine detaillierte ingenieurwissenschaftliche Analyse unseres
-    standardisierten Open-Source KI-Tech-Stacks: vLLM, Hermes Agent, Google
-    WikiSkills, LangGraph, Mem0, PostgreSQL/Qdrant + Neo4j, LiteLLM Proxy,
-    Keycloak und Open WebUI."
+  title: "Titelgrafik: Ein standardisierter Open-Source Agentic AI Tech Stack: Architektur, Komponenten und Governance für souveräne Enterprise-Agenten"
+  description: "Eine detaillierte ingenieurwissenschaftliche Analyse unseres standardisierten Open-Source KI-Tech-Stacks: vLLM, Hermes Agent, Google WikiSkills, LangGraph, Mem0, PostgreSQL/Qdrant + Neo4j, LiteLLM Proxy, Keycloak und Open WebUI."
 references:
   - type: online
-    author: Anthropic
     title: Model Context Protocol (MCP) Specification
     url: https://modelcontextprotocol.io/
     year: 2024
     siteName: Anthropic Documentation
     id: anthropic-2024-mcp
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: inproceedings
-    author: Kwon, W., Li, Z., Zhuang, S., Sheng, Y., Zheng, L., Yu, C. H., Joseph,
-      A. E., & Stoica, I.
-    title: Efficient Memory Management for Large Language Model Serving with
-      PagedAttention
+    title: Efficient Memory Management for Large Language Model Serving with PagedAttention
     url: https://arxiv.org/abs/2309.06180
     year: 2023
     doi: 10.1145/3600006.3613165
-    booktitle: Proceedings of the 29th ACM Symposium on Operating Systems Principles
-      (SOSP '23)
+    booktitle: Proceedings of the 29th ACM Symposium on Operating Systems Principles (SOSP '23)
     id: kwon-2023-efficient-memory
+    authors:
+      - name: Woosuk Kwon
+        id: https://orcid.org/0009-0008-8870-4892
+      - name: Zhuohan Li
+        id: https://orcid.org/0009-0004-1534-9106
+      - name: Siyuan Zhuang
+        id: https://orcid.org/0009-0007-3787-0316
+      - name: Ying Sheng
+        id: https://orcid.org/0000-0002-1883-2126
+      - name: Lianmin Zheng
+        id: https://orcid.org/0000-0002-6611-4612
+      - name: Cody Hao Yu
+        id: https://orcid.org/0000-0002-9298-6254
+      - name: Joseph Gonzalez
+        id: https://orcid.org/0000-0003-2921-956X
+      - name: Hao Zhang
+        id: https://orcid.org/0009-0003-8392-3977
+      - name: Ion Stoica
+        id: https://orcid.org/0000-0002-5373-0088
   - type: online
-    author: LangChain Inc.
     title: "LangGraph: Building Language Agents as State Graphs"
     url: https://langchain-ai.github.io/langgraph/
     year: 2024
     siteName: LangChain Documentation
     id: inc-2024-langgraph-building
+    authors:
+      - name: LangChain Inc.
+        type: Organization
   - type: online
-    author: Red Hat
-    title: "Keycloak: Open Source Identity and Access Management for Modern
-      Applications"
+    title: "Keycloak: Open Source Identity and Access Management for Modern Applications"
     url: https://www.keycloak.org/
     year: 2024
     siteName: Keycloak Project Documentation
     id: hat-2024-keycloak-open
+    authors:
+      - name: Red Hat
+        type: Organization
 ---
 
 

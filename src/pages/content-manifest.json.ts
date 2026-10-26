@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { formatAuthorsPlain } from "@commons/shared/authors";
 import { getImage } from "astro:assets";
 
 function parseItemDate(id: string, dateVal?: string | Date): number {
@@ -73,7 +74,6 @@ export async function GET() {
   const visualizations = await getCollection("visualizations");
   const services = await getCollection("services");
   const modules = await getCollection("modules");
-  const interests = await getCollection("interests");
   const tags = await getCollection("tags");
 
   const [
@@ -82,15 +82,14 @@ export async function GET() {
     resolvedCourses,
     resolvedProjects,
     resolvedVisualizations,
-    resolvedServices,
-    resolvedInterests
+    resolvedServices
   ] = await Promise.all([
     Promise.all(posts.map(async p => ({
       id: p.id,
       url: `/posts/${p.id}/`,
       title: p.data.title,
       description: p.data.description || '',
-      image: await resolveImage(p.data.icon),
+      image: await resolveImage(p.data.image),
       tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     }))),
@@ -100,7 +99,7 @@ export async function GET() {
       title: p.data.title,
       subtitle: p.data.subtitle || '',
       description: p.data.description || '',
-      image: await resolveImage(p.data.previewImage || p.data.icon),
+      image: await resolveImage(p.data.image),
       tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     }))),
@@ -109,8 +108,8 @@ export async function GET() {
       url: `/courses/${c.id}/`,
       title: c.data.title,
       description: c.data.description || '',
-      image: await resolveImage(c.data.screenshot),
-      language: c.data.language,
+      image: await resolveImage(c.data.image),
+      language: c.data.inLanguage,
       tags: c.data.tags || [],
       date: parseItemDate(c.id, c.data.pubDate)
     }))),
@@ -120,7 +119,7 @@ export async function GET() {
       title: p.data.title,
       trl: p.data.trl,
       description: p.data.description,
-      image: await resolveImage(p.data.screenshot),
+      image: await resolveImage(p.data.image),
       href: p.data.href,
       tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
@@ -130,7 +129,7 @@ export async function GET() {
       url: `/visualizations/${v.id}/`,
       title: v.data.title,
       description: v.data.description,
-      image: await resolveImage(v.data.screenshot),
+      image: await resolveImage(v.data.image),
       date: parseItemDate(v.id, v.data.pubDate)
     }))),
     Promise.all([
@@ -139,7 +138,7 @@ export async function GET() {
         url: `/services/${s.id}/`,
         title: s.data.title,
         description: s.data.description,
-        image: await resolveImage(s.data.previewImage),
+        image: await resolveImage(s.data.image),
         tags: s.data.tags || [],
         date: parseItemDate(s.id, s.data.pubDate)
       })),
@@ -150,18 +149,7 @@ export async function GET() {
         description: m.data.description,
         date: parseItemDate(m.id, m.data.pubDate)
       }))
-    ]),
-    Promise.all(interests.map(async i => ({
-      id: i.id,
-      url: `/interests/${i.id}/`,
-      title: i.data.title,
-      description: i.data.description || '',
-      image: await resolveImage(i.data.heroImage),
-      tags: i.data.tags || [],
-      color: i.data.color,
-      order: i.data.order,
-      date: parseItemDate(i.id, i.data.pubDate) || Date.UTC(2026, 8, 14)
-    })))
+    ])
   ]);
 
   const manifest = {
@@ -185,7 +173,7 @@ export async function GET() {
       id: p.id,
       url: `/publications/${p.id}/`,
       title: p.data.title,
-      author: p.data.author,
+      author: formatAuthorsPlain(p.data.authors),
       book: p.data.book || '',
       description: p.data.abstract || '',
       abstract: p.data.abstract || '',
@@ -193,8 +181,7 @@ export async function GET() {
       date: parseItemDate(p.id, p.data.pubDate)
     })),
     visualizations: resolvedVisualizations,
-    services: resolvedServices,
-    interests: resolvedInterests
+    services: resolvedServices
   };
 
   return new Response(JSON.stringify(manifest, null, 2), {

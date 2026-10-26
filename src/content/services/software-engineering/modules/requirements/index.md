@@ -5,7 +5,7 @@ description: "Systematic elicitation, domain analysis, formal specification, and
 ctaText: "Inquire about Requirements Engineering"
 order: 1
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Requirements & Story Mapping"
   description: "Isometrisches Story-Mapping-Board mit strukturierten User-Story-Spalten, Epic-Hierarchien und verifizierten Akzeptanzkriterien"

@@ -19,7 +19,7 @@ methodologyPhases:
   - title: "Persistence Integration"
     description: "Setting up database checkpointing (PostgreSQL or SQLite) for workflow state persistence."
 order: 4
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Multi-Agent Orchestration"
   description: "Zentraler 3D-Supervisor-Routing-Hub zur Koordination spezialisierter Agenten-Subsysteme über integrierte Datenbusse"

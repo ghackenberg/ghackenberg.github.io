@@ -7,7 +7,7 @@ tags: ["computer-graphics", "java", "manufacturing-engineering", "open-source", 
 accentColor: "blue"
 order: 6
 repoName: "welding-simulation"
-screenshot:
+image:
   src: "./screenshot.png"
   title: "Welding Simulation: 3D-Temperaturfeld & Schweißnaht-Geometrie"
   description: "Interaktive OpenGL-Visualisierung des räumlichen Temperaturfelds und der Schmelzbad-Isothermen mit orthogonalen 2D-Schnittansichten"

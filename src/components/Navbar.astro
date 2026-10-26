@@ -1,5 +1,6 @@
 ---
 import Container from "@components/Container.astro";
+import { CONTENT_DOMAINS, DOMAIN_METADATA } from "@commons/shared/domain-themes";
 
 const { pathname } = Astro.url;
 const normalizedPathname = pathname.replace(/\/$/, "") || "/";
@@ -12,62 +13,344 @@ const isActive = (href: string) => {
   return normalizedPathname.startsWith(normHref);
 };
 
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Posts", href: "/posts/" },
-  { label: "Publications", href: "/publications/" },
-  { label: "Presentations", href: "/presentations/" },
-  { label: "Courses", href: "/courses/" },
-  { label: "Projects", href: "/projects/" },
-  { label: "Services", href: "/services/" },
-  { label: "Visualizations", href: "/visualizations/" }
+const isAboutActive = isActive("/about/");
+const isContactActive = isActive("/contact/");
+
+// Desktop navigation items (Canonical sequence derived from CONTENT_DOMAINS)
+const directNavItems = [
+  { label: "About", href: "/about/", id: "about", priority: 1, active: isAboutActive },
+  ...CONTENT_DOMAINS.map((domain, idx) => ({
+    label: DOMAIN_METADATA[domain].label,
+    href: DOMAIN_METADATA[domain].href,
+    id: domain,
+    priority: idx + 2,
+    active: isActive(DOMAIN_METADATA[domain].href),
+  }))
 ];
+
+// All site pages for mobile menu
+const mobileNavItems = [
+  { label: "About", href: "/about/", id: "about", active: isAboutActive },
+  ...CONTENT_DOMAINS.map((domain) => ({
+    label: DOMAIN_METADATA[domain].label,
+    href: DOMAIN_METADATA[domain].href,
+    id: domain,
+    active: isActive(DOMAIN_METADATA[domain].href),
+  }))
+];
+
+let activePriority = 0;
+const matchedActiveItem = directNavItems.find((item) => item.active);
+if (matchedActiveItem) {
+  activePriority = matchedActiveItem.priority;
+}
+
+const moreItems = CONTENT_DOMAINS.map((domain, idx) => ({
+  label: DOMAIN_METADATA[domain].label,
+  href: DOMAIN_METADATA[domain].href,
+  description: DOMAIN_METADATA[domain].navDescription,
+  domain,
+  priority: idx + 2,
+}));
+
+const NAV_DOMAIN_STYLES: Record<string, {
+  cssVar: string;
+  desktopActiveText: string;
+  desktopActiveBar: string;
+  mobileActive: string;
+  megaCardActive: string;
+  megaCardHover: string;
+  megaIconActive: string;
+  megaIconHover: string;
+  megaTitleHover: string;
+}> = {
+  about: {
+    cssVar: 'var(--color-brand-primary)',
+    desktopActiveText: 'text-brand-primary font-semibold',
+    desktopActiveBar: 'bg-brand-primary',
+    mobileActive: 'text-brand-primary font-semibold border-l-2 border-brand-primary pl-3 -ml-3',
+    megaCardActive: 'bg-brand-primary/15 text-brand-primary font-semibold border border-brand-primary/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-brand-primary/30',
+    megaIconActive: 'bg-brand-primary/20 text-brand-primary',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-brand-primary group-hover/item:bg-brand-primary/15',
+    megaTitleHover: 'group-hover/item:text-brand-primary transition-colors duration-200',
+  },
+  posts: {
+    cssVar: 'var(--color-domain-posts)',
+    desktopActiveText: 'text-domain-posts font-semibold',
+    desktopActiveBar: 'bg-domain-posts',
+    mobileActive: 'text-domain-posts font-semibold border-l-2 border-domain-posts pl-3 -ml-3',
+    megaCardActive: 'bg-domain-posts/15 text-domain-posts font-semibold border border-domain-posts/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-posts/30',
+    megaIconActive: 'bg-domain-posts/20 text-domain-posts',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-posts group-hover/item:bg-domain-posts/15',
+    megaTitleHover: 'group-hover/item:text-domain-posts transition-colors duration-200',
+  },
+  publications: {
+    cssVar: 'var(--color-domain-publications)',
+    desktopActiveText: 'text-domain-publications font-semibold',
+    desktopActiveBar: 'bg-domain-publications',
+    mobileActive: 'text-domain-publications font-semibold border-l-2 border-domain-publications pl-3 -ml-3',
+    megaCardActive: 'bg-domain-publications/15 text-domain-publications font-semibold border border-domain-publications/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-publications/30',
+    megaIconActive: 'bg-domain-publications/20 text-domain-publications',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-publications group-hover/item:bg-domain-publications/15',
+    megaTitleHover: 'group-hover/item:text-domain-publications transition-colors duration-200',
+  },
+  presentations: {
+    cssVar: 'var(--color-domain-presentations)',
+    desktopActiveText: 'text-domain-presentations font-semibold',
+    desktopActiveBar: 'bg-domain-presentations',
+    mobileActive: 'text-domain-presentations font-semibold border-l-2 border-domain-presentations pl-3 -ml-3',
+    megaCardActive: 'bg-domain-presentations/15 text-domain-presentations font-semibold border border-domain-presentations/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-presentations/30',
+    megaIconActive: 'bg-domain-presentations/20 text-domain-presentations',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-presentations group-hover/item:bg-domain-presentations/15',
+    megaTitleHover: 'group-hover/item:text-domain-presentations transition-colors duration-200',
+  },
+  courses: {
+    cssVar: 'var(--color-domain-courses)',
+    desktopActiveText: 'text-domain-courses font-semibold',
+    desktopActiveBar: 'bg-domain-courses',
+    mobileActive: 'text-domain-courses font-semibold border-l-2 border-domain-courses pl-3 -ml-3',
+    megaCardActive: 'bg-domain-courses/15 text-domain-courses font-semibold border border-domain-courses/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-courses/30',
+    megaIconActive: 'bg-domain-courses/20 text-domain-courses',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-courses group-hover/item:bg-domain-courses/15',
+    megaTitleHover: 'group-hover/item:text-domain-courses transition-colors duration-200',
+  },
+  projects: {
+    cssVar: 'var(--color-domain-projects)',
+    desktopActiveText: 'text-domain-projects font-semibold',
+    desktopActiveBar: 'bg-domain-projects',
+    mobileActive: 'text-domain-projects font-semibold border-l-2 border-domain-projects pl-3 -ml-3',
+    megaCardActive: 'bg-domain-projects/15 text-domain-projects font-semibold border border-domain-projects/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-projects/30',
+    megaIconActive: 'bg-domain-projects/20 text-domain-projects',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-projects group-hover/item:bg-domain-projects/15',
+    megaTitleHover: 'group-hover/item:text-domain-projects transition-colors duration-200',
+  },
+  services: {
+    cssVar: 'var(--color-domain-services)',
+    desktopActiveText: 'text-domain-services font-semibold',
+    desktopActiveBar: 'bg-domain-services',
+    mobileActive: 'text-domain-services font-semibold border-l-2 border-domain-services pl-3 -ml-3',
+    megaCardActive: 'bg-domain-services/15 text-domain-services font-semibold border border-domain-services/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-services/30',
+    megaIconActive: 'bg-domain-services/20 text-domain-services',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-services group-hover/item:bg-domain-services/15',
+    megaTitleHover: 'group-hover/item:text-domain-services transition-colors duration-200',
+  },
+  newsletters: {
+    cssVar: 'var(--color-domain-newsletters)',
+    desktopActiveText: 'text-domain-newsletters font-semibold',
+    desktopActiveBar: 'bg-domain-newsletters',
+    mobileActive: 'text-domain-newsletters font-semibold border-l-2 border-domain-newsletters pl-3 -ml-3',
+    megaCardActive: 'bg-domain-newsletters/15 text-domain-newsletters font-semibold border border-domain-newsletters/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-newsletters/30',
+    megaIconActive: 'bg-domain-newsletters/20 text-domain-newsletters',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-newsletters group-hover/item:bg-domain-newsletters/15',
+    megaTitleHover: 'group-hover/item:text-domain-newsletters transition-colors duration-200',
+  },
+  visualizations: {
+    cssVar: 'var(--color-domain-visualizations)',
+    desktopActiveText: 'text-domain-visualizations font-semibold',
+    desktopActiveBar: 'bg-domain-visualizations',
+    mobileActive: 'text-domain-visualizations font-semibold border-l-2 border-domain-visualizations pl-3 -ml-3',
+    megaCardActive: 'bg-domain-visualizations/15 text-domain-visualizations font-semibold border border-domain-visualizations/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-visualizations/30',
+    megaIconActive: 'bg-domain-visualizations/20 text-domain-visualizations',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-visualizations group-hover/item:bg-domain-visualizations/15',
+    megaTitleHover: 'group-hover/item:text-domain-visualizations transition-colors duration-200',
+  },
+  tags: {
+    cssVar: 'var(--color-domain-tags)',
+    desktopActiveText: 'text-domain-tags font-semibold',
+    desktopActiveBar: 'bg-domain-tags',
+    mobileActive: 'text-domain-tags font-semibold border-l-2 border-domain-tags pl-3 -ml-3',
+    megaCardActive: 'bg-domain-tags/15 text-domain-tags font-semibold border border-domain-tags/30',
+    megaCardHover: 'hover:bg-element-bg/60 text-gray-300 hover:text-gray-100 border border-transparent hover:border-domain-tags/30',
+    megaIconActive: 'bg-domain-tags/20 text-domain-tags',
+    megaIconHover: 'bg-element-bg text-gray-400 group-hover/item:text-domain-tags group-hover/item:bg-domain-tags/15',
+    megaTitleHover: 'group-hover/item:text-domain-tags transition-colors duration-200',
+  },
+};
+
+const activeNavItem = directNavItems.find(item => item.active);
+const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cssVar || 'var(--color-brand-primary)') : 'var(--color-brand-primary)';
 ---
 
-<div class="sticky top-0 left-0 right-0 z-50 w-full">
-  <header class="transition-all duration-300 w-full glass-panel border-b border-element-border py-4 backdrop-blur-md relative">
-  <Container as="div" size="wide" padding="none" class="relative flex items-center justify-between">
-    
-    <!-- Logo / Brand -->
-    <a href="/" class="flex items-center space-x-3 group shrink-0">
-      <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
-        <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
-          GH
-        </span>
-      </span>
-      <div class="flex flex-col nav-logo-name leading-tight shrink-0">
-        <span class="nav-logo-title font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors whitespace-nowrap">
-          Dr. Georg Hackenberg
-        </span>
-        <span class="nav-logo-subtitle text-[11px] text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors whitespace-nowrap">
-          Professor for Industrial Informatics @ UAP
-        </span>
-      </div>
-    </a>
+<div class="sticky top-0 left-0 right-0 z-50 w-full" id="navbar-root">
+  <header
+    id="site-header"
+    class="transition-all duration-300 w-full py-4 relative"
+    data-nav-mode="desktop"
+    data-nav-count="10"
+    data-active-priority={activePriority}
+    style={`--active-nav-color: ${activeNavCssVar};`}
+  >
+    <!-- Background frosted glass layer (separated from header to avoid backdrop-root clipping on dropdown menus) -->
+    <div class="header-bg absolute inset-0 glass-panel border-b border-element-border backdrop-blur-md -z-10 pointer-events-none" id="site-header-bg"></div>
 
-    <!-- Desktop Navigation Links -->
-    <nav class="hidden nav:flex items-center space-x-3.5 lg:space-x-4 xl:space-x-5">
-      {navItems.map(item => {
-        const active = isActive(item.href);
-        return (
-          <a 
-            href={item.href} 
-            class={`relative py-1 text-xs nav:text-sm font-medium transition-colors duration-200 flex items-center ${
-              active 
-                ? "text-brand-blue font-semibold" 
-                : "text-gray-400 hover:text-gray-100"
-            }`}
+    <Container as="div" size="wide" padding="none" class="relative flex items-center justify-between" id="nav-container">
+      
+      <!-- Logo / Brand on the left (shrink-0 with dedicated minimum distance to nav) -->
+      <a href="/" class="flex items-center space-x-3 group shrink-0 mr-8 min-w-max" id="nav-brand">
+        <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-primary/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
+          <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
+            GH
+          </span>
+        </span>
+        <div class="flex flex-col nav-logo-name leading-tight shrink-0">
+          <span class="nav-logo-title font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors whitespace-nowrap">
+            Dr. Georg Hackenberg
+          </span>
+          <span class="nav-logo-subtitle text-[11px] text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors whitespace-nowrap">
+            Professor for Industrial Informatics @ UAP
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links (Right-aligned, Priority+ Dynamic Container) -->
+      <nav id="desktop-nav" class="ml-auto flex items-center justify-end gap-4 lg:gap-5 transition-opacity duration-200">
+        <!-- 9 Direct Canonical Items -->
+        {directNavItems.map(item => {
+          const styles = NAV_DOMAIN_STYLES[item.id] || NAV_DOMAIN_STYLES.about;
+          return (
+            <a 
+              href={item.href} 
+              data-nav-item={item.id}
+              data-nav-priority={item.priority > 1 ? String(item.priority) : undefined}
+              class={`nav-item-desktop relative py-1 text-sm font-medium transition-colors duration-200 flex items-center whitespace-nowrap ${
+                item.active 
+                  ? styles.desktopActiveText 
+                  : "text-gray-400 hover:text-gray-100"
+              }`}
+            >
+              {item.id === 'about' && (
+                <svg class="w-4 h-4 mr-1.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              )}
+              <span>{item.label}</span>
+              {item.active && (
+                <span 
+                  class={`absolute bottom-0 left-0 right-0 h-[2px] ${styles.desktopActiveBar} rounded-full`}
+                  style={`box-shadow: 0 0 8px color-mix(in srgb, ${styles.cssVar} 80%, transparent);`}
+                ></span>
+              )}
+            </a>
+          );
+        })}
+
+        <!-- 10. More ▾ Mega-Menu Dropdown Trigger -->
+        <div class="relative group shrink-0" id="more-dropdown-container">
+          <button
+            id="more-dropdown-trigger"
+            aria-label="Toggle More navigation menu"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            data-more-active="false"
+            class="relative py-1 text-sm font-medium transition-colors duration-200 flex items-center gap-1 cursor-pointer whitespace-nowrap text-gray-400 hover:text-gray-100"
           >
-            <span>{item.label}</span>
-            {active && (
-              <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-blue rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
-            )}
-          </a>
-        );
-      })}
+            <span>More ▾</span>
+            <span class="more-active-indicator hidden absolute bottom-0 left-0 right-0 h-[2px] bg-brand-primary rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+          </button>
 
-      <!-- Desktop Actions Group -->
-      <div class="flex items-center space-x-1 ml-2">
+          <!-- Dropdown Panel with Hover Bridge -->
+          <div
+            id="more-dropdown-menu"
+            role="menu"
+            aria-label="More Navigation"
+            class="invisible opacity-0 group-hover:visible group-hover:opacity-100 focus-within:visible focus-within:opacity-100 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 absolute right-0 top-full pt-3 z-50 w-[560px] max-w-[calc(100vw-2rem)] pointer-events-none group-hover:pointer-events-auto focus-within:pointer-events-auto"
+          >
+            <!-- Invisible bridge padding to prevent mouse drop -->
+            <div class="absolute -top-3 left-0 right-0 h-4 bg-transparent pointer-events-auto"></div>
+
+            <div class="glass-panel rounded-2xl border border-element-border-medium shadow-2xl p-4 backdrop-blur-md">
+              <div id="more-items-container" class="grid grid-cols-2 gap-2">
+                {moreItems.map(item => {
+                  const active = isActive(item.href);
+                  const styles = NAV_DOMAIN_STYLES[item.domain] || NAV_DOMAIN_STYLES.about;
+                  return (
+                    <a
+                      href={item.href}
+                      role="menuitem"
+                      data-more-priority={item.priority}
+                      class={`p-2.5 rounded-xl transition-all duration-200 flex items-start gap-3 group/item ${
+                        active
+                          ? styles.megaCardActive
+                          : styles.megaCardHover
+                      }`}
+                    >
+                      <div class={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-200 ${
+                        active
+                          ? styles.megaIconActive
+                          : styles.megaIconHover
+                      }`}>
+                        {item.domain === "posts" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                          </svg>
+                        )}
+                        {item.domain === "publications" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                          </svg>
+                        )}
+                        {item.domain === "presentations" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+                          </svg>
+                        )}
+                        {item.domain === "courses" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-5.25 6.557c0 1.5 2.35 2.7 5.25 2.7s5.25-1.2 5.25-2.7" />
+                          </svg>
+                        )}
+                        {item.domain === "projects" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                          </svg>
+                        )}
+                        {item.domain === "services" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
+                          </svg>
+                        )}
+                        {item.domain === "newsletters" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                          </svg>
+                        )}
+                        {item.domain === "visualizations" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        )}
+                        {item.domain === "tags" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+                          </svg>
+                        )}
+                      </div>
+                      <div class="flex flex-col min-w-0">
+                        <span class={`text-sm font-semibold leading-snug ${active ? "" : styles.megaTitleHover}`}>{item.label}</span>
+                        <span class="text-xs text-gray-400 line-clamp-1 leading-normal">{item.description}</span>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Desktop Actions Group at far right -->
+      <div id="desktop-actions" class="flex items-center space-x-1.5 shrink-0 ml-4 xl:ml-5">
         <!-- Theme Cycle Button Desktop -->
         <button 
           id="theme-cycle-btn-desktop"
@@ -112,17 +395,29 @@ const navItems = [
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
         </button>
-      </div>
-    </nav>
 
-    <!-- Theme, What's New & Privacy Toggle Mobile -->
-    <div class="flex items-center nav:hidden">
-      <!-- Action buttons -->
-      <div class="flex items-center space-x-1 mr-2">
+        <!-- Contact CTA Button (Far Right of Actions Group) -->
+        <a 
+          href="/contact/" 
+          class={`group relative px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm ml-2 active:scale-95 ${
+            isContactActive 
+              ? "bg-brand-primary hover:bg-brand-primary/90 text-white shadow-brand-primary/30 shadow-md ring-2 ring-brand-primary/50" 
+              : "bg-brand-primary/12 hover:bg-brand-primary/25 text-brand-primary border border-brand-primary/20 hover:border-brand-primary/45"
+          }`}
+        >
+          <svg class="w-4 h-4 shrink-0 opacity-85 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+          <span>Contact</span>
+        </a>
+      </div>
+
+      <!-- Mobile Actions (Theme, Sparkle, Privacy, Burger Button) -->
+      <div id="mobile-actions" class="flex items-center space-x-1 ml-auto">
         <!-- Theme Cycle Button Mobile -->
         <button 
           id="theme-cycle-btn-mobile"
-          class="w-11 h-11 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-90"
+          class="w-10 h-10 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-90"
           aria-label="Toggle theme"
           title="Toggle theme (System / Light / Dark)"
         >
@@ -142,7 +437,7 @@ const navItems = [
           id="whats-new-btn-mobile"
           type="button"
           data-open-whats-new-modal
-          class="relative w-11 h-11 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-90"
+          class="relative w-10 h-10 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-90"
           aria-label="Content Updates"
           title="Content Updates"
         >
@@ -155,56 +450,162 @@ const navItems = [
         <button 
           type="button"
           data-open-privacy-modal
-          class="w-11 h-11 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-90"
+          class="w-10 h-10 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-90"
           aria-label="Privacy Settings"
           title="Privacy Settings"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button 
+          id="mobile-menu-btn" 
+          class="text-gray-400 hover:text-gray-100 focus:outline-none p-2 rounded-lg hover:bg-element-bg cursor-pointer"
+          aria-label="Toggle Menu"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
 
-      <!-- Mobile Menu Button -->
-      <button 
-        id="mobile-menu-btn" 
-        class="text-gray-400 hover:text-gray-100 focus:outline-none p-2.5 rounded-lg hover:bg-element-bg"
-        aria-label="Toggle Menu"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
-  </Container>
+    </Container>
 
+    <!-- Synchronous inline script for Zero-Flicker on first paint -->
+    <script is:inline>
+      (function() {
+        try {
+          var header = document.getElementById('site-header');
+          var container = document.getElementById('nav-container');
+          var brand = document.getElementById('nav-brand');
+          var actions = document.getElementById('desktop-actions');
+          if (!header || !container) return;
+
+          var w = window.innerWidth;
+          if (w < 820) {
+            header.setAttribute('data-nav-mode', 'burger');
+            return;
+          }
+
+          var containerWidth = container.clientWidth || w;
+          var brandWidth = brand ? brand.offsetWidth : 280;
+          var actionsWidth = actions ? actions.offsetWidth : 260;
+          var minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
+          var navActionsGap = 20;
+
+          var availableWidth = containerWidth - brandWidth - actionsWidth - minLogoGap - navActionsGap;
+
+          // Calibrated baseline item widths (About, Posts, Publications, Presentations, Courses, Projects, Services, Visualizations, Newsletters, Tags)
+          var itemWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
+          var gap = 16;
+          var moreWidth = 60;
+
+          // Needed width for count = 10 (all 10 items shown, More ▾ is hidden)
+          var sum10 = 0;
+          for (var i = 0; i < 10; i++) sum10 += itemWidths[i];
+          var needed10 = sum10 + 9 * gap;
+
+          // Needed width for count = k (1..9, items 1..k + More ▾ trigger)
+          var needed = { 10: needed10 };
+          var runningSum = 0;
+          for (var k = 1; k <= 9; k++) {
+            runningSum += itemWidths[k - 1];
+            needed[k] = runningSum + k * gap + moreWidth;
+          }
+
+          if (availableWidth < needed[1]) {
+            header.setAttribute('data-nav-mode', 'burger');
+          } else {
+            header.setAttribute('data-nav-mode', 'desktop');
+            var chosen = 1;
+            if (availableWidth >= needed[10]) {
+              chosen = 10;
+            } else {
+              for (var c = 9; c >= 1; c--) {
+                if (availableWidth >= needed[c]) {
+                  chosen = c;
+                  break;
+                }
+              }
+            }
+            header.setAttribute('data-nav-count', String(chosen));
+
+            var activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
+            var moreTrigger = document.getElementById('more-dropdown-trigger');
+            if (moreTrigger) {
+              var isMoreActive = (activePriority > 0 && activePriority > chosen);
+              moreTrigger.setAttribute('data-more-active', isMoreActive ? 'true' : 'false');
+            }
+
+            var menu = document.getElementById('more-dropdown-menu');
+            if (menu && moreTrigger && container) {
+              var mWidth = (chosen >= 7 && chosen <= 9) ? 320 : 560;
+              var tRect = moreTrigger.getBoundingClientRect();
+              var cRect = container.getBoundingClientRect();
+              var dLeft = tRect.right - mWidth;
+              var minL = Math.max(cRect.left + 8, 16);
+              if (dLeft < minL) {
+                menu.style.right = '-' + Math.round(minL - dLeft) + 'px';
+              } else {
+                menu.style.right = '0px';
+              }
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
   </header>
 
-  <!-- Mobile Dropdown Menu -->
+  <!-- Mobile Dropdown Menu (Shows all 9 pages in canonical sequence + Contact CTA) -->
   <div 
     id="mobile-menu" 
-    class="hidden nav:hidden glass-panel border-b border-element-border absolute top-full left-0 right-0 py-6 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
+    class="hidden glass-panel border-b border-element-border absolute top-full left-0 right-0 py-5 px-6 flex flex-col space-y-1.5 shadow-xl shadow-black/30 backdrop-blur-md max-h-[85vh] overflow-y-auto"
   >
-    {navItems.map(item => {
-      const active = isActive(item.href);
+    {mobileNavItems.map(item => {
+      const styles = NAV_DOMAIN_STYLES[item.id] || NAV_DOMAIN_STYLES.about;
       return (
         <a 
           href={item.href} 
-          class={`text-base font-medium transition-colors py-1 flex items-center ${
-            active 
-              ? "text-brand-blue font-semibold border-l-2 border-brand-blue pl-3 -ml-3" 
+          class={`text-base font-medium transition-colors py-1.5 flex items-center ${
+            item.active 
+              ? styles.mobileActive 
               : "text-gray-300 hover:text-gray-100"
           }`}
         >
+          {item.id === 'about' && (
+            <svg class="w-4 h-4 mr-2 shrink-0 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          )}
           <span>{item.label}</span>
         </a>
       );
     })}
+
+    <!-- Contact CTA Full Width at bottom -->
+    <div class="pt-3 border-t border-element-border/50 mt-2">
+      <a
+        href="/contact/"
+        class={`group w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
+          isContactActive
+            ? "bg-brand-primary hover:bg-brand-primary/90 text-white shadow-brand-primary/30 shadow-md ring-2 ring-brand-primary/50"
+            : "bg-brand-primary/12 hover:bg-brand-primary/25 text-brand-primary border border-brand-primary/20 hover:border-brand-primary/45"
+        }`}
+      >
+        <svg class="w-4 h-4 shrink-0 opacity-85 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+        <span>Contact</span>
+      </a>
+    </div>
   </div>
 </div>
 
 <script>
+  // Mobile drawer interactive toggle
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
   const hamburger = document.getElementById('hamburger-icon');
@@ -228,16 +629,205 @@ const navItems = [
     });
   }
 
+  // Desktop More ▾ Mega-Menu Interactive Support
+  const moreBtn = document.getElementById('more-dropdown-trigger');
+  const moreMenu = document.getElementById('more-dropdown-menu');
+  const moreContainer = document.getElementById('more-dropdown-container');
+
+  if (moreBtn && moreMenu && moreContainer) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = moreBtn.getAttribute('aria-expanded') === 'true';
+      moreBtn.setAttribute('aria-expanded', String(!isExpanded));
+      if (!isExpanded) {
+        moreMenu.classList.remove('invisible', 'opacity-0', 'pointer-events-none');
+        moreMenu.classList.add('visible', 'opacity-100', 'pointer-events-auto');
+      } else {
+        moreMenu.classList.add('invisible', 'opacity-0', 'pointer-events-none');
+        moreMenu.classList.remove('visible', 'opacity-100', 'pointer-events-auto');
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (!moreContainer.contains(e.target as Node)) {
+        moreBtn.setAttribute('aria-expanded', 'false');
+        moreMenu.classList.add('invisible', 'opacity-0', 'pointer-events-none');
+        moreMenu.classList.remove('visible', 'opacity-100', 'pointer-events-auto');
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        moreBtn.setAttribute('aria-expanded', 'false');
+        moreMenu.classList.add('invisible', 'opacity-0', 'pointer-events-none');
+        moreMenu.classList.remove('visible', 'opacity-100', 'pointer-events-auto');
+        moreBtn.focus();
+      }
+    });
+  }
+
+  // Dynamic Greedy / Priority+ Navigation Engine
+  function initPriorityNav() {
+    const header = document.getElementById('site-header');
+    const container = document.getElementById('nav-container');
+    const brand = document.getElementById('nav-brand');
+    const desktopNav = document.getElementById('desktop-nav');
+    const desktopActions = document.getElementById('desktop-actions');
+    const moreTrigger = document.getElementById('more-dropdown-trigger');
+    const menuEl = document.getElementById('mobile-menu');
+    const hamburgerEl = document.getElementById('hamburger-icon');
+    const closeIconEl = document.getElementById('close-icon');
+
+    if (!header || !container || !brand || !desktopNav || !desktopActions) return;
+
+    const activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
+
+    // Query all 10 direct items in canonical sequence
+    const itemIds = [
+      'about', 'posts', 'publications', 'presentations',
+      'courses', 'projects', 'services', 'visualizations', 'newsletters', 'tags'
+    ];
+    const fallbackWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
+    const minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
+    const navActionsGap = 20;
+    const gap = 16;
+
+    const moreContainerEl = document.getElementById('more-dropdown-container');
+
+    const repositionMoreDropdown = () => {
+      const moreMenu = document.getElementById('more-dropdown-menu');
+      if (!moreMenu || !moreTrigger || !container) return;
+
+      const currentCount = parseInt(header.getAttribute('data-nav-count') || '10', 10);
+      const menuWidth = (currentCount >= 7 && currentCount <= 9) ? 320 : 560;
+
+      const triggerRect = moreTrigger.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      const desiredLeft = triggerRect.right - menuWidth;
+      const minLeft = Math.max(containerRect.left + 8, 16);
+
+      if (desiredLeft < minLeft) {
+        const offset = Math.round(minLeft - desiredLeft);
+        moreMenu.style.right = `-${offset}px`;
+      } else {
+        moreMenu.style.right = '0px';
+      }
+    };
+
+    let rafId: number | null = null;
+
+    const updateNavPriority = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const containerWidth = container.clientWidth;
+        const brandWidth = brand.offsetWidth;
+        const actionsWidth = desktopActions.offsetWidth || 260;
+
+        const availableWidth = containerWidth - brandWidth - actionsWidth - minLogoGap - navActionsGap;
+
+        // Measure live widths of items or use calibrated fallbacks
+        const measuredWidths = itemIds.map((id, index) => {
+          const el = desktopNav.querySelector<HTMLElement>(`[data-nav-item="${id}"]`);
+          return Math.max(el?.getBoundingClientRect().width || el?.offsetWidth || 0, fallbackWidths[index]);
+        });
+
+        const measuredMoreWidth = Math.max(
+          moreContainerEl?.getBoundingClientRect().width || moreContainerEl?.offsetWidth || 0,
+          60
+        );
+
+        // Compute needed widths:
+        // Count 10: all 10 items shown, More ▾ trigger is hidden
+        const sum10 = measuredWidths.reduce((a, b) => a + b, 0);
+        const needed10 = sum10 + 9 * gap;
+
+        // Count 1..9: items 1..k + More ▾ trigger
+        const needed: Record<number, number> = { 10: needed10 };
+        let runningSum = 0;
+        for (let k = 1; k <= 9; k++) {
+          runningSum += measuredWidths[k - 1];
+          needed[k] = runningSum + k * gap + measuredMoreWidth;
+        }
+
+        let nextMode: 'burger' | 'desktop';
+        let nextCount = 1;
+
+        if (availableWidth < needed[1] || containerWidth < 820) {
+          nextMode = 'burger';
+        } else {
+          nextMode = 'desktop';
+          if (availableWidth >= needed[10]) {
+            nextCount = 10;
+          } else {
+            for (let c = 9; c >= 1; c--) {
+              if (availableWidth >= needed[c]) {
+                nextCount = c;
+                break;
+              }
+            }
+          }
+        }
+
+        if (header.getAttribute('data-nav-mode') !== nextMode) {
+          header.setAttribute('data-nav-mode', nextMode);
+        }
+
+        if (nextMode === 'desktop') {
+          if (header.getAttribute('data-nav-count') !== String(nextCount)) {
+            header.setAttribute('data-nav-count', String(nextCount));
+          }
+
+          repositionMoreDropdown();
+
+          if (moreTrigger) {
+            const isMoreActive = (activePriority > 0 && activePriority > nextCount);
+            const activeAttr = isMoreActive ? 'true' : 'false';
+            if (moreTrigger.getAttribute('data-more-active') !== activeAttr) {
+              moreTrigger.setAttribute('data-more-active', activeAttr);
+            }
+          }
+
+          // Close mobile menu if switching to desktop
+          if (menuEl && !menuEl.classList.contains('hidden')) {
+            menuEl.classList.add('hidden');
+            hamburgerEl?.classList.remove('hidden');
+            closeIconEl?.classList.add('hidden');
+          }
+        }
+      });
+    };
+
+    updateNavPriority();
+
+    window.addEventListener('resize', updateNavPriority, { passive: true });
+
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => {
+        updateNavPriority();
+      });
+      ro.observe(container);
+    }
+  }
+
+  initPriorityNav();
+  document.addEventListener('astro:page-load', initPriorityNav);
+
   // Header scroll dynamic visual styling
   window.addEventListener('scroll', () => {
     const header = document.querySelector('header');
+    const headerBg = document.getElementById('site-header-bg');
     if (header) {
       if (window.scrollY > 50) {
         header.classList.remove('py-4');
-        header.classList.add('py-3', 'navbar-scrolled', 'shadow-lg');
+        header.classList.add('py-3');
+        headerBg?.classList.add('navbar-scrolled', 'shadow-lg');
       } else {
-        header.classList.remove('py-3', 'navbar-scrolled', 'shadow-lg');
+        header.classList.remove('py-3');
         header.classList.add('py-4');
+        headerBg?.classList.remove('navbar-scrolled', 'shadow-lg');
       }
     }
   }, { passive: true });
@@ -345,16 +935,165 @@ const navItems = [
     }
   };
 
-  // Initialize immediately
   initThemeToggle();
 
-  // Re-run if Astro uses page load events
   document.addEventListener('astro:page-load', () => {
     initThemeToggle();
   });
 </script>
 
 <style is:global>
+  /* Priority+ Pre-Paint Display States (Burger vs Desktop) */
+  #site-header[data-nav-mode="burger"] #desktop-nav,
+  #site-header[data-nav-mode="burger"] #desktop-actions {
+    display: none !important;
+  }
+  #site-header[data-nav-mode="burger"] #mobile-actions {
+    display: flex !important;
+  }
+
+  #site-header:not([data-nav-mode="burger"]) #desktop-nav {
+    display: flex !important;
+  }
+  #site-header:not([data-nav-mode="burger"]) #desktop-actions {
+    display: flex !important;
+  }
+  #site-header:not([data-nav-mode="burger"]) #mobile-actions {
+    display: none !important;
+  }
+
+  /* When all 10 items fit directly in the bar, More ▾ is HIDDEN */
+  #site-header[data-nav-count="10"] #more-dropdown-container {
+    display: none !important;
+  }
+
+  /* More trigger active state highlight & indicator bar */
+  #more-dropdown-trigger[data-more-active="true"] {
+    color: var(--active-nav-color, var(--color-brand-primary)) !important;
+    font-weight: 600 !important;
+  }
+  #more-dropdown-trigger[data-more-active="true"] .more-active-indicator {
+    display: block !important;
+    background-color: var(--active-nav-color, var(--color-brand-primary)) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--active-nav-color, var(--color-brand-primary)) 80%, transparent) !important;
+  }
+
+  /* Priority+ Item Folding in Top Bar (from right to left) */
+  #site-header[data-nav-count="1"] [data-nav-priority="2"],
+  #site-header[data-nav-count="1"] [data-nav-priority="3"],
+  #site-header[data-nav-count="1"] [data-nav-priority="4"],
+  #site-header[data-nav-count="1"] [data-nav-priority="5"],
+  #site-header[data-nav-count="1"] [data-nav-priority="6"],
+  #site-header[data-nav-count="1"] [data-nav-priority="7"],
+  #site-header[data-nav-count="1"] [data-nav-priority="8"],
+  #site-header[data-nav-count="1"] [data-nav-priority="9"],
+  #site-header[data-nav-count="1"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="2"] [data-nav-priority="3"],
+  #site-header[data-nav-count="2"] [data-nav-priority="4"],
+  #site-header[data-nav-count="2"] [data-nav-priority="5"],
+  #site-header[data-nav-count="2"] [data-nav-priority="6"],
+  #site-header[data-nav-count="2"] [data-nav-priority="7"],
+  #site-header[data-nav-count="2"] [data-nav-priority="8"],
+  #site-header[data-nav-count="2"] [data-nav-priority="9"],
+  #site-header[data-nav-count="2"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="3"] [data-nav-priority="4"],
+  #site-header[data-nav-count="3"] [data-nav-priority="5"],
+  #site-header[data-nav-count="3"] [data-nav-priority="6"],
+  #site-header[data-nav-count="3"] [data-nav-priority="7"],
+  #site-header[data-nav-count="3"] [data-nav-priority="8"],
+  #site-header[data-nav-count="3"] [data-nav-priority="9"],
+  #site-header[data-nav-count="3"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="4"] [data-nav-priority="5"],
+  #site-header[data-nav-count="4"] [data-nav-priority="6"],
+  #site-header[data-nav-count="4"] [data-nav-priority="7"],
+  #site-header[data-nav-count="4"] [data-nav-priority="8"],
+  #site-header[data-nav-count="4"] [data-nav-priority="9"],
+  #site-header[data-nav-count="4"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="5"] [data-nav-priority="6"],
+  #site-header[data-nav-count="5"] [data-nav-priority="7"],
+  #site-header[data-nav-count="5"] [data-nav-priority="8"],
+  #site-header[data-nav-count="5"] [data-nav-priority="9"],
+  #site-header[data-nav-count="5"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="6"] [data-nav-priority="7"],
+  #site-header[data-nav-count="6"] [data-nav-priority="8"],
+  #site-header[data-nav-count="6"] [data-nav-priority="9"],
+  #site-header[data-nav-count="6"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="7"] [data-nav-priority="8"],
+  #site-header[data-nav-count="7"] [data-nav-priority="9"],
+  #site-header[data-nav-count="7"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="8"] [data-nav-priority="9"],
+  #site-header[data-nav-count="8"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="9"] [data-nav-priority="10"] {
+    display: none !important;
+  }
+
+  /* In More ▾ Mega-Menu, only show items that are NOT shown directly in top bar (priority <= nav-count are hidden) */
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="4"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="5"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="6"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="7"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="8"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="9"],
+
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="4"],
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="5"],
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="6"],
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="7"],
+  #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="8"],
+
+  #site-header[data-nav-count="7"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="7"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="7"] #more-dropdown-menu [data-more-priority="4"],
+  #site-header[data-nav-count="7"] #more-dropdown-menu [data-more-priority="5"],
+  #site-header[data-nav-count="7"] #more-dropdown-menu [data-more-priority="6"],
+  #site-header[data-nav-count="7"] #more-dropdown-menu [data-more-priority="7"],
+
+  #site-header[data-nav-count="6"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="6"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="6"] #more-dropdown-menu [data-more-priority="4"],
+  #site-header[data-nav-count="6"] #more-dropdown-menu [data-more-priority="5"],
+  #site-header[data-nav-count="6"] #more-dropdown-menu [data-more-priority="6"],
+
+  #site-header[data-nav-count="5"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="5"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="5"] #more-dropdown-menu [data-more-priority="4"],
+  #site-header[data-nav-count="5"] #more-dropdown-menu [data-more-priority="5"],
+
+  #site-header[data-nav-count="4"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="4"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="4"] #more-dropdown-menu [data-more-priority="4"],
+
+  #site-header[data-nav-count="3"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="3"] #more-dropdown-menu [data-more-priority="3"],
+
+  #site-header[data-nav-count="2"] #more-dropdown-menu [data-more-priority="2"] {
+    display: none !important;
+  }
+
+  /* Dynamic sizing of More dropdown: 1 column (320px) when 1..3 items overflow (counts 7, 8, 9); 2 columns (560px) when 4..9 items overflow */
+  #site-header[data-nav-count="7"] #more-dropdown-menu,
+  #site-header[data-nav-count="8"] #more-dropdown-menu,
+  #site-header[data-nav-count="9"] #more-dropdown-menu {
+    width: 320px !important;
+  }
+  #site-header[data-nav-count="7"] #more-items-container,
+  #site-header[data-nav-count="8"] #more-items-container,
+  #site-header[data-nav-count="9"] #more-items-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+
   /* Theme Cycle Button Icons Visibility */
   .theme-icon-system,
   .theme-icon-light,

@@ -1,7 +1,7 @@
 ---
-title: "Schema.org ImageObject Knowledge Graphs & Build-Time Asset Governance in Astro"
+title: Schema.org ImageObject Knowledge Graphs & Build-Time Asset Governance in Astro
 pubDate: 2026-10-16
-description: "How we engineered a zero-fallback Schema.org ImageObject JSON-LD compiler, XML image sitemap enforcer, and 5-stage CI asset integrity validator in Astro."
+description: How we engineered a zero-fallback Schema.org ImageObject JSON-LD compiler, XML image sitemap enforcer, and 5-stage CI asset integrity validator in Astro.
 lang: en
 tags:
   - seo
@@ -16,55 +16,69 @@ tags:
   - systems-validation
 icon:
   src: ./hero.jpg
-  title: "Schema.org ImageObject Knowledge Graph and Asset Governance Pipeline on Ultrawide Monitor"
-  description: "Close-up illustration of a curved ultra-wide monitor in the Grünau im Almtal timber office displaying a Schema.org ImageObject JSON-LD knowledge graph, copyright license shield, and XML image sitemap pipeline"
+  title: Schema.org ImageObject Knowledge Graph and Asset Governance Pipeline on Ultrawide Monitor
+  description: Close-up illustration of a curved ultra-wide monitor in the Grünau im Almtal timber office displaying a Schema.org ImageObject JSON-LD knowledge graph, copyright license shield, and XML image sitemap pipeline
 references:
   - id: guha-2016-schema-org
     type: article
-    author: "Guha, Ramanathan V. and Brickley, Dan and Macbeth, Steve"
     title: "Schema.org: Evolution of Structured Data on the Web"
-    journal: "Communications of the ACM"
+    journal: Communications of the ACM
     year: 2016
     volume: "59"
     number: "2"
-    pages: "44--51"
-    url: "https://doi.org/10.1145/2844544"
-    doi: "10.1145/2844544"
+    pages: 44--51
+    url: https://doi.org/10.1145/2844544
+    doi: 10.1145/2844544
+    authors:
+      - name: Ramanathan V. Guha
+      - name: Dan Brickley
+      - name: Steve Macbeth
   - id: w3c-2020-json-ld11
     type: online
-    author: "Kellogg, Gregg and Champin, Pierre-Antoine and Longley, Dave"
     title: "JSON-LD 1.1: A JSON-based Serialization for Linked Data"
     year: 2020
-    siteName: "W3C Recommendation"
-    url: "https://www.w3.org/TR/json-ld11/"
+    siteName: W3C Recommendation
+    url: https://www.w3.org/TR/json-ld11/
+    authors:
+      - name: Gregg Kellogg
+      - name: Pierre-Antoine Champin
+      - name: Dave Longley
   - id: schema-org-2024-imageobject
     type: online
-    author: "Schema.org Community Group"
     title: "Schema.org Type: ImageObject — A MediaObject Encoding an Image"
     year: 2024
-    siteName: "Schema.org"
-    url: "https://schema.org/ImageObject"
+    siteName: Schema.org
+    url: https://schema.org/ImageObject
+    authors:
+      - name: Schema.org Community Group
+        type: Organization
   - id: google-2024-image-license-metadata
     type: online
-    author: "Google Search Central"
-    title: "Image License Metadata (Schema.org ImageObject) in Google Search"
+    title: Image License Metadata (Schema.org ImageObject) in Google Search
     year: 2024
-    siteName: "Google for Developers"
-    url: "https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata"
+    siteName: Google for Developers
+    url: https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata
+    authors:
+      - name: Google Search Central
+        type: Organization
   - id: google-2024-image-sitemaps
     type: online
-    author: "Google Search Central"
     title: "Image Sitemaps: Help Google Discover Images on Your Site"
     year: 2024
-    siteName: "Google for Developers"
-    url: "https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps"
+    siteName: Google for Developers
+    url: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps
+    authors:
+      - name: Google Search Central
+        type: Organization
   - id: w3c-2023-wcag22-non-text
     type: online
-    author: "W3C Accessibility Guidelines Working Group"
-    title: "Web Content Accessibility Guidelines (WCAG) 2.2 — Success Criterion 1.1.1 Non-text Content"
+    title: Web Content Accessibility Guidelines (WCAG) 2.2 — Success Criterion 1.1.1 Non-text Content
     year: 2023
-    siteName: "W3C Recommendation"
-    url: "https://www.w3.org/TR/WCAG22/#non-text-content"
+    siteName: W3C Recommendation
+    url: https://www.w3.org/TR/WCAG22/#non-text-content
+    authors:
+      - name: W3C Accessibility Guidelines Working Group
+        type: Organization
 ---
 
 Build-time Schema.org `ImageObject` knowledge graph compilation and deterministic asset governance transform passive HTML graphics into machine-verifiable linked data entities. By scanning compiled DOM trees with Cheerio, stripping content-hash suffixes into stable `@id` fragment URIs, injecting licensing metadata into JSON-LD, and enforcing five post-build CI assertions, static sites achieve 100% multimodal attribution parity.

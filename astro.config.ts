@@ -31,6 +31,7 @@ import {
 } from '@commons/shared/citations.js';
 import { getFileContentHash, getHashedFilename } from '@commons/server/content-hash.js';
 import { BRANDING_CACHE_DIR, ensureBrandingAssets } from '@commons/server/branding-assets.js';
+import { MAP_CACHE_DIR, ensureMapAssets } from '@commons/server/map-assets.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
@@ -109,6 +110,18 @@ function copyContentAssets(): AstroIntegration {
             );
             if (brandingIconMatch) {
               const filePath = path.join(BRANDING_CACHE_DIR, `${brandingIconMatch[1]}.png`);
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+
+            // Dev server middleware for cached static maps
+            const mapMatch = cleanUrl.match(/^\/assets\/maps\/(campus-wels|headquarters-gruenau)(-(?:light|dark))?-([a-f0-9]{8})\.png$/);
+            if (mapMatch) {
+              const themeSuffix = mapMatch[2] || '';
+              const filePath = path.join(MAP_CACHE_DIR, `${mapMatch[1]}${themeSuffix}.png`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
                 res.writeHead(200, { 'Content-Type': 'image/png' });
                 fs.createReadStream(filePath).pipe(res);
@@ -320,6 +333,9 @@ function copyContentAssets(): AstroIntegration {
           };
           copyMermaid(mermaidExportsDir);
         }
+
+        // Ensure static map assets are synced into dist/
+        await ensureMapAssets({ outDir });
 
         // Copy cached branding & OG assets into dist/ and remove _internal/
         const { ogImagePath, iconFiles } = await ensureBrandingAssets();
@@ -611,16 +627,6 @@ function buildImageIndex(): void {
           } else if (norm.includes('src/content/characters/')) {
             const match = norm.match(/src\/content\/characters\/([^/]+)/);
             targetDir = match ? `characters/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'characters';
-          } else if (norm.includes('src/content/feeds/')) {
-            const match = norm.match(/src\/content\/feeds\/(linkedin|youtube|github)\/(.+)\/[^/]+$/);
-            if (match) {
-              const platform = match[1];
-              const subpath = match[2].replace(/[<>:"/\\|?*]/g, '_');
-              targetDir = `feeds/${platform}/${subpath}`;
-            } else {
-              const simpleMatch = norm.match(/src\/content\/feeds\/([^/]+)/);
-              targetDir = simpleMatch ? `feeds/${simpleMatch[1]}` : 'feeds';
-            }
           } else if (norm.includes('src/assets/avatar/')) {
             targetDir = 'assets/avatar';
           } else if (norm.includes('src/assets/technologies/')) {
@@ -761,14 +767,6 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
       const match = searchPath.match(/(?:src\/content\/)?characters\/([^/]+)/);
       const charSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
       return charSlug ? `characters/${charSlug}/[name]-[hash][extname]` : `characters/[name]-[hash][extname]`;
-    }
-    if (searchPath.includes('src/content/feeds/') || searchPath.includes('/feeds/')) {
-      const match = searchPath.match(/(?:src\/content\/)?feeds\/(linkedin|youtube|github)\/(.+)\/[^/]+$/);
-      if (match) {
-        return `feeds/${match[1]}/${match[2].replace(/[<>:"/\\|?*]/g, '_')}/[name]-[hash][extname]`;
-      }
-      const simpleMatch = searchPath.match(/(?:src\/content\/)?feeds\/([^/]+)/);
-      return simpleMatch ? `feeds/${simpleMatch[1]}/[name]-[hash][extname]` : `feeds/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/assets/avatar/') || searchPath.includes('/avatar/') || cleanName.includes('comic-profile')) {
       return `assets/avatar/[name]-[hash][extname]`;

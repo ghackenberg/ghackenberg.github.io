@@ -11,6 +11,7 @@ interface Props {
   description?: string;
   pubDate: Date;
   duration?: string;
+  image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   icon?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   previewImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags?: string[];
@@ -26,6 +27,7 @@ const {
   description, 
   pubDate, 
   duration,
+  image, 
   icon, 
   previewImage,
   tags = [], 
@@ -39,7 +41,7 @@ const displayDuration = duration ?? getPresentationDuration(id).text;
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
-const rawImage = previewImage || icon;
+const rawImage = image || previewImage || icon;
 const isCoverObj = Boolean(rawImage && typeof rawImage === 'object' && 'src' in rawImage && rawImage.src);
 const iconImg = isCoverObj ? (rawImage as { src: ImageMetadata }).src : (rawImage as ImageMetadata | undefined);
 const iconTitle = isCoverObj ? (rawImage as { title: string }).title : title;
@@ -65,7 +67,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
 <article class={articleClass} data-card-id={id} data-collection="presentations">
   {featured && (
-    <div class="absolute inset-0 bg-gradient-to-br from-domain-presentations/15 via-transparent to-brand-purple/15 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-domain-presentations/15 via-transparent to-domain-presentations/5 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
   )}
 
   <!-- Image panel -->

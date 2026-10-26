@@ -20,10 +20,10 @@ const {
 const colorClasses: Record<string, string> = {
   projects: 'fill-domain-projects',
   teal: 'fill-domain-projects',
-  blue: 'fill-brand-blue',
-  yellow: 'fill-brand-yellow',
-  purple: 'fill-brand-purple',
-  green: 'fill-brand-green',
+  blue: 'fill-brand-primary',
+  yellow: 'fill-brand-primary',
+  purple: 'fill-brand-primary',
+  green: 'fill-brand-primary',
 };
 
 const resolvedColor = domain || accentColor || 'projects';
@@ -32,10 +32,10 @@ const activeFill = theme === 'dark'
   ? {
       projects: 'fill-domain-projects',
       teal: 'fill-domain-projects',
-      blue: 'fill-brand-blue',
-      yellow: 'fill-brand-yellow',
-      purple: 'fill-brand-purple',
-      green: 'fill-brand-green',
+      blue: 'fill-brand-primary',
+      yellow: 'fill-brand-primary',
+      purple: 'fill-brand-primary',
+      green: 'fill-brand-primary',
     }[resolvedColor] || 'fill-domain-projects'
   : colorClasses[resolvedColor] || colorClasses.projects;
 

@@ -1,25 +1,24 @@
 ---
-title: "Crawler-Budget & Bot-Barrieren"
+title: Crawler-Budget & Bot-Barrieren
 subtitle: "Die Ökonomie der Indexierung: {cue:hl-sub-crawler-budget}Warum Latenzen und Timeouts Ihre Inhalte für KI-Bots unsichtbar machen{/cue}"
 number: "41"
-slideLayout: "story-hero"
-voiceover: >
-  Suchmaschinen- und KI-Crawler durchforsten das Web nicht unbegrenzt, sondern unterliegen strikten betriebswirtschaftlichen Rechenzeitgrenzen.
-  {cue:sub} Jede Domain besitzt {cue:hl-sub-crawler-budget}ein limitiertes Crawler-Budget für Crawl-Kapazität und Host-Load{/cue}.
-  {cue:vis-crawler-budget-pipe} Unser Pipeline-Modell zeigt die fatale Weiche zwischen schneller und träger Bereitstellung.
-  {cue:card-crawler-budget-rules} Gemäß den offiziellen Spezifikationen von Google {cue:hl-callout-crawler-budget-cap}investieren Bots nur begrenzte Rechenzeit pro Host{/cue}: {cue:hl-crawler-fast-path}Blitzschnelle statische HTML-Seiten erlauben die Indexierung hunderter Dokumente{/cue}, während {cue:hl-crawler-slow-path}hohe Serverlatenzen das Crawl-Rate-Limit drastisch drosseln{/cue}, sodass {cue:hl-crawler-timeout-barrier}bei Erreichen der Timeout-Barriere der Rest der Website unindexiert verbleibt{/cue} – Performance ist Sichtbarkeit!
+slideLayout: story-hero
+voiceover: |
+  Suchmaschinen- und KI-Crawler durchforsten das Web nicht unbegrenzt, sondern unterliegen strikten betriebswirtschaftlichen Rechenzeitgrenzen. {cue:sub} Jede Domain besitzt {cue:hl-sub-crawler-budget}ein limitiertes Crawler-Budget für Crawl-Kapazität und Host-Load{/cue}. {cue:vis-crawler-budget-pipe} Unser Pipeline-Modell zeigt die fatale Weiche zwischen schneller und träger Bereitstellung. {cue:card-crawler-budget-rules} Gemäß den offiziellen Spezifikationen von Google {cue:hl-callout-crawler-budget-cap}investieren Bots nur begrenzte Rechenzeit pro Host{/cue}: {cue:hl-crawler-fast-path}Blitzschnelle statische HTML-Seiten erlauben die Indexierung hunderter Dokumente{/cue}, während {cue:hl-crawler-slow-path}hohe Serverlatenzen das Crawl-Rate-Limit drastisch drosseln{/cue}, sodass {cue:hl-crawler-timeout-barrier}bei Erreichen der Timeout-Barriere der Rest der Website unindexiert verbleibt{/cue} – Performance ist Sichtbarkeit!
 notes: |
   - Zeit: 55:00 - 57:30 Min.
   - Google Search Central (2024) zitieren.
   - Kernaussage: Langsame Backend-Antworten verbrennen das Bot-Budget, noch bevor der Content analysiert werden kann.
 references:
   - type: online
-    id: "google-2024-crawler-budget"
-    author: "Google Search Central"
-    title: "What Crawl Budget Means for Googlebot"
-    siteName: "Google for Developers"
+    id: google-2024-crawler-budget
+    title: What Crawl Budget Means for Googlebot
+    siteName: Google for Developers
     year: 2024
-    url: "https://developers.google.com/search/docs/crawling-indexing/large-site-managing-crawl-budget"
+    url: https://developers.google.com/search/docs/crawling-indexing/large-site-managing-crawl-budget
+    authors:
+      - name: Google Search Central
+        type: Organization
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

@@ -131,51 +131,15 @@ html {
 }
 
 /* Premium high-contrast styling for status/category badges */
-.bg-brand-blue\/10.text-brand-blue {
-  color: var(--color-brand-blue) !important;
-  border-color: color-mix(in srgb, var(--color-brand-blue) 30%, transparent) !important;
-  background-color: color-mix(in srgb, var(--color-brand-blue) 15%, transparent) !important;
+.bg-brand-primary\/10.text-brand-primary {
+  color: var(--color-brand-primary) !important;
+  border-color: color-mix(in srgb, var(--color-brand-primary) 30%, transparent) !important;
+  background-color: color-mix(in srgb, var(--color-brand-primary) 15%, transparent) !important;
 
   @variant light {
-    color: var(--color-brand-blue) !important;
-    border-color: color-mix(in srgb, var(--color-brand-blue) 25%, transparent) !important;
-    background-color: color-mix(in srgb, var(--color-brand-blue) 10%, transparent) !important;
-  }
-}
-
-.bg-brand-yellow\/10.text-brand-yellow {
-  color: var(--color-brand-yellow) !important;
-  border-color: color-mix(in srgb, var(--color-brand-yellow) 30%, transparent) !important;
-  background-color: color-mix(in srgb, var(--color-brand-yellow) 15%, transparent) !important;
-
-  @variant light {
-    color: var(--color-brand-yellow) !important;
-    border-color: color-mix(in srgb, var(--color-brand-yellow) 30%, transparent) !important;
-    background-color: color-mix(in srgb, var(--color-brand-yellow) 10%, transparent) !important;
-  }
-}
-
-.bg-brand-purple\/10.text-brand-purple {
-  color: var(--color-brand-purple) !important;
-  border-color: color-mix(in srgb, var(--color-brand-purple) 30%, transparent) !important;
-  background-color: color-mix(in srgb, var(--color-brand-purple) 15%, transparent) !important;
-
-  @variant light {
-    color: var(--color-brand-purple) !important;
-    border-color: color-mix(in srgb, var(--color-brand-purple) 25%, transparent) !important;
-    background-color: color-mix(in srgb, var(--color-brand-purple) 10%, transparent) !important;
-  }
-}
-
-.bg-brand-green\/10.text-brand-green {
-  color: var(--color-brand-green) !important;
-  border-color: color-mix(in srgb, var(--color-brand-green) 30%, transparent) !important;
-  background-color: color-mix(in srgb, var(--color-brand-green) 15%, transparent) !important;
-
-  @variant light {
-    color: var(--color-brand-green) !important;
-    border-color: color-mix(in srgb, var(--color-brand-green) 25%, transparent) !important;
-    background-color: color-mix(in srgb, var(--color-brand-green) 10%, transparent) !important;
+    color: var(--color-brand-primary) !important;
+    border-color: color-mix(in srgb, var(--color-brand-primary) 25%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-primary) 10%, transparent) !important;
   }
 }
 
@@ -423,16 +387,16 @@ html {
 html.has-unread-notifications #whats-new-btn-desktop svg,
 html.has-unread-notifications #whats-new-btn-mobile svg,
 .whats-new-luminous svg {
-  color: var(--color-brand-blue) !important;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-brand-blue) 70%, transparent));
+  color: var(--color-brand-primary) !important;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-brand-primary) 70%, transparent));
   transition: color 0.3s ease, filter 0.3s ease;
 }
 
 html.light.has-unread-notifications #whats-new-btn-desktop svg,
 html.light.has-unread-notifications #whats-new-btn-mobile svg,
 html.light .whats-new-luminous svg {
-  color: var(--color-brand-blue) !important;
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-brand-blue) 45%, transparent));
+  color: var(--color-brand-primary) !important;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-brand-primary) 45%, transparent));
 }
 
 /* Navigation Section Unread Notification Dot */
@@ -507,8 +471,8 @@ html.light .whats-new-luminous svg {
 .badge-new-teal,
 .badge-new-projects {
   background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-projects) 80%, black) 0%, var(--color-domain-projects) 50%, color-mix(in srgb, var(--color-domain-projects) 70%, white) 100%);
-  color: var(--color-gray-950) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-projects) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
@@ -522,8 +486,8 @@ html.light .whats-new-luminous svg {
 .badge-new-yellow,
 .badge-new-visualizations {
   background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-visualizations) 80%, black) 0%, var(--color-domain-visualizations) 50%, color-mix(in srgb, var(--color-domain-visualizations) 70%, white) 100%);
-  color: var(--color-gray-950) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-visualizations) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
@@ -537,8 +501,8 @@ html.light .whats-new-luminous svg {
 .badge-new-orange,
 .badge-new-tags {
   background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 50%, color-mix(in srgb, var(--color-domain-tags) 70%, white) 100%);
-  color: var(--color-gray-950) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-tags) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
@@ -549,17 +513,32 @@ html.light .whats-new-luminous svg {
   }
 }
 
-.badge-new-purple {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand-purple) 80%, black) 0%, var(--color-brand-purple) 50%, color-mix(in srgb, var(--color-brand-purple) 70%, white) 100%);
+.badge-new-newsletters {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-newsletters) 80%, black) 0%, var(--color-domain-newsletters) 50%, color-mix(in srgb, var(--color-domain-newsletters) 70%, white) 100%);
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-brand-purple) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-newsletters) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand-purple) 80%, black) 0%, var(--color-brand-purple) 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-newsletters) 80%, black) 0%, var(--color-domain-newsletters) 100%);
     color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-brand-purple) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-brand-purple) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-domain-newsletters) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-newsletters) 25%, transparent);
+  }
+}
+
+
+.badge-new-purple {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 50%, color-mix(in srgb, var(--color-domain-tags) 70%, white) 100%);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-tags) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-tags) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-tags) 25%, transparent);
   }
 }
 
@@ -582,8 +561,8 @@ html.light .whats-new-luminous svg {
 .badge-new-cyan,
 .badge-new-courses {
   background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-courses) 80%, black) 0%, var(--color-domain-courses) 50%, color-mix(in srgb, var(--color-domain-courses) 70%, white) 100%);
-  color: var(--color-gray-950) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-courses) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
@@ -594,20 +573,6 @@ html.light .whats-new-luminous svg {
   }
 }
 
-.badge-new-rose,
-.badge-new-interests {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-interests) 80%, black) 0%, var(--color-domain-interests) 50%, color-mix(in srgb, var(--color-domain-interests) 70%, white) 100%);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-interests) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @variant light {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-interests) 80%, black) 0%, var(--color-domain-interests) 100%);
-    color: white !important;
-    border: 1px solid color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
-    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-interests) 25%, transparent);
-  }
-}
 
 /* Timeline lifeline dashed SVG lines in light mode */
 .light [data-lifeline-dashed-top] stop[offset="0%"] {
@@ -674,21 +639,6 @@ div.vis-tooltip {
 }
 
 /* Hover States (when not matching active tag filter) */
-/* 1. Interests (Rose) */
-.tag-chip-rose:hover:not(.active-tag-match),
-.tag-chip-interests:hover:not(.active-tag-match) {
-  border-color: color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
-  color: color-mix(in srgb, var(--color-domain-interests) 70%, white);
-  background: color-mix(in srgb, var(--color-domain-interests) 8%, transparent);
-}
-:root.light .tag-chip-rose:hover:not(.active-tag-match),
-.light .tag-chip-rose:hover:not(.active-tag-match),
-:root.light .tag-chip-interests:hover:not(.active-tag-match),
-.light .tag-chip-interests:hover:not(.active-tag-match) {
-  background: color-mix(in srgb, var(--color-domain-interests) 6%, transparent);
-  border-color: color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
-  color: var(--color-domain-interests);
-}
 
 /* 2. Posts (Violet) */
 .tag-chip-violet:hover:not(.active-tag-match),
@@ -830,25 +780,20 @@ div.vis-tooltip {
   color: var(--color-domain-tags);
 }
 
-/* Active Highlight Matches - Harmonized 1:1 across 9 Domains */
-/* 1. Interests (Rose) */
-.tag-chip-rose.active-tag-match,
-.tag-chip-interests.active-tag-match {
-  background: color-mix(in srgb, var(--color-domain-interests) 20%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-domain-interests) 50%, transparent) !important;
-  color: color-mix(in srgb, var(--color-domain-interests) 70%, white) !important;
-  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-interests) 25%, transparent) !important;
-  font-weight: 700 !important;
+/* 10. Newsletters */
+.tag-chip-newsletters:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-newsletters) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-newsletters) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-newsletters) 8%, transparent);
 }
-:root.light .tag-chip-rose.active-tag-match,
-.light .tag-chip-rose.active-tag-match,
-:root.light .tag-chip-interests.active-tag-match,
-.light .tag-chip-interests.active-tag-match {
-  background: color-mix(in srgb, var(--color-domain-interests) 15%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-domain-interests) 40%, transparent) !important;
-  color: var(--color-domain-interests) !important;
-  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-interests) 20%, transparent) !important;
+:root.light .tag-chip-newsletters:hover:not(.active-tag-match),
+.light .tag-chip-newsletters:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-newsletters) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-newsletters) 30%, transparent);
+  color: var(--color-domain-newsletters);
 }
+
+/* Active Highlight Matches - Harmonized 1:1 across 10 Domains */
 
 /* 2. Posts (Violet) */
 .tag-chip-violet.active-tag-match,
@@ -1012,6 +957,22 @@ div.vis-tooltip {
   border-color: color-mix(in srgb, var(--color-domain-tags) 40%, transparent) !important;
   color: var(--color-domain-tags) !important;
   box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-tags) 20%, transparent) !important;
+}
+
+/* 10. Newsletters */
+.tag-chip-newsletters.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-newsletters) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-newsletters) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-newsletters) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-newsletters) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-newsletters.active-tag-match,
+.light .tag-chip-newsletters.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-newsletters) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-newsletters) 40%, transparent) !important;
+  color: var(--color-domain-newsletters) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-newsletters) 20%, transparent) !important;
 }
 
 /* Free-text Search Highlights */

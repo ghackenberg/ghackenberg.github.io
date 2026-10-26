@@ -2,11 +2,12 @@
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { formatDate } from "@commons/shared/format";
+import { formatAuthorsHtml, type AuthorEntry } from "@commons/shared/authors";
 
 interface Props {
   id: string;
   title: string;
-  author: string;
+  authors: AuthorEntry[];
   pubDate: Date | string;
   book?: string;
   tags?: string[];
@@ -14,18 +15,20 @@ interface Props {
   activeTag?: string | string[];
   showTags?: boolean;
   icon?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
+  image?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
 }
 
 const { 
   id, 
-  title, 
-  author, 
+  title,  
+  authors,
   pubDate, 
   book, 
   tags = [], 
   activeTag,
   showTags,
-  icon
+  icon,
+  image
 } = Astro.props;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
@@ -33,16 +36,17 @@ const shouldShowTags = showTags ?? Boolean(activeTag);
 
 type CoverImageObject = { src: ImageMetadata; title?: string; description?: string };
 
+const rawImg = image || icon;
 const isCoverObj = Boolean(
-  icon &&
-  typeof icon === 'object' &&
-  'src' in icon &&
-  typeof (icon as { src: ImageMetadata | string }).src === 'object'
+  rawImg &&
+  typeof rawImg === 'object' &&
+  'src' in rawImg &&
+  typeof (rawImg as { src: ImageMetadata | string }).src === 'object'
 );
-const coverObj = isCoverObj ? (icon as CoverImageObject) : null;
+const coverObj = isCoverObj ? (rawImg as CoverImageObject) : null;
 const iconImg = coverObj
   ? coverObj.src
-  : (icon as ImageMetadata | string | undefined);
+  : (rawImg as ImageMetadata | string | undefined);
 const iconTitle = coverObj?.title || title;
 const iconDesc = coverObj?.description || `Publication preview: ${title}`;
 
@@ -114,7 +118,7 @@ const optimizedIcon = iconImg && typeof iconImg === 'object' && !isSvg ? await g
 
     <!-- Authors -->
     <p class="text-gray-300 light:text-slate-600 text-xs sm:text-sm font-normal mb-3 leading-relaxed line-clamp-2 min-h-[2lh]">
-      <span set:html={author} />
+      <span set:html={formatAuthorsHtml(authors)} />
     </p>
 
     <!-- Tags & Action Button Area -->

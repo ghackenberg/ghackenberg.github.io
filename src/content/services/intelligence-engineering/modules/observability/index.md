@@ -20,7 +20,7 @@ methodologyPhases:
     description: "Building automated testing suites with ground-truth datasets to evaluate output accuracy."
 order: 5
 pubDate: 2026-09-11
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: LLM Observability"
   description: "Isometrisches 3D-Telemetriemodul zur Echtzeit-Überwachung von Token-Durchsatz, Latenzwellen und Modellmetriken"

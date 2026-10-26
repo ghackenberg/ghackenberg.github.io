@@ -1,8 +1,7 @@
 ---
 title: Flicker-Free Unread Indicators in Astro
 pubDate: 2026-05-24
-description: How to build a zero-flicker client-side unread content notification
-  badge in Astro using localStorage and synchronous manifest synchronization.
+description: How to build a zero-flicker client-side unread content notification badge in Astro using localStorage and synchronous manifest synchronization.
 tags:
   - web-development
   - astro
@@ -12,35 +11,35 @@ tags:
   - state-management
 icon:
   src: ./icon.png
-  title: "Cover illustration: Designing a Flicker-Free Client-Side Unread Content
-    System in Astro"
-  description: How we implemented a client-side localStorage notification system
-    for unread content, using cached Astro static content manifests and
-    synchronous scripting to eliminate visual flickering.
+  title: "Cover illustration: Designing a Flicker-Free Client-Side Unread Content System in Astro"
+  description: How we implemented a client-side localStorage notification system for unread content, using cached Astro static content manifests and synchronous scripting to eliminate visual flickering.
 references:
   - type: online
-    author: Google Web Vitals
     title: Optimize Cumulative Layout Shift (CLS)
     url: https://web.dev/articles/cls
     year: 2024
-    siteName: Google Chrome Developer Documentation. Available online at
-      [web.dev/cls](https://web.dev/articles/cls)
+    siteName: Google Chrome Developer Documentation. Available online at [web.dev/cls](https://web.dev/articles/cls)
     id: google-2024-optimize-cumulative
+    authors:
+      - name: Google Web Vitals
+        type: Organization
   - type: misc
-    author: W3C Web Applications Working Group
     title: Web Storage (Second Edition)
     url: https://www.w3.org/TR/webstorage/
     year: 2016
     howpublished: W3C Recommendation
     id: w3c-2016-storage-second
+    authors:
+      - name: W3C Web Applications Working Group
+        type: Organization
   - type: online
-    author: Dr. Georg Hackenberg
     title: WebKit Team (Apple)
     url: https://webkit.org/tracking-prevention/
-    siteName: "* (2020). *Tracking Prevention Policy and Client-Side Storage Caps*.
-      WebKit Open Source Project. Available online at
-      [webkit.org/tracking-prevention](https://webkit.org/tracking-prevention/)"
+    siteName: "* (2020). *Tracking Prevention Policy and Client-Side Storage Caps*. WebKit Open Source Project. Available online at [webkit.org/tracking-prevention](https://webkit.org/tracking-prevention/)"
     id: hackenberg-webkit-team
+    authors:
+      - name: Georg Hackenberg
+        id: https://hackenberg.tech/#person
 ---
 
 

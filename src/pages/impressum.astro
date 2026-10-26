@@ -1,32 +1,16 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildLegalWebPageSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Impressum",
-      "item": "https://hackenberg.tech/impressum/"
-    }
-  ]
-};
+const legalSchema = buildLegalWebPageSchema({ path: 'impressum', name: 'Impressum', description: 'Offizielles Impressum von Dr. Georg Hackenberg (IT-Dienstleistungen) gemäß § 5 ECG, § 14 UGB, § 345 GewO und § 25 Mediengesetz.' });
 ---
 
 <Layout 
   title="Impressum | Dr. Georg Hackenberg" 
   description="Offizielles Impressum von Dr. Georg Hackenberg (IT-Dienstleistungen) gemäß § 5 ECG, § 14 UGB, § 345 GewO und § 25 Mediengesetz."
-  jsonLd={breadcrumbSchema}
+  jsonLd={legalSchema}
 >
   <Navbar />
 
@@ -46,13 +30,13 @@ const breadcrumbSchema = {
       <!-- Section: General Information -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div>
-          <h2 id="diensteanbieter" class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Diensteanbieter & Medieninhaber</h2>
+          <h2 id="diensteanbieter" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-3">Diensteanbieter & Medieninhaber</h2>
           <p class="font-semibold text-lg text-gray-100">Dr. rer. nat. Georg Hackenberg BSc MSc</p>
           <p class="text-gray-400 text-sm mt-1">IT-Dienstleister / Software Engineer & Professor</p>
         </div>
         
         <div>
-          <h2 id="firmensitz" class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Firmensitz / Anschrift</h2>
+          <h2 id="firmensitz" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-3">Firmensitz / Anschrift</h2>
           <p class="text-gray-300 text-sm leading-relaxed">
             Edthof 13a<br />
             4645 Grünau im Almtal<br />
@@ -66,21 +50,21 @@ const breadcrumbSchema = {
       <!-- Section: Contact Details -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div>
-          <h2 id="kontakt" class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Kontakt</h2>
+          <h2 id="kontakt" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-3">Kontakt</h2>
           <div class="space-y-3 text-sm text-gray-300">
             <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
               <span class="text-gray-500 font-medium min-w-[70px]">Telefon:</span>
-              <a href="tel:+436648048444066" class="hover:text-brand-blue transition-colors select-all font-mono break-all">+43 664 80484 44066</a>
+              <a href="tel:+436648048444066" class="hover:text-brand-primary transition-colors select-all font-mono break-all">+43 664 80484 44066</a>
             </p>
             <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
               <span class="text-gray-500 font-medium min-w-[70px]">E-Mail:</span>
-              <a href="mailto:georg.hackenberg@fh-wels.at" class="hover:text-brand-blue transition-colors select-all font-mono break-all">georg.hackenberg@fh-wels.at</a>
+              <a href="mailto:georg.hackenberg@fh-wels.at" class="hover:text-brand-primary transition-colors select-all font-mono break-all">georg.hackenberg@fh-wels.at</a>
             </p>
           </div>
         </div>
 
         <div>
-          <h2 id="umsatzsteuer-status" class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Umsatzsteuer-Status</h2>
+          <h2 id="umsatzsteuer-status" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-3">Umsatzsteuer-Status</h2>
           <p class="text-gray-300 text-sm leading-relaxed">
             Umsatzsteuerbefreit aufgrund der Kleinunternehmerregelung gemäß § 6 Abs. 1 Art. 27 UStG.
           </p>
@@ -91,7 +75,7 @@ const breadcrumbSchema = {
 
       <!-- Section: Professional & Trade Information -->
       <div class="space-y-4">
-        <h2 id="gewerberechtliche-angaben" class="text-xs font-extrabold uppercase tracking-widest text-brand-blue">Gewerberechtliche Angaben</h2>
+        <h2 id="gewerberechtliche-angaben" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">Gewerberechtliche Angaben</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-300">
           <div>
             <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Unternehmensgegenstand</p>
@@ -112,7 +96,7 @@ const breadcrumbSchema = {
         </div>
         <div class="pt-2 text-xs text-gray-400">
           <p>
-            Es gilt die österreichische <strong class="text-gray-300">Gewerbeordnung 1994 (GewO)</strong> in der jeweils aktuellen Fassung, abrufbar im Rechtsinformationssystem des Bundes (RIS) unter <a href="https://www.ris.bka.gv.at" target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">www.ris.bka.gv.at</a>.
+            Es gilt die österreichische <strong class="text-gray-300">Gewerbeordnung 1994 (GewO)</strong> in der jeweils aktuellen Fassung, abrufbar im Rechtsinformationssystem des Bundes (RIS) unter <a href="https://www.ris.bka.gv.at" target="_blank" rel="noopener noreferrer" class="text-brand-primary hover:underline break-all">www.ris.bka.gv.at</a>.
           </p>
         </div>
       </div>
@@ -121,10 +105,10 @@ const breadcrumbSchema = {
 
       <!-- Section: ODR / Arbitration -->
       <div class="space-y-3">
-        <h2 id="online-streitbeilegung" class="text-xs font-extrabold uppercase tracking-widest text-brand-blue">Online-Streitbeilegung</h2>
+        <h2 id="online-streitbeilegung" class="text-xs font-extrabold uppercase tracking-widest text-brand-primary">Online-Streitbeilegung</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Verbraucher haben die Möglichkeit, Beschwerden an die Online-Streitbeilegungsplattform der Europäischen Kommission zu richten: 
-          <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline select-all font-mono break-all block sm:inline mt-1 sm:mt-0">https://ec.europa.eu/consumers/odr</a>. 
+          <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" class="text-brand-primary hover:underline select-all font-mono break-all block sm:inline mt-1 sm:mt-0">https://ec.europa.eu/consumers/odr</a>. 
           Sie können allfällige Beschwerden auch an die oben angegebene E-Mail-Adresse richten. Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
         </p>
       </div>

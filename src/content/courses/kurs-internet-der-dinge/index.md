@@ -8,8 +8,8 @@ learningGoals:
   - "Einrichtung und Visualisierung von Sensordaten in Dashboards auf der ThingsBoard-Plattform."
 terms:
   - "Summer Term 2025"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Internet der Dinge: Sensorik & Cloud-Telemetrie"
   description: "Orthogonale Schautafel eines Mikrocontroller-Boards mit Sensorik, Status-LEDs und gerichteten MQTT-Telemetriedatenströmen zu einem Cloud-Broker"

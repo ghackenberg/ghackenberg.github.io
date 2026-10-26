@@ -1,7 +1,7 @@
 ---
 title: "3D Force: Volumetric Network Graph"
 description: "Explore the portfolio's content and semantic connections as an interactive 3D volumetric graph powered by WebGL and Three.js, featuring orbital camera controls and spatial clustering."
-screenshot:
+image:
   src: "./3d-force.png"
   title: "3D Network Graph in Spatial Space"
   description: "Three-dimensional visualization of the interconnected content network featuring spherical nodes and glowing link particles on a dark background"

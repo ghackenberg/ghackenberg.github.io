@@ -9,8 +9,8 @@ learningGoals:
 terms:
   - "Winter Term 2024/25"
   - "Winter Term 2025/26"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Java-Programmierung: Eclipse IDE & Sprachelemente"
   description: "Orthogonale Schautafel der Java-Entwicklung in der Eclipse IDE mit Package Explorer, Java-Kaffeebecher-Symbol, Syntax-Editor und Konsole"

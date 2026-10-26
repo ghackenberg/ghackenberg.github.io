@@ -35,7 +35,6 @@ const domainFromAccent: Record<string, ContentDomain> = {
   teal: "projects",
   emerald: "services",
   yellow: "visualizations",
-  rose: "interests",
   orange: "tags",
   // Legacy aliases
   purple: "services",
@@ -48,7 +47,6 @@ const threshold = minItemsThreshold ?? ((pageSize ?? 12) + 1);
 const shouldRender = totalCount === undefined || totalCount >= threshold;
 
 const searchFocusClasses: Record<ContentDomain, string> = {
-  interests: "focus:border-domain-interests/50 focus:ring-1 focus:ring-domain-interests/50",
   posts: "focus:border-domain-posts/50 focus:ring-1 focus:ring-domain-posts/50",
   publications: "focus:border-domain-publications/50 focus:ring-1 focus:ring-domain-publications/50",
   presentations: "focus:border-domain-presentations/50 focus:ring-1 focus:ring-domain-presentations/50",
@@ -56,11 +54,11 @@ const searchFocusClasses: Record<ContentDomain, string> = {
   projects: "focus:border-domain-projects/50 focus:ring-1 focus:ring-domain-projects/50",
   services: "focus:border-domain-services/50 focus:ring-1 focus:ring-domain-services/50",
   visualizations: "focus:border-domain-visualizations/50 focus:ring-1 focus:ring-domain-visualizations/50",
+  newsletters: "focus:border-domain-newsletters/50 focus:ring-1 focus:ring-domain-newsletters/50",
   tags: "focus:border-domain-tags/50 focus:ring-1 focus:ring-domain-tags/50",
 };
 
 const summaryHoverBorder: Record<ContentDomain, string> = {
-  interests: "hover:border-domain-interests/30",
   posts: "hover:border-domain-posts/30",
   publications: "hover:border-domain-publications/30",
   presentations: "hover:border-domain-presentations/30",
@@ -68,6 +66,7 @@ const summaryHoverBorder: Record<ContentDomain, string> = {
   projects: "hover:border-domain-projects/30",
   services: "hover:border-domain-services/30",
   visualizations: "hover:border-domain-visualizations/30",
+  newsletters: "hover:border-domain-newsletters/30",
   tags: "hover:border-domain-tags/30",
 };
 ---

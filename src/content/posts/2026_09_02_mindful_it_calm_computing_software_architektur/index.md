@@ -2,9 +2,7 @@
 title: "Mindful IT & Calm Computing: Kognitive IT-Architektur"
 pubDate: 2026-09-02
 lang: de
-description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten,
-  die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten
-  und intentional stärken.
+description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken.
 tags:
   - artificial-intelligence
   - calm-technology
@@ -18,31 +16,32 @@ tags:
   - software-architecture
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Mindful IT & Calm Computing: Software-Architekturen,
-    Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
-  description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten,
-    die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten
-    und intentional stärken.
+  title: "Titelgrafik: Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
+  description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken.
 references:
   - type: book
-    author: Calvo, R. A., & Peters, D.
     title: "Positive Computing: Technology for Wellbeing and Human Potential"
     url: https://doi.org/10.7551/mitpress/9764.001.0001
     year: 2014
     doi: 10.7551/mitpress/9764.001.0001
     publisher: MIT Press
     id: calvo-2014-positive-computing
+    authors:
+      - name: Rafael A. Calvo
+      - name: Dorian Peters
   - type: inproceedings
-    author: Kleppmann, M., Wiggins, A., van Hardenberg, M., & McGranaghan, M.
     title: "Local-first software: you own your data, in spite of the cloud"
     url: https://doi.org/10.1145/3359591.3359737
     year: 2019
     doi: 10.1145/3359591.3359737
-    booktitle: Proceedings of the 2019 ACM SIGPLAN International Symposium on New
-      Ideas, Onward! 2019
+    booktitle: Proceedings of the 2019 ACM SIGPLAN International Symposium on New Ideas, Onward! 2019
     id: kleppmann-2019-localfirst-software
+    authors:
+      - name: Martin Kleppmann
+      - name: Adam Wiggins
+      - name: Peter van Hardenberg
+      - name: Mark McGranaghan
   - type: book
-    author: Weiser, M., & Brown, J. S.
     title: The Coming Age of Calm Technology
     url: https://doi.org/10.1007/978-1-4612-0685-9_6
     year: 1997
@@ -50,6 +49,9 @@ references:
     publisher: Springer
     pages: 75–85
     id: weiser-1997-coming-calm
+    authors:
+      - name: Mark Weiser
+      - name: John Seely Brown
 ---
 
 

@@ -2,24 +2,24 @@
 title: "Core Web Vitals: Der KI-Crawler-Filter"
 subtitle: "LCP, INP & CLS: {cue:hl-sub-vitals-1001}Warum Millisekunden über die Aufnahme in den RAG-Index entscheiden{/cue}"
 number: "42"
-slideLayout: "story-hero"
-voiceover: >
-  Ein oft übersehener Engpass ist die technische Auslieferungsgeschwindigkeit Ihrer Webseiten.
-  {cue:sub} Die Core Web Vitals fungieren heute {cue:hl-sub-vitals-1001}als harter Filter für moderne KI-Crawler{/cue}.
-  {cue:vis-vitals-dash} Auf unserem Instrumenten-Dashboard sehen Sie die drei maßgeblichen Performance-Indikatoren.
-  {cue:card-vitals-metrics} Bots von OpenAI und Perplexity brechen bei Timeouts ab und verlangen {cue:hl-callout-vitals-timeouts}schnellste Antwortzeiten ohne Ladeverzögerung{/cue}: Ein {cue:hl-vitals-lcp}LCP unter zweieinhalb Sekunden sichert sofortige Extraktion{/cue}, ein {cue:hl-vitals-inp}INP unter zweihundert Millisekunden verhindert Script-Blockaden{/cue}, und ein {cue:hl-vitals-cls}CLS unter null Komma eins garantiert visuelle Stabilität{/cue} – technische Hygiene als Pflichtprogramm!
+slideLayout: story-hero
+voiceover: |
+  Ein oft übersehener Engpass ist die technische Auslieferungsgeschwindigkeit Ihrer Webseiten. {cue:sub} Die Core Web Vitals fungieren heute {cue:hl-sub-vitals-1001}als harter Filter für moderne KI-Crawler{/cue}. {cue:vis-vitals-dash} Auf unserem Instrumenten-Dashboard sehen Sie die drei maßgeblichen Performance-Indikatoren. {cue:card-vitals-metrics} Bots von OpenAI und Perplexity brechen bei Timeouts ab und verlangen {cue:hl-callout-vitals-timeouts}schnellste Antwortzeiten ohne Ladeverzögerung{/cue}: Ein {cue:hl-vitals-lcp}LCP unter zweieinhalb Sekunden sichert sofortige Extraktion{/cue}, ein {cue:hl-vitals-inp}INP unter zweihundert Millisekunden verhindert Script-Blockaden{/cue}, und ein {cue:hl-vitals-cls}CLS unter null Komma eins garantiert visuelle Stabilität{/cue} – technische Hygiene als Pflichtprogramm!
 notes: |
   - Zeit: 56:00 - 58:30 Min.
   - Philipp Walton et al. (Google Web Vitals 2024) zitieren.
   - Kernaussage für IT-Leiter: Wenn die Website 4 Sekunden zum Laden braucht, bricht der KI-Crawler ab und greift zur Konkurrenz.
 references:
   - type: online
-    id: "walton-2024-web-vitals"
-    author: "Walton, Philip and Far, Addy and Boulos, Houssein"
+    id: walton-2024-web-vitals
     title: "Web Vitals: Essential metrics for a healthy site"
-    siteName: "web.dev by Google"
+    siteName: web.dev by Google
     year: 2024
-    url: "https://web.dev/articles/vitals"
+    url: https://web.dev/articles/vitals
+    authors:
+      - name: Philip Walton
+      - name: Addy Far
+      - name: Houssein Boulos
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

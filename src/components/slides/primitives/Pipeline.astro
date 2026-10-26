@@ -39,51 +39,60 @@ const {
 const elementId = explicitId;
 
 const accentPills: Record<string, string> = {
-  rose: 'bg-[var(--color-slide-accent-rose)] text-white',
-  red: 'bg-[var(--color-slide-accent-rose)] text-white',
-  purple: 'bg-[var(--color-slide-accent-purple)] text-white',
-  violet: 'bg-[var(--color-slide-accent-purple)] text-white',
-  indigo: 'bg-[var(--color-slide-accent-indigo)] text-white',
   blue: 'bg-[var(--color-slide-accent-blue)] text-white',
+  indigo: 'bg-[var(--color-slide-accent-indigo)] text-white',
+  violet: 'bg-[var(--color-slide-accent-violet)] text-white',
+  purple: 'bg-[var(--color-slide-accent-purple)] text-white',
+  fuchsia: 'bg-[var(--color-slide-accent-fuchsia)] text-white',
+  pink: 'bg-[var(--color-slide-accent-pink)] text-white',
+  rose: 'bg-[var(--color-slide-accent-rose)] text-white',
+  orange: 'bg-[var(--color-slide-accent-orange)] text-white',
+  amber: 'bg-[var(--color-slide-accent-amber)] text-white',
+  // Legacy aliases
   cyan: 'bg-[var(--color-slide-accent-cyan)] text-white',
   teal: 'bg-[var(--color-slide-accent-teal)] text-white',
   emerald: 'bg-[var(--color-slide-accent-emerald)] text-white',
   green: 'bg-[var(--color-slide-accent-emerald)] text-white',
-  amber: 'bg-[var(--color-slide-accent-amber)] text-white',
-  yellow: 'bg-[var(--color-slide-accent-amber)] text-white',
-  orange: 'bg-[var(--color-slide-accent-orange)] text-white'
+  red: 'bg-[var(--color-slide-accent-rose)] text-white',
+  yellow: 'bg-[var(--color-slide-accent-amber)] text-white'
 };
 
 const accentBars: Record<string, string> = {
-  rose: 'bg-[var(--color-slide-accent-rose)]',
-  red: 'bg-[var(--color-slide-accent-rose)]',
-  purple: 'bg-[var(--color-slide-accent-purple)]',
-  violet: 'bg-[var(--color-slide-accent-purple)]',
-  indigo: 'bg-[var(--color-slide-accent-indigo)]',
   blue: 'bg-[var(--color-slide-accent-blue)]',
+  indigo: 'bg-[var(--color-slide-accent-indigo)]',
+  violet: 'bg-[var(--color-slide-accent-violet)]',
+  purple: 'bg-[var(--color-slide-accent-purple)]',
+  fuchsia: 'bg-[var(--color-slide-accent-fuchsia)]',
+  pink: 'bg-[var(--color-slide-accent-pink)]',
+  rose: 'bg-[var(--color-slide-accent-rose)]',
+  orange: 'bg-[var(--color-slide-accent-orange)]',
+  amber: 'bg-[var(--color-slide-accent-amber)]',
+  // Legacy aliases
   cyan: 'bg-[var(--color-slide-accent-cyan)]',
   teal: 'bg-[var(--color-slide-accent-teal)]',
   emerald: 'bg-[var(--color-slide-accent-emerald)]',
   green: 'bg-[var(--color-slide-accent-emerald)]',
-  amber: 'bg-[var(--color-slide-accent-amber)]',
-  yellow: 'bg-[var(--color-slide-accent-amber)]',
-  orange: 'bg-[var(--color-slide-accent-orange)]'
+  red: 'bg-[var(--color-slide-accent-rose)]',
+  yellow: 'bg-[var(--color-slide-accent-amber)]'
 };
 
 const accentGlass: Record<string, string> = {
-  rose: 'bg-[var(--color-slide-accent-rose)]/15 border-[var(--color-slide-accent-rose)]/35 text-[var(--color-slide-accent-rose)]',
-  red: 'bg-[var(--color-slide-accent-rose)]/15 border-[var(--color-slide-accent-rose)]/35 text-[var(--color-slide-accent-rose)]',
-  purple: 'bg-[var(--color-slide-accent-purple)]/15 border-[var(--color-slide-accent-purple)]/35 text-[var(--color-slide-accent-purple)]',
-  violet: 'bg-[var(--color-slide-accent-purple)]/15 border-[var(--color-slide-accent-purple)]/35 text-[var(--color-slide-accent-purple)]',
-  indigo: 'bg-[var(--color-slide-accent-indigo)]/15 border-[var(--color-slide-accent-indigo)]/35 text-[var(--color-slide-accent-indigo)]',
   blue: 'bg-[var(--color-slide-accent-blue)]/15 border-[var(--color-slide-accent-blue)]/35 text-[var(--color-slide-accent-blue)]',
+  indigo: 'bg-[var(--color-slide-accent-indigo)]/15 border-[var(--color-slide-accent-indigo)]/35 text-[var(--color-slide-accent-indigo)]',
+  violet: 'bg-[var(--color-slide-accent-violet)]/15 border-[var(--color-slide-accent-violet)]/35 text-[var(--color-slide-accent-violet)]',
+  purple: 'bg-[var(--color-slide-accent-purple)]/15 border-[var(--color-slide-accent-purple)]/35 text-[var(--color-slide-accent-purple)]',
+  fuchsia: 'bg-[var(--color-slide-accent-fuchsia)]/15 border-[var(--color-slide-accent-fuchsia)]/35 text-[var(--color-slide-accent-fuchsia)]',
+  pink: 'bg-[var(--color-slide-accent-pink)]/15 border-[var(--color-slide-accent-pink)]/35 text-[var(--color-slide-accent-pink)]',
+  rose: 'bg-[var(--color-slide-accent-rose)]/15 border-[var(--color-slide-accent-rose)]/35 text-[var(--color-slide-accent-rose)]',
+  orange: 'bg-[var(--color-slide-accent-orange)]/15 border-[var(--color-slide-accent-orange)]/35 text-[var(--color-slide-accent-orange)]',
+  amber: 'bg-[var(--color-slide-accent-amber)]/15 border-[var(--color-slide-accent-amber)]/35 text-[var(--color-slide-accent-amber)]',
+  // Legacy aliases
   cyan: 'bg-[var(--color-slide-accent-cyan)]/15 border-[var(--color-slide-accent-cyan)]/35 text-[var(--color-slide-accent-cyan)]',
   teal: 'bg-[var(--color-slide-accent-teal)]/15 border-[var(--color-slide-accent-teal)]/35 text-[var(--color-slide-accent-teal)]',
   emerald: 'bg-[var(--color-slide-accent-emerald)]/15 border-[var(--color-slide-accent-emerald)]/35 text-[var(--color-slide-accent-emerald)]',
   green: 'bg-[var(--color-slide-accent-emerald)]/15 border-[var(--color-slide-accent-emerald)]/35 text-[var(--color-slide-accent-emerald)]',
-  amber: 'bg-[var(--color-slide-accent-amber)]/15 border-[var(--color-slide-accent-amber)]/35 text-[var(--color-slide-accent-amber)]',
-  yellow: 'bg-[var(--color-slide-accent-amber)]/15 border-[var(--color-slide-accent-amber)]/35 text-[var(--color-slide-accent-amber)]',
-  orange: 'bg-[var(--color-slide-accent-orange)]/15 border-[var(--color-slide-accent-orange)]/35 text-[var(--color-slide-accent-orange)]'
+  red: 'bg-[var(--color-slide-accent-rose)]/15 border-[var(--color-slide-accent-rose)]/35 text-[var(--color-slide-accent-rose)]',
+  yellow: 'bg-[var(--color-slide-accent-amber)]/15 border-[var(--color-slide-accent-amber)]/35 text-[var(--color-slide-accent-amber)]'
 };
 
 const effectiveStartAccent = startAccent || baseAccent;

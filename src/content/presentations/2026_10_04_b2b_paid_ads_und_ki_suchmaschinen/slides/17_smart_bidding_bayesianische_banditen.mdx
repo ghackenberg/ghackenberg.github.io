@@ -1,38 +1,38 @@
 ---
-title: "Smart Bidding & Bayesianische Banditen"
-subtitle: "Vom statischen Keyword-Gebot zu {cue:hl-sub-bandits}kontextuellen Multi-Armed Bandits in Echtzeit{/cue}"
+title: Smart Bidding & Bayesianische Banditen
+subtitle: Vom statischen Keyword-Gebot zu {cue:hl-sub-bandits}kontextuellen Multi-Armed Bandits in Echtzeit{/cue}
 number: "17"
-slideLayout: "code"
-voiceover: >
-  Manuelle CPC-Gebote gehören im modernen Suchmaschinenmarketing der Vergangenheit an und wurden durch probabilistische Modelle ersetzt.
-  {cue:sub} Smart Bidding nutzt heute {cue:hl-sub-bandits}kontextuelle Multi-Armed Bandits in Echtzeit{/cue}.
-  {cue:code-bandit} Der Python-Code illustriert die probabilistische Gebotsfindung via Thompson Sampling.
-  {cue:card-bandit} Im Kern berechnet das Modell für jeden Nutzerkontakt {cue:hl-bandit-pconv}die probabilistische Abschlusswahrscheinlichkeit pConv in Millisekunden{/cue}. Gleichzeitig balanciert der Bandit zwei Pole: {cue:hl-bandit-explore}Exploration testet kontinuierlich neue Suchanfragen auf unerwartete Kaufabsichten{/cue}, während {cue:hl-bandit-exploit}historische Konversionsmuster für profitable Gebotsentscheidungen{/cue} maximal ausgeschöpft werden. Vor jedem Gebot analysiert das neuronale Netz hunderte Faktoren wie {cue:hl-bandit-signale}Gerätetyp, Standort, semantischen Kontext und historische Session-Pfade{/cue}.
+slideLayout: code
+voiceover: |
+  Manuelle CPC-Gebote gehören im modernen Suchmaschinenmarketing der Vergangenheit an und wurden durch probabilistische Modelle ersetzt. {cue:sub} Smart Bidding nutzt heute {cue:hl-sub-bandits}kontextuelle Multi-Armed Bandits in Echtzeit{/cue}. {cue:code-bandit} Der Python-Code illustriert die probabilistische Gebotsfindung via Thompson Sampling. {cue:card-bandit} Im Kern berechnet das Modell für jeden Nutzerkontakt {cue:hl-bandit-pconv}die probabilistische Abschlusswahrscheinlichkeit pConv in Millisekunden{/cue}. Gleichzeitig balanciert der Bandit zwei Pole: {cue:hl-bandit-explore}Exploration testet kontinuierlich neue Suchanfragen auf unerwartete Kaufabsichten{/cue}, während {cue:hl-bandit-exploit}historische Konversionsmuster für profitable Gebotsentscheidungen{/cue} maximal ausgeschöpft werden. Vor jedem Gebot analysiert das neuronale Netz hunderte Faktoren wie {cue:hl-bandit-signale}Gerätetyp, Standort, semantischen Kontext und historische Session-Pfade{/cue}.
 notes: |
   - Zeit: 29:00 - 31:00 Min.
   - Theorie: Contextual Multi-Armed Bandit (MAB), Bayesian Inference, Thompson Sampling (Thompson 1933, Chapelle & Li 2011).
   - Kernaussage: Marketer steuern keine Klickpreise mehr, sondern trainieren die Zielfunktion des Algorithmus (tCPA / tROAS).
 references:
   - type: article
-    id: "thompson-1933-likelihood"
-    author: "Thompson, William R."
-    title: "On the likelihood that one unknown probability exceeds another in view of the evidence of two samples"
-    journal: "Biometrika"
+    id: thompson-1933-likelihood
+    title: On the likelihood that one unknown probability exceeds another in view of the evidence of two samples
+    journal: Biometrika
     volume: "25"
-    number: "3-4"
-    pages: "285--294"
+    number: 3-4
+    pages: 285--294
     year: 1933
-    doi: "10.1093/biomet/25.3-4.285"
-    url: "https://doi.org/10.1093/biomet/25.3-4.285"
+    doi: 10.1093/biomet/25.3-4.285
+    url: https://doi.org/10.1093/biomet/25.3-4.285
+    authors:
+      - name: William R. Thompson
   - type: inproceedings
-    id: "chapelle-2011-thompson-sampling"
-    author: "Chapelle, Olivier and Li, Lihong"
-    title: "An Empirical Evaluation of Thompson Sampling"
-    booktitle: "Advances in Neural Information Processing Systems (NeurIPS)"
+    id: chapelle-2011-thompson-sampling
+    title: An Empirical Evaluation of Thompson Sampling
+    booktitle: Advances in Neural Information Processing Systems (NeurIPS)
     volume: "24"
-    pages: "2249--2257"
+    pages: 2249--2257
     year: 2011
-    url: "https://papers.nips.cc/paper/2011/hash/e53a0a2978c28872a4505bdb51db06dc-Abstract.html"
+    url: https://papers.nips.cc/paper/2011/hash/e53a0a2978c28872a4505bdb51db06dc-Abstract.html
+    authors:
+      - name: Olivier Chapelle
+      - name: Lihong Li
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';

@@ -35,6 +35,8 @@ import PreviewMediaBoot from "@components/PreviewMediaBoot.astro";
 import PreviewMediaLoader from "@components/PreviewMediaLoader.astro";
 import Telemetry from "@components/Telemetry.astro";
 import NewsletterSignup from "@components/NewsletterSignup.astro";
+import { getCollection } from "astro:content";
+import { CONTENT_DOMAINS, DOMAIN_METADATA } from "@commons/shared/domain-themes";
 
 const isDev = import.meta.env.DEV;
 
@@ -59,6 +61,8 @@ interface Props {
   preloadImage?: string;
   jsonLd?: Record<string, JsonLdValue> | Array<Record<string, JsonLdValue>>;
   lang?: string;
+  inLanguage?: string;
+  breadcrumbParentTitle?: string;
 }
 
 const { 
@@ -71,17 +75,24 @@ const {
   hasMath = false,
   preloadImage,
   jsonLd,
-  lang = "en"
+  lang,
+  inLanguage,
+  breadcrumbParentTitle
 } = Astro.props;
+
+const htmlLang = inLanguage || lang || "en";
 
 // Determine active domain from the first URL path segment
 const pathname = Astro.url.pathname;
 const firstSegment = pathname.split('/').filter(Boolean)[0] || '';
-const VALID_DOMAINS = ['posts', 'courses', 'publications', 'presentations', 'projects', 'services', 'visualizations', 'interests', 'tags'];
+const VALID_DOMAINS = ['posts', 'courses', 'publications', 'presentations', 'projects', 'services', 'visualizations', 'tags', 'newsletters'];
 const activeDomain = VALID_DOMAINS.includes(firstSegment) ? firstSegment : undefined;
 
 // Build canonical URL
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// External profiles
+const profiles = (await getCollection("profiles")).sort((a, b) => a.data.order - b.data.order);
 
 // Resolve default OG image from .cache/branding/ with content hash
 const { ogImagePath } = await ensureBrandingAssets();
@@ -151,15 +162,9 @@ const pathnameSegments = Astro.url.pathname.replace(/^\/|\/$/g, "").split("/").f
 
 if (!hasBreadcrumbList && pathnameSegments.length > 0) {
   const SEGMENT_NAMES: Record<string, string> = {
-    posts: "Posts",
-    publications: "Publications",
-    presentations: "Presentations",
-    courses: "Courses",
-    projects: "Projects",
-    services: "Services",
-    visualizations: "Visualizations",
-    interests: "Interests",
-    tags: "Tags",
+    ...Object.fromEntries(CONTENT_DOMAINS.map((d) => [d, DOMAIN_METADATA[d].label])),
+    about: "About",
+    contact: "Contact",
     impressum: "Impressum",
     datenschutz: "Datenschutz"
   };
@@ -188,7 +193,9 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
         "item": canonicalURL.href
       });
     } else {
-      const segName = SEGMENT_NAMES[seg] || decodeURIComponent(seg).replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const segName = (idx === 1 && pathnameSegments.length === 3 && breadcrumbParentTitle)
+        ? breadcrumbParentTitle
+        : (SEGMENT_NAMES[seg] || decodeURIComponent(seg).replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
       breadcrumbElements.push({
         "@type": "ListItem",
         "position": idx + 2,
@@ -207,7 +214,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
 ---
 
 <!DOCTYPE html>
-<html lang={lang} class="scroll-smooth">
+<html lang={htmlLang} class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -291,7 +298,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
               if (rawManifest) {
                 const manifest = JSON.parse(rawManifest);
                 if (manifest) {
-                  const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
+                  const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
                   let hasUnread = false;
                   for (let i = 0; i < SECTIONS.length; i++) {
                     const section = SECTIONS[i];
@@ -577,7 +584,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     )}
   </head>
 
-  <body data-domain={activeDomain} class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
+  <body data-domain={activeDomain} class="text-gray-100 selection:bg-brand-primary selection:text-white min-h-screen flex flex-col relative antialiased">
     <!-- Parallax vector background with astronomical moon phases and day/night transitions -->
     <Background />
 
@@ -587,116 +594,79 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
 
       <!-- Footer -->
       <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-element-border py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
-        <Container as="div" size="wide" padding="none">
+        <Container as="div" size="reading" padding="none">
           <NewsletterSignup variant="footer" />
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pt-10 pb-10 border-t border-b border-element-border">
-            
-            <!-- Brand Column -->
-            <div class="md:col-span-5 flex flex-col space-y-4">
-              <a href="/" class="flex items-center space-x-3 group self-start">
-                <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
-                  <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
-                    GH
-                  </span>
-                </span>
-                <div class="flex flex-col leading-tight">
-                  <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors">
-                    Dr. Georg Hackenberg
-                  </span>
-                  <span class="text-xs text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors">
-                    Professor for Industrial Informatics @ UAP
-                  </span>
-                </div>
-              </a>
-              <p class="text-xs text-gray-500 leading-relaxed max-w-sm">
-                Full Professor for Industrial Informatics & enterprise software architect bridging academic systems engineering with sovereign agentic AI workflows, cyber-physical simulation, and digital content creation. Founder of CADdrive and Mentawise.
-              </p>
-            </div>
-            
-            <!-- Navigation Column -->
-            <div class="md:col-span-3 flex flex-col space-y-3">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Navigation</span>
-              <ul class="space-y-2 text-xs">
-                <li>
-                  <a href="/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Home</a>
-                </li>
-                <li>
-                  <a href="/posts/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Posts</a>
-                </li>
-                <li>
-                  <a href="/publications/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Publications</a>
-                </li>
-                <li>
-                  <a href="/presentations/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Presentations</a>
-                </li>
-                <li>
-                  <a href="/courses/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Courses</a>
-                </li>
-                <li>
-                  <a href="/projects/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Projects</a>
-                </li>
-                <li>
-                  <a href="/services/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Services</a>
-                </li>
-                <li>
-                  <a href="/visualizations/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Visualizations</a>
-                </li>
-                <li>
-                  <a href="/newsletters/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Newsletters</a>
-                </li>
-              </ul>
-            </div>
-            
-            <!-- Contact/Institution & Profiles Column -->
-            <div class="md:col-span-4 flex flex-col space-y-5">
-              <div>
-                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Contact & Institution</span>
-                <p class="text-xs text-gray-500 leading-relaxed mt-2.5">
-                  UAP – University of Applied Sciences Upper Austria<br />
-                  Technology Campus Wels<br />
-                  Stelzhamerstrasse 23, 4600 Wels, Austria
-                </p>
-                <a 
-                  href="mailto:georg.hackenberg@fh-wels.at" 
-                  class="text-xs text-brand-blue hover:text-brand-blue/80 hover:underline select-all font-mono inline-block mt-2"
-                >
-                  georg.hackenberg@fh-wels.at
-                </a>
-              </div>
+        </Container>
 
-              <!-- Research Profiles & Channels -->
-              <div>
-                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Profiles & Research</span>
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-400 mt-2.5">
-                  <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="GitHub">GitHub</a>
-                  <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="LinkedIn">LinkedIn</a>
-                  <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="YouTube">YouTube</a>
-                  <a href="https://scholar.google.com/citations?user=WS9Q3eYAAAAJ" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="Google Scholar">Scholar</a>
-                  <a href="https://orcid.org/0000-0003-3913-4148" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="ORCID">ORCID</a>
-                  <a href="https://www.wikidata.org/wiki/Q141537961" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="Wikidata">Wikidata</a>
-                </div>
-              </div>
-            </div>
-            
-          </div>
-          
-          <!-- Footer Bottom -->
-          <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-text-subtle gap-4">
-            <div class="flex flex-col items-center sm:items-start gap-1">
-              <p>&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
-              <p class="text-[10px] text-text-subtle mt-0.5">
-                Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
+        <Container as="div" size="wide" padding="none">
+          <!-- Minimalist Footer Single-Bar (Variant 1A) -->
+          <div class="flex flex-col min-[1100px]:flex-row items-center justify-between gap-6 text-xs text-text-subtle">
+            <!-- Left: Copyright & Colophon -->
+            <div class="flex flex-col items-center min-[1100px]:items-start gap-1 shrink-0 whitespace-nowrap">
+              <p class="text-gray-400 light:text-slate-600 font-medium">&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
+              <p class="text-xs text-text-subtle">
+                Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
               </p>
             </div>
-            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2">
-              <a href="/impressum/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Impressum</a>
-              <a href="/datenschutz/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Datenschutz</a>
-              <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
-              <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
-              <a href="#" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Back to top ↑</a>
+
+            <!-- Center: External Profiles (6 glass icon buttons) -->
+            <div class="flex items-center gap-2 shrink-0" aria-label="External Profiles">
+              {profiles.map((profile) => (
+                <a 
+                  href={profile.data.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-primary/40 text-gray-400 hover:text-gray-100 light:text-slate-600 light:hover:text-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-105" 
+                  aria-label={`${profile.data.name} Profile`} 
+                  title={profile.data.name}
+                >
+                  {profile.data.icon === "github" && (
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "linkedin" && (
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "youtube" && (
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "scholar" && (
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "orcid" && (
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/>
+                    </svg>
+                  )}
+                  {profile.data.icon === "wikidata" && (
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M1.5 4.5h2.25v15H1.5v-15zm3.375 0h1.125v15H4.875v-15zm2.25 0h2.25v15h-2.25v-15zm3.375 0h1.125v15H10.5v-15zm2.25 0h1.125v15H12.75v-15zm2.25 0h2.25v15H15v-15zm3.375 0h1.125v15h-1.125v-15zm2.25 0h1.875v15h-1.875v-15z"/>
+                    </svg>
+                  )}
+                </a>
+              ))}
+            </div>
+
+            <!-- Right: Legal, AI Feeds & Back-to-top -->
+            <div class="flex flex-wrap items-center justify-center min-[1100px]:justify-end gap-x-4 gap-y-2 whitespace-nowrap">
+              <a href="/impressum/" class="text-text-subtle hover:text-brand-primary/80 transition-colors">Impressum</a>
+              <a href="/datenschutz/" class="text-text-subtle hover:text-brand-primary/80 transition-colors">Datenschutz</a>
+              <span class="opacity-30 select-none" aria-hidden="true">|</span>
+              <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary/80 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
+              <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-primary/80 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
+              <span class="opacity-30 select-none" aria-hidden="true">|</span>
+              <a href="#" class="text-text-subtle hover:text-brand-primary/80 transition-colors">Back to top ↑</a>
             </div>
           </div>
         </Container>
+
       </footer>
     </div>
 
@@ -714,7 +684,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
       (function() {
         const STORAGE_KEY = 'gh_site_notifications_v1';
         const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-        const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
+        const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
         
         function normalizePath(path) {
           let n = path.replace(/\/$/, '');

@@ -7,7 +7,7 @@ tags: ["agentic-ai", "artificial-intelligence", "gpgpu", "local-ai", "react", "s
 accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
-screenshot:
+image:
   src: "./final_sample_terrain_view.png"
   title: "Delta Dynamics: Low-Poly Ecosystem & Hydrology Simulation"
   description: "Interactive 3D low-poly terrain featuring procedural elevation tiers, dynamic biome coloring, and GPU shallow-water simulation."

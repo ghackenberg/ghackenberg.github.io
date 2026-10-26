@@ -2,24 +2,34 @@
 title: "Programmatische Optimierung: DSPy"
 subtitle: "Khattab et al. 2023: {cue:hl-sub-45}Warum wir Prompts in Zukunft kompilieren statt manuell zu tippen{/cue}"
 number: "45"
-slideLayout: "split"
-voiceover: >
-  Der nächste evolutionäre Schritt im Prompt Engineering stammt aus den Stanford Labs: DSPy von Omar Khattab und Team.
-  {cue:sub} Es begründet ein Paradigma: {cue:hl-sub-45}Prompts kompilieren statt manuell zu tippen{/cue}.
-  {cue:col-handarbeit} Manuelles Prompting ist fragil: Viele Teams klagen, {cue:hl-fragiles-tuning}mit dem nächsten Modell-Update funktionierte nichts mehr{/cue}. Bei Updates {cue:hl-modell-bruch}brechen mühsam ertestete Formulierungen zusammen{/cue}, und Entwickler verlieren Zeit mit {cue:hl-wording-feinschliff}endlosem sprachlichem Feinschliff statt Systemarchitektur{/cue}.
-  {cue:col-compiler} DSPy wählt den Compiler-Ansatz: Prompts werden {cue:hl-dspy-compiler}automatisch gegen eine Verlustfunktion kompiliert und optimiert{/cue}. Typisierte Signaturen ermöglichen eine {cue:hl-saubere-trennung}saubere Trennung völlig losgelöst von Prompt-Strings{/cue}, während Teleprompter für {cue:hl-maximale-zielmetrik}maximale Zielmetriken auf Ihren Daten{/cue} sorgen.
+slideLayout: split
+voiceover: |
+  Der nächste evolutionäre Schritt im Prompt Engineering stammt aus den Stanford Labs: DSPy von Omar Khattab und Team. {cue:sub} Es begründet ein Paradigma: {cue:hl-sub-45}Prompts kompilieren statt manuell zu tippen{/cue}. {cue:col-handarbeit} Manuelles Prompting ist fragil: Viele Teams klagen, {cue:hl-fragiles-tuning}mit dem nächsten Modell-Update funktionierte nichts mehr{/cue}. Bei Updates {cue:hl-modell-bruch}brechen mühsam ertestete Formulierungen zusammen{/cue}, und Entwickler verlieren Zeit mit {cue:hl-wording-feinschliff}endlosem sprachlichem Feinschliff statt Systemarchitektur{/cue}. {cue:col-compiler} DSPy wählt den Compiler-Ansatz: Prompts werden {cue:hl-dspy-compiler}automatisch gegen eine Verlustfunktion kompiliert und optimiert{/cue}. Typisierte Signaturen ermöglichen eine {cue:hl-saubere-trennung}saubere Trennung völlig losgelöst von Prompt-Strings{/cue}, während Teleprompter für {cue:hl-maximale-zielmetrik}maximale Zielmetriken auf Ihren Daten{/cue} sorgen.
 notes: |
   - Zeit: 88:00 - 90:00 Min.
   - Primärquelle: Khattab et al. (2023), Stanford University.
   - Ausblick: Der Übergang von 'Prompting' zu 'Software 2.0 / Compiler'.
 references:
   - type: article
-    id: "khattab-2023-dspy"
-    author: "Khattab, O., et al."
+    id: khattab-2023-dspy
     title: "DSPy: Compiling Declarative Language Model Calls into Self-Refining Pipelines"
-    journal: "arXiv preprint arXiv:2310.03714"
+    journal: arXiv preprint arXiv:2310.03714
     year: 2023
-    url: "https://arxiv.org/abs/2310.03714"
+    url: https://arxiv.org/abs/2310.03714
+    authors:
+      - name: Omar Khattab
+      - name: Arnav Singhvi
+      - name: Paridhi Maheshwari
+      - name: Zhiyuan Zhang
+      - name: Keshav Santhanam
+      - name: Sri Vardhamanan
+      - name: Saiful Haq
+      - name: Ashutosh Sharma
+      - name: Thomas T. Joshi
+      - name: Hanna Moazam
+      - name: Heather Miller
+      - name: Matei Zaharia
+      - name: Christopher Potts
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

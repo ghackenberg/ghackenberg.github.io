@@ -1,24 +1,23 @@
 ---
-title: "Structured Outputs & JSON-Schema"
+title: Structured Outputs & JSON-Schema
 subtitle: "Constrained Decoding: {cue:hl-sub-35}100 Prozent syntaktische Garantie für nachgelagerte Software-Systeme{/cue}"
 number: "35"
-slideLayout: "code"
-voiceover: >
-  Das größte historische Hindernis für Enterprise-KI waren unzuverlässig formatierte Antworten.
-  {cue:sub} Structured Outputs bieten {cue:hl-sub-35}100 Prozent syntaktische Garantie für nachgelagerte Software{/cue}.
-  {cue:col-code} Mit modernem Structured Output übergeben Entwickler ein {cue:hl-json-schema}striktes JSON-Schema mit Pflichtfeldern und Typen{/cue}. Das Modell wird gezwungen, exakt dieses Datenformat zu befüllen.
-  {cue:col-explanation} Unter der Haube wirkt {cue:hl-constrained-decoding}Constrained Decoding auf Token-Ebene{/cue}: Unpassende Tokens werden maskiert, sodass {cue:hl-null-syntax-fehler}Syntaxfehler mathematisch unmöglich gemacht werden{/cue}. Antworten fließen direkt {cue:hl-direkte-db}ohne manuelle Bereinigung in SQL-Datenbanken und ERP-Tabellen{/cue}.
+slideLayout: code
+voiceover: |
+  Das größte historische Hindernis für Enterprise-KI waren unzuverlässig formatierte Antworten. {cue:sub} Structured Outputs bieten {cue:hl-sub-35}100 Prozent syntaktische Garantie für nachgelagerte Software{/cue}. {cue:col-code} Mit modernem Structured Output übergeben Entwickler ein {cue:hl-json-schema}striktes JSON-Schema mit Pflichtfeldern und Typen{/cue}. Das Modell wird gezwungen, exakt dieses Datenformat zu befüllen. {cue:col-explanation} Unter der Haube wirkt {cue:hl-constrained-decoding}Constrained Decoding auf Token-Ebene{/cue}: Unpassende Tokens werden maskiert, sodass {cue:hl-null-syntax-fehler}Syntaxfehler mathematisch unmöglich gemacht werden{/cue}. Antworten fließen direkt {cue:hl-direkte-db}ohne manuelle Bereinigung in SQL-Datenbanken und ERP-Tabellen{/cue}.
 notes: |
   - Zeit: 68:00 - 70:00 Min.
   - Primärquelle: OpenAI (2024), Structured Outputs API.
   - Wichtig: Nicht nur JSON Mode, sondern echte Schema-Validierung via Kontextfreie Grammatik (CFG).
 references:
   - type: online
-    id: "openai-2024-structured-outputs"
-    author: "OpenAI"
-    title: "Introducing Structured Outputs in the API"
+    id: openai-2024-structured-outputs
+    title: Introducing Structured Outputs in the API
     year: 2024
-    url: "https://openai.com/index/introducing-structured-outputs-in-the-api/"
+    url: https://openai.com/index/introducing-structured-outputs-in-the-api/
+    authors:
+      - name: OpenAI
+        type: Organization
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

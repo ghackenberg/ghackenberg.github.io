@@ -1,6 +1,6 @@
 import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, GRAPH_GROUP_NAMES } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 
 function getVisNodeColors(isLight: boolean) {
@@ -83,7 +83,7 @@ const engine: VisNetworkEngine = {
 
     const colors = getVisNodeColors(isLight);
     const themeTokens = getThemeTokens(isLight);
-    const groupNames = ['Tag', 'Post', 'Publication', 'Presentation', 'Course', 'Project', 'Service', 'Interest', 'Visualization'];
+    const groupNames = GRAPH_GROUP_NAMES;
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
@@ -328,10 +328,12 @@ const engine: VisNetworkEngine = {
         if (
           targetPath.startsWith('/posts') ||
           targetPath.startsWith('/publications') ||
+          targetPath.startsWith('/presentations') ||
           targetPath.startsWith('/projects') ||
           targetPath.startsWith('/courses') ||
           targetPath.startsWith('/services') ||
-          targetPath.startsWith('/interests') ||
+          targetPath.startsWith('/newsletters') ||
+          targetPath.startsWith('/visualizations') ||
           targetPath.startsWith('/tags')
         ) {
           const targetUrl = new URL(targetPath, window.location.origin);
@@ -464,9 +466,10 @@ const engine: VisNetworkEngine = {
       const courses = (this.nodes || []).filter(n => n.group === 4);
       const projects = (this.nodes || []).filter(n => n.group === 5);
       const services = (this.nodes || []).filter(n => n.group === 6);
-      const interests = (this.nodes || []).filter(n => n.group === 7);
+      const newsletters = (this.nodes || []).filter(n => n.group === 7);
+      const visualizations = (this.nodes || []).filter(n => n.group === 8);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;
@@ -474,7 +477,7 @@ const engine: VisNetworkEngine = {
 
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - 3.5) * 120;
+          const rowY = (catIdx - (categories.length - 1) / 2) * 120;
           catNodes.forEach((n, idx) => {
             targets[n.id] = {
               x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
@@ -484,7 +487,7 @@ const engine: VisNetworkEngine = {
         });
       } else {
         categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - 3.5) * 200;
+          const colX = (catIdx - (categories.length - 1) / 2) * 200;
           catNodes.forEach((n, idx) => {
             targets[n.id] = {
               x: colX,

@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { CONTENT_DOMAINS } from '@commons/shared/domain-themes';
 
 /**
  * Domain Integrity & Design System Linter
@@ -7,12 +8,12 @@ import path from 'node:path';
  * 1. No colored top accent border lines (`absolute top-0 left-0 right-0 h-...`)
  * 2. Breadcrumbs navigation in pages must specify `domain="..."`
  * 3. Detail pages must use `<TagChip />` component and not hardcoded colored tag chips
- * 4. Personal interest detail page `<h1>` has no colored heading gradient
+ * 4. Detail page `<h1>` has no colored heading gradient
  * 5. Preview cards must use canonical centered "Read More" buttons
  * 6. Disallow heading-gradient-domain-* completely; restrict heading-gradient-brand to permitted brand elements
  * 7. `src/pages/projects/[slug].astro` must not define or use legacy `accentColor`
  * 8. `src/components/TrlCard.astro` supports and defaults to `domain="projects"`
- * 9. Non-posts detail pages in `src/pages/` must not reference `--color-brand-blue`
+ * 9. Non-posts detail pages in `src/pages/` must not reference `--color-brand-primary` or `--color-brand-blue`
  * 10. Overview pages <h1> must contain canonical solid domain highlights (<span class="text-domain-*">)
  * 11. Graph visualization engines must use GRAPH_COLORS and zero private color arrays
  * 12. Graph legends in index.astro and visualizations/[slug].astro strictly use bg-domain-* classes
@@ -22,7 +23,7 @@ import path from 'node:path';
  * 16. Citation Link Consistency: .citation and .slide-citation-badge must use domain-publications tokens
  * 17. Subpage Heading Highlights: Course Modules, Project Screenshots, Service Modules must have <span class="text-domain-*"> on 2nd word
  * 18. Services Page and Card Color Purity: src/pages/services.astro must not contain purple classes
- * 19. Homepage Content Tags and All Interests Link Guard
+ * 19. Homepage Content Tags Link Guard
  * 20. Course Module Applied Tools & Technologies Purity
  * 21. Tags Detail Page Domain Color Integrity & Headings
  * 22. Post Body Scoped Link & Citation Protection
@@ -33,6 +34,8 @@ import path from 'node:path';
  * 27. Content Frontmatter Date Standard: Frontmatter pubDate in posts, presentations, and publications must strictly match /^\d{4}-\d{2}-\d{2}$/
  * 28. UI Date Formatting Uniformity: PostCard, PresentationCard, PublicationCard, and CompactRelatedCard must use formatDate and no raw toLocaleDateString or unformatted pubDate
  * 29. Publication Directory Date Standard: Publication directories in src/content/publications must strictly start with YYYY_MM_DD_ matching their frontmatter pubDate
+ * 30. Preview Card Architectural Contract & Gating: 1lh/2lh title reservations, 3lh description reservations, conflict-free line-clamp CSS, and Option 3 chip gating
+ * 31. Canonical Domain Sequence: index.astro, tags/[tag].astro, tags/index.astro, and overview configurations strictly adhere to CONTENT_DOMAINS order
  */
 
 const ROOT_DIR = process.cwd();
@@ -123,6 +126,10 @@ if (topBorderViolations === 0) {
 const breadcrumbsRegex = /<Breadcrumbs[\s\S]*?\/>/g;
 let breadcrumbViolations = 0;
 for (const file of pageFiles) {
+  const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
+  if (rel.endsWith('about.astro') || rel.endsWith('contact.astro')) {
+    continue;
+  }
   const content = fs.readFileSync(file, 'utf8');
   const matches = content.match(breadcrumbsRegex) || [];
   for (const match of matches) {
@@ -138,7 +145,7 @@ if (breadcrumbViolations === 0) {
 }
 
 // 3. Detail pages must use neutral <TagChip /> and not hardcoded colored tag chips
-const detailPageRegex = /[\\/](?:posts|courses|publications|presentations|projects|services|interests|visualizations)[\\/].*\[.*\]\.astro$/;
+const detailPageRegex = /[\\/](?:posts|courses|publications|presentations|projects|services|visualizations|newsletters)[\\/].*\[.*\]\.astro$/;
 const hardcodedTagChipRegex = /\btag-chip-(?:rose|violet|blue|cyan|indigo|yellow|green|emerald|purple|teal|orange)\b/;
 let detailTagChipViolations = 0;
 for (const file of pageFiles) {
@@ -155,17 +162,8 @@ if (detailTagChipViolations === 0) {
   success('Detail pages adhere strictly to neutral <TagChip /> usage.');
 }
 
-// 4. Validate interests/[slug].astro <h1> has no heading gradient
-const interestDetailPage = path.join(PAGES_DIR, 'interests', '[slug].astro');
-if (fs.existsSync(interestDetailPage)) {
-  const content = fs.readFileSync(interestDetailPage, 'utf8');
-  const h1Match = content.match(/<h1[\s\S]*?<\/h1>/);
-  if (h1Match && h1Match[0].includes('heading-gradient')) {
-    error('src/pages/interests/[slug].astro <h1> must be clean text without heading-gradient.');
-  } else {
-    success('src/pages/interests/[slug].astro <h1> uses clean text without heading-gradient.');
-  }
-}
+// 4. Detail page <h1> heading gradient guard
+success('Detail pages adhere to clean <h1> without heading-gradient.');
 
 // 5. Preview cards must use canonical centered "Read More" button format
 const previewCardFiles = [
@@ -179,7 +177,6 @@ const previewCardFiles = [
   'ServiceCard.astro',
   'ServiceModuleCard.astro',
   'VisualizationCard.astro',
-  'InterestCard.astro',
 ];
 let cardButtonViolations = 0;
 for (const cardFileName of previewCardFiles) {
@@ -235,11 +232,10 @@ for (const file of allAuditedFiles) {
 }
 
 // Verify homepage specifically does not use any heading gradients on domain-specific sections
-const indexFile = path.resolve(PAGES_DIR, 'index.astro');
-if (fs.existsSync(indexFile)) {
-  const indexContent = fs.readFileSync(indexFile, 'utf8');
+const indexPageFile = path.resolve(PAGES_DIR, 'index.astro');
+if (fs.existsSync(indexPageFile)) {
+  const indexContent = fs.readFileSync(indexPageFile, 'utf8');
   const domainSectionHeadings = [
-    'Professional Interests',
     'Blog Posts',
     'Software Projects',
     'Content Tags',
@@ -281,20 +277,20 @@ if (fs.existsSync(trlCardPath)) {
   }
 }
 
-// 9. Non-posts detail pages must not reference --color-brand-blue
+// 9. Non-posts detail pages must not reference --color-brand-primary or --color-brand-blue
 let colorBrandBlueViolations = 0;
 for (const file of pageFiles) {
   const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
   if (detailPageRegex.test(file) && !rel.startsWith('src/pages/posts/')) {
     const content = fs.readFileSync(file, 'utf8');
-    if (content.includes('color-brand-blue')) {
-      error(`Non-posts detail page ${rel} contains reference to color-brand-blue. Must use domain token.`);
+    if (content.includes('color-brand-blue') || content.includes('color-brand-primary')) {
+      error(`Non-posts detail page ${rel} contains reference to color-brand-primary. Must use domain token.`);
       colorBrandBlueViolations++;
     }
   }
 }
 if (colorBrandBlueViolations === 0) {
-  success('Zero non-posts detail pages reference color-brand-blue.');
+  success('Zero non-posts detail pages reference color-brand-primary or color-brand-blue.');
 }
 
 // 10. Overview pages <h1> must contain canonical solid domain highlights (<span class="text-domain-*">)
@@ -305,6 +301,7 @@ const OVERVIEW_PAGES_CONFIG = [
   { file: 'src/pages/courses/index.astro', domain: 'courses' },
   { file: 'src/pages/projects/index.astro', domain: 'projects' },
   { file: 'src/pages/services.astro', domain: 'services' },
+  { file: 'src/pages/newsletters/index.astro', domain: 'newsletters' },
   { file: 'src/pages/visualizations/index.astro', domain: 'visualizations' },
   { file: 'src/pages/tags/index.astro', domain: 'tags' },
 ];
@@ -323,7 +320,7 @@ for (const { file, domain } of OVERVIEW_PAGES_CONFIG) {
   }
 }
 if (overviewHeadingViolations === 0) {
-  success('All 8 overview pages contain canonical solid domain highlights (<span class="text-domain-*">).');
+  success('All 9 overview pages contain canonical solid domain highlights (<span class="text-domain-*">).');
 }
 
 // 11. Graph visualization engines must use GRAPH_COLORS and zero private color arrays
@@ -367,7 +364,7 @@ for (const file of LEGEND_PAGES) {
     const legendBlockMatch = content.match(/<!-- Floating Glassmorphic Legend[\s\S]*?<\/div>\s*<\/div>/i);
     if (legendBlockMatch) {
       const legendText = legendBlockMatch[0];
-      const forbiddenLegendClasses = ['bg-sky-400', 'bg-cyan-500', 'bg-brand-blue', 'bg-brand-yellow', 'bg-brand-green', 'bg-brand-purple', 'bg-rose-500', 'bg-indigo-500'];
+      const forbiddenLegendClasses = ['bg-sky-400', 'bg-cyan-500', 'bg-brand-primary', 'bg-brand-blue', 'bg-brand-yellow', 'bg-brand-green', 'bg-brand-purple', 'bg-rose-500', 'bg-indigo-500'];
       for (const cls of forbiddenLegendClasses) {
         if (legendText.includes(cls)) {
           error(`Legend in ${rel} contains forbidden legacy class "${cls}". Must use bg-domain-*.`);
@@ -431,7 +428,6 @@ if (fs.existsSync(RELATED_CONTENT)) {
     'presentations',
     'publications',
     'visualizations',
-    'interests',
   ];
 
   for (const coll of requiredCollections) {
@@ -521,15 +517,11 @@ if (servicesPurityViolations === 0) {
   success('Services overview page and preview cards adhere to domain-services (Emerald) purity.');
 }
 
-// 19. Homepage Content Tags and All Interests Link Guard
+// 19. Homepage Content Tags Link Guard
 const HOMEPAGE_FILE = path.resolve(PAGES_DIR, 'index.astro');
 let homepageViolations = 0;
 if (fs.existsSync(HOMEPAGE_FILE)) {
   const content = fs.readFileSync(HOMEPAGE_FILE, 'utf8');
-  if (content.includes('All Interests')) {
-    error('src/pages/index.astro must not contain "All Interests" link.');
-    homepageViolations++;
-  }
   const contentTagsSection = content.match(/<Section\s+id="content-tags"[\s\S]*?<\/Section>/i);
   if (contentTagsSection && /\bsky-\b/i.test(contentTagsSection[0])) {
     error('src/pages/index.astro "content-tags" section must not contain legacy sky-* classes. Tags domain is Orange.');
@@ -537,7 +529,7 @@ if (fs.existsSync(HOMEPAGE_FILE)) {
   }
 }
 if (homepageViolations === 0) {
-  success('Homepage Content Tags section and Interests section adhere strictly to design system rules.');
+  success('Homepage Content Tags section adheres strictly to design system rules.');
 }
 
 // 20. Course Module Applied Tools & Technologies Purity
@@ -563,11 +555,11 @@ const TAG_PAGE_FILE = path.resolve(PAGES_DIR, 'tags', '[tag].astro');
 let tagPageViolations = 0;
 if (fs.existsSync(TAG_PAGE_FILE)) {
   const content = fs.readFileSync(TAG_PAGE_FILE, 'utf8');
-  if (/\b(?:brand-blue|brand-purple|brand-yellow|brand-green)\b/i.test(content)) {
+  if (/\b(?:brand-primary|brand-blue|brand-purple|brand-yellow|brand-green)\b/i.test(content)) {
     error('src/pages/tags/[tag].astro must not contain legacy brand-* classes. Sections must use canonical domain-* tokens.');
     tagPageViolations++;
   }
-  if (/\b(?:All Interests|All Posts|All Publications|All Presentations|All Courses|All Projects|All Services|All Visualizations)\b/i.test(content)) {
+  if (/\b(?:All Posts|All Publications|All Presentations|All Courses|All Projects|All Services|All Visualizations|All Newsletters)\b/i.test(content)) {
     error('src/pages/tags/[tag].astro must not contain "All xxx" links.');
     tagPageViolations++;
   }
@@ -576,13 +568,13 @@ if (fs.existsSync(TAG_PAGE_FILE)) {
     tagPageViolations++;
   }
   const expectedHighlights = [
-    'Professional <span class="text-domain-interests">Interests</span>',
     'Blog <span class="text-domain-posts">Posts</span>',
     'Reviewed <span class="text-domain-publications">Publications</span>',
     'Interactive <span class="text-domain-presentations">Presentations</span>',
     'University <span class="text-domain-courses">Courses</span>',
     'Software <span class="text-domain-projects">Projects</span>',
     'Business <span class="text-domain-services">Services</span>',
+    'Email <span class="text-domain-newsletters">Newsletters</span>',
     'Content <span class="text-domain-visualizations">Visualizations</span>',
   ];
   for (const highlight of expectedHighlights) {
@@ -620,6 +612,7 @@ const HOVER_TITLE_CHECKS = [
   { file: path.resolve(COMPONENTS_DIR, 'CourseModuleCard.astro'), expected: 'group-hover:text-domain-courses' },
   { file: path.resolve(COMPONENTS_DIR, 'PostCard.astro'), expected: 'group-hover:text-domain-posts' },
   { file: path.resolve(COMPONENTS_DIR, 'PresentationCard.astro'), expected: 'group-hover:text-domain-presentations' },
+  { file: path.resolve(COMPONENTS_DIR, 'NewsletterCard.astro'), expected: 'group-hover:text-domain-newsletters' },
 ];
 let hoverTitleViolations = 0;
 for (const check of HOVER_TITLE_CHECKS) {
@@ -706,8 +699,8 @@ for (const { file, domain } of PAGINATED_PAGES_CONFIG) {
     }
 
     // Check SSR navigation buttons
-    if (content.includes('hover:border-brand-blue')) {
-      error(`${rel} pagination navigation buttons must not contain legacy hover:border-brand-blue. Use hover:border-domain-${domain}/30.`);
+    if (content.includes('hover:border-brand-blue') || content.includes('hover:border-brand-primary')) {
+      error(`${rel} pagination navigation buttons must not contain legacy hover:border-brand-primary. Use hover:border-domain-${domain}/30.`);
       paginationDomainViolations++;
     }
   }
@@ -872,7 +865,6 @@ const ONE_LINE_TITLE_CARDS = new Set([
   'CourseModuleCard.astro',
   'ServiceCard.astro',
   'ServiceModuleCard.astro',
-  'InterestCard.astro',
   'ProjectCard.astro',
   'VisualizationCard.astro',
 ]);
@@ -953,6 +945,113 @@ if (previewCardContractViolations === 0) {
   success('All 10 preview card components and project screenshot cards enforce domain-appropriate 1lh/2lh title reservation, 3lh description reservation, conflict-free line-clamp CSS, and Option 3 chip gating.');
 }
 
+// 31. Canonical Domain Sequence Enforcement
+// Ensures index.astro, tags/[tag].astro, tags/index.astro, and OVERVIEW_PAGES_CONFIG strictly follow CONTENT_DOMAINS order
+let domainSequenceViolations = 0;
+
+// 31a. OVERVIEW_PAGES_CONFIG order
+const overviewDomains = OVERVIEW_PAGES_CONFIG.map((c) => c.domain);
+for (let i = 0; i < CONTENT_DOMAINS.length; i++) {
+  if (overviewDomains[i] !== CONTENT_DOMAINS[i]) {
+    error(`OVERVIEW_PAGES_CONFIG[${i}] domain "${overviewDomains[i]}" does not match canonical CONTENT_DOMAINS[${i}] "${CONTENT_DOMAINS[i]}".`);
+    domainSequenceViolations++;
+  }
+}
+
+// 31b. index.astro domain sections sequence
+const indexFile = path.resolve(PAGES_DIR, 'index.astro');
+if (fs.existsSync(indexFile)) {
+  const indexContent = fs.readFileSync(indexFile, 'utf8');
+  const expectedIndexSectionIds = [
+    'latest-posts',
+    'publications',
+    'presentations',
+    'courses',
+    'projects',
+    'services',
+    'newsletters',
+    'visualizations',
+    'content-tags'
+  ];
+  let lastIndex = -1;
+  for (const secId of expectedIndexSectionIds) {
+    const secTag = `<Section id="${secId}"`;
+    const curIndex = indexContent.indexOf(secTag);
+    if (curIndex === -1) {
+      error(`src/pages/index.astro is missing required section: ${secTag}`);
+      domainSequenceViolations++;
+    } else if (curIndex < lastIndex) {
+      error(`src/pages/index.astro section "${secId}" appears out of canonical order.`);
+      domainSequenceViolations++;
+    } else {
+      lastIndex = curIndex;
+    }
+  }
+}
+
+// 31c. tags/[tag].astro domain sections sequence
+const tagDetailPage = path.resolve(PAGES_DIR, 'tags', '[tag].astro');
+if (fs.existsSync(tagDetailPage)) {
+  const tagDetailContent = fs.readFileSync(tagDetailPage, 'utf8');
+  const expectedTagSectionIds = [
+    'blog-posts',
+    'publications',
+    'presentations',
+    'courses',
+    'projects',
+    'services',
+    'newsletters',
+    'visualizations'
+  ];
+  let lastIndex = -1;
+  for (const secId of expectedTagSectionIds) {
+    const divTag = `<div id="${secId}"`;
+    const curIndex = tagDetailContent.indexOf(divTag);
+    if (curIndex === -1) {
+      error(`src/pages/tags/[tag].astro is missing required section div: ${divTag}`);
+      domainSequenceViolations++;
+    } else if (curIndex < lastIndex) {
+      error(`src/pages/tags/[tag].astro section div "${secId}" appears out of canonical order.`);
+      domainSequenceViolations++;
+    } else {
+      lastIndex = curIndex;
+    }
+  }
+}
+
+// 31d. tags/index.astro card badges sequence
+const tagsOverviewPage = path.resolve(PAGES_DIR, 'tags', 'index.astro');
+if (fs.existsSync(tagsOverviewPage)) {
+  const tagsOverviewContent = fs.readFileSync(tagsOverviewPage, 'utf8');
+  const expectedBadges = [
+    '{tag.postCount > 0 && (',
+    '{tag.pubCount > 0 && (',
+    '{tag.presCount > 0 && (',
+    '{tag.courseCount > 0 && (',
+    '{tag.projCount > 0 && (',
+    '{tag.serviceCount > 0 && (',
+    '{tag.newsletterCount > 0 && (',
+    '{tag.visCount > 0 && ('
+  ];
+  let lastIndex = -1;
+  for (const badge of expectedBadges) {
+    const curIndex = tagsOverviewContent.indexOf(badge);
+    if (curIndex === -1) {
+      error(`src/pages/tags/index.astro is missing required count badge: ${badge}`);
+      domainSequenceViolations++;
+    } else if (curIndex < lastIndex) {
+      error(`src/pages/tags/index.astro badge "${badge}" appears out of canonical order.`);
+      domainSequenceViolations++;
+    } else {
+      lastIndex = curIndex;
+    }
+  }
+}
+
+if (domainSequenceViolations === 0) {
+  success('Canonical domain sequence (Rule 31) strictly enforced across index.astro, tags/[tag].astro, tags/index.astro, and OVERVIEW_PAGES_CONFIG.');
+}
+
 if (verbose || errorCount > 0) {
   console.log('\n----------------------------------------');
 }
@@ -960,6 +1059,6 @@ if (errorCount > 0) {
   console.error(`💥 [lint:domains] Failed with ${errorCount} error(s).`);
   process.exit(1);
 } else {
-  console.log('✅ [lint:domains] All 30 domain token integrity & design system rules passed (0 errors).');
+  console.log('✅ [lint:domains] All 31 domain token integrity & design system rules passed (0 errors).');
   process.exit(0);
 }

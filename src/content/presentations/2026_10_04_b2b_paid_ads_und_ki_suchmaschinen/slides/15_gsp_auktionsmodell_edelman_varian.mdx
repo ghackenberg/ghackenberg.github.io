@@ -1,40 +1,41 @@
 ---
-title: "Generalized Second Price (GSP)"
-subtitle: "Die spieltheoretischen Grundlagen der {cue:hl-sub-gsp}Suchauktion nach Edelman und Varian{/cue}"
+title: Generalized Second Price (GSP)
+subtitle: Die spieltheoretischen Grundlagen der {cue:hl-sub-gsp}Suchauktion nach Edelman und Varian{/cue}
 number: "15"
-slideLayout: "code"
-voiceover: >
-  Die ökonomische Grundlage digitaler Werbeimperien basiert auf einem raffinierten Mechanismusdesign namens Generalized Second Price Auction.
-  {cue:sub} Die spieltheoretischen Grundlagen stammen aus den {cue:hl-sub-gsp}bahnbrechenden Arbeiten von Edelman, Ostrovsky, Schwarz und Hal Varian{/cue}.
-  {cue:code-gsp} Der Code verdeutlicht die mathematische Bietregel im GSP-Gleichgewicht.
-  {cue:card-gsp} Die spieltheoretische Gleichgewichtsanalyse zeigt: {cue:hl-gsp-keindominant}Im GSP ist wahrheitsgemäßes Bieten der eigenen Zahlungsbereitschaft keine dominante Strategie{/cue}. Stattdessen gilt: {cue:hl-gsp-preis}Der Gewinner zahlt nicht sein eigenes Gebot, sondern das Gebot des Nächstplatzierten plus einen Cent{/cue}. Dieses Design {cue:hl-gsp-shading}reduziert aggressives Unterbieten im laufenden Auktionsbetrieb{/cue}, während rationale Bieter auf {cue:hl-gsp-neidfrei}lokal neidfreie Gleichgewichte zwischen Position und Klickpreis{/cue} optimieren.
+slideLayout: code
+voiceover: |
+  Die ökonomische Grundlage digitaler Werbeimperien basiert auf einem raffinierten Mechanismusdesign namens Generalized Second Price Auction. {cue:sub} Die spieltheoretischen Grundlagen stammen aus den {cue:hl-sub-gsp}bahnbrechenden Arbeiten von Edelman, Ostrovsky, Schwarz und Hal Varian{/cue}. {cue:code-gsp} Der Code verdeutlicht die mathematische Bietregel im GSP-Gleichgewicht. {cue:card-gsp} Die spieltheoretische Gleichgewichtsanalyse zeigt: {cue:hl-gsp-keindominant}Im GSP ist wahrheitsgemäßes Bieten der eigenen Zahlungsbereitschaft keine dominante Strategie{/cue}. Stattdessen gilt: {cue:hl-gsp-preis}Der Gewinner zahlt nicht sein eigenes Gebot, sondern das Gebot des Nächstplatzierten plus einen Cent{/cue}. Dieses Design {cue:hl-gsp-shading}reduziert aggressives Unterbieten im laufenden Auktionsbetrieb{/cue}, während rationale Bieter auf {cue:hl-gsp-neidfrei}lokal neidfreie Gleichgewichte zwischen Position und Klickpreis{/cue} optimieren.
 notes: |
   - Zeit: 25:00 - 27:00 Min.
   - Primärquellen: Edelman, Ostrovsky & Schwarz (AER 2007); Hal Varian (IJIO 2007).
   - Wichtig: Erklären, warum der Zweitpreis-Mechanismus für Google Milliarden generiert, indem er Bietern die Angst vor Gebotsfehlern nimmt.
 references:
   - type: article
-    id: "edelman-2007-gsp"
-    author: "Edelman, Benjamin and Ostrovsky, Michael and Schwarz, Michael"
+    id: edelman-2007-gsp
     title: "Internet Advertising and the Generalized Second-Price Auction: Selling Billions of Dollars Worth of Keywords"
-    journal: "American Economic Review"
+    journal: American Economic Review
     volume: "97"
     number: "1"
-    pages: "242--259"
+    pages: 242--259
     year: 2007
-    doi: "10.1257/aer.97.1.242"
-    url: "https://doi.org/10.1257/aer.97.1.242"
+    doi: 10.1257/aer.97.1.242
+    url: https://doi.org/10.1257/aer.97.1.242
+    authors:
+      - name: Benjamin Edelman
+      - name: Michael Ostrovsky
+      - name: Michael Schwarz
   - type: article
-    id: "varian-2007-position-auctions"
-    author: "Varian, Hal R."
-    title: "Position auctions"
-    journal: "International Journal of Industrial Organization"
+    id: varian-2007-position-auctions
+    title: Position auctions
+    journal: International Journal of Industrial Organization
     volume: "25"
     number: "6"
-    pages: "1163--1178"
+    pages: 1163--1178
     year: 2007
-    doi: "10.1016/j.ijindorg.2007.05.006"
-    url: "https://doi.org/10.1016/j.ijindorg.2007.05.006"
+    doi: 10.1016/j.ijindorg.2007.05.006
+    url: https://doi.org/10.1016/j.ijindorg.2007.05.006
+    authors:
+      - name: Nisvan Erkal
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';

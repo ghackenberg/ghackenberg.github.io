@@ -3,6 +3,7 @@ import Layout from '@layouts/Layout.astro';
 import Navbar from '@components/Navbar.astro';
 import Container from '@components/Container.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
+import { buildCollectionPageSchema } from '@commons/server/json-ld';
 import NewsletterCard from '@components/NewsletterCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -13,31 +14,13 @@ const pageTitle = 'Email Newsletters | Dr. Georg Hackenberg';
 const pageDescription =
   'Archive of English-language engineering and research newsletter dispatches covering blog posts, presentations, courses, projects, visualizations, and publications.';
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: 'https://hackenberg.tech',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Newsletters',
-      item: 'https://hackenberg.tech/newsletters/',
-    },
-  ],
-};
 ---
 
 <Layout
   title={pageTitle}
   description={pageDescription}
-  image={sortedIssues[0]?.data.icon.src}
-  jsonLd={breadcrumbSchema}
+  image={sortedIssues[0]?.data.image.src}
+  jsonLd={buildCollectionPageSchema("newsletters", sortedIssues.map((n) => ({ id: `https://hackenberg.tech/newsletters/${n.id}/#article` })))}
   lang="en"
 >
   <Navbar />
@@ -48,12 +31,12 @@ const breadcrumbSchema = {
         { label: 'Home', href: '/' },
         { label: 'Newsletters' },
       ]}
-      domain="posts"
+      domain="newsletters"
     />
 
     <div class="mb-12">
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
-        Email <span class="text-domain-posts">Newsletters</span>
+        Email <span class="text-domain-newsletters">Newsletters</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Periodic English-language dispatches summarizing newly published blog posts, presentations, courses, projects, visualizations, and publications.
@@ -73,7 +56,8 @@ const breadcrumbSchema = {
             title={issue.data.title}
             description={issue.data.description}
             pubDate={issue.data.pubDate}
-            icon={issue.data.icon}
+            image={issue.data.image}
+            tags={issue.data.tags}
           />
         ))}
       </div>

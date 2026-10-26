@@ -17,7 +17,7 @@
     <!-- Header (Sticky/Shrink-0) -->
     <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-element-border flex items-center justify-between gap-3">
       <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-blue/15 border border-brand-blue/30 text-brand-blue flex items-center justify-center shrink-0">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-primary/15 border border-brand-primary/30 text-brand-primary flex items-center justify-center shrink-0">
           <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
@@ -53,7 +53,7 @@
           <div class="space-y-1 min-w-0">
             <div class="flex flex-wrap items-center gap-2">
               <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Local Preferences</h3>
-              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 shrink-0">
+              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-primary/15 text-brand-primary border border-brand-primary/30 shrink-0">
                 100% Client-Side
               </span>
             </div>
@@ -65,7 +65,7 @@
           <!-- Toggle Switch -->
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
             <input type="checkbox" id="toggle-read-status" class="sr-only peer">
-            <div class="w-10 sm:w-11 h-5.5 sm:h-6 bg-gray-700 light:bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 light:after:border-slate-200 after:border after:rounded-full after:h-4.5 sm:after:h-5 after:w-4.5 sm:after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+            <div class="w-10 sm:w-11 h-5.5 sm:h-6 bg-gray-700 light:bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 light:after:border-slate-200 after:border after:rounded-full after:h-4.5 sm:after:h-5 after:w-4.5 sm:after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
             <span class="sr-only">Enable local preferences and read status</span>
           </label>
         </div>
@@ -89,7 +89,7 @@
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Web Analytics</h3>
-            <span id="analytics-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-green/15 text-brand-green border border-brand-green/30 shrink-0">
+            <span id="analytics-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-primary/15 text-brand-primary border border-brand-primary/30 shrink-0">
               Active (Cookie-Free)
             </span>
           </div>
@@ -116,7 +116,7 @@
     <!-- Footer (Sticky/Shrink-0) -->
     <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-element-border light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
       <span>Data protection details</span>
-      <a href="/datenschutz/" class="underline hover:text-brand-blue transition-colors">
+      <a href="/datenschutz/" class="underline hover:text-brand-primary transition-colors">
         Privacy Policy
       </a>
     </div>
@@ -176,7 +176,7 @@
       if (readingStatusText) {
         readingStatusText.textContent = enabled ? 'Enabled (Stored locally)' : 'Disabled (No local storage)';
         readingStatusText.className = enabled 
-          ? 'text-brand-blue font-medium' 
+          ? 'text-brand-primary font-medium' 
           : 'text-gray-400 light:text-slate-500 font-medium';
       }
       if (clearReadingDataBtn) {
@@ -192,14 +192,14 @@
       if (toggleAnalyticsBtn) {
         toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
         toggleAnalyticsBtn.className = optedOut
-          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-brand-green/30 bg-brand-green/10 text-brand-green hover:bg-brand-green/20 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto'
+          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-brand-primary/30 bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto'
           : 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto shadow-sm';
       }
       if (analyticsBadge) {
         analyticsBadge.textContent = optedOut ? 'Disabled (Opt-out active)' : 'Active (Cookie-Free)';
         analyticsBadge.className = optedOut
-          ? 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-callout-warning/15 text-callout-warning border border-callout-warning/30 shrink-0'
-          : 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-green/15 text-brand-green border border-brand-green/30 shrink-0';
+          ? 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-element-bg text-gray-400 light:text-slate-500 border border-element-border-medium shrink-0'
+          : 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-primary/15 text-brand-primary border border-brand-primary/30 shrink-0';
       }
     }
 

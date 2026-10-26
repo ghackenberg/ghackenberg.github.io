@@ -482,7 +482,26 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
       howpublished: r.howpublished
     }));
 
-    // In-text citation validation
+    // Authors and in-text citation validation
+    for (const rawRef of parsed.references) {
+      if (rawRef.author) {
+        errors.push(`[${relPath}] Reference "${rawRef.id || rawRef.title}" uses deprecated "author" field. Only "authors: [...]" array is supported.`);
+      }
+      if (!Array.isArray(rawRef.authors) || rawRef.authors.length === 0) {
+        errors.push(`[${relPath}] Reference "${rawRef.id || rawRef.title}" is missing mandatory non-empty "authors" array.`);
+      } else {
+        for (const a of rawRef.authors) {
+          if (typeof a === 'object' && a !== null) {
+            if (!a.name || typeof a.name !== 'string' || !a.name.trim()) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" has an author missing a non-empty "name".`);
+            }
+            if (a.id && (typeof a.id !== 'string' || !/^https?:\/\//i.test(a.id))) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "id": "${a.id}". Must be a valid absolute HTTP(S) URL.`);
+            }
+          }
+        }
+      }
+    }
     for (const ref of refs) {
       if (!ref.id) {
         errors.push(`[${relPath}] Reference "${ref.title}" is missing mandatory "id" in frontmatter.`);

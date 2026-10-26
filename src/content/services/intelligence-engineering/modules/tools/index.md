@@ -19,7 +19,7 @@ methodologyPhases:
   - title: "Integration Testing"
     description: "Validating tool calling under boundary conditions, malformed parameters, and network errors."
 order: 3
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Tool Integration & MCP"
   description: "Hexagonales 3D-Gateway zur nahtlosen Anbindung modularer Werkzeug- und API-Module über das Model Context Protocol"

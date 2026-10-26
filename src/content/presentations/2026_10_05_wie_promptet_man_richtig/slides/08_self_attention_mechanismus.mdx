@@ -1,25 +1,30 @@
 ---
-title: "Der Self-Attention-Mechanismus"
-subtitle: "Wie der Transformer {cue:hl-sub-08}Relevanzbeziehungen zwischen Tokens{/cue} dynamisch berechnet"
+title: Der Self-Attention-Mechanismus
+subtitle: Wie der Transformer {cue:hl-sub-08}Relevanzbeziehungen zwischen Tokens{/cue} dynamisch berechnet
 number: "08"
-slideLayout: "split"
-voiceover: >
-  Der eigentliche Durchbruch moderner Sprachmodelle ist die Self-Attention-Architektur aus der Transformer-Forschung.
-  {cue:sub} Sie berechnet dynamisch {cue:hl-sub-08}Relevanzbeziehungen zwischen Tokens{/cue}.
-  {cue:col-attention-formel} Das Modell vergleicht jedes Token mit jedem anderen. Die {cue:hl-attention-matrix}Suchanfragen, Schlüssel und Werte{/cue} werden gewichtet, wobei jedes Wort auf {cue:hl-all-to-all}alle vorhergehenden Kontext-Tokens blickt{/cue}.
-  {cue:col-attention-praxis} Beim Prompting gilt: Klare Schlüsselbegriffe {cue:hl-fokus-verstaerkung}verstärken die Attention-Weights signifikant{/cue}, während Fülltext dazu führt, dass {cue:hl-attention-verwaschen}essenzielle Randbedingungen an Gewicht verlieren{/cue}. Parallele Köpfe erfassen {cue:hl-multi-aspekte}Syntax, Rollen und Sachzusammenhänge{/cue} simultan.
+slideLayout: split
+voiceover: |
+  Der eigentliche Durchbruch moderner Sprachmodelle ist die Self-Attention-Architektur aus der Transformer-Forschung. {cue:sub} Sie berechnet dynamisch {cue:hl-sub-08}Relevanzbeziehungen zwischen Tokens{/cue}. {cue:col-attention-formel} Das Modell vergleicht jedes Token mit jedem anderen. Die {cue:hl-attention-matrix}Suchanfragen, Schlüssel und Werte{/cue} werden gewichtet, wobei jedes Wort auf {cue:hl-all-to-all}alle vorhergehenden Kontext-Tokens blickt{/cue}. {cue:col-attention-praxis} Beim Prompting gilt: Klare Schlüsselbegriffe {cue:hl-fokus-verstaerkung}verstärken die Attention-Weights signifikant{/cue}, während Fülltext dazu führt, dass {cue:hl-attention-verwaschen}essenzielle Randbedingungen an Gewicht verlieren{/cue}. Parallele Köpfe erfassen {cue:hl-multi-aspekte}Syntax, Rollen und Sachzusammenhänge{/cue} simultan.
 notes: |
   - Zeit: 14:00 - 16:00 Min.
   - Primärquelle: Vaswani et al. (2017), "Attention Is All You Need".
   - Analogie: Wie ein dynamisches Kreuzkorrelationsnetzwerk.
 references:
   - type: inproceedings
-    id: "vaswani-2017-attention"
-    author: "Vaswani, A., et al."
-    title: "Attention Is All You Need"
-    booktitle: "NeurIPS 2017"
+    id: vaswani-2017-attention
+    title: Attention Is All You Need
+    booktitle: NeurIPS 2017
     year: 2017
-    url: "https://arxiv.org/abs/1706.03762"
+    url: https://arxiv.org/abs/1706.03762
+    authors:
+      - name: Ashish Vaswani
+      - name: Noam Shazeer
+      - name: Niki Parmar
+      - name: Jakob Uszkoreit
+      - name: Llion Jones
+      - name: Aidan N. Gomez
+      - name: Lukasz Kaiser
+      - name: Illia Polosukhin
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

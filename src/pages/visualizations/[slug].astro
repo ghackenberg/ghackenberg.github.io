@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildVisualizationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -21,7 +22,7 @@ const { vis } = Astro.props;
 const type = vis.id;
 const title = vis.data.title;
 const description = vis.data.description;
-const screenshot = vis.data.screenshot;
+const screenshot = vis.data.image;
 
 const { Content } = await render(vis);
 
@@ -41,7 +42,8 @@ const presentations = await getCollection("presentations");
 const projects = await getCollection("projects");
 const courses = await getCollection("courses");
 const services = await getCollection("services");
-const interests = await getCollection("interests");
+const visualizations = await getCollection("visualizations");
+const newsletters = await getCollection("newsletters");
 const tags = await getCollection("tags");
 
 const payload = await buildGraphPayload({
@@ -51,44 +53,21 @@ const payload = await buildGraphPayload({
   projects,
   courses,
   services,
-  interests,
+  visualizations,
+  newsletters,
   tags,
   getImage
 });
 
-const visUrl = `https://hackenberg.tech/visualizations/${vis.id}/`;
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Visualizations",
-      "item": "https://hackenberg.tech/visualizations/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": title,
-      "item": visUrl
-    }
-  ]
-};
+const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
-  title={`${title} | Dr. Georg Hackenberg`} 
-  description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, interests, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
+  title={`${title} | Dr. Georg Hackenberg`}
+  description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
   image={screenshot || optimizedScreenshot?.src}
-  jsonLd={breadcrumbSchema}
+  jsonLd={vizSchema}
 >
   <Navbar />
 
@@ -130,14 +109,6 @@ const breadcrumbSchema = {
         <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
         <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-element-border-medium light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-domain-tags border border-white/20 shadow-sm shadow-domain-tags/30"></span>
-            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-domain-interests border border-white/20 shadow-sm shadow-domain-interests/30"></span>
-            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Interests</span>
-          </div>
-          <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-domain-posts border border-white/20 shadow-sm shadow-domain-posts/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Posts</span>
           </div>
@@ -162,8 +133,16 @@ const breadcrumbSchema = {
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Services</span>
           </div>
           <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-newsletters border border-white/20 shadow-sm shadow-domain-newsletters/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Newsletters</span>
+          </div>
+          <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-domain-visualizations border border-white/20 shadow-sm shadow-domain-visualizations/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Visualizations</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-tags border border-white/20 shadow-sm shadow-domain-tags/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
           </div>
         </div>
 
@@ -173,7 +152,7 @@ const breadcrumbSchema = {
           class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-gray-950/70 light:bg-white/90 backdrop-blur-md border border-element-border-medium light:border-slate-200 shadow-md text-xs"
         >
           <label for="layout-selector" class="flex items-center space-x-1.5 text-gray-400 light:text-slate-500 font-medium select-none">
-            <svg class="w-3.5 h-3.5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-domain-visualizations" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
             <span>Layout:</span>
@@ -197,7 +176,7 @@ const breadcrumbSchema = {
         <!-- Render Loading Placeholder -->
         <div id="canvas-loading" class="absolute inset-0 flex items-center justify-center bg-gray-950/80 z-30 transition-opacity duration-300">
           <div class="flex flex-col items-center space-y-4">
-            <div class="w-8 h-8 rounded-full border-2 border-brand-green/20 border-t-brand-green animate-spin"></div>
+            <div class="w-8 h-8 rounded-full border-2 border-domain-visualizations/20 border-t-domain-visualizations animate-spin"></div>
             <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Loading Network Graph...</span>
           </div>
         </div>

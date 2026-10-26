@@ -30,24 +30,24 @@ const mailtoHref = `mailto:${emailAddress}?subject=${encodeURIComponent(emailSub
 
 const colorStyles = {
   blue: {
-    text: "text-brand-blue",
-    glow: "from-brand-blue to-brand-blue/40",
-    btnPrimary: "bg-brand-blue hover:bg-brand-blue/90 text-slate-950 light:text-white shadow-brand-blue/20 font-bold",
+    text: "text-brand-primary",
+    glow: "from-brand-primary to-brand-primary/40",
+    btnPrimary: "bg-brand-primary hover:bg-brand-primary/90 text-slate-950 light:text-white shadow-brand-primary/20 font-bold",
   },
   yellow: {
-    text: "text-brand-yellow",
-    glow: "from-brand-yellow to-brand-yellow/40",
-    btnPrimary: "bg-brand-yellow hover:bg-brand-yellow/90 text-slate-950 light:text-white shadow-brand-yellow/20 font-bold",
+    text: "text-brand-primary",
+    glow: "from-brand-primary to-brand-primary/40",
+    btnPrimary: "bg-brand-primary hover:bg-brand-primary/90 text-slate-950 light:text-white shadow-brand-primary/20 font-bold",
   },
   purple: {
-    text: "text-brand-purple",
-    glow: "from-brand-purple to-brand-purple/40",
-    btnPrimary: "bg-brand-purple hover:bg-brand-purple/90 text-slate-950 light:text-white font-bold shadow-brand-purple/20",
+    text: "text-brand-primary",
+    glow: "from-brand-primary to-brand-primary/40",
+    btnPrimary: "bg-brand-primary hover:bg-brand-primary/90 text-slate-950 light:text-white font-bold shadow-brand-primary/20",
   },
   green: {
-    text: "text-brand-green",
-    glow: "from-brand-green to-brand-green/40",
-    btnPrimary: "bg-brand-green hover:bg-brand-green/90 text-slate-950 light:text-white shadow-brand-green/20 font-bold",
+    text: "text-brand-primary",
+    glow: "from-brand-primary to-brand-primary/40",
+    btnPrimary: "bg-brand-primary hover:bg-brand-primary/90 text-slate-950 light:text-white shadow-brand-primary/20 font-bold",
   }
 }[accentColor];
 ---
@@ -123,11 +123,11 @@ const colorStyles = {
         if (label) {
           label.textContent = 'Copied!';
           btn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-          btn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+          btn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
 
           setTimeout(() => {
             label.textContent = 'Copy Email';
-            btn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+            btn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
             btn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
           }, 2500);
         }

@@ -2,9 +2,7 @@
 title: "Vision Campus Almtal 2035: Dezentraler Innovationsraum"
 pubDate: 2026-08-09
 lang: de
-description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales
-  Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im
-  Wandel."
+description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im Wandel."
 tags:
   - education
   - innovation
@@ -13,17 +11,11 @@ tags:
   - almtal
 icon:
   src: ./icon.jpg
-  title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum
-    dezentralen Innovationsraum"
-  description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der
-    Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und
-    Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural
-    Sciences & Applications."
+  title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum dezentralen Innovationsraum"
+  description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural Sciences & Applications."
 references:
   - type: article
-    author: Etzkowitz, H., & Leydesdorff, L.
-    title: 'The dynamics of innovation: from National Systems and "Mode 2" to a
-      Triple Helix of university-industry-government relations'
+    title: 'The dynamics of innovation: from National Systems and "Mode 2" to a Triple Helix of university-industry-government relations'
     url: https://doi.org/10.1016/S0048-7333(99
     year: 2000
     doi: 10.1016/S0048-7333(99)00055-4
@@ -31,19 +23,20 @@ references:
     volume: "29"
     number: "2"
     id: etzkowitz-2000-dynamics-innovation
+    authors:
+      - name: Henry Etzkowitz
+      - name: Loet Leydesdorff
   - type: online
-    author: Europäische Kommission
-    title: Eine langfristige Vision für die ländlichen Gebiete der EU – Für
-      stärkere, vernetzte, widerstandsfähige und florierende ländliche Gebiete
-      bis 2040
+    title: Eine langfristige Vision für die ländlichen Gebiete der EU – Für stärkere, vernetzte, widerstandsfähige und florierende ländliche Gebiete bis 2040
     url: https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:52021DC0345
     year: 2021
     siteName: Mitteilung der Kommission COM(2021) 345 final
     id: kommission-2021-eine-langfristige
+    authors:
+      - name: Europäische Kommission
+        type: Organization
   - type: article
-    author: Porter, M. E.
-    title: "Location, Competition, and Economic Development: Local Clusters in a
-      Global Economy"
+    title: "Location, Competition, and Economic Development: Local Clusters in a Global Economy"
     url: https://doi.org/10.1177/089124240001400105
     year: 2000
     doi: 10.1177/089124240001400105
@@ -51,6 +44,8 @@ references:
     volume: "14"
     number: "1"
     id: porter-2000-location-competition
+    authors:
+      - name: Michael E. Porter
 ---
 
 
@@ -136,15 +131,15 @@ Um Bedenken auszuräumen und Machbarkeit schrittweise zu beweisen, folgen wir ei
 
 Das vollständige Visionsdokument liegt aktuell als **Version 0.1 (Initialer Diskussionsentwurf)** vor. Ich lade Vertreter aus Politik, Wirtschaft, Wissenschaft und der Almtaler Bevölkerung herzlich ein, diesen Entwurf mitzugestalten.
 
-<div class="my-8 p-6 glass-card rounded-2xl border border-brand-blue/30 bg-brand-blue/5 text-center">
-  <h3 id="visionsdokument-herunterladen" class="text-xl font-bold mb-2 text-brand-blue">Visionsdokument herunterladen</h3>
+<div class="my-8 p-6 glass-card rounded-2xl border border-brand-primary/30 bg-brand-primary/5 text-center">
+  <h3 id="visionsdokument-herunterladen" class="text-xl font-bold mb-2 text-brand-primary">Visionsdokument herunterladen</h3>
   <p class="text-sm text-gray-300 light:text-gray-600 mb-4">Laden Sie das detaillierte Konzeptpapier als PDF herunter (Version 0.1, Stand Juli 2026):</p>
   <a 
     href="/posts/2026_08_09_fh_ooe_campus_almtal_vision/vision_almtal_2035.pdf" 
     target="_blank"
     download="Vision_Almtal_2035_v0.1.pdf"
     style="color: #ffffff !important; text-decoration: none;"
-    class="inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-bold !text-white !no-underline bg-brand-blue hover:bg-blue-600 transition-all shadow-lg hover:shadow-brand-blue/25"
+    class="inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-bold !text-white !no-underline bg-brand-primary hover:bg-brand-primary/90 transition-all shadow-lg hover:shadow-brand-primary/25"
   >
     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>

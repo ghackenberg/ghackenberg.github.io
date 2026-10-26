@@ -2,24 +2,28 @@
 title: "ReAct: Reasoning & Acting"
 subtitle: "Yao et al. 2022: {cue:hl-sub-30}Die Synergie aus internem Nachdenken und externen Werkzeugaufrufen{/cue}"
 number: "30"
-slideLayout: "story-hero"
-voiceover: >
-  Reines Nachdenken stößt an Grenzen, wenn aktuelle Fakten oder externe Berechnungen fehlen. Shunyu Yao und Kollegen entwickelten dafür das ReAct-Paradigma.
-  {cue:sub} Es verbindet {cue:hl-sub-30}internes Nachdenken mit externen Werkzeugaufrufen{/cue}.
-  {cue:vis-react} In der Illustration sehen wir den dreistufigen Kreislauf: Nachdenken, API-Werkzeug auslösen und Umgebungsergebnisse zurücklesen.
-  {cue:col-impact} Das Modell agiert als logischer Controller, der {cue:hl-werkzeug-grounding}seine Argumentation auf Live-Schnittstellen erdet{/cue}. Statt starr zu raten, kann es {cue:hl-react-action}gezielte API- und Tool-Calls absetzen{/cue}, {cue:hl-react-observation}externe Daten in den Prompt zurücklesen{/cue} und Live-Informationen {cue:hl-live-daten-integration}zur Laufzeit on-demand integrieren{/cue}. Bei Fehlern greift der {cue:hl-selbstkorrektur-loop}dynamische Selbstkorrektur-Loop{/cue}.
+slideLayout: story-hero
+voiceover: |
+  Reines Nachdenken stößt an Grenzen, wenn aktuelle Fakten oder externe Berechnungen fehlen. Shunyu Yao und Kollegen entwickelten dafür das ReAct-Paradigma. {cue:sub} Es verbindet {cue:hl-sub-30}internes Nachdenken mit externen Werkzeugaufrufen{/cue}. {cue:vis-react} In der Illustration sehen wir den dreistufigen Kreislauf: Nachdenken, API-Werkzeug auslösen und Umgebungsergebnisse zurücklesen. {cue:col-impact} Das Modell agiert als logischer Controller, der {cue:hl-werkzeug-grounding}seine Argumentation auf Live-Schnittstellen erdet{/cue}. Statt starr zu raten, kann es {cue:hl-react-action}gezielte API- und Tool-Calls absetzen{/cue}, {cue:hl-react-observation}externe Daten in den Prompt zurücklesen{/cue} und Live-Informationen {cue:hl-live-daten-integration}zur Laufzeit on-demand integrieren{/cue}. Bei Fehlern greift der {cue:hl-selbstkorrektur-loop}dynamische Selbstkorrektur-Loop{/cue}.
 notes: |
   - Zeit: 58:00 - 60:00 Min.
   - Primärquelle: Yao et al. (2022), ICLR 2023.
   - Brückenschlag: Fundament aller modernen Agentensysteme und MCP-Server.
 references:
   - type: inproceedings
-    id: "yao-2022-react"
-    author: "Yao, S., et al."
+    id: yao-2022-react
     title: "ReAct: Synergizing Reasoning and Acting in Language Models"
-    booktitle: "ICLR 2023"
+    booktitle: ICLR 2023
     year: 2022
-    url: "https://arxiv.org/abs/2210.03629"
+    url: https://arxiv.org/abs/2210.03629
+    authors:
+      - name: Shunyu Yao
+      - name: Jeffrey Zhao
+      - name: Dian Yu
+      - name: Nan Du
+      - name: Izhak Shafran
+      - name: Karthik Narasimhan
+      - name: Yuan Cao
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

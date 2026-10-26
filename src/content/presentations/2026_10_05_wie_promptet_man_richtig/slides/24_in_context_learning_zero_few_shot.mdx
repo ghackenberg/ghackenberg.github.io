@@ -2,24 +2,52 @@
 title: "In-Context Learning: Zero- vs. Few-Shot"
 subtitle: "Der Urknall des modernen Promptings: {cue:hl-sub-24}Lernen durch exemplarische Demonstration im Prompt{/cue}"
 number: "24"
-slideLayout: "split"
-voiceover: >
-  Mit der wegweisenden Veröffentlichung von Brown und Kollegen im Jahr 2020 wurde das Konzept des In-Context Learnings begründet.
-  {cue:sub} Es beschreibt {cue:hl-sub-24}Lernen durch exemplarische Demonstration im Prompt{/cue} ohne Gradienten-Update.
-  {cue:col-zeroshot} Beim Zero-Shot Prompting formuliert man Anweisungen direkt: {cue:hl-vortraining-assoziation}Das Modell verlässt sich rein auf Vortrainings-Assoziationen{/cue}. Der Output variiert stark und leidet unter {cue:hl-zeroshot-formatunsicherheit}spezifischen unternehmensinternen Formatvorgaben{/cue}, eignet sich aber für {cue:hl-offene-generierung}offene Textgenerierung ohne starre Schnittstellen{/cue}.
-  {cue:col-fewshot} Beim Few-Shot Prompting demonstrieren wir Beispiele. Das Modell erkennt {cue:hl-fewshot-muster}syntaktische und logische Muster sofort{/cue} und sichert {cue:hl-fewshot-praezision}signifikant höhere Vorhersagegenauigkeit{/cue}, und zwar komplett {cue:hl-in-memory-tuning}ohne aufwendiges Fine-Tuning oder Gewichts-Updates{/cue}.
+slideLayout: split
+voiceover: |
+  Mit der wegweisenden Veröffentlichung von Brown und Kollegen im Jahr 2020 wurde das Konzept des In-Context Learnings begründet. {cue:sub} Es beschreibt {cue:hl-sub-24}Lernen durch exemplarische Demonstration im Prompt{/cue} ohne Gradienten-Update. {cue:col-zeroshot} Beim Zero-Shot Prompting formuliert man Anweisungen direkt: {cue:hl-vortraining-assoziation}Das Modell verlässt sich rein auf Vortrainings-Assoziationen{/cue}. Der Output variiert stark und leidet unter {cue:hl-zeroshot-formatunsicherheit}spezifischen unternehmensinternen Formatvorgaben{/cue}, eignet sich aber für {cue:hl-offene-generierung}offene Textgenerierung ohne starre Schnittstellen{/cue}. {cue:col-fewshot} Beim Few-Shot Prompting demonstrieren wir Beispiele. Das Modell erkennt {cue:hl-fewshot-muster}syntaktische und logische Muster sofort{/cue} und sichert {cue:hl-fewshot-praezision}signifikant höhere Vorhersagegenauigkeit{/cue}, und zwar komplett {cue:hl-in-memory-tuning}ohne aufwendiges Fine-Tuning oder Gewichts-Updates{/cue}.
 notes: |
   - Zeit: 46:00 - 48:00 Min.
   - Primärquelle: Brown et al. (2020), NeurIPS 2020.
   - Wichtig: In-Context Learning ändert keine Modellgewichte, sondern setzt den Prompt-Zustand.
 references:
   - type: inproceedings
-    id: "brown-2020-few-shot"
-    author: "Brown, T., et al."
-    title: "Language Models are Few-Shot Learners"
-    booktitle: "NeurIPS 2020"
+    id: brown-2020-few-shot
+    title: Language Models are Few-Shot Learners
+    booktitle: NeurIPS 2020
     year: 2020
-    url: "https://arxiv.org/abs/2005.14165"
+    url: https://arxiv.org/abs/2005.14165
+    authors:
+      - name: Tom B. Brown
+      - name: Benjamin Mann
+      - name: Nick Ryder
+      - name: Melanie Subbiah
+      - name: Jared Kaplan
+      - name: Prafulla Dhariwal
+      - name: Arvind Neelakantan
+      - name: Pranav Shyam
+      - name: Girish Sastry
+      - name: Amanda Askell
+      - name: Sandhini Agarwal
+      - name: Ariel Herbert-Voss
+      - name: Gretchen Krueger
+      - name: Tom Henighan
+      - name: Rewon Child
+      - name: Aditya Ramesh
+      - name: Daniel M. Ziegler
+      - name: Jeffrey Wu
+      - name: Clemens Winter
+      - name: Christopher Hesse
+      - name: Mark Chen
+      - name: Eric Sigler
+      - name: Mateusz Litwin
+      - name: Scott Gray
+      - name: Benjamin Chess
+      - name: Jack Clark
+      - name: Christopher Berner
+      - name: Sam McCandlish
+      - name: Alec Radford
+      - name: Ilya Sutskever
+      - name: Dario Amodei
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';

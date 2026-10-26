@@ -87,10 +87,12 @@ const engine: Force3DEngine = {
         if (
           node.id.startsWith('/posts/') ||
           node.id.startsWith('/publications/') ||
+          node.id.startsWith('/presentations/') ||
           node.id.startsWith('/projects/') ||
           node.id.startsWith('/courses/') ||
           node.id.startsWith('/services/') ||
-          node.id.startsWith('/interests/') ||
+          node.id.startsWith('/newsletters/') ||
+          node.id.startsWith('/visualizations/') ||
           node.id.startsWith('/tags/')
         ) {
           window.location.href = node.id;
@@ -177,9 +179,10 @@ const engine: Force3DEngine = {
       const courses = this.nodes.filter(n => n.group === 4);
       const projects = this.nodes.filter(n => n.group === 5);
       const services = this.nodes.filter(n => n.group === 6);
-      const interests = this.nodes.filter(n => n.group === 7);
+      const newsletters = this.nodes.filter(n => n.group === 7);
+      const visualizations = this.nodes.filter(n => n.group === 8);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
       const isMobile = window.innerWidth < 768;
       const heightFactor = 25;
       const widthFactor = 25;

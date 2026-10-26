@@ -1,11 +1,7 @@
 ---
-title: "Architektur und Funktionsweise des Hermes Agent: Body-Brain-Entkopplung,
-  Bounded Context, Progressive Skills und der Curator-Lifecycle"
+title: "Architektur und Funktionsweise des Hermes Agent: Body-Brain-Entkopplung, Bounded Context, Progressive Skills und der Curator-Lifecycle"
 pubDate: 2026-09-07
-description: "Eine softwaretechnische Tiefenanalyse des Hermes Agent von Nous
-  Research: Wie die Trennung von Body und Brain echte Modellagnostik schafft,
-  warum Bounded Memory KV-Caches schützt, wie Progressive Disclosure Token spart
-  und wie der Curator Skill Sprawl verhindert."
+description: "Eine softwaretechnische Tiefenanalyse des Hermes Agent von Nous Research: Wie die Trennung von Body und Brain echte Modellagnostik schafft, warum Bounded Memory KV-Caches schützt, wie Progressive Disclosure Token spart und wie der Curator Skill Sprawl verhindert."
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -20,26 +16,27 @@ tags:
 icon:
   src: ./hero.jpg
   title: Hermes Agent
-  description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit
-    Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"
+  description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"
 references:
   - type: online
-    author: Nous Research
-    title: "Hermes 3 Technical Report: Open Bi-Directional Function Calling and
-      Advanced Reasoning"
+    title: "Hermes 3 Technical Report: Open Bi-Directional Function Calling and Advanced Reasoning"
     url: https://nousresearch.com/hermes3/
     year: 2024
     siteName: Technical Report, Nous Research
     id: research-2024-hermes3
+    authors:
+      - name: Nous Research
+        type: Organization
   - type: online
-    author: Anthropic
     title: "Prompt Caching with Claude: Reducing Latency and Costs"
     url: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
     year: 2024
     siteName: Anthropic Engineering Documentation
     id: anthropic-2024-prompt-caching
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: article
-    author: Robertson, S., & Zaragoza, H.
     title: "The Probabilistic Relevance Framework: BM25 and Beyond"
     url: https://doi.org/10.1561/1500000019
     year: 2009
@@ -48,6 +45,9 @@ references:
     volume: "3"
     number: "4"
     id: robertson-2009-bm25
+    authors:
+      - name: Stephen Robertson
+      - name: Hugo Zaragoza
 ---
 
 

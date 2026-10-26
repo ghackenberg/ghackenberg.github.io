@@ -9,8 +9,8 @@ learningGoals:
 terms:
   - "Winter Term 2024/25"
   - "Winter Term 2025/26"
-language: "en"
-screenshot:
+inLanguage: "en"
+image:
   src: "./preview.jpg"
   title: "Digital Factory: Discrete-Event Manufacturing Cell"
   description: "Orthogonal schematic of a modular manufacturing cell with input feeder conveyor, automated robotic processing station, and pallet buffer sorting gate"

@@ -1,9 +1,7 @@
 ---
 title: "KI-Ergonomie: Dynamische Prävention am Arbeitsplatz"
 pubDate: 2026-08-10
-description: Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel
-  Haltungsschäden im Homeoffice und Büro aktiv verhindern und Ergonomie
-  steigern.
+description: Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel Haltungsschäden im Homeoffice und Büro aktiv verhindern und Ergonomie steigern.
 tags:
   - artificial-intelligence
   - cognitive-ergonomics
@@ -19,15 +17,15 @@ icon:
   description: KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht
 references:
   - type: online
-    author: ISO
-    title: "ISO 9241-5:2024: Ergonomics of human-system interaction — Part 5:
-      Workstation layout and postural requirements"
+    title: "ISO 9241-5:2024: Ergonomics of human-system interaction — Part 5: Workstation layout and postural requirements"
     url: https://www.iso.org/standard/83030.html
     year: 2024
     siteName: International Organization for Standardization
     id: iso-9241
+    authors:
+      - name: ISO
+        type: Organization
   - type: article
-    author: Leminen, S., Westerlund, M., & Nyström, A. G.
     title: Living Labs as open innovation networks
     url: https://doi.org/10.22215/timreview/602
     year: 2012
@@ -36,10 +34,12 @@ references:
     volume: "2"
     number: "9"
     id: leminen-2012-living-labs
+    authors:
+      - name: Seppo Leminen
+      - name: Mika Westerlund
+      - name: Anna-Greta Nyström
   - type: article
-    author: Punnett, L., & Wegman, D. H.
-    title: "Work-related musculoskeletal disorders: the epidemiologic evidence and
-      the debate"
+    title: "Work-related musculoskeletal disorders: the epidemiologic evidence and the debate"
     url: https://doi.org/10.1016/j.jelekin.2003.09.015
     year: 2004
     doi: 10.1016/j.jelekin.2003.09.015
@@ -47,6 +47,9 @@ references:
     volume: "14"
     number: "1"
     id: punnett-2004-workrelated-musculoskeletal
+    authors:
+      - name: Laura Punnett
+      - name: David H. Wegman
 ---
 
 

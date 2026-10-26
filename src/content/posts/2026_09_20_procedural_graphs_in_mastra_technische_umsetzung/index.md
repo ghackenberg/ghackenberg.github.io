@@ -1,12 +1,7 @@
 ---
-title: "Procedural Graphs mit Mastra: Wie Software-Ingenieure selbstlernende
-  Prozessgraphen in TypeScript technisch realisieren"
+title: "Procedural Graphs mit Mastra: Wie Software-Ingenieure selbstlernende Prozessgraphen in TypeScript technisch realisieren"
 pubDate: 2026-09-20
-description: "Die ingenieurwissenschaftliche Brücke von Google Research zu
-  moderner Enterprise-Software: Wie Entwickler das Paper 'Procedural Graphs'
-  (arXiv:2609.09153) auf Basis des TypeScript-Frameworks Mastra technisch
-  implementieren – inklusive Zod-Schemas für Kantenattribute, Runtime Soft
-  Guidance, MCP-Integration und Offline-Evolution mit Rejection Memory."
+description: "Die ingenieurwissenschaftliche Brücke von Google Research zu moderner Enterprise-Software: Wie Entwickler das Paper 'Procedural Graphs' (arXiv:2609.09153) auf Basis des TypeScript-Frameworks Mastra technisch implementieren – inklusive Zod-Schemas für Kantenattribute, Runtime Soft Guidance, MCP-Integration und Offline-Evolution mit Rejection Memory."
 tags:
   - mastra
   - typescript
@@ -19,28 +14,35 @@ tags:
 icon:
   src: ./hero.jpg
   title: Procedural Graphs mit Mastra
-  description: "Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet
-    TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen"
+  description: "Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen"
 references:
   - type: online
-    author: Anthropic
     title: Model Context Protocol (MCP) Specification
     url: https://modelcontextprotocol.io/
     year: 2024
     id: anthropic-2024-mcp
+    authors:
+      - name: Anthropic
+        type: Organization
   - type: article
-    author: Lu, Y., Chen, Y., Wu, S., & Arık, S. Ö.
     title: "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents"
     url: https://arxiv.org/abs/2609.09153
     year: 2026
     journal: Google Cloud AI Research
     id: lu-2026-procedural-graphs
+    authors:
+      - name: Yuxing Lu
+      - name: Yicheng Chen
+      - name: Shanchan Wu
+      - name: Sercan Ö. Arık
   - type: online
-    author: Mastra Core Team
     title: Mastra Workflows and Suspended Execution
     url: https://mastra.ai/docs/workflows/overview
     year: 2024
     id: team-2024-mastra
+    authors:
+      - name: Mastra Core Team
+        type: Organization
 ---
 
 

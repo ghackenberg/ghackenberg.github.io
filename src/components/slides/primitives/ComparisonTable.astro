@@ -44,26 +44,34 @@ function nonBreakingHyphens(text: string): string {
 
 const accentBars: Record<string, string> = {
   blue: 'bg-[var(--color-slide-accent-blue)]',
-  cyan: 'bg-[var(--color-slide-accent-cyan)]',
   indigo: 'bg-[var(--color-slide-accent-indigo)]',
-  emerald: 'bg-[var(--color-slide-accent-emerald)]',
-  amber: 'bg-[var(--color-slide-accent-amber)]',
+  violet: 'bg-[var(--color-slide-accent-violet)]',
   purple: 'bg-[var(--color-slide-accent-purple)]',
+  fuchsia: 'bg-[var(--color-slide-accent-fuchsia)]',
+  pink: 'bg-[var(--color-slide-accent-pink)]',
   rose: 'bg-[var(--color-slide-accent-rose)]',
+  orange: 'bg-[var(--color-slide-accent-orange)]',
+  amber: 'bg-[var(--color-slide-accent-amber)]',
+  // Legacy aliases
+  cyan: 'bg-[var(--color-slide-accent-cyan)]',
   teal: 'bg-[var(--color-slide-accent-teal)]',
-  orange: 'bg-[var(--color-slide-accent-orange)]'
+  emerald: 'bg-[var(--color-slide-accent-emerald)]'
 };
 
 const accentTitles: Record<string, string> = {
   blue: 'text-[var(--color-slide-accent-blue)]',
-  cyan: 'text-[var(--color-slide-accent-cyan)]',
   indigo: 'text-[var(--color-slide-accent-indigo)]',
-  emerald: 'text-[var(--color-slide-accent-emerald)]',
-  amber: 'text-[var(--color-slide-accent-amber)]',
+  violet: 'text-[var(--color-slide-accent-violet)]',
   purple: 'text-[var(--color-slide-accent-purple)]',
+  fuchsia: 'text-[var(--color-slide-accent-fuchsia)]',
+  pink: 'text-[var(--color-slide-accent-pink)]',
   rose: 'text-[var(--color-slide-accent-rose)]',
+  orange: 'text-[var(--color-slide-accent-orange)]',
+  amber: 'text-[var(--color-slide-accent-amber)]',
+  // Legacy aliases
+  cyan: 'text-[var(--color-slide-accent-cyan)]',
   teal: 'text-[var(--color-slide-accent-teal)]',
-  orange: 'text-[var(--color-slide-accent-orange)]'
+  emerald: 'text-[var(--color-slide-accent-emerald)]'
 };
 
 function resolveRowAccent(idx: number): string {
@@ -222,4 +230,12 @@ function resolveRowAccent(idx: number): string {
 
   :global([data-accent="orange"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-orange); }
   :global([data-accent="orange"]) .table-row-item .table-row-title { color: var(--color-slide-accent-orange); }
+  :global([data-accent="violet"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-violet); }
+  :global([data-accent="violet"]) .table-row-item .table-row-title { color: var(--color-slide-accent-violet); }
+
+  :global([data-accent="fuchsia"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-fuchsia); }
+  :global([data-accent="fuchsia"]) .table-row-item .table-row-title { color: var(--color-slide-accent-fuchsia); }
+
+  :global([data-accent="pink"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-pink); }
+  :global([data-accent="pink"]) .table-row-item .table-row-title { color: var(--color-slide-accent-pink); }
 </style>

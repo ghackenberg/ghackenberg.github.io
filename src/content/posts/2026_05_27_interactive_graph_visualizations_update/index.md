@@ -2,7 +2,7 @@
 title: "Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared"
 pubDate: 2026-05-27
 lang: en
-description: "Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts."
+description: Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts.
 tags:
   - astro
   - computer-graphics
@@ -16,10 +16,9 @@ tags:
 icon:
   src: ./icon.png
   title: "Cover illustration: Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared"
-  description: "Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts."
+  description: Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts.
 references:
   - type: article
-    author: Barnes, J., & Hut, P.
     title: A hierarchical O(N log N) force-calculation algorithm
     url: https://doi.org/10.1038/324446a0
     year: 1986
@@ -28,8 +27,10 @@ references:
     volume: "324"
     number: "6096"
     id: barnes-1986-hierarchical-forcecalculation
+    authors:
+      - name: Josh Barnes
+      - name: Piet Hut
   - type: article
-    author: Bostock, M., Ogievetsky, V., & Heer, J.
     title: "D3: Data-Driven Documents"
     url: https://doi.org/10.1109/TVCG.2011.185
     year: 2011
@@ -38,10 +39,12 @@ references:
     volume: "17"
     number: "12"
     id: bostock-2011-datadriven-documents
+    authors:
+      - name: Mike Bostock
+      - name: Vadim Ogievetsky
+      - name: Jeffrey Heer
   - type: article
-    author: Jacomy, M., Venturini, T., Heymann, S., & Bastian, M.
-    title: ForceAtlas2, a continuous graph layout algorithm for handy network
-      visualization designed for the Gephi software
+    title: ForceAtlas2, a continuous graph layout algorithm for handy network visualization designed for the Gephi software
     url: https://doi.org/10.1371/journal.pone.0098679
     year: 2014
     doi: 10.1371/journal.pone.0098679
@@ -49,6 +52,11 @@ references:
     volume: "9"
     number: "6"
     id: jacomy-2014-forceatlas2-continuous
+    authors:
+      - name: Mathieu Jacomy
+      - name: Tommaso Venturini
+      - name: Sebastien Heymann
+      - name: Mathieu Bastian
 ---
 
 Interactive directed graph visualization in JavaScript balances graphical performance against layout complexity. High-density, volumetric 3D network rendering exceeding 10,000 nodes relies on WebGL and Three.js where GPU parallelization prevents browser thread freezing. Conversely, 2D semantic layouts, compound clustering, and rich DOM-driven node interactions below 2,000 nodes are best served by specialized graph engines like Cytoscape.js or Vis.js.

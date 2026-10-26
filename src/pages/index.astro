@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildWebsiteSchema, buildNavigationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -10,8 +11,7 @@ import CourseCard from "@components/CourseCard.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
-import Timeline from "@components/Timeline.astro";
-import ImageGalleryMarquee, { type GalleryItem } from "@components/ImageGalleryMarquee.astro";
+import NewsletterCard from "@components/NewsletterCard.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
 import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
@@ -25,13 +25,6 @@ import profileClosedMouthImage from "@assets/avatar/comic-profile-head-closed-mo
 import profileClosedMouthDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-depth.png";
 import profileClosedMouthBlinkImage from "@assets/avatar/comic-profile-head-closed-mouth-blink.png";
 import profileClosedMouthBlinkDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-blink-depth.png";
-import astroLogo from "@assets/technologies/astro.svg";
-import tailwindLogo from "@assets/technologies/tailwind.svg";
-import antigravityLogo from "@assets/technologies/antigravity.svg";
-import interestSoftwareImg from "@content/interests/software-engineering/preview.jpg";
-import interestSimulationImg from "@content/interests/computer-simulation/preview.jpg";
-import interestAiImg from "@content/interests/artificial-intelligence/preview.jpg";
-import interestUxImg from "@content/interests/user-experience/preview.jpg";
 import { getCollection } from "astro:content";
 import { calculateTagCounts } from "@commons/shared/graph-payload.js";
 
@@ -162,11 +155,6 @@ const faceExpressions = [
   }
 ];
 
-const optimizedInterestSoftware = await getImage({ src: interestSoftwareImg, format: "webp", width: 800, quality: 85 });
-const optimizedInterestSimulation = await getImage({ src: interestSimulationImg, format: "webp", width: 800, quality: 85 });
-const optimizedInterestAi = await getImage({ src: interestAiImg, format: "webp", width: 800, quality: 85 });
-const optimizedInterestUx = await getImage({ src: interestUxImg, format: "webp", width: 800, quality: 85 });
-
 const projects = await getCollection("projects");
 const sortedProjects = projects.sort((a, b) => {
   const trlDiff = b.data.trl - a.data.trl;
@@ -176,7 +164,6 @@ const sortedProjects = projects.sort((a, b) => {
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-const interests = await getCollection("interests");
 
 const posts = await getCollection("posts");
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -188,12 +175,13 @@ const courses = await getCollection("courses");
 const sortedCourses = courses;
 const visualizations = await getCollection("visualizations");
 const sortedVisualizations = visualizations;
+const newsletters = await getCollection("newsletters");
+const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
 const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 
 // Calculate tags and graph payload for the home page Vis.js Network
-const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, interests, visualizations });
-const tagInterests = tagCounts.interests;
+const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, visualizations, newsletters });
 const tagPosts = tagCounts.posts;
 const tagPubs = tagCounts.publications;
 const tagPresentations = tagCounts.presentations;
@@ -201,6 +189,7 @@ const tagCourses = tagCounts.courses;
 const tagProjects = tagCounts.projects;
 const tagServices = tagCounts.services;
 const tagVisualizations = tagCounts.visualizations;
+const tagNewsletters = tagCounts.newsletters;
 const allTags = tagCounts.allTags;
 
 interface TagCloudItem {
@@ -208,7 +197,6 @@ interface TagCloudItem {
   name: string;
   description: string;
   totalCount: number;
-  interestsCount: number;
   postsCount: number;
   pubsCount: number;
   presCount: number;
@@ -216,7 +204,7 @@ interface TagCloudItem {
   projectsCount: number;
   servicesCount: number;
   visCount: number;
-  interestsPct: number;
+  newslettersCount: number;
   postsPct: number;
   pubsPct: number;
   presPct: number;
@@ -224,12 +212,12 @@ interface TagCloudItem {
   projectsPct: number;
   servicesPct: number;
   visPct: number;
+  newslettersPct: number;
   fontSizeClass: string;
   fontWeightClass: string;
 }
 
 const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
-  const interestsCount = tagInterests[tagId] || 0;
   const postsCount = tagPosts[tagId] || 0;
   const pubsCount = tagPubs[tagId] || 0;
   const presCount = tagPresentations[tagId] || 0;
@@ -237,9 +225,9 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const projectsCount = tagProjects[tagId] || 0;
   const servicesCount = tagServices[tagId] || 0;
   const visCount = tagVisualizations[tagId] || 0;
-  const totalCount = interestsCount + postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + visCount;
+  const newslettersCount = tagNewsletters[tagId] || 0;
+  const totalCount = postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + visCount + newslettersCount;
   
-  const interestsPct = totalCount > 0 ? Math.round((interestsCount / totalCount) * 100) : 0;
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
   const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
   const presPct = totalCount > 0 ? Math.round((presCount / totalCount) * 100) : 0;
@@ -247,6 +235,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
   const servicesPct = totalCount > 0 ? Math.round((servicesCount / totalCount) * 100) : 0;
   const visPct = totalCount > 0 ? Math.round((visCount / totalCount) * 100) : 0;
+  const newslettersPct = totalCount > 0 ? Math.round((newslettersCount / totalCount) * 100) : 0;
 
   const tagEntry = tagMap.get(tagId);
   const name = tagEntry?.data.title ?? tagId;
@@ -257,7 +246,6 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     name,
     description,
     totalCount,
-    interestsCount,
     postsCount,
     pubsCount,
     presCount,
@@ -265,7 +253,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     projectsCount,
     servicesCount,
     visCount,
-    interestsPct,
+    newslettersCount,
     postsPct,
     pubsPct,
     presPct,
@@ -273,6 +261,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     projectsPct,
     servicesPct,
     visPct,
+    newslettersPct,
     fontSizeClass: "text-xs sm:text-sm",
     fontWeightClass: "font-medium",
   };
@@ -306,7 +295,6 @@ const overflowTags = sortedByFreq.slice(21);
 const restTagsCount = overflowTags.length;
 const overflowTagIds = new Set(overflowTags.map(t => t.id));
 
-const restInterestsCount = interests.filter(i => i.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restPostsCount = posts.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restPubsCount = publications.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restPresCount = presentations.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
@@ -314,9 +302,9 @@ const restCoursesCount = courses.filter(c => c.data.tags?.some(t => overflowTagI
 const restProjectsCount = projects.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restServicesCount = services.filter(s => s.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restVisCount = visualizations.filter(v => v.data.tags?.some(t => overflowTagIds.has(t))).length;
-const restTotalContentCount = restInterestsCount + restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restVisCount;
+const restNewslettersCount = newsletters.filter(n => n.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restTotalContentCount = restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restVisCount + restNewslettersCount;
 
-const restInterestsPct = restTotalContentCount > 0 ? Math.round((restInterestsCount / restTotalContentCount) * 100) : 0;
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
 const restPubsPct = restTotalContentCount > 0 ? Math.round((restPubsCount / restTotalContentCount) * 100) : 0;
 const restPresPct = restTotalContentCount > 0 ? Math.round((restPresCount / restTotalContentCount) * 100) : 0;
@@ -324,619 +312,13 @@ const restCoursesPct = restTotalContentCount > 0 ? Math.round((restCoursesCount 
 const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCount / restTotalContentCount) * 100) : 0;
 const restServicesPct = restTotalContentCount > 0 ? Math.round((restServicesCount / restTotalContentCount) * 100) : 0;
 const restVisPct = restTotalContentCount > 0 ? Math.round((restVisCount / restTotalContentCount) * 100) : 0;
+const restNewslettersPct = restTotalContentCount > 0 ? Math.round((restNewslettersCount / restTotalContentCount) * 100) : 0;
 
 // Peripheral weight sizing for the remaining badge so it tapers naturally at the outer edge of the cloud
 const restFontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
 const restFontWeightClass = "font-semibold";
 
-const professionalInterests = [
-  {
-    slug: "software-engineering",
-    icon: "💻",
-    title: "Software Engineering",
-    image: optimizedInterestSoftware.src,
-    imageTitle: "Research domain: Software Engineering",
-    imageDescription: "Focus area in Software Engineering: Architectures & Web Platforms.",
-    description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up.",
-    tags: [
-      "software-engineering",
-      "software-architecture",
-      "web-development",
-      "typescript",
-      "systems-engineering",
-      "open-source"
-    ]
-  },
-  {
-    slug: "computer-simulation",
-    icon: "🎓",
-    title: "Computer Simulation",
-    image: optimizedInterestSimulation.src,
-    imageTitle: "Research domain: Computer Simulation",
-    imageDescription: "Focus area in Computer Simulation: Systems & Layout Modeling.",
-    description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models.",
-    tags: [
-      "simulation",
-      "optimization",
-      "manufacturing-systems",
-      "factory-layout",
-      "systems-engineering"
-    ]
-  },
-  {
-    slug: "artificial-intelligence",
-    icon: "🎯",
-    title: "Artificial Intelligence",
-    image: optimizedInterestAi.src,
-    imageTitle: "Research domain: Artificial Intelligence",
-    imageDescription: "Focus area in Artificial Intelligence: Generative AI & Agent Systems.",
-    description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights.",
-    tags: [
-      "artificial-intelligence",
-      "generative-ai",
-      "agentic-ai",
-      "machine-learning",
-      "enterprise-ai",
-      "mcp"
-    ]
-  },
-  {
-    slug: "user-experience",
-    icon: "🌐",
-    title: "User Experience",
-    image: optimizedInterestUx.src,
-    imageTitle: "Research domain: User Experience",
-    imageDescription: "Focus area in User Experience: Visualizations & UI Designs.",
-    description: "I believe great software must be intuitive, responsive, and visually engaging. I love creating interactive graph network visualizers, dynamic layouts, and polished interfaces that make complex data effortless to explore.",
-    tags: [
-      "user-interface",
-      "ux-design",
-      "data-visualization",
-      "human-computer-interaction",
-      "computer-graphics",
-      "webgl"
-    ]
-  }
-];
-
-// Build comprehensive showcase items for the flying image gallery marquee pool
-const postGalleryItems: GalleryItem[] = await Promise.all(
-  sortedPosts
-    .filter(p => !!p.data.icon)
-    .map(async p => {
-      const opt = await getImage({
-        src: p.data.icon!.src || p.data.icon!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      return {
-        id: `post:${p.id}`,
-        title: p.data.title,
-        image: opt.src,
-        href: `/posts/${p.id}/`,
-        tagline: p.data.description,
-        pubDate: new Date(p.data.pubDate).valueOf(),
-        imageTitle: p.data.icon!.title,
-        imageDescription: p.data.icon!.description
-      };
-    })
-);
-
-const publicationGalleryItems: GalleryItem[] = await Promise.all(
-  sortedPublications
-    .filter(p => !!p.data.icon)
-    .map(async p => {
-      const opt = await getImage({
-        src: p.data.icon!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      return {
-        id: `pub:${p.id}`,
-        title: p.data.title,
-        image: opt.src,
-        href: `/publications/${p.id}/`,
-        tagline: p.data.book || p.data.abstract,
-        pubDate: new Date(p.data.pubDate).valueOf(),
-        imageTitle: p.data.title,
-        imageDescription: `Publication preview: ${p.data.title}`
-      };
-    })
-);
-
-const projectGalleryItems: GalleryItem[] = await Promise.all(
-  sortedProjects
-    .filter(p => !!p.data.screenshot)
-    .map(async p => {
-      const opt = await getImage({
-        src: p.data.screenshot!.src || p.data.screenshot!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      return {
-        id: `project:${p.id}`,
-        title: p.data.title,
-        image: opt.src,
-        href: `/projects/${p.id}/`,
-        tagline: p.data.description,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 60,
-        imageTitle: p.data.screenshot!.title,
-        imageDescription: p.data.screenshot!.description
-      };
-    })
-);
-
-const courseGalleryItems: GalleryItem[] = await Promise.all(
-  courses
-    .filter(c => !!c.data.screenshot)
-    .map(async c => {
-      const opt = await getImage({
-        src: c.data.screenshot!.src || c.data.screenshot!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      return {
-        id: `course:${c.id}`,
-        title: c.data.title,
-        image: opt.src,
-        href: `/courses/${c.id}/`,
-        tagline: c.data.description,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 90,
-        imageTitle: c.data.screenshot!.title,
-        imageDescription: c.data.screenshot!.description
-      };
-    })
-);
-
-const allModules = await getCollection("modules");
-const serviceGalleryItems: GalleryItem[] = await Promise.all(
-  services
-    .filter(s => !!s.data.previewImage)
-    .map(async s => {
-      const opt = await getImage({
-        src: s.data.previewImage!.src || s.data.previewImage!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      return {
-        id: `service:${s.id}`,
-        title: s.data.title,
-        image: opt.src,
-        href: `/services/${s.id}/`,
-        tagline: s.data.description,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
-        imageTitle: s.data.previewImage!.title,
-        imageDescription: s.data.previewImage!.description
-      };
-    })
-);
-
-const moduleGalleryItems: GalleryItem[] = await Promise.all(
-  allModules
-    .filter(m => !!m.data.previewImage)
-    .map(async m => {
-      const opt = await getImage({
-        src: m.data.previewImage!.src || m.data.previewImage!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      const [serviceSlug, moduleSlug] = m.id.split('/');
-      return {
-        id: `module:${m.id}`,
-        title: m.data.title,
-        image: opt.src,
-        href: `/services/${serviceSlug}/${moduleSlug}/`,
-        tagline: m.data.description,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
-        imageTitle: m.data.previewImage!.title,
-        imageDescription: m.data.previewImage!.description
-      };
-    })
-);
-
-const visualizationGalleryItems: GalleryItem[] = await Promise.all(
-  visualizations
-    .filter(v => !!v.data.screenshot)
-    .map(async v => {
-      const opt = await getImage({
-        src: v.data.screenshot!.src || v.data.screenshot!,
-        format: "webp",
-        width: 480,
-        height: 270,
-        quality: 80
-      });
-      return {
-        id: `viz:${v.id}`,
-        title: v.data.title,
-        image: opt.src,
-        href: `/visualizations/${v.id}/`,
-        tagline: v.data.description,
-        pubDate: v.data.pubDate ? new Date(v.data.pubDate).valueOf() : (Date.now() - 1000 * 60 * 60 * 24 * 150),
-        imageTitle: v.data.screenshot!.title,
-        imageDescription: v.data.screenshot!.description
-      };
-    })
-);
-
-const interestGalleryItems: GalleryItem[] = professionalInterests.map(interest => ({
-  id: `interest:${interest.slug}`,
-  title: interest.title,
-  image: interest.image,
-  href: `/interests/${interest.slug}/`,
-  tagline: interest.description,
-  pubDate: Date.now() - 1000 * 60 * 60 * 24 * 30,
-  imageTitle: interest.imageTitle,
-  imageDescription: interest.imageDescription
-}));
-
-// Interleave categories to alternate color and topic rhythms in the marquee
-const categoryBuckets = [
-  postGalleryItems,
-  publicationGalleryItems,
-  projectGalleryItems,
-  courseGalleryItems,
-  [...serviceGalleryItems, ...moduleGalleryItems],
-  visualizationGalleryItems,
-  interestGalleryItems
-];
-
-const galleryItems: GalleryItem[] = [];
-const maxBucketLen = Math.max(...categoryBuckets.map(b => b.length));
-for (let i = 0; i < maxBucketLen; i++) {
-  for (const bucket of categoryBuckets) {
-    if (i < bucket.length) {
-      galleryItems.push(bucket[i]);
-    }
-  }
-}
-
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://hackenberg.tech/#person",
-  "name": "Dr. Georg Hackenberg",
-  "givenName": "Georg",
-  "familyName": "Hackenberg",
-  "honorificPrefix": "Dr.",
-  "jobTitle": "Professor for Industrial Informatics",
-  "worksFor": {
-    "@type": "EducationalOrganization",
-    "@id": "https://www.wikidata.org/wiki/Q1390494",
-    "name": "UAP - University of Applied Sciences Upper Austria",
-    "alternateName": [
-      "UAP",
-      "UAP Technology Campus Wels",
-      "UAP Campus Wels",
-      "FH Upper Austria",
-      "FH Oberösterreich",
-      "FH OÖ Technology Campus Wels",
-      "FH OÖ Campus Wels",
-      "University of Applied Sciences Upper Austria"
-    ],
-    "url": "https://www.fh-ooe.at/",
-    "sameAs": "https://www.wikidata.org/wiki/Q1390494"
-  },
-  "alumniOf": [
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://www.wikidata.org/wiki/Q157808",
-      "name": "Technical University of Munich",
-      "alternateName": ["TUM", "Technische Universität München"],
-      "url": "https://www.tum.de/",
-      "sameAs": "https://www.wikidata.org/wiki/Q157808"
-    },
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://www.wikidata.org/wiki/Q2732",
-      "name": "RWTH Aachen University",
-      "alternateName": ["RWTH Aachen", "Rheinisch-Westfälische Technische Hochschule Aachen"],
-      "url": "https://www.rwth-aachen.de/",
-      "sameAs": "https://www.wikidata.org/wiki/Q2732"
-    },
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://www.wikidata.org/wiki/Q317070",
-      "name": "University of Mannheim",
-      "alternateName": ["Universität Mannheim"],
-      "url": "https://www.uni-mannheim.de/",
-      "sameAs": "https://www.wikidata.org/wiki/Q317070"
-    }
-  ],
-  "hasCredential": [
-    {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "name": "Doctor rerum naturalium (Dr. rer. nat.)",
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.wikidata.org/wiki/Q157808",
-        "name": "Technical University of Munich"
-      }
-    },
-    {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "name": "Master of Science (M.Sc.) in Software Systems Engineering",
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.wikidata.org/wiki/Q2732",
-        "name": "RWTH Aachen University"
-      }
-    },
-    {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "name": "Bachelor of Science (B.Sc.) in Software- und Internettechnologie",
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.wikidata.org/wiki/Q317070",
-        "name": "University of Mannheim"
-      }
-    }
-  ],
-  "hasOccupation": [
-    {
-      "@type": "Occupation",
-      "name": "Professor of Computer Science & Industrial Informatics",
-      "occupationalCategory": "25-1021.00",
-      "description": "Teaching and conducting research in industrial informatics, cyber-physical systems, and model-based software engineering."
-    },
-    {
-      "@type": "Occupation",
-      "name": "Software Architect",
-      "occupationalCategory": "15-1252.00",
-      "description": "Designing type-safe, resilient cloud software architectures, web platforms, and discrete-event simulation engines."
-    },
-    {
-      "@type": "Occupation",
-      "name": "AI Systems Consultant",
-      "occupationalCategory": "15-1221.00",
-      "description": "Advising on sovereign AI tech stacks, local LLM orchestration, and autonomous agent workflows."
-    },
-    {
-      "@type": "Occupation",
-      "name": "Digital Content Creator & Technical Publisher",
-      "occupationalCategory": "27-3042.00",
-      "description": "Creating multi-channel technical content, video lectures, and open-source publications across Web, YouTube, LinkedIn, and GitHub."
-    }
-  ],
-  "founder": [
-    {
-      "@type": "SoftwareApplication",
-      "name": "CADdrive",
-      "url": "https://caddrive.com",
-      "applicationCategory": "DesignApplication",
-      "description": "Cloud-based CAD collaboration platform and file manager."
-    },
-    {
-      "@type": "SoftwareApplication",
-      "name": "Mentawise",
-      "url": "https://mentawise.com",
-      "applicationCategory": "EducationalApplication",
-      "description": "Knowledge graph engine and digital learning platform."
-    }
-  ],
-  "url": "https://hackenberg.tech",
-  "email": "georg.hackenberg@fh-wels.at",
-  "sameAs": [
-    "https://www.wikidata.org/wiki/Q141537961",
-    "https://github.com/ghackenberg",
-    "https://www.linkedin.com/in/georghackenberg/",
-    "https://youtube.com/@georghackenberg",
-    "https://scholar.google.com/citations?user=WS9Q3eYAAAAJ",
-    "https://orcid.org/0000-0003-3913-4148"
-  ],
-  "knowsAbout": [
-    "Industrial Informatics",
-    "Software Architecture",
-    "Knowledge Graphs",
-    "Model-Based Systems Engineering",
-    "Model-Driven Software Engineering",
-    "AI-Augmented Engineering",
-    "Agentic AI",
-    "Artificial Intelligence Agents",
-    "Digital Content Production",
-    "Cross-Channel Media Publishing",
-    "Agentic Workflow Automation",
-    "Cyber-Physical Systems",
-    "Computer Simulation",
-    "Digital Engineering"
-  ]
-};
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": "https://hackenberg.tech/#website",
-  "url": "https://hackenberg.tech",
-  "name": "Dr. Georg Hackenberg",
-  "description": "Personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, digital entrepreneur, and software engineer.",
-  "publisher": { "@id": "https://hackenberg.tech/#person" },
-  "hasPart": [
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/posts/",
-      "url": "https://hackenberg.tech/posts/",
-      "name": "Posts",
-      "description": "Technical articles, dev logs, and engineering insights on AI, systems, and web architectures."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/publications/",
-      "url": "https://hackenberg.tech/publications/",
-      "name": "Publications",
-      "description": "Peer-reviewed scientific papers, academic publications, and conference proceedings."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/presentations/",
-      "url": "https://hackenberg.tech/presentations/",
-      "name": "Presentations",
-      "description": "Interactive slide decks, keynote presentations, and executive briefings with synchronized neural voiceovers."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/courses/",
-      "url": "https://hackenberg.tech/courses/",
-      "name": "Courses",
-      "description": "University curriculum, interactive teaching modules, and hands-on computer science courses."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/projects/",
-      "url": "https://hackenberg.tech/projects/",
-      "name": "Projects",
-      "description": "Open-source software repositories, production web applications, and developer tools."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/services/",
-      "url": "https://hackenberg.tech/services/",
-      "name": "Services",
-      "description": "Sovereign artificial intelligence architectures, agentic automation, and automated media publishing pipelines."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/visualizations/",
-      "url": "https://hackenberg.tech/visualizations/",
-      "name": "Visualizations",
-      "description": "Interactive data visualizations, WebGL simulations, and graph network engines."
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://hackenberg.tech/interests/",
-      "url": "https://hackenberg.tech/interests/",
-      "name": "Professional Interests",
-      "description": "Academic domains, industrial informatics, and technical research focus areas."
-    }
-  ]
-};
-
-const siteNavigationSchema = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "@id": "https://hackenberg.tech/#navigation",
-  "name": "Main Navigation",
-  "itemListElement": [
-    {
-      "@type": "SiteNavigationElement",
-      "position": 1,
-      "name": "Home",
-      "description": "Homepage of Dr. Georg Hackenberg",
-      "url": "https://hackenberg.tech/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 2,
-      "name": "Posts",
-      "description": "Technical articles, dev logs, and engineering insights",
-      "url": "https://hackenberg.tech/posts/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 3,
-      "name": "Publications",
-      "description": "Peer-reviewed scientific papers and academic publications",
-      "url": "https://hackenberg.tech/publications/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 4,
-      "name": "Presentations",
-      "description": "Interactive slide decks and keynote presentations",
-      "url": "https://hackenberg.tech/presentations/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 5,
-      "name": "Courses",
-      "description": "University curriculum and teaching modules",
-      "url": "https://hackenberg.tech/courses/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 6,
-      "name": "Projects",
-      "description": "Open-source software projects and developer tools",
-      "url": "https://hackenberg.tech/projects/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 7,
-      "name": "Services",
-      "description": "Sovereign AI architectures and engineering advisory",
-      "url": "https://hackenberg.tech/services/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 8,
-      "name": "Visualizations",
-      "description": "Interactive data visualizations and graph network engines",
-      "url": "https://hackenberg.tech/visualizations/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 9,
-      "name": "Professional Interests",
-      "description": "Research domains and academic focus areas",
-      "url": "https://hackenberg.tech/interests/"
-    }
-  ]
-};
-
-const profilePageSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfilePage",
-  "@id": "https://hackenberg.tech/#profilepage",
-  "url": "https://hackenberg.tech",
-  "name": "Dr. Georg Hackenberg Profile",
-  "mainEntity": { "@id": "https://hackenberg.tech/#person" }
-};
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Who is Dr. Georg Hackenberg?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Dr. Georg Hackenberg is a Professor for Industrial Informatics at UAP (University of Applied Sciences Upper Austria / FH Upper Austria, Technology Campus Wels) and an enterprise software architect. He holds a doctorate (Dr. rer. nat.) from the Technical University of Munich (TUM), a Master of Science in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science in Software- und Internettechnologie from the University of Mannheim."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What are CADdrive and Mentawise?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "CADdrive (caddrive.com) is a cloud-based CAD file manager and collaboration tool created by Dr. Georg Hackenberg. Mentawise (mentawise.com) is a digital learning and knowledge platform designed for academic and professional technical education."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What business services and training does Dr. Georg Hackenberg offer?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Dr. Georg Hackenberg offers specialized business services across two primary domains: Artificial Intelligence (sovereign technology stack with vLLM, Hermes Agent, Google WikiSkills, LangGraph, and Mem0, open-source system integration, and agentic automation) and Media Publishing (channel definition and cross-channel strategy, social media design systems, and automated content production pipelines)."
-      }
-    }
-  ]
-};
-
-const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, siteNavigationSchema];
+const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
 ---
 
 <Layout 
@@ -979,135 +361,46 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
           <!-- Heading -->
           <h1 id="hero-heading" class="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-2xl">
-            Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
+            Dr. Georg <span class="heading-gradient-brand">Hackenberg</span>
           </h1>
 
           <!-- Subtitle -->
           <p id="hero-subtitle" class="max-w-2xl relative z-10 text-xl md:text-2xl font-bold text-gray-300 light:text-slate-700 mb-6 leading-normal tracking-wide">
-            Professor for Industrial Informatics @ UAP &bull; AI-Augmented Workflows &bull; Digital Content Creation
+            Professor for Industrial Informatics @ UAP &bull; AI-Based Software &amp; Systems Engineering
           </p>
 
           <!-- Bio -->
           <p id="hero-bio" class="max-w-2xl relative z-10 text-gray-400 text-base md:text-lg leading-relaxed mb-6 font-normal">
-            I explore and engineer the frontier of <strong class="font-bold text-gray-200 light:text-slate-900">agentic AI workflows</strong>, <strong class="font-bold text-gray-200 light:text-slate-900">industrial simulation</strong>, and <strong class="font-bold text-gray-200 light:text-slate-900">automated media publishing</strong>. Discover my latest technical articles, interactive slide-as-code keynotes, university courses at <strong class="font-bold text-gray-200 light:text-slate-900">UAP (FH Upper Austria)</strong>, and sovereign AI advisory services below.
+            At <strong class="font-bold text-gray-200 light:text-slate-900">FH Upper Austria (Campus Wels)</strong> and in industrial practice, I research, teach, and architect <strong class="font-bold text-gray-200 light:text-slate-900">AI-based software systems</strong>, <strong class="font-bold text-gray-200 light:text-slate-900">agentic engineering workflows</strong>, and <strong class="font-bold text-gray-200 light:text-slate-900">cyber-physical simulations</strong>. Explore my latest technical articles, interactive slide-as-code keynotes, university courses, and open-source projects below.
           </p>
 
-          <!-- Entity Trust Pills -->
-          <div id="hero-trust-pills" class="max-w-2xl relative z-10 flex flex-wrap items-center gap-2 sm:gap-2.5 mb-6">
+          <!-- Contact & About Buttons -->
+          <div id="hero-actions-row" class="max-w-2xl relative z-10 flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap min-w-0">
             <a 
-              href="https://www.fh-ooe.at/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-brand-blue/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
-              title="University of Applied Sciences Upper Austria (Technology Campus Wels)"
+              id="hero-about-btn"
+              href="/about/" 
+              aria-label="About Dr. Georg Hackenberg"
+              class="shrink-0 h-12 px-6 rounded-xl bg-brand-primary/12 hover:bg-brand-primary/25 backdrop-blur-md border border-brand-primary/20 hover:border-brand-primary/45 text-brand-primary font-extrabold shadow-sm transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              <span class="text-sm select-none">🏛️</span>
-              <span><strong>FH Upper Austria</strong> <span class="text-gray-400 group-hover:text-gray-300 font-normal">(Prof.)</span></span>
-            </a>
-            
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium text-gray-300 shadow-sm" title="Doctorate (Dr. rer. nat.) - Technical University of Munich">
-              <span class="text-sm select-none">🎓</span>
-              <span><strong>TU Munich</strong> <span class="text-gray-400 font-normal">(Dr. rer. nat.)</span></span>
-            </div>
-
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium text-gray-300 shadow-sm" title="Master of Science in Software Systems Engineering - RWTH Aachen University">
-              <span class="text-sm select-none">🎓</span>
-              <span><strong>RWTH Aachen</strong> <span class="text-gray-400 font-normal">(M.Sc.)</span></span>
-            </div>
-
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium text-gray-300 shadow-sm" title="Bachelor of Science in Software- und Internettechnologie - University of Mannheim">
-              <span class="text-sm select-none">🎓</span>
-              <span><strong>Uni Mannheim</strong> <span class="text-gray-400 font-normal">(B.Sc.)</span></span>
-            </div>
-
-            <a 
-              href="/projects/caddrive/" 
-              title="CADdrive – Cloud CAD Collaboration Case Study"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-brand-blue/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
-            >
-              <span class="text-sm select-none">🚀</span>
-              <span><strong>CADdrive</strong></span>
+              <svg class="w-4 h-4 shrink-0 opacity-85" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+              <span class="hero-about-full">About Me</span>
+              <span class="hero-about-short hidden">About</span>
             </a>
 
-            <a 
-              href="/projects/mentawise/" 
-              title="Mentawise – Knowledge Graph Learning Platform Case Study"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-brand-purple/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
-            >
-              <span class="text-sm select-none">🚀</span>
-              <span><strong>Mentawise</strong></span>
-            </a>
-          </div>
-
-          <!-- Contact & Social Buttons -->
-          <div id="hero-actions-row" class="max-w-2xl relative z-10 flex flex-nowrap items-center gap-3 sm:gap-4 min-w-0">
             <a 
               id="hero-contact-btn"
-              href="#contact" 
+              href="/contact/" 
               aria-label="Get in Touch"
-              class="shrink-0 h-12 px-6 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-extrabold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center whitespace-nowrap"
+              class="shrink-0 h-12 px-6 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-extrabold shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              <span class="hero-cta-full">Get in Touch</span>
-              <span class="hero-cta-short hidden">Contact</span>
-              <svg class="hero-cta-icon hidden w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg class="hero-cta-icon w-4 h-4 shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
+              <span class="hero-cta-full">Get in Touch</span>
+              <span class="hero-cta-short hidden">Contact</span>
             </a>
-
-            <!-- Social Media Buttons -->
-            <div id="hero-social-group" class="flex flex-nowrap items-center gap-2.5 sm:gap-3 shrink-0">
-              <!-- GitHub -->
-              <a 
-                href="https://github.com/ghackenberg" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-blue/40 hover:bg-brand-blue/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="GitHub Profile"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-                </svg>
-              </a>
-
-              <!-- LinkedIn -->
-              <a 
-                href="https://www.linkedin.com/in/georghackenberg/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-purple/40 hover:bg-brand-purple/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="LinkedIn Profile"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
-                </svg>
-              </a>
-
-              <!-- Twitter / X -->
-              <a 
-                href="https://twitter.com/georghackenberg" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-yellow/40 hover:bg-brand-yellow/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="Twitter Profile"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-
-              <!-- YouTube -->
-              <a 
-                href="https://youtube.com/@georghackenberg" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-green/40 hover:bg-brand-green/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
-                aria-label="YouTube Channel"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                </svg>
-              </a>
-            </div>
           </div>
 
           <!-- Portrait Cell (dynamically positioned by syncHeroResponsiveLayout) -->
@@ -1150,54 +443,76 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       let lastContourJson = '';
 
       function syncHeroResponsiveLayout() {
-        // 1. Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
+        // 1. Adaptive Hero CTA Buttons (#hero-about-btn & #hero-contact-btn)
         const actionsRow = document.getElementById('hero-actions-row');
         const contactBtn = document.getElementById('hero-contact-btn');
-        const socialGroup = document.getElementById('hero-social-group');
+        const aboutBtn = document.getElementById('hero-about-btn');
 
-        if (actionsRow && contactBtn && socialGroup) {
-          const textFull = contactBtn.querySelector('.hero-cta-full');
-          const textShort = contactBtn.querySelector('.hero-cta-short');
-          const icon = contactBtn.querySelector('.hero-cta-icon');
+        if (actionsRow && (contactBtn || aboutBtn)) {
+          const availableWidth = actionsRow.clientWidth;
+          if (availableWidth !== lastActionsWidth || isFontsReady !== lastActionsFontsReady) {
+            lastActionsWidth = availableWidth;
+            lastActionsFontsReady = isFontsReady;
 
-          if (textFull && textShort && icon) {
-            const availableWidth = actionsRow.clientWidth;
-            if (availableWidth !== lastActionsWidth || isFontsReady !== lastActionsFontsReady) {
-              lastActionsWidth = availableWidth;
-              lastActionsFontsReady = isFontsReady;
+            const contactFull = contactBtn ? contactBtn.querySelector('.hero-cta-full') : null;
+            const contactShort = contactBtn ? contactBtn.querySelector('.hero-cta-short') : null;
+            const contactIcon = contactBtn ? contactBtn.querySelector('.hero-cta-icon') : null;
 
-              const style = window.getComputedStyle(actionsRow);
-              const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
-              const socialWidth = socialGroup.offsetWidth;
+            const aboutFull = aboutBtn ? aboutBtn.querySelector('.hero-about-full') : null;
+            const aboutShort = aboutBtn ? aboutBtn.querySelector('.hero-about-short') : null;
 
-              const fits = function () {
-                return contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
-              };
+            const style = window.getComputedStyle(actionsRow);
+            const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
 
-              // Level 1: Full text ("Get in Touch")
-              textFull.classList.remove('hidden');
-              textShort.classList.add('hidden');
-              icon.classList.add('hidden');
+            const fits = function () {
+              const cWidth = contactBtn ? contactBtn.offsetWidth : 0;
+              const aWidth = aboutBtn ? aboutBtn.offsetWidth : 0;
+              const needed = cWidth > 0 && aWidth > 0 ? cWidth + gap + aWidth : cWidth + aWidth;
+              return needed <= availableWidth + 1;
+            };
+
+            // Level 1: Full text ("About Me" & "Get in Touch")
+            if (contactFull) contactFull.classList.remove('hidden');
+            if (contactShort) contactShort.classList.add('hidden');
+            if (contactBtn) {
               contactBtn.classList.remove('w-12', 'px-0', 'px-4');
               contactBtn.classList.add('px-6');
+            }
 
-              if (!fits()) {
-                // Level 2: Short text ("Contact")
-                textFull.classList.add('hidden');
-                textShort.classList.remove('hidden');
-                icon.classList.add('hidden');
-                contactBtn.classList.remove('w-12', 'px-0', 'px-6');
+            if (aboutFull) aboutFull.classList.remove('hidden');
+            if (aboutShort) aboutShort.classList.add('hidden');
+            if (aboutBtn) {
+              aboutBtn.classList.remove('px-4');
+              aboutBtn.classList.add('px-6');
+            }
+
+            // Level 2: If tight, shorten contact button text ("Contact")
+            if (!fits() && contactShort && contactFull) {
+              contactFull.classList.add('hidden');
+              contactShort.classList.remove('hidden');
+              if (contactBtn) {
+                contactBtn.classList.remove('px-6');
                 contactBtn.classList.add('px-4');
-
-                if (!fits()) {
-                  // Level 3: Envelope Icon Only
-                  textFull.classList.add('hidden');
-                  textShort.classList.add('hidden');
-                  icon.classList.remove('hidden');
-                  contactBtn.classList.remove('px-6', 'px-4');
-                  contactBtn.classList.add('w-12', 'px-0');
-                }
               }
+            }
+
+            // Level 3: If still tight, shorten about button text ("About")
+            if (!fits() && aboutShort && aboutFull) {
+              aboutFull.classList.add('hidden');
+              aboutShort.classList.remove('hidden');
+              if (aboutBtn) {
+                aboutBtn.classList.remove('px-6');
+                aboutBtn.classList.add('px-4');
+              }
+            }
+
+            // Level 4: Extreme fallback for micro-screens (< 260px)
+            if (!fits() && contactIcon && contactFull && contactShort && contactBtn) {
+              contactFull.classList.add('hidden');
+              contactShort.classList.add('hidden');
+              contactIcon.classList.remove('hidden');
+              contactBtn.classList.remove('px-6', 'px-4');
+              contactBtn.classList.add('w-12', 'px-0');
             }
           }
         }
@@ -1243,10 +558,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           const bioEl = document.getElementById('hero-bio');
           if (bioEl) collectLineRects(bioEl);
 
-          const pillsEl = document.getElementById('hero-trust-pills');
-          if (pillsEl) {
-            for (let i = 0; i < pillsEl.children.length; i++) {
-              const child = pillsEl.children[i];
+          if (actionsRow) {
+            for (let i = 0; i < actionsRow.children.length; i++) {
+              const child = actionsRow.children[i];
               if (child instanceof HTMLElement) {
                 const cr = child.getBoundingClientRect();
                 if (cr.width > 2 && cr.height > 2) {
@@ -1255,34 +569,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                     bottom: cr.bottom - contentOriginY,
                     right: cr.right - gridRect.left
                   });
-                }
-              }
-            }
-          }
-
-          if (actionsRow) {
-            if (contactBtn) {
-              const cr = contactBtn.getBoundingClientRect();
-              if (cr.width > 2 && cr.height > 2) {
-                rawRects.push({
-                  top: cr.top - contentOriginY,
-                  bottom: cr.bottom - contentOriginY,
-                  right: cr.right - gridRect.left
-                });
-              }
-            }
-            if (socialGroup) {
-              for (let i = 0; i < socialGroup.children.length; i++) {
-                const child = socialGroup.children[i];
-                if (child instanceof HTMLElement) {
-                  const cr = child.getBoundingClientRect();
-                  if (cr.width > 2 && cr.height > 2) {
-                    rawRects.push({
-                      top: cr.top - contentOriginY,
-                      bottom: cr.bottom - contentOriginY,
-                      right: cr.right - gridRect.left
-                    });
-                  }
                 }
               }
             }
@@ -1343,7 +629,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           let topPos = 0;
 
           if (!isSmallH1) {
-            // Candidate 1: 'rechts mittig' (Right-Center)
+            // Mode 1: 'rechts mittig' (Right-Center)
             let sizeRightCenter = 0;
             let reqLeftRightCenter = 0;
             const maxPossibleRightCenter = Math.min(480, contentHeight);
@@ -1358,32 +644,21 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               }
             }
 
-            // Candidate 2: 'oben rechts neben H1' (Top-Beside-H1)
-            const reqLeftBesideH1 = maxRightInVerticalRange(0, h1Height) + PORTRAIT_GAP_X;
-            const availableWidthBesideH1 = gridWidth - reqLeftBesideH1;
-            const sizeTopRight = (availableWidthBesideH1 >= targetTopSize && h1Height > 0) ? targetTopSize : 0;
-
-            if (sizeRightCenter >= targetTopSize && (sizeRightCenter + 4 >= sizeTopRight) && h1Height > 0) {
+            if (sizeRightCenter >= targetTopSize && h1Height > 0) {
               // Mode 1: Right-Center
               topExtension = 0;
               chosenSize = sizeRightCenter;
               leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
               topPos = Math.round((contentHeight - sizeRightCenter) * 0.5);
-            } else if (sizeTopRight >= targetTopSize && h1Height > 0) {
-              // Mode 2: Top-Right Beside H1
-              topExtension = 0;
-              chosenSize = sizeTopRight;
-              leftPos = Math.round(reqLeftBesideH1 + (availableWidthBesideH1 - sizeTopRight) * 0.5);
-              topPos = 0;
             } else if (gridWidth > 0) {
-              // Mode 3: Top-Center Above H1
+              // Mode 2: Above H1 (jump directly above H1 without intermediate beside-H1 position)
               chosenSize = Math.min(MIN_PORTRAIT_SIZE, gridWidth);
               topExtension = chosenSize + TOP_BAND_GAP;
               leftPos = Math.round((gridWidth - chosenSize) * 0.5);
               topPos = 0;
             }
           } else if (gridWidth > 0) {
-            // Mode 3: Top-Center Above H1 (whenever H1 switches to smaller font < 768px)
+            // Mode 2: Above H1 (mobile screens < 768px)
             chosenSize = Math.min(MIN_PORTRAIT_SIZE, gridWidth);
             topExtension = chosenSize + TOP_BAND_GAP;
             leftPos = Math.round((gridWidth - chosenSize) * 0.5);
@@ -1459,6 +734,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
             }
           }
+
+
         }
       }
 
@@ -1530,99 +807,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     })();
   </script>
 
-  <!-- Professional Interests Section -->
-  <Section id="about" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Professional <span class="text-domain-interests">Interests</span>
-        </h2>
-        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-          Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
-        </p>
-      </div>
-
-      <div class="carousel-stage at-start relative">
-        <!-- Navigation Buttons (< lg) -->
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
-          aria-label="Previous items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
-          aria-label="Next items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-
-        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-4 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-          {professionalInterests.map(interest => (
-            <article 
-              class="w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto glass-card preview-card relative rounded-2xl border border-domain-interests/20 hover:border-domain-interests/50 shadow-domain-interests/5 hover:shadow-domain-interests/15 group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
-              data-card-id={interest.slug}
-              data-collection="interests"
-            >
-              <!-- Absolute overlay link for card clickability -->
-              <a href={`/interests/${interest.slug}/`} class="absolute inset-0 z-10" aria-label={`Explore ${interest.title}`}></a>
-
-              <!-- Artwork Header -->
-              <div class="relative w-full aspect-video shrink-0 grow-0 overflow-hidden bg-slate-950" data-media-host>
-                <img 
-                  src={interest.image} 
-                  alt={`${interest.title} illustration`}
-                  title={interest.title}
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
-                <span 
-                  class="unread-dot hidden badge-new badge-new-interests badge-corner-tr" 
-                  data-item-url={`/interests/${interest.slug}/`}
-                  title="Unread interest"
-                >UNREAD</span>
-              </div>
-
-              <!-- Content Body -->
-              <div class="preview-card-body flex flex-col flex-grow">
-                <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-interests transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={interest.title}>
-                  {interest.title}
-                </h3>
-                <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
-                  {interest.description}
-                </p>
-
-                <!-- Footer: Read More Button -->
-                <div class="mt-auto pt-4 w-full">
-                  <a
-                    href={`/interests/${interest.slug}/`}
-                    aria-label={`Read More: ${interest.title}`}
-                    class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold relative z-20 transition-all duration-200"
-                  >
-                    <span>Read More</span>
-                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-
-    </Container>
-  </Section>
-
   <!-- Featured Blog Posts Section -->
   <Section id="latest-posts" border="top" padding="standard">
     <Container size="wide" padding="none">
@@ -1652,7 +836,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1662,7 +846,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1678,7 +862,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 title={post.data.title}
                 description={post.data.description}
                 pubDate={post.data.pubDate}
-                icon={post.data.icon}
+                image={post.data.image}
                 tags={post.data.tags}
               />
             </div>
@@ -1745,7 +929,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1755,7 +939,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1769,12 +953,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <PublicationCard
                 id={pub.id}
                 title={pub.data.title}
-                author={pub.data.author}
+                authors={pub.data.authors}
                 pubDate={pub.data.pubDate}
                 book={pub.data.book}
                 tags={pub.data.tags}
                 publisherUrl={pub.data.publisherUrl}
-                icon={pub.data.icon}
+                image={pub.data.image}
               />
             </div>
           ))}
@@ -1840,7 +1024,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1850,7 +1034,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1867,7 +1051,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 subtitle={presentation.data.subtitle}
                 description={presentation.data.description}
                 pubDate={presentation.data.pubDate}
-                icon={presentation.data.previewImage || presentation.data.icon}
+                image={presentation.data.image}
                 tags={presentation.data.tags || []}
               />
             </div>
@@ -1934,7 +1118,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1944,7 +1128,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1959,8 +1143,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 title={course.data.title}
                 description={course.data.description}
                 href={`/courses/${course.id}/`}
-                language={course.data.language}
-                screenshot={course.data.screenshot}
+                inLanguage={course.data.inLanguage}
+                image={course.data.image}
                 tags={course.data.tags}
               />
             </div>
@@ -2027,7 +1211,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2037,7 +1221,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2054,8 +1238,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 description={project.data.description}
                 href={`/projects/${project.id}/`}
                 tags={project.data.tags}
-                screenshot={project.data.screenshot}
-                screenshotLight={project.data.screenshotLight}
+                image={project.data.image}
+                imageLight={project.data.imageLight}
               />
             </div>
           ))}
@@ -2121,7 +1305,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2131,7 +1315,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2147,7 +1331,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 title={service.data.title}
                 description={service.data.description}
                 tags={service.data.tags}
-                previewImage={service.data.previewImage}
+                image={service.data.image}
               />
             </div>
           ))}
@@ -2171,6 +1355,99 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               </p>
               <div class="w-full pt-2 flex justify-center">
                 <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-services hover:bg-domain-services/90 text-white text-xs font-bold shadow-lg shadow-domain-services/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Email Newsletters Section -->
+  <Section id="newsletters" border="top" padding="standard">
+    <Container size="wide" padding="none">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="newsletters-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+            Email <span class="text-domain-newsletters">Newsletters</span>
+          </h2>
+          <a
+            href="/newsletters/"
+            aria-label="Explore all Newsletters"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-newsletters hover:bg-domain-newsletters/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-newsletters/20 hover:shadow-domain-newsletters/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+          Periodic English-language dispatches summarizing newly published blog posts, presentations, courses, projects, visualizations, and publications.
+        </p>
+      </div>
+
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedNewsletters.slice(0, 5).map((issue, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <NewsletterCard
+                id={issue.id}
+                issueNumber={issue.data.issueNumber}
+                title={issue.data.title}
+                description={issue.data.description}
+                pubDate={issue.data.pubDate}
+                image={issue.data.image}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/newsletters/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-newsletters/25 hover:border-domain-newsletters/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-newsletters/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-newsletters/15 border border-domain-newsletters/30 text-domain-newsletters flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                ✉️
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-newsletters/15 text-domain-newsletters border border-domain-newsletters/30 mb-3">
+                {newsletters.length} {newsletters.length === 1 ? 'Issue' : 'Issues'} Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Newsletters
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse curated engineering dispatches, release summaries, and research updates.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-newsletters hover:bg-domain-newsletters/90 text-white text-xs font-bold shadow-lg shadow-domain-newsletters/20 transition-all duration-200">
                   <span>View Archive</span>
                   <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -2213,7 +1490,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <!-- Navigation Buttons (< lg) -->
         <button
           type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
           aria-label="Previous items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2223,7 +1500,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         <button
           type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
           aria-label="Next items"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2238,7 +1515,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 title={vis.data.title}
                 description={vis.data.description}
                 href={`/visualizations/${vis.id}/`}
-                screenshot={vis.data.screenshot}
+                image={vis.data.image}
                 tags={vis.data.tags}
               />
             </div>
@@ -2343,25 +1620,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
                   {tag.totalCount > 0 && (
                     <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                      {tag.interestsCount > 0 && <div class="bg-domain-interests h-full" style={`width: ${tag.interestsPct}%`} title={`Interests: ${tag.interestsCount}`}></div>}
                       {tag.postsCount > 0 && <div class="bg-domain-posts h-full" style={`width: ${tag.postsPct}%`} title={`Posts: ${tag.postsCount}`}></div>}
                       {tag.pubsCount > 0 && <div class="bg-domain-publications h-full" style={`width: ${tag.pubsPct}%`} title={`Publications: ${tag.pubsCount}`}></div>}
                       {tag.presCount > 0 && <div class="bg-domain-presentations h-full" style={`width: ${tag.presPct}%`} title={`Presentations: ${tag.presCount}`}></div>}
                       {tag.coursesCount > 0 && <div class="bg-domain-courses h-full" style={`width: ${tag.coursesPct}%`} title={`Courses: ${tag.coursesCount}`}></div>}
                       {tag.projectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${tag.projectsPct}%`} title={`Projects: ${tag.projectsCount}`}></div>}
                       {tag.servicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${tag.servicesPct}%`} title={`Services: ${tag.servicesCount}`}></div>}
+                      {tag.newslettersCount > 0 && <div class="bg-domain-newsletters h-full" style={`width: ${tag.newslettersPct}%`} title={`Newsletters: ${tag.newslettersCount}`}></div>}
                       {tag.visCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${tag.visPct}%`} title={`Visualizations: ${tag.visCount}`}></div>}
                     </div>
                   )}
 
                   <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] sm:text-[11px] text-gray-300 light:text-slate-600 font-medium pt-0.5">
-                    {tag.interestsCount > 0 && (
-                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                        <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                        <span>{tag.interestsCount} {tag.interestsCount === 1 ? 'Interest' : 'Interests'}</span>
-                        <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
-                      </span>
-                    )}
                     {tag.postsCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
@@ -2402,6 +1672,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                         <span class="w-2 h-2 rounded-full bg-domain-services"></span>
                         <span>{tag.servicesCount} {tag.servicesCount === 1 ? 'Service' : 'Services'}</span>
                         <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
+                      </span>
+                    )}
+                    {tag.newslettersCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-newsletters"></span>
+                        <span>{tag.newslettersCount} {tag.newslettersCount === 1 ? 'Newsletter' : 'Newsletters'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.newslettersPct}%)</span>
                       </span>
                     )}
                     {tag.visCount > 0 && (
@@ -2446,25 +1723,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
                   {restTotalContentCount > 0 && (
                     <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                      {restInterestsCount > 0 && <div class="bg-domain-interests h-full" style={`width: ${restInterestsPct}%`} title={`Interests: ${restInterestsCount}`}></div>}
                       {restPostsCount > 0 && <div class="bg-domain-posts h-full" style={`width: ${restPostsPct}%`} title={`Posts: ${restPostsCount}`}></div>}
                       {restPubsCount > 0 && <div class="bg-domain-publications h-full" style={`width: ${restPubsPct}%`} title={`Publications: ${restPubsCount}`}></div>}
                       {restPresCount > 0 && <div class="bg-domain-presentations h-full" style={`width: ${restPresPct}%`} title={`Presentations: ${restPresCount}`}></div>}
                       {restCoursesCount > 0 && <div class="bg-domain-courses h-full" style={`width: ${restCoursesPct}%`} title={`Courses: ${restCoursesCount}`}></div>}
                       {restProjectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${restProjectsPct}%`} title={`Projects: ${restProjectsCount}`}></div>}
                       {restServicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${restServicesPct}%`} title={`Services: ${restServicesCount}`}></div>}
+                      {restNewslettersCount > 0 && <div class="bg-domain-newsletters h-full" style={`width: ${restNewslettersPct}%`} title={`Newsletters: ${restNewslettersCount}`}></div>}
                       {restVisCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${restVisPct}%`} title={`Visualizations: ${restVisCount}`}></div>}
                     </div>
                   )}
 
                   <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] sm:text-[11px] text-gray-300 light:text-slate-600 font-medium pt-0.5">
-                    {restInterestsCount > 0 && (
-                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                        <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                        <span>{restInterestsCount} {restInterestsCount === 1 ? 'Interest' : 'Interests'}</span>
-                        <span class="text-gray-400 text-[10px]">({restInterestsPct}%)</span>
-                      </span>
-                    )}
                     {restPostsCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
@@ -2507,6 +1777,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                         <span class="text-gray-400 text-[10px]">({restServicesPct}%)</span>
                       </span>
                     )}
+                    {restNewslettersCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-newsletters"></span>
+                        <span>{restNewslettersCount} {restNewslettersCount === 1 ? 'Newsletter' : 'Newsletters'}</span>
+                        <span class="text-gray-400 text-[10px]">({restNewslettersPct}%)</span>
+                      </span>
+                    )}
                     {restVisCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
@@ -2522,208 +1799,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
           <!-- Hidden staging pool for tags that overflow the elliptical budget on narrow screens -->
           <div id="bin-packing-pool" class="hidden" aria-hidden="true"></div>
-        </div>
-      </div>
-    </Container>
-  </Section>
-
-  <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
-  <ImageGalleryMarquee catalog={galleryItems} />
-
-  <!-- Experience Section -->
-  <Section id="experience" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="experience-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Professional <span class="heading-gradient-brand">Experiences</span>
-        </h2>
-        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-          A summary of my academic tenure, software engineering developments, and organizational leadership roles.
-        </p>
-      </div>
-
-      <Timeline />
-    </Container>
-  </Section>
-
-  <!-- Contact Section -->
-  <Section id="contact" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        
-        <!-- Copywriting Left -->
-        <div class="lg:col-span-5">
-          <div class="section-header">
-            <h2 id="contact-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-              Get in <span class="heading-gradient-brand">Touch</span>
-            </h2>
-            <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-              Whether you want to discuss educational initiatives, collaborate on software architectures, explore knowledge graphs, or just say hello—feel free to reach out. I am always happy to share experiences!
-            </p>
-          </div>
-
-          <!-- Social Shortcuts -->
-          <div class="flex items-center space-x-4">
-            <!-- Github -->
-            <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-300 hover:scale-110" aria-label="GitHub Profile">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-              </svg>
-            </a>
-            <!-- LinkedIn -->
-            <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 hover:border-brand-purple/30 transition-all duration-300 hover:scale-110" aria-label="LinkedIn Profile">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
-              </svg>
-            </a>
-            <!-- Twitter / X -->
-            <a href="https://twitter.com/georghackenberg" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 hover:border-brand-yellow/30 transition-all duration-300 hover:scale-110" aria-label="Twitter Profile">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-              </svg>
-            </a>
-            <!-- YouTube -->
-            <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 hover:border-brand-green/30 transition-all duration-300 hover:scale-110" aria-label="YouTube Channel">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Contact Card Right -->
-        <div class="lg:col-span-7">
-          <div class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
-            <h3 id="contact-profile-heading" class="text-xl md:text-2xl font-extrabold text-gray-100 mb-8 tracking-tight">
-              Dr. Georg Hackenberg
-            </h3>
-
-            <div class="space-y-6 text-sm md:text-base">
-              
-              <!-- Role -->
-              <div class="flex items-start space-x-4">
-                <div class="text-brand-yellow shrink-0 mt-0.5">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-gray-100 font-semibold">Professor for Industrial Informatics</p>
-                  <p class="text-gray-400 text-sm">Digital Entrepreneur and Software Engineer</p>
-                </div>
-              </div>
-
-              <!-- Institution -->
-              <div class="flex items-start space-x-4">
-                <div class="text-brand-purple shrink-0 mt-0.5">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-gray-100 font-semibold">Technology Campus Wels</p>
-                  <p class="text-gray-400 text-sm">UAP / FH Upper Austria</p>
-                </div>
-              </div>
-
-              <!-- Address -->
-              <div class="flex items-start space-x-4">
-                <div class="text-brand-green shrink-0 mt-0.5">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-gray-100 font-semibold">Stelzhamerstrasse 23</p>
-                  <p class="text-gray-400 text-sm">4600 Wels, Austria</p>
-                </div>
-              </div>
-
-              <!-- Email Action -->
-              <div class="flex items-start space-x-4 pt-4 border-t border-element-border">
-                <div class="text-brand-blue shrink-0 mt-1">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                </div>
-                <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <p class="text-gray-400 light:text-slate-600 text-xs font-semibold uppercase tracking-wider">Email Address</p>
-                    <p id="email-text" class="text-gray-100 font-mono font-medium mt-0.5 select-all">georg.hackenberg@fh-wels.at</p>
-                  </div>
-                  
-                  <button 
-                    id="copy-email-btn"
-                    data-track-event="High Intent: Copy Email"
-                    data-track-location="home-contact"
-                    class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
-                  >
-                    <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                    </svg>
-                    <span id="copy-btn-text">Copy Email</span>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </Container>
-  </Section>
-
-  <!-- Tech Stack Showcase Section -->
-  <Section id="tech-stack" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="glass-panel rounded-3xl p-6 md:p-10 border border-element-border relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 bg-gradient-to-r from-white/[0.01] via-brand-blue/[0.02] to-brand-purple/[0.02]">
-        <!-- Left Content -->
-        <div class="flex-grow max-w-2xl text-center lg:text-left">
-
-          <h2 id="tech-stack-heading" class="text-2xl md:text-3xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
-            Built with Cutting-Edge <span class="heading-gradient-brand">Technologies</span>
-          </h2>
-          <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-            This personal portfolio is engineered as a modern, high-performance web platform. Built using framework-agnostic compiler design, componentized styling systems, and agentic AI tooling to deliver optimized delivery speeds and visual quality.
-          </p>
-        </div>
-
-        <!-- Right Content: Interactive Grayscale-to-Color Logos -->
-        <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6 shrink-0 w-full lg:w-auto">
-          <!-- Astro Card -->
-          <a 
-            href="https://astro.build" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="group flex flex-col items-center gap-3 px-5 py-4 w-32 rounded-2xl glass-card border border-element-border hover:border-brand-blue/30 transition-all duration-300 hover:scale-105"
-          >
-            <img src={astroLogo.src} alt="Astro Logo" title="Astro Web Framework" width="40" height="40" class="w-10 h-10 filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300" />
-            <span class="text-xs font-bold text-gray-400 group-hover:text-gray-100 transition-colors duration-300">Astro</span>
-          </a>
-
-          <!-- Tailwind CSS Card -->
-          <a 
-            href="https://tailwindcss.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="group flex flex-col items-center gap-3 px-5 py-4 w-32 rounded-2xl glass-card border border-element-border hover:border-brand-blue/30 transition-all duration-300 hover:scale-105"
-          >
-            <img src={tailwindLogo.src} alt="Tailwind CSS Logo" title="Tailwind CSS Framework" width="40" height="40" class="w-10 h-10 filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300" />
-            <span class="text-xs font-bold text-gray-400 group-hover:text-gray-100 transition-colors duration-300">Tailwind CSS</span>
-          </a>
-
-          <!-- Antigravity Card -->
-          <a 
-            href="https://antigravity.google" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="group flex flex-col items-center gap-3 px-5 py-4 w-32 rounded-2xl glass-card border border-element-border hover:border-brand-purple/30 transition-all duration-300 hover:scale-105 cursor-pointer"
-          >
-            <img src={antigravityLogo.src} alt="Antigravity Logo" title="Google Antigravity AI Engine" width="40" height="40" class="w-10 h-10 filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300" />
-            <span class="text-xs font-bold text-gray-400 group-hover:text-brand-purple transition-colors duration-300">Antigravity</span>
-          </a>
         </div>
       </div>
     </Container>
@@ -2939,33 +2014,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 </style>
 
 <script>
-  // Copy to Clipboard logic for contact button
-  const copyBtn = document.getElementById('copy-email-btn');
-  const emailText = document.getElementById('email-text');
-  const copyBtnText = document.getElementById('copy-btn-text');
-  const copyIcon = document.getElementById('copy-icon');
-
-  if (copyBtn && emailText && copyBtnText && copyIcon) {
-    copyBtn.addEventListener('click', () => {
-      const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
-      
-      navigator.clipboard.writeText(email).then(() => {
-        // Visual feedback
-        copyBtnText.textContent = 'Copied!';
-        copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-        
-        // Reset after 2.5 seconds
-        setTimeout(() => {
-          copyBtnText.textContent = 'Copy Email';
-          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-          copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
-    });
-  }
 
   // Interactive Carousel Controller for All 9 Homepage Sections (< lg)
   function initCarousels() {

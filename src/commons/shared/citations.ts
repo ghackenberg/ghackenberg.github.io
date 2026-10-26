@@ -1,7 +1,7 @@
 export interface CitationRef {
   id?: string;
   label?: string;
-  author?: string;
+  authors?: Array<{ name: string; type?: string; id?: string }> | string[];
   year?: number | string;
 }
 
@@ -67,7 +67,10 @@ export function generateCitationLabel(ref: CitationRef): string {
   }
 
   const yearStr = ref.year ? String(ref.year).slice(-2) : '';
-  const authorStr = ref.author || '';
+  const authorsFromList = Array.isArray(ref.authors)
+    ? ref.authors.map((a) => (typeof a === 'string' ? a : a.name)).join(' and ')
+    : '';
+  const authorStr = authorsFromList;
 
   // Check known institutions/organizations first
   if (/^iso\b/i.test(authorStr)) return 'ISO' + yearStr;

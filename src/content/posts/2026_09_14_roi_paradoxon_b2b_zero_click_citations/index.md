@@ -1,10 +1,7 @@
 ---
-title: "Das ROI-Paradoxon im B2B: Wie man Erfolg in einer Zero-Click- und
-  Zitations-Ökonomie misst"
+title: "Das ROI-Paradoxon im B2B: Wie man Erfolg in einer Zero-Click- und Zitations-Ökonomie misst"
 pubDate: 2026-09-14
-description: "Wenn 68% der Suchen ohne Website-Klick enden: Warum traditionelle
-  KPIs wie PageViews im B2B versagen und wie Unternehmen Share of Model (SoM),
-  Citation Share und Prompt-Audits für die Erfolgsmessung nutzen."
+description: "Wenn 68% der Suchen ohne Website-Klick enden: Warum traditionelle KPIs wie PageViews im B2B versagen und wie Unternehmen Share of Model (SoM), Citation Share und Prompt-Audits für die Erfolgsmessung nutzen."
 tags:
   - aeo
   - agentic-ai
@@ -18,35 +15,45 @@ tags:
 icon:
   src: ./hero.jpg
   title: Das B2B ROI Paradoxon im Enterprise Boardroom
-  description: Dr. Georg Hackenberg präsentiert die Auswirkungen von
-    Zero-Click-Zitaten und synthetischer B2B-Recherche vor Führungskräften
+  description: Dr. Georg Hackenberg präsentiert die Auswirkungen von Zero-Click-Zitaten und synthetischer B2B-Recherche vor Führungskräften
 references:
   - type: inproceedings
-    author: Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K.,
-      & Deshpande, A.
     title: "GEO: Generative Engine Optimization"
     url: https://doi.org/10.1145/3637528.3671900
     year: 2024
     doi: 10.1145/3637528.3671900
-    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery
-      and Data Mining (KDD '24)
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)
     id: aggarwal-2024-geo
+    authors:
+      - name: Pranjal Aggarwal
+        id: https://orcid.org/0000-0002-2962-1535
+      - name: Vishvak Murahari
+        id: https://orcid.org/0009-0008-9304-0701
+      - name: Tanmay Rajpurohit
+        id: https://orcid.org/0000-0001-9302-4244
+      - name: Ashwin Kalyan
+        id: https://orcid.org/0009-0006-3448-3305
+      - name: Karthik Narasimhan
+        id: https://orcid.org/0000-0001-9894-9983
+      - name: Ameet Deshpande
+        id: https://orcid.org/0000-0001-9885-0385
   - type: online
-    author: Fishkin, R.
-    title: "2024 Zero-Click Search Study: For every 1,000 Google searches, only 360
-      clicks go to the open web"
+    title: "2024 Zero-Click Search Study: For every 1,000 Google searches, only 360 clicks go to the open web"
     url: https://sparktoro.com/blog/2024-zero-click-search-study/
     year: 2024
     siteName: SparkToro
     id: fishkin-2024-zero-click
+    authors:
+      - name: Rand Fishkin
   - type: online
-    author: ISO
-    title: "ISO 13485:2016: Medical devices — Quality management systems —
-      Requirements for regulatory purposes"
+    title: "ISO 13485:2016: Medical devices — Quality management systems — Requirements for regulatory purposes"
     url: https://www.iso.org/standard/59752.html
     year: 2016
     siteName: International Organization for Standardization
     id: iso-13485
+    authors:
+      - name: ISO
+        type: Organization
 ---
 
 
