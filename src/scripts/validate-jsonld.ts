@@ -1057,6 +1057,18 @@ async function verifyExternalAuthorities() {
           }
         }
         cacheModified = true;
+      } else if (res.status === 404) {
+        for (const qid of missingQids) {
+          cache.wikidata[qid] = {
+            exists: false,
+            labels: {},
+            aliases: {},
+            claims: {}
+          };
+        }
+        cacheModified = true;
+      } else if ([403, 429].includes(res.status) || res.status >= 500) {
+        console.warn(`[validate-jsonld] Warning: Transient HTTP ${res.status} from Wikidata API for [${missingQids.join(', ')}]`);
       }
     } catch (err) {
       console.warn(`[validate-jsonld] Warning: Wikidata fetch error: ${String(err)}`);
@@ -1162,10 +1174,13 @@ async function verifyExternalAuthorities() {
         const title = match ? match[1] : undefined;
         const valid = title ? title.includes(code) : false;
         cache.onet[code] = { valid, title };
-      } else {
+        cacheModified = true;
+      } else if (res.status === 404) {
         cache.onet[code] = { valid: false };
+        cacheModified = true;
+      } else if ([403, 429].includes(res.status) || res.status >= 500) {
+        console.warn(`[validate-jsonld] Warning: Transient HTTP ${res.status} from onetonline.org for ${code}`);
       }
-      cacheModified = true;
     } catch (err) {
       console.warn(`[validate-jsonld] Warning: O*NET fetch error for ${code}: ${String(err)}`);
     }
@@ -1209,10 +1224,13 @@ async function verifyExternalAuthorities() {
         const givenName = data.name?.['given-names']?.value;
         const familyName = data.name?.['family-name']?.value;
         cache.orcid[orcidId] = { valid: true, checksumValid: true, givenName, familyName };
-      } else {
+        cacheModified = true;
+      } else if (res.status === 404) {
         cache.orcid[orcidId] = { valid: false, checksumValid: true };
+        cacheModified = true;
+      } else if ([403, 429].includes(res.status) || res.status >= 500) {
+        console.warn(`[validate-jsonld] Warning: Transient HTTP ${res.status} from pub.orcid.org for ${orcidId}`);
       }
-      cacheModified = true;
     } catch (err) {
       console.warn(`[validate-jsonld] Warning: ORCID fetch error for ${orcidId}: ${String(err)}`);
     }
@@ -1259,10 +1277,13 @@ async function verifyExternalAuthorities() {
         const title = data.message?.title?.[0];
         const valid = authors.length > 0 ? hasAuthorHackenberg : Boolean(title);
         cache.crossref[doi] = { valid, hasAuthorHackenberg, title };
-      } else {
+        cacheModified = true;
+      } else if (res.status === 404) {
         cache.crossref[doi] = { valid: false, hasAuthorHackenberg: false };
+        cacheModified = true;
+      } else if ([403, 429].includes(res.status) || res.status >= 500) {
+        console.warn(`[validate-jsonld] Warning: Transient HTTP ${res.status} from api.crossref.org for ${doi}`);
       }
-      cacheModified = true;
       await new Promise((r) => setTimeout(r, 100));
     } catch (err) {
       console.warn(`[validate-jsonld] Warning: Crossref fetch error for ${doi}: ${String(err)}`);
@@ -1285,12 +1306,22 @@ async function verifyExternalAuthorities() {
 
   for (const repoName of missingRepos) {
     try {
+      const headers: Record<string, string> = {
+        'User-Agent': 'hackenberg.tech-jsonld-validator/1.0',
+        ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {})
+      };
       const res = await fetch(`https://api.github.com/repos/ghackenberg/${repoName}`, {
-        headers: { 'User-Agent': 'hackenberg.tech-jsonld-validator/1.0' }
+        headers
       });
-      const exists = res.status === 200;
-      cache.github[repoName] = { exists };
-      cacheModified = true;
+      if (res.status === 200) {
+        cache.github[repoName] = { exists: true };
+        cacheModified = true;
+      } else if (res.status === 404) {
+        cache.github[repoName] = { exists: false };
+        cacheModified = true;
+      } else if ([403, 429].includes(res.status) || res.status >= 500) {
+        console.warn(`[validate-jsonld] Warning: Transient HTTP ${res.status} from api.github.com for ${repoName}`);
+      }
     } catch (err) {
       console.warn(`[validate-jsonld] Warning: GitHub fetch error for ${repoName}: ${String(err)}`);
     }

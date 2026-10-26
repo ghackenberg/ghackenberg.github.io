@@ -64,11 +64,22 @@ jobs:
           restore-keys: |
             slides-pdf-
 
+      - name: Restore JSON-LD Authorities Cache
+        id: cache-jsonld
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/jsonld-authorities.json
+          key: jsonld-authorities-${{ hashFiles('src/content/**', 'src/commons/server/json-ld.ts', 'src/scripts/validate-jsonld.ts') }}
+          restore-keys: |
+            jsonld-authorities-
+
       - name: Validate Code Quality & Integrity
         run: npm run validate
 
       - name: Build Astro Site, Export Presentation PDFs & Validate Semantic Artifacts
         run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save Branding & OG Assets Cache
         if: always() && steps.cache-branding.outputs.cache-hit != 'true'
@@ -90,6 +101,13 @@ jobs:
         with:
           path: .cache/slides-pdf
           key: ${{ steps.cache-pdf.outputs.cache-primary-key }}
+
+      - name: Save JSON-LD Authorities Cache
+        if: always() && steps.cache-jsonld.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/jsonld-authorities.json
+          key: ${{ steps.cache-jsonld.outputs.cache-primary-key }}
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
