@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import InstitutionLogo from '@components/InstitutionLogo.astro';
 
 const experiences = await getCollection('experiences');
 
@@ -226,122 +227,6 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
   <!-- Continuous background line -->
   <div class="absolute left-[41px] sm:left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-element-border-medium z-0 pointer-events-none rounded-full"></div>
   {companyGroups.map((group, index) => {
-    // Determine the SVG logo or image to render
-    const nameLower = group.company.toLowerCase();
-    const isSelfEmployed = nameLower.includes('georg hackenberg');
-    
-    let svgContent = '';
-    if (!isSelfEmployed) {
-      if (nameLower.includes('fh oö') || nameLower.includes('fh upper austria')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-fhGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="crimson" />
-              <stop offset="100%" stop-color="darkred" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-fhGrad)" />
-          <text x="50" y="65" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="44" fill="white" text-anchor="middle" letter-spacing="-3">FH</text>
-        `;
-      } else if (nameLower.includes('reply')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-replyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="coral" />
-              <stop offset="100%" stop-color="orangered" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-replyGrad)" />
-          <text x="50" y="66" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="48" fill="white" text-anchor="middle">R</text>
-        `;
-      } else if (nameLower.includes('münchen') || nameLower.includes('tum') || nameLower.includes('munich')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="dodgerblue" />
-              <stop offset="100%" stop-color="royalblue" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-tumGrad)" />
-          <text x="50" y="64" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="34" fill="white" text-anchor="middle" letter-spacing="-1">TUM</text>
-        `;
-      } else if (nameLower.includes('epfl')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-epflGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="red" />
-              <stop offset="100%" stop-color="darkred" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-epflGrad)" />
-          <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="32" fill="white" text-anchor="middle" letter-spacing="-2">EPFL</text>
-        `;
-      } else if (nameLower.includes('fraunhofer')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-fraunhoferGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="mediumseagreen" />
-              <stop offset="100%" stop-color="seagreen" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-fraunhoferGrad)" />
-          <g stroke="white" stroke-width="4" stroke-linecap="round" fill="none">
-            <path d="M30 70 C30 50, 50 30, 70 30" />
-            <path d="M40 70 C40 55, 55 40, 70 40" />
-            <path d="M50 70 C50 60, 60 50, 70 50" />
-          </g>
-          <text x="50" y="85" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="14" fill="white" text-anchor="middle" letter-spacing="1">FIT</text>
-        `;
-      } else if (nameLower.includes('rwth') || nameLower.includes('aachen')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-rwthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="mediumblue" />
-              <stop offset="100%" stop-color="navy" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-rwthGrad)" />
-          <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="30" fill="white" text-anchor="middle" letter-spacing="-1.5">RWTH</text>
-        `;
-      } else if (nameLower.includes('siemens')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-siemensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="teal" />
-              <stop offset="100%" stop-color="darkslategray" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-siemensGrad)" />
-          <text x="50" y="66" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="52" fill="white" text-anchor="middle" letter-spacing="-2">S</text>
-        `;
-      } else if (nameLower.includes('mannheim')) {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-mannheimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="navy" />
-              <stop offset="100%" stop-color="midnightblue" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-mannheimGrad)" />
-          <path d="M30 45 L50 35 L70 45 L70 65 L30 65 Z" fill="none" stroke="gold" stroke-width="4" stroke-linejoin="round" />
-          <path d="M40 65 L40 55 L60 55 L60 65" fill="none" stroke="gold" stroke-width="4" />
-          <text x="50" y="82" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="800" font-size="14" fill="gold" text-anchor="middle">UNI MA</text>
-        `;
-      } else {
-        svgContent = `
-          <defs>
-            <linearGradient id="exp-${index}-defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="gray" />
-              <stop offset="100%" stop-color="darkslategray" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-defaultGrad)" />
-          <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="none" stroke="white" stroke-width="4" />
-          <path d="M30 45 V65 C30 70, 50 75, 50 75 C50 75, 70 70, 70 65 V45" fill="none" stroke="white" stroke-width="4" />
-        `;
-      }
-    }
-
     return (
       <div class="relative group rounded-2xl">
         <!-- Interactive Glow Element -->
@@ -391,11 +276,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
               <div class="flex gap-5 items-start mb-6">
                 <!-- Logo Container -->
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-950 border border-element-border-medium shrink-0 overflow-hidden shadow-inner relative z-20 timeline-logo-container">
-                  {isSelfEmployed ? (
-                    <img src="/favicon.svg" alt={`Logo von ${group.company}`} title={group.company} class="w-full h-full object-contain" />
-                  ) : (
-                    <svg viewBox="0 0 100 100" class="w-full h-full" set:html={svgContent}></svg>
-                  )}
+                  <InstitutionLogo name={group.company} />
                 </div>
                 
                 <div class="min-w-0">

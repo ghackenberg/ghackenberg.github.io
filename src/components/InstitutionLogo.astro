@@ -1,0 +1,115 @@
+---
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+const nameLower = name.toLowerCase();
+
+type InstitutionKey =
+  | 'self'
+  | 'fhoo'
+  | 'reply'
+  | 'tum'
+  | 'epfl'
+  | 'fraunhofer'
+  | 'rwth'
+  | 'siemens'
+  | 'mannheim'
+  | 'default';
+
+function resolveInstitution(lower: string): InstitutionKey {
+  if (lower.includes('georg hackenberg')) return 'self';
+  if (lower.includes('fh o') || lower.includes('fh upper austria')) return 'fhoo';
+  if (lower.includes('reply')) return 'reply';
+  if (
+    lower.includes('münchen') ||
+    lower.includes('tum') ||
+    lower.includes('munich') ||
+    lower.includes('technische universit')
+  ) {
+    return 'tum';
+  }
+  if (lower.includes('epfl')) return 'epfl';
+  if (lower.includes('fraunhofer')) return 'fraunhofer';
+  if (lower.includes('rwth') || lower.includes('aachen')) return 'rwth';
+  if (lower.includes('siemens')) return 'siemens';
+  if (lower.includes('mannheim')) return 'mannheim';
+  return 'default';
+}
+
+const kind = resolveInstitution(nameLower);
+---
+
+<svg viewBox="0 0 100 100" class="w-full h-full" role="img" aria-label={`Logo of ${name}`}>
+  {kind === 'self' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-brand-primary)" />
+      <polygon points="18,78 30,22 44,22 32,78" fill="white" />
+      <polygon points="56,78 68,22 82,22 70,78" fill="white" />
+      <polygon points="36,58 40,42 64,42 60,58" fill="color-mix(in srgb, var(--color-brand-primary) 28%, white)" />
+    </>
+  )}
+  {kind === 'fhoo' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-fhoo)" />
+      <text x="50" y="64.2" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="40" fill="white" text-anchor="middle">FH</text>
+    </>
+  )}
+  {kind === 'reply' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-reply)" />
+      <text x="50" y="66.2" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="46" fill="white" text-anchor="middle">R</text>
+    </>
+  )}
+  {kind === 'tum' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-tum)" />
+      <text x="50" y="61.5" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="32" fill="white" text-anchor="middle">TUM</text>
+    </>
+  )}
+  {kind === 'epfl' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-epfl)" />
+      <text x="50" y="60.8" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="30" fill="white" text-anchor="middle">EPFL</text>
+    </>
+  )}
+  {kind === 'fraunhofer' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-fraunhofer)" />
+      <g stroke="color-mix(in srgb, var(--color-inst-fraunhofer) 28%, white)" stroke-width="4" stroke-linecap="round" fill="none">
+        <path d="M32 56 C32 38, 50 22, 68 22" />
+        <path d="M41 56 C41 43, 54 31, 68 31" />
+        <path d="M50 56 C50 48, 59 40, 68 40" />
+      </g>
+      <text x="50" y="76" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="15" fill="white" text-anchor="middle">FIT</text>
+    </>
+  )}
+  {kind === 'rwth' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-rwth)" />
+      <text x="50" y="59.8" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="27" fill="white" text-anchor="middle">RWTH</text>
+    </>
+  )}
+  {kind === 'siemens' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-siemens)" />
+      <text x="50" y="66.5" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="46" fill="white" text-anchor="middle">S</text>
+    </>
+  )}
+  {kind === 'mannheim' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-inst-mannheim)" />
+      <path d="M31 34 L50 23 L69 34 L69 53 L31 53 Z" fill="none" stroke="color-mix(in srgb, var(--color-inst-mannheim) 28%, white)" stroke-width="3.8" stroke-linejoin="round" />
+      <path d="M41 53 L41 43 L59 43 L59 53" fill="none" stroke="color-mix(in srgb, var(--color-inst-mannheim) 28%, white)" stroke-width="3.8" stroke-linejoin="round" />
+      <text x="50" y="75" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="800" font-size="14" fill="white" text-anchor="middle">UNI MA</text>
+    </>
+  )}
+  {kind === 'default' && (
+    <>
+      <rect x="0" y="0" width="100" height="100" rx="22" fill="var(--color-brand-primary)" />
+      <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="none" stroke="white" stroke-width="4" stroke-linejoin="round" />
+      <path d="M30 45 V65 C30 70, 50 75, 50 75 C50 75, 70 70, 70 65 V45" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    </>
+  )}
+</svg>

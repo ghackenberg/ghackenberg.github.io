@@ -66,6 +66,16 @@
   --color-accent-9: #8261b8; /* 9: Dusty Lavender (263°)   - Visualizations */
   --color-accent-10: #9261b8; /* 10: Muted Mauve (274°)    - Tags */
 
+  /* Institution Logo Tokens (Soft Nordic Pastel) */
+  --color-inst-fhoo: #b5545b;       /* 356° Muted Crimson   (FH OÖ) */
+  --color-inst-reply: #529c56;      /* 123° Soft Leaf Green (Reply S.p.A.) */
+  --color-inst-tum: #477eb5;        /* 210° Soft TUM Azure  (TU München) */
+  --color-inst-epfl: #b85852;       /*   4° Soft Vermilion  (EPFL) */
+  --color-inst-fraunhofer: #459b86; /* 166° Soft Mint-Sage  (Fraunhofer FIT) */
+  --color-inst-rwth: #4870a8;       /* 215° Dusty Royal     (RWTH Aachen) */
+  --color-inst-siemens: #459696;    /* 180° Soft Petrol     (Siemens) */
+  --color-inst-mannheim: #4b688c;   /* 213° Dusty Navy      (Uni Mannheim) */
+
   /* Presentation Slide Design Tokens (mapped to canonical accent palette) */
   --color-slide-bg: #020617;
   --color-slide-text: #f8fafc;
@@ -159,6 +169,16 @@
   --color-accent-8: #7161b3; /* 8: Soft Iris */
   --color-accent-9: #8061b3; /* 9: Dusty Lavender */
   --color-accent-10: #8f61b3; /* 10: Muted Mauve */
+
+  /* Institution Logo Tokens (Light Mode Shifts - Soft Nordic Pastel) */
+  --color-inst-fhoo: #ba5d64;
+  --color-inst-reply: #59a35d;
+  --color-inst-tum: #4f85bc;
+  --color-inst-epfl: #bd615b;
+  --color-inst-fraunhofer: #4da28d;
+  --color-inst-rwth: #5078b0;
+  --color-inst-siemens: #4d9e9e;
+  --color-inst-mannheim: #537196;
 
   /* Presentation Slide Design Tokens (Light Mode Shift) */
   --color-slide-bg: #ffffff;

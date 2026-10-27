@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import InstitutionLogo from '@components/InstitutionLogo.astro';
 
 const degrees = await getCollection('degrees');
 
@@ -90,59 +91,6 @@ function getFallbackGradient(groupColor: string, isFirstCard: boolean = false, i
   <div class="absolute left-[41px] sm:left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-element-border-medium z-0 pointer-events-none rounded-full"></div>
 
   {processedDegrees.map((entry, index) => {
-    const instName = entry.organization.name;
-    const instLower = instName.toLowerCase();
-    
-    let svgContent = '';
-    if (instLower.includes('münchen') || instLower.includes('tum') || instLower.includes('munich')) {
-      svgContent = `
-        <defs>
-          <linearGradient id="edu-${index}-tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="dodgerblue" />
-            <stop offset="100%" stop-color="royalblue" />
-          </linearGradient>
-        </defs>
-        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-tumGrad)" />
-        <text x="50" y="64" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="34" fill="white" text-anchor="middle" letter-spacing="-1">TUM</text>
-      `;
-    } else if (instLower.includes('rwth') || instLower.includes('aachen')) {
-      svgContent = `
-        <defs>
-          <linearGradient id="edu-${index}-rwthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="mediumblue" />
-            <stop offset="100%" stop-color="navy" />
-          </linearGradient>
-        </defs>
-        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-rwthGrad)" />
-        <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="30" fill="white" text-anchor="middle" letter-spacing="-1.5">RWTH</text>
-      `;
-    } else if (instLower.includes('mannheim')) {
-      svgContent = `
-        <defs>
-          <linearGradient id="edu-${index}-mannheimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="navy" />
-            <stop offset="100%" stop-color="midnightblue" />
-          </linearGradient>
-        </defs>
-        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-mannheimGrad)" />
-        <path d="M30 45 L50 35 L70 45 L70 65 L30 65 Z" fill="none" stroke="gold" stroke-width="4" stroke-linejoin="round" />
-        <path d="M40 65 L40 55 L60 55 L60 65" fill="none" stroke="gold" stroke-width="4" />
-        <text x="50" y="82" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="800" font-size="14" fill="gold" text-anchor="middle">UNI MA</text>
-      `;
-    } else {
-      svgContent = `
-        <defs>
-          <linearGradient id="edu-${index}-defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="gray" />
-            <stop offset="100%" stop-color="darkslategray" />
-          </linearGradient>
-        </defs>
-        <rect width="100" height="100" rx="24" fill="url(#edu-${index}-defaultGrad)" />
-        <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="none" stroke="white" stroke-width="4" />
-        <path d="M30 45 V65 C30 70, 50 75, 50 75 C50 75, 70 70, 70 65 V45" fill="none" stroke="white" stroke-width="4" />
-      `;
-    }
-
     const periodStr = entry.endYear 
       ? `${entry.startYear} - ${entry.endYear}` 
       : `${entry.startYear} - Present`;
@@ -198,7 +146,7 @@ function getFallbackGradient(groupColor: string, isFirstCard: boolean = false, i
             <div class="flex gap-5 items-start mb-6">
               <!-- Logo Container -->
               <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-950 border border-element-border-medium shrink-0 overflow-hidden shadow-inner relative z-20 timeline-logo-container">
-                <svg viewBox="0 0 100 100" class="w-full h-full" set:html={svgContent}></svg>
+                <InstitutionLogo name={entry.organization.name} />
               </div>
               
               <div class="min-w-0">
