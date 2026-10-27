@@ -178,32 +178,20 @@ for (let i = 0; i < numStars; i++) {
       .logo-badge {
         width: 112px;
         height: 112px;
-        border-radius: 28px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1.5px solid rgba(255, 255, 255, 0.16);
+        border-radius: 25px;
         box-shadow: 
           0 20px 48px -10px rgba(0, 0, 0, 0.7),
-          inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
-          0 0 40px -10px rgba(130, 196, 179, 0.35);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+          0 0 40px -10px rgba(124, 194, 174, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
       }
 
-      .logo-text {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 800;
-        font-size: 52px;
-        line-height: 1;
-        letter-spacing: -1.5px;
-        background: linear-gradient(to right, #469b84 0%, #4a81a5 33%, #6161b8 67%, #9261b8 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        padding-bottom: 2px;
+      .logo-badge svg {
+        width: 112px;
+        height: 112px;
+        display: block;
       }
 
       .logo-details {
@@ -274,7 +262,12 @@ for (let i = 0; i < numStars; i++) {
       <!-- Center Brand Logo Lockup -->
       <div class="center-container">
         <div class="logo-badge">
-          <span class="logo-text">GH</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect x="0" y="0" width="100" height="100" rx="22" fill="#469b84" />
+            <polygon points="30,58 34,42 70,42 66,58" fill="#cae8df" />
+            <polygon points="18,78 30,22 44,22 32,78" fill="#ffffff" />
+            <polygon points="56,78 68,22 82,22 70,78" fill="#ffffff" />
+          </svg>
         </div>
         <div class="logo-details">
           <h1 class="brand-name">Dr. Georg Hackenberg</h1>

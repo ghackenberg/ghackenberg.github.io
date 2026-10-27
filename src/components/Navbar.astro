@@ -197,10 +197,13 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       
       <!-- Logo / Brand on the left (shrink-0 with script-driven visibility) -->
       <a href="/" class="flex items-center gap-3 group shrink-0 min-w-max" id="nav-brand">
-        <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-primary/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
-          <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
-            GH
-          </span>
+        <span class="w-10 h-10 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shrink-0">
+          <svg class="w-10 h-10 block" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="0" y="0" width="100" height="100" rx="22" style="fill: var(--active-nav-color); transition: fill 0.25s ease;" />
+            <polygon points="18,78 30,22 44,22 32,78" fill="white" />
+            <polygon points="56,78 68,22 82,22 70,78" fill="white" />
+            <polygon points="36,58 40,42 64,42 60,58" style="fill: color-mix(in srgb, var(--active-nav-color) 28%, white); transition: fill 0.25s ease;" />
+          </svg>
         </span>
         <div class="flex flex-col items-start nav-logo-name leading-tight shrink-0">
           <span class="nav-logo-title font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors whitespace-nowrap">

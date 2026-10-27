@@ -141,9 +141,8 @@ html, body {
 .brand-badge {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-elevated);
+  border-radius: 9px;
+  background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -751,9 +750,8 @@ ul.pagination li a {
   min-width: 34px;
   height: 34px;
   padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-elevated);
+  border-radius: 9px;
+  background: transparent;
   color: var(--text-body);
   font-size: 13px;
   font-weight: 600;
