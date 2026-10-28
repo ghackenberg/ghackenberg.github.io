@@ -232,11 +232,6 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
                   : "text-gray-400 hover:text-gray-100"
               }`}
             >
-              {item.id === 'about' && (
-                <svg class="w-4 h-4 mr-1.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-              )}
               <span>{item.label}</span>
               {item.active && (
                 <span 
@@ -495,7 +490,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
           var availableWidth = innerWidth - brandFullWidth - actionsWidth - minLogoGap - navActionsGap;
 
           // Calibrated baseline item widths (About, Posts, Publications, Presentations, Courses, Projects, Services, Visualizations, Newsletters, Tags)
-          var itemWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
+          var itemWidths = [46, 46, 92, 102, 62, 62, 62, 102, 90, 44];
           var gap = 16;
           var moreWidth = 60;
 
@@ -582,11 +577,6 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
               : "text-gray-300 hover:text-gray-100"
           }`}
         >
-          {item.id === 'about' && (
-            <svg class="w-4 h-4 mr-2 shrink-0 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-            </svg>
-          )}
           <span>{item.label}</span>
         </a>
       );
@@ -702,7 +692,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       'about', 'posts', 'publications', 'presentations',
       'courses', 'projects', 'services', 'visualizations', 'newsletters', 'tags'
     ];
-    const fallbackWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
+    const fallbackWidths = [46, 46, 92, 102, 62, 62, 62, 102, 90, 44];
     const minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
     const navActionsGap = 20;
     const minBurgerGap = 10;
