@@ -4,6 +4,7 @@ import {
   Head,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
@@ -41,7 +42,13 @@ export function EmailShell({
               <tbody>
                 <tr>
                   <td style={emailStyles.headerBadgeCell}>
-                    <div style={emailStyles.brandBadge}>GH</div>
+                    <Img
+                      src="https://hackenberg.tech/icon-192x192.png"
+                      width="40"
+                      height="40"
+                      alt="Dr. Georg Hackenberg"
+                      style={emailStyles.brandBadge}
+                    />
                   </td>
                   <td style={emailStyles.headerTextCell}>
                     <div style={emailStyles.brandTitle}>

@@ -47,7 +47,7 @@ featuredVisualizations: []
 All compiled Listmonk build artifacts are written to `.build/listmonk/` (outside `dist/`, so `dist/` only contains genuine website pages):
 - **Shared Email Theme & Shell** (`src/commons/server/email/email-theme.ts` & `src/commons/server/email/EmailShell.tsx`):
   - `email-theme.ts` is the single source of truth for all React Email `CSSProperties` tokens (`emailStyles`, `emailMarkdownStyles`, `EMAIL_BUTTON_INLINE_STYLE`).
-  - `EmailShell.tsx` renders the shared `GH` brand header and campaign/transactional footer across all email templates.
+  - `EmailShell.tsx` renders the shared brand header (`icon-192x192.png` lockup) and campaign/transactional footer across all email templates.
 - **Transactional & System Static Email Templates** (`src/commons/server/email/ListmonkTransactionalEmail.tsx`):
   - Compiles all 8 static Listmonk HTML email templates in `.build/listmonk/email-templates/` (`base.html`, `subscriber-optin.html`, `subscriber-optin-campaign.html`, `subscriber-data.html`, `campaign-status.html`, `import-status.html`, `forgot-password.html`, and `smtp-test.html`) using `EmailShell`, `emailStyles`, neutral `'Hello,'` greeting, and zero `listmonk.app` branding.
 - **Default Campaign Wrapper** (`src/commons/server/email/ListmonkCampaignTemplate.tsx`):
