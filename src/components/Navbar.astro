@@ -425,6 +425,7 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
         <!-- Support / Sponsor Heart Button Mobile -->
         <a
+          id="mobile-sponsor-btn"
           href="/support/"
           data-track-event="High Intent: Sponsor Click"
           data-track-location="navbar-mobile"
@@ -464,7 +465,6 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
           var container = document.getElementById('nav-container');
           var brand = document.getElementById('nav-brand');
           var actions = document.getElementById('desktop-actions');
-          var mobileActions = document.getElementById('mobile-actions');
           if (!header || !container) return;
 
           var cs = window.getComputedStyle(container);
@@ -509,18 +509,26 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
           if (availableWidth < needed[1]) {
             header.setAttribute('data-nav-mode', 'burger');
-            var mobileActionsWidth = (mobileActions && mobileActions.offsetWidth) ? mobileActions.offsetWidth : 128;
+            var mobileActionsWithHeart = 128;
+            var mobileActionsNoHeart = 84;
             var minBurgerGap = 10;
-            var availableBrandWidth = innerWidth - mobileActionsWidth - minBurgerGap;
-            if (availableBrandWidth >= brandFullWidth) {
+            if (innerWidth - mobileActionsWithHeart - minBurgerGap >= brandFullWidth) {
+              header.setAttribute('data-mobile-sponsor', 'bar');
               header.setAttribute('data-brand-mode', 'full');
-            } else if (availableBrandWidth >= brandTitleWidth) {
-              header.setAttribute('data-brand-mode', 'title');
             } else {
-              header.setAttribute('data-brand-mode', 'compact');
+              header.setAttribute('data-mobile-sponsor', 'menu');
+              var availableBrandWidth = innerWidth - mobileActionsNoHeart - minBurgerGap;
+              if (availableBrandWidth >= brandFullWidth) {
+                header.setAttribute('data-brand-mode', 'full');
+              } else if (availableBrandWidth >= brandTitleWidth) {
+                header.setAttribute('data-brand-mode', 'title');
+              } else {
+                header.setAttribute('data-brand-mode', 'compact');
+              }
             }
           } else {
             header.setAttribute('data-nav-mode', 'desktop');
+            header.setAttribute('data-mobile-sponsor', 'bar');
             header.setAttribute('data-brand-mode', 'full');
             var chosen = 1;
             if (availableWidth >= needed[10]) {
@@ -582,8 +590,24 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       );
     })}
 
-    <!-- Contact CTA Full Width at bottom -->
-    <div class="pt-5 border-t border-element-border/50 mt-2">
+    <!-- Contact & Fallback Support CTA Full Width at bottom -->
+    <div class="pt-5 border-t border-element-border/50 mt-2 flex flex-col gap-3">
+      <a
+        id="mobile-menu-sponsor-btn"
+        href="/support/"
+        data-track-event="High Intent: Sponsor Click"
+        data-track-location="mobile-menu"
+        class={`group w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
+          isSupportActive
+            ? "bg-brand-primary hover:bg-brand-primary/90 text-white shadow-brand-primary/30 shadow-md ring-2 ring-brand-primary/50"
+            : "bg-element-bg hover:bg-element-bg-hover text-gray-200 hover:text-brand-primary border border-element-border-medium hover:border-brand-primary/40"
+        }`}
+      >
+        <svg class="w-4 h-4 shrink-0 opacity-85 group-hover:opacity-100 transition-opacity" fill={isSupportActive ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        </svg>
+        <span>Support</span>
+      </a>
       <a
         href="/contact/"
         class={`group w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
@@ -672,7 +696,6 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     const brand = document.getElementById('nav-brand');
     const desktopNav = document.getElementById('desktop-nav');
     const desktopActions = document.getElementById('desktop-actions');
-    const mobileActions = document.getElementById('mobile-actions');
     const moreTrigger = document.getElementById('more-dropdown-trigger');
     const menuEl = document.getElementById('mobile-menu');
     const hamburgerEl = document.getElementById('hamburger-icon');
@@ -769,21 +792,30 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
         let nextMode: 'burger' | 'desktop';
         let nextBrandMode: 'full' | 'title' | 'compact' = 'full';
+        let nextMobileSponsor: 'bar' | 'menu' = 'bar';
         let nextCount = 1;
 
         if (availableWidth < needed[1]) {
           nextMode = 'burger';
-          const mobileActionsWidth = (mobileActions && mobileActions.offsetWidth) ? mobileActions.offsetWidth : 128;
-          const availableBrandWidth = innerWidth - mobileActionsWidth - minBurgerGap;
-          if (availableBrandWidth >= brandFullWidth) {
+          const mobileActionsWithHeart = 128;
+          const mobileActionsNoHeart = 84;
+          if (innerWidth - mobileActionsWithHeart - minBurgerGap >= brandFullWidth) {
+            nextMobileSponsor = 'bar';
             nextBrandMode = 'full';
-          } else if (availableBrandWidth >= brandTitleWidth) {
-            nextBrandMode = 'title';
           } else {
-            nextBrandMode = 'compact';
+            nextMobileSponsor = 'menu';
+            const availableBrandWidth = innerWidth - mobileActionsNoHeart - minBurgerGap;
+            if (availableBrandWidth >= brandFullWidth) {
+              nextBrandMode = 'full';
+            } else if (availableBrandWidth >= brandTitleWidth) {
+              nextBrandMode = 'title';
+            } else {
+              nextBrandMode = 'compact';
+            }
           }
         } else {
           nextMode = 'desktop';
+          nextMobileSponsor = 'bar';
           nextBrandMode = 'full';
           if (availableWidth >= needed[10]) {
             nextCount = 10;
@@ -799,6 +831,9 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
         if (header.getAttribute('data-nav-mode') !== nextMode) {
           header.setAttribute('data-nav-mode', nextMode);
+        }
+        if (header.getAttribute('data-mobile-sponsor') !== nextMobileSponsor) {
+          header.setAttribute('data-mobile-sponsor', nextMobileSponsor);
         }
         if (header.getAttribute('data-brand-mode') !== nextBrandMode) {
           header.setAttribute('data-brand-mode', nextBrandMode);
@@ -1144,6 +1179,14 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
   #site-header[data-nav-count="8"] #more-items-container,
   #site-header[data-nav-count="9"] #more-items-container {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+
+  /* Mobile Sponsor Heart Button Priority+ Folding (Bar vs Burger Menu Overlay) */
+  #site-header[data-mobile-sponsor="menu"] #mobile-sponsor-btn {
+    display: none !important;
+  }
+  #site-header:not([data-mobile-sponsor="menu"]) ~ #mobile-menu #mobile-menu-sponsor-btn {
+    display: none !important;
   }
 
   /* Theme Cycle Button Icons Visibility */
