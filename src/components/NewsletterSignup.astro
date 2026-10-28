@@ -20,6 +20,60 @@ const cardTitlesByDomain: Record<CalloutDomain, string> = {
   courses: 'Interested in this course? Stay in the loop.',
 };
 
+interface AccentTokens {
+  button: string;
+  icon: string;
+  link: string;
+  inputFocus: string;
+}
+
+const accentByDomain: Record<CalloutDomain | 'brand', AccentTokens> = {
+  posts: {
+    button: 'bg-domain-posts hover:bg-domain-posts/90 shadow-domain-posts/20',
+    icon: 'text-domain-posts',
+    link: 'text-domain-posts hover:text-domain-posts/80',
+    inputFocus: 'focus:border-domain-posts focus:ring-domain-posts/25',
+  },
+  presentations: {
+    button: 'bg-domain-presentations hover:bg-domain-presentations/90 shadow-domain-presentations/20',
+    icon: 'text-domain-presentations',
+    link: 'text-domain-presentations hover:text-domain-presentations/80',
+    inputFocus: 'focus:border-domain-presentations focus:ring-domain-presentations/25',
+  },
+  publications: {
+    button: 'bg-domain-publications hover:bg-domain-publications/90 shadow-domain-publications/20',
+    icon: 'text-domain-publications',
+    link: 'text-domain-publications hover:text-domain-publications/80',
+    inputFocus: 'focus:border-domain-publications focus:ring-domain-publications/25',
+  },
+  visualizations: {
+    button: 'bg-domain-visualizations hover:bg-domain-visualizations/90 shadow-domain-visualizations/20',
+    icon: 'text-domain-visualizations',
+    link: 'text-domain-visualizations hover:text-domain-visualizations/80',
+    inputFocus: 'focus:border-domain-visualizations focus:ring-domain-visualizations/25',
+  },
+  projects: {
+    button: 'bg-domain-projects hover:bg-domain-projects/90 shadow-domain-projects/20',
+    icon: 'text-domain-projects',
+    link: 'text-domain-projects hover:text-domain-projects/80',
+    inputFocus: 'focus:border-domain-projects focus:ring-domain-projects/25',
+  },
+  courses: {
+    button: 'bg-domain-courses hover:bg-domain-courses/90 shadow-domain-courses/20',
+    icon: 'text-domain-courses',
+    link: 'text-domain-courses hover:text-domain-courses/80',
+    inputFocus: 'focus:border-domain-courses focus:ring-domain-courses/25',
+  },
+  brand: {
+    button: 'bg-brand-primary hover:bg-brand-primary/90 shadow-brand-primary/20',
+    icon: 'text-brand-primary',
+    link: 'text-brand-primary hover:text-brand-primary/80',
+    inputFocus: 'focus:border-brand-primary focus:ring-brand-primary/25',
+  },
+};
+
+const accent = accentByDomain[domain || 'brand'];
+
 const variantContainerClasses: Record<'footer' | 'card', string> = {
   footer: 'w-full mb-12 md:mb-16 rounded-3xl glass-card border border-element-border relative overflow-hidden',
   card: 'w-full mt-10 rounded-3xl glass-card border border-element-border relative overflow-hidden',
@@ -88,11 +142,17 @@ const copy = variantCopy[variant];
             required
             autocomplete="email"
             placeholder="Enter your email address..."
-            class="flex-1 min-w-0 h-10 px-3.5 rounded-xl bg-element-bg/70 light:bg-white border border-element-border-medium light:border-slate-300 text-xs sm:text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/25 transition-all"
+            class:list={[
+              'flex-1 min-w-0 h-10 px-3.5 rounded-xl bg-element-bg/70 light:bg-white border border-element-border-medium light:border-slate-300 text-xs sm:text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all',
+              accent.inputFocus,
+            ]}
           />
           <button
             type="submit"
-            class="h-10 px-4 sm:px-5 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-brand-primary/20 cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+            class:list={[
+              'h-10 px-4 sm:px-5 rounded-xl text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0',
+              accent.button,
+            ]}
           >
             <svg data-submit-spinner class="hidden w-3.5 h-3.5 animate-spin text-white shrink-0" fill="none" viewBox="0 0 24 24" aria-hidden="true">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
@@ -127,7 +187,7 @@ const copy = variantCopy[variant];
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
             <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
           </svg>
-          <svg data-altcha-icon="verified" class="hidden w-3.5 h-3.5 text-brand-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+          <svg data-altcha-icon="verified" class:list={['hidden w-3.5 h-3.5 shrink-0', accent.icon]} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
           <span data-altcha-status>Protected by ALTCHA</span>
@@ -140,7 +200,10 @@ const copy = variantCopy[variant];
 
       <a
         href="/newsletters/"
-        class="inline-flex items-center gap-1 font-semibold text-brand-primary hover:text-brand-primary/80 hover:underline transition-colors shrink-0"
+        class:list={[
+          'inline-flex items-center gap-1 font-semibold hover:underline transition-colors shrink-0',
+          accent.link,
+        ]}
       >
         <span><span class="hidden sm:inline">Browse past issues in the </span>Archive</span>
         <span aria-hidden="true">→</span>

@@ -18,6 +18,51 @@ const titlesByDomain: Record<CalloutDomain, string> = {
   courses: 'Value this courseware? Sustain digital education.',
 };
 
+interface AccentTokens {
+  button: string;
+  icon: string;
+  link: string;
+}
+
+const accentByDomain: Record<CalloutDomain | 'brand', AccentTokens> = {
+  posts: {
+    button: 'bg-domain-posts hover:bg-domain-posts/90 shadow-domain-posts/20',
+    icon: 'text-domain-posts',
+    link: 'text-domain-posts hover:text-domain-posts/80',
+  },
+  presentations: {
+    button: 'bg-domain-presentations hover:bg-domain-presentations/90 shadow-domain-presentations/20',
+    icon: 'text-domain-presentations',
+    link: 'text-domain-presentations hover:text-domain-presentations/80',
+  },
+  publications: {
+    button: 'bg-domain-publications hover:bg-domain-publications/90 shadow-domain-publications/20',
+    icon: 'text-domain-publications',
+    link: 'text-domain-publications hover:text-domain-publications/80',
+  },
+  visualizations: {
+    button: 'bg-domain-visualizations hover:bg-domain-visualizations/90 shadow-domain-visualizations/20',
+    icon: 'text-domain-visualizations',
+    link: 'text-domain-visualizations hover:text-domain-visualizations/80',
+  },
+  projects: {
+    button: 'bg-domain-projects hover:bg-domain-projects/90 shadow-domain-projects/20',
+    icon: 'text-domain-projects',
+    link: 'text-domain-projects hover:text-domain-projects/80',
+  },
+  courses: {
+    button: 'bg-domain-courses hover:bg-domain-courses/90 shadow-domain-courses/20',
+    icon: 'text-domain-courses',
+    link: 'text-domain-courses hover:text-domain-courses/80',
+  },
+  brand: {
+    button: 'bg-brand-primary hover:bg-brand-primary/90 shadow-brand-primary/20',
+    icon: 'text-brand-primary',
+    link: 'text-brand-primary hover:text-brand-primary/80',
+  },
+};
+
+const accent = accentByDomain[domain || 'brand'];
 const title = domain ? titlesByDomain[domain] : 'Value this work? Sustain ongoing development.';
 const description =
   'Support the ongoing development of software frameworks, interactive simulations, and university courseware via GitHub Sponsors.';
@@ -50,7 +95,10 @@ const description =
         rel="noopener noreferrer"
         data-track-event="High Intent: Sponsor Click"
         data-track-location={`callout-${domain || 'content'}`}
-        class="h-10 px-5 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all shadow-sm shadow-brand-primary/20 cursor-pointer active:scale-95 shrink-0"
+        class:list={[
+          'h-10 px-5 rounded-xl text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer active:scale-95 shrink-0',
+          accent.button,
+        ]}
       >
         <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -63,7 +111,7 @@ const description =
 
   <div class="px-6 sm:px-8 py-3 bg-white/[0.025] light:bg-slate-100/80 border-t border-element-border flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap">
     <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-      <svg class="w-3.5 h-3.5 text-brand-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <svg class:list={['w-3.5 h-3.5 shrink-0', accent.icon]} fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
       </svg>
       <span>One-time or monthly tiers</span>
@@ -73,7 +121,10 @@ const description =
 
     <a
       href="/support/"
-      class="inline-flex items-center gap-1 font-semibold text-brand-primary hover:text-brand-primary/80 hover:underline transition-colors shrink-0"
+      class:list={[
+        'inline-flex items-center gap-1 font-semibold hover:underline transition-colors shrink-0',
+        accent.link,
+      ]}
     >
       <span><span class="hidden sm:inline">Explore all options on </span>Support</span>
       <span aria-hidden="true">→</span>
