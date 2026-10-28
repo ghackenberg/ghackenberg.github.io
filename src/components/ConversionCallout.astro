@@ -1,0 +1,52 @@
+---
+import NewsletterSignup from '@components/NewsletterSignup.astro';
+import SponsorCallout from '@components/SponsorCallout.astro';
+
+type CalloutDomain = 'posts' | 'presentations' | 'publications' | 'visualizations' | 'projects' | 'courses';
+
+interface Props {
+  domain: CalloutDomain;
+  class?: string;
+}
+
+const { domain, class: className = '' } = Astro.props;
+---
+
+<div data-conversion-callout data-callout-domain={domain} class={className}>
+  <div data-callout-variant="newsletter">
+    <NewsletterSignup variant="card" domain={domain} />
+  </div>
+  <div data-callout-variant="sponsor" class="hidden">
+    <SponsorCallout domain={domain} />
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    try {
+      var containers = document.querySelectorAll('[data-conversion-callout]:not([data-callout-resolved])');
+      for (var i = 0; i < containers.length; i++) {
+        var container = containers[i];
+        container.setAttribute('data-callout-resolved', 'true');
+        var nlEl = container.querySelector('[data-callout-variant="newsletter"]');
+        var spEl = container.querySelector('[data-callout-variant="sponsor"]');
+        if (!nlEl || !spEl) continue;
+
+        var search = window.location.search || '';
+        var ref = document.referrer || '';
+        var fromNewsletter =
+          search.indexOf('utm_source=newsletter') !== -1 ||
+          ref.indexOf('/newsletters/') !== -1;
+
+        var pickSponsor = fromNewsletter ? true : Math.random() < 0.5;
+        if (pickSponsor) {
+          spEl.classList.remove('hidden');
+          nlEl.remove();
+        } else {
+          nlEl.classList.remove('hidden');
+          spEl.remove();
+        }
+      }
+    } catch (e) {}
+  })();
+</script>

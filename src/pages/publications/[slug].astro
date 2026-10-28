@@ -7,6 +7,7 @@ import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
+import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection } from "astro:content";
 import { formatDate } from "@commons/shared/format";
 import { formatAuthorsHtml } from "@commons/shared/authors";
@@ -153,6 +154,8 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
         </div>
       )}
     </div>
+
+    <ConversionCallout domain="publications" />
     </Container>
   </Section>
 

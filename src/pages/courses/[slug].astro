@@ -8,6 +8,7 @@ import RelatedContent from "@components/RelatedContent.astro";
 import CourseModuleCard from "@components/CourseModuleCard.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
+import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -188,6 +189,8 @@ const courseSchema = buildCourseSchema({ course, modules: courseModules, siteUrl
         )}
       </div>
     </div>
+
+    <ConversionCallout domain="courses" />
     </Container>
   </Section>
 

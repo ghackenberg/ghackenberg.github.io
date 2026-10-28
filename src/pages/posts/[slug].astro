@@ -7,7 +7,7 @@ import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
-import NewsletterSignup from "@components/NewsletterSignup.astro";
+import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection, render } from "astro:content";
 import { generateCitationLabel } from "@commons/shared/citations.js";
 import { formatAuthorsPlain } from "@commons/shared/authors";
@@ -203,7 +203,7 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
       )}
     </div>
 
-    <NewsletterSignup variant="card" />
+    <ConversionCallout domain="posts" />
     </Container>
   </Section>
 

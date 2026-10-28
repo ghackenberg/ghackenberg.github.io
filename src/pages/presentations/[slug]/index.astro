@@ -9,6 +9,7 @@ import SlideReferencesModal from "@components/slides/player/SlideReferencesModal
 import RelatedContent from "@components/RelatedContent.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
+import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
@@ -214,6 +215,10 @@ const previewImg = previewUrl || presentation.data.image;
           ))}
         </SlideDeck>
       </div>
+    </Container>
+
+    <Container size="reading" padding="none">
+      <ConversionCallout domain="presentations" />
     </Container>
   </Section>
 

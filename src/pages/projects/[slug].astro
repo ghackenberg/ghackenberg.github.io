@@ -8,6 +8,7 @@ import RelatedContent from "@components/RelatedContent.astro";
 import TrlCard from "@components/TrlCard.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
+import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
@@ -221,6 +222,8 @@ const projectSchema = buildProjectSchema({ project, siteUrl: Astro.site?.origin 
         </div>
       )}
     </div>
+
+    <ConversionCallout domain="projects" />
     </Container>
   </Section>
 

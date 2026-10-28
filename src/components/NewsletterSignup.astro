@@ -1,12 +1,24 @@
 ---
+type CalloutDomain = 'posts' | 'presentations' | 'publications' | 'visualizations' | 'projects' | 'courses';
+
 interface Props {
   variant?: 'footer' | 'card';
+  domain?: CalloutDomain;
   class?: string;
 }
 
-const { variant = 'footer', class: className = '' } = Astro.props;
+const { variant = 'footer', domain, class: className = '' } = Astro.props;
 const inputId = `newsletter-email-${variant}`;
 const headingId = `newsletter-heading-${variant}`;
+
+const cardTitlesByDomain: Record<CalloutDomain, string> = {
+  posts: 'Enjoyed this post? Stay in the loop.',
+  presentations: 'Enjoyed this presentation? Stay in the loop.',
+  publications: 'Interested in this research? Stay in the loop.',
+  visualizations: 'Enjoyed this visualization? Stay in the loop.',
+  projects: 'Interested in this project? Stay in the loop.',
+  courses: 'Interested in this course? Stay in the loop.',
+};
 
 const variantContainerClasses: Record<'footer' | 'card', string> = {
   footer: 'w-full mb-12 md:mb-16 rounded-3xl glass-card border border-element-border relative overflow-hidden',
@@ -39,7 +51,7 @@ const variantCopy: Record<'footer' | 'card', { title: string; description: strin
     description: 'Get notified when new blog posts, presentations, courses, or publications are published.',
   },
   card: {
-    title: 'Enjoyed this post? Stay in the loop.',
+    title: domain ? cardTitlesByDomain[domain] : 'Enjoyed this content? Stay in the loop.',
     description: 'Subscribe to get notified when new blog posts, presentations, courses, or publications go live.',
   },
 };
