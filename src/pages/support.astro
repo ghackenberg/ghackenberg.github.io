@@ -5,20 +5,6 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
-import ProjectCard from "@components/ProjectCard.astro";
-import { getCollection } from "astro:content";
-
-const allProjects = await getCollection("projects");
-const openSourceProjects = allProjects
-  .filter((p) => Boolean(p.data.repoName))
-  .sort((a, b) => {
-    const trlDiff = b.data.trl - a.data.trl;
-    if (trlDiff !== 0) return trlDiff;
-    const orderDiff = (a.data.order ?? 99) - (b.data.order ?? 99);
-    if (orderDiff !== 0) return orderDiff;
-    return a.data.title.localeCompare(b.data.title);
-  })
-  .slice(0, 6);
 
 const pageTitle = "Support & Open-Source Patronage | Dr. Georg Hackenberg";
 const pageDescription =
@@ -93,11 +79,11 @@ const pageJsonLd = buildSupportPageSchema({
                 </a>
 
                 <a
-                  href="#open-source-projects-heading"
+                  href="/projects/"
                   class="w-full lg:w-auto min-w-[230px] px-5 py-3 rounded-2xl bg-element-bg hover:bg-element-bg-hover text-gray-200 light:text-slate-800 hover:text-white border border-element-border-medium hover:border-brand-primary/40 font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all duration-200"
                 >
                   <span>Explore Open-Source Projects</span>
-                  <span class="text-brand-primary" aria-hidden="true">↓</span>
+                  <span class="text-brand-primary" aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -424,49 +410,6 @@ const pageJsonLd = buildSupportPageSchema({
               </a>
             </div>
           </div>
-
-          <!-- Sub-Section 4: Open-Source Projects & Repositories -->
-          {openSourceProjects.length > 0 && (
-            <div>
-              <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-                <div>
-                  <h2
-                    id="open-source-projects-heading"
-                    class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3"
-                  >
-                    Open-Source <span class="text-domain-projects">Projects</span>
-                  </h2>
-                  <p
-                    id="open-source-projects-subheading"
-                    class="text-gray-400 light:text-slate-600 text-base md:text-lg max-w-3xl font-normal leading-relaxed"
-                  >
-                    Featured open-source platforms, simulation frameworks, and developer tools maintained on GitHub.
-                  </p>
-                </div>
-                <a
-                  href="/projects/"
-                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-domain-projects hover:text-domain-projects/80 transition-colors shrink-0"
-                >
-                  <span>View All Projects</span>
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {openSourceProjects.map((project) => (
-                  <ProjectCard
-                    title={project.data.title}
-                    trl={project.data.trl}
-                    description={project.data.description}
-                    href={`/projects/${project.id}/`}
-                    tags={project.data.tags}
-                    accentColor={project.data.accentColor}
-                    image={project.data.image}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </Container>
     </Section>
