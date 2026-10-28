@@ -994,7 +994,7 @@ export function buildSupportPageSchema(params?: {
     name: params?.name || 'Support & Open-Source Patronage | Dr. Georg Hackenberg',
     description:
       params?.description ||
-      'Support Dr. Georg Hackenberg’s open-source software frameworks, interactive WebGL/Canvas simulations, and open educational university courseware via GitHub Sponsors.',
+      'Support Dr. Georg Hackenberg’s independent software frameworks, interactive WebGL/Canvas simulations, and university courseware via GitHub Sponsors.',
     inLanguage: 'en'
   });
 }
