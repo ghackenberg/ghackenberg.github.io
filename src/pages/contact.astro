@@ -564,6 +564,44 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
             </a>
           ))}
         </div>
+
+        <!-- Open-Source Patronage Callout Banner -->
+        <div class="mt-8 glass-card p-6 sm:p-8 rounded-3xl border border-element-border hover:border-brand-primary/30 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2 max-w-2xl">
+            <h3 id="open-source-patronage-heading" class="text-xl font-bold text-gray-100 light:text-slate-900 flex items-center gap-2.5">
+              <svg class="w-5 h-5 text-brand-primary fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+              <span>Open-Source <span class="text-brand-primary">Patronage</span></span>
+            </h3>
+            <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed">
+              Want to support ongoing maintenance of open-source frameworks, interactive WebGL simulations, and open educational courseware? Back independent development via GitHub Sponsors.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 shrink-0">
+            <a
+              href="/support/"
+              class="px-4 py-2.5 rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-200 light:text-slate-800 hover:text-brand-primary border border-element-border-medium hover:border-brand-primary/40 text-xs sm:text-sm font-semibold transition-all duration-200 inline-flex items-center gap-1.5"
+            >
+              <span>Support Overview</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="https://github.com/sponsors/ghackenberg"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track-event="High Intent: Sponsor Click"
+              data-track-location="contact-page"
+              class="px-4 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white text-xs sm:text-sm font-bold shadow-sm shadow-brand-primary/25 transition-all duration-200 inline-flex items-center gap-1.5"
+            >
+              <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+              <span>Sponsor on GitHub</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </Container>

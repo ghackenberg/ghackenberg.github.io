@@ -127,7 +127,7 @@ const breadcrumbsRegex = /<Breadcrumbs[\s\S]*?\/>/g;
 let breadcrumbViolations = 0;
 for (const file of pageFiles) {
   const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
-  if (rel.endsWith('about.astro') || rel.endsWith('contact.astro')) {
+  if (rel.endsWith('about.astro') || rel.endsWith('contact.astro') || rel.endsWith('support.astro')) {
     continue;
   }
   const content = fs.readFileSync(file, 'utf8');

@@ -77,6 +77,7 @@ export async function GET() {
 - **Institution**: UAP – University of Applied Sciences Upper Austria, Technology Campus Wels, Austria
 - **Email**: georg.hackenberg@fh-wels.at
 - **Primary Website**: https://hackenberg.tech
+- **GitHub Sponsors & Open-Source Patronage**: https://github.com/sponsors/ghackenberg (Overview: https://hackenberg.tech/support/)
 - **Key Projects**: CADdrive (https://caddrive.com), Mentawise (https://mentawise.com)
 - **Academic Degrees**:
 ${degreeLines}

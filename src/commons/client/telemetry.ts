@@ -91,6 +91,9 @@ export interface TelemetryEventMap {
   'High Intent: Copy BibTeX': {
     id: string;
   };
+  'High Intent: Sponsor Click': {
+    location?: string;
+  };
   'High Intent: Subscribe Newsletter': {
     location?: string;
   };

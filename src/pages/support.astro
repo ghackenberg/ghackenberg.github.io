@@ -1,0 +1,476 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { buildSupportPageSchema } from "@commons/server/json-ld";
+import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ProjectCard from "@components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("projects");
+const openSourceProjects = allProjects
+  .filter((p) => Boolean(p.data.repoName))
+  .sort((a, b) => {
+    const trlDiff = b.data.trl - a.data.trl;
+    if (trlDiff !== 0) return trlDiff;
+    const orderDiff = (a.data.order ?? 99) - (b.data.order ?? 99);
+    if (orderDiff !== 0) return orderDiff;
+    return a.data.title.localeCompare(b.data.title);
+  })
+  .slice(0, 6);
+
+const pageTitle = "Support & Open-Source Patronage | Dr. Georg Hackenberg";
+const pageDescription =
+  "Support Dr. Georg Hackenberg's open-source software frameworks, interactive WebGL/Canvas simulations, and open educational university courseware via GitHub Sponsors.";
+
+const pageJsonLd = buildSupportPageSchema({
+  name: pageTitle,
+  description: pageDescription,
+});
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  jsonLd={pageJsonLd}
+>
+  <Navbar />
+
+  <main class="w-full">
+    <Section id="support" padding="standard">
+      <Container size="wide" padding="none">
+        <Breadcrumbs class="mb-6" />
+
+        <!-- Level-1 Page Header & Answer-First Definition Block -->
+        <div class="mb-12">
+          <h1
+            id="support-page-heading"
+            class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4"
+          >
+            Open-Source <span class="text-brand-primary">Support</span>
+          </h1>
+          <p
+            id="support-page-subheading"
+            class="text-gray-400 light:text-slate-600 text-base md:text-lg max-w-3xl font-normal leading-relaxed"
+          >
+            All open-source software frameworks, interactive WebGL and Canvas simulations, slide-as-code university lectures, and in-depth technical engineering articles on this platform are published freely without paywalls, advertisements, or commercial tracking. GitHub Sponsors patronage directly sustains the independent engineering, cloud infrastructure, and open educational ecosystem behind these resources.
+          </p>
+        </div>
+
+        <div class="space-y-16">
+          <!-- Primary Hero Callout Card (Glassmorphic Patronage Banner) -->
+          <div class="glass-card p-6 sm:p-8 md:p-10 rounded-3xl border border-element-border hover:border-brand-primary/30 relative overflow-hidden transition-all duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div class="lg:col-span-8 space-y-5">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/10 border border-brand-primary/25 text-brand-primary text-xs font-semibold tracking-wide">
+                  <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                  <span>GitHub Sponsors • @ghackenberg</span>
+                </div>
+
+                <h2
+                  id="github-sponsors-banner-heading"
+                  class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight"
+                >
+                  Sustain Independent Open-Source Engineering &amp; <span class="text-brand-primary">Open Education</span>
+                </h2>
+
+                <p class="text-gray-300 light:text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl">
+                  If my open-source libraries, industrial AI blueprints, interactive visualizers, or university lecture materials save your team engineering time or accelerate your learning, consider backing ongoing development through GitHub Sponsors.
+                </p>
+
+                <!-- Key Trust Badges -->
+                <div class="flex flex-wrap items-center gap-2 pt-1">
+                  <span class="px-3 py-1 rounded-xl bg-element-bg border border-element-border text-xs font-medium text-gray-300 light:text-slate-700 inline-flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-primary"></span>
+                    <span>100% Open Source &amp; OER</span>
+                  </span>
+                  <span class="px-3 py-1 rounded-xl bg-element-bg border border-element-border text-xs font-medium text-gray-300 light:text-slate-700 inline-flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-primary"></span>
+                    <span>Zero Ads &amp; Paywalls</span>
+                  </span>
+                  <span class="px-3 py-1 rounded-xl bg-element-bg border border-element-border text-xs font-medium text-gray-300 light:text-slate-700 inline-flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-primary"></span>
+                    <span>One-Time or Monthly Tiers</span>
+                  </span>
+                  <span class="px-3 py-1 rounded-xl bg-element-bg border border-element-border text-xs font-medium text-gray-300 light:text-slate-700 inline-flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-primary"></span>
+                    <span>Corporate Invoicing via GitHub</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- CTA Column -->
+              <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center lg:items-end">
+                <a
+                  href="https://github.com/sponsors/ghackenberg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-track-event="High Intent: Sponsor Click"
+                  data-track-location="support-hero"
+                  class="w-full lg:w-auto min-w-[230px] px-6 py-3.5 rounded-2xl bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-sm inline-flex items-center justify-center gap-2.5 shadow-lg shadow-brand-primary/25 hover:shadow-brand-primary/40 transition-all duration-200 hover:scale-102 active:scale-95"
+                >
+                  <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                  <span>Sponsor on GitHub</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+
+                <a
+                  href="#open-source-projects-heading"
+                  class="w-full lg:w-auto min-w-[230px] px-5 py-3 rounded-2xl bg-element-bg hover:bg-element-bg-hover text-gray-200 light:text-slate-800 hover:text-white border border-element-border-medium hover:border-brand-primary/40 font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all duration-200"
+                >
+                  <span>Explore Open-Source Projects</span>
+                  <span class="text-brand-primary" aria-hidden="true">↓</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Section 1: What Your Sponsorship Sustains -->
+          <div>
+            <div class="mb-8">
+              <h2
+                id="what-sponsorship-sustains-heading"
+                class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3"
+              >
+                What Your Sponsorship <span class="text-brand-primary">Sustains</span>
+              </h2>
+              <p
+                id="what-sponsorship-sustains-subheading"
+                class="text-gray-400 light:text-slate-600 text-base md:text-lg max-w-3xl font-normal leading-relaxed"
+              >
+                Every contribution directly funds open-source maintenance, public educational courseware, and ad-free interactive web infrastructure.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Pillar 1 -->
+              <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-primary/30 transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/25 flex items-center justify-center text-brand-primary mb-5 shrink-0">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                  </svg>
+                </div>
+                <h3
+                  id="pillar-open-source-heading"
+                  class="text-xl font-bold text-gray-100 light:text-slate-900 mb-3"
+                >
+                  Open-Source <span class="text-brand-primary">Frameworks</span>
+                </h3>
+                <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed flex-1">
+                  Continuous maintenance, dependency security updates, and feature development across public repositories in Python, TypeScript, and Java—spanning WebAssembly CAD kernels (<strong class="text-gray-200 light:text-slate-800">OpenCASCADE.js</strong>, <strong class="text-gray-200 light:text-slate-800">AgentBrick</strong>), discrete-event simulation (<strong class="text-gray-200 light:text-slate-800">SpineML</strong>), and optimization engines (<strong class="text-gray-200 light:text-slate-800">Smart Systems IDE</strong>).
+                </p>
+              </div>
+
+              <!-- Pillar 2 -->
+              <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-primary/30 transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/25 flex items-center justify-center text-brand-primary mb-5 shrink-0">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-5.25 6.557c0 1.5 2.35 2.7 5.25 2.7s5.25-1.2 5.25-2.7" />
+                  </svg>
+                </div>
+                <h3
+                  id="pillar-open-education-heading"
+                  class="text-xl font-bold text-gray-100 light:text-slate-900 mb-3"
+                >
+                  Open Educational <span class="text-brand-primary">Resources</span>
+                </h3>
+                <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed flex-1">
+                  Production of free, self-contained university courseware, interactive Slide-as-Code lecture decks with synchronized voiceover synthesis, and dual-theme PDF study handouts accessible to students, educators, and practicing engineers worldwide.
+                </p>
+              </div>
+
+              <!-- Pillar 3 -->
+              <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-primary/30 transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/25 flex items-center justify-center text-brand-primary mb-5 shrink-0">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                </div>
+                <h3
+                  id="pillar-infrastructure-heading"
+                  class="text-xl font-bold text-gray-100 light:text-slate-900 mb-3"
+                >
+                  Independent <span class="text-brand-primary">Infrastructure</span>
+                </h3>
+                <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed flex-1">
+                  Cloud hosting, automated verification pipelines, domain operations, and interactive browser-native WebGL/Canvas simulations operated with zero commercial ads, zero paywalls, and strict GDPR/DSGVO privacy compliance.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Section 2: Ways to Support & Collaborate -->
+          <div>
+            <div class="mb-8">
+              <h2
+                id="ways-to-support-heading"
+                class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3"
+              >
+                Ways to Support &amp; <span class="text-brand-primary">Collaborate</span>
+              </h2>
+              <p
+                id="ways-to-support-subheading"
+                class="text-gray-400 light:text-slate-600 text-base md:text-lg max-w-3xl font-normal leading-relaxed"
+              >
+                Choose between individual community patronage, corporate team sponsorship via GitHub, or direct B2B engineering advisory with contractual SLAs.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Tier 1: Individual Patronage -->
+              <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-primary/30 transition-all duration-300 flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-4">
+                    <span class="px-2.5 py-1 rounded-lg bg-brand-primary/10 border border-brand-primary/25 text-brand-primary text-xs font-bold uppercase tracking-wider">
+                      Community Backing
+                    </span>
+                    <span class="text-xs font-mono text-gray-400">One-Time / Monthly</span>
+                  </div>
+                  <h3
+                    id="tier-individual-heading"
+                    class="text-xl font-bold text-gray-100 light:text-slate-900 mb-3"
+                  >
+                    Individual <span class="text-brand-primary">Patronage</span>
+                  </h3>
+                  <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed mb-6">
+                    Flexible one-time micro-sponsorships or recurring monthly contributions via GitHub Sponsors. Ideal for developers, students, and researchers who benefit from open-source packages, lecture slides, or engineering deep-dives.
+                  </p>
+                </div>
+
+                <div class="pt-5 border-t border-element-border/50 mt-auto">
+                  <a
+                    href="https://github.com/sponsors/ghackenberg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track-event="High Intent: Sponsor Click"
+                    data-track-location="support-tier-individual"
+                    class="w-full py-2.5 px-4 rounded-xl bg-brand-primary/15 hover:bg-brand-primary text-brand-primary hover:text-white border border-brand-primary/30 font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all duration-200"
+                  >
+                    <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    <span>Back as an Individual</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Tier 2: Organization & Team Sponsorship -->
+              <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-primary/30 transition-all duration-300 flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-4">
+                    <span class="px-2.5 py-1 rounded-lg bg-brand-primary/10 border border-brand-primary/25 text-brand-primary text-xs font-bold uppercase tracking-wider">
+                      Corporate Patronage
+                    </span>
+                    <span class="text-xs font-mono text-gray-400">GitHub Billing</span>
+                  </div>
+                  <h3
+                    id="tier-organization-heading"
+                    class="text-xl font-bold text-gray-100 light:text-slate-900 mb-3"
+                  >
+                    Organization <span class="text-brand-primary">Sponsorship</span>
+                  </h3>
+                  <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed mb-6">
+                    Sustaining sponsorship for engineering teams and enterprises building upon open-source repositories or training materials. GitHub Sponsors supports automated corporate billing, consolidated invoices, and public organization attribution.
+                  </p>
+                </div>
+
+                <div class="pt-5 border-t border-element-border/50 mt-auto">
+                  <a
+                    href="https://github.com/sponsors/ghackenberg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track-event="High Intent: Sponsor Click"
+                    data-track-location="support-tier-organization"
+                    class="w-full py-2.5 px-4 rounded-xl bg-brand-primary/15 hover:bg-brand-primary text-brand-primary hover:text-white border border-brand-primary/30 font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all duration-200"
+                  >
+                    <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    <span>Sponsor as an Organization</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Tier 3: Industrial R&D & Advisory Services -->
+              <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-domain-services/40 transition-all duration-300 flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-4">
+                    <span class="px-2.5 py-1 rounded-lg bg-domain-services/10 border border-domain-services/25 text-domain-services text-xs font-bold uppercase tracking-wider">
+                      B2B Consulting
+                    </span>
+                    <span class="text-xs font-mono text-gray-400">Contractual SLA</span>
+                  </div>
+                  <h3
+                    id="tier-enterprise-heading"
+                    class="text-xl font-bold text-gray-100 light:text-slate-900 mb-3"
+                  >
+                    Industrial R&amp;D &amp; <span class="text-domain-services">Advisory</span>
+                  </h3>
+                  <p class="text-sm text-gray-400 light:text-slate-600 leading-relaxed mb-6">
+                    Require dedicated architecture reviews, custom industrial AI and simulation engineering, executive workshops, or joint academic-industrial research with formal deliverables? Engage directly through B2B consulting services.
+                  </p>
+                </div>
+
+                <div class="pt-5 border-t border-element-border/50 mt-auto">
+                  <a
+                    href="/services/"
+                    class="w-full py-2.5 px-4 rounded-xl bg-domain-services/15 hover:bg-domain-services text-domain-services hover:text-white border border-domain-services/30 font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all duration-200"
+                  >
+                    <span>Explore B2B Services</span>
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Section 3: Non-Financial Contributions -->
+          <div>
+            <div class="mb-8">
+              <h2
+                id="community-support-heading"
+                class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3"
+              >
+                Non-Financial <span class="text-brand-primary">Contributions</span>
+              </h2>
+              <p
+                id="community-support-subheading"
+                class="text-gray-400 light:text-slate-600 text-base md:text-lg max-w-3xl font-normal leading-relaxed"
+              >
+                Community engagement, code contributions, and academic citations amplify the impact of open-source research just as much as financial backing.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <a
+                href="https://github.com/ghackenberg"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="glass-card p-6 rounded-2xl border border-element-border hover:border-brand-primary/40 transition-all duration-300 flex flex-col group h-full"
+              >
+                <div class="text-brand-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                  01 • GitHub
+                </div>
+                <h3
+                  id="community-star-heading"
+                  class="text-base font-bold text-gray-100 group-hover:text-brand-primary transition-colors mb-2"
+                >
+                  Star &amp; Fork Repositories
+                </h3>
+                <p class="text-xs text-gray-400 light:text-slate-600 leading-relaxed mt-auto">
+                  Starring repositories on GitHub boosts visibility and helps fellow engineers discover open-source tools.
+                </p>
+              </a>
+
+              <a
+                href="https://github.com/ghackenberg"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="glass-card p-6 rounded-2xl border border-element-border hover:border-brand-primary/40 transition-all duration-300 flex flex-col group h-full"
+              >
+                <div class="text-brand-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                  02 • Engineering
+                </div>
+                <h3
+                  id="community-contribute-heading"
+                  class="text-base font-bold text-gray-100 group-hover:text-brand-primary transition-colors mb-2"
+                >
+                  Submit Issues &amp; PRs
+                </h3>
+                <p class="text-xs text-gray-400 light:text-slate-600 leading-relaxed mt-auto">
+                  Report edge cases, contribute pull requests, or improve documentation across active software projects.
+                </p>
+              </a>
+
+              <a
+                href="/publications/"
+                class="glass-card p-6 rounded-2xl border border-element-border hover:border-brand-primary/40 transition-all duration-300 flex flex-col group h-full"
+              >
+                <div class="text-brand-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                  03 • Research
+                </div>
+                <h3
+                  id="community-cite-heading"
+                  class="text-base font-bold text-gray-100 group-hover:text-brand-primary transition-colors mb-2"
+                >
+                  Cite &amp; Share Work
+                </h3>
+                <p class="text-xs text-gray-400 light:text-slate-600 leading-relaxed mt-auto">
+                  Cite peer-reviewed papers using one-click BibTeX records and share technical posts or slide decks with colleagues.
+                </p>
+              </a>
+
+              <a
+                href="/newsletters/"
+                class="glass-card p-6 rounded-2xl border border-element-border hover:border-brand-primary/40 transition-all duration-300 flex flex-col group h-full"
+              >
+                <div class="text-brand-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                  04 • Digest
+                </div>
+                <h3
+                  id="community-newsletter-heading"
+                  class="text-base font-bold text-gray-100 group-hover:text-brand-primary transition-colors mb-2"
+                >
+                  Join the Newsletter
+                </h3>
+                <p class="text-xs text-gray-400 light:text-slate-600 leading-relaxed mt-auto">
+                  Subscribe to the technical newsletter for curated digests on agentic software, simulation, and systems engineering.
+                </p>
+              </a>
+            </div>
+          </div>
+
+          <!-- Sub-Section 4: Open-Source Projects & Repositories -->
+          {openSourceProjects.length > 0 && (
+            <div>
+              <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                <div>
+                  <h2
+                    id="open-source-projects-heading"
+                    class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3"
+                  >
+                    Open-Source <span class="text-domain-projects">Projects</span>
+                  </h2>
+                  <p
+                    id="open-source-projects-subheading"
+                    class="text-gray-400 light:text-slate-600 text-base md:text-lg max-w-3xl font-normal leading-relaxed"
+                  >
+                    Featured open-source platforms, simulation frameworks, and developer tools maintained on GitHub.
+                  </p>
+                </div>
+                <a
+                  href="/projects/"
+                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-domain-projects hover:text-domain-projects/80 transition-colors shrink-0"
+                >
+                  <span>View All Projects</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {openSourceProjects.map((project) => (
+                  <ProjectCard
+                    title={project.data.title}
+                    trl={project.data.trl}
+                    description={project.data.description}
+                    href={`/projects/${project.id}/`}
+                    tags={project.data.tags}
+                    accentColor={project.data.accentColor}
+                    image={project.data.image}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </Container>
+    </Section>
+  </main>
+</Layout>

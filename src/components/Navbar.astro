@@ -15,6 +15,7 @@ const isActive = (href: string) => {
 
 const isAboutActive = isActive("/about/");
 const isContactActive = isActive("/contact/");
+const isSupportActive = isActive("/support/");
 
 // Desktop navigation items (Canonical sequence derived from CONTENT_DOMAINS)
 const directNavItems = [
@@ -557,6 +558,21 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
     <!-- Contact CTA Full Width at bottom -->
     <div class="pt-5 border-t border-element-border/50 mt-2">
+      <a
+        href="/support/"
+        data-track-event="High Intent: Sponsor Click"
+        data-track-location="mobile-menu"
+        class={`group w-full mb-2 py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
+          isSupportActive
+            ? "bg-brand-primary hover:bg-brand-primary/90 text-white shadow-brand-primary/30 shadow-md ring-2 ring-brand-primary/50"
+            : "bg-element-bg hover:bg-element-bg-hover text-gray-200 hover:text-brand-primary border border-element-border-medium hover:border-brand-primary/40"
+        }`}
+      >
+        <svg class="w-4 h-4 text-brand-primary fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+        <span>Support Open Source</span>
+      </a>
       <a
         href="/contact/"
         class={`group w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${

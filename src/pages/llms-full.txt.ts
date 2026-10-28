@@ -55,6 +55,7 @@ export async function GET() {
 > Professor for Industrial Informatics at UAP - University of Applied Sciences Upper Austria (Technology Campus Wels) and enterprise software architect. He bridges academic systems engineering with autonomous agent workflows and modern digital production across Web, YouTube, LinkedIn, and GitHub. Founder of CADdrive (caddrive.com) and Mentawise (mentawise.com).
 > Website: https://hackenberg.tech
 > Contact: georg.hackenberg@fh-wels.at
+> GitHub Sponsors & Open-Source Patronage: https://github.com/sponsors/ghackenberg (Overview: https://hackenberg.tech/support/)
 
 ---
 

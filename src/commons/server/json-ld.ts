@@ -984,3 +984,17 @@ export function buildLegalWebPageSchema(params: {
     about: PERSON_REF
   };
 }
+
+export function buildSupportPageSchema(params?: {
+  name?: string;
+  description?: string;
+}) {
+  return buildLegalWebPageSchema({
+    path: 'support',
+    name: params?.name || 'Support & Open-Source Patronage | Dr. Georg Hackenberg',
+    description:
+      params?.description ||
+      'Support Dr. Georg Hackenberg’s open-source software frameworks, interactive WebGL/Canvas simulations, and open educational university courseware via GitHub Sponsors.',
+    inLanguage: 'en'
+  });
+}

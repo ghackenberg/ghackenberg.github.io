@@ -786,6 +786,13 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
     if (!nodeTypes.has('BreadcrumbList')) {
       addViolation(5, 'Gate 5: Missing BreadcrumbList', normPath, 'Datenschutz page must define a BreadcrumbList.');
     }
+  } else if (normPath === 'support/index.html') {
+    if (!nodesById.has('https://hackenberg.tech/support/#webpage') || !nodeTypes.has('WebPage')) {
+      addViolation(5, 'Gate 5: Missing Support WebPage', normPath, 'Support page must define WebPage ("https://hackenberg.tech/support/#webpage").');
+    }
+    if (!nodeTypes.has('BreadcrumbList')) {
+      addViolation(5, 'Gate 5: Missing BreadcrumbList', normPath, 'Support page must define a BreadcrumbList.');
+    }
   }
 
   // 6. Domain overview pages
