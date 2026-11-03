@@ -218,7 +218,7 @@ const projects = defineCollection({
     title: z.string(),
     trl: z.number().int().min(1).max(9),
     description: z.string(),
-    href: z.url(),
+    href: z.url().optional(),
     tags: z.array(tagReference).default([]),
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),

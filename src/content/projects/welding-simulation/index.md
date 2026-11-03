@@ -2,7 +2,6 @@
 title: "Welding Simulation"
 trl: 4
 description: "Interactive physics-based simulation and 3D visualization tool for thermal welding processes and automated weld seam geometry estimation."
-href: "https://github.com/ghackenberg/welding-simulation"
 tags: ["computer-graphics", "java", "manufacturing-engineering", "open-source", "simulation", "systems-engineering", "thermal-engineering"]
 accentColor: "blue"
 order: 6

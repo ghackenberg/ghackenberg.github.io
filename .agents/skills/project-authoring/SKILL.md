@@ -15,8 +15,8 @@ Every project lives in its own directory under `src/content/projects/<slug>/`:
   title: "Steward Workflow Engine"
   trl: 7
   description: "Echtzeitfähige Orchestrierung autonomer KI-Agenten mit deterministischer State-Machine und lokaler Telemetrie."
-  href: "https://steward.hackenberg.tech"
-  repoName: "ghackenberg/steward"
+  href: "https://steward.hackenberg.tech" # Optional: only for standalone live websites/deployments (never duplicate GitHub URLs here)
+  repoName: "steward"                     # Optional: GitHub repository name under ghackenberg/<repoName>
   accentColor: "blue"
   order: 1
   tags:

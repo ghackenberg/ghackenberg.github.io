@@ -2,7 +2,6 @@
 title: "OpenCASCADE Tools"
 trl: 7
 description: "Open-source TypeScript wrapper and CLI converting STEP and IGES CAD geometries into web-optimized 3D formats (GLTF, GLB, OBJ) via OpenCASCADE Technology and WebAssembly."
-href: "https://github.com/ghackenberg/opencascade-tools"
 repoName: "opencascade-tools"
 accentColor: "blue"
 order: 6

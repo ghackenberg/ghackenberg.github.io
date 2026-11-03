@@ -2,7 +2,6 @@
 title: "Welding Analytics"
 trl: 6
 description: "High-performance industrial analytics and visualization suite for high-frequency welding process data, featuring custom timeseries rendering, arc cyclograms, and density distributions."
-href: "https://github.com/ghackenberg/welding-analytics"
 tags: ["data-visualization", "hyperkit-software", "industrial-informatics", "java", "manufacturing-engineering", "manufacturing-systems", "open-source", "systems-analysis"]
 accentColor: "blue"
 order: 5

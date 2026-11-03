@@ -2,7 +2,6 @@
 title: "Transport IDE"
 trl: 4
 description: "A modern Java- and JavaFX-based Intelligent Transportation Systems (ITS) modeling, discrete-event simulation, and control strategy optimization workbench."
-href: "https://github.com/ghackenberg/Transport-IDE"
 tags:
   - "dynamic-programming"
   - "java"

@@ -788,7 +788,7 @@ export function buildProjectSchema(params: {
     description: project.data.description,
     image: resolvedImage ? new URL(resolvedImage, siteUrl).href : undefined,
     url: projectUrl,
-    sameAs: project.data.href,
+    ...(project.data.href ? { sameAs: project.data.href } : {}),
     applicationCategory: 'Software',
     operatingSystem: 'Cross-platform',
     runtimePlatform: 'Cross-platform',

@@ -2,7 +2,6 @@
 title: "Smart Systems IDE"
 trl: 4
 description: "An integrated development environment and dynamic optimization framework for modeling objective functions, behavior spaces, and automated optimal control in smart systems."
-href: "https://github.com/ghackenberg/Smart-Systems-IDE"
 tags:
   - "dynamic-programming"
   - "energy-systems"

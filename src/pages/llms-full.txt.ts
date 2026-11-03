@@ -166,7 +166,7 @@ ${profileLines}
   for (const project of projects) {
     output += `### ${project.data.title}\n`;
     output += `- URL: https://hackenberg.tech/projects/${project.id}/\n`;
-    output += `- External Link: ${project.data.href}\n`;
+    if (project.data.href) output += `- External Link: ${project.data.href}\n`;
     output += `- Technology Readiness Level: TRL ${project.data.trl}\n`;
     output += `- Description: ${project.data.description}\n`;
     if (project.data.tags && project.data.tags.length > 0) {

@@ -2,7 +2,6 @@
 title: "AgentBrick"
 trl: 4
 description: "Open-source framework translating natural language prompts into structured LDraw CAD models and voxel assemblies using LangChain agents and LangGraph workflows."
-href: "https://github.com/ghackenberg/agentbrick"
 repoName: "agentbrick"
 accentColor: "blue"
 order: 5
