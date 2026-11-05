@@ -86,6 +86,12 @@
 </div>
 
 <script>
+  import {
+    $analyticsConsent,
+    syncAnalyticsConsentFromStorage,
+    toggleAnalyticsConsent,
+  } from '@commons/client/stores';
+
   declare global {
     interface Window {
       openPrivacyModal?: () => void;
@@ -95,24 +101,14 @@
   }
 
   (function() {
-    const PLAUSIBLE_IGNORE_KEY = 'plausible_ignore';
-
     const backdrop = document.getElementById('privacy-modal-backdrop');
     const container = document.getElementById('privacy-modal-container');
     const closeBtn = document.getElementById('privacy-modal-close-btn');
     const toggleAnalyticsBtn = document.getElementById('toggle-analytics-optout-btn');
     const analyticsBadge = document.getElementById('analytics-badge');
 
-    function isAnalyticsOptedOut() {
-      try {
-        return localStorage.getItem(PLAUSIBLE_IGNORE_KEY) === 'true';
-      } catch(e) {
-        return false;
-      }
-    }
-
-    function updateModalUI() {
-      const optedOut = isAnalyticsOptedOut();
+    function updateModalUI(consented: boolean) {
+      const optedOut = !consented;
       if (toggleAnalyticsBtn) {
         toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
         toggleAnalyticsBtn.className = optedOut
@@ -127,11 +123,16 @@
       }
     }
 
+    $analyticsConsent.subscribe((consented) => {
+      updateModalUI(consented);
+    });
+
     function openModal() {
       if (typeof window.closeReferencesModal === 'function') {
         window.closeReferencesModal();
       }
-      updateModalUI();
+      syncAnalyticsConsentFromStorage();
+      updateModalUI($analyticsConsent.get());
       if (backdrop && container) {
         backdrop.classList.remove('opacity-0', 'pointer-events-none');
         backdrop.classList.add('opacity-100');
@@ -184,13 +185,7 @@
     // Toggle Analytics Opt-Out
     if (toggleAnalyticsBtn) {
       toggleAnalyticsBtn.addEventListener('click', function() {
-        const currentlyOptedOut = isAnalyticsOptedOut();
-        if (currentlyOptedOut) {
-          localStorage.removeItem(PLAUSIBLE_IGNORE_KEY);
-        } else {
-          localStorage.setItem(PLAUSIBLE_IGNORE_KEY, 'true');
-        }
-        updateModalUI();
+        toggleAnalyticsConsent();
       });
     }
 

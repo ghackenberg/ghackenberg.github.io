@@ -65,6 +65,29 @@ export default defineConfig([
           allow: []
         }
       ],
+
+      // 4. Zero-innerHTML Policy: disallow unsafe raw HTML DOM injection properties and methods
+      'no-restricted-properties': [
+        'error',
+        {
+          property: 'innerHTML',
+          message:
+            'Direct .innerHTML assignment is forbidden (XSS & untyped DOM risk). Use declarative Preact JSX (.tsx) or safe DOM APIs (textContent, replaceChildren).',
+        },
+        {
+          property: 'outerHTML',
+          message:
+            'Direct .outerHTML assignment is forbidden. Use declarative Preact JSX (.tsx) or safe DOM APIs.',
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.property.name='insertAdjacentHTML']",
+          message:
+            'insertAdjacentHTML() is forbidden (XSS & untyped DOM risk). Use declarative Preact JSX (.tsx) or safe DOM APIs.',
+        },
+      ],
     },
   },
   // 4. Path Alias Enforcement: disallow relative parent traversals into alias domains
@@ -106,7 +129,7 @@ export default defineConfig([
   },
   {
     // Client-side commons must never import server-side commons or server-only Astro modules
-    files: ['src/commons/client/**/*.ts'],
+    files: ['src/commons/client/**/*.ts', 'src/commons/client/**/*.tsx'],
     rules: {
       'no-restricted-imports': [
         'error',

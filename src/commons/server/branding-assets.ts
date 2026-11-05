@@ -241,7 +241,7 @@ async function runGeneration(
 
         await page.evaluateOnNewDocument(() => {
           const style = document.createElement('style');
-          style.innerHTML = 'html, body { background: transparent !important; }';
+          style.textContent = 'html, body { background: transparent !important; }';
           document.head.appendChild(style);
         });
 

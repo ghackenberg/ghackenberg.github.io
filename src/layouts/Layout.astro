@@ -241,8 +241,10 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
         var rawTags = urlParams.getAll('tag');
         var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
         var hasQ = Boolean((urlParams.get('q') || '').trim());
+        var hasLang = Boolean((urlParams.get('lang') || '').trim());
+        var hasTrl = Boolean((urlParams.get('trl') || '').trim());
         var page = parseInt(urlParams.get('page') || '1', 10);
-        if (hasTag || hasQ || page > 1) {
+        if (hasTag || hasQ || hasLang || hasTrl || page > 1) {
           document.documentElement.classList.add('has-filter-query');
         }
         if (hasTag) {

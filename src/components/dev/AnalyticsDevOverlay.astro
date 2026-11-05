@@ -248,6 +248,11 @@ const { isInsideFrame = false } = Astro.props;
 
 <script>
   import { renderVisitorFlowSankey, type DevSankeyData } from '@commons/client/dev-sankey';
+  import {
+    renderCardDevBadge,
+    renderHeadingDevBadge,
+    renderSectionDevBadge,
+  } from '@commons/client/dev-overlay-badge';
 
   interface SearchQuery {
     query: string;
@@ -861,11 +866,6 @@ const { isInsideFrame = false } = Astro.props;
           else indicatorColor = 'text-amber-200 font-bold';
         }
 
-        const dropOffText =
-          index > 0 && dropOffFromPrevious !== null
-            ? ` <span class="text-zinc-400">|</span> <span class="${dropOffFromPrevious > 30 ? 'text-rose-300 font-bold' : 'text-zinc-300'}">${dropOffFromPrevious > 0 ? '🔻-' : '🔼+'}${Math.abs(dropOffFromPrevious)}%</span>`
-            : '';
-
         const nextSibling = el.nextElementSibling as HTMLElement | null;
         const hasInlineCta = nextSibling && nextSibling.tagName === 'A';
 
@@ -874,10 +874,15 @@ const { isInsideFrame = false } = Astro.props;
         badge.className = `dev-analytics-badge dev-heading-badge inline-flex items-center gap-1.5 ${spacingClass} px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm align-middle my-auto leading-none ring-1 ring-black/20`;
         badge.title = `Heading #${id} retention: ${retentionRate}% (${visitors}/${totalPageVisitors} dwellers, ${events} dwell events)`;
 
-        const labelText = dwell && visitors > 0
-          ? `👁️ <span class="${indicatorColor}">${visitors}</span><span class="text-zinc-300">/${totalPageVisitors}</span> <span class="text-zinc-200">(${retentionRate}%)</span>${dropOffText}`
-          : `👁️ <span class="text-zinc-300">0/${totalPageVisitors}</span> <span class="text-zinc-300">(0%)</span>`;
-        badge.innerHTML = labelText;
+        renderHeadingDevBadge(badge, {
+          hasDwell: Boolean(dwell),
+          visitors,
+          totalPageVisitors,
+          retentionRate,
+          indicatorColor,
+          dropOffFromPrevious,
+          showDropOff: index > 0 && dropOffFromPrevious !== null,
+        });
 
         if (hasInlineCta && nextSibling) {
           nextSibling.insertAdjacentElement('afterend', badge);
@@ -921,10 +926,14 @@ const { isInsideFrame = false } = Astro.props;
         badge.className = `dev-analytics-badge dev-section-badge absolute top-3 right-3 sm:right-4 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm leading-none ring-1 ring-black/20`;
         badge.title = `Section #${id} retention: ${visitors}/${totalPageVisitors} dwellers (${retentionRate}%), ${events} dwell events`;
 
-        const labelText = dwell && visitors > 0
-          ? `📍 <span class="text-white font-bold">#${id}</span> <span class="text-zinc-400">|</span> 👁️ <span class="${indicatorColor}">${visitors}</span><span class="text-zinc-300">/${totalPageVisitors}</span> <span class="text-zinc-200">(${retentionRate}%)</span>`
-          : `📍 <span class="text-white font-bold">#${id}</span> <span class="text-zinc-400">|</span> 👁️ <span class="text-zinc-300">0/${totalPageVisitors}</span> <span class="text-zinc-300">(0%)</span>`;
-        badge.innerHTML = labelText;
+        renderSectionDevBadge(badge, {
+          id,
+          hasDwell: Boolean(dwell),
+          visitors,
+          totalPageVisitors,
+          retentionRate,
+          indicatorColor,
+        });
 
         // Directly attach the badge to the section element itself for 100% predictable, uniform positioning across all pages.
         secEl.classList.add('relative');
@@ -974,8 +983,14 @@ const { isInsideFrame = false } = Astro.props;
         badge.className = `dev-analytics-badge dev-card-badge absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm pointer-events-auto cursor-default select-none leading-none ring-1 ring-black/20`;
         badge.title = `Card CTR: ${metrics.ctr}% (${metrics.clicks} clicks / ${metrics.views} impressions) | Target: ${targetVisitors} visitors (${targetViews} views)`;
 
-        const labelText = `🎯 <span class="${ctrColor}">${metrics.ctr}%</span> <span class="text-zinc-200">(${metrics.clicks}c/${metrics.views}i)</span> <span class="text-zinc-400">|</span> <span class="text-sky-200 font-bold">👥 ${targetVisitors}</span> <span class="text-zinc-200">(${targetViews}v)</span>`;
-        badge.innerHTML = labelText;
+        renderCardDevBadge(badge, {
+          ctr: metrics.ctr,
+          clicks: metrics.clicks,
+          views: metrics.views,
+          ctrColor,
+          targetVisitors,
+          targetViews,
+        });
 
         const style = window.getComputedStyle(cardEl);
         if (style.position === 'static') {

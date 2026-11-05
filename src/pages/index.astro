@@ -2651,7 +2651,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
       const effectiveW = Math.min(containerW, 920);
 
       // 1. Temporarily place all nodes in a single flat flex container to measure exact pixel widths
-      binRowsContainer.innerHTML = '';
+      binRowsContainer.replaceChildren();
       binRowsContainer.className = 'flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 w-full';
       allTagNodes.forEach((node) => binRowsContainer.appendChild(node));
       if (overflowNode) binRowsContainer.appendChild(overflowNode);
@@ -2771,9 +2771,9 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
       });
 
       // 5. Phase 3: Arrange items inside each row in a center-heavy pendulum (largest in row center)
-      binRowsContainer.innerHTML = '';
+      binRowsContainer.replaceChildren();
       binRowsContainer.className = 'flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 w-full';
-      binPool.innerHTML = '';
+      binPool.replaceChildren();
 
       rows.forEach((row) => {
         if (row.items.length === 0 && !row.hasOverflowBadge) return;

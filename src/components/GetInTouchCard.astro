@@ -87,11 +87,12 @@ const colorStyles = {
             <button
               type="button"
               data-copy-email={emailAddress}
+              data-copy-text={emailAddress}
               data-track-event="High Intent: Copy Email"
               data-track-location="get-in-touch-card"
               class="copy-email-btn px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2 cursor-pointer"
             >
-              <span class="copy-email-text">Copy Email</span>
+              <span class="copy-email-text" data-copy-label>Copy Email</span>
             </button>
           </div>
         </div>
@@ -113,27 +114,7 @@ const colorStyles = {
 </div>
 
 <script>
-  // Copy email click handler
-  document.querySelectorAll<HTMLButtonElement>('.copy-email-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const email = btn.getAttribute('data-copy-email') || 'georg.hackenberg@fh-wels.at';
-      const label = btn.querySelector<HTMLElement>('.copy-email-text');
-      try {
-        await navigator.clipboard.writeText(email);
-        if (label) {
-          label.textContent = 'Copied!';
-          btn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-          btn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
+  import { initClipboard } from "@commons/client/clipboard";
 
-          setTimeout(() => {
-            label.textContent = 'Copy Email';
-            btn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
-            btn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-          }, 2500);
-        }
-      } catch (err) {
-        console.error('Failed to copy email:', err);
-      }
-    });
-  });
+  initClipboard();
 </script>

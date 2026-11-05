@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
 import TrlCircle from "@components/TrlCircle.astro";
@@ -75,20 +76,6 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.image)?.data.imag
       </div>
     </FilterToolbar>
 
-    <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
-    <script is:inline>
-      (function() {
-        var params = new URLSearchParams(window.location.search);
-        var rawTags = params.getAll('tag');
-        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
-        var hasQ = Boolean((params.get('q') || '').trim());
-        var hasTrl = Boolean((params.get('trl') || '').trim());
-        if (hasTag || hasQ || hasTrl) {
-          document.documentElement.classList.add('has-filter-query');
-        }
-      })();
-    </script>
-
     <!-- Projects Grid (3-2-1) -->
     {sortedProjects.length === 0 ? (
       <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No projects defined.</p>
@@ -119,77 +106,11 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.image)?.data.imag
           })}
         </div>
 
-        <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
-        <script is:inline>
-          (function() {
-            try {
-              var params = new URLSearchParams(window.location.search);
-              var rawTags = params.getAll('tag');
-              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
-              var q = (params.get('q') || '').trim().toLowerCase();
-              var trl = (params.get('trl') || '').trim();
-
-              var hasTag = tags.length > 0;
-              var hasQ = Boolean(q);
-              var hasTrl = Boolean(trl);
-
-              if (hasTrl) {
-                var trlBtn = document.getElementById('trl-btn-' + trl);
-                if (trlBtn) trlBtn.classList.add('active');
-              }
-
-              if (!hasTag && !hasQ && !hasTrl) return;
-
-              var items = document.querySelectorAll('.project-wrapper');
-              var matching = [];
-
-              items.forEach(function(item) {
-                var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
-                var title = item.getAttribute('data-title') || '';
-                var desc = item.getAttribute('data-desc') || '';
-                var tagsStr = item.getAttribute('data-tags') || '';
-                var itemTrl = item.getAttribute('data-trl') || '';
-
-                var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
-                var matchesQ = !hasQ || (title.indexOf(q) !== -1 || desc.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
-                var matchesTrl = !hasTrl || (itemTrl === trl);
-
-                if (matchesTag && matchesQ && matchesTrl) {
-                  matching.push(item);
-                  item.classList.add('is-matched');
-                  item.classList.remove('hidden');
-                  item.style.display = '';
-                } else {
-                  item.classList.remove('is-matched');
-                  item.classList.add('hidden');
-                  item.style.display = 'none';
-                }
-              });
-
-              var noResults = document.getElementById('no-projects-message');
-              if (noResults) {
-                if (matching.length === 0) {
-                  noResults.classList.remove('hidden');
-                  noResults.style.display = '';
-                } else {
-                  noResults.classList.add('hidden');
-                  noResults.style.display = 'none';
-                }
-              }
-
-              var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
-              if (countEl && (hasTag || hasQ || hasTrl)) {
-                var availTags = new Set();
-                matching.forEach(function(item) {
-                  var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
-                  itags.forEach(function(t) { if (t) availTags.add(t); });
-                });
-                countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
-                countEl.classList.add('is-synced');
-              }
-            } catch(e) {}
-          })();
-        </script>
+        <CatalogPreFilter
+          itemSelector=".project-wrapper"
+          noResultsId="no-projects-message"
+          extraParam={{ paramKey: "trl", dataAttribute: "data-trl", buttonIdPrefix: "trl-btn-" }}
+        />
       </>
     )}
 

@@ -1,24 +1,38 @@
 import * as d3 from 'd3';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
-import { getThemeTokens } from '@commons/shared/domain-themes';
+import {
+  GRAPH_COLORS,
+  HIGHLIGHT_TRANSITION_MS,
+  easeHighlightTransition,
+  getGraphStyleTokens,
+  buildGraphAdjacency,
+  computeHopDistances,
+  interpolateHexColor,
+  getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
+  getAttenuatedEdgeStyle,
+  getNodeHopZIndex,
+  getEdgeHopZIndex,
+  type GraphNodePayload
+} from '@commons/shared/graph-payload';
+import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
-export interface D3Node extends d3.SimulationNodeDatum {
-  id: string;
-  name: string;
-  size: number;
-  group: number;
+export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
   targetX?: number;
   targetY?: number;
+  displayColor?: string;
+  displayRadius?: number;
 }
 
 export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
   source: string | D3Node;
   target: string | D3Node;
+  displayColor?: string;
+  displayWidth?: number;
 }
 
 export interface D3Payload {
   d3: {
-    nodes: { id: string; name: string; size: number; group: number }[];
+    nodes: GraphNodePayload[];
     connections: { sourceId: string; targetId: string }[];
   };
 }
@@ -35,11 +49,17 @@ export interface D3Engine {
   simulation: d3.Simulation<D3Node, D3Link> | null;
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
+  tooltipController: GraphTooltipController | null;
+  hoveredNodeId?: string | null;
+  draggedNodeId?: string | null;
+  highlightFrameId?: number | null;
+  applyHighlight?(activeId: string | null, immediate?: boolean): void;
   currentLayout?: string;
   isLight?: boolean;
   fitTimeout?: ReturnType<typeof setTimeout>;
   resizeObserver: ResizeObserver | null;
-  init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean): Promise<D3Engine>;
+  init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<D3Engine>;
+  recomputeSlotTargets(useCurrentOrder?: boolean): void;
   fitToView(duration?: number): void;
   updateLayout(layout: string, isLight: boolean): void;
   destroy(): void;
@@ -61,9 +81,10 @@ const engine: D3Engine = {
   simulation: null,
   linkElements: null,
   nodeElements: null,
+  tooltipController: null,
   resizeObserver: null,
 
-  async init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean) {
+  async init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.width = container.offsetWidth || 800;
     this.height = container.offsetHeight || 500;
 
@@ -79,82 +100,276 @@ const engine: D3Engine = {
       target: c.targetId
     })).filter((l) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
 
+    container.style.touchAction = 'pan-y';
+
     this.svg = d3.select<HTMLElement, D3Node>(container).append<SVGSVGElement>("svg")
       .attr("width", "100%")
       .attr("height", "100%")
       .attr("viewBox", `0 0 ${this.width} ${this.height}`)
-      .style("display", "block");
+      .style("display", "block")
+      .style("touch-action", "pan-y");
 
     this.svgGroup = this.svg.append<SVGGElement>("g");
 
     this.zoom = d3.zoom<SVGSVGElement, D3Node>()
       .scaleExtent([0.1, 8])
-      .filter((event) => event.type !== 'wheel')
+      .filter(() => false)
       .on("zoom", (event) => {
         this.svgGroup?.attr("transform", event.transform.toString());
       });
 
     this.svg.call(this.zoom).on('wheel.zoom', null);
 
+    // Create shared floating tooltip controller
+    this.tooltipController = createGraphTooltipController(container);
+
     // Create D3 simulation
     this.simulation = d3.forceSimulation<D3Node>(this.nodes);
 
-    this.linkElements = this.svgGroup.selectAll<SVGLineElement, D3Link>(".link")
+    const styleTokens = getGraphStyleTokens(isLight);
+
+    const linkLayer = this.svgGroup.append<SVGGElement>("g");
+    const nodeLayer = this.svgGroup.append<SVGGElement>("g");
+
+    this.linkElements = linkLayer.selectAll<SVGLineElement, D3Link>(".link")
       .data(this.links)
       .enter().append("line")
-      .style("stroke-width", "1px");
+      .style("stroke", styleTokens.edgeColor)
+      .style("stroke-width", `${styleTokens.edgeWidth}px`);
+
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let wasDragged = false;
+    let isReorderingDom = false;
+    let lastHighlightedNodeId: string | null = null;
+    this.hoveredNodeId = null;
+    this.draggedNodeId = null;
+
+    const adjacency = buildGraphAdjacency(
+      this.links.map(l => ({
+        source: typeof l.source === 'object' ? l.source.id : String(l.source),
+        target: typeof l.target === 'object' ? l.target.id : String(l.target)
+      }))
+    );
+
+    const applyHighlight = (activeId: string | null, immediate = false) => {
+      if (!immediate && activeId === lastHighlightedNodeId) return;
+      lastHighlightedNodeId = activeId;
+
+      if (this.highlightFrameId) {
+        cancelAnimationFrame(this.highlightFrameId);
+        this.highlightFrameId = null;
+      }
+
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+      const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
+
+      if (dists) {
+        isReorderingDom = true;
+        this.linkElements?.sort((a: D3Link, b: D3Link) => {
+          const srcA = typeof a.source === 'object' ? a.source.id : String(a.source);
+          const tgtA = typeof a.target === 'object' ? a.target.id : String(a.target);
+          const srcB = typeof b.source === 'object' ? b.source.id : String(b.source);
+          const tgtB = typeof b.target === 'object' ? b.target.id : String(b.target);
+          return getEdgeHopZIndex(dists.get(srcA), dists.get(tgtA)) - getEdgeHopZIndex(dists.get(srcB), dists.get(tgtB));
+        });
+        this.nodeElements?.sort((a: D3Node, b: D3Node) => {
+          return getNodeHopZIndex(dists.get(a.id)) - getNodeHopZIndex(dists.get(b.id));
+        });
+        isReorderingDom = false;
+      }
+
+      const nodeTrans = (this.nodes || []).map((n) => {
+        const baseColor = groupColors[n.group] || groupColors[0];
+        const startColor = n.displayColor || baseColor;
+        const startRadius = n.displayRadius ?? currentTokens.nodeRadius;
+        const hopDist = dists ? dists.get(n.id) : undefined;
+        const targetColor = dists
+          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+          : baseColor;
+        const targetRadius = dists
+          ? currentTokens.nodeRadius * getAttenuatedNodeScale(hopDist)
+          : currentTokens.nodeRadius;
+        return { node: n, startColor, targetColor, startRadius, targetRadius };
+      });
+
+      const linkTrans = (this.links || []).map((l) => {
+        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+        const startColor = l.displayColor || currentTokens.edgeColor;
+        const startWidth = l.displayWidth ?? currentTokens.edgeWidth;
+        const targetStyle = dists
+          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight)
+          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+        return {
+          link: l,
+          startColor,
+          targetColor: targetStyle.color,
+          startWidth,
+          targetWidth: targetStyle.width
+        };
+      });
+
+      const renderStep = (ease: number) => {
+        for (const nt of nodeTrans) {
+          nt.node.displayColor = interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          nt.node.displayRadius = nt.startRadius + (nt.targetRadius - nt.startRadius) * ease;
+        }
+        for (const lt of linkTrans) {
+          lt.link.displayColor = interpolateHexColor(lt.startColor, lt.targetColor, ease);
+          lt.link.displayWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+        }
+
+        this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle")
+          .attr("r", (n: D3Node) => n.displayRadius ?? currentTokens.nodeRadius)
+          .style("fill", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
+          .style("stroke", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
+          .style("stroke-width", "1.5px");
+
+        this.linkElements
+          ?.style("stroke", (l: D3Link) => l.displayColor || currentTokens.edgeColor)
+          ?.style("stroke-width", (l: D3Link) => `${l.displayWidth ?? currentTokens.edgeWidth}px`);
+      };
+
+      if (immediate) {
+        renderStep(1);
+        return;
+      }
+
+      const startTime = performance.now();
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
+        const ease = easeHighlightTransition(progress);
+        renderStep(ease);
+        if (progress < 1) {
+          this.highlightFrameId = requestAnimationFrame(step);
+        } else {
+          this.highlightFrameId = null;
+        }
+      };
+      this.highlightFrameId = requestAnimationFrame(step);
+    };
+    this.applyHighlight = applyHighlight;
 
     const dragBehavior = d3.drag<SVGGElement, D3Node>()
       .on("start", (event, d) => {
+        dragStartX = event.x;
+        dragStartY = event.y;
+        wasDragged = false;
+        this.draggedNodeId = d.id;
+        applyHighlight(d.id);
         if (!event.active) this.simulation?.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
       })
       .on("drag", (event, d) => {
+        if (Math.hypot(event.x - dragStartX, event.y - dragStartY) > 6) {
+          wasDragged = true;
+          this.tooltipController?.hide();
+        }
         d.fx = event.x;
         d.fy = event.y;
+        d.x = event.x;
+        d.y = event.y;
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.recomputeSlotTargets(true);
+          this.simulation?.alphaTarget(0.3).restart();
+        }
       })
       .on("end", (event, d) => {
-        if (!event.active) this.simulation?.alphaTarget(0);
+        this.draggedNodeId = null;
+        if (wasDragged) {
+          this.hoveredNodeId = null;
+          container.style.cursor = "default";
+        }
+        applyHighlight(this.hoveredNodeId ?? null);
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.recomputeSlotTargets(true);
+        }
         d.fx = null;
         d.fy = null;
+        if (!event.active) {
+          this.simulation?.alphaTarget(0).alpha(0.35).restart();
+        }
       });
 
-    this.nodeElements = this.svgGroup.selectAll<SVGGElement, D3Node>(".node")
+    this.nodeElements = nodeLayer.selectAll<SVGGElement, D3Node>(".node")
       .data(this.nodes)
       .enter().append("g")
+      .style("cursor", "pointer")
       .call(dragBehavior);
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     
     this.nodeElements.append("circle")
-      .attr("r", d => d.size * 6 + 4)
+      .attr("r", styleTokens.nodeRadius)
       .style("fill", d => colors[d.group] || colors[0])
+      .style("stroke", d => colors[d.group] || colors[0])
       .style("stroke-width", "1.5px");
 
-    this.nodeElements.append("text")
-      .attr("dx", d => d.size * 6 + 8)
-      .attr("dy", ".35em")
-      .style("font-size", "9px")
-      .style("font-family", "Outfit, Inter, sans-serif")
-      .style("font-weight", "500")
-      .style("pointer-events", "none");
+    const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
+    const utmMedium = String(extraOptions.utmMedium || 'd3');
+    const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
-    this.nodeElements.on("dblclick", (_event, d) => {
+    const navigateToNode = (d: D3Node) => {
       if (
-        d.id.startsWith('/posts/') ||
-        d.id.startsWith('/publications/') ||
-        d.id.startsWith('/presentations/') ||
-        d.id.startsWith('/projects/') ||
-        d.id.startsWith('/courses/') ||
-        d.id.startsWith('/services/') ||
-        d.id.startsWith('/newsletters/') ||
-        d.id.startsWith('/visualizations/') ||
-        d.id.startsWith('/tags/')
+        d.id.startsWith('/posts') ||
+        d.id.startsWith('/publications') ||
+        d.id.startsWith('/presentations') ||
+        d.id.startsWith('/projects') ||
+        d.id.startsWith('/courses') ||
+        d.id.startsWith('/services') ||
+        d.id.startsWith('/newsletters') ||
+        d.id.startsWith('/visualizations') ||
+        d.id.startsWith('/tags')
       ) {
-        window.location.href = d.id;
+        const targetUrl = new URL(d.id, window.location.origin);
+        targetUrl.searchParams.set('utm_source', utmSource);
+        targetUrl.searchParams.set('utm_medium', utmMedium);
+        targetUrl.searchParams.set('utm_campaign', utmCampaign);
+        window.location.href = targetUrl.pathname + targetUrl.search;
       }
-    });
+    };
+
+    this.nodeElements
+      .on("mouseenter", (event: MouseEvent, d: D3Node) => {
+        if (isReorderingDom) return;
+        if (!this.draggedNodeId && this.hoveredNodeId === d.id) return;
+        this.hoveredNodeId = d.id;
+        if (!this.draggedNodeId) {
+          container.style.cursor = "pointer";
+          applyHighlight(d.id);
+          const [x, y] = d3.pointer(event, container);
+          this.tooltipController?.show(d, Boolean(this.isLight), x, y);
+        }
+      })
+      .on("mousemove", (event: MouseEvent) => {
+        if (!this.draggedNodeId) {
+          const [x, y] = d3.pointer(event, container);
+          this.tooltipController?.move(x, y);
+        }
+      })
+      .on("mouseleave", (_event: MouseEvent, d: D3Node) => {
+        if (isReorderingDom) return;
+        if (this.hoveredNodeId === d.id) {
+          this.hoveredNodeId = null;
+        }
+        this.tooltipController?.hide();
+        if (!this.draggedNodeId) {
+          container.style.cursor = "default";
+          applyHighlight(null);
+        }
+      })
+      .on("click", (_event: MouseEvent, d: D3Node) => {
+        if (!wasDragged) {
+          navigateToNode(d);
+        }
+      })
+      .on("dblclick", (_event: MouseEvent, d: D3Node) => {
+        navigateToNode(d);
+      });
 
     this.simulation.on("tick", () => {
       this.linkElements
@@ -182,6 +397,7 @@ const engine: D3Engine = {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (width <= 0 || height <= 0) continue;
+        if (Math.abs(width - this.width) < 2 && Math.abs(height - this.height) < 2) continue;
         this.width = width;
         this.height = height;
         if (this.svg) {
@@ -205,11 +421,11 @@ const engine: D3Engine = {
     if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
     if (this.width <= 0 || this.height <= 0) return;
 
+    const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const n of this.nodes) {
-      const r = (n.size || 1) * 6 + 4;
       const left = (n.x || 0) - r - 10;
-      const right = (n.x || 0) + r + 80; // approximate label length
+      const right = (n.x || 0) + r + 10;
       const top = (n.y || 0) - r - 10;
       const bottom = (n.y || 0) + r + 10;
 
@@ -255,18 +471,9 @@ const engine: D3Engine = {
     }
   },
 
-  updateLayout(layout: string, isLight: boolean) {
-    if (!this.simulation || !this.nodes || !this.linkElements || !this.nodeElements) return;
-    this.currentLayout = layout;
-    this.isLight = isLight;
-
-    // Apply color update to D3 texts and circles based on theme
-    const tokens = getThemeTokens(isLight);
-    this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
-    this.nodeElements.selectAll("circle").style("stroke", tokens.background);
-    this.nodeElements.selectAll("text").style("fill", tokens.textMain);
-    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    this.nodeElements.selectAll<SVGCircleElement, D3Node>("circle").style("fill", d => colors[d.group] || colors[0]);
+  recomputeSlotTargets(useCurrentOrder = false) {
+    if (!this.nodes || !this.simulation) return;
+    const layout = this.currentLayout;
 
     if (layout === 'radial') {
       const cx = this.width / 2;
@@ -276,8 +483,15 @@ const engine: D3Engine = {
       const innerRadius = Math.max(60, minDim * 0.20);
       const outerRadius = Math.max(140, minDim * 0.42);
 
-      const tags = this.nodes.filter(n => n.group === 0);
-      const others = this.nodes.filter(n => n.group !== 0);
+      const tags = [...this.nodes.filter(n => n.group === 0)];
+      const others = [...this.nodes.filter(n => n.group !== 0)];
+
+      if (useCurrentOrder) {
+        const normAngle = (n: D3Node, count: number) =>
+          ((Math.atan2((n.y ?? cy) - cy, (n.x ?? cx) - cx) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
+        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
+      }
 
       tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
@@ -291,28 +505,29 @@ const engine: D3Engine = {
         n.targetY = cy + outerRadius * Math.sin(theta);
       });
 
-      // Apply positional forces
-      this.simulation
-        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.08))
-        .force("charge", d3.forceManyBody().strength(-30))
-        .force("center", null)
-        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.2))
-        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.2))
-        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 10).strength(0.8));
-
+      const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
+      const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
+      fx?.x(d => d.targetX ?? cx);
+      fy?.y(d => d.targetY ?? cy);
     } else if (layout === 'columns') {
-      const posts = this.nodes.filter(n => n.group === 1);
-      const publications = this.nodes.filter(n => n.group === 2);
-      const presentations = this.nodes.filter(n => n.group === 3);
-      const tags = this.nodes.filter(n => n.group === 0);
-      const courses = this.nodes.filter(n => n.group === 4);
-      const projects = this.nodes.filter(n => n.group === 5);
-      const services = this.nodes.filter(n => n.group === 6);
-      const newsletters = this.nodes.filter(n => n.group === 7);
-      const visualizations = this.nodes.filter(n => n.group === 8);
+      const posts = [...this.nodes.filter(n => n.group === 1)];
+      const publications = [...this.nodes.filter(n => n.group === 2)];
+      const presentations = [...this.nodes.filter(n => n.group === 3)];
+      const tags = [...this.nodes.filter(n => n.group === 0)];
+      const courses = [...this.nodes.filter(n => n.group === 4)];
+      const projects = [...this.nodes.filter(n => n.group === 5)];
+      const services = [...this.nodes.filter(n => n.group === 6)];
+      const newsletters = [...this.nodes.filter(n => n.group === 7)];
+      const visualizations = [...this.nodes.filter(n => n.group === 8)];
 
       const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
       const isMobile = this.width < 768 || window.innerWidth < 768;
+
+      if (useCurrentOrder) {
+        categories.forEach(catNodes => {
+          catNodes.sort((a, b) => isMobile ? ((a.x ?? 0) - (b.x ?? 0)) : ((a.y ?? 0) - (b.y ?? 0)));
+        });
+      }
 
       const padX = Math.max(40, this.width * 0.08);
       const padY = Math.max(50, this.height * 0.12);
@@ -337,6 +552,39 @@ const engine: D3Engine = {
         });
       }
 
+      const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
+      const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
+      fx?.x(d => d.targetX ?? 0);
+      fy?.y(d => d.targetY ?? 0);
+    }
+  },
+
+  updateLayout(layout: string, isLight: boolean) {
+    if (!this.simulation || !this.nodes || !this.linkElements || !this.nodeElements) return;
+    this.currentLayout = layout;
+    this.isLight = isLight;
+
+    // Apply color update to D3 circles and links based on theme (and preserve any active highlight)
+    this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
+
+    if (layout === 'radial') {
+      const cx = this.width / 2;
+      const cy = this.height / 2;
+
+      this.recomputeSlotTargets(false);
+
+      // Apply positional forces
+      this.simulation
+        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.08))
+        .force("charge", d3.forceManyBody().strength(-30))
+        .force("center", null)
+        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.2))
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.2))
+        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 10).strength(0.8));
+
+    } else if (layout === 'columns') {
+      this.recomputeSlotTargets(false);
+
       // Apply columnar forces
       this.simulation
         .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.02))
@@ -355,10 +603,10 @@ const engine: D3Engine = {
       this.simulation
         .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(linkDist).strength(0.3))
         .force("charge", d3.forceManyBody().strength(charge))
-        .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+        .force("center", d3.forceCenter(this.width / 2, this.height / 2).strength(0.15))
         .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 12).strength(0.8))
-        .force("x", d3.forceX(this.width / 2).strength(0.04))
-        .force("y", d3.forceY(this.height / 2).strength(0.04));
+        .force("x", d3.forceX(this.width / 2).strength(0.06))
+        .force("y", d3.forceY(this.height / 2).strength(0.06));
     }
 
     // Trigger transition
@@ -372,10 +620,18 @@ const engine: D3Engine = {
   },
 
   destroy() {
+    if (this.highlightFrameId) {
+      cancelAnimationFrame(this.highlightFrameId);
+      this.highlightFrameId = null;
+    }
     if (this.fitTimeout) clearTimeout(this.fitTimeout);
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
+    }
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
     }
     if (this.simulation) {
       this.simulation.stop();

@@ -227,10 +227,10 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
     }
 
     interface GraphPayload {
-      cytoscape?: { elements: { data: Record<string, string | number | undefined> }[] };
-      d3?: { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] };
-      sigma?: { nodes: { id: string; label: string; x: number; y: number; size: number; group: number; color: string }[]; edges: { id: string; source: string; target: string; color?: string }[] };
-      '3d-force'?: { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] };
+      cytoscape?: { elements: { data: Record<string, string | number | string[] | undefined> }[] };
+      d3?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
+      sigma?: { nodes: (VisNetworkNode & { label: string; x: number; y: number; color: string; rawSize?: number })[]; edges: { id: string; source: string; target: string; color?: string }[] };
+      '3d-force'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
       'vis-network'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
     }
 
@@ -281,7 +281,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           activeInstance = null;
         }
         if (container) {
-          container.innerHTML = '';
+          container.replaceChildren();
         }
 
         try {
@@ -322,7 +322,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           if (selector) {
             const isLightMode = document.documentElement.classList.contains('light');
             const tokens = getThemeTokens(isLightMode);
-            selector.innerHTML = '';
+            selector.replaceChildren();
             engine.layouts.forEach((l: { id: string; label: string }) => {
               const option = document.createElement('option');
               option.value = l.id;

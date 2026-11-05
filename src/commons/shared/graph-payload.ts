@@ -1,5 +1,5 @@
 import type { getImage } from "astro:assets";
-import { DOMAIN_METADATA } from "./domain-themes";
+import { DOMAIN_METADATA, getThemeTokens } from "./domain-themes";
 import { formatDate } from "./format";
 
 export interface GraphNodePayload {
@@ -26,6 +26,12 @@ export interface CytoscapeElement {
     group?: number;
     color?: string;
     size?: number;
+    rawSize?: number;
+    typeLabel?: string;
+    description?: string;
+    date?: string;
+    image?: string;
+    tags?: string[];
     source?: string;
     target?: string;
   };
@@ -37,8 +43,14 @@ export interface SigmaNode {
   x: number;
   y: number;
   size: number;
+  rawSize?: number;
   group: number;
   color: string;
+  typeLabel?: string;
+  description?: string;
+  date?: string;
+  image?: string;
+  tags?: string[];
 }
 
 export interface SigmaEdge {
@@ -60,7 +72,7 @@ export interface EnginePayloads {
     elements: CytoscapeElement[];
   };
   d3: {
-    nodes: Array<{ id: string; name: string; size: number; group: number }>;
+    nodes: GraphNodePayload[];
     connections: GraphConnectionPayload[];
   };
   sigma: {
@@ -68,7 +80,7 @@ export interface EnginePayloads {
     edges: SigmaEdge[];
   };
   '3d-force': {
-    nodes: Array<{ id: string; name: string; size: number; group: number }>;
+    nodes: GraphNodePayload[];
     connections: GraphConnectionPayload[];
   };
 }
@@ -109,6 +121,295 @@ export const GRAPH_COLORS = {
     DOMAIN_METADATA.visualizations.colors.light  // 8: Visualization
   ]
 };
+
+export interface GraphStyleTokens {
+  edgeColor: string;
+  edgeHoverColor: string;
+  edgeWidth: number;
+  edgeHoverWidth: number;
+  nodeRadius: number;
+  nodeHoverScale: number;
+}
+
+export function getGraphStyleTokens(isLight: boolean): GraphStyleTokens {
+  const themeTokens = getThemeTokens(isLight);
+  return {
+    edgeColor: themeTokens.edgeBase,
+    edgeHoverColor: themeTokens.edgeHover,
+    edgeWidth: 1.5,
+    edgeHoverWidth: 2.5,
+    nodeRadius: 8,
+    nodeHoverScale: 1.25
+  };
+}
+
+export function buildGraphAdjacency(
+  edges: ReadonlyArray<{ source?: string; target?: string; sourceId?: string; targetId?: string }>
+): Map<string, Set<string>> {
+  const adjacency = new Map<string, Set<string>>();
+  for (const edge of edges) {
+    const src = edge.source ?? edge.sourceId;
+    const tgt = edge.target ?? edge.targetId;
+    if (!src || !tgt) continue;
+    let srcSet = adjacency.get(src);
+    if (!srcSet) {
+      srcSet = new Set<string>();
+      adjacency.set(src, srcSet);
+    }
+    srcSet.add(tgt);
+
+    let tgtSet = adjacency.get(tgt);
+    if (!tgtSet) {
+      tgtSet = new Set<string>();
+      adjacency.set(tgt, tgtSet);
+    }
+    tgtSet.add(src);
+  }
+  return adjacency;
+}
+
+export interface HopCurveParams {
+  max: number;
+  min: number;
+  exponent: number;
+  maxHops?: number;
+}
+
+export const HOP_ATTENUATION_CONFIG = {
+  maxHops: 4,
+  focusBudgetNodes: 16,
+  directHubSoftThreshold: 8,
+  hubDegreeBaseline: 4,
+  hubPenaltyWeight: 0.65,
+  nodeColor: { max: 1.0, min: 0.20, exponent: 1.35 },
+  nodeScale: { max: 2.10, min: 0.40, exponent: 1.25 },
+  edgeColor: { max: 1.0, min: 0.18, exponent: 1.20 },
+  edgeWidth: { max: 3.0, min: 0.80, exponent: 1.10 }
+} as const;
+
+export function computeHopCurve(
+  hopDistance: number | undefined,
+  params: HopCurveParams
+): number {
+  const maxHops = params.maxHops ?? HOP_ATTENUATION_CONFIG.maxHops;
+  const d = hopDistance ?? Infinity;
+  if (d <= 0) return params.max;
+  if (!Number.isFinite(d) || d >= maxHops) return params.min;
+  const u = Math.max(0, Math.min(1, d / maxHops));
+  return params.min + (params.max - params.min) * (1 - Math.pow(u, params.exponent));
+}
+
+export function computeHopDistances(
+  startNodeId: string,
+  adjacency: Map<string, Set<string>>,
+  maxHops: number = HOP_ATTENUATION_CONFIG.maxHops
+): Map<string, number> {
+  const rawHops = new Map<string, number>();
+  const shells: string[][] = Array.from({ length: maxHops + 1 }, () => []);
+  rawHops.set(startNodeId, 0);
+  shells[0].push(startNodeId);
+
+  const queue: [string, number][] = [[startNodeId, 0]];
+  let head = 0;
+
+  while (head < queue.length) {
+    const [current, dist] = queue[head++];
+    if (dist >= maxHops) continue;
+    const neighbors = adjacency.get(current);
+    if (!neighbors) continue;
+    for (const neighbor of neighbors) {
+      if (!rawHops.has(neighbor)) {
+        const nextDist = dist + 1;
+        rawHops.set(neighbor, nextDist);
+        shells[nextDist].push(neighbor);
+        if (nextDist < maxHops) {
+          queue.push([neighbor, nextDist]);
+        }
+      }
+    }
+  }
+
+  const distances = new Map<string, number>();
+  const minPathCost = new Map<string, number>();
+  distances.set(startNodeId, 0);
+  minPathCost.set(startNodeId, 0);
+
+  const shell1 = shells[1] ?? [];
+  const shell1Count = shell1.length;
+  const crowdFactor = Math.max(
+    0,
+    Math.min(
+      1,
+      (shell1Count - HOP_ATTENUATION_CONFIG.directHubSoftThreshold) /
+        HOP_ATTENUATION_CONFIG.focusBudgetNodes
+    )
+  );
+  const dEff1 = 1 + 0.60 * crowdFactor;
+
+  for (const u of shell1) {
+    distances.set(u, dEff1);
+    minPathCost.set(u, dEff1);
+  }
+
+  let cumulativeBeforeShell = 1 + shell1Count;
+
+  for (let d = 2; d <= maxHops; d++) {
+    const shell = shells[d] ?? [];
+    if (shell.length === 0) continue;
+
+    const budgetDist =
+      maxHops * (cumulativeBeforeShell / HOP_ATTENUATION_CONFIG.focusBudgetNodes);
+
+    for (const v of shell) {
+      const neighbors = adjacency.get(v);
+      let bestParentCost = Infinity;
+      let sharedParents = 0;
+
+      if (neighbors) {
+        for (const u of neighbors) {
+          if (rawHops.get(u) !== d - 1) continue;
+          sharedParents++;
+          const degU = adjacency.get(u)?.size ?? 1;
+          const stepCost =
+            1 +
+            HOP_ATTENUATION_CONFIG.hubPenaltyWeight *
+              Math.log2(
+                Math.max(HOP_ATTENUATION_CONFIG.hubDegreeBaseline, degU) /
+                  HOP_ATTENUATION_CONFIG.hubDegreeBaseline
+              );
+          const candidateCost = (minPathCost.get(u) ?? (d - 1)) + stepCost;
+          if (candidateCost < bestParentCost) {
+            bestParentCost = candidateCost;
+          }
+        }
+      }
+
+      const parentCount = Math.max(1, sharedParents);
+      const resolvedBestCost = Number.isFinite(bestParentCost) ? bestParentCost : d;
+      const hubAdjustedDist = d + Math.max(0, resolvedBestCost - d) / parentCount;
+      const dEff = Math.max(hubAdjustedDist, budgetDist);
+
+      minPathCost.set(v, dEff);
+      if (dEff < maxHops) {
+        distances.set(v, dEff);
+      }
+    }
+
+    cumulativeBeforeShell += shell.length;
+  }
+
+  return distances;
+}
+
+function parseHexRgb(hex: string): [number, number, number] {
+  const cleaned = hex.replace(/^#/, '').trim();
+  if (cleaned.length === 3) {
+    const r = parseInt(cleaned[0] + cleaned[0], 16) || 0;
+    const g = parseInt(cleaned[1] + cleaned[1], 16) || 0;
+    const b = parseInt(cleaned[2] + cleaned[2], 16) || 0;
+    return [r, g, b];
+  }
+  const r = parseInt(cleaned.slice(0, 2), 16) || 0;
+  const g = parseInt(cleaned.slice(2, 4), 16) || 0;
+  const b = parseInt(cleaned.slice(4, 6), 16) || 0;
+  return [r, g, b];
+}
+
+export const HIGHLIGHT_TRANSITION_MS = 750;
+
+export function easeHighlightTransition(progress: number): number {
+  const clamped = Math.max(0, Math.min(1, progress));
+  return -(Math.cos(Math.PI * clamped) - 1) / 2;
+}
+
+export function blendHexColor(fgHex: string, bgHex: string, retention: number): string {
+  const clamped = Math.max(0, Math.min(1, retention));
+  if (clamped >= 1) return fgHex;
+  const [fgR, fgG, fgB] = parseHexRgb(fgHex);
+  const [bgR, bgG, bgB] = parseHexRgb(bgHex);
+  const r = Math.round(bgR + (fgR - bgR) * clamped).toString(16).padStart(2, '0');
+  const g = Math.round(bgG + (fgG - bgG) * clamped).toString(16).padStart(2, '0');
+  const b = Math.round(bgB + (fgB - bgB) * clamped).toString(16).padStart(2, '0');
+  return `#${r}${g}${b}`;
+}
+
+export function interpolateHexColor(fromHex: string, toHex: string, t: number): string {
+  if (t <= 0) return fromHex;
+  if (t >= 1) return toHex;
+  return blendHexColor(toHex, fromHex, t);
+}
+
+export function getAttenuatedNodeScale(hopDistance: number | undefined): number {
+  return computeHopCurve(hopDistance, HOP_ATTENUATION_CONFIG.nodeScale);
+}
+
+export function getAttenuatedNodeColor(
+  baseColor: string,
+  hopDistance: number | undefined,
+  isLight: boolean
+): string {
+  const retention = computeHopCurve(hopDistance, HOP_ATTENUATION_CONFIG.nodeColor);
+  if (retention >= 1) return baseColor;
+  const canvasBg = getThemeTokens(isLight).canvasBg;
+  return blendHexColor(baseColor, canvasBg, retention);
+}
+
+export function getAttenuatedEdgeStyle(
+  sourceDistance: number | undefined,
+  targetDistance: number | undefined,
+  isLight: boolean
+): { color: string; width: number } {
+  const styleTokens = getGraphStyleTokens(isLight);
+  const dSrc = sourceDistance ?? Infinity;
+  const dTgt = targetDistance ?? Infinity;
+
+  if (dSrc === 0 || dTgt === 0) {
+    return {
+      color: styleTokens.edgeHoverColor,
+      width: HOP_ATTENUATION_CONFIG.edgeWidth.max
+    };
+  }
+
+  const canvasBg = getThemeTokens(isLight).canvasBg;
+  const maxDist = Math.max(dSrc, dTgt);
+  const edgeHop = Number.isFinite(maxDist) ? Math.max(0, maxDist - 1) : Infinity;
+  const edgeMaxHops = Math.max(1, HOP_ATTENUATION_CONFIG.maxHops - 1);
+  const retention = computeHopCurve(edgeHop, {
+    ...HOP_ATTENUATION_CONFIG.edgeColor,
+    maxHops: edgeMaxHops
+  });
+  const width = computeHopCurve(edgeHop, {
+    ...HOP_ATTENUATION_CONFIG.edgeWidth,
+    maxHops: edgeMaxHops
+  });
+
+  return {
+    color: blendHexColor(styleTokens.edgeColor, canvasBg, retention),
+    width
+  };
+}
+
+export function getNodeHopZIndex(hopDistance: number | undefined): number {
+  const d = hopDistance ?? Infinity;
+  if (d <= 0) return 40;
+  if (d < 1.8) return 30;
+  if (d < 2.8) return 20;
+  if (d < 3.8) return 10;
+  return 1;
+}
+
+export function getEdgeHopZIndex(
+  sourceDistance: number | undefined,
+  targetDistance: number | undefined
+): number {
+  const dSrc = sourceDistance ?? Infinity;
+  const dTgt = targetDistance ?? Infinity;
+  if (dSrc === 0 || dTgt === 0) return 30;
+  const maxDist = Math.max(dSrc, dTgt);
+  if (maxDist < 2.8) return 20;
+  if (maxDist < 3.8) return 10;
+  return 1;
+}
 
 export interface TagCounts {
   posts: Record<string, number>;
@@ -309,7 +610,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: `/tags/${encodeURIComponent(tag)}/`,
       name: `#${title}`,
-      size: Math.log(count) + 1,
+      size: 1,
       group: 0,
       typeLabel: "Tag",
       description: tagEntry?.data.description || `${count} connected item${count > 1 ? 's' : ''}.`
@@ -332,7 +633,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: post.data.title,
-      size: 1.2,
+      size: 1,
       group: 1,
       typeLabel: "Post",
       description: post.data.description,
@@ -383,7 +684,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: pres.data.title,
-      size: 1.15,
+      size: 1,
       group: 3,
       typeLabel: "Presentation",
       description: pres.data.subtitle || pres.data.description,
@@ -414,7 +715,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: course.data.title,
-      size: 1.1,
+      size: 1,
       group: 4,
       typeLabel: "Course",
       description: course.data.description,
@@ -445,7 +746,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: project.data.title,
-      size: 1.1,
+      size: 1,
       group: 5,
       typeLabel: "Project",
       description: project.data.description,
@@ -476,7 +777,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: service.data.title,
-      size: 1.15,
+      size: 1,
       group: 6,
       typeLabel: "Service",
       description: service.data.description,
@@ -507,7 +808,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: nl.data.title,
-      size: 1.1,
+      size: 1,
       group: 7,
       typeLabel: "Newsletter",
       description: nl.data.description,
@@ -538,7 +839,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: vis.data.title,
-      size: 1.1,
+      size: 1,
       group: 8,
       typeLabel: "Visualization",
       description: vis.data.description,
@@ -567,7 +868,13 @@ export async function buildGraphPayload(options: {
         name: node.name,
         group: node.group,
         color: GRAPH_COLORS.dark[node.group] || GRAPH_COLORS.dark[0],
-        size: node.group === 0 ? (node.size * 12 + 10) : (node.size * 10 + 6)
+        size: 16,
+        rawSize: node.size,
+        typeLabel: node.typeLabel,
+        description: node.description,
+        date: node.date,
+        image: node.image,
+        tags: node.tags
       }
     });
   });
@@ -582,29 +889,41 @@ export async function buildGraphPayload(options: {
   });
 
   // 3. D3 / 3D-force nodes & connections
-  const d3Nodes = visNodes.map(n => ({
+  const d3Nodes: GraphNodePayload[] = visNodes.map(n => ({
     id: n.id,
     name: n.name,
     size: n.size,
-    group: n.group
+    group: n.group,
+    typeLabel: n.typeLabel,
+    description: n.description,
+    date: n.date,
+    image: n.image,
+    tags: n.tags
   }));
 
   // 4. Sigma nodes & edges
+  const defaultStyleTokens = getGraphStyleTokens(false);
   const sigmaNodes: SigmaNode[] = visNodes.map(n => ({
     id: n.id,
     label: n.name,
     x: (Math.random() - 0.5) * 100,
     y: (Math.random() - 0.5) * 100,
-    size: n.group === 0 ? Math.max(n.size * 2, 3) : 2,
+    size: 5,
+    rawSize: n.size,
     group: n.group,
-    color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0]
+    color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],
+    typeLabel: n.typeLabel,
+    description: n.description,
+    date: n.date,
+    image: n.image,
+    tags: n.tags
   }));
   const sigmaEdges: SigmaEdge[] = visConnections.map(conn => ({
     id: `${conn.sourceId}--${conn.targetId}`,
     source: conn.sourceId,
     target: conn.targetId,
-    size: 1,
-    color: "rgba(255,255,255,0.07)"
+    size: defaultStyleTokens.edgeWidth,
+    color: defaultStyleTokens.edgeColor
   }));
 
   return {

@@ -401,6 +401,8 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
                 <button 
                   type="button"
                   id="copy-web-btn"
+                  data-copy-target="#web-domain-text"
+                  data-copy-text="https://hackenberg.tech"
                   data-track-event="High Intent: Copy Web"
                   data-track-location="contact-page"
                   class="px-4 py-2 text-xs font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-200 hover:text-white border border-element-border-medium hover:border-brand-primary/40 transition-all duration-200 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-102"
@@ -408,7 +410,7 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
                   <svg id="copy-web-icon" class="w-3.5 h-3.5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
-                  <span id="copy-web-btn-text">Copy URL</span>
+                  <span id="copy-web-btn-text" data-copy-label>Copy URL</span>
                 </button>
               </div>
             </div>
@@ -441,6 +443,8 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
                 <button 
                   type="button"
                   id="copy-email-btn"
+                  data-copy-target="#email-address-text"
+                  data-copy-text="georg.hackenberg@fh-wels.at"
                   data-track-event="High Intent: Copy Email"
                   data-track-location="contact-page"
                   class="px-4 py-2 text-xs font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-200 hover:text-white border border-element-border-medium hover:border-brand-primary/40 transition-all duration-200 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-102"
@@ -448,7 +452,7 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
                   <svg id="copy-email-icon" class="w-3.5 h-3.5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
-                  <span id="copy-email-btn-text">Copy Email</span>
+                  <span id="copy-email-btn-text" data-copy-label>Copy Email</span>
                 </button>
               </div>
             </div>
@@ -481,6 +485,8 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
                 <button 
                   type="button"
                   id="copy-phone-btn"
+                  data-copy-target="#phone-number-text"
+                  data-copy-text="+43 664 80484 44066"
                   data-track-event="High Intent: Copy Phone"
                   data-track-location="contact-page"
                   class="px-4 py-2 text-xs font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-200 hover:text-white border border-element-border-medium hover:border-brand-primary/40 transition-all duration-200 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-102"
@@ -488,7 +494,7 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
                   <svg id="copy-phone-icon" class="w-3.5 h-3.5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
-                  <span id="copy-phone-btn-text">Copy Phone</span>
+                  <span id="copy-phone-btn-text" data-copy-label>Copy Phone</span>
                 </button>
               </div>
             </div>
@@ -610,78 +616,7 @@ const pageJsonLd = buildContactPageSchemas({ profiles });
 </Layout>
 
 <script>
-  // Copy to Clipboard logic for email
-  const copyEmailBtn = document.getElementById('copy-email-btn');
-  const emailText = document.getElementById('email-address-text');
-  const copyEmailBtnText = document.getElementById('copy-email-btn-text');
+  import { initClipboard } from "@commons/client/clipboard";
 
-  if (copyEmailBtn && emailText && copyEmailBtnText) {
-    copyEmailBtn.addEventListener('click', () => {
-      const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
-
-      navigator.clipboard.writeText(email).then(() => {
-        copyEmailBtnText.textContent = 'Copied!';
-        copyEmailBtn.classList.remove('bg-element-bg', 'text-gray-200');
-        copyEmailBtn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/40');
-
-        setTimeout(() => {
-          copyEmailBtnText.textContent = 'Copy Email';
-          copyEmailBtn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/40');
-          copyEmailBtn.classList.add('bg-element-bg', 'text-gray-200');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy email:', err);
-      });
-    });
-  }
-
-  // Copy to Clipboard logic for phone
-  const copyPhoneBtn = document.getElementById('copy-phone-btn');
-  const phoneText = document.getElementById('phone-number-text');
-  const copyPhoneBtnText = document.getElementById('copy-phone-btn-text');
-
-  if (copyPhoneBtn && phoneText && copyPhoneBtnText) {
-    copyPhoneBtn.addEventListener('click', () => {
-      const phone = phoneText.textContent?.trim() || '+43 664 80484 44066';
-
-      navigator.clipboard.writeText(phone).then(() => {
-        copyPhoneBtnText.textContent = 'Copied!';
-        copyPhoneBtn.classList.remove('bg-element-bg', 'text-gray-200');
-        copyPhoneBtn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/40');
-
-        setTimeout(() => {
-          copyPhoneBtnText.textContent = 'Copy Phone';
-          copyPhoneBtn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/40');
-          copyPhoneBtn.classList.add('bg-element-bg', 'text-gray-200');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy phone:', err);
-      });
-    });
-  }
-
-  // Copy to Clipboard logic for web
-  const copyWebBtn = document.getElementById('copy-web-btn');
-  const webText = document.getElementById('web-domain-text');
-  const copyWebBtnText = document.getElementById('copy-web-btn-text');
-
-  if (copyWebBtn && webText && copyWebBtnText) {
-    copyWebBtn.addEventListener('click', () => {
-      const url = webText.textContent?.trim() || 'https://hackenberg.tech';
-
-      navigator.clipboard.writeText(url).then(() => {
-        copyWebBtnText.textContent = 'Copied!';
-        copyWebBtn.classList.remove('bg-element-bg', 'text-gray-200');
-        copyWebBtn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/40');
-
-        setTimeout(() => {
-          copyWebBtnText.textContent = 'Copy URL';
-          copyWebBtn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/40');
-          copyWebBtn.classList.add('bg-element-bg', 'text-gray-200');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy URL:', err);
-      });
-    });
-  }
+  initClipboard();
 </script>
