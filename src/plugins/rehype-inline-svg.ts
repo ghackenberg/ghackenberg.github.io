@@ -94,7 +94,11 @@ function computeContentUrl(src: string, resolvedPath: string): string {
   return src;
 }
 
-function createFigureElement(imgNode: Element, mdPath: string): Element | null {
+function createFigureElement(
+  imgNode: Element,
+  mdPath: string,
+  svgDependencies: Set<string>
+): Element | null {
   const src = String(imgNode.properties?.src || '');
   const alt = String(imgNode.properties?.alt || '').trim();
   const title = String(imgNode.properties?.title || alt || '').trim();
@@ -104,6 +108,7 @@ function createFigureElement(imgNode: Element, mdPath: string): Element | null {
     return null;
   }
 
+  svgDependencies.add(resolvedPath);
   const svgRaw = fs.readFileSync(resolvedPath, 'utf8');
   const $ = cheerio.load(svgRaw, { xml: true });
   const $svg = $('svg').first();
@@ -150,8 +155,14 @@ function createFigureElement(imgNode: Element, mdPath: string): Element | null {
     }
   });
 
-  // Scope internal SVG IDs to prevent duplicate ID collisions in HTML documents
-  const hash = crypto.createHash('md5').update(resolvedPath).digest('hex').slice(0, 8);
+  // Scope internal SVG IDs using both normalized file path and SVG content hash
+  const hash = crypto
+    .createHash('sha256')
+    .update(resolvedPath.replace(/\\/g, '/'))
+    .update('\0')
+    .update(svgRaw.replace(/\r\n/g, '\n'))
+    .digest('hex')
+    .slice(0, 8);
   const prefix = `svg-${hash}-`;
 
   const idMap = new Map<string, string>();
@@ -177,7 +188,7 @@ function createFigureElement(imgNode: Element, mdPath: string): Element | null {
   const contentUrl = computeContentUrl(src, resolvedPath);
 
   const figureHtml = `
-<figure class="svg-diagram my-8 overflow-hidden rounded-2xl border border-element-border bg-element-bg/50 p-2 sm:p-4" data-diagram-title="${escapeAttr(title)}" data-diagram-caption="${escapeAttr(alt)}">
+<figure class="svg-diagram my-8 overflow-hidden rounded-2xl border border-element-border bg-element-bg/50 p-2 sm:p-4" data-diagram-title="${escapeAttr(title)}" data-diagram-caption="${escapeAttr(alt)}" data-svg-hash="${escapeAttr(hash)}">
   <meta itemprop="name" content="${escapeAttr(title)}" />
   <meta itemprop="description" content="${escapeAttr(alt)}" />
   <meta itemprop="contentUrl" content="${escapeAttr(contentUrl)}" />
@@ -204,6 +215,7 @@ export default function rehypeInlineSvg() {
       return;
     }
     const mdPath: string = rawPath;
+    const svgDependencies = new Set<string>();
 
     function transformChildren(parent: HastParent) {
       if (!Array.isArray(parent.children)) {
@@ -220,7 +232,7 @@ export default function rehypeInlineSvg() {
         if (child.type === 'element' && child.tagName === 'p') {
           const soleImg = getSoleSvgImgInParagraph(child);
           if (soleImg) {
-            const figure = createFigureElement(soleImg, mdPath);
+            const figure = createFigureElement(soleImg, mdPath, svgDependencies);
             if (figure) {
               parent.children[i] = figure;
               continue;
@@ -230,7 +242,7 @@ export default function rehypeInlineSvg() {
 
         // Case B: Standalone <img> pointing to local SVG
         if (child.type === 'element' && isLocalSvgImg(child)) {
-          const figure = createFigureElement(child, mdPath);
+          const figure = createFigureElement(child, mdPath, svgDependencies);
           if (figure) {
             parent.children[i] = figure;
             continue;
@@ -245,5 +257,12 @@ export default function rehypeInlineSvg() {
     }
 
     transformChildren(tree);
+
+    if (file && svgDependencies.size > 0) {
+      file.data = {
+        ...file.data,
+        inlineSvgDependencies: [...svgDependencies],
+      };
+    }
   };
 }

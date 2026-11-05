@@ -2,10 +2,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-const hashCache = new Map<string, string>();
+interface CachedHashEntry {
+  mtimeMs: number;
+  size: number;
+  hash: string;
+}
+
+const hashCache = new Map<string, CachedHashEntry>();
 
 /**
- * Computes an MD5 content hash for a file on disk, with in-memory caching.
+ * Computes an MD5 content hash for a file on disk, with mtime/size-aware in-memory caching
+ * so in-place file overwrites during `astro dev` immediately invalidate the cached digest.
  *
  * @param filePath Absolute or relative path to the target file.
  * @param length Desired character length of the truncated hexadecimal hash (default: 8).
@@ -13,14 +20,19 @@ const hashCache = new Map<string, string>();
  */
 export function getFileContentHash(filePath: string, length = 8): string {
   const resolvedPath = path.resolve(filePath);
+  const stat = fs.statSync(resolvedPath);
   const cached = hashCache.get(resolvedPath);
-  if (cached) {
-    return cached.slice(0, length);
+  if (cached && cached.mtimeMs === stat.mtimeMs && cached.size === stat.size) {
+    return cached.hash.slice(0, length);
   }
 
   const buffer = fs.readFileSync(resolvedPath);
   const fullHash = crypto.createHash('md5').update(buffer).digest('hex');
-  hashCache.set(resolvedPath, fullHash);
+  hashCache.set(resolvedPath, {
+    mtimeMs: stat.mtimeMs,
+    size: stat.size,
+    hash: fullHash,
+  });
   return fullHash.slice(0, length);
 }
 

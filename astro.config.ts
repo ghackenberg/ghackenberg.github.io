@@ -50,47 +50,6 @@ const mimeTypes: Record<string, string> = {
   '.css': 'text/css',
 };
 
-function findColocatedMarkdownFiles(svgFilePath: string, contentDirNorm: string): string[] {
-  const resolvedSvg = path.resolve(svgFilePath);
-  const svgDir = path.dirname(resolvedSvg);
-  const svgFileName = path.basename(resolvedSvg);
-  const candidateDirs: string[] = [svgDir];
-
-  const parentDir = path.dirname(svgDir);
-  if (parentDir.replace(/\\/g, '/').startsWith(`${contentDirNorm}/`)) {
-    candidateDirs.push(parentDir);
-  }
-
-  const slidesDir = path.join(svgDir, 'slides');
-  if (fs.existsSync(slidesDir)) {
-    candidateDirs.push(slidesDir);
-  }
-
-  const allMdFiles: string[] = [];
-  for (const dir of candidateDirs) {
-    if (!fs.existsSync(dir)) continue;
-    try {
-      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        if (entry.isFile() && /\.(md|mdx)$/i.test(entry.name)) {
-          allMdFiles.push(path.join(dir, entry.name));
-        }
-      }
-    } catch {
-      // ignore unreadable directory
-    }
-  }
-
-  const referencingMdFiles = allMdFiles.filter((mdFile) => {
-    try {
-      return fs.readFileSync(mdFile, 'utf8').includes(svgFileName);
-    } catch {
-      return false;
-    }
-  });
-
-  return referencingMdFiles.length > 0 ? referencingMdFiles : allMdFiles;
-}
-
 function copyContentAssets(): AstroIntegration {
   return {
     name: 'copy-content-assets',
@@ -99,13 +58,11 @@ function copyContentAssets(): AstroIntegration {
         const pluginsDir = path.resolve('src/plugins').replace(/\\/g, '/');
         const contentDir = path.resolve('src/content').replace(/\\/g, '/');
         server.watcher.add(pluginsDir);
-        server.watcher.add(contentDir);
 
-        const pendingSvgPaths = new Set<string>();
-        let svgDebounceTimer: ReturnType<typeof setTimeout> | undefined;
         let pluginDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+        let assetIndexDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
-        const invalidateContentCacheOnAssetOrPluginChange = (changedPath: string) => {
+        const onPluginOrAssetChange = (changedPath: string) => {
           const normPath = path.resolve(changedPath).replace(/\\/g, '/');
           if (normPath.startsWith(`${pluginsDir}/`)) {
             if (pluginDebounceTimer) {
@@ -117,48 +74,30 @@ function copyContentAssets(): AstroIntegration {
             }, 300);
           } else if (
             normPath.startsWith(`${contentDir}/`) &&
-            normPath.toLowerCase().endsWith('.svg')
+            /\.(svg|png|jpe?g|webp|avif|gif)$/i.test(normPath)
           ) {
-            pendingSvgPaths.add(path.resolve(changedPath));
-            if (svgDebounceTimer) {
-              clearTimeout(svgDebounceTimer);
+            if (assetIndexDebounceTimer) {
+              clearTimeout(assetIndexDebounceTimer);
             }
-            svgDebounceTimer = setTimeout(() => {
-              svgDebounceTimer = undefined;
-              const affectedMdFiles = new Set<string>();
-              for (const svgPath of pendingSvgPaths) {
-                for (const mdFile of findColocatedMarkdownFiles(svgPath, contentDir)) {
-                  affectedMdFiles.add(mdFile);
-                }
-              }
-              pendingSvgPaths.clear();
+            assetIndexDebounceTimer = setTimeout(() => {
+              assetIndexDebounceTimer = undefined;
               buildImageIndex();
-
-              const now = new Date();
-              for (const mdFile of affectedMdFiles) {
-                try {
-                  if (fs.existsSync(mdFile)) {
-                    fs.utimesSync(mdFile, now, now);
-                    server.watcher.emit('unlink', mdFile);
-                    server.watcher.emit('add', mdFile);
-                  }
-                } catch {
-                  // ignore transient Windows file lock during touch
-                }
-              }
             }, 150);
           }
         };
-        server.watcher.on('change', invalidateContentCacheOnAssetOrPluginChange);
-        server.watcher.on('add', invalidateContentCacheOnAssetOrPluginChange);
-        server.watcher.on('unlink', invalidateContentCacheOnAssetOrPluginChange);
+        server.watcher.on('change', onPluginOrAssetChange);
+        server.watcher.on('add', onPluginOrAssetChange);
+        server.watcher.on('unlink', onPluginOrAssetChange);
 
         server.middlewares.use(
           (req: IncomingMessage, res: ServerResponse, next: () => void) => {
             if (req.url === '/styles/graphics.css' || req.url?.startsWith('/styles/graphics.css?')) {
               const graphicsPath = path.resolve('src/styles/graphics.css');
               if (fs.existsSync(graphicsPath)) {
-                res.writeHead(200, { 'Content-Type': 'text/css' });
+                res.writeHead(200, {
+                  'Content-Type': 'text/css',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(graphicsPath).pipe(res);
                 return;
               }
@@ -170,7 +109,10 @@ function copyContentAssets(): AstroIntegration {
             if (/^\/assets\/branding\/og-share-preview-[a-f0-9]{8}\.png$/.test(cleanUrl)) {
               const filePath = path.join(BRANDING_CACHE_DIR, 'og-share-preview.png');
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.writeHead(200, {
+                  'Content-Type': 'image/png',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
@@ -179,7 +121,10 @@ function copyContentAssets(): AstroIntegration {
             if (cleanUrl === '/favicon.svg') {
               const filePath = path.join(BRANDING_CACHE_DIR, 'favicon.svg');
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-                res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+                res.writeHead(200, {
+                  'Content-Type': 'image/svg+xml',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
@@ -191,7 +136,10 @@ function copyContentAssets(): AstroIntegration {
             if (brandingIconMatch) {
               const filePath = path.join(BRANDING_CACHE_DIR, `${brandingIconMatch[1]}.png`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.writeHead(200, {
+                  'Content-Type': 'image/png',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
@@ -203,7 +151,10 @@ function copyContentAssets(): AstroIntegration {
               const themeSuffix = mapMatch[2] || '';
               const filePath = path.join(MAP_CACHE_DIR, `${mapMatch[1]}${themeSuffix}.png`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.writeHead(200, {
+                  'Content-Type': 'image/png',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
@@ -216,7 +167,10 @@ function copyContentAssets(): AstroIntegration {
               const filePath = path.resolve('.cache/slides-audio', presId, `${slideBase}.${ext}`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
                 const contentType = mimeTypes[`.${ext}`] || 'application/octet-stream';
-                res.writeHead(200, { 'Content-Type': contentType });
+                res.writeHead(200, {
+                  'Content-Type': contentType,
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
@@ -237,7 +191,10 @@ function copyContentAssets(): AstroIntegration {
               const [, presId] = presPreviewMatch;
               const filePath = path.resolve('src/content/presentations', presId, 'preview.jpg');
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-                res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+                res.writeHead(200, {
+                  'Content-Type': 'image/jpeg',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
@@ -251,13 +208,19 @@ function copyContentAssets(): AstroIntegration {
               const ext = path.extname(filePath).toLowerCase();
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
                 const contentType = mimeTypes[ext] || 'application/octet-stream';
-                res.writeHead(200, { 'Content-Type': contentType });
+                res.writeHead(200, {
+                  'Content-Type': contentType,
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(filePath).pipe(res);
                 return;
               }
               const mermaidCached = path.resolve('.cache/mermaid/exports', collection, cleanRest);
               if (fs.existsSync(mermaidCached) && fs.statSync(mermaidCached).isFile()) {
-                res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+                res.writeHead(200, {
+                  'Content-Type': 'image/svg+xml',
+                  'Cache-Control': 'no-cache',
+                });
                 fs.createReadStream(mermaidCached).pipe(res);
                 return;
               }

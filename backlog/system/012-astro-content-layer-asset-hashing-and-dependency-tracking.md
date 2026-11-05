@@ -2,7 +2,7 @@
 
 - **ID:** `SYSTEM-012`
 - **Kategorie / Domäne:** `Build Engineering / Content Layer / DX`
-- **Status:** `proposed`
+- **Status:** `implemented`
 - **Priorität / Hebel:** `Mittel` (Architektonische Bereinigung von `astro.config.ts` und der Rehype-Pipeline)
 - **Erstellt am:** `2026-11-05`
 - **Ursprung:** Session 2026-11-05 (Root-Cause-Analyse zur fehlenden Cache-Invalidierung in `.astro/data-store.json` bei Änderungen an eingebetteten `.svg`-Dateien und in-place überschriebenen Rasterbildern)
@@ -124,7 +124,7 @@ Sobald die Dependency-Registrierung nativ über den Content-Layer-Digest (Säule
 
 | Datei / Modul | Geplante Änderung im Rahmen von `SYSTEM-012` |
 | :--- | :--- |
-| [`src/commons/server/content-loader.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/content-hash.ts) *(Neu)* | Implementierung des `assetAwareGlob`-Loaders mit Composite-SHA-256-Digest über Markdown-Inhalt + ko-lozierte `.svg`/Bild-Assets und gezielter Einzel-Entry-Invalidierung im `watcher`. |
+| [`src/commons/server/content-loader.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/content-loader.ts) *(Neu)* | Implementierung des `assetAwareGlob`-Loaders mit Composite-SHA-256-Digest über Markdown-Inhalt + ko-lozierte `.svg`/Bild-Assets und gezielter Einzel-Entry-Invalidierung im `watcher`. |
 | [`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts) | Umstellung der relevanten Collections (`posts`, `presentations`, `courses`, `projects`, `services`, `publications`, `visualizations`, `newsletters`) von `glob(...)` auf `assetAwareGlob(...)`. |
 | [`src/plugins/rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) | Berechnung des SVG-ID-Scoping-Hashes über den **SVG-Dateiinhalt + Pfad** (statt nur über `resolvedPath`) sowie Registrierung der gelesenen `.svg`-Pfade im `VFile`-Metadatenobjekt. |
 | [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) | Entfernung des `.astro/data-store.json`-Lösch- und `server.restart()`-Workarounds für Content-SVGs in `copyContentAssets`; Ergänzung von `Cache-Control: no-cache` auf ungehashten Dev-Middleware-Routen. |
@@ -135,10 +135,10 @@ Sobald die Dependency-Registrierung nativ über den Content-Layer-Digest (Säule
 
 Vor der Umsetzung sind folgende technische Detailfragen abzustimmen:
 
-- [ ] **Q1 (Umfang des Asset-Fingerprints im Loader — Verzeichnis-Scan vs. AST-Referenz-Scan):**  
-  Soll `assetAwareGlob` pauschal alle ko-lozierten Bild- und `.svg`-Dateien im jeweiligen Eintrag-Ordner (`src/content/posts/<slug>/*`) in den Composite-Digest einbeziehen (extrem schnell und erfasst automatisch auch Frontmatter-Bilder wie `hero.jpg` und `preview.jpg`), oder sollen zusätzlich auch ordnerübergreifende Referenzen (z. B. `src/assets/...`) aus dem Markdown-Text geparst werden?
-- [ ] **Q2 (Verhalten bei Änderungen an `src/styles/graphics.css`):**  
-  Da [`src/styles/graphics.css`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/styles/graphics.css) im Production-Build direkt in eigenständige `.svg`-Kopien eingebettet wird, im HTML-DOM jedoch global über [`src/styles/theme.css`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/styles/theme.css) geladen wird: Reicht im Dev-Server das native Vite-CSS-HMR für `graphics.css`, oder soll der Hash von `graphics.css` ebenfalls Teil des SVG-Build-Digests sein?
+- [x] **Q1 (Umfang des Asset-Fingerprints im Loader — Verzeichnis-Scan + relative Referenzen):**  
+  `assetAwareGlob` bezieht sowohl alle ko-lozierten Bild- und `.svg`-Dateien im jeweiligen Eintrag-Ordner (`src/content/<collection>/<slug>/*` inkl. Präsentations-Stammordner bei `slides/`) als auch explizite relative Asset-Referenzen (`./...`, `../...`) aus Frontmatter und Markdown-Body in den Composite-Digest ein.
+- [x] **Q2 (Verhalten bei Änderungen an `src/styles/graphics.css`):**  
+  Sobald ein Eintrag mindestens eine `.svg`-Datei referenziert/ko-loziert hat, fließt auch der Content-Hash von [`src/styles/graphics.css`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/styles/graphics.css) deterministisch in den Asset-Fingerprint ein.
 
 ---
 

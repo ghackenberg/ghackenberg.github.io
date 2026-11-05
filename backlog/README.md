@@ -21,7 +21,7 @@ Initiativen, die das Zusammenspiel aus Frontend-Features auf `hackenberg.tech` u
 | **SYSTEM-009** | Client-Script Deduplication, Preact/Nanostores & Zero-`innerHTML` Gate | Frontend Architecture / QA | Hoch | `implemented` | [009-client-script-deduplication-and-preact-dom-hardening.md](./system/009-client-script-deduplication-and-preact-dom-hardening.md) |
 | **SYSTEM-010** | Target Audience Profiles Collection, Adaptive Linting & Multi-Persona Review | Content Architecture / CI | Hoch | `proposed` | [010-target-audience-collection-and-adaptive-review.md](./system/010-target-audience-collection-and-adaptive-review.md) |
 | **SYSTEM-011** | Quadratisches SVG-Standardformat, Bestands-Migration & Aspect-Ratio-Linter | Visual Design / CI / QA | Mittel | `proposed` | [011-square-svg-aspect-ratio-migration-and-linter.md](./system/011-square-svg-aspect-ratio-migration-and-linter.md) |
-| **SYSTEM-012** | Natives Astro Asset-Hashing, Content-Layer Dependency-Tracking & Ablösung manueller Dev-Watcher-Workarounds | Build Engineering / Content Layer / DX | Mittel | `proposed` | [012-astro-content-layer-asset-hashing-and-dependency-tracking.md](./system/012-astro-content-layer-asset-hashing-and-dependency-tracking.md) |
+| **SYSTEM-012** | Natives Astro Asset-Hashing, Content-Layer Dependency-Tracking & Ablösung manueller Dev-Watcher-Workarounds | Build Engineering / Content Layer / DX | Mittel | `implemented` | [012-astro-content-layer-asset-hashing-and-dependency-tracking.md](./system/012-astro-content-layer-asset-hashing-and-dependency-tracking.md) |
 
 ---
 

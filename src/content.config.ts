@@ -1,7 +1,7 @@
 import { defineCollection, reference, type ImageFunction } from 'astro:content';
 import { authorEntrySchema } from '@commons/shared/authors';
+import { assetAwareGlob as glob } from '@commons/server/content-loader';
 import { z } from 'astro/zod';
-import { glob } from 'astro/loaders';
 import fs from 'node:fs';
 import path from 'node:path';
 
