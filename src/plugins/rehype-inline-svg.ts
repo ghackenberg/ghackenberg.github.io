@@ -116,25 +116,80 @@ function createFigureElement(
     return null;
   }
 
-  const existingClass = $svg.attr('class') || '';
-  const classNames = new Set(existingClass.split(/\s+/).filter(Boolean));
-  classNames.add('w-full');
-  classNames.add('h-auto');
-  classNames.add('max-w-full');
-  $svg.attr('class', Array.from(classNames).join(' '));
-
-  $svg.attr('role', 'img');
-  const label = alt || title;
-  if (label) {
-    $svg.attr('aria-label', label);
-  }
-
   if (!$svg.attr('viewBox')) {
     const w = $svg.attr('width');
     const h = $svg.attr('height');
     if (w && h && !w.includes('%') && !h.includes('%')) {
       $svg.attr('viewBox', `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
     }
+  }
+
+  // Compute font-size-relative max-width so mobile-first SVGs with large fonts do not look oversized on desktop
+  const vbParts = ($svg.attr('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+  const vbWidth = vbParts.length === 4 && !Number.isNaN(vbParts[2]) ? vbParts[2] : 0;
+
+  const textSamples: Array<{ fs: number; weight: number }> = [];
+  $svg.find('text').each((_, el) => {
+    const $el = $(el);
+    if ($el.closest('defs, clipPath, mask, symbol').length > 0) return;
+    const trimmed = $el.text().trim();
+    if (!trimmed) return;
+    const fsAttr = $el.attr('font-size') || $el.closest('[font-size]').attr('font-size');
+    const fsVal = fsAttr ? parseFloat(fsAttr) : 12;
+    if (!Number.isNaN(fsVal) && fsVal > 0) {
+      textSamples.push({ fs: fsVal, weight: Math.max(1, trimmed.length) });
+    }
+  });
+
+  let figureMaxStyleAttr = '';
+  if (vbWidth > 0 && textSamples.length > 0) {
+    const totalWeight = textSamples.reduce((acc, s) => acc + s.weight, 0);
+    const weightedMeanFs =
+      textSamples.reduce((acc, s) => acc + s.fs * s.weight, 0) / totalWeight;
+
+    const sortedSamples = [...textSamples].sort((a, b) => a.fs - b.fs);
+    let cumWeight = 0;
+    let p15Fs = sortedSamples[0].fs;
+    for (const sample of sortedSamples) {
+      cumWeight += sample.weight;
+      if (cumWeight >= totalWeight * 0.15) {
+        p15Fs = sample.fs;
+        break;
+      }
+    }
+
+    const TARGET_MEAN_FONT_PX = 14;
+    const MIN_SMALL_FONT_PX = 12.2;
+    const widthByMean = vbWidth * (TARGET_MEAN_FONT_PX / weightedMeanFs);
+    const widthByMinFloor = vbWidth * (MIN_SMALL_FONT_PX / p15Fs);
+    const rawTargetSvgWidth = Math.max(widthByMean, widthByMinFloor);
+
+    const maxSvgWidthPx = Math.round(
+      Math.max(320, Math.min(880, Math.min(vbWidth, rawTargetSvgWidth)))
+    );
+    const maxFigureWidthPx = maxSvgWidthPx + 34;
+
+    const existingStyle = ($svg.attr('style') || '').trim();
+    const cleanStyle = existingStyle.replace(/max-width\s*:\s*[^;]+;?/gi, '').trim();
+    $svg.attr(
+      'style',
+      cleanStyle ? `${cleanStyle}; max-width: ${maxSvgWidthPx}px` : `max-width: ${maxSvgWidthPx}px`
+    );
+    figureMaxStyleAttr = ` style="max-width: ${maxFigureWidthPx}px"`;
+  }
+
+  const existingClass = $svg.attr('class') || '';
+  const classNames = new Set(existingClass.split(/\s+/).filter(Boolean));
+  classNames.add('w-full');
+  classNames.add('h-auto');
+  classNames.add('max-w-full');
+  classNames.add('mx-auto');
+  $svg.attr('class', Array.from(classNames).join(' '));
+
+  $svg.attr('role', 'img');
+  const label = alt || title;
+  if (label) {
+    $svg.attr('aria-label', label);
   }
 
   // Strip @import url('/styles/graphics.css') during HTML inlining (styles already provided by theme.css)
@@ -188,7 +243,7 @@ function createFigureElement(
   const contentUrl = computeContentUrl(src, resolvedPath);
 
   const figureHtml = `
-<figure class="svg-diagram my-8 overflow-hidden rounded-2xl border border-element-border bg-element-bg/50 p-2 sm:p-4" data-diagram-title="${escapeAttr(title)}" data-diagram-caption="${escapeAttr(alt)}" data-svg-hash="${escapeAttr(hash)}">
+<figure class="svg-diagram my-8 mx-auto w-full overflow-hidden rounded-2xl border border-element-border bg-element-bg/50 p-2 sm:p-4"${figureMaxStyleAttr} data-diagram-title="${escapeAttr(title)}" data-diagram-caption="${escapeAttr(alt)}" data-svg-hash="${escapeAttr(hash)}">
   <meta itemprop="name" content="${escapeAttr(title)}" />
   <meta itemprop="description" content="${escapeAttr(alt)}" />
   <meta itemprop="contentUrl" content="${escapeAttr(contentUrl)}" />

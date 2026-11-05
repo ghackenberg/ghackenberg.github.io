@@ -166,6 +166,8 @@ However, as soon as engineering teams attempted to apply backend MCP servers to 
 1. **The Authentication & Session Isolation Bottleneck:** A backend MCP server runs in an isolated OS subprocess or remote container. It has zero access to the user's browser cookie jar (`HttpOnly` session cookies), hardware-backed WebAuthn/Passkey assertions, enterprise SAML/OIDC Single Sign-On (SSO) sessions, or ephemeral Cross-Site Request Forgery (CSRF) tokens. Exposing a web application via a backend MCP server forces the developer to build, host, and secure a parallel OAuth2 API infrastructure—even when the web application already has a fully authenticated client-side session running in the user's browser tab.
 2. **The UI Disintermediation Bottleneck:** Even when a backend MCP server is provisioned with separate API credentials, any mutation it performs happens *out-of-band* on the remote server. If a human user is staring at an open browser tab containing a client-side React, Vue, or WebGL state tree (such as an unsaved vector canvas or an interactive filter grid), a backend API call cannot update the in-memory client state without building bespoke WebSocket push synchronization. Worse, the human user loses immediate visual situational awareness of what the agent is staging before committing a change.
 
+The timeline below traces the progression from Anthropic's backend MCP specification to community browser bridges and the joint Microsoft/Google W3C WebMCP standard:
+
 ```mermaid
 ---
 title: "Evolution of In-Browser Model Context Protocol Toward W3C WebMCP"
@@ -291,6 +293,8 @@ Every field and method in this WebIDL contract enforces specific runtime invaria
   - `"DataError"` (`invalid input`): The caller's `inputObject` failed JSON serialization or violated the tool's JSON Schema 2020-12 `inputSchema`.
   - `"OperationError"` (`tool rejected` / `unserializable result`): Either the tool's `execute` callback rejected its promise during runtime execution, or its resolved return value could not be serialized to a JSON string.
   - `"AbortError"` (`target document unloaded`): The target `Document` unloaded or navigated away, or the caller's/registration's `AbortSignal` aborted before completion.
+
+The sequence diagram below illustrates how an agent harness invokes `executeTool()` on `document.modelContext`, triggering schema validation, `ToolActivatedEvent` dispatch, and in-page user confirmation:
 
 ```mermaid
 ---
@@ -507,7 +511,9 @@ What about millions of server-rendered or progressive-enhancement web pages that
 - **Form-Level Attributes (`toolname`, `tooldescription`, `toolautosubmit`):** Adding `toolname` and `tooldescription` to a `<form>` instructs the browser parser to automatically synthesize a `ModelContextTool` whose `inputSchema` is derived from the form's child `<input>`, `<select>`, and `<textarea>` validation constraints (`type`, `required`, `min`, `max`, `pattern`, and `<option>` enums). By default, when an agent invokes a declarative form tool, the browser populates the form fields and highlights the submit button without submitting—allowing the human user to inspect the staged values and click submit manually. Only if the developer explicitly sets the boolean `toolautosubmit` attribute does the browser automatically dispatch the form submission.
 - **Parameter Overrides (`toolparamtitle`, `toolparamdescription`):** Individual form controls can override their synthesized JSON Schema property descriptions using `toolparamtitle` and `toolparamdescription` (falling back to the associated `<label>` text or `aria-description` if omitted).
 - **Agent-Active CSS Pseudo-Classes (`:tool-form-active` & `:tool-submit-active`):** While an agent is populating or awaiting confirmation on a declarative form, the browser applies `:tool-form-active` to the `<form>` element and `:tool-submit-active` to its active submit button, enabling clear visual styling (such as an amber or blue focus ring showing the human user where the agent is staging data).
-- **`SubmitEvent.agentInvoked` and `SubmitEvent.respondWith(Promise)`:** When a form submission is triggered by an agent tool call rather than a human mouse click, the DOM `SubmitEvent` carries `event.agentInvoked === true`. If the page handles submission asynchronously via JavaScript (`event.preventDefault()`), it passes its result promise to `event.respondWith(promise)` so the resolved data is piped back to the calling agent as the tool's output:
+- **`SubmitEvent.agentInvoked` and `SubmitEvent.respondWith(Promise)`:** When a form submission is triggered by an agent tool call rather than a human mouse click, the DOM `SubmitEvent` carries `event.agentInvoked === true`. If the page handles submission asynchronously via JavaScript (`event.preventDefault()`), it passes its result promise to `event.respondWith(promise)` so the resolved data is piped back to the calling agent as the tool's output.
+
+The following HTML and JavaScript snippet demonstrates a declarative WebMCP form that auto-synthesizes its JSON Schema 2020-12 input contract and returns structured JSON via `event.respondWith()`:
 
 ```html
 <!-- Declarative WebMCP HTML Form: Auto-synthesizes JSON Schema 2020-12 from HTML5 constraints -->
@@ -603,7 +609,9 @@ How do standalone engineering harnesses like **Google Antigravity** (the environ
 1. **Dedicated Experimental WebMCP CDP Category (`--categoryExperimentalWebmcp=true`):** Starting with `chrome-devtools-mcp` v0.21+ paired with Chrome 149+, launching the MCP server with `--categoryExperimentalWebmcp=true` enables native CDP inspection of the browser's `WebMCP` domain. It automatically exposes two first-class MCP tools to the coding agent:
    - `list_webmcp_tools`: Queries the active browser tab's `document.modelContext` registry and returns all tool names, descriptions, `ToolAnnotations` (`debugging: true`, `readOnlyHint`, etc.), and JSON Schema 2020-12 `inputSchema` definitions.
    - `execute_webmcp_tool`: Dispatches a validated JSON payload over CDP into the target document's `document.modelContext.executeTool()` method and returns the serialized JSON result over `stdio` to the coding agent.
-2. **Universal CDP `evaluate_script` Fallback:** Even on standard `chrome-devtools-mcp` configurations without experimental flags enabled, any agent with access to `evaluate_script` can discover and invoke WebMCP tools deterministically in a single round-trip:
+2. **Universal CDP `evaluate_script` Fallback:** Even on standard `chrome-devtools-mcp` configurations without experimental flags enabled, any agent with access to `evaluate_script` can discover and invoke WebMCP tools deterministically in a single round-trip.
+
+The MCP server configuration below enables the experimental WebMCP CDP domain in `chrome-devtools-mcp`:
 
 ```json
 {

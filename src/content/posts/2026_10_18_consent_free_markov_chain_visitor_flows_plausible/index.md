@@ -183,6 +183,8 @@ Crucially, `document.referrer` is an intrinsic, transient property of the HTTP/H
 1. **Boundary Entry State (`(entry)`):** If `document.referrer` is empty (direct URL entry, bookmark, or `noreferrer` link), if its origin `refUrl.origin` differs from `window.location.origin` (external search engine or social referral), or if its normalized pathname equals the current pathname `refNorm === curNorm` (same-page reload or hash jump), the transition originated outside the internal state graph or represents a self-loop reload. We map all such cases to the canonical boundary symbol `'(entry)'`.
 2. **Internal Upstream State (`refNorm`):** If `refUrl.origin === window.location.origin` and `refNorm !== curNorm`, the visitor executed a genuine internal state transition $S_{t-1} \to S_t$. We strip query parameters (`?`) and fragment identifiers (`#`), enforce leading and trailing slashes, and return the canonical internal pathname (e.g., `'/posts/'` or `'/services/'`).
 
+The following helper functions in `src/commons/client/telemetry.ts` implement this stateless pathname normalization and predecessor extraction:
+
 ```typescript
 // Excerpt from src/commons/client/telemetry.ts
 function normalizeInternalPathname(rawPathname: string): string {

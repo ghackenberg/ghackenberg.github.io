@@ -86,6 +86,14 @@ function computeEntryAssetFingerprint(mdFilePath: string, mdContents: string): s
         // ignore
       }
     }
+    const rehypeInlineSvgPath = path.resolve('src/plugins/rehype-inline-svg.ts');
+    if (fs.existsSync(rehypeInlineSvgPath)) {
+      try {
+        parts.push(`rehype-inline-svg.ts:${getFileContentHash(rehypeInlineSvgPath, 16)}`);
+      } catch {
+        // ignore
+      }
+    }
   }
 
   return parts.join('|');
@@ -237,6 +245,29 @@ export function assetAwareGlob(options: Parameters<typeof glob>[0]): Loader {
         const onFsEvent = (changedPath: string) => {
           const resolved = path.resolve(changedPath);
           const norm = resolved.replace(/\\/g, '/');
+
+          if (
+            (norm.endsWith('/src/styles/graphics.css') ||
+              norm.endsWith('/src/plugins/rehype-inline-svg.ts')) &&
+            globChangeHandler
+          ) {
+            for (const mdFile of mdFileByBaseDigest.values()) {
+              try {
+                const mdDir = path.dirname(mdFile);
+                const hasSvgInDir =
+                  fs.existsSync(mdDir) &&
+                  fs.readdirSync(mdDir).some((f) => f.toLowerCase().endsWith('.svg'));
+                if (hasSvgInDir) {
+                  indexMarkdownFile(mdFile);
+                  void globChangeHandler(mdFile);
+                }
+              } catch {
+                // ignore
+              }
+            }
+            return;
+          }
+
           if (norm !== baseDirNorm && !norm.startsWith(`${baseDirNorm}/`)) {
             return;
           }

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic of the six-gate postbuild validator inspecting 433 built HTML pages through three shield verification stages into an approved dist/ build">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Single Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Subtle Ambient Pipeline Glow -->
+  <ellipse cx="240" cy="252" rx="196" ry="156" fill="var(--svg-card)" opacity="0.6" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-blue-text)">SIX-GATE POSTBUILD VALIDATOR</text>
+
+  <!-- ===================================================================
+       TOP INPUT: HTML DOCUMENT STACK ICON (433 Pages)
+       =================================================================== -->
+  <circle cx="84" cy="84" r="30" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <!-- Stacked HTML Pages Icon -->
+  <rect x="74" y="66" width="24" height="28" rx="3" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <rect x="68" y="72" width="24" height="28" rx="3" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+  <polyline points="75,83 72,86 75,89" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="1.6" stroke-linecap="round" />
+  <polyline points="85,83 88,86 85,89" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="1.6" stroke-linecap="round" />
+
+  <text x="272" y="80" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-text-primary)">433 Built HTML Pages</text>
+  <text x="272" y="100" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">3,074 @id Entities · 14,221 Pointers</text>
+
+  <path d="M 84 114 V 138" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-end="url(#arr-blue)" />
+
+  <!-- ===================================================================
+       STAGE 1 (GATES 1–2): BLUE SHIELD + 3NF HIERARCHY ICON
+       =================================================================== -->
+  <path d="M 84 144 L 112 154 V 178 C 112 196, 84 208, 84 208 C 84 208, 56 196, 56 178 V 154 Z" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <text x="84" y="181" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">G1–2</text>
+
+  <text x="246" y="172" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-blue-text)">Syntax &amp; 3NF Equivalence</text>
+  <text x="246" y="192" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Single @graph · Actor Labels</text>
+
+  <!-- Right Semantic Icon: 3NF Normalized Tree -->
+  <circle cx="412" cy="176" r="26" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <circle cx="412" cy="165" r="5" fill="var(--svg-node-blue-text)" />
+  <circle cx="400" cy="185" r="4.5" fill="var(--svg-node-blue-border)" />
+  <circle cx="424" cy="185" r="4.5" fill="var(--svg-node-blue-border)" />
+  <line x1="412" y1="170" x2="400" y2="181" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+  <line x1="412" y1="170" x2="424" y2="181" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+
+  <path d="M 84 208 V 232" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.2" marker-end="url(#arr-purple)" />
+
+  <!-- ===================================================================
+       STAGE 2 (GATES 3–5): PURPLE SHIELD + CHAIN-LINK CLOSURE ICON
+       =================================================================== -->
+  <path d="M 84 238 L 112 248 V 272 C 112 290, 84 302, 84 302 C 84 302, 56 290, 56 272 V 248 Z" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <text x="84" y="275" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">G3–5</text>
+
+  <text x="246" y="266" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-purple-text)">Zero Clones &amp; Link Closure</text>
+  <text x="246" y="286" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">100% @id Resolution · DOM Images</text>
+
+  <!-- Right Semantic Icon: Interlocking Chain Links -->
+  <circle cx="412" cy="270" r="26" fill="var(--svg-card-alt)" stroke="var(--svg-node-purple-border)" stroke-width="1.8" />
+  <rect x="396" y="263" width="18" height="10" rx="5" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <rect x="408" y="267" width="18" height="10" rx="5" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+
+  <path d="M 84 302 V 326" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2.2" marker-end="url(#arr-amber)" />
+
+  <!-- ===================================================================
+       STAGE 3 (GATE 6): AMBER SHIELD + AUTHORITY GLOBE ICON
+       =================================================================== -->
+  <path d="M 84 332 L 112 342 V 366 C 112 384, 84 396, 84 396 C 84 396, 56 384, 56 366 V 342 Z" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.2" />
+  <text x="84" y="369" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-amber-text)">G6</text>
+
+  <text x="246" y="360" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-amber-text)">Authority Registries</text>
+  <text x="246" y="380" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Wikidata · ORCID · Crossref DOI</text>
+
+  <!-- Right Semantic Icon: Authority Globe with Meridians -->
+  <circle cx="412" cy="364" r="26" fill="var(--svg-card-alt)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+  <circle cx="412" cy="364" r="14" fill="none" stroke="var(--svg-node-amber-text)" stroke-width="1.8" />
+  <ellipse cx="412" cy="364" rx="7" ry="14" fill="none" stroke="var(--svg-node-amber-text)" stroke-width="1.4" />
+  <line x1="398" y1="364" x2="426" y2="364" stroke="var(--svg-node-amber-text)" stroke-width="1.4" />
+
+  <path d="M 84 396 V 420" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+
+  <!-- ===================================================================
+       BOTTOM OUTPUT: VERIFIED CHECKMARK BADGE (0 VIOLATIONS)
+       =================================================================== -->
+  <circle cx="84" cy="444" r="22" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.5" />
+  <polyline points="75,444 82,451 94,437" fill="none" stroke="var(--svg-node-green-text)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+  <text x="264" y="442" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-green-text)">0 Violations · Build Approved</text>
+  <text x="264" y="461" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Verified dist/ HTML + .cache/jsonld-authorities.json</text>
+</svg>

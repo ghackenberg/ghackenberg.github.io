@@ -112,6 +112,8 @@ The table below contrasts naive CSS flexbox wrapping and randomized canvas spira
 | **DOM Accessibility & Rich Tooltips** | Native `<a>` links, but static item count overflows narrow mobile viewports vertically. | Flattened `<canvas>` bitmap or overlapping SVG `<text>`; incompatible with rich HTML hover popovers. | 100% semantic DOM nodes (`<a>` + multi-domain progress bar tooltips) with live `#bin-packing-pool` overflow accounting. |
 | **Responsive Budget & Overflow** | Either truncates at a fixed server limit or forces 12+ vertical lines on $320\text{ px}$ screens. | Scales down font sizes globally until peripheral labels become illegible ($< 7\text{ px}$). | Reserves bottom-row budget for `#bin-overflow-node` and dynamically updates `+X remaining` tag and content sums. |
 
+Both the server-side frequency quantization and the client-side 2D elliptical bin-packing solver operate directly within our production homepage architecture.
+
 > [!TIP]
 > **Production Source Code:**  
 > Both the Astro server-side frequency quantization and the client-side 2D elliptical bin-packing solver (`initTagCloudEngines` and `runEllipticalBinPacking`) are open-source in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro) (lines 231–331 for server-side taxonomy preparation, lines 2304–2526 for the DOM stage, and lines 3568–3778 for the solver).
@@ -314,7 +316,9 @@ $$\text{canFit}(r, w_i) \iff \Big(|I_r| = 0 \land \neg\text{hasOverflowBadge}_r 
 In **Phase 1**, we isolate the top 7 core tags (`coreItems`, $\text{rank} \in \{0, \dots, 6\}$) and restrict their primary target region to the central rows satisfying $|u_r| \le 0.72$ (`centralRows`, which selects rows $\{2, 1, 3\}$ for $R=5$ and rows $\{2, 3, 1, 4\}$ for $R=6$):
 
 - **Dead-Center Anchor (`cIdx === 0`):** The `#1` highest-frequency tag on the entire website (`rank = 0`) is placed unconditionally into `centerOutwardRows[0]` (the equatorial row).
-- **Load-Balanced Core Distribution (`cIdx = 1..6`):** Each remaining core tag filters `centralRows` to those where `canFitInRow` holds, and sorts candidates lexicographically by **(1) fewest currently placed items** $|I_r|$ ascending, and **(2) largest residual capacity** $(C_r - U_r)$ descending:
+- **Load-Balanced Core Distribution (`cIdx = 1..6`):** Each remaining core tag filters `centralRows` to those where `canFitInRow` holds, and sorts candidates lexicographically by **(1) fewest currently placed items** $|I_r|$ ascending, and **(2) largest residual capacity** $(C_r - U_r)$ descending.
+
+The TypeScript implementation below shows how Phase 1 anchors the `#1` tag at the equator and distributes the remaining six core tags across `centralRows`:
 
 ```typescript
 // 3. Phase 1: Place top-frequency tags (rank 0..6) into the central rows first so the largest pills anchor the center
@@ -478,7 +482,9 @@ Because every `.bin-tag-node` remains a native HTML element inside a `.bin-cloud
 Finally, to guarantee zero Cumulative Layout Shift (CLS = 0), prevent duplicate observer registration across Astro page loads via an idempotency guard (`binStage.dataset.engineInit === 'true'`), and avoid redundant layout thrashing during vertical mobile scrolling (when mobile browser address bars retract and fire vertical resize events without changing horizontal width), `initTagCloudEngines()` wraps `runEllipticalBinPacking()` in a W3C `ResizeObserver` [@w3c-2020-resize-observer] paired with two custom synchronization guards:
 
 1. **Horizontal Width Hysteresis (`< 2px`):** The guard `if (containerW <= 0 || Math.abs(containerW - lastPackedWidth) < 2) return;` ignores pure vertical viewport changes and sub-pixel rounding fluctuations.
-2. **Web-Font Metric Re-Convergence (`document.fonts.ready`):** When local `@fontsource/inter` web fonts finish asynchronous glyph table activation, `document.fonts.ready` resets `lastPackedWidth = 0` and triggers a single deterministic re-pack so pill widths reflect the final typographic metrics:
+2. **Web-Font Metric Re-Convergence (`document.fonts.ready`):** When local `@fontsource/inter` web fonts finish asynchronous glyph table activation, `document.fonts.ready` resets `lastPackedWidth = 0` and triggers a single deterministic re-pack so pill widths reflect the final typographic metrics.
+
+The initialization sequence below wires `ResizeObserver` and `document.fonts.ready` around `runEllipticalBinPacking()`:
 
 ```typescript
 runEllipticalBinPacking();

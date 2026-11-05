@@ -29,6 +29,156 @@ const MIN_ANSWER_FIRST_WORDS = 38;
 const MAX_ANSWER_FIRST_WORDS = 58;
 const MAX_MERMAID_NODES = 5;
 
+type MarkdownBlockType = 'heading' | 'paragraph' | 'table' | 'code' | 'list' | 'image' | 'blockquote';
+
+interface MarkdownBlock {
+  type: MarkdownBlockType;
+  startLine: number;
+  detail: string;
+}
+
+const STRUCTURAL_BLOCKS = new Set<MarkdownBlockType>(['table', 'code', 'list', 'image', 'blockquote']);
+
+function parseMarkdownBlocks(markdown: string): MarkdownBlock[] {
+  const lines = markdown.split(/\r?\n/);
+  const blocks: MarkdownBlock[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const rawLine = lines[i];
+    const trimmed = rawLine.trim();
+
+    if (trimmed === '') {
+      i++;
+      continue;
+    }
+
+    const startLine = i + 1;
+
+    // 1. Fenced code / mermaid block
+    if (trimmed.startsWith('```')) {
+      const fenceInfo = trimmed.slice(3).trim() || 'code';
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        i++;
+      }
+      if (i < lines.length) {
+        i++; // consume closing ```
+      }
+      blocks.push({ type: 'code', startLine, detail: `\`\`\`${fenceInfo}` });
+      continue;
+    }
+
+    // 2. Heading (# .. ######)
+    if (/^#{1,6}\s+/.test(trimmed)) {
+      blocks.push({ type: 'heading', startLine, detail: trimmed });
+      i++;
+      continue;
+    }
+
+    // 3. Markdown Table
+    if (trimmed.startsWith('|')) {
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        i++;
+      }
+      blocks.push({ type: 'table', startLine, detail: 'Markdown table' });
+      continue;
+    }
+
+    // 4. Blockquote / Callout
+    if (trimmed.startsWith('>')) {
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        i++;
+      }
+      blocks.push({ type: 'blockquote', startLine, detail: 'blockquote/callout' });
+      continue;
+    }
+
+    // 5. Standalone Image / SVG
+    if (/^!\[[^\]]*\]\([^)]+\)\s*$/.test(trimmed)) {
+      blocks.push({ type: 'image', startLine, detail: trimmed.slice(0, 60) });
+      i++;
+      continue;
+    }
+
+    // 6. List (-, *, +, 1.)
+    if (/^(?:[-*+]|\d+\.)\s+/.test(trimmed)) {
+      i++;
+      while (i < lines.length) {
+        const curTrim = lines[i].trim();
+        if (curTrim === '') {
+          // Check if the list continues after blank line
+          let k = i + 1;
+          while (k < lines.length && lines[k].trim() === '') {
+            k++;
+          }
+          if (
+            k < lines.length &&
+            (/^(?:[-*+]|\d+\.)\s+/.test(lines[k].trim()) || /^\s{2,}\S/.test(lines[k]))
+          ) {
+            i = k;
+            continue;
+          }
+          break;
+        }
+        if (/^(?:[-*+]|\d+\.)\s+/.test(curTrim) || /^\s{2,}\S/.test(lines[i])) {
+          i++;
+          continue;
+        }
+        break;
+      }
+      blocks.push({ type: 'list', startLine, detail: 'list' });
+      continue;
+    }
+
+    // 7. Prose Paragraph
+    while (i < lines.length) {
+      const curTrim = lines[i].trim();
+      if (
+        curTrim === '' ||
+        curTrim.startsWith('```') ||
+        /^#{1,6}\s+/.test(curTrim) ||
+        curTrim.startsWith('|') ||
+        curTrim.startsWith('>') ||
+        /^!\[[^\]]*\]\([^)]+\)\s*$/.test(curTrim) ||
+        /^(?:[-*+]|\d+\.)\s+/.test(curTrim)
+      ) {
+        break;
+      }
+      i++;
+    }
+    blocks.push({ type: 'paragraph', startLine, detail: trimmed.slice(0, 50) });
+  }
+
+  return blocks;
+}
+
+function lintProseRhythm(relPath: string, bodyWithoutFourTicks: string, violations: string[]): void {
+  const blocks = parseMarkdownBlocks(bodyWithoutFourTicks);
+
+  for (let i = 0; i < blocks.length; i++) {
+    const cur = blocks[i];
+    const next = blocks[i + 1];
+
+    // Rule A: Every heading must be immediately followed by a prose paragraph
+    if (cur.type === 'heading') {
+      if (!next || next.type !== 'paragraph') {
+        const foundDesc = next ? `<${next.type}> (${next.detail}) at L${next.startLine}` : 'end of file';
+        violations.push(
+          `[${relPath}] Prose rhythm violation: Heading "${cur.detail}" (body L${cur.startLine}) must be followed immediately by a prose paragraph, but found ${foundDesc}.`
+        );
+      }
+    }
+
+    // Rule B: Structural blocks (table, code, list, image, blockquote) must never immediately follow one another without a prose paragraph in between
+    if (STRUCTURAL_BLOCKS.has(cur.type) && next && STRUCTURAL_BLOCKS.has(next.type)) {
+      violations.push(
+        `[${relPath}] Prose rhythm violation: <${cur.type}> block (${cur.detail}, body L${cur.startLine}) is followed directly by <${next.type}> block (${next.detail}, body L${next.startLine}) without an intervening prose paragraph.`
+      );
+    }
+  }
+}
+
 function stripFourBacktickBlocks(markdown: string): string {
   const lines = markdown.split(/\r?\n/);
   const result: string[] = [];
@@ -453,6 +603,9 @@ function run(): void {
           `[${relPath}] Must include at least 1 question-framed "## " heading ending with "?" for GEO/AIO extractability.`
         );
       }
+
+      // (v) Editorial Prose Rhythm: Every heading followed by a prose paragraph; no two structural blocks back-to-back without intervening prose
+      lintProseRhythm(relPath, bodyWithoutFourTicks, violations);
     }
   }
 

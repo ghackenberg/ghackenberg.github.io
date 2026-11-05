@@ -11,26 +11,26 @@ This skill governs the creation, styling, and embedding of responsive, accessibl
 - **Mandatory Standalone `.svg` Files (Zero Inline `<svg>` in Markdown)**: Save every SVG diagram as a standalone `.svg` file co-located in the content directory (e.g. `src/content/posts/<slug>/<diagram-name>.svg`) and embed it via standard Markdown image syntax with distinct caption and title:
   `![Descriptive caption explaining the visual topology](./<diagram-name>.svg "Concise Distinct Diagram Title")`
   Never embed raw `<svg>` tags directly inside `.md` or `.mdx` content files (blocked deterministically by `npm run lint:posts`).
-- **Mental-Model Visual-First Rule**: Diagrams must communicate topological structure at a glance using rich geometric primitives (`<circle>`, `<polygon>`, `<path>`, concentric rings, Bezier curves, dashed boundaries, and status icons) paired with **concise 1–3 word labels**. Never turn an SVG into a wall of multi-sentence text boxes.
+- **Mental-Model Visual-First & Semantic Iconography Rule**: Rather than cramming an entire post into a single abstract diagram or nesting boxy `<rect>` containers inside containers, create **focused, per-section SVGs** (`1` focused SVG per major `##` section) using **recognizable semantic vector iconography** (e.g. document sheets, person silhouettes, 3D isometric cubes, shield/check emblems, hexagonal hubs, and directional flow ribbons drawn with `<path>`, `<circle>`, `<polygon>`, `<line>`) paired with **concise 1–3 word labels**. Avoid nested rectangular container boxes ("no box-in-box-in-box"); separate zones with subtle curved horizon arcs or open whitespace.
 - **Escalation Target**: Primary escalation target from `mermaid-diagrams` when layout complexity exceeds 5 nodes or demands custom coordinate geometry and adaptive themes.
 
 ## 2. Standard ViewBox & Responsive Sizing
 Always configure explicit `viewBox` coordinates with responsive scaling:
-- **Primary Standard — Square / Near-Square (`1:1` Aspect Ratio)**:
-  - **Standard Post & Article Illustration**: `viewBox="0 0 640 640"` (or near-square `viewBox="0 0 640 560"` / `viewBox="0 0 640 680"`).
-  - **Mobile + Desktop Ergonomics**: A `640x640` ($1:1$) canvas scales down by less than $2\times$ on portrait mobile viewports (`393px` wide) while scaling cleanly to 100% container width (`w-full h-auto max-w-full`) across both mobile and desktop viewports. Structure diagrams into **2–3 vertical tiers** or a **2×2 grid** rather than wide horizontal ribbons (`880x340`) that shrink text to illegible sizes on smartphones.
+- **Primary Standard — Mobile-First Square (`viewBox="0 0 480 480"`, `1:1` Aspect Ratio)**:
+  - **Standard Post & Article Illustration**: `viewBox="0 0 480 480"` (or `640 640` when higher density is required).
+  - **Font-Size-Relative Desktop `max-width` & Mobile Ergonomics**: On a `340px` mobile viewport, a `480x480` ($1:1$) canvas scales by $0.71\times$ so `13px–16px` labels remain crisp and legible. On wide desktop screens, `src/plugins/rehype-inline-svg.ts` automatically computes the median `<text>` `font-size` inside each SVG and caps the `<figure class="svg-diagram">` wrapper width (`style="max-width: ...px"` with `mx-auto`) so rendered diagram text targets $\approx 13\text{px}$ rather than inflating to oversized proportions across the full article column.
   - **Slide-Deck Wide Exception**: Wide aspect ratios (`viewBox="0 0 800 420"` or `880 380`) should only be used when embedding inside landscape `16:9` presentation slides.
 - **Root `<svg>` Attributes**: Include `xmlns="http://www.w3.org/2000/svg"`, `width="100%"`, `height="auto"`, `role="img"`, and a descriptive `aria-label` on the root `<svg>`.
-- **Safe Padding**: Keep at least 20px–24px padding from canvas edges (e.g. min `x=24`, max `x=616` on a `640`-wide canvas) to prevent stroke clipping.
+- **Safe Padding**: Keep at least 20px–24px padding from canvas edges (e.g. min `x=20`, max `x=460` on a `480`-wide canvas) to prevent stroke clipping.
 
 ## 3. Typography & Font Hierarchy
 Use system sans-serif fonts consistent with site typography:
 - **Font Stack**: `font-family="Outfit, Inter, system-ui, -apple-system, sans-serif"`
-- **Hierarchy**:
-  - Section / Container Header: `font-size="13"` or `"14"`, `font-weight="700"`, letter-spacing `0.05em`, uppercase.
-  - Primary Node Title: `font-size="12"` or `"13"`, `font-weight="600"` or `"700"`, 1–3 words maximum.
-  - Secondary Metadata / Subtitle: `font-size="10"` or `"11"`, `font-weight="400"`, concise metric or token name.
-  - Badges / Status Pills: `font-size="9"` or `"10"`, `font-weight="600"`.
+- **Hierarchy (for `480x480` Mobile-First Canvas)**:
+  - Section / Zone Header: `font-size="15"` to `"17"`, `font-weight="700"`, letter-spacing `0.05em`, uppercase.
+  - Primary Node Title: `font-size="14"` to `"16"`, `font-weight="700"`, 1–3 words maximum.
+  - Secondary Metadata / Subtitle: `font-size="12"` to `"13"`, `font-weight="500"` or `"600"`, concise metric or token name (never below `11.5` on `480x480` canvases).
+  - Badges / Status Pills: `font-size="11.5"` to `"12.5"`, `font-weight="700"`.
 - **Text Alignment**: Use `text-anchor="middle"` for centered node labels, `dominant-baseline="central"` or `dominant-baseline="middle"` for vertical centering.
 - **Horizontal Character-Width Budget**: In `Outfit`/`Inter`, average proportional character advance is $\approx 0.56 \times \text{font-size}$ (up to $\approx 0.62 \times \text{font-size}$ for uppercase/bold or `letter-spacing`). Ensure every `<text>` element maintains at least `12px–14px` horizontal padding inside its enclosing `<rect>` container (`x_left + text_width <= rect_right - 12`). Never place multi-sentence paragraphs inside `<text>` nodes. Enforced deterministically by `npm run lint:svgs`.
 

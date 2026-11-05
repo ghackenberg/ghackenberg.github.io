@@ -91,25 +91,37 @@ A **Single-Root JSON-LD Knowledge Graph** compiles every page's structured metad
 | **External Authority & DOM Parity** | Hardcoded strings drift from live DOM `<img>` tags and external authority registries. | Ignores rendered `dist/` HTML images and never validates Wikidata, ORCID, Crossref, or O*NET codes. | **Six-gate postbuild verification** across `dist/` HTML, scoped DOM `ImageObject` nodes, and cached authority APIs. |
 | **Agentic Discovery (`llms.txt`)** | Hand-maintained Markdown summaries rapidly diverge from Schema.org structured data. | No bridge between HTML `<head>` metadata and plain-text LLM ingestion endpoints. | **Single-source compilation** via [`llms.txt.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/llms.txt.ts) and [`json-ld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/json-ld.ts) over shared Astro collections. |
 
+Consolidating these four architectural dimensions shifts structured metadata from ad-hoc template strings to a verified build-time compilation graph.
+
 ## Why Do Fragmented JSON-LD Snippets Fail Entity Disambiguation?
 
 Fragmented JSON-LD templates emit isolated `<script>` islands without shared `@id` anchors [@sporny-2020-json-ld11], forcing search crawlers and LLM retrieval pipelines to guess whether anonymous `Person` or `Organization` blocks represent the same real-world entity [@hogan-2021-knowledge-graphs]. Centralizing schema synthesis in [`json-ld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/json-ld.ts) eliminates blank-node ambiguity through deterministic URI fragments and normalized relation pointers [@guha-2016-schema-org].
 
 When components inject separate Schema.org snippets, RDF parsers allocate distinct blank nodes (`_:b0`, `_:b1`) for every unanchored object [@sporny-2020-json-ld11]. Conversely, emitting bare `{"@id": "..."}` pointers without summary labels fails Google's single-page Rich Results parser. In [`src/commons/server/json-ld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/json-ld.ts) and [`src/components/JsonLd.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/JsonLd.astro), we flatten all page schemas into a single `@graph` root where `PERSON_REF` (`https://hackenberg.tech/#person`), Wikidata-backed `OFFICIAL_ORG_LABELS`, `buildTagAboutRefs()` (`Person.knowsAbout` -> `DefinedTerm`), and `buildCitationList()` resolve into a connected star graph.
 
-![Comparison between fragmented JSON-LD snippets with broken blank nodes and a single-root @graph star topology passing through six validation gates into dist/ and llms.txt](./jsonld-graph-validator.svg "Single-Root JSON-LD @graph Topology and Six-Gate Validator")
+![Semantic vector infographic contrasting fragmented Person, Article, and Image blank nodes with a unified single-root @graph star topology anchored on #webpage](./jsonld-fragmentation-vs-star-graph.svg "Multi-Block JSON-LD Fragmentation vs. Single-Root @graph Star Topology")
+
+Anchoring every page entity to `#webpage` ensures that both RDF graph expanders and single-page search extractors traverse a connected, cycle-free star topology.
 
 ## How Does Our Six-Gate Postbuild Validator Enforce Graph Coherence?
 
 Inspired by the W3C Shapes Constraint Language (SHACL) [@knublauch-2017-shacl], [`validate-jsonld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-jsonld.ts) parses every generated HTML document inside `dist/` after [`image-sitemap.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/image-sitemap.ts) enriches scoped DOM `ImageObject` nodes, evaluating six deterministic governance gates across global entity definitions, relation pointers, and cached external authority registries.
 
+![Semantic vector infographic of the six-gate postbuild validator inspecting 433 built HTML pages through three shield verification stages into an approved dist/ build](./jsonld-six-gate-validator.svg "Six-Gate SHACL-Inspired Postbuild Validation Pipeline")
+
+To prevent any unanchored node or broken pointer from reaching production, the postbuild pipeline executes these six sequential verification gates across all 433 rendered HTML pages:
+
 - **Gate 1 & Gate 2 (Single-Root Syntax, 3NF Consistency & Rich Results Self-Containment):** Gate 1 enforces a single `@context: "https://schema.org"` root with an `@graph` array and absolute `http(s)://` URIs [@sporny-2020-json-ld11]. Gate 2 enforces cross-page property equivalence (3NF), restricts relation pointers to `SUMMARY_PROPS` (`@id`, `@type`, `name`, `url`, `sameAs`), and guarantees that every `RICH_RESULT_ACTOR_PROPS` target (`author`, `creator`, `publisher`, `provider`, `instructor`) carries inline or same-page `@type` and `name`.
 - **Gate 3, Gate 4 & Gate 5 (Zero Blank-Node Clones, Referential Closure & Domain Coverage):** Gate 3 blocks anonymous `Person`, `EducationalOrganization`, or primary artifact clones; Gate 4 verifies 100% global `@id` resolution (`definedEntityIds.has(ref.targetId)`); and Gate 5 audits route-specific schemas, `BreadcrumbList` names, citation completeness, and scoped DOM `ImageObject` parity (excluding favicons and `#related-content` cards).
 - **Gate 6 (External Authority & Vocabulary Verification):** Validates every `@type` and property domain against `schemaorg-current-https.jsonld` [@guha-2016-schema-org] and verifies Wikidata `Q`-IDs (`P31`/`P856`), O*NET-SOC codes, ISO 7064 Mod 11,2 ORCID checksums, Crossref DOIs, and GitHub repositories via `.cache/jsonld-authorities.json`.
 
+If any page violates a single SHACL-equivalent invariant across the 3,074 unique `@id` entities and 14,221 cross-referenced pointers, `npm run postbuild` aborts the release before deployment.
+
 ## Synchronizing Schema.org Entities with Dynamic llms.txt Feeds
 
 Maintaining separate metadata pipelines for search engines and autonomous LLM agents inevitably causes semantic drift [@hogan-2021-knowledge-graphs]. By driving both [`json-ld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/json-ld.ts) and the build-time [`llms.txt.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/llms.txt.ts) endpoint from identical Astro content collections, every entity modification propagates simultaneously to JSON-LD `@graph` nodes and agentic Markdown indexes.
+
+![Semantic vector infographic showing single-source compilation from Astro Content Collections into both HTML JSON-LD 1.1 for search engines and llms.txt Markdown for AI agents](./jsonld-llms-txt-synchronization.svg "Single-Source Entity Synchronization Across JSON-LD @graph and llms.txt")
 
 When an LLM agent fetches `/llms.txt`, [`src/pages/llms.txt.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/llms.txt.ts) queries all 8 content collections alongside `degrees`, `experiences`, and `src/content/profiles/`—the exact records used by `buildAboutPageSchemas()` and `buildTagsOverviewSchemas()` to populate `Person.sameAs`, `alumniOf`, `hasCredential`, and `knowsAbout`:
 
@@ -129,3 +141,5 @@ const profileLines = sortedProfiles
   .map((p) => `  - ${p.data.name}: ${p.data.url}`)
   .join('\n');
 ```
+
+Coupling the JSON-LD `@graph` compiler and the `/llms.txt` endpoint to the same typed Astro collections guarantees that search crawlers and RAG agents always ingest identical academic credentials, ORCID identifiers, and publication graphs.

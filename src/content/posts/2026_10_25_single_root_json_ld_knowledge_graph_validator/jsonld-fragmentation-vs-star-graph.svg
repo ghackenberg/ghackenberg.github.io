@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic contrasting a search crawler confused by fragmented Person, Article, and Image blank nodes at the top with a unified single-root @graph star topology at the bottom">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+  </defs>
+
+  <!-- Single Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Zone Glows -->
+  <ellipse cx="240" cy="108" rx="204" ry="74" fill="var(--svg-node-red-bg)" opacity="0.26" />
+  <circle cx="240" cy="344" r="118" fill="var(--svg-card)" opacity="0.65" />
+  <circle cx="240" cy="344" r="78" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+
+  <!-- ===================================================================
+       TOP HALF: MULTI-BLOCK FRAGMENTS (BROKEN IDENTITY)
+       =================================================================== -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-red-text)">MULTI-BLOCK FRAGMENTS (DISJOINTED)</text>
+
+  <!-- Broken Red Connection Wires & X Breaks -->
+  <path d="M 128 92 H 196" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="5,4" />
+  <line x1="157" y1="86" x2="167" y2="98" stroke="var(--svg-node-red-border)" stroke-width="2.5" />
+  <line x1="167" y1="86" x2="157" y2="98" stroke="var(--svg-node-red-border)" stroke-width="2.5" />
+
+  <path d="M 284 92 H 352" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="5,4" />
+  <line x1="313" y1="86" x2="323" y2="98" stroke="var(--svg-node-red-border)" stroke-width="2.5" />
+  <line x1="323" y1="86" x2="313" y2="98" stroke="var(--svg-node-red-border)" stroke-width="2.5" />
+
+  <!-- Fragment 1 (Left, cx=88, cy=92): Person Silhouette Icon + ? Badge -->
+  <circle cx="88" cy="92" r="34" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <!-- Head & Shoulders Silhouette -->
+  <circle cx="88" cy="81" r="9" fill="none" stroke="var(--svg-node-red-text)" stroke-width="2.2" />
+  <path d="M 71 108 C 71 95, 105 95, 105 108" fill="none" stroke="var(--svg-node-red-text)" stroke-width="2.2" stroke-linecap="round" />
+  <!-- Question Badge -->
+  <circle cx="114" cy="66" r="10" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+  <text x="114" y="71" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-red-text)">?</text>
+  <text x="88" y="148" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">Person (_:b0)</text>
+  <text x="88" y="167" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-red-subtext)">Anonymous Actor</text>
+
+  <!-- Fragment 2 (Center, cx=240, cy=92): Cloned Twin Document Pages Icon -->
+  <circle cx="240" cy="92" r="34" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <!-- Back Document Page -->
+  <rect x="234" y="71" width="22" height="28" rx="3" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+  <!-- Front Document Page -->
+  <rect x="224" y="79" width="22" height="28" rx="3" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-text)" stroke-width="2" />
+  <line x1="229" y1="87" x2="241" y2="87" stroke="var(--svg-node-red-text)" stroke-width="2" />
+  <line x1="229" y1="93" x2="241" y2="93" stroke="var(--svg-node-red-text)" stroke-width="1.8" />
+  <line x1="229" y1="99" x2="237" y2="99" stroke="var(--svg-node-red-text)" stroke-width="1.8" />
+  <text x="240" y="148" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">Article (_:b1)</text>
+  <text x="240" y="167" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-red-subtext)">Duplicate Clone</text>
+
+  <!-- Fragment 3 (Right, cx=392, cy=92): Unlinked Picture Frame Icon -->
+  <circle cx="392" cy="92" r="34" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <!-- Picture Frame with Sun & Mountain -->
+  <rect x="375" y="77" width="34" height="28" rx="4" fill="none" stroke="var(--svg-node-amber-text)" stroke-width="2" />
+  <circle cx="384" cy="85" r="3" fill="var(--svg-node-amber-text)" />
+  <polygon points="378,102 388,90 396,98 401,93 406,102" fill="var(--svg-node-amber-border)" />
+  <text x="392" y="148" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-amber-text)">Orphan &lt;img&gt;</text>
+  <text x="392" y="167" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">Unlinked DOM</text>
+
+  <!-- ===================================================================
+       CURVED HORIZON WAVE DIVIDER
+       =================================================================== -->
+  <path d="M 28 194 Q 240 212 452 194" fill="none" stroke="var(--svg-line)" stroke-width="1.8" stroke-dasharray="6,6" />
+
+  <!-- ===================================================================
+       BOTTOM HALF: SINGLE-ROOT @GRAPH (ANCHORED STAR TOPOLOGY)
+       =================================================================== -->
+  <text x="240" y="226" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-blue-text)">SINGLE-ROOT @GRAPH (ANCHORED)</text>
+
+  <!-- Orbital Ring -->
+  <circle cx="240" cy="342" r="96" fill="none" stroke="var(--svg-line)" stroke-width="1.5" stroke-dasharray="4,5" />
+
+  <!-- Bi-Directional @id Anchor Streams -->
+  <path d="M 126 278 Q 178 294 202 318" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.2" marker-start="url(#arr-purple)" marker-end="url(#arr-blue)" />
+  <path d="M 354 278 Q 302 294 278 318" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-start="url(#arr-blue)" marker-end="url(#arr-blue)" />
+  <path d="M 126 396 Q 178 382 202 362" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-start="url(#arr-blue)" marker-end="url(#arr-blue)" />
+  <path d="M 354 396 Q 302 382 278 362" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.2" marker-start="url(#arr-purple)" marker-end="url(#arr-blue)" />
+
+  <!-- Central Hub (cx=240, cy=342): Browser Window + @graph Root Emblem -->
+  <circle cx="240" cy="342" r="38" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.5" />
+  <rect x="218" y="324" width="44" height="34" rx="5" fill="var(--svg-card)" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <line x1="218" y1="333" x2="262" y2="333" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+  <circle cx="225" cy="328.5" r="1.8" fill="var(--svg-node-blue-border)" />
+  <circle cx="231" cy="328.5" r="1.8" fill="var(--svg-node-purple-border)" />
+  <!-- Central Hub Node Star Inside Browser -->
+  <circle cx="240" cy="346" r="4.5" fill="var(--svg-node-green-border)" />
+  <line x1="240" y1="346" x2="229" y2="340" stroke="var(--svg-node-blue-text)" stroke-width="1.5" />
+  <line x1="240" y1="346" x2="251" y2="340" stroke="var(--svg-node-blue-text)" stroke-width="1.5" />
+  <line x1="240" y1="346" x2="229" y2="352" stroke="var(--svg-node-blue-text)" stroke-width="1.5" />
+  <line x1="240" y1="346" x2="251" y2="352" stroke="var(--svg-node-blue-text)" stroke-width="1.5" />
+
+  <text x="240" y="402" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-blue-text)">#webpage</text>
+  <text x="240" y="421" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Single @graph Root</text>
+
+  <!-- Satellite 1 (Top-Left, cx=92, cy=266): Verified Person Icon -->
+  <circle cx="92" cy="266" r="28" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <circle cx="92" cy="257" r="7.5" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <path d="M 78 279 C 78 269, 106 269, 106 279" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linecap="round" />
+  <text x="92" y="314" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">#person</text>
+  <text x="92" y="332" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">ORCID Anchor</text>
+
+  <!-- Satellite 2 (Top-Right, cx=388, cy=266): Single Canonical Article Icon -->
+  <circle cx="388" cy="266" r="28" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <rect x="376" y="251" width="24" height="30" rx="3" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <line x1="381" y1="259" x2="395" y2="259" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <line x1="381" y1="266" x2="395" y2="266" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+  <line x1="381" y1="273" x2="390" y2="273" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+  <text x="388" y="314" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">#article</text>
+  <text x="388" y="332" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">3NF Primary</text>
+
+  <!-- Satellite 3 (Bottom-Left, cx=92, cy=400): Breadcrumb Signpost / Chevron Trail Icon -->
+  <circle cx="92" cy="400" r="28" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <polyline points="80,392 88,400 80,408" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+  <polyline points="94,392 102,400 94,408" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="92" y="446" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">#breadcrumb</text>
+  <text x="92" y="464" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Named Trail</text>
+
+  <!-- Satellite 4 (Bottom-Right, cx=388, cy=400): Verified Image Frame + Checkmark Icon -->
+  <circle cx="388" cy="400" r="28" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <rect x="373" y="388" width="30" height="24" rx="3" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <circle cx="381" cy="395" r="2.5" fill="var(--svg-node-purple-text)" />
+  <polygon points="376,409 385,399 392,405 397,400 401,409" fill="var(--svg-node-purple-border)" />
+  <text x="388" y="446" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">#image</text>
+  <text x="388" y="464" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">Scoped DOM</text>
+</svg>

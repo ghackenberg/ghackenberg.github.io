@@ -87,6 +87,8 @@ The following architectural comparison contrasts cloud SaaS newsletter providers
 | **Campaign & Static Synchronization** | Manual web dashboard scheduling or stateful webhook scripts. | Manual copy-paste into Admin UI or stateful scripts storing DB IDs in frontmatter. | **Stateless REST tag reconciliation** (`slug:<slug>`, `issue-<N>`) + **idempotent SSH SHA-256 diffing**. |
 | **Bot & Spam Protection** | Cloud CAPTCHAs (reCAPTCHA / Turnstile) injecting third-party scripts and telemetry cookies. | Default ALTCHA widget loading external script bundles or allocating heap strings per hash. | **Zero-allocation `Int32Array` SHA-256 Web Worker** solving FIPS 180-4 PoW in ~35–90 ms with zero cookies. |
 
+Every compilation, synchronization, and client-side Proof-of-Work module in this pipeline is maintained directly in our repository.
+
 > [!TIP]
 > **Production Source Code on GitHub:**  
 > All modules discussed in this article are open-source on `main`: the content loader [`newsletter-loader.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/newsletter-loader.ts), the React Email compilers [`NewsletterIssueEmail.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/NewsletterIssueEmail.tsx), [`ListmonkCampaignTemplate.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/ListmonkCampaignTemplate.tsx), and [`ListmonkTransactionalEmail.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/ListmonkTransactionalEmail.tsx), the public web shell builder [`ListmonkPublicShell.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/ListmonkPublicShell.ts), the CLI entrypoints [`build-newsletters.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/build-newsletters.ts) and [`sync-newsletters.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/sync-newsletters.ts), and the client-side PoW solver [`newsletter.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/newsletter.ts).
@@ -240,7 +242,9 @@ When `@react-email/render` serializes JSX `<Link>` or `<Button>` components, it 
 
 We prevent escaping collisions using two deterministic post-processing passes:
 1. **Valid URL Placeholder Tokens:** For `href` attributes, we pass syntactically valid URL constants during JSX rendering—such as `OPTIN_URL_TOKEN = 'https://hackenberg.tech/__LISTMONK_OPTIN_URL__'` and `RESET_URL_TOKEN = 'https://hackenberg.tech/__LISTMONK_RESET_URL__'`. After React Email finishes rendering, `.replaceAll(OPTIN_URL_TOKEN, '{{ .OptinURL }}')` substitutes the exact Go action token.
-2. **Mustache Entity Unescaping:** In `extractInnerFragment()`, a targeted regular expression `/\{\{[\s\S]*?\}\}/g` unescapes `&quot;`, `&#x27;`, `&#39;`, and `&amp;` exclusively inside `{{ ... }}` blocks while keeping surrounding HTML entities intact:
+2. **Mustache Entity Unescaping:** In `extractInnerFragment()`, a targeted regular expression `/\{\{[\s\S]*?\}\}/g` unescapes `&quot;`, `&#x27;`, `&#39;`, and `&amp;` exclusively inside `{{ ... }}` blocks while keeping surrounding HTML entities intact.
+
+The implementation of `extractInnerFragment()` below demonstrates how the outer HTML wrapper is stripped before unescaping Go template expressions:
 
 ```typescript
 function extractInnerFragment(rawHtml: string): string {

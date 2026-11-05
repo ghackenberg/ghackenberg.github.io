@@ -432,6 +432,8 @@ Classical accident models (such as the Domino or Swiss Cheese models) assume tha
    - **The Controlled Process (`Host OS, Docker Runtime, Shared Proxies & External APIs`):** The physical and virtual execution substrate whose state $x_{t+1}$ evolves under control inputs and external disturbances.
    - **The Sensors (`Observation Parser, Context Manager & RAG Ingestion`):** Measure state outputs $y_t$ from the Controlled Process and transmit feedback observations $o_t$ back to update the Controller's Process Model.
 
+The architectural schematic below contrasts the four scientific paradigms of emergence alongside Nancy Leveson's STAMP and STPA-Sec closed-loop AI agent harness security architecture:
+
 ![Detailed architectural schematic contrasting the four scientific paradigms of emergence alongside Nancy Leveson's STAMP and STPA-Sec closed-loop AI agent harness security architecture](./stamp_security_control_loop.svg "Four Paradigms of Emergence & STAMP AI Harness Security Control Loop")
 
 ### Mapping STPA-Sec Unsafe Control Actions (UCAs) to Autonomous Agent Harnesses

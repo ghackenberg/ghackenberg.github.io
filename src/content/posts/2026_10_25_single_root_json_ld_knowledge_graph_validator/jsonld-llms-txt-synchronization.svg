@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic showing single-source compilation from Astro Content Collections into both HTML JSON-LD 1.1 for search engines and llms.txt Markdown for AI agents">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Single Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Glows -->
+  <circle cx="240" cy="104" r="76" fill="var(--svg-node-green-bg)" opacity="0.22" />
+  <circle cx="116" cy="272" r="76" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+  <circle cx="364" cy="272" r="76" fill="var(--svg-node-purple-bg)" opacity="0.22" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-green-text)">SINGLE-SOURCE ENTITY SYNC</text>
+
+  <!-- ===================================================================
+       TOP CENTER: ASTRO CONTENT COLLECTIONS DATABASE CYLINDER ICON
+       =================================================================== -->
+  <circle cx="240" cy="92" r="36" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  <!-- Database Cylinder Icon -->
+  <ellipse cx="240" cy="76" rx="18" ry="6" fill="var(--svg-card)" stroke="var(--svg-node-green-text)" stroke-width="2" />
+  <path d="M 222 76 V 104 C 222 108, 258 108, 258 104 V 76" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" />
+  <path d="M 222 90 C 222 94, 258 94, 258 90" fill="none" stroke="var(--svg-node-green-text)" stroke-width="1.8" />
+
+  <text x="240" y="148" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-text-primary)">Astro Content Collections</text>
+  <text x="240" y="168" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">8 Collections · Degrees · Profiles</text>
+
+  <!-- Dual Compilation Streams -->
+  <path d="M 196 178 C 148 190, 116 204, 116 226" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.4" marker-end="url(#arr-blue)" />
+  <path d="M 284 178 C 332 190, 364 204, 364 226" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.4" marker-end="url(#arr-purple)" />
+
+  <!-- ===================================================================
+       LEFT BRANCH (cx=116, cy=268): JSON-LD @GRAPH & SEARCH GLOBE ICON
+       =================================================================== -->
+  <circle cx="116" cy="268" r="36" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <!-- Curly Braces { @ } + Search Node Icon -->
+  <text x="116" y="274" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="20" font-weight="700" fill="var(--svg-node-blue-text)">{@id}</text>
+
+  <text x="116" y="326" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">json-ld.ts Compiler</text>
+  <text x="116" y="346" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">HTML &lt;head&gt; @graph</text>
+  <text x="116" y="365" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Search Rich Results</text>
+
+  <!-- ===================================================================
+       RIGHT BRANCH (cx=364, cy=268): LLMS.TXT MARKDOWN & AI BOT ICON
+       =================================================================== -->
+  <circle cx="364" cy="268" r="36" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <!-- AI Bot Head + Antenna Icon -->
+  <line x1="364" y1="244" x2="364" y2="252" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <circle cx="364" cy="242" r="3" fill="var(--svg-node-purple-border)" />
+  <rect x="346" y="252" width="36" height="26" rx="6" fill="var(--svg-card)" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <circle cx="356" cy="265" r="3.5" fill="var(--svg-node-purple-text)" />
+  <circle cx="372" cy="265" r="3.5" fill="var(--svg-node-purple-text)" />
+  <line x1="356" y1="272" x2="372" y2="272" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+
+  <text x="364" y="326" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">llms.txt.ts Endpoint</text>
+  <text x="364" y="346" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">/llms.txt Markdown</text>
+  <text x="364" y="365" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">LLM &amp; RAG Agents</text>
+
+  <!-- ===================================================================
+       BOTTOM EQUIVALENCE BRIDGE: 100% ENTITY PARITY
+       =================================================================== -->
+  <path d="M 140 384 Q 240 422 340 384" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" stroke-dasharray="5,4" marker-start="url(#arr-green)" marker-end="url(#arr-green)" />
+
+  <circle cx="240" cy="402" r="20" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  <line x1="231" y1="398" x2="249" y2="398" stroke="var(--svg-node-green-text)" stroke-width="2.5" stroke-linecap="round" />
+  <line x1="231" y1="406" x2="249" y2="406" stroke="var(--svg-node-green-text)" stroke-width="2.5" stroke-linecap="round" />
+
+  <text x="240" y="442" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-green-text)">100% Entity Parity · Zero Drift</text>
+  <text x="240" y="462" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Identical #person, ORCID &amp; Wikidata Anchors</text>
+</svg>

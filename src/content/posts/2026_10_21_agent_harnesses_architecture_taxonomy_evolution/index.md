@@ -192,6 +192,8 @@ In systems engineering, a *harness* is never the component under test or the lea
 1. **Software Verification Test Harnesses:** In classical software verification, a test harness comprises the *test driver* (which initializes environment fixtures and invokes the System Under Test), *stubs/mocks* (which simulate unavailable downstream dependencies), and the *comparator* (which evaluates post-execution state against formal assertions). Crucially, the test harness guarantees isolation and repeatability: regardless of whether the target binary crashes, leaks memory, or enters a livelock, the harness bounds execution via wall-clock timeouts and restores a clean initial state before the next run.
 2. **Reinforcement Learning Environment Harnesses:** In reinforcement learning, formalized widely by OpenAI Gym [@brockman-2016-openai-gym], the harness separates the *agent policy* $\pi_\theta(a_t \mid s_t)$ from the *environment dynamics* $\mathcal{T}(s_{t+1}, r_t \mid s_t, a_t)$. Through a standardized execution contract—`reset()` to initialize an episode and `step(action)` returning `(observation, reward, terminated, truncated, info)`—the RL harness abstracts physics engines, Atari emulators, and robotic control loops behind a uniform state-transition boundary [@brockman-2016-openai-gym].
 
+The closed-loop control diagram below illustrates how a modern agent harness mediates between the probabilistic policy model, the deterministic verifier, and the isolated execution sandbox:
+
 ```mermaid
 ---
 title: "Closed-Loop Agent Harness Control Cycle"
@@ -438,6 +440,8 @@ Rather than embedding custom tool adapters inside every agent loop, harnesses ar
 Even as foundation models advertise context windows of $128\text{K}$ to $1\text{M}+$ tokens, filling the prompt with raw search results, full tool schemas, and multi-turn exploration traces degrades instruction adherence and inflates per-turn prefill costs. Modern harnesses address this through two complementary mechanisms:
 - **Progressive Disclosure of Capabilities and Resources:** Instead of injecting 80 complete tool JSON schemas and full documentation files into the initial system prompt, the harness exposes a compact index of capability descriptors and loads detailed schemas or reference sub-documents on demand only when the task requires them [@mcp-specification-2024].
 - **Control Plane vs. Data Plane Context Isolation:** When a task requires noisy multi-step exploration (such as searching 50 files to trace a call graph or running iterative test diagnostics), a parent *Control Plane* harness dispatches an isolated *Data Plane* worker subagent with a clean, task-scoped context window [@schluntz-2024-effective-agents]. The worker executes the 15-turn exploration loop inside its own ephemeral context and returns only a distilled, structured synthesis to the parent orchestrator—preventing intermediate search noise from polluting the primary reasoning state.
+
+The following TypeScript orchestrator illustrates how a parent Control Plane delegates scoped tasks to an isolated worker loop and records only the distilled synthesis:
 
 ```typescript
 export interface WorkerBriefing {

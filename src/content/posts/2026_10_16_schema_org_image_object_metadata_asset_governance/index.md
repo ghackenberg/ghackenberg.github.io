@@ -93,6 +93,8 @@ The following architectural comparison contrasts naive static image hosting and 
 | **Crawler Discovery (`sitemap.xml`)** | Standard page URLs only; relies on secondary image-crawl passes. | Manual XML lists that rapidly fall out of sync with physical assets. | Automated Cheerio DOM extraction injecting `<image:image>`, `<image:loc>`, `<image:title>`, and `<image:caption>` into `sitemap-*.xml`. |
 | **Physical & Hash Integrity** | Risk of broken `srcset` candidates, unhashed cache-poisoned images, or leaked `/_astro/` folders. | Verified manually in the browser; no automated post-build regression barrier. | **5-Assertion CI Gate** (`validate-assets.ts`): Folder absence, zero `_astro` leaks, 100% physical disk existence, content hashing, and JSON-LD parity. |
 
+All four stages of this visual asset governance pipeline are implemented as deterministic build-time TypeScript plugins and post-build CI verifiers in our repository.
+
 > [!TIP]
 > **Production Source Code on GitHub:**  
 > You can inspect our complete production implementation in [`src/plugins/image-sitemap.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/image-sitemap.ts), the early Markdown AST validator in [`src/plugins/remark-validate-images.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/remark-validate-images.ts), the static Mermaid exporter in [`src/plugins/remark-mermaid.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/remark-mermaid.ts), and the 5-stage post-build CI auditor in [`src/scripts/validate-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-assets.ts).
@@ -108,6 +110,8 @@ However, in typical technical blogs and academic portfolios, structured data ter
 1. **Multimodal Context Detachment:** When vision-language scrapers and multimodal RAG pipelines ingest technical diagrams (such as our [2D Signed Distance Field lattices](/posts/2026_10_14_treewalker_text_geometrie_sdf_hero_grid/) or [build-time Mermaid topologies](/posts/2026_09_22_build_time_static_mermaid_in_astro/)), an isolated `<img>` or `<svg>` tag without a corresponding `ImageObject` [@schema-org-2024-imageobject] lacks machine-readable bindings back to its parent document (`isPartOf`) and human author (`creator`).
 2. **Missing Licensable Badges and Attribution in Search:** Google Search Central's specification for Image Metadata [@google-2024-image-license-metadata] defines six structured `ImageObject` properties—requiring `contentUrl` plus at least one licensing or attribution field (`license`, `acquireLicensePage`, `creditText`, `copyrightNotice`, or a structured `creator` entity), all six of which our pipeline enforces as mandatory to guarantee complete copyright attribution and licensing links in Google Images and multimodal search panels. Furthermore, machine-readable licensing (`license` and `acquireLicensePage`) prevents enterprise architectural blueprints and proprietary engineering schematics from being ingested as unattributed "orphan works" by commercial multimodal scrapers.
 3. **Volatile Bundler Identifiers:** Static site generators (SSGs) like Astro and Vite append cryptographic content hashes to filenames for immutable HTTP caching (e.g., `hero-a1b2c3d4.jpg`). If an external knowledge graph references the physical asset URL as its primary key, every image re-compression or pixel tweak invalidates the entity's identity across the web.
+
+The following relational topology illustrates how our knowledge graph binds each canonical `TechArticle` node to its child `ImageObject` entities, author identity, and legal licensing endpoints:
 
 ```mermaid
 ---
@@ -165,6 +169,8 @@ Because Astro pages also render images via `.astro` components, JSX templates, a
 1. **Standard HTML Images (`$('img')`):** Audits `src`, `alt`, and `title`, explicitly exempting decorative elements marked with `aria-hidden="true"`, `role="presentation"`, or `role="none"`.
 2. **Compiled Architectural Diagrams (`$('figure.mermaid-diagram, figure.svg-diagram')`):** Extracts `data-diagram-title` (or `meta[itemprop="name"]`), `data-diagram-caption` (or `meta[itemprop="description"]`), and `meta[itemprop="contentUrl"]`.
 3. **Embedded Sub-Images Inside Raw SVGs (`$('svg image')`):** Audits `href` / `xlink:href`, `title`, and `aria-label` / `alt` on `<image>` nodes inside raw SVGs that are not already encapsulated by a `.mermaid-diagram` or `.svg-diagram` figure (ignoring inline `data:` URIs).
+
+The following excerpt from `src/plugins/image-sitemap.ts` shows how Step 2B validates diagram figures against these non-empty, distinct metadata constraints:
 
 ```typescript
 // Excerpt from src/plugins/image-sitemap.ts (Step 2B: Diagram Figure Validation)
