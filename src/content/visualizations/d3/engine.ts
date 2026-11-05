@@ -37,6 +37,7 @@ export interface D3Engine {
   fitTimeout?: ReturnType<typeof setTimeout>;
   resizeObserver: ResizeObserver | null;
   init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<D3Engine>;
+  recomputeSlotTargets(useCurrentOrder?: boolean): void;
   fitToView(duration?: number): void;
   updateLayout(layout: string, isLight: boolean): void;
   destroy(): void;
@@ -77,17 +78,20 @@ const engine: D3Engine = {
       target: c.targetId
     })).filter((l) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
 
+    container.style.touchAction = 'pan-y';
+
     this.svg = d3.select<HTMLElement, D3Node>(container).append<SVGSVGElement>("svg")
       .attr("width", "100%")
       .attr("height", "100%")
       .attr("viewBox", `0 0 ${this.width} ${this.height}`)
-      .style("display", "block");
+      .style("display", "block")
+      .style("touch-action", "pan-y");
 
     this.svgGroup = this.svg.append<SVGGElement>("g");
 
     this.zoom = d3.zoom<SVGSVGElement, D3Node>()
       .scaleExtent([0.1, 8])
-      .filter((event) => event.type !== 'wheel')
+      .filter(() => false)
       .on("zoom", (event) => {
         this.svgGroup?.attr("transform", event.transform.toString());
       });
@@ -128,11 +132,22 @@ const engine: D3Engine = {
         }
         d.fx = event.x;
         d.fy = event.y;
+        d.x = event.x;
+        d.y = event.y;
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.recomputeSlotTargets(true);
+          this.simulation?.alphaTarget(0.3).restart();
+        }
       })
       .on("end", (event, d) => {
-        if (!event.active) this.simulation?.alphaTarget(0);
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.recomputeSlotTargets(true);
+        }
         d.fx = null;
         d.fy = null;
+        if (!event.active) {
+          this.simulation?.alphaTarget(0).alpha(0.35).restart();
+        }
       });
 
     this.nodeElements = this.svgGroup.selectAll<SVGGElement, D3Node>(".node")
@@ -332,23 +347,9 @@ const engine: D3Engine = {
     }
   },
 
-  updateLayout(layout: string, isLight: boolean) {
-    if (!this.simulation || !this.nodes || !this.linkElements || !this.nodeElements) return;
-    this.currentLayout = layout;
-    this.isLight = isLight;
-
-    // Apply color update to D3 circles and links based on theme
-    const styleTokens = getGraphStyleTokens(isLight);
-    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    this.linkElements
-      .style("stroke", styleTokens.edgeColor)
-      .style("stroke-width", `${styleTokens.edgeWidth}px`);
-    this.nodeElements
-      .selectAll<SVGCircleElement, D3Node>("circle")
-      .attr("r", styleTokens.nodeRadius)
-      .style("fill", d => colors[d.group] || colors[0])
-      .style("stroke", d => colors[d.group] || colors[0])
-      .style("stroke-width", "1.5px");
+  recomputeSlotTargets(useCurrentOrder = false) {
+    if (!this.nodes || !this.simulation) return;
+    const layout = this.currentLayout;
 
     if (layout === 'radial') {
       const cx = this.width / 2;
@@ -358,8 +359,15 @@ const engine: D3Engine = {
       const innerRadius = Math.max(60, minDim * 0.20);
       const outerRadius = Math.max(140, minDim * 0.42);
 
-      const tags = this.nodes.filter(n => n.group === 0);
-      const others = this.nodes.filter(n => n.group !== 0);
+      const tags = [...this.nodes.filter(n => n.group === 0)];
+      const others = [...this.nodes.filter(n => n.group !== 0)];
+
+      if (useCurrentOrder) {
+        const normAngle = (n: D3Node, count: number) =>
+          ((Math.atan2((n.y ?? cy) - cy, (n.x ?? cx) - cx) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
+        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
+      }
 
       tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
@@ -373,28 +381,29 @@ const engine: D3Engine = {
         n.targetY = cy + outerRadius * Math.sin(theta);
       });
 
-      // Apply positional forces
-      this.simulation
-        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.08))
-        .force("charge", d3.forceManyBody().strength(-30))
-        .force("center", null)
-        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.2))
-        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.2))
-        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 10).strength(0.8));
-
+      const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
+      const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
+      fx?.x(d => d.targetX ?? cx);
+      fy?.y(d => d.targetY ?? cy);
     } else if (layout === 'columns') {
-      const posts = this.nodes.filter(n => n.group === 1);
-      const publications = this.nodes.filter(n => n.group === 2);
-      const presentations = this.nodes.filter(n => n.group === 3);
-      const tags = this.nodes.filter(n => n.group === 0);
-      const courses = this.nodes.filter(n => n.group === 4);
-      const projects = this.nodes.filter(n => n.group === 5);
-      const services = this.nodes.filter(n => n.group === 6);
-      const newsletters = this.nodes.filter(n => n.group === 7);
-      const visualizations = this.nodes.filter(n => n.group === 8);
+      const posts = [...this.nodes.filter(n => n.group === 1)];
+      const publications = [...this.nodes.filter(n => n.group === 2)];
+      const presentations = [...this.nodes.filter(n => n.group === 3)];
+      const tags = [...this.nodes.filter(n => n.group === 0)];
+      const courses = [...this.nodes.filter(n => n.group === 4)];
+      const projects = [...this.nodes.filter(n => n.group === 5)];
+      const services = [...this.nodes.filter(n => n.group === 6)];
+      const newsletters = [...this.nodes.filter(n => n.group === 7)];
+      const visualizations = [...this.nodes.filter(n => n.group === 8)];
 
       const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
       const isMobile = this.width < 768 || window.innerWidth < 768;
+
+      if (useCurrentOrder) {
+        categories.forEach(catNodes => {
+          catNodes.sort((a, b) => isMobile ? ((a.x ?? 0) - (b.x ?? 0)) : ((a.y ?? 0) - (b.y ?? 0)));
+        });
+      }
 
       const padX = Math.max(40, this.width * 0.08);
       const padY = Math.max(50, this.height * 0.12);
@@ -418,6 +427,49 @@ const engine: D3Engine = {
           });
         });
       }
+
+      const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
+      const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
+      fx?.x(d => d.targetX ?? 0);
+      fy?.y(d => d.targetY ?? 0);
+    }
+  },
+
+  updateLayout(layout: string, isLight: boolean) {
+    if (!this.simulation || !this.nodes || !this.linkElements || !this.nodeElements) return;
+    this.currentLayout = layout;
+    this.isLight = isLight;
+
+    // Apply color update to D3 circles and links based on theme
+    const styleTokens = getGraphStyleTokens(isLight);
+    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+    this.linkElements
+      .style("stroke", styleTokens.edgeColor)
+      .style("stroke-width", `${styleTokens.edgeWidth}px`);
+    this.nodeElements
+      .selectAll<SVGCircleElement, D3Node>("circle")
+      .attr("r", styleTokens.nodeRadius)
+      .style("fill", d => colors[d.group] || colors[0])
+      .style("stroke", d => colors[d.group] || colors[0])
+      .style("stroke-width", "1.5px");
+
+    if (layout === 'radial') {
+      const cx = this.width / 2;
+      const cy = this.height / 2;
+
+      this.recomputeSlotTargets(false);
+
+      // Apply positional forces
+      this.simulation
+        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.08))
+        .force("charge", d3.forceManyBody().strength(-30))
+        .force("center", null)
+        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.2))
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.2))
+        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 10).strength(0.8));
+
+    } else if (layout === 'columns') {
+      this.recomputeSlotTargets(false);
 
       // Apply columnar forces
       this.simulation

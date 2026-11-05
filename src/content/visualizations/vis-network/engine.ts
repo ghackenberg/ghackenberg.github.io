@@ -57,6 +57,8 @@ export interface VisNetworkEngine {
   options?: Options;
   network?: Network | null;
   isDragging?: boolean;
+  lastDraggedAt?: number;
+  lastOrderSignature?: string;
   dragStabilizeTimeout?: ReturnType<typeof setTimeout> | null;
   currentLayout?: string;
   isLight?: boolean;
@@ -64,10 +66,11 @@ export interface VisNetworkEngine {
   intersectionObserver?: IntersectionObserver | null;
   animationFrameId?: number | null;
   init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions?: VisNetworkExtraOptions): Promise<VisNetworkEngine>;
+  computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   pause(): void;
   resume(): void;
-  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number): void;
+  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string): void;
   destroy(): void;
 }
 
@@ -156,7 +159,7 @@ const engine: VisNetworkEngine = {
       hoverConnectedEdges: true,
       tooltipDelay: 100,
       zoomView: false,
-      dragView: true,
+      dragView: false,
       dragNodes: true
     }, extraInteraction);
 
@@ -245,19 +248,63 @@ const engine: VisNetworkEngine = {
 
     if (interactionOptions.dragNodes) {
       this.isDragging = false;
+      this.lastDraggedAt = 0;
+      this.lastOrderSignature = '';
       this.dragStabilizeTimeout = null;
 
-      this.network.on("dragStart", () => {
+      this.network.on("dragStart", (params: { nodes: string[] }) => {
+        if (!params.nodes || params.nodes.length === 0) return;
         this.isDragging = true;
+        this.lastDraggedAt = performance.now();
+        const tip = container.querySelector('.vis-tooltip') as HTMLElement | null;
+        if (tip) tip.style.visibility = 'hidden';
+
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
           this.dragStabilizeTimeout = null;
         }
-        this.network?.setOptions({ physics: { enabled: true } });
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
+
+        if (this.currentLayout === 'force') {
+          this.network?.setOptions({
+            physics: {
+              enabled: true,
+              stabilization: { enabled: false }
+            }
+          });
+          this.network?.startSimulation();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { signature } = this.computeLayoutTargets(this.currentLayout, true);
+          this.lastOrderSignature = signature;
+        }
       });
 
-      this.network.on("dragEnd", () => {
+      this.network.on("dragging", (params: { nodes: string[] }) => {
+        if (!params.nodes || params.nodes.length === 0) return;
+        this.lastDraggedAt = performance.now();
+        const draggedId = String(params.nodes[0]);
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+          if (signature !== this.lastOrderSignature) {
+            this.lastOrderSignature = signature;
+            this.animateTo(targets, 250, draggedId);
+          }
+        }
+      });
+
+      this.network.on("dragEnd", (params: { nodes: string[] }) => {
+        if (!this.isDragging && (!params.nodes || params.nodes.length === 0)) return;
         this.isDragging = false;
+        this.lastDraggedAt = performance.now();
+
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
+          this.animateTo(targets, 400);
+          return;
+        }
 
         const stopAfterDrag = () => {
           if (this.network && !this.isDragging) {
@@ -275,12 +322,12 @@ const engine: VisNetworkEngine = {
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
         }
-        // Graceful fallback timeout: if complex graphs oscillate indefinitely, stabilize after 5 seconds
-        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 5000);
+        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 1500);
       });
     }
 
     this.network.on("click", (params: { nodes: string[] }) => {
+      if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
       if (params.nodes.length > 0) {
         const targetPath = params.nodes[0];
         if (
@@ -350,6 +397,95 @@ const engine: VisNetworkEngine = {
     return this;
   },
 
+  computeLayoutTargets(layout: string, useCurrentOrder = false) {
+    const targets: Record<string, { x: number; y: number }> = {};
+    let signature = '';
+    const pos = useCurrentOrder && this.network ? this.network.getPositions() : {};
+
+    if (layout === 'radial') {
+      const tags = [...(this.nodes || []).filter(n => n.group === 0)];
+      const others = [...(this.nodes || []).filter(n => n.group !== 0)];
+
+      if (useCurrentOrder && this.network) {
+        const normAngle = (id: string, count: number) => {
+          const p = pos[id] || { x: 0, y: 0 };
+          return ((Math.atan2(p.y, p.x) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        };
+        tags.sort((a, b) => normAngle(a.id, tags.length) - normAngle(b.id, tags.length));
+        others.sort((a, b) => normAngle(a.id, others.length) - normAngle(b.id, others.length));
+      }
+
+      tags.forEach((n, idx) => {
+        const theta = (2 * Math.PI * idx) / tags.length;
+        targets[n.id] = {
+          x: 120 * Math.cos(theta),
+          y: 120 * Math.sin(theta)
+        };
+      });
+
+      others.forEach((n, idx) => {
+        const theta = (2 * Math.PI * idx) / others.length;
+        targets[n.id] = {
+          x: 280 * Math.cos(theta),
+          y: 280 * Math.sin(theta)
+        };
+      });
+
+      signature = `${tags.map(n => n.id).join(',')}|${others.map(n => n.id).join(',')}`;
+    } else if (layout === 'columns') {
+      const tags = [...(this.nodes || []).filter(n => n.group === 0)];
+      const posts = [...(this.nodes || []).filter(n => n.group === 1)];
+      const publications = [...(this.nodes || []).filter(n => n.group === 2)];
+      const presentations = [...(this.nodes || []).filter(n => n.group === 3)];
+      const courses = [...(this.nodes || []).filter(n => n.group === 4)];
+      const projects = [...(this.nodes || []).filter(n => n.group === 5)];
+      const services = [...(this.nodes || []).filter(n => n.group === 6)];
+      const newsletters = [...(this.nodes || []).filter(n => n.group === 7)];
+      const visualizations = [...(this.nodes || []).filter(n => n.group === 8)];
+
+      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
+      const isMobile = window.innerWidth < 768;
+      const heightFactor = 45;
+      const widthFactor = 45;
+
+      if (useCurrentOrder && this.network) {
+        categories.forEach(catNodes => {
+          catNodes.sort((a, b) => {
+            const pa = pos[a.id] || { x: 0, y: 0 };
+            const pb = pos[b.id] || { x: 0, y: 0 };
+            return isMobile ? pa.x - pb.x : pa.y - pb.y;
+          });
+        });
+      }
+
+      if (isMobile) {
+        categories.forEach((catNodes, catIdx) => {
+          const rowY = (catIdx - (categories.length - 1) / 2) * 120;
+          catNodes.forEach((n, idx) => {
+            targets[n.id] = {
+              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
+              y: rowY
+            };
+          });
+        });
+      } else {
+        categories.forEach((catNodes, catIdx) => {
+          const colX = (catIdx - (categories.length - 1) / 2) * 200;
+          catNodes.forEach((n, idx) => {
+            targets[n.id] = {
+              x: colX,
+              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * heightFactor : 0
+            };
+          });
+        });
+      }
+
+      signature = categories.map(cat => cat.map(n => n.id).join(',')).join('|');
+    }
+
+    return { targets, signature };
+  },
+
   updateLayout(layout: string, isLight: boolean) {
     if (!this.network || !this.visNodes || !this.visEdges) return;
     const layoutChanged = this.currentLayout !== layout;
@@ -386,99 +522,38 @@ const engine: VisNetworkEngine = {
     });
     this.visEdges?.update(edgeUpdates);
 
+    if (!layoutChanged) {
+      this.network.setOptions({ physics: { enabled: false } });
+      this.network.stopSimulation();
+      return;
+    }
+
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
 
-    if (layout === 'radial') {
-      const targets: Record<string, { x: number; y: number }> = {};
-      const tags = (this.nodes || []).filter(n => n.group === 0);
-      const others = (this.nodes || []).filter(n => n.group !== 0);
-
-      tags.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / tags.length;
-        targets[n.id] = {
-          x: 120 * Math.cos(theta),
-          y: 120 * Math.sin(theta)
-        };
-      });
-
-      others.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / others.length;
-        targets[n.id] = {
-          x: 280 * Math.cos(theta),
-          y: 280 * Math.sin(theta)
-        };
-      });
-
+    if (layout === 'radial' || layout === 'columns') {
+      const { targets, signature } = this.computeLayoutTargets(layout, false);
+      this.lastOrderSignature = signature;
       this.animateTo(targets);
-
-    } else if (layout === 'columns') {
-      const targets: Record<string, { x: number; y: number }> = {};
-      const tags = (this.nodes || []).filter(n => n.group === 0);
-      const posts = (this.nodes || []).filter(n => n.group === 1);
-      const publications = (this.nodes || []).filter(n => n.group === 2);
-      const presentations = (this.nodes || []).filter(n => n.group === 3);
-      const courses = (this.nodes || []).filter(n => n.group === 4);
-      const projects = (this.nodes || []).filter(n => n.group === 5);
-      const services = (this.nodes || []).filter(n => n.group === 6);
-      const newsletters = (this.nodes || []).filter(n => n.group === 7);
-      const visualizations = (this.nodes || []).filter(n => n.group === 8);
-
-      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-
-      const isMobile = window.innerWidth < 768;
-      const heightFactor = 45;
-      const widthFactor = 45;
-
-      if (isMobile) {
-        categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - (categories.length - 1) / 2) * 120;
-          catNodes.forEach((n, idx) => {
-            targets[n.id] = {
-              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
-              y: rowY
-            };
-          });
-        });
-      } else {
-        categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - (categories.length - 1) / 2) * 200;
-          catNodes.forEach((n, idx) => {
-            targets[n.id] = {
-              x: colX,
-              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * heightFactor : 0
-            };
-          });
-        });
-      }
-
-      this.animateTo(targets);
-
     } else {
       // default: force directed
-      if (layoutChanged) {
-        this.network.setOptions({
-          physics: {
-            enabled: true,
-            stabilization: { iterations: 100, updateInterval: 25 }
-          }
-        });
-        const stopForce = () => {
-          if (this.network) {
-            this.network.setOptions({ physics: { enabled: false } });
-            this.network.stopSimulation();
-          }
-        };
-        this.network.once("stabilizationIterationsDone", stopForce);
-        this.network.once("stabilized", stopForce);
-        setTimeout(stopForce, 1500);
-      } else {
-        // Layout didn't change (e.g. theme toggle), keep physics frozen to avoid battery/CPU drain
-        this.network.setOptions({ physics: { enabled: false } });
-        this.network.stopSimulation();
-      }
+      this.network.setOptions({
+        physics: {
+          enabled: true,
+          stabilization: { iterations: 100, updateInterval: 25 }
+        }
+      });
+      const stopForce = () => {
+        if (this.network) {
+          this.network.setOptions({ physics: { enabled: false } });
+          this.network.stopSimulation();
+        }
+      };
+      this.network.once("stabilizationIterationsDone", stopForce);
+      this.network.once("stabilized", stopForce);
+      setTimeout(stopForce, 1500);
     }
   },
 
@@ -503,9 +578,13 @@ const engine: VisNetworkEngine = {
     }
   },
 
-  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600) {
+  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600, excludeNodeId?: string) {
     if (!this.network || !this.visNodes) return;
     this.network.setOptions({ physics: { enabled: false } });
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
 
     const startTime = performance.now();
     const startPositions = this.network.getPositions();
@@ -520,6 +599,7 @@ const engine: VisNetworkEngine = {
 
       const updates: (VisNode & { rawGroup?: number })[] = [];
       (this.nodes || []).forEach(n => {
+        if (excludeNodeId && n.id === excludeNodeId) return;
         const start = startPositions[n.id] || { x: 0, y: 0 };
         const target = targets[n.id];
         if (target) {
