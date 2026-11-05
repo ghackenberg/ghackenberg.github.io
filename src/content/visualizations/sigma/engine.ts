@@ -1,7 +1,16 @@
 import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import { GRAPH_COLORS, getGraphStyleTokens, type SigmaNode, type SigmaEdge } from '@commons/shared/graph-payload';
+import {
+  GRAPH_COLORS,
+  getGraphStyleTokens,
+  buildGraphAdjacency,
+  computeHopDistances,
+  getAttenuatedNodeColor,
+  getAttenuatedEdgeStyle,
+  type SigmaNode,
+  type SigmaEdge
+} from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
@@ -28,6 +37,8 @@ export interface SigmaEngine {
   sigma: Sigma | null;
   nodeMap: Map<string, SigmaNodeData> | null;
   tooltipController: GraphTooltipController | null;
+  hoveredNodeId?: string | null;
+  applyHighlight?(activeNodeId: string | null): void;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
   container: HTMLElement | null;
   payload?: SigmaPayload;
@@ -200,32 +211,59 @@ const engine: SigmaEngine = {
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
     };
 
-    let hoveredNodeId: string | null = null;
+    this.hoveredNodeId = null;
+    this.isLight = isLight;
+    const adjacency = buildGraphAdjacency(edges);
 
     const applyHighlight = (activeNodeId: string | null) => {
       if (!this.graph || !this.sigma) return;
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
-      const connectedEdges = activeNodeId ? new Set(this.graph.edges(activeNodeId)) : null;
+
+      if (!activeNodeId) {
+        this.graph.forEachNode(nId => {
+          const grp = (this.graph?.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
+          this.graph?.setNodeAttribute(nId, 'size', SIGMA_BASE_NODE_SIZE);
+          this.graph?.setNodeAttribute(nId, 'color', getNodeColor(grp, currentIsLight));
+        });
+        this.graph.forEachEdge(edge => {
+          this.graph?.setEdgeAttribute(edge, 'color', currentTokens.edgeColor);
+          this.graph?.setEdgeAttribute(edge, 'size', currentTokens.edgeWidth);
+        });
+        this.sigma.refresh();
+        return;
+      }
+
+      const dists = computeHopDistances(activeNodeId, adjacency);
 
       this.graph.forEachNode(nId => {
+        const grp = (this.graph?.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
+        const baseColor = getNodeColor(grp, currentIsLight);
         this.graph?.setNodeAttribute(
           nId,
           'size',
           nId === activeNodeId ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale : SIGMA_BASE_NODE_SIZE
         );
+        this.graph?.setNodeAttribute(
+          nId,
+          'color',
+          getAttenuatedNodeColor(baseColor, dists.get(nId), currentIsLight)
+        );
       });
 
       this.graph.forEachEdge(edge => {
-        const isConnected = connectedEdges ? connectedEdges.has(edge) : false;
-        this.graph?.setEdgeAttribute(edge, 'color', isConnected ? currentTokens.edgeHoverColor : currentTokens.edgeColor);
-        this.graph?.setEdgeAttribute(edge, 'size', isConnected ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth);
+        const [src, tgt] = this.graph!.extremities(edge);
+        const style = getAttenuatedEdgeStyle(dists.get(src), dists.get(tgt), currentIsLight);
+        this.graph?.setEdgeAttribute(edge, 'color', style.color);
+        this.graph?.setEdgeAttribute(edge, 'size', style.width);
       });
       this.sigma.refresh();
     };
+    this.applyHighlight = applyHighlight;
 
     this.sigma.on('downNode', (e) => {
       draggedNode = e.node;
+      this.hoveredNodeId = e.node;
       dragStartViewport = { x: e.event.x, y: e.event.y };
       wasDragged = false;
       this.tooltipController?.hide();
@@ -285,7 +323,7 @@ const engine: SigmaEngine = {
       }
 
       if (wasDragged) {
-        hoveredNodeId = null;
+        this.hoveredNodeId = null;
         container.style.cursor = 'default';
         applyHighlight(null);
         this.lastDraggedAt = performance.now();
@@ -335,7 +373,7 @@ const engine: SigmaEngine = {
           this.animateTo(targets, 400, undefined, false);
         }
       } else {
-        applyHighlight(hoveredNodeId);
+        applyHighlight(this.hoveredNodeId ?? null);
       }
     });
 
@@ -364,7 +402,7 @@ const engine: SigmaEngine = {
 
     this.sigma.on('enterNode', ({ node }: { node: string }) => {
       if (draggedNode !== null) return;
-      hoveredNodeId = node;
+      this.hoveredNodeId = node;
       container.style.cursor = 'pointer';
 
       const currentIsLight = Boolean(this.isLight);
@@ -396,7 +434,7 @@ const engine: SigmaEngine = {
     });
 
     this.sigma.on('leaveNode', () => {
-      hoveredNodeId = null;
+      this.hoveredNodeId = null;
       this.tooltipController?.hide();
       if (draggedNode !== null) return;
       container.style.cursor = 'default';
@@ -404,7 +442,7 @@ const engine: SigmaEngine = {
     });
 
     this.mouseMoveHandler = (e: MouseEvent) => {
-      if (hoveredNodeId && draggedNode === null) {
+      if (this.hoveredNodeId && draggedNode === null) {
         const rect = container.getBoundingClientRect();
         this.tooltipController?.move(e.clientX - rect.left, e.clientY - rect.top);
       }
@@ -558,22 +596,12 @@ const engine: SigmaEngine = {
       this.sigma.setCustomBBox(null);
     }
 
-    // Apply color update to nodes and edges based on theme
+    // Apply color update to nodes and edges based on theme (and preserve any active highlight)
     const tokens = getThemeTokens(isLight);
     const styleTokens = getGraphStyleTokens(isLight);
-
-    this.graph.forEachEdge(edge => {
-      this.graph?.setEdgeAttribute(edge, 'color', styleTokens.edgeColor);
-      this.graph?.setEdgeAttribute(edge, 'size', styleTokens.edgeWidth);
-    });
-
-    this.graph.forEachNode(node => {
-      const grp = (this.graph?.getNodeAttribute(node, 'group') as number | undefined) ?? 0;
-      this.graph?.setNodeAttribute(node, 'color', getNodeColor(grp, isLight));
-    });
-
     this.sigma.setSetting('labelColor', { color: tokens.textHeading });
     this.sigma.setSetting('defaultEdgeColor', styleTokens.edgeColor);
+    this.applyHighlight?.(this.hoveredNodeId ?? null);
 
     if (!layoutChanged) {
       this.sigma.refresh();

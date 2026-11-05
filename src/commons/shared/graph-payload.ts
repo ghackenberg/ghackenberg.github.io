@@ -143,6 +143,133 @@ export function getGraphStyleTokens(isLight: boolean): GraphStyleTokens {
   };
 }
 
+export function buildGraphAdjacency(
+  edges: ReadonlyArray<{ source?: string; target?: string; sourceId?: string; targetId?: string }>
+): Map<string, Set<string>> {
+  const adjacency = new Map<string, Set<string>>();
+  for (const edge of edges) {
+    const src = edge.source ?? edge.sourceId;
+    const tgt = edge.target ?? edge.targetId;
+    if (!src || !tgt) continue;
+    let srcSet = adjacency.get(src);
+    if (!srcSet) {
+      srcSet = new Set<string>();
+      adjacency.set(src, srcSet);
+    }
+    srcSet.add(tgt);
+
+    let tgtSet = adjacency.get(tgt);
+    if (!tgtSet) {
+      tgtSet = new Set<string>();
+      adjacency.set(tgt, tgtSet);
+    }
+    tgtSet.add(src);
+  }
+  return adjacency;
+}
+
+export function computeHopDistances(
+  startNodeId: string,
+  adjacency: Map<string, Set<string>>,
+  maxHops = 3
+): Map<string, number> {
+  const distances = new Map<string, number>();
+  distances.set(startNodeId, 0);
+  const queue: [string, number][] = [[startNodeId, 0]];
+  let head = 0;
+
+  while (head < queue.length) {
+    const [current, dist] = queue[head++];
+    if (dist >= maxHops) continue;
+    const neighbors = adjacency.get(current);
+    if (!neighbors) continue;
+    for (const neighbor of neighbors) {
+      if (!distances.has(neighbor)) {
+        const nextDist = dist + 1;
+        distances.set(neighbor, nextDist);
+        if (nextDist < maxHops) {
+          queue.push([neighbor, nextDist]);
+        }
+      }
+    }
+  }
+
+  return distances;
+}
+
+function parseHexRgb(hex: string): [number, number, number] {
+  const cleaned = hex.replace(/^#/, '').trim();
+  if (cleaned.length === 3) {
+    const r = parseInt(cleaned[0] + cleaned[0], 16) || 0;
+    const g = parseInt(cleaned[1] + cleaned[1], 16) || 0;
+    const b = parseInt(cleaned[2] + cleaned[2], 16) || 0;
+    return [r, g, b];
+  }
+  const r = parseInt(cleaned.slice(0, 2), 16) || 0;
+  const g = parseInt(cleaned.slice(2, 4), 16) || 0;
+  const b = parseInt(cleaned.slice(4, 6), 16) || 0;
+  return [r, g, b];
+}
+
+export function blendHexColor(fgHex: string, bgHex: string, retention: number): string {
+  const clamped = Math.max(0, Math.min(1, retention));
+  if (clamped >= 1) return fgHex;
+  const [fgR, fgG, fgB] = parseHexRgb(fgHex);
+  const [bgR, bgG, bgB] = parseHexRgb(bgHex);
+  const r = Math.round(bgR + (fgR - bgR) * clamped).toString(16).padStart(2, '0');
+  const g = Math.round(bgG + (fgG - bgG) * clamped).toString(16).padStart(2, '0');
+  const b = Math.round(bgB + (fgB - bgB) * clamped).toString(16).padStart(2, '0');
+  return `#${r}${g}${b}`;
+}
+
+export function getAttenuatedNodeColor(
+  baseColor: string,
+  hopDistance: number | undefined,
+  isLight: boolean
+): string {
+  const d = hopDistance ?? Infinity;
+  if (d <= 0) return baseColor;
+  const canvasBg = getThemeTokens(isLight).canvasBg;
+  let retention = 0.14;
+  if (d === 1) {
+    retention = 0.90;
+  } else if (d === 2) {
+    retention = 0.42;
+  }
+  return blendHexColor(baseColor, canvasBg, retention);
+}
+
+export function getAttenuatedEdgeStyle(
+  sourceDistance: number | undefined,
+  targetDistance: number | undefined,
+  isLight: boolean
+): { color: string; width: number } {
+  const styleTokens = getGraphStyleTokens(isLight);
+  const dSrc = sourceDistance ?? Infinity;
+  const dTgt = targetDistance ?? Infinity;
+
+  if (dSrc === 0 || dTgt === 0) {
+    return {
+      color: styleTokens.edgeHoverColor,
+      width: styleTokens.edgeHoverWidth
+    };
+  }
+
+  const canvasBg = getThemeTokens(isLight).canvasBg;
+  const maxDist = Math.max(dSrc, dTgt);
+  if (maxDist <= 2) {
+    return {
+      color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.35),
+      width: styleTokens.edgeWidth
+    };
+  }
+
+  return {
+    color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.12),
+    width: styleTokens.edgeWidth
+  };
+}
+
 export interface TagCounts {
   posts: Record<string, number>;
   publications: Record<string, number>;

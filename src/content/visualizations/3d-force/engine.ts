@@ -1,5 +1,13 @@
 import ForceGraph3D from '3d-force-graph';
-import { GRAPH_COLORS, getGraphStyleTokens, type GraphNodePayload } from '@commons/shared/graph-payload';
+import {
+  GRAPH_COLORS,
+  getGraphStyleTokens,
+  buildGraphAdjacency,
+  computeHopDistances,
+  getAttenuatedNodeColor,
+  getAttenuatedEdgeStyle,
+  type GraphNodePayload
+} from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
@@ -32,6 +40,8 @@ export interface Force3DEngine {
   tooltipController: GraphTooltipController | null;
   hoveredNodeId: string | null;
   draggedNodeId: string | null;
+  adjacency: Map<string, Set<string>> | null;
+  activeDistances: Map<string, number> | null;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
   container: HTMLElement | null;
   currentLayout?: string;
@@ -49,13 +59,6 @@ export interface Force3DEngine {
   destroy(): void;
 }
 
-function isLinkConnected(link: Force3DLink, hoveredId: string | null): boolean {
-  if (!hoveredId) return false;
-  const srcId = typeof link.source === 'object' ? link.source.id : link.source;
-  const tgtId = typeof link.target === 'object' ? link.target.id : link.target;
-  return srcId === hoveredId || tgtId === hoveredId;
-}
-
 const engine: Force3DEngine = {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
@@ -68,6 +71,8 @@ const engine: Force3DEngine = {
   tooltipController: null,
   hoveredNodeId: null,
   draggedNodeId: null,
+  adjacency: null,
+  activeDistances: null,
   mouseMoveHandler: null,
   container: null,
   lastOrderSignature: '',
@@ -83,6 +88,8 @@ const engine: Force3DEngine = {
     this.isLight = isLight;
     this.hoveredNodeId = null;
     this.draggedNodeId = null;
+    this.adjacency = buildGraphAdjacency(payload['3d-force'].connections);
+    this.activeDistances = null;
     this.lastOrderSignature = '';
     this.lastDraggedAt = 0;
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -120,8 +127,13 @@ const engine: Force3DEngine = {
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     const refreshHighlight = () => {
+      const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
+      this.activeDistances = activeNodeId && this.adjacency
+        ? computeHopDistances(activeNodeId, this.adjacency)
+        : null;
       if (this.graph) {
         this.graph
+          .nodeColor(this.graph.nodeColor())
           .nodeVal(this.graph.nodeVal())
           .linkColor(this.graph.linkColor())
           .linkWidth(this.graph.linkWidth());
@@ -145,18 +157,37 @@ const engine: Force3DEngine = {
           ? n.val * Math.pow(currentTokens.nodeHoverScale, 3)
           : n.val;
       })
-      .nodeColor('color')
+      .nodeColor((n: Force3DNode) => {
+        const currentIsLight = Boolean(this.isLight);
+        const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+        const baseColor = palette[n.group] || palette[0];
+        if (!this.activeDistances) return baseColor;
+        return getAttenuatedNodeColor(baseColor, this.activeDistances.get(n.id), currentIsLight);
+      })
       .linkOpacity(1)
       .linkColor((l: Force3DLink) => {
         const currentIsLight = Boolean(this.isLight);
         const currentTokens = getGraphStyleTokens(currentIsLight);
-        const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
-        return isLinkConnected(l, activeNodeId) ? currentTokens.edgeHoverColor : currentTokens.edgeColor;
+        if (!this.activeDistances) return currentTokens.edgeColor;
+        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+        return getAttenuatedEdgeStyle(
+          this.activeDistances.get(srcId),
+          this.activeDistances.get(tgtId),
+          currentIsLight
+        ).color;
       })
       .linkWidth((l: Force3DLink) => {
-        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-        const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
-        return isLinkConnected(l, activeNodeId) ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth;
+        const currentIsLight = Boolean(this.isLight);
+        const currentTokens = getGraphStyleTokens(currentIsLight);
+        if (!this.activeDistances) return currentTokens.edgeWidth;
+        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+        return getAttenuatedEdgeStyle(
+          this.activeDistances.get(srcId),
+          this.activeDistances.get(tgtId),
+          currentIsLight
+        ).width;
       })
       .onNodeHover((node: Force3DNode | null) => {
         const hovered = node;
@@ -410,13 +441,15 @@ const engine: Force3DEngine = {
     // Apply color update based on theme
     const tokens = getThemeTokens(isLight);
     this.graph.backgroundColor(tokens.canvasBg);
-    this.graph.linkColor(this.graph.linkColor());
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodes.forEach(n => {
       n.color = colors[n.group] || colors[0];
     });
-    this.graph.nodeColor('color');
+    this.graph
+      .nodeColor(this.graph.nodeColor())
+      .linkColor(this.graph.linkColor())
+      .linkWidth(this.graph.linkWidth());
 
     if (this.initialized && !layoutChanged) {
       return;
@@ -552,6 +585,8 @@ const engine: Force3DEngine = {
     }
     this.hoveredNodeId = null;
     this.draggedNodeId = null;
+    this.adjacency = null;
+    this.activeDistances = null;
     if (this.graph) {
       this.graph.pauseAnimation();
       this.graph.graphData({ nodes: [], links: [] });

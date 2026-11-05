@@ -1,5 +1,13 @@
 import * as d3 from 'd3';
-import { GRAPH_COLORS, getGraphStyleTokens, type GraphNodePayload } from '@commons/shared/graph-payload';
+import {
+  GRAPH_COLORS,
+  getGraphStyleTokens,
+  buildGraphAdjacency,
+  computeHopDistances,
+  getAttenuatedNodeColor,
+  getAttenuatedEdgeStyle,
+  type GraphNodePayload
+} from '@commons/shared/graph-payload';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
@@ -32,6 +40,9 @@ export interface D3Engine {
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
   tooltipController: GraphTooltipController | null;
+  hoveredNodeId?: string | null;
+  draggedNodeId?: string | null;
+  applyHighlight?(activeId: string | null): void;
   currentLayout?: string;
   isLight?: boolean;
   fitTimeout?: ReturnType<typeof setTimeout>;
@@ -115,40 +126,62 @@ const engine: D3Engine = {
     let dragStartX = 0;
     let dragStartY = 0;
     let wasDragged = false;
-    let hoveredNodeId: string | null = null;
-    let draggedNodeId: string | null = null;
+    this.hoveredNodeId = null;
+    this.draggedNodeId = null;
+
+    const adjacency = buildGraphAdjacency(
+      this.links.map(l => ({
+        source: typeof l.source === 'object' ? l.source.id : String(l.source),
+        target: typeof l.target === 'object' ? l.target.id : String(l.target)
+      }))
+    );
 
     const applyHighlight = (activeId: string | null) => {
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
 
+      if (!activeId) {
+        this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle")
+          .attr("r", currentTokens.nodeRadius)
+          .style("fill", (n: D3Node) => groupColors[n.group] || groupColors[0])
+          .style("stroke", (n: D3Node) => groupColors[n.group] || groupColors[0])
+          .style("stroke-width", "1.5px");
+
+        this.linkElements
+          ?.style("stroke", currentTokens.edgeColor)
+          ?.style("stroke-width", `${currentTokens.edgeWidth}px`);
+        return;
+      }
+
+      const dists = computeHopDistances(activeId, adjacency);
+
       this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle")
         .attr("r", (n: D3Node) => n.id === activeId ? currentTokens.nodeRadius * currentTokens.nodeHoverScale : currentTokens.nodeRadius)
-        .style("stroke", (n: D3Node) => groupColors[n.group] || groupColors[0])
+        .style("fill", (n: D3Node) => getAttenuatedNodeColor(groupColors[n.group] || groupColors[0], dists.get(n.id), currentIsLight))
+        .style("stroke", (n: D3Node) => getAttenuatedNodeColor(groupColors[n.group] || groupColors[0], dists.get(n.id), currentIsLight))
         .style("stroke-width", "1.5px");
 
       this.linkElements
         ?.style("stroke", (l: D3Link) => {
-          if (!activeId) return currentTokens.edgeColor;
-          const srcId = typeof l.source === 'object' ? l.source.id : l.source;
-          const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
-          return srcId === activeId || tgtId === activeId ? currentTokens.edgeHoverColor : currentTokens.edgeColor;
+          const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+          const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+          return getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight).color;
         })
         ?.style("stroke-width", (l: D3Link) => {
-          if (!activeId) return `${currentTokens.edgeWidth}px`;
-          const srcId = typeof l.source === 'object' ? l.source.id : l.source;
-          const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
-          return srcId === activeId || tgtId === activeId ? `${currentTokens.edgeHoverWidth}px` : `${currentTokens.edgeWidth}px`;
+          const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+          const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+          return `${getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight).width}px`;
         });
     };
+    this.applyHighlight = applyHighlight;
 
     const dragBehavior = d3.drag<SVGGElement, D3Node>()
       .on("start", (event, d) => {
         dragStartX = event.x;
         dragStartY = event.y;
         wasDragged = false;
-        draggedNodeId = d.id;
+        this.draggedNodeId = d.id;
         applyHighlight(d.id);
         if (!event.active) this.simulation?.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -169,12 +202,12 @@ const engine: D3Engine = {
         }
       })
       .on("end", (event, d) => {
-        draggedNodeId = null;
+        this.draggedNodeId = null;
         if (wasDragged) {
-          hoveredNodeId = null;
+          this.hoveredNodeId = null;
           container.style.cursor = "default";
         }
-        applyHighlight(hoveredNodeId);
+        applyHighlight(this.hoveredNodeId ?? null);
         if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           this.recomputeSlotTargets(true);
         }
@@ -225,8 +258,8 @@ const engine: D3Engine = {
 
     this.nodeElements
       .on("mouseenter", (event: MouseEvent, d: D3Node) => {
-        hoveredNodeId = d.id;
-        if (!draggedNodeId) {
+        this.hoveredNodeId = d.id;
+        if (!this.draggedNodeId) {
           container.style.cursor = "pointer";
           applyHighlight(d.id);
           const [x, y] = d3.pointer(event, container);
@@ -234,17 +267,17 @@ const engine: D3Engine = {
         }
       })
       .on("mousemove", (event: MouseEvent) => {
-        if (!draggedNodeId) {
+        if (!this.draggedNodeId) {
           const [x, y] = d3.pointer(event, container);
           this.tooltipController?.move(x, y);
         }
       })
       .on("mouseleave", (_event: MouseEvent, d: D3Node) => {
-        if (hoveredNodeId === d.id) {
-          hoveredNodeId = null;
+        if (this.hoveredNodeId === d.id) {
+          this.hoveredNodeId = null;
         }
         this.tooltipController?.hide();
-        if (!draggedNodeId) {
+        if (!this.draggedNodeId) {
           container.style.cursor = "default";
           applyHighlight(null);
         }
@@ -451,18 +484,8 @@ const engine: D3Engine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to D3 circles and links based on theme
-    const styleTokens = getGraphStyleTokens(isLight);
-    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    this.linkElements
-      .style("stroke", styleTokens.edgeColor)
-      .style("stroke-width", `${styleTokens.edgeWidth}px`);
-    this.nodeElements
-      .selectAll<SVGCircleElement, D3Node>("circle")
-      .attr("r", styleTokens.nodeRadius)
-      .style("fill", d => colors[d.group] || colors[0])
-      .style("stroke", d => colors[d.group] || colors[0])
-      .style("stroke-width", "1.5px");
+    // Apply color update to D3 circles and links based on theme (and preserve any active highlight)
+    this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null);
 
     if (layout === 'radial') {
       const cx = this.width / 2;

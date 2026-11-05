@@ -1,6 +1,13 @@
 import cytoscape, { type Core, type NodeSingular, type EdgeSingular, type EventObjectNode } from 'cytoscape';
 import * as d3 from 'd3';
-import { GRAPH_COLORS, getGraphStyleTokens } from '@commons/shared/graph-payload';
+import {
+  GRAPH_COLORS,
+  getGraphStyleTokens,
+  buildGraphAdjacency,
+  computeHopDistances,
+  getAttenuatedNodeColor,
+  getAttenuatedEdgeStyle
+} from '@commons/shared/graph-payload';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 interface CySimNode extends d3.SimulationNodeDatum {
@@ -23,6 +30,8 @@ export interface CytoscapeEngine {
   layouts: { id: string; label: string }[];
   cy: Core | null;
   tooltipController: GraphTooltipController | null;
+  hoveredNodeId?: string | null;
+  applyHighlight?(activeId: string | null): void;
   currentLayout?: string;
   isLight?: boolean;
   initialized?: boolean;
@@ -61,9 +70,10 @@ const engine: CytoscapeEngine = {
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     const styleTokens = getGraphStyleTokens(isLight);
     const baseDiameter = styleTokens.nodeRadius * 2;
-    const hoverDiameter = baseDiameter * styleTokens.nodeHoverScale;
 
     this.initialized = false;
+    this.isLight = isLight;
+    this.hoveredNodeId = null;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
     this.forcePositions = null;
@@ -95,35 +105,83 @@ const engine: CytoscapeEngine = {
             'line-color': styleTokens.edgeColor,
             'curve-style': 'straight'
           }
-        },
-        {
-          selector: 'node:selected',
-          style: {
-            'width': hoverDiameter,
-            'height': hoverDiameter,
-            'border-width': '1.5px',
-            'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
-          }
-        },
-        {
-          selector: 'node.hovered',
-          style: {
-            'width': hoverDiameter,
-            'height': hoverDiameter,
-            'border-width': '1.5px',
-            'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
-          }
-        },
-        {
-          selector: 'edge.hovered-edge',
-          style: {
-            'width': styleTokens.edgeHoverWidth,
-            'line-color': styleTokens.edgeHoverColor
-          }
         }
       ],
       layout: { name: 'null' }
     });
+
+    const rawEdges: { source: string; target: string }[] = [];
+    this.cy.edges().forEach((e: EdgeSingular) => {
+      rawEdges.push({ source: e.source().id(), target: e.target().id() });
+    });
+    const adjacency = buildGraphAdjacency(rawEdges);
+
+    const applyHighlight = (activeId: string | null) => {
+      if (!this.cy) return;
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const currentBaseDiameter = currentTokens.nodeRadius * 2;
+      const currentHoverDiameter = currentBaseDiameter * currentTokens.nodeHoverScale;
+
+      if (!activeId) {
+        this.cy.batch(() => {
+          this.cy?.nodes().forEach((n: NodeSingular) => {
+            const baseColor = getNodeColor(n, currentIsLight);
+            n.data({
+              displayColor: baseColor,
+              displaySize: currentBaseDiameter
+            });
+          });
+          this.cy?.edges().forEach((e: EdgeSingular) => {
+            e.data({
+              displayColor: currentTokens.edgeColor,
+              displayWidth: currentTokens.edgeWidth
+            });
+          });
+        });
+        return;
+      }
+
+      const dists = computeHopDistances(activeId, adjacency);
+      this.cy.batch(() => {
+        this.cy?.nodes().forEach((n: NodeSingular) => {
+          const id = n.id();
+          const baseColor = getNodeColor(n, currentIsLight);
+          n.data({
+            displayColor: getAttenuatedNodeColor(baseColor, dists.get(id), currentIsLight),
+            displaySize: id === activeId ? currentHoverDiameter : currentBaseDiameter
+          });
+        });
+        this.cy?.edges().forEach((e: EdgeSingular) => {
+          const srcId = e.source().id();
+          const tgtId = e.target().id();
+          const style = getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight);
+          e.data({
+            displayColor: style.color,
+            displayWidth: style.width
+          });
+        });
+      });
+    };
+    this.applyHighlight = applyHighlight;
+    applyHighlight(null);
+
+    this.cy.style()
+      .selector('node').style({
+        'background-color': 'data(displayColor)',
+        'border-color': 'data(displayColor)',
+        'width': 'data(displaySize)',
+        'height': 'data(displaySize)',
+        'border-width': '1.5px',
+        'label': '',
+        'overlay-opacity': 0
+      })
+      .selector('edge').style({
+        'line-color': 'data(displayColor)',
+        'width': 'data(displayWidth)',
+        'curve-style': 'straight'
+      })
+      .update();
 
     container.style.touchAction = 'pan-y';
     container.querySelectorAll('canvas, div').forEach((el) => {
@@ -233,13 +291,12 @@ const engine: CytoscapeEngine = {
     this.cy.on('grabon', 'node', (evt: EventObjectNode) => {
       const node = evt.target;
       grabbedNodeId = node.id();
+      this.hoveredNodeId = grabbedNodeId;
       const pos = node.position();
       grabStartPos = { x: pos.x, y: pos.y };
       wasDragged = false;
       this.tooltipController?.hide();
-      this.cy?.elements().removeClass('hovered hovered-edge');
-      node.addClass('hovered');
-      node.connectedEdges().addClass('hovered-edge');
+      applyHighlight(grabbedNodeId);
       container.style.cursor = 'grabbing';
 
       if (this.animationFrameId) {
@@ -311,8 +368,9 @@ const engine: CytoscapeEngine = {
       grabbedNodeId = null;
 
       if (wasDragged) {
-        this.cy?.elements().removeClass('hovered hovered-edge');
+        this.hoveredNodeId = null;
         container.style.cursor = 'default';
+        applyHighlight(null);
         this.lastDraggedAt = performance.now();
         if (this.currentLayout === 'force' && this.dragSimulation) {
           const sn = simNodeMap.get(node.id());
@@ -339,6 +397,7 @@ const engine: CytoscapeEngine = {
         }
       } else {
         container.style.cursor = 'pointer';
+        applyHighlight(this.hoveredNodeId ?? null);
         settleFramesRemaining = 0;
       }
     });
@@ -386,8 +445,8 @@ const engine: CytoscapeEngine = {
       if (grabbedNodeId !== null) return;
       container.style.cursor = 'pointer';
       const node = evt.target;
-      node.addClass('hovered');
-      node.connectedEdges().addClass('hovered-edge');
+      this.hoveredNodeId = node.id();
+      applyHighlight(node.id());
 
       const data = node.data();
       const coords = getCoords(evt);
@@ -415,12 +474,11 @@ const engine: CytoscapeEngine = {
       this.tooltipController?.move(coords.x, coords.y);
     });
 
-    this.cy.on('mouseout', 'node', (evt: EventObjectNode) => {
+    this.cy.on('mouseout', 'node', () => {
       if (grabbedNodeId !== null) return;
+      this.hoveredNodeId = null;
       container.style.cursor = 'default';
-      const node = evt.target;
-      node.removeClass('hovered');
-      node.connectedEdges().removeClass('hovered-edge');
+      applyHighlight(null);
       this.tooltipController?.hide();
     });
 
@@ -695,39 +753,8 @@ const engine: CytoscapeEngine = {
       this.physicsFrameId = null;
     }
 
-    // Apply color update to nodes and edges based on theme
-    const styleTokens = getGraphStyleTokens(isLight);
-    const baseDiameter = styleTokens.nodeRadius * 2;
-    const hoverDiameter = baseDiameter * styleTokens.nodeHoverScale;
-    this.cy.style()
-      .selector('node').style({
-        'width': baseDiameter,
-        'height': baseDiameter,
-        'border-width': '1.5px',
-        'border-color': (node: NodeSingular) => getNodeColor(node, isLight),
-        'background-color': (node: NodeSingular) => getNodeColor(node, isLight)
-      })
-      .selector('node:selected').style({
-        'width': hoverDiameter,
-        'height': hoverDiameter,
-        'border-width': '1.5px',
-        'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
-      })
-      .selector('node.hovered').style({
-        'width': hoverDiameter,
-        'height': hoverDiameter,
-        'border-width': '1.5px',
-        'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
-      })
-      .selector('edge').style({
-        'width': styleTokens.edgeWidth,
-        'line-color': styleTokens.edgeColor
-      })
-      .selector('edge.hovered-edge').style({
-        'width': styleTokens.edgeHoverWidth,
-        'line-color': styleTokens.edgeHoverColor
-      })
-      .update();
+    // Apply color update to nodes and edges based on theme (and preserve any active highlight)
+    this.applyHighlight?.(this.hoveredNodeId ?? null);
 
     if (!this.initialized || layoutChanged || forceRecompute) {
       const targets = this.computeLayoutTargets(layout, false);

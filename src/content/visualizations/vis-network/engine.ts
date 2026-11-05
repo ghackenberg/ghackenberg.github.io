@@ -1,6 +1,14 @@
 import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { GRAPH_COLORS, GRAPH_GROUP_NAMES, getGraphStyleTokens } from '@commons/shared/graph-payload';
+import {
+  GRAPH_COLORS,
+  GRAPH_GROUP_NAMES,
+  getGraphStyleTokens,
+  buildGraphAdjacency,
+  computeHopDistances,
+  getAttenuatedNodeColor,
+  getAttenuatedEdgeStyle
+} from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
 
@@ -57,6 +65,8 @@ export interface VisNetworkEngine {
   options?: Options;
   network?: Network | null;
   isDragging?: boolean;
+  hoveredNodeId?: string | null;
+  draggedNodeId?: string | null;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
   dragStabilizeTimeout?: ReturnType<typeof setTimeout> | null;
@@ -65,6 +75,7 @@ export interface VisNetworkEngine {
   resizeObserver?: ResizeObserver | null;
   intersectionObserver?: IntersectionObserver | null;
   animationFrameId?: number | null;
+  applyHighlight?(activeId: string | null): void;
   init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions?: VisNetworkExtraOptions): Promise<VisNetworkEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
@@ -248,14 +259,93 @@ const engine: VisNetworkEngine = {
 
     if (interactionOptions.dragNodes) {
       this.isDragging = false;
+      this.hoveredNodeId = null;
+      this.draggedNodeId = null;
       this.lastDraggedAt = 0;
       this.lastOrderSignature = '';
       this.dragStabilizeTimeout = null;
+    }
 
+    const adjacency = buildGraphAdjacency(this.connections || []);
+
+    this.applyHighlight = (activeId: string | null) => {
+      if (!this.visNodes || !this.visEdges) return;
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const palette = GRAPH_COLORS[currentIsLight ? 'light' : 'dark'];
+
+      if (!activeId) {
+        const nodeColors = getVisNodeColors(currentIsLight);
+        const nodeUpdates: VisCustomNode[] = (this.nodes || []).map((n) => ({
+          id: n.id,
+          size: currentTokens.nodeRadius,
+          color: nodeColors[n.group] || nodeColors[0]
+        }));
+        this.visNodes.update(nodeUpdates);
+
+        const edgeUpdates: VisEdge[] = [];
+        this.visEdges.forEach((edge: VisEdge) => {
+          edgeUpdates.push({
+            id: edge.id,
+            width: currentTokens.edgeWidth,
+            hoverWidth: currentTokens.edgeHoverWidth,
+            color: {
+              color: currentTokens.edgeColor,
+              highlight: currentTokens.edgeHoverColor,
+              hover: currentTokens.edgeHoverColor
+            }
+          });
+        });
+        this.visEdges.update(edgeUpdates);
+        return;
+      }
+
+      const dists = computeHopDistances(activeId, adjacency);
+      const nodeUpdates: VisCustomNode[] = (this.nodes || []).map((n) => {
+        const baseColor = palette[n.group] || palette[0];
+        const c = getAttenuatedNodeColor(baseColor, dists.get(n.id), currentIsLight);
+        return {
+          id: n.id,
+          size: n.id === activeId ? currentTokens.nodeRadius * currentTokens.nodeHoverScale : currentTokens.nodeRadius,
+          color: {
+            background: c,
+            border: c,
+            highlight: { background: c, border: c },
+            hover: { background: c, border: c }
+          }
+        };
+      });
+      this.visNodes.update(nodeUpdates);
+
+      const edgeUpdates: VisEdge[] = [];
+      this.visEdges.forEach((edge: VisEdge) => {
+        const style = getAttenuatedEdgeStyle(
+          dists.get(String(edge.from)),
+          dists.get(String(edge.to)),
+          currentIsLight
+        );
+        edgeUpdates.push({
+          id: edge.id,
+          width: style.width,
+          hoverWidth: style.width,
+          color: {
+            color: style.color,
+            highlight: style.color,
+            hover: style.color
+          }
+        });
+      });
+      this.visEdges.update(edgeUpdates);
+    };
+
+    if (interactionOptions.dragNodes) {
       this.network.on("dragStart", (params: { nodes: string[] }) => {
         if (!params.nodes || params.nodes.length === 0) return;
         this.isDragging = true;
         this.lastDraggedAt = performance.now();
+        const draggedId = String(params.nodes[0]);
+        this.draggedNodeId = draggedId;
+        this.applyHighlight?.(draggedId);
         const tip = container.querySelector('.vis-tooltip') as HTMLElement | null;
         if (tip) tip.style.visibility = 'hidden';
 
@@ -298,8 +388,12 @@ const engine: VisNetworkEngine = {
       this.network.on("dragEnd", (params: { nodes: string[] }) => {
         if (!this.isDragging && (!params.nodes || params.nodes.length === 0)) return;
         this.isDragging = false;
+        this.draggedNodeId = null;
+        this.hoveredNodeId = null;
         this.lastDraggedAt = performance.now();
         this.network?.unselectAll();
+        container.style.cursor = "default";
+        this.applyHighlight?.(null);
 
         if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
@@ -329,6 +423,7 @@ const engine: VisNetworkEngine = {
 
     this.network.on("click", (params: { nodes: string[] }) => {
       this.network?.unselectAll();
+      this.applyHighlight?.(this.hoveredNodeId ?? null);
       if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
       if (params.nodes.length > 0) {
         const targetPath = params.nodes[0];
@@ -352,12 +447,20 @@ const engine: VisNetworkEngine = {
       }
     });
 
-    this.network.on("hoverNode", () => {
-      container.style.cursor = "pointer";
+    this.network.on("hoverNode", (params: { node: string | number }) => {
+      this.hoveredNodeId = String(params.node);
+      if (!this.isDragging) {
+        container.style.cursor = "pointer";
+        this.applyHighlight?.(this.hoveredNodeId);
+      }
     });
 
     this.network.on("blurNode", () => {
-      container.style.cursor = "default";
+      this.hoveredNodeId = null;
+      if (!this.isDragging) {
+        container.style.cursor = "default";
+        this.applyHighlight?.(null);
+      }
     });
 
     this.currentLayout = layout;
@@ -494,35 +597,8 @@ const engine: VisNetworkEngine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to nodes and edges based on theme
-    const colors = getVisNodeColors(isLight);
-    const styleTokens = getGraphStyleTokens(isLight);
-
-    // Batch node styling updates (colors)
-    const nodeUpdates: (VisNode & { rawGroup?: number })[] = [];
-    this.visNodes?.forEach((node: VisCustomNode) => {
-      nodeUpdates.push({
-        id: node.id,
-        color: colors[node.rawGroup ?? 0] || colors[0]
-      });
-    });
-    this.visNodes?.update(nodeUpdates);
-
-    // Batch edge updates
-    const edgeUpdates: VisEdge[] = [];
-    this.visEdges?.forEach((edge: VisEdge) => {
-      edgeUpdates.push({
-        id: edge.id,
-        width: styleTokens.edgeWidth,
-        hoverWidth: styleTokens.edgeHoverWidth,
-        color: {
-          color: styleTokens.edgeColor,
-          highlight: styleTokens.edgeHoverColor,
-          hover: styleTokens.edgeHoverColor
-        }
-      });
-    });
-    this.visEdges?.update(edgeUpdates);
+    // Apply color update to nodes and edges based on theme (and preserve any active highlight)
+    this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null);
 
     if (!layoutChanged) {
       this.network.setOptions({ physics: { enabled: false } });
