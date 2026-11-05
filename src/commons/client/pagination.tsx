@@ -1,3 +1,6 @@
+import { render } from 'preact';
+import { setPaginationPage } from './stores';
+
 export type PaginationTheme = 'blue' | 'purple' | 'yellow' | 'green' | 'indigo';
 
 export interface RenderPaginationOptions {
@@ -30,6 +33,93 @@ export function getPageNumbers(current: number, total: number): (number | string
   return [1, '...', current - 1, current, current + 1, '...', total];
 }
 
+interface PaginationNumbersProps {
+  pageNumbers: (number | string)[];
+  currentPage: number;
+  activeClass: string;
+  hoverBorderClass: string;
+}
+
+export function PaginationNumbers({
+  pageNumbers,
+  currentPage,
+  activeClass,
+  hoverBorderClass,
+}: PaginationNumbersProps) {
+  return (
+    <>
+      {pageNumbers.map((num, idx) => {
+        if (typeof num === 'string') {
+          return (
+            <span key={`ellipsis-${idx}`} class="px-3 py-2 text-gray-500 text-sm font-medium">
+              ...
+            </span>
+          );
+        }
+        if (num === currentPage) {
+          return (
+            <span
+              key={`page-${num}`}
+              class={`px-3.5 py-2 rounded-xl text-sm font-bold text-white ${activeClass} cursor-default select-none min-w-[38px] text-center`}
+              aria-current="page"
+              data-page-btn={String(num)}
+            >
+              {num}
+            </span>
+          );
+        }
+        return (
+          <button
+            key={`page-${num}`}
+            type="button"
+            data-goto={String(num)}
+            class={`px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer`}
+          >
+            {num}
+          </button>
+        );
+      })}
+    </>
+  );
+}
+
+function syncNavButtonState(
+  btn: HTMLButtonElement,
+  isDisabled: boolean,
+  hoverBorderClass: string
+): void {
+  btn.disabled = isDisabled;
+  const hoverClasses = hoverBorderClass.split(' ').filter(Boolean);
+  if (isDisabled) {
+    btn.classList.remove(
+      'border-element-border-medium',
+      'text-gray-300',
+      'hover:text-gray-100',
+      'hover:bg-element-bg-hover',
+      'group',
+      'cursor-pointer',
+      ...hoverClasses
+    );
+    btn.classList.add('border-element-border', 'text-gray-600', 'cursor-not-allowed', 'opacity-40');
+  } else {
+    btn.classList.remove(
+      'border-element-border',
+      'text-gray-600',
+      'cursor-not-allowed',
+      'opacity-40'
+    );
+    btn.classList.add(
+      'border-element-border-medium',
+      'text-gray-300',
+      'hover:text-gray-100',
+      'hover:bg-element-bg-hover',
+      'group',
+      'cursor-pointer',
+      ...hoverClasses
+    );
+  }
+}
+
 export function renderPaginationControls({
   navElement,
   currentPage,
@@ -49,40 +139,28 @@ export function renderPaginationControls({
   const numbersContainer = navElement.querySelector<HTMLElement>('.page-numbers-container');
 
   if (prevBtn) {
-    if (currentPage <= 1) {
-      prevBtn.disabled = true;
-      prevBtn.className =
-        'prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200';
-    } else {
-      prevBtn.disabled = false;
-      prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
-    }
+    syncNavButtonState(prevBtn, currentPage <= 1, hoverBorderClass);
   }
 
   if (nextBtn) {
-    if (currentPage >= totalPages) {
-      nextBtn.disabled = true;
-      nextBtn.className =
-        'next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200';
-    } else {
-      nextBtn.disabled = false;
-      nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
-    }
+    syncNavButtonState(nextBtn, currentPage >= totalPages, hoverBorderClass);
   }
 
   if (numbersContainer) {
     const pageNumbers = getPageNumbers(currentPage, totalPages);
-    numbersContainer.innerHTML = pageNumbers
-      .map((num) => {
-        if (typeof num === 'string') {
-          return '<span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>';
-        }
-        if (num === currentPage) {
-          return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white ${activeClass} cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
-        }
-        return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
-      })
-      .join('');
+    render(
+      <PaginationNumbers
+        pageNumbers={pageNumbers}
+        currentPage={currentPage}
+        activeClass={activeClass}
+        hoverBorderClass={hoverBorderClass}
+      />,
+      numbersContainer
+    );
+  }
+
+  if (navElement.id) {
+    setPaginationPage(navElement.id, currentPage);
   }
 }
 
@@ -176,7 +254,9 @@ export function setupSectionPagination({
   window.addEventListener('popstate', () => {
     const currentParams = new URLSearchParams(window.location.search);
     const paramVal = currentParams.get(paramKey);
-    const targetPage = paramVal ? Math.min(totalPages, Math.max(1, parseInt(paramVal, 10) || 1)) : 1;
+    const targetPage = paramVal
+      ? Math.min(totalPages, Math.max(1, parseInt(paramVal, 10) || 1))
+      : 1;
     if (targetPage !== currentPage) {
       setPage(targetPage, false);
     }

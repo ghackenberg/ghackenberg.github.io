@@ -150,7 +150,53 @@ if (overviewDomainErrors === 0) {
   success('All 8 overview pages strictly adhere to solid domain highlights and Breadcrumbs domain configurations.');
 }
 
-// 6. Summary and exit code
+// 6. Zero-innerHTML Gate across all source files in src/ (including <script is:inline>)
+const SELF_SCRIPT_PATH = path.resolve(SRC_DIR, 'scripts', 'validate-architecture.ts');
+const UNSAFE_HTML_REGEX = /\.(?:innerHTML|outerHTML|insertAdjacentHTML)\b/g;
+
+function walkSourceFiles(dir: string): string[] {
+  const results: string[] = [];
+  if (!fs.existsSync(dir)) return results;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...walkSourceFiles(fullPath));
+    } else if (
+      entry.isFile() &&
+      /\.(?:ts|tsx|js|jsx|astro)$/.test(entry.name) &&
+      path.resolve(fullPath) !== SELF_SCRIPT_PATH
+    ) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
+let innerHtmlViolations = 0;
+for (const filePath of walkSourceFiles(SRC_DIR)) {
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const lines = raw.split(/\r?\n/);
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) {
+      return;
+    }
+    UNSAFE_HTML_REGEX.lastIndex = 0;
+    const match = UNSAFE_HTML_REGEX.exec(line);
+    if (match) {
+      const rel = path.relative(ROOT_DIR, filePath).replace(/\\/g, '/');
+      error(
+        `Forbidden DOM injection "${match[0]}" in ${rel}:${idx + 1}. Use declarative Preact JSX (.tsx) or safe DOM APIs (textContent, replaceChildren).`
+      );
+      innerHtmlViolations++;
+    }
+  });
+}
+if (innerHtmlViolations === 0) {
+  success('Zero raw .innerHTML / .outerHTML / .insertAdjacentHTML injections across src/.');
+}
+
+// 7. Summary and exit code
 if (errorCount > 0) {
   console.error(`\n💥 [validate:architecture] Validation failed with ${errorCount} error(s).`);
   process.exit(1);

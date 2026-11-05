@@ -2,6 +2,7 @@ import { Network, type Options, type Node as VisNode, type Edge as VisEdge } fro
 import { DataSet } from 'vis-data';
 import { GRAPH_COLORS, GRAPH_GROUP_NAMES } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
+import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
 
 function getVisNodeColors(isLight: boolean) {
   const palette = GRAPH_COLORS[isLight ? 'light' : 'dark'];
@@ -98,45 +99,13 @@ const engine: VisNetworkEngine = {
       card.style.overflowWrap = 'break-word';
       card.style.wordBreak = 'break-word';
       
-      let imageHtml = '';
-      if (n.image) {
-        imageHtml = `
-          <div style="width: 100%; height: 110px; overflow: hidden; border-radius: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center;">
-            <img src="${n.image}" alt="${n.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
-          </div>
-        `;
-      }
-
-      let tagsHtml = '';
-      if (n.tags && n.tags.length > 0) {
-        tagsHtml = `
-          <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;">
-            ${n.tags.map((t: string) => `<span style="font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: ${groupColors[0]};">#${t}</span>`).join('')}
-          </div>
-        `;
-      }
-
-      let dateHtml = '';
-      if (n.date) {
-        dateHtml = `<span style="font-size: 10px; color: ${themeTokens.textSubtle}; font-weight: 500; shrink: 0;">${n.date}</span>`;
-      }
-
-      card.innerHTML = `
-        <div style="padding: 2px; box-sizing: border-box; width: 100%; white-space: normal;">
-          ${imageHtml}
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
-            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: ${groupColors[n.group] || themeTokens.nodeDefault}; flex-shrink: 0;">
-              ${n.typeLabel || groupNames[n.group] || 'Item'}
-            </span>
-            ${dateHtml}
-          </div>
-          <div style="font-size: 13px; font-weight: 700; line-height: 1.35; color: ${themeTokens.textHeading}; margin-bottom: 6px; white-space: normal; overflow-wrap: break-word; word-break: break-word;">
-            ${n.name}
-          </div>
-          ${n.description ? `<div style="font-size: 11px; line-height: 1.45; color: ${themeTokens.textSubtle}; white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; overflow-wrap: break-word; word-break: break-word;">${n.description}</div>` : ''}
-          ${tagsHtml}
-        </div>
-      `;
+      renderVisNetworkTooltip(card, {
+        node: n,
+        typeLabel: n.typeLabel || groupNames[n.group] || 'Item',
+        accentColor: groupColors[n.group] || themeTokens.nodeDefault,
+        tagColor: groupColors[0],
+        themeTokens,
+      });
 
       const isTagNode = n.group === 0;
       const nodeValue = isTagNode ? (Math.pow(n.size, 2) * 16 + 10) : (n.size * 3 + 2);

@@ -400,6 +400,11 @@ const { currentPath } = Astro.props;
 
 <script>
   import { renderVisitorFlowSankey, type DevSankeyData } from '@commons/client/dev-sankey';
+  import {
+    renderFunnelGradientStops,
+    renderMinimapMilestones,
+    renderSankeyLoadingState,
+  } from '@commons/client/dev-studio-views';
 
   // Client-side DevStudio Controller
   interface ScrollMilestone {
@@ -1528,15 +1533,8 @@ const { currentPath } = Astro.props;
     }
 
     private applyGradientStops(stops: GradientStop[]): void {
-      const html = stops
-        .map(
-          (s) =>
-            `<stop offset="${s.offset.toFixed(1)}%" stop-color="rgb(${s.r},${s.g},${s.b})" stop-opacity="${s.opacity.toFixed(2)}" />`
-        )
-        .join('');
-
       const grad = document.getElementById('dev-funnel-grad');
-      if (grad) grad.innerHTML = html;
+      if (grad) renderFunnelGradientStops(grad, stops);
     }
 
     private updateMedianMarker(median: number | null | undefined): void {
@@ -1568,18 +1566,10 @@ const { currentPath } = Astro.props;
       if (!milestonesEl) return;
 
       if (milestones.length > 0) {
-        milestonesEl.innerHTML = milestones
-          .filter((m) => m.depth % 25 === 0)
-          .map((m) => `
-            <div class="absolute w-full flex items-center justify-between px-1 pointer-events-none" style="top: ${m.depth}%;" title="Reach at ${m.depth}% depth: ${Math.round(m.percentageOfVisitors)}%">
-              <div class="h-px bg-zinc-300 w-1.5"></div>
-              <div class="h-px bg-zinc-300 w-1.5"></div>
-            </div>
-          `)
-          .join('');
+        renderMinimapMilestones(milestonesEl, milestones);
         milestonesEl.style.opacity = '1';
       } else {
-        milestonesEl.innerHTML = '';
+        milestonesEl.replaceChildren();
       }
     }
 
@@ -1646,15 +1636,7 @@ const { currentPath } = Astro.props;
 
       const sankeyEl = document.getElementById('full-visitor-flow-sankey');
       if (sankeyEl) {
-        sankeyEl.innerHTML = `
-          <div class="w-full h-full flex items-center justify-center gap-2 text-zinc-100 italic font-mono text-xs animate-pulse">
-            <svg class="w-4 h-4 animate-spin text-emerald-300 shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <span>Loading Plausible visitor flow stage...</span>
-          </div>
-        `;
+        renderSankeyLoadingState(sankeyEl);
       }
     }
 

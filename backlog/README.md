@@ -18,7 +18,7 @@ Initiativen, die das Zusammenspiel aus Frontend-Features auf `hackenberg.tech` u
 | **SYSTEM-006** | Content Preview Image Rollout | Visual Design | Mittel | `planned` | [006-content-preview-image-rollout.md](./system/006-content-preview-image-rollout.md) |
 | **SYSTEM-007** | Design-Token & Layout Linter | CI/CD / QA | Mittel | `proposed` | [007-design-token-and-layout-linter.md](./system/007-design-token-and-layout-linter.md) |
 | **SYSTEM-008** | Client-Side W3C WebMCP Progressive Enhancement | Agentic Web / MCP | Hoch | `proposed` | [008-client-webmcp-progressive-enhancement.md](./system/008-client-webmcp-progressive-enhancement.md) |
-| **SYSTEM-009** | Client-Script Deduplication, Preact/Nanostores & Zero-`innerHTML` Gate | Frontend Architecture / QA | Hoch | `in-progress` | [009-client-script-deduplication-and-preact-dom-hardening.md](./system/009-client-script-deduplication-and-preact-dom-hardening.md) |
+| **SYSTEM-009** | Client-Script Deduplication, Preact/Nanostores & Zero-`innerHTML` Gate | Frontend Architecture / QA | Hoch | `implemented` | [009-client-script-deduplication-and-preact-dom-hardening.md](./system/009-client-script-deduplication-and-preact-dom-hardening.md) |
 
 ---
 

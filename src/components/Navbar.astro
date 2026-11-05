@@ -654,6 +654,13 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 </div>
 
 <script>
+  import {
+    $themeSetting,
+    THEME_TOOLTIP_MAP,
+    cycleThemeSetting,
+    syncThemeFromDom,
+  } from '@commons/client/stores';
+
   // Mobile drawer interactive toggle
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
@@ -779,95 +786,44 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     }
   }, { passive: true });
 
-  // Theme Toggle Client Logic
+  // Theme Toggle Client Logic (Reactive via Nanostores)
+  const applyThemeTooltips = (setting: keyof typeof THEME_TOOLTIP_MAP) => {
+    const tooltip = THEME_TOOLTIP_MAP[setting] || 'Toggle theme';
+    const dBtn = document.getElementById('theme-cycle-btn-desktop');
+    const mBtn = document.getElementById('theme-cycle-btn-mobile');
+    if (dBtn) {
+      dBtn.setAttribute('title', tooltip);
+      dBtn.setAttribute('aria-label', tooltip);
+    }
+    if (mBtn) {
+      mBtn.setAttribute('title', tooltip);
+      mBtn.setAttribute('aria-label', tooltip);
+    }
+  };
+
+  $themeSetting.subscribe((setting) => {
+    applyThemeTooltips(setting);
+  });
+
   const initThemeToggle = () => {
-    const setTheme = (setting: string) => {
-      document.documentElement.setAttribute('data-theme-setting', setting);
-      localStorage.setItem('theme', setting);
-
-      let activeTheme = setting;
-      if (setting === 'system') {
-        const systemIsLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-        activeTheme = systemIsLight ? 'light' : 'dark';
-      }
-
-      if (activeTheme === 'light') {
-        document.documentElement.classList.add('light');
-        document.documentElement.classList.remove('dark');
-      } else {
-        document.documentElement.classList.remove('light');
-        document.documentElement.classList.add('dark');
-      }
-
-      // Update English tooltip & aria-label
-      const tooltipMap: Record<string, string> = {
-        system: 'Theme: System (Click to switch to Light)',
-        light: 'Theme: Light (Click to switch to Dark)',
-        dark: 'Theme: Dark (Click to switch to System)'
-      };
-      const tooltip = tooltipMap[setting] || 'Toggle theme';
-      const dBtn = document.getElementById('theme-cycle-btn-desktop');
-      const mBtn = document.getElementById('theme-cycle-btn-mobile');
-      if (dBtn) {
-        dBtn.setAttribute('title', tooltip);
-        dBtn.setAttribute('aria-label', tooltip);
-      }
-      if (mBtn) {
-        mBtn.setAttribute('title', tooltip);
-        mBtn.setAttribute('aria-label', tooltip);
-      }
-
-      // Dispatch custom event for Plausible / timelines / graphs
-      window.dispatchEvent(new CustomEvent('theme-changed', { 
-        detail: { 
-          themeSetting: setting,
-          resolvedTheme: activeTheme,
-          trigger: 'manual'
-        } 
-      }));
-    };
-
-    const cycleTheme = () => {
-      const currentSetting = document.documentElement.getAttribute('data-theme-setting') || 'system';
-      let nextSetting = 'system';
-      if (currentSetting === 'system') {
-        nextSetting = 'light';
-      } else if (currentSetting === 'light') {
-        nextSetting = 'dark';
-      } else if (currentSetting === 'dark') {
-        nextSetting = 'system';
-      }
-      setTheme(nextSetting);
-    };
-
     const desktopBtn = document.getElementById('theme-cycle-btn-desktop');
     const mobileBtn = document.getElementById('theme-cycle-btn-mobile');
 
     if (desktopBtn && desktopBtn.dataset.themeInitialized !== 'true') {
       desktopBtn.dataset.themeInitialized = 'true';
-      desktopBtn.addEventListener('click', cycleTheme);
+      desktopBtn.addEventListener('click', () => {
+        cycleThemeSetting();
+      });
     }
     if (mobileBtn && mobileBtn.dataset.themeInitialized !== 'true') {
       mobileBtn.dataset.themeInitialized = 'true';
-      mobileBtn.addEventListener('click', cycleTheme);
+      mobileBtn.addEventListener('click', () => {
+        cycleThemeSetting();
+      });
     }
 
-    // Apply initial tooltips based on current theme setting
-    const currentTheme = document.documentElement.getAttribute('data-theme-setting') || localStorage.getItem('theme') || 'system';
-    const initialTooltipMap: Record<string, string> = {
-      system: 'Theme: System (Click to switch to Light)',
-      light: 'Theme: Light (Click to switch to Dark)',
-      dark: 'Theme: Dark (Click to switch to System)'
-    };
-    const initialTip = initialTooltipMap[currentTheme] || 'Toggle theme';
-    if (desktopBtn) {
-      desktopBtn.setAttribute('title', initialTip);
-      desktopBtn.setAttribute('aria-label', initialTip);
-    }
-    if (mobileBtn) {
-      mobileBtn.setAttribute('title', initialTip);
-      mobileBtn.setAttribute('aria-label', initialTip);
-    }
+    const currentTheme = syncThemeFromDom();
+    applyThemeTooltips(currentTheme);
   };
 
   initThemeToggle();

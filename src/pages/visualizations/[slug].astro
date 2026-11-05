@@ -281,7 +281,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           activeInstance = null;
         }
         if (container) {
-          container.innerHTML = '';
+          container.replaceChildren();
         }
 
         try {
@@ -322,7 +322,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           if (selector) {
             const isLightMode = document.documentElement.classList.contains('light');
             const tokens = getThemeTokens(isLightMode);
-            selector.innerHTML = '';
+            selector.replaceChildren();
             engine.layouts.forEach((l: { id: string; label: string }) => {
               const option = document.createElement('option');
               option.value = l.id;

@@ -2,7 +2,7 @@
 
 - **ID:** `SYSTEM-009`
 - **Domäne:** `frontend-architecture` / `type-safety` / `security` / `ci`
-- **Status:** `in-progress`
+- **Status:** `implemented`
 - **Priorität / Hebel:** `HOCH`
 - **Ursprung:** Session 2026-11-05 (Vollständiges Audit aller 49 clientseitigen Skript-Fundstellen)
 - **Branch:** `feat/client-script-hardening-and-preact`
@@ -42,11 +42,11 @@ Ein vollständiges Audit aller 49 clientseitigen Skripte (`src/commons/client/`,
 - [x] **1d. Zentraler Clipboard-Controller:** Einführung von [`src/commons/client/clipboard.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/clipboard.ts) mit deklarativem `[data-copy-text]`-Contract und `astro:page-load`-Unterstützung für `contact.astro`, `GetInTouchCard.astro` und `publications/[slug].astro`.
 
 ### Phase 2: Deklaratives Client-Rendering mit Preact (`.tsx`) & Nanostores
-- [ ] **2a. Setup & Tooling (`preact`, `nanostores`, `@nanostores/preact`):**
+- [x] **2a. Setup & Tooling (`preact`, `nanostores`, `@nanostores/preact`):**
   - Installation von `preact`, `nanostores` und `@nanostores/preact`.
   - Konfiguration von `tsconfig.json` für Preact-JSX (`"jsxImportSource": "preact"`) unter Beibehaltung von `/** @jsxImportSource react */` in den 4 serverseitigen React-Email-Dateien unter `src/commons/server/email/*.tsx`.
   - Einführung typsicherer Nanostores für geteilten Client-State (z. B. Theme/Privacy-Consent, Filter-/Paginierungs-State).
-- [ ] **2b. Ablösung aller `.innerHTML`-Stellen durch typsichere Preact-`.tsx`-Komponenten:**
+- [x] **2b. Ablösung aller `.innerHTML`-Stellen durch typsichere Preact-`.tsx`-Komponenten:**
   1. `vis-network` Tooltip (`src/content/visualizations/vis-network/engine.ts` $\rightarrow$ deklarative Preact-Tooltip-Komponente, 100 % XSS-sicher).
   2. Paginierungs-Leiste (`src/commons/client/pagination.tsx` $\rightarrow$ deklarative Preact-Buttons ohne `.innerHTML` und ohne `.className`-Überschreibung).
   3. SlideDeck Zitations-Modal (`src/components/slides/player/SlideDeck.astro` $\rightarrow$ deklarative Preact-Referenzliste).
@@ -55,11 +55,11 @@ Ein vollständiges Audit aller 49 clientseitigen Skripte (`src/commons/client/`,
   6. DevSankey Inspector & Node Cards (`src/commons/client/dev-sankey.ts` $\rightarrow$ deklaratives Preact-JSX für Karten, Tabellen und SVG-Ribbons).
 
 ### Phase 3: Harte ESLint- & Architektur-Gates (Zero-`innerHTML` Policy)
-- [ ] **3a. ESLint-Verbot (`eslint.config.ts`):**
+- [x] **3a. ESLint-Verbot (`eslint.config.ts`):**
   Verankerung von `no-restricted-properties` (`.innerHTML`, `.outerHTML`) und `no-restricted-syntax` (`insertAdjacentHTML`) als `error` für alle `.ts`, `.tsx` und `.astro` Dateien (unumgehbar durch `'eslint-comments/no-use': 'error'`).
-- [ ] **3b. Architektur-Linter (`src/scripts/validate-architecture.ts`):**
+- [x] **3b. Architektur-Linter (`src/scripts/validate-architecture.ts`):**
   Statische Prüfung über alle Dateien in `src/` (inkl. `<script is:inline>`), dass nirgendwo `.innerHTML`, `.outerHTML` oder `insertAdjacentHTML` verwendet wird.
-- [ ] **3c. Master Verification Gate (`npm run verify`) & Browser-Abnahme:**
+- [x] **3c. Master Verification Gate (`npm run verify`) & Browser-Abnahme:**
   0 Fehler / 0 Warnungen über alle Linter, Typechecks und den Astro-SSG-Build hinweg.
 
 ---
@@ -72,3 +72,9 @@ Ein vollständiges Audit aller 49 clientseitigen Skripte (`src/commons/client/`,
   - `src/commons/client/pagination.ts` (`getPageNumbers`, `renderPaginationControls`, `setupSectionPagination`) erstellt und in `src/commons/client/filter.ts`, `src/pages/tags/[tag].astro` und `src/pages/publications/index.astro` eingebunden.
   - `src/components/Navbar.astro` Priority+-Breitenberechnung in eine zentrale Evaluierungsfunktion (`__evaluateNavbarPriority`) zusammengeführt und den `cloneNode(true)`-Event-Listener-Hack beim Theme-Toggle durch `dataset.themeInitialized`-Guards ersetzt.
   - `src/commons/client/clipboard.ts` eingeführt und `src/pages/contact.astro`, `src/components/GetInTouchCard.astro` sowie `src/pages/publications/[slug].astro` auf den deklarativen `[data-copy-text]`/`[data-copy-target]`-Contract mit `astro:page-load`-Unterstützung umgestellt.
+- **2026-11-05:** Phasen 2 & 3 abgeschlossen (`2a`, `2b`, `3a`, `3b`, `3c`):
+  - `preact`, `nanostores` und `@nanostores/preact` installiert; `tsconfig.json` auf `"jsxImportSource": "preact"` umgestellt und die 4 serverseitigen React-Email-Templates unter `src/commons/server/email/*.tsx` mit `/** @jsxImportSource react */` annotiert.
+  - `src/commons/client/stores.ts` mit typsicheren Nanostores (`$themeSetting`, `$analyticsConsent`, `$paginationPages`, `$devSankeyConfig`) eingeführt und in `Navbar.astro`, `PrivacyModal.astro`, `pagination.tsx` und `dev-sankey.ts` angebunden.
+  - Alle 6 komplexen HTML-String-Builder auf deklarative Preact-`.tsx`-Komponenten umgestellt: `src/commons/client/pagination.tsx`, `src/commons/client/vis-tooltip.tsx` (behebt die unescapte HTML-Injektion in `vis-network/engine.ts`), `src/commons/client/slide-references.tsx`, `src/commons/client/dev-overlay-badge.tsx`, `src/commons/client/dev-studio-views.tsx` sowie `src/commons/client/dev-sankey-view.tsx` (~600 Zeilen HTML/SVG-Templates aus `dev-sankey.ts` extrahiert).
+  - Triviales Container-Leeren in `src/pages/visualizations/[slug].astro` und `src/pages/index.astro` auf `.replaceChildren()` sowie `style.innerHTML` in `src/commons/server/branding-assets.ts` auf `style.textContent` umgestellt.
+  - Harte Zero-`innerHTML`-Gates in `eslint.config.ts` (`no-restricted-properties` für `innerHTML`/`outerHTML`, `no-restricted-syntax` für `insertAdjacentHTML`) und `src/scripts/validate-architecture.ts` (Vollscan über `src/`) verankert.

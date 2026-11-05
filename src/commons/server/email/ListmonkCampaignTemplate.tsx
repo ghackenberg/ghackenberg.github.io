@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { render } from '@react-email/render';
 import { EmailShell } from './EmailShell';
 
