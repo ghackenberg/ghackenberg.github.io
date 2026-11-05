@@ -4,10 +4,10 @@
       @import url('/styles/graphics.css');
     </style>
     <marker id="arrow-flow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-accent-stroke)" />
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
     </marker>
     <marker id="arrow-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-success-stroke)" />
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
     </marker>
   </defs>
 
@@ -15,56 +15,56 @@
   <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
 
   <!-- Ambient Halo Glows -->
-  <circle cx="112" cy="144" r="68" fill="var(--svg-accent-fill)" opacity="0.34" />
-  <circle cx="368" cy="144" r="68" fill="var(--svg-warning-fill)" opacity="0.30" />
-  <circle cx="240" cy="316" r="82" fill="var(--svg-success-fill)" opacity="0.34" />
+  <circle cx="112" cy="144" r="68" fill="var(--svg-node-blue-bg)" opacity="0.34" />
+  <circle cx="368" cy="144" r="68" fill="var(--svg-node-amber-bg)" opacity="0.30" />
+  <circle cx="240" cy="316" r="82" fill="var(--svg-node-green-bg)" opacity="0.34" />
 
   <!-- Header Title -->
-  <text x="240" y="36" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-fg)" text-anchor="middle" letter-spacing="0.05em">EFFECTIVE HOP REGULATORS (computeHopDistances)</text>
-  <text x="240" y="58" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">Balancing Ego Horizon, Scale-Free Hubs &amp; Triangulation</text>
+  <text x="240" y="36" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle" letter-spacing="0.05em">EFFECTIVE HOP REGULATORS (computeHopDistances)</text>
+  <text x="240" y="58" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Balancing Ego Horizon, Scale-Free Hubs &amp; Triangulation</text>
 
   <!-- Converging Curved Flow Connectors to Central Triangulation & Output -->
-  <path d="M 136 184 C 156 236, 184 266, 204 286" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="2.4" stroke-dasharray="5,4" marker-end="url(#arrow-flow)" />
-  <path d="M 344 184 C 324 236, 296 266, 276 286" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="2.4" stroke-dasharray="5,4" marker-end="url(#arrow-flow)" />
+  <path d="M 136 184 C 156 236, 184 266, 204 286" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.4" stroke-dasharray="5,4" marker-end="url(#arrow-flow)" />
+  <path d="M 344 184 C 324 236, 296 266, 276 286" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.4" stroke-dasharray="5,4" marker-end="url(#arrow-flow)" />
 
   <!-- ==================== REGULATOR 1: 16-NODE FOCUS BUDGET ==================== -->
   <g transform="translate(112, 136)">
-    <circle cx="0" cy="0" r="42" fill="var(--svg-accent-fill)" stroke="var(--svg-accent-stroke)" stroke-width="2.5" />
+    <circle cx="0" cy="0" r="42" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.5" />
     <!-- Gauge / Slider Filter Icon -->
-    <line x1="-18" y1="-10" x2="18" y2="-10" stroke="var(--svg-accent-stroke)" stroke-width="2.2" stroke-linecap="round" />
-    <circle cx="6" cy="-10" r="5" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="2.2" />
-    <line x1="-18" y1="6" x2="18" y2="6" stroke="var(--svg-accent-stroke)" stroke-width="2.2" stroke-linecap="round" />
-    <circle cx="-6" cy="6" r="5" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="2.2" />
+    <line x1="-18" y1="-10" x2="18" y2="-10" stroke="var(--svg-node-blue-border)" stroke-width="2.2" stroke-linecap="round" />
+    <circle cx="6" cy="-10" r="5" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+    <line x1="-18" y1="6" x2="18" y2="6" stroke="var(--svg-node-blue-border)" stroke-width="2.2" stroke-linecap="round" />
+    <circle cx="-6" cy="6" r="5" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
   </g>
-  <text x="112" y="204" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">1. Focus Budget</text>
-  <text x="112" y="224" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-accent-text)" text-anchor="middle">budgetNodes: 16</text>
-  <text x="112" y="242" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">Soft Cap: 8 Neighbors</text>
+  <text x="112" y="204" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">1. Focus Budget</text>
+  <text x="112" y="224" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-node-blue-subtext)" text-anchor="middle">budgetNodes: 16</text>
+  <text x="112" y="242" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Soft Cap: 8 Neighbors</text>
 
   <!-- ==================== REGULATOR 2: LOGARITHMIC HUB PENALTY ==================== -->
   <g transform="translate(368, 136)">
-    <circle cx="0" cy="0" r="42" fill="var(--svg-warning-fill)" stroke="var(--svg-warning-stroke)" stroke-width="2.5" />
+    <circle cx="0" cy="0" r="42" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.5" />
     <!-- Logarithmic Curve & Hub Repulsion Icon -->
-    <path d="M -18 14 Q -10 -12 18 -14" fill="none" stroke="var(--svg-warning-stroke)" stroke-width="2.5" stroke-linecap="round" />
-    <circle cx="-12" cy="8" r="4" fill="var(--svg-warning-stroke)" />
-    <circle cx="12" cy="-12" r="5" fill="var(--svg-warning-stroke)" />
+    <path d="M -18 14 Q -10 -12 18 -14" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="-12" cy="8" r="4" fill="var(--svg-node-amber-border)" />
+    <circle cx="12" cy="-12" r="5" fill="var(--svg-node-amber-border)" />
   </g>
-  <text x="368" y="204" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">2. Hub Penalty</text>
-  <text x="368" y="224" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-warning-text)" text-anchor="middle">+w&#183;log2(deg / 4)</text>
-  <text x="368" y="242" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">Dampens Scale-Free Hubs</text>
+  <text x="368" y="204" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">2. Hub Penalty</text>
+  <text x="368" y="224" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-node-amber-subtext)" text-anchor="middle">+w&#183;log2(deg / 4)</text>
+  <text x="368" y="242" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Dampens Scale-Free Hubs</text>
 
   <!-- ==================== REGULATOR 3: SHARED-PARENT TRIANGULATION ==================== -->
   <g transform="translate(240, 314)">
-    <circle cx="0" cy="0" r="46" fill="var(--svg-success-fill)" stroke="var(--svg-success-stroke)" stroke-width="2.8" />
+    <circle cx="0" cy="0" r="46" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.8" />
     <!-- Multi-Path Triangle Cluster Icon -->
-    <polygon points="0,-20 -18,12 18,12" fill="none" stroke="var(--svg-success-stroke)" stroke-width="2.2" stroke-linejoin="round" />
-    <circle cx="0" cy="-20" r="5" fill="var(--svg-success-stroke)" />
-    <circle cx="-18" cy="12" r="5" fill="var(--svg-success-stroke)" />
-    <circle cx="18" cy="12" r="5" fill="var(--svg-success-stroke)" />
+    <polygon points="0,-20 -18,12 18,12" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" stroke-linejoin="round" />
+    <circle cx="0" cy="-20" r="5" fill="var(--svg-node-green-border)" />
+    <circle cx="-18" cy="12" r="5" fill="var(--svg-node-green-border)" />
+    <circle cx="18" cy="12" r="5" fill="var(--svg-node-green-border)" />
   </g>
-  <text x="240" y="382" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-success-text)" text-anchor="middle">3. Multi-Path Triangulation</text>
-  <text x="240" y="402" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-fg)" text-anchor="middle">excessPenalty / sharedParents</text>
+  <text x="240" y="382" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">3. Multi-Path Triangulation</text>
+  <text x="240" y="402" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-text-primary)" text-anchor="middle">excessPenalty / sharedParents</text>
 
   <!-- Bottom Formula Summary Pill -->
-  <rect x="30" y="424" width="420" height="38" rx="19" fill="var(--svg-surface)" stroke="var(--svg-success-stroke)" stroke-width="1.8" />
-  <text x="240" y="448" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="var(--svg-success-text)" text-anchor="middle">d_eff = max(hubAdjustedDist, budgetDist)</text>
+  <rect x="30" y="424" width="420" height="38" rx="19" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+  <text x="240" y="448" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">d_eff = max(hubAdjustedDist, budgetDist)</text>
 </svg>

@@ -4,13 +4,13 @@
       @import url('/styles/graphics.css');
     </style>
     <marker id="arrow-danger" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-danger-stroke)" />
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
     </marker>
     <marker id="arrow-accent" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-accent-stroke)" />
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
     </marker>
     <marker id="arrow-success" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-success-stroke)" />
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
     </marker>
   </defs>
 
@@ -18,116 +18,116 @@
   <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
 
   <!-- Ambient Zone Glows -->
-  <ellipse cx="240" cy="108" rx="195" ry="74" fill="var(--svg-danger-fill)" opacity="0.24" />
-  <circle cx="240" cy="340" r="118" fill="var(--svg-accent-fill)" opacity="0.32" />
+  <ellipse cx="240" cy="108" rx="195" ry="74" fill="var(--svg-node-red-bg)" opacity="0.24" />
+  <circle cx="240" cy="340" r="118" fill="var(--svg-node-blue-bg)" opacity="0.32" />
 
   <!-- ==================== TOP ZONE: UNWEIGHTED BFS HUB EXPLOSION ==================== -->
-  <text x="240" y="34" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-danger-text)" text-anchor="middle" letter-spacing="0.05em">UNWEIGHTED BFS HUB EXPLOSION (d &#8804; 2)</text>
+  <text x="240" y="34" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle" letter-spacing="0.05em">UNWEIGHTED BFS HUB EXPLOSION (d &#8804; 2)</text>
 
   <!-- Explosion Fan-out Edges from Hub to d=2 Siblings -->
-  <path d="M 104 114 L 182 114" fill="none" stroke="var(--svg-danger-stroke)" stroke-width="2.5" marker-end="url(#arrow-danger)" />
-  <path d="M 244 98 C 282 78, 314 70, 344 70" fill="none" stroke="var(--svg-danger-stroke)" stroke-width="2.2" marker-end="url(#arrow-danger)" />
-  <path d="M 248 114 L 344 114" fill="none" stroke="var(--svg-danger-stroke)" stroke-width="2.2" marker-end="url(#arrow-danger)" />
-  <path d="M 244 130 C 282 150, 314 158, 344 158" fill="none" stroke="var(--svg-danger-stroke)" stroke-width="2.2" marker-end="url(#arrow-danger)" />
+  <path d="M 104 114 L 182 114" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.5" marker-end="url(#arrow-danger)" />
+  <path d="M 244 98 C 282 78, 314 70, 344 70" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.2" marker-end="url(#arrow-danger)" />
+  <path d="M 248 114 L 344 114" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.2" marker-end="url(#arrow-danger)" />
+  <path d="M 244 130 C 282 150, 314 158, 344 158" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.2" marker-end="url(#arrow-danger)" />
 
   <!-- Focused Node (d=0) -->
   <g transform="translate(76, 114)">
-    <circle cx="0" cy="0" r="24" fill="var(--svg-danger-fill)" stroke="var(--svg-danger-stroke)" stroke-width="2.2" />
+    <circle cx="0" cy="0" r="24" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2.2" />
     <!-- Document Icon -->
-    <rect x="-8" y="-10" width="16" height="20" rx="2" fill="none" stroke="var(--svg-danger-stroke)" stroke-width="1.8" />
-    <line x1="-4" y1="-4" x2="4" y2="-4" stroke="var(--svg-danger-stroke)" stroke-width="1.6" />
-    <line x1="-4" y1="1" x2="4" y2="1" stroke="var(--svg-danger-stroke)" stroke-width="1.6" />
+    <rect x="-8" y="-10" width="16" height="20" rx="2" fill="none" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+    <line x1="-4" y1="-4" x2="4" y2="-4" stroke="var(--svg-node-red-border)" stroke-width="1.6" />
+    <line x1="-4" y1="1" x2="4" y2="1" stroke="var(--svg-node-red-border)" stroke-width="1.6" />
   </g>
-  <text x="76" y="156" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Focus (d=0)</text>
-  <text x="76" y="174" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">100% Salience</text>
+  <text x="76" y="156" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">Focus (d=0)</text>
+  <text x="76" y="174" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">100% Salience</text>
 
   <!-- Scale-Free Tag Hub (d=1) -->
   <g transform="translate(218, 114)">
-    <circle cx="0" cy="0" r="28" fill="var(--svg-danger-fill)" stroke="var(--svg-danger-stroke)" stroke-width="2.5" />
+    <circle cx="0" cy="0" r="28" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2.5" />
     <!-- Tag / Hub Starburst Icon -->
-    <circle cx="0" cy="0" r="6" fill="var(--svg-danger-stroke)" />
-    <line x1="-14" y1="0" x2="14" y2="0" stroke="var(--svg-danger-stroke)" stroke-width="2" />
-    <line x1="0" y1="-14" x2="0" y2="14" stroke="var(--svg-danger-stroke)" stroke-width="2" />
-    <line x1="-10" y1="-10" x2="10" y2="10" stroke="var(--svg-danger-stroke)" stroke-width="1.8" />
-    <line x1="-10" y1="10" x2="10" y2="-10" stroke="var(--svg-danger-stroke)" stroke-width="1.8" />
+    <circle cx="0" cy="0" r="6" fill="var(--svg-node-red-border)" />
+    <line x1="-14" y1="0" x2="14" y2="0" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <line x1="0" y1="-14" x2="0" y2="14" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <line x1="-10" y1="-10" x2="10" y2="10" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+    <line x1="-10" y1="10" x2="10" y2="-10" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
   </g>
-  <text x="218" y="72" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-danger-text)" text-anchor="middle">Tag Hub (d=1)</text>
-  <text x="218" y="162" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-danger-text)" text-anchor="middle">Degree = 42</text>
+  <text x="218" y="72" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">Tag Hub (d=1)</text>
+  <text x="218" y="162" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-red-subtext)" text-anchor="middle">Degree = 42</text>
 
   <!-- Flooded Sibling Nodes at d=2 -->
   <g transform="translate(366, 70)">
-    <circle cx="0" cy="0" r="14" fill="var(--svg-danger-fill)" stroke="var(--svg-danger-stroke)" stroke-width="2" />
+    <circle cx="0" cy="0" r="14" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
   </g>
   <g transform="translate(366, 114)">
-    <circle cx="0" cy="0" r="14" fill="var(--svg-danger-fill)" stroke="var(--svg-danger-stroke)" stroke-width="2" />
+    <circle cx="0" cy="0" r="14" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
   </g>
   <g transform="translate(366, 158)">
-    <circle cx="0" cy="0" r="14" fill="var(--svg-danger-fill)" stroke="var(--svg-danger-stroke)" stroke-width="2" />
+    <circle cx="0" cy="0" r="14" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
   </g>
-  <text x="424" y="108" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-danger-text)" text-anchor="middle">&gt;80% Graph</text>
-  <text x="424" y="128" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">Flooded (d=2)</text>
+  <text x="424" y="108" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">&gt;80% Graph</text>
+  <text x="424" y="128" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Flooded (d=2)</text>
 
   <!-- Curved Horizon Divider -->
   <path d="M 28 198 Q 240 214 452 198" fill="none" stroke="var(--svg-border)" stroke-width="1.5" stroke-dasharray="6,6" />
 
   <!-- ==================== BOTTOM ZONE: FOCUS-AWARE DOI ATTENUATION ==================== -->
-  <text x="240" y="236" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-accent-text)" text-anchor="middle" letter-spacing="0.05em">FOCUS-AWARE DOI ATTENUATION (d_eff &#8712; [0, 4])</text>
+  <text x="240" y="236" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-blue-subtext)" text-anchor="middle" letter-spacing="0.05em">FOCUS-AWARE DOI ATTENUATION (d_eff &#8712; [0, 4])</text>
 
   <!-- Concentric Ego-Neighborhood Rings -->
-  <circle cx="204" cy="342" r="56" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="1.4" stroke-dasharray="4,4" opacity="0.7" />
+  <circle cx="204" cy="342" r="56" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.4" stroke-dasharray="4,4" opacity="0.7" />
   <circle cx="204" cy="342" r="102" fill="none" stroke="var(--svg-border)" stroke-width="1.4" stroke-dasharray="5,5" />
 
   <!-- Edges from Central Focus Node -->
   <!-- Direct Specific Peer (d_eff = 1.0) -->
-  <line x1="180" y1="326" x2="124" y2="294" stroke="var(--svg-success-stroke)" stroke-width="2.8" />
+  <line x1="180" y1="326" x2="124" y2="294" stroke="var(--svg-node-green-border)" stroke-width="2.8" />
   <!-- Direct Specific Tag (d_eff = 1.0) -->
-  <line x1="180" y1="358" x2="124" y2="388" stroke="var(--svg-success-stroke)" stroke-width="2.8" />
+  <line x1="180" y1="358" x2="124" y2="388" stroke="var(--svg-node-green-border)" stroke-width="2.8" />
   <!-- High-Degree Hub pushed outward by Logarithmic Penalty -->
-  <path d="M 232 342 C 272 342, 304 342, 344 342" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="2.2" stroke-dasharray="5,4" marker-end="url(#arrow-accent)" />
+  <path d="M 232 342 C 272 342, 304 342, 344 342" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" stroke-dasharray="5,4" marker-end="url(#arrow-accent)" />
   <!-- Attenuated Hub Children pushed to Outer Shell (d_eff = 3.4) -->
   <line x1="382" y1="326" x2="418" y2="292" stroke="var(--svg-border)" stroke-width="1.2" />
   <line x1="382" y1="358" x2="418" y2="392" stroke="var(--svg-border)" stroke-width="1.2" />
 
   <!-- Central Focused Node (d_eff = 0, Scale 2.1x) -->
   <g transform="translate(204, 342)">
-    <circle cx="0" cy="0" r="28" fill="var(--svg-accent-fill)" stroke="var(--svg-accent-stroke)" stroke-width="2.8" />
+    <circle cx="0" cy="0" r="28" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.8" />
     <!-- Fisheye Focus Target Icon -->
-    <circle cx="0" cy="0" r="11" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="2" />
-    <circle cx="0" cy="0" r="4" fill="var(--svg-accent-stroke)" />
-    <line x1="-16" y1="0" x2="-12" y2="0" stroke="var(--svg-accent-stroke)" stroke-width="2" />
-    <line x1="12" y1="0" x2="16" y2="0" stroke="var(--svg-accent-stroke)" stroke-width="2" />
-    <line x1="0" y1="-16" x2="0" y2="-12" stroke="var(--svg-accent-stroke)" stroke-width="2" />
-    <line x1="0" y1="12" x2="0" y2="16" stroke="var(--svg-accent-stroke)" stroke-width="2" />
+    <circle cx="0" cy="0" r="11" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <circle cx="0" cy="0" r="4" fill="var(--svg-node-blue-border)" />
+    <line x1="-16" y1="0" x2="-12" y2="0" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <line x1="12" y1="0" x2="16" y2="0" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <line x1="0" y1="-16" x2="0" y2="-12" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <line x1="0" y1="12" x2="0" y2="16" stroke="var(--svg-node-blue-border)" stroke-width="2" />
   </g>
-  <text x="204" y="388" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Focus (2.1x)</text>
-  <text x="204" y="406" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-text)" text-anchor="middle">d_eff = 0.0</text>
+  <text x="204" y="388" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">Focus (2.1x)</text>
+  <text x="204" y="406" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)" text-anchor="middle">d_eff = 0.0</text>
 
   <!-- Specific Neighbors on Inner Ring (d_eff = 1.0) -->
   <g transform="translate(104, 284)">
-    <circle cx="0" cy="0" r="18" fill="var(--svg-success-fill)" stroke="var(--svg-success-stroke)" stroke-width="2.2" />
-    <circle cx="0" cy="0" r="5" fill="var(--svg-success-stroke)" />
+    <circle cx="0" cy="0" r="18" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+    <circle cx="0" cy="0" r="5" fill="var(--svg-node-green-border)" />
   </g>
-  <text x="52" y="288" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-success-text)" text-anchor="middle">d_eff = 1.0</text>
+  <text x="52" y="288" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">d_eff = 1.0</text>
 
   <g transform="translate(104, 398)">
-    <circle cx="0" cy="0" r="18" fill="var(--svg-success-fill)" stroke="var(--svg-success-stroke)" stroke-width="2.2" />
-    <circle cx="0" cy="0" r="5" fill="var(--svg-success-stroke)" />
+    <circle cx="0" cy="0" r="18" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+    <circle cx="0" cy="0" r="5" fill="var(--svg-node-green-border)" />
   </g>
-  <text x="52" y="402" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-success-text)" text-anchor="middle">Specific</text>
+  <text x="52" y="402" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">Specific</text>
 
   <!-- Penalized Hub Node Pushed Outward -->
   <g transform="translate(368, 342)">
-    <circle cx="0" cy="0" r="20" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="2" />
-    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-accent-text)" text-anchor="middle">+&#916;d</text>
+    <circle cx="0" cy="0" r="20" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-node-blue-subtext)" text-anchor="middle">+&#916;d</text>
   </g>
-  <text x="336" y="310" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-text)" text-anchor="middle">Hub Penalty</text>
+  <text x="336" y="310" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-subtext)" text-anchor="middle">Hub Penalty</text>
 
   <!-- Dimmed Outer Hub Children (d_eff = 3.4, Scale 0.4x) -->
-  <circle cx="426" cy="284" r="10" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.6" />
-  <circle cx="426" cy="400" r="10" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.6" />
-  <text x="426" y="346" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-muted)" text-anchor="middle">d_eff = 3.4</text>
+  <circle cx="426" cy="284" r="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.6" />
+  <circle cx="426" cy="400" r="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.6" />
+  <text x="426" y="346" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">d_eff = 3.4</text>
 
   <!-- Bottom Summary Pill -->
-  <rect x="34" y="428" width="412" height="36" rx="18" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.5" />
-  <text x="240" y="451" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Fisheye DOI Stretches Crowded Hubs Outward</text>
+  <rect x="34" y="428" width="412" height="36" rx="18" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+  <text x="240" y="451" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">Fisheye DOI Stretches Crowded Hubs Outward</text>
 </svg>

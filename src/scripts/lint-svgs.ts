@@ -38,6 +38,22 @@ const GRAPHICAL_TAGS = new Set([
 const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 const INLINE_STYLE_HEX_REGEX = /(?:fill|stroke)\s*:\s*#([0-9a-fA-F]{3,8})/i;
 const GRAPHICS_IMPORT_REGEX = /@import\s+(?:url\(['"]?\/styles\/graphics\.css['"]?\)|['"]\/styles\/graphics\.css['"])/;
+const CSS_VAR_REF_REGEX = /var\(\s*(--[a-zA-Z0-9-_]+)/g;
+
+function loadValidSvgCssVars(): Set<string> {
+  const graphicsCssPath = path.join(ROOT_DIR, 'src', 'styles', 'graphics.css');
+  const vars = new Set<string>();
+  if (fs.existsSync(graphicsCssPath)) {
+    const css = fs.readFileSync(graphicsCssPath, 'utf8');
+    for (const match of css.matchAll(/(--svg-[a-zA-Z0-9-_]+)\s*:/g)) {
+      vars.add(match[1]);
+    }
+  }
+  return vars;
+}
+
+const VALID_SVG_CSS_VARS = loadValidSvgCssVars();
+const VALID_SVG_CSS_VARS_LIST = [...VALID_SVG_CSS_VARS].sort().join(', ');
 
 const NARROW_GLYPHS = new Set('iIjl1!|.,:;\'()[]{} '.split(''));
 const WIDE_GLYPHS = new Set('MW@#%&QGO'.split(''));
@@ -385,6 +401,36 @@ function lintSvg(filePath: string): boolean {
           `Element <${tagName}> contains inline style with hardcoded hex colors: "${style}". Use centralized design tokens instead.`,
           tagName
         );
+      }
+    }
+
+    // 2b. Validate all CSS custom property references var(--...) against src/styles/graphics.css
+    const attrsToCheck = ['fill', 'stroke', 'style', 'stop-color', 'flood-color', 'color'];
+    for (const attrName of attrsToCheck) {
+      const attrVal = $(el).attr(attrName);
+      if (!attrVal) continue;
+      for (const match of attrVal.matchAll(CSS_VAR_REF_REGEX)) {
+        const varName = match[1];
+        if (!VALID_SVG_CSS_VARS.has(varName)) {
+          recordError(
+            relPath,
+            `Element <${tagName}> attribute ${attrName}="${attrVal}" references undefined CSS variable "${varName}". Allowed tokens in src/styles/graphics.css: ${VALID_SVG_CSS_VARS_LIST}`,
+            tagName
+          );
+        }
+      }
+    }
+    if (tagName === 'style') {
+      const styleText = $(el).text();
+      for (const match of styleText.matchAll(CSS_VAR_REF_REGEX)) {
+        const varName = match[1];
+        if (!VALID_SVG_CSS_VARS.has(varName)) {
+          recordError(
+            relPath,
+            `<style> block references undefined CSS variable "${varName}". Allowed tokens in src/styles/graphics.css: ${VALID_SVG_CSS_VARS_LIST}`,
+            'style'
+          );
+        }
       }
     }
   });
