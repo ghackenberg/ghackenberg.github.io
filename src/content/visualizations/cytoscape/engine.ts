@@ -36,7 +36,7 @@ export interface CytoscapeEngine {
   init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
   getOrderSignature(layout: string): string;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): Record<string, { x: number; y: number }>;
-  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, fitOnStep?: boolean): void;
+  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, fitOnStep?: boolean, animateFitAfter?: boolean): void;
   updateLayout(layout: string, isLight: boolean, forceRecompute?: boolean): void;
   destroy(): void;
 }
@@ -216,6 +216,11 @@ const engine: CytoscapeEngine = {
           this.physicsFrameId = requestAnimationFrame(stepPhysics);
         } else {
           this.physicsFrameId = null;
+          this.cy?.animate({
+            fit: { eles: this.cy.elements(), padding: 30 },
+            duration: 350,
+            easing: 'ease-in-out-cubic'
+          });
         }
       };
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
@@ -319,7 +324,7 @@ const engine: CytoscapeEngine = {
           startForcePhysicsLoop();
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const targets = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false);
+          this.animateTo(targets, 400, undefined, false, true);
         }
       } else {
         settleFramesRemaining = 0;
@@ -607,7 +612,7 @@ const engine: CytoscapeEngine = {
     return targets;
   },
 
-  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600, excludeNodeId?: string, fitOnStep = true) {
+  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600, excludeNodeId?: string, fitOnStep = true, animateFitAfter = false) {
     if (!this.cy) return;
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
@@ -653,6 +658,13 @@ const engine: CytoscapeEngine = {
         this.animationFrameId = requestAnimationFrame(step);
       } else {
         this.animationFrameId = null;
+        if (animateFitAfter && this.cy) {
+          this.cy.animate({
+            fit: { eles: this.cy.elements(), padding: 30 },
+            duration: 350,
+            easing: 'ease-in-out-cubic'
+          });
+        }
       }
     };
 

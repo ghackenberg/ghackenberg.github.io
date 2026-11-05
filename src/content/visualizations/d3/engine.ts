@@ -148,6 +148,12 @@ const engine: D3Engine = {
         if (!event.active) {
           this.simulation?.alphaTarget(0).alpha(0.35).restart();
         }
+        if (wasDragged) {
+          if (this.fitTimeout) clearTimeout(this.fitTimeout);
+          this.fitTimeout = setTimeout(() => {
+            this.fitToView(400);
+          }, 450);
+        }
       });
 
     this.nodeElements = this.svgGroup.selectAll<SVGGElement, D3Node>(".node")

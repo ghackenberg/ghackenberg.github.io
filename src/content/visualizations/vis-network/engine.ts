@@ -70,7 +70,7 @@ export interface VisNetworkEngine {
   updateLayout(layout: string, isLight: boolean): void;
   pause(): void;
   resume(): void;
-  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string): void;
+  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, fitAfter?: boolean): void;
   destroy(): void;
 }
 
@@ -302,7 +302,7 @@ const engine: VisNetworkEngine = {
 
         if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400);
+          this.animateTo(targets, 400, undefined, true);
           return;
         }
 
@@ -310,6 +310,7 @@ const engine: VisNetworkEngine = {
           if (this.network && !this.isDragging) {
             this.network.setOptions({ physics: { enabled: false } });
             this.network.stopSimulation();
+            this.network.fit({ animation: { duration: 350, easingFunction: 'easeInOutQuad' } });
           }
           if (this.dragStabilizeTimeout) {
             clearTimeout(this.dragStabilizeTimeout);
@@ -322,7 +323,7 @@ const engine: VisNetworkEngine = {
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
         }
-        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 1500);
+        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 650);
       });
     }
 
@@ -578,7 +579,7 @@ const engine: VisNetworkEngine = {
     }
   },
 
-  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600, excludeNodeId?: string) {
+  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600, excludeNodeId?: string, fitAfter = false) {
     if (!this.network || !this.visNodes) return;
     this.network.setOptions({ physics: { enabled: false } });
     if (this.animationFrameId) {
@@ -617,6 +618,9 @@ const engine: VisNetworkEngine = {
         this.animationFrameId = requestAnimationFrame(step);
       } else {
         this.animationFrameId = null;
+        if (fitAfter && this.network) {
+          this.network.fit({ animation: { duration: 350, easingFunction: 'easeInOutQuad' } });
+        }
       }
     };
 

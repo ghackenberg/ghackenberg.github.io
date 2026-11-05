@@ -33,13 +33,18 @@ export interface Force3DEngine {
   hoveredNodeId: string | null;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
   container: HTMLElement | null;
+  currentLayout?: string;
   isLight?: boolean;
+  lastOrderSignature?: string;
+  lastDraggedAt?: number;
+  recenterTimeout?: ReturnType<typeof setTimeout> | null;
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
   animationFrameId: number | null;
   init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
+  computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
-  animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number): void;
+  animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number, excludeNodeId?: string, zoomToFitAfter?: boolean): void;
   destroy(): void;
 }
 
@@ -63,13 +68,19 @@ const engine: Force3DEngine = {
   hoveredNodeId: null,
   mouseMoveHandler: null,
   container: null,
+  lastOrderSignature: '',
+  lastDraggedAt: 0,
+  recenterTimeout: null,
   resizeObserver: null,
   initialized: false,
   animationFrameId: null,
 
   async init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.container = container;
+    this.currentLayout = undefined;
     this.isLight = isLight;
+    this.lastOrderSignature = '';
+    this.lastDraggedAt = 0;
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     
     // Cache nodes and connections with full rich metadata
@@ -162,7 +173,61 @@ const engine: Force3DEngine = {
             .linkWidth(this.graph.linkWidth());
         }
       })
+      .onNodeDrag((node: Force3DNode) => {
+        this.lastDraggedAt = performance.now();
+        this.tooltipController?.hide();
+        if (this.recenterTimeout) {
+          clearTimeout(this.recenterTimeout);
+          this.recenterTimeout = null;
+        }
+
+        if (this.currentLayout === 'force' && this.nodes) {
+          this.nodes.forEach(n => {
+            if (n.id !== node.id) {
+              n.fx = null;
+              n.fy = null;
+              n.fz = null;
+            }
+          });
+          try {
+            this.graph?.d3ReheatSimulation();
+          } catch {
+            // Suppress
+          }
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+          if (signature !== this.lastOrderSignature) {
+            this.lastOrderSignature = signature;
+            this.animateTo(targets, 250, node.id, false);
+          }
+        }
+      })
+      .onNodeDragEnd((node: Force3DNode) => {
+        this.lastDraggedAt = performance.now();
+        if (this.currentLayout === 'force') {
+          node.fx = null;
+          node.fy = null;
+          node.fz = null;
+          try {
+            this.graph?.d3ReheatSimulation();
+          } catch {
+            // Suppress
+          }
+          if (this.recenterTimeout) clearTimeout(this.recenterTimeout);
+          this.recenterTimeout = setTimeout(() => {
+            try {
+              this.graph?.zoomToFit(400, 40);
+            } catch {
+              // Suppress
+            }
+          }, 450);
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
+          this.animateTo(targets, 400, undefined, true);
+        }
+      })
       .onNodeClick((node: Force3DNode) => {
+        if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
         const clicked = node;
         if (
           clicked.id.startsWith('/posts/') ||
@@ -232,30 +297,21 @@ const engine: Force3DEngine = {
     return this;
   },
 
-  updateLayout(layout: string, isLight: boolean) {
-    if (!this.graph || !this.nodes) return;
-    this.isLight = isLight;
-
-    // Apply color update based on theme
-    const tokens = getThemeTokens(isLight);
-    this.graph.backgroundColor(tokens.canvasBg);
-    this.graph.linkColor(this.graph.linkColor());
-
-    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    this.nodes.forEach(n => {
-      n.color = colors[n.group] || colors[0];
-    });
-    this.graph.nodeColor('color');
-
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
+  computeLayoutTargets(layout: string, useCurrentOrder = false) {
+    const targets: Record<string, { x: number; y: number; z: number }> = {};
+    let signature = '';
+    if (!this.nodes) return { targets, signature };
 
     if (layout === 'radial') {
-      const targets: Record<string, { x: number; y: number; z: number }> = {};
-      const tags = this.nodes.filter(n => n.group === 0);
-      const others = this.nodes.filter(n => n.group !== 0);
+      const tags = [...this.nodes.filter(n => n.group === 0)];
+      const others = [...this.nodes.filter(n => n.group !== 0)];
+
+      if (useCurrentOrder) {
+        const normAngle = (n: Force3DNode, count: number) =>
+          ((Math.atan2(n.y || 0, n.x || 0) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
+        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
+      }
 
       // Inner ring: tags (Z = 0)
       tags.forEach((n, idx) => {
@@ -277,24 +333,28 @@ const engine: Force3DEngine = {
         };
       });
 
-      this.animateTo(targets);
-
+      signature = `${tags.map(n => n.id).join(',')}|${others.map(n => n.id).join(',')}`;
     } else if (layout === 'columns') {
-      const targets: Record<string, { x: number; y: number; z: number }> = {};
-      const posts = this.nodes.filter(n => n.group === 1);
-      const publications = this.nodes.filter(n => n.group === 2);
-      const presentations = this.nodes.filter(n => n.group === 3);
-      const tags = this.nodes.filter(n => n.group === 0);
-      const courses = this.nodes.filter(n => n.group === 4);
-      const projects = this.nodes.filter(n => n.group === 5);
-      const services = this.nodes.filter(n => n.group === 6);
-      const newsletters = this.nodes.filter(n => n.group === 7);
-      const visualizations = this.nodes.filter(n => n.group === 8);
+      const posts = [...this.nodes.filter(n => n.group === 1)];
+      const publications = [...this.nodes.filter(n => n.group === 2)];
+      const presentations = [...this.nodes.filter(n => n.group === 3)];
+      const tags = [...this.nodes.filter(n => n.group === 0)];
+      const courses = [...this.nodes.filter(n => n.group === 4)];
+      const projects = [...this.nodes.filter(n => n.group === 5)];
+      const services = [...this.nodes.filter(n => n.group === 6)];
+      const newsletters = [...this.nodes.filter(n => n.group === 7)];
+      const visualizations = [...this.nodes.filter(n => n.group === 8)];
 
       const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
       const isMobile = window.innerWidth < 768;
       const heightFactor = 25;
       const widthFactor = 25;
+
+      if (useCurrentOrder) {
+        categories.forEach(catNodes => {
+          catNodes.sort((a, b) => isMobile ? (a.x || 0) - (b.x || 0) : (a.y || 0) - (b.y || 0));
+        });
+      }
 
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
@@ -320,8 +380,42 @@ const engine: Force3DEngine = {
         });
       }
 
-      this.animateTo(targets);
+      signature = categories.map(cat => cat.map(n => n.id).join(',')).join('|');
+    }
 
+    return { targets, signature };
+  },
+
+  updateLayout(layout: string, isLight: boolean) {
+    if (!this.graph || !this.nodes) return;
+    const layoutChanged = this.currentLayout !== layout;
+    this.currentLayout = layout;
+    this.isLight = isLight;
+
+    // Apply color update based on theme
+    const tokens = getThemeTokens(isLight);
+    this.graph.backgroundColor(tokens.canvasBg);
+    this.graph.linkColor(this.graph.linkColor());
+
+    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+    this.nodes.forEach(n => {
+      n.color = colors[n.group] || colors[0];
+    });
+    this.graph.nodeColor('color');
+
+    if (this.initialized && !layoutChanged) {
+      return;
+    }
+
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    if (layout === 'radial' || layout === 'columns') {
+      const { targets, signature } = this.computeLayoutTargets(layout, false);
+      this.lastOrderSignature = signature;
+      this.animateTo(targets, 800, undefined, this.initialized);
     } else {
       // default: force directed
       // Release node positions so the force simulation can solve them dynamically
@@ -338,12 +432,24 @@ const engine: Force3DEngine = {
         } catch {
           // Suppress if the internal engine has not loaded yet
         }
+        if (this.recenterTimeout) clearTimeout(this.recenterTimeout);
+        this.recenterTimeout = setTimeout(() => {
+          try {
+            this.graph?.zoomToFit(400, 40);
+          } catch {
+            // Suppress
+          }
+        }, 450);
       }
     }
   },
 
-  animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration = 800) {
+  animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration = 800, excludeNodeId?: string, zoomToFitAfter = false) {
     if (!this.nodes) return;
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
     const startTime = performance.now();
     const startPositions: Record<string, { x: number; y: number; z: number }> = {};
     
@@ -366,6 +472,7 @@ const engine: Force3DEngine = {
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
       this.nodes.forEach(n => {
+        if (excludeNodeId && n.id === excludeNodeId) return;
         const start = startPositions[n.id];
         const target = targets[n.id];
         if (start && target) {
@@ -393,6 +500,9 @@ const engine: Force3DEngine = {
         try {
           if (this.graph && this.initialized) {
             this.graph.d3ReheatSimulation();
+            if (zoomToFitAfter) {
+              this.graph.zoomToFit(400, 40);
+            }
           }
         } catch {
           // Suppress if the internal engine is not ready
@@ -404,6 +514,10 @@ const engine: Force3DEngine = {
   },
 
   destroy() {
+    if (this.recenterTimeout) {
+      clearTimeout(this.recenterTimeout);
+      this.recenterTimeout = null;
+    }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }

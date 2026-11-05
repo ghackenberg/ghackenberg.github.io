@@ -1,22 +1,11 @@
 import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import * as d3 from 'd3';
 import { GRAPH_COLORS, getGraphStyleTokens, type SigmaNode, type SigmaEdge } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 const SIGMA_BASE_NODE_SIZE = 5;
-
-interface SigmaSimNode extends d3.SimulationNodeDatum {
-  id: string;
-  group: number;
-}
-
-interface SigmaSimLink extends d3.SimulationLinkDatum<SigmaSimNode> {
-  source: string | SigmaSimNode;
-  target: string | SigmaSimNode;
-}
 
 function getNodeColor(group: number, isLight: boolean): string {
   const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -46,7 +35,6 @@ export interface SigmaEngine {
   isLight?: boolean;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
-  dragSimulation?: d3.Simulation<SigmaSimNode, SigmaSimLink> | null;
   physicsFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   animationFrameId: number | null;
@@ -71,7 +59,6 @@ const engine: SigmaEngine = {
   container: null,
   lastDraggedAt: 0,
   lastOrderSignature: '',
-  dragSimulation: null,
   physicsFrameId: null,
   resizeObserver: null,
   animationFrameId: null,
@@ -80,6 +67,7 @@ const engine: SigmaEngine = {
     this.container = container;
     this.graph = new Graph();
     this.payload = payload;
+    this.currentLayout = undefined;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
     const nodes = payload.sigma.nodes;
@@ -87,9 +75,6 @@ const engine: SigmaEngine = {
     this.nodeMap = new Map(nodes.map(n => [n.id, n]));
 
     const styleTokens = getGraphStyleTokens(isLight);
-
-    const simNodes: SigmaSimNode[] = [];
-    const simNodeMap = new Map<string, SigmaSimNode>();
 
     nodes.forEach(n => {
       const nx = n.x || Math.random();
@@ -102,32 +87,22 @@ const engine: SigmaEngine = {
         group: n.group ?? 0,
         color: getNodeColor(n.group ?? 0, isLight)
       });
-      const sn: SigmaSimNode = {
-        id: n.id,
-        group: n.group ?? 0,
-        x: nx,
-        y: ny
-      };
-      simNodes.push(sn);
-      simNodeMap.set(n.id, sn);
     });
 
-    const simLinks: SigmaSimLink[] = [];
     edges.forEach(e => {
       this.graph?.addEdge(e.source, e.target, {
         size: styleTokens.edgeWidth,
         color: styleTokens.edgeColor
       });
-      if (simNodeMap.has(e.source) && simNodeMap.has(e.target)) {
-        simLinks.push({ source: e.source, target: e.target });
-      }
     });
 
-    this.dragSimulation = d3.forceSimulation<SigmaSimNode, SigmaSimLink>(simNodes)
-      .force('link', d3.forceLink<SigmaSimNode, SigmaSimLink>(simLinks).id(d => d.id).distance(5).strength(0.28))
-      .force('charge', d3.forceManyBody<SigmaSimNode>().strength(-20))
-      .force('collide', d3.forceCollide<SigmaSimNode>(1.5).strength(0.8))
-      .stop();
+    // Pre-solve initial ForceAtlas2 layout so initial render is immediately organic
+    forceAtlas2.assign(this.graph, {
+      iterations: 100,
+      settings: {
+        gravity: 0.8
+      }
+    });
 
     const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
@@ -161,30 +136,31 @@ const engine: SigmaEngine = {
     let draggedNode: string | null = null;
     let dragStartViewport = { x: 0, y: 0 };
     let wasDragged = false;
-    let settleFramesRemaining = 0;
 
     const startForcePhysicsLoop = () => {
       if (this.physicsFrameId) return;
       const stepPhysics = () => {
-        if (!this.sigma || !this.graph || !this.dragSimulation) {
+        if (!this.sigma || !this.graph || draggedNode === null || this.currentLayout !== 'force') {
           this.physicsFrameId = null;
           return;
         }
-        this.dragSimulation.tick();
 
-        for (const sn of simNodes) {
-          if (sn.id === draggedNode) continue;
-          this.graph.setNodeAttribute(sn.id, 'x', sn.x ?? 0);
-          this.graph.setNodeAttribute(sn.id, 'y', sn.y ?? 0);
-        }
+        const pinnedX = this.graph.getNodeAttribute(draggedNode, 'x') as number;
+        const pinnedY = this.graph.getNodeAttribute(draggedNode, 'y') as number;
+
+        forceAtlas2.assign(this.graph, {
+          iterations: 2,
+          settings: {
+            gravity: 0.8,
+            slowDown: 6
+          }
+        });
+
+        this.graph.setNodeAttribute(draggedNode, 'x', pinnedX);
+        this.graph.setNodeAttribute(draggedNode, 'y', pinnedY);
         this.sigma.refresh();
 
-        if (draggedNode !== null || settleFramesRemaining > 0) {
-          if (draggedNode === null) settleFramesRemaining--;
-          this.physicsFrameId = requestAnimationFrame(stepPhysics);
-        } else {
-          this.physicsFrameId = null;
-        }
+        this.physicsFrameId = requestAnimationFrame(stepPhysics);
       };
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
     };
@@ -203,40 +179,7 @@ const engine: SigmaEngine = {
         this.animationFrameId = null;
       }
 
-      if (this.currentLayout === 'force' && this.dragSimulation && this.graph) {
-        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-        let sumX = 0, sumY = 0, count = 0;
-        this.graph.forEachNode(nId => {
-          const nx = this.graph?.getNodeAttribute(nId, 'x') as number;
-          const ny = this.graph?.getNodeAttribute(nId, 'y') as number;
-          if (nx < minX) minX = nx;
-          if (nx > maxX) maxX = nx;
-          if (ny < minY) minY = ny;
-          if (ny > maxY) maxY = ny;
-          sumX += nx;
-          sumY += ny;
-          count++;
-          const sn = simNodeMap.get(nId);
-          if (sn) {
-            sn.x = nx;
-            sn.y = ny;
-            sn.vx = 0;
-            sn.vy = 0;
-            sn.fx = nId === draggedNode ? nx : null;
-            sn.fy = nId === draggedNode ? ny : null;
-          }
-        });
-        const spread = Math.max(10, Math.hypot(maxX - minX, maxY - minY));
-        const cx = sumX / Math.max(1, count);
-        const cy = sumY / Math.max(1, count);
-        this.dragSimulation
-          .force('link', d3.forceLink<SigmaSimNode, SigmaSimLink>(simLinks).id(d => d.id).distance(spread * 0.12).strength(0.28))
-          .force('charge', d3.forceManyBody<SigmaSimNode>().strength(-spread * 0.45))
-          .force('collide', d3.forceCollide<SigmaSimNode>(spread * 0.035).strength(0.8))
-          .force('x', d3.forceX<SigmaSimNode>(cx).strength(0.02))
-          .force('y', d3.forceY<SigmaSimNode>(cy).strength(0.02))
-          .alphaTarget(0.3)
-          .alpha(0.35);
+      if (this.currentLayout === 'force') {
         startForcePhysicsLoop();
       } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
         const { signature } = this.computeLayoutTargets(this.currentLayout, true);
@@ -260,15 +203,7 @@ const engine: SigmaEngine = {
       this.graph.setNodeAttribute(draggedNode, 'x', pos.x);
       this.graph.setNodeAttribute(draggedNode, 'y', pos.y);
 
-      if (this.currentLayout === 'force' && this.dragSimulation) {
-        const sn = simNodeMap.get(draggedNode);
-        if (sn) {
-          sn.fx = pos.x;
-          sn.fy = pos.y;
-          sn.x = pos.x;
-          sn.y = pos.y;
-        }
-        this.dragSimulation.alphaTarget(0.3).alpha(0.35);
+      if (this.currentLayout === 'force') {
         startForcePhysicsLoop();
       } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
         const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
@@ -283,28 +218,50 @@ const engine: SigmaEngine = {
 
     this.sigma.getMouseCaptor().on('mouseup', () => {
       if (!draggedNode) return;
-      const releasedNode = draggedNode;
       draggedNode = null;
+      if (this.physicsFrameId) {
+        cancelAnimationFrame(this.physicsFrameId);
+        this.physicsFrameId = null;
+      }
 
       if (wasDragged) {
         this.lastDraggedAt = performance.now();
-        if (this.currentLayout === 'force' && this.dragSimulation && this.graph) {
-          const sn = simNodeMap.get(releasedNode);
-          if (sn) {
-            sn.x = this.graph.getNodeAttribute(releasedNode, 'x') as number;
-            sn.y = this.graph.getNodeAttribute(releasedNode, 'y') as number;
-            sn.fx = null;
-            sn.fy = null;
-          }
-          this.dragSimulation.alphaTarget(0).alpha(0.3);
-          settleFramesRemaining = 40;
-          startForcePhysicsLoop();
+        if (this.currentLayout === 'force' && this.graph) {
+          const startingPos: Record<string, { x: number; y: number }> = {};
+          const targets: Record<string, { x: number; y: number }> = {};
+          this.graph.forEachNode(node => {
+            startingPos[node] = {
+              x: this.graph?.getNodeAttribute(node, 'x') as number,
+              y: this.graph?.getNodeAttribute(node, 'y') as number
+            };
+          });
+
+          forceAtlas2.assign(this.graph, {
+            iterations: 30,
+            settings: {
+              gravity: 0.8,
+              slowDown: 3
+            }
+          });
+
+          this.graph.forEachNode(node => {
+            targets[node] = {
+              x: this.graph?.getNodeAttribute(node, 'x') as number,
+              y: this.graph?.getNodeAttribute(node, 'y') as number
+            };
+            this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
+            this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
+          });
+
+          this.sigma?.setCustomBBox(null);
+          this.animateTo(targets, 400, undefined, true);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false);
+          this.sigma?.setCustomBBox(null);
+          this.animateTo(targets, 400, undefined, true);
         }
       } else {
-        settleFramesRemaining = 0;
+        this.sigma?.setCustomBBox(null);
       }
     });
 
@@ -411,13 +368,18 @@ const engine: SigmaEngine = {
     };
     container.addEventListener('mousemove', this.mouseMoveHandler);
 
-    this.currentLayout = layout;
     this.isLight = isLight;
-    this.updateLayout(layout, isLight);
+    if (layout === 'force') {
+      this.currentLayout = 'force';
+      this.sigma.refresh();
+    } else {
+      this.updateLayout(layout, isLight);
+    }
     
     // Zoom to fit the graph
     setTimeout(() => {
       if (this.sigma) {
+        this.sigma.setCustomBBox(null);
         this.sigma.getCamera().animatedReset();
       }
     }, 100);
@@ -432,6 +394,7 @@ const engine: SigmaEngine = {
           lastWidth = width;
           lastHeight = height;
           if (this.sigma) {
+            this.sigma.setCustomBBox(null);
             this.sigma.refresh();
             this.sigma.getCamera().animatedReset();
           }
@@ -652,7 +615,8 @@ const engine: SigmaEngine = {
       } else {
         this.animationFrameId = null;
         if (resetCamera && this.sigma) {
-          this.sigma.getCamera().animatedReset();
+          this.sigma.setCustomBBox(null);
+          this.sigma.getCamera().animatedReset({ duration: 400 });
         }
       }
     };
@@ -664,10 +628,6 @@ const engine: SigmaEngine = {
     if (this.physicsFrameId) {
       cancelAnimationFrame(this.physicsFrameId);
       this.physicsFrameId = null;
-    }
-    if (this.dragSimulation) {
-      this.dragSimulation.stop();
-      this.dragSimulation = null;
     }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
