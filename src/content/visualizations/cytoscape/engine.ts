@@ -33,7 +33,6 @@ const engine: CytoscapeEngine = {
 
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     const tokens = getThemeTokens(isLight);
-    this.tooltipController = createGraphTooltipController(container);
 
     this.cy = cytoscape({
       container: container,
@@ -94,6 +93,8 @@ const engine: CytoscapeEngine = {
       ],
       layout: { name: 'null' }
     });
+
+    this.tooltipController = createGraphTooltipController(container);
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || 'cytoscape');

@@ -190,6 +190,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
   tooltipEl.className = 'vis-tooltip';
   tooltipEl.style.position = 'absolute';
   tooltipEl.style.pointerEvents = 'none';
+  tooltipEl.style.zIndex = '1000';
   tooltipEl.style.opacity = '0';
   tooltipEl.style.visibility = 'hidden';
   tooltipEl.style.left = '0px';

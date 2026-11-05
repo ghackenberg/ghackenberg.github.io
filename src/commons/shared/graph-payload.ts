@@ -321,7 +321,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: `/tags/${encodeURIComponent(tag)}/`,
       name: `#${title}`,
-      size: Math.log(count) + 1,
+      size: 1,
       group: 0,
       typeLabel: "Tag",
       description: tagEntry?.data.description || `${count} connected item${count > 1 ? 's' : ''}.`
@@ -344,7 +344,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: post.data.title,
-      size: 1.2,
+      size: 1,
       group: 1,
       typeLabel: "Post",
       description: post.data.description,
@@ -395,7 +395,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: pres.data.title,
-      size: 1.15,
+      size: 1,
       group: 3,
       typeLabel: "Presentation",
       description: pres.data.subtitle || pres.data.description,
@@ -426,7 +426,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: course.data.title,
-      size: 1.1,
+      size: 1,
       group: 4,
       typeLabel: "Course",
       description: course.data.description,
@@ -457,7 +457,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: project.data.title,
-      size: 1.1,
+      size: 1,
       group: 5,
       typeLabel: "Project",
       description: project.data.description,
@@ -488,7 +488,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: service.data.title,
-      size: 1.15,
+      size: 1,
       group: 6,
       typeLabel: "Service",
       description: service.data.description,
@@ -519,7 +519,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: nl.data.title,
-      size: 1.1,
+      size: 1,
       group: 7,
       typeLabel: "Newsletter",
       description: nl.data.description,
@@ -550,7 +550,7 @@ export async function buildGraphPayload(options: {
     visNodes.push({
       id: path,
       name: vis.data.title,
-      size: 1.1,
+      size: 1,
       group: 8,
       typeLabel: "Visualization",
       description: vis.data.description,
@@ -579,7 +579,7 @@ export async function buildGraphPayload(options: {
         name: node.name,
         group: node.group,
         color: GRAPH_COLORS.dark[node.group] || GRAPH_COLORS.dark[0],
-        size: node.group === 0 ? (node.size * 12 + 10) : (node.size * 10 + 6),
+        size: 16,
         rawSize: node.size,
         typeLabel: node.typeLabel,
         description: node.description,
@@ -618,7 +618,7 @@ export async function buildGraphPayload(options: {
     label: n.name,
     x: (Math.random() - 0.5) * 100,
     y: (Math.random() - 0.5) * 100,
-    size: n.group === 0 ? Math.max(n.size * 2, 3) : 2,
+    size: 2,
     rawSize: n.size,
     group: n.group,
     color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],

@@ -81,8 +81,6 @@ const engine: SigmaEngine = {
       });
     });
 
-    this.tooltipController = createGraphTooltipController(container);
-
     const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
       defaultNodeColor: tokens.nodeDefault,
@@ -95,6 +93,8 @@ const engine: SigmaEngine = {
       enableCameraZooming: false
     });
     this.sigma.getCamera().enabledZooming = false;
+
+    this.tooltipController = createGraphTooltipController(container);
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || 'sigma');

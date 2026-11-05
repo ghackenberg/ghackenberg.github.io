@@ -84,20 +84,21 @@ const engine: Force3DEngine = {
       target: c.targetId
     }));
 
-    this.tooltipController = createGraphTooltipController(container);
-
+    let hasMousePosition = false;
     let lastMouseX = container.clientWidth / 2;
     let lastMouseY = container.clientHeight / 2;
 
     this.mouseMoveHandler = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
+      hasMousePosition = true;
       lastMouseX = e.clientX - rect.left;
       lastMouseY = e.clientY - rect.top;
       if (this.hoveredNodeId) {
         this.tooltipController?.move(lastMouseX, lastMouseY);
       }
     };
-    container.addEventListener('mousemove', this.mouseMoveHandler);
+    container.addEventListener('pointermove', this.mouseMoveHandler, { capture: true, passive: true });
+    container.addEventListener('mousemove', this.mouseMoveHandler, { capture: true, passive: true });
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || '3d-force');
@@ -108,7 +109,7 @@ const engine: Force3DEngine = {
       .graphData({ nodes: this.nodes, links: this.links })
       .backgroundColor(tokens.canvasBg)
       .showNavInfo(false)
-      .nodeLabel('')
+      .nodeLabel(() => '')
       .nodeVal('val')
       .nodeColor('color')
       .linkColor((l: Force3DLink) => {
@@ -130,7 +131,7 @@ const engine: Force3DEngine = {
         if (hovered) {
           let x = lastMouseX;
           let y = lastMouseY;
-          if (this.graph && typeof hovered.x === 'number' && typeof hovered.y === 'number' && typeof hovered.z === 'number') {
+          if (!hasMousePosition && this.graph && typeof hovered.x === 'number' && typeof hovered.y === 'number' && typeof hovered.z === 'number') {
             try {
               const screenCoords = this.graph.graph2ScreenCoords(hovered.x, hovered.y, hovered.z);
               if (screenCoords && typeof screenCoords.x === 'number' && typeof screenCoords.y === 'number') {
@@ -172,6 +173,14 @@ const engine: Force3DEngine = {
           window.location.href = targetUrl.pathname + targetUrl.search;
         }
       });
+
+    // Hide any internal 3d-force-graph scene tooltip element and mount our Preact tooltip AFTER ForceGraph3D()(container)
+    // so kapsule's container DOM clearing does not detach tooltipEl.
+    const internalTooltip = container.querySelector<HTMLElement>('.scene-tooltip, .graph-tooltip');
+    if (internalTooltip) {
+      internalTooltip.style.display = 'none';
+    }
+    this.tooltipController = createGraphTooltipController(container);
 
     this.graph.d3Force('charge').strength(-120);
 
@@ -378,7 +387,8 @@ const engine: Force3DEngine = {
       this.resizeObserver = null;
     }
     if (this.container && this.mouseMoveHandler) {
-      this.container.removeEventListener('mousemove', this.mouseMoveHandler);
+      this.container.removeEventListener('pointermove', this.mouseMoveHandler, { capture: true });
+      this.container.removeEventListener('mousemove', this.mouseMoveHandler, { capture: true });
       this.mouseMoveHandler = null;
       this.container = null;
     }

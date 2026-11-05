@@ -108,13 +108,12 @@ const engine: VisNetworkEngine = {
       });
 
       const isTagNode = n.group === 0;
-      const nodeValue = isTagNode ? (Math.pow(n.size, 2) * 16 + 10) : (n.size * 3 + 2);
       return {
         id: n.id,
         label: isTagNode ? n.name : '',
         title: card,
         shape: 'dot',
-        value: nodeValue,
+        size: 10,
         x: (Math.random() - 0.5) * 500,
         y: (Math.random() - 0.5) * 500,
         rawGroup: n.group,
@@ -130,10 +129,10 @@ const engine: VisNetworkEngine = {
         },
         font: {
           color: themeTokens.textHeading,
-          size: isTagNode ? Math.min(19 + Math.round(n.size * 3.6), 32) : 15,
+          size: 14,
           face: 'Outfit, Inter, sans-serif',
           align: 'center',
-          vadjust: isTagNode ? -Math.round(nodeValue * 0.35) : 0,
+          vadjust: isTagNode ? -18 : 0,
           strokeWidth: isLight ? 2.5 : 3,
           strokeColor: isLight ? themeTokens.background : themeTokens.textHeading
         }
@@ -172,6 +171,7 @@ const engine: VisNetworkEngine = {
     this.options = {
       nodes: {
         shape: 'dot',
+        size: 10,
         chosen: {
           node: (values: { color?: string; borderColor?: string; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
             if (hovering || selected) {
@@ -180,16 +180,6 @@ const engine: VisNetworkEngine = {
             }
           },
           label: false
-        },
-        scaling: {
-          min: 10,
-          max: 84,
-          label: {
-            enabled: true,
-            min: 18,
-            max: 53,
-            drawThreshold: 1
-          }
         },
         borderWidth: 1.5,
         borderWidthSelected: 3
