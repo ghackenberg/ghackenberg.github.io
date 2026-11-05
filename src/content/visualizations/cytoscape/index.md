@@ -27,12 +27,16 @@ The **Cytoscape Graph** visualization is built on **Cytoscape.js**, a premier op
 
 ### Architectural Pipeline
 
+The analytical and rendering pipeline integrates four specialized capabilities for browser-based network analysis:
+
 - **Graph-Theoretical Analytics**: Native client-side implementations of Dijkstra, A*, Floyd-Warshall, PageRank, and betweenness centrality algorithms.
 - **Compound Node Hierarchies**: Supports nested container nodes, enabling visual grouping of articles, tools, and courses under overarching thematic clusters.
 - **Versatile Layout Plugins**: Seamless execution of physics-based solvers (CoSE, CoSE-Bilkent), hierarchical directed acyclic graphs (Dagre), circular layouts, and concentric rings.
 - **Selector-Based Styling**: CSS-like declarative selectors bind visual attributes (colors, sizes, borders, labels) dynamically to graph properties and user interactions.
 
 ### Engine Specifications
+
+The following table outlines the primary technical specifications and structural advantages of the Cytoscape.js runtime:
 
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
@@ -43,6 +47,8 @@ The **Cytoscape Graph** visualization is built on **Cytoscape.js**, a premier op
 | **Structural Nodes** | Compound Containers | Natural representation of subsystems and hierarchical taxonomy |
 
 ## Technical FAQ
+
+The sections below address key implementation considerations around graph algorithms, compound hierarchies, and engine trade-offs.
 
 ### Graph Analytics
 

@@ -58,6 +58,8 @@ Der agentenbasierte Optimierungszyklus verbindet externe Performancedaten aus Se
 > **Human-in-the-Loop als unverzichtbares Kontroll-Gate:**
 > Autonomie bedeutet im professionellen Web-Engineering nicht blinde Selbstveröffentlichung. Während der Agent Heuristiken abgleicht, Scores berechnet und Pull Requests vorbereitet, verbleibt die inhaltliche Qualitätsprüfung und die finale Freigabe zwingend beim menschlichen Fachexperten (*Human-in-the-Loop*). Dies verhindert subtile Halluzinationen, schützt die redaktionelle Stimme und entspricht Googles Richtlinien für hochwertige, nutzerzentrierte Inhalte [@google-2024-creating-helpful] (E-E-A-T).
 
+Die folgende Übersicht veranschaulicht das Zusammenspiel der vier Phasen innerhalb dieses geschlossenen Optimierungszyklus:
+
 ![Visuelle Gedankenkarte des vierstufigen geschlossenen Regelkreises für agentenbasierte SEO und GEO](./agentic_loop_mindmap.svg "Gedankenkarte: Agentic Loop")
 
 Dieser Ablauf eliminiert den traditionellen Bruch zwischen Analyse-Dashboards und Code-Editor. Statt manuelle CSV-Exporte aus GSC mit Web-Analytics-Statistiken abzugleichen, führt der Agent strukturierte Abfragen durch, die beide Welten auf Pfadebene deterministisch zusammenführen.

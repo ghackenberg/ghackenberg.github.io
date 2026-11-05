@@ -89,6 +89,8 @@ Das GEO-Reifegradmodell für Industrieunternehmen klassifiziert Webpräsenzen in
 
 ### Die vier Reifegrade im direkten Vergleich
 
+Die folgende Übersichtstabelle fasst die Zielgruppen, technologischen Schwerpunkte und geschäftlichen Auswirkungen der vier Stufen zusammen:
+
 | Reifegrad | Primäre Zielgruppe | Technologischer Fokus | Typische Fehlerquelle | Zitations- und Business-Effekt |
 | :--- | :--- | :--- | :--- | :--- |
 | **Level 1: SEO-Baseline** | Klassische Such-Crawler (Googlebot) | HTML5, Responsivität, Basis-Metadaten | Gated PDFs hinter Kontaktformularen | Faktisch unsichtbar für generative [@aggarwal-2024-geo] RAG-Systeme |
@@ -97,12 +99,16 @@ Das GEO-Reifegradmodell für Industrieunternehmen klassifiziert Webpräsenzen in
 | **Level 4: Agentic AIO** | Autonome Einkaufs- & Engineering-Agenten | Maschinenlesbare Manifeste, AAS (IEC 63278-1) | Manuelle E-Mail-Anfrageprozesse | Automatisierte RFQs und programmatische Machbarkeitsprüfung |
 
 ### Level 1: Das klassische Web-Fundament (SEO-Baseline)
+
+Auf der ersten Stufe beschränkt sich der Webauftritt auf traditionelle Suchmaschinen-Indexierung ohne semantische Maschinenlesbarkeit für Sprachmodelle:
 * **Zielgruppe**: Herkömmliche Suchmaschinen-Crawler (Googlebot, Bingbot).
 * **Fokus**: Mobile Responsivität, schnelle Ladezeiten, Meta-Descriptions, semantisches HTML5 (`<h1>`–`<h6>`) und Basis-Keywords.
 * **Typischer Industrie-Status**: Großformatige Werbebilder, Prosa-Slogans (*„Präzision in Perfektion“*), technische Spezifikationen und Zertifikate als herunterladbare PDFs hinter Kontaktformularen (*Gated Content*).
 * **Diagnose**: Im Zeitalter generativer Engines faktisch **unsichtbar für KI-gestützte Einkäufer-Recherchen**. RAG-Systeme können PDFs hinter Barrieren nicht parsen und weisen dem Unternehmen mangels harter Fakten keine semantische Relevanz zu.
 
 ### Level 2: Semantische Entitäten & Antwortbereitschaft (AEO-Ready)
+
+Auf der zweiten Stufe werden technische Inhalte durch explizite Entitäts-Schemata und präzise Antwortblöcke für direkte Antwort-Engines erschlossen:
 * **Zielgruppe**: Direct Answer Engines, Featured Snippets und Sprachassistenten (Fokus: punktuelle Faktenextraktion).
 * **Fokus**:
   - Typisiertes [Schema.org](https://schema.org) Markup ([`Organization`](https://schema.org/Organization), [`Product`](https://schema.org/Product), [`TechArticle`](https://schema.org/TechArticle), [`DefinedTerm`](https://schema.org/DefinedTerm)).
@@ -111,6 +117,8 @@ Das GEO-Reifegradmodell für Industrieunternehmen klassifiziert Webpräsenzen in
 * **Diagnose**: Das Unternehmen wird von Suchmaschinen als eindeutige Entität im Knowledge Graph verankert. In Google AI Overviews tauchen erste Zitate auf, wenn isolierte Faktenfragen beantwortet werden.
 
 ### Level 3: RAG-optimierte Ingestion (GEO-Standard)
+
+Die dritte Stufe adressiert gezielt mehrstufige Retrieval-Augmented-Generation-Pipelines durch offene Spezifikationsmatrizen und dedizierte Markdown-Endpunkte:
 * **Zielgruppe**: Generative KI-Suchsysteme (Perplexity, ChatGPT Search, Claude, Gemini; Fokus: mehrstufige RAG-Synthese und Zitations-Reasoning).
 * **Fokus**:
   - Bereitstellung nativer Markdown-Aggregationsdateien ([`/llms.txt`](https://llmstxt.org) und `/llms-full.txt`) für token-effiziente Ingestion durch Web-LLMs.
@@ -119,6 +127,8 @@ Das GEO-Reifegradmodell für Industrieunternehmen klassifiziert Webpräsenzen in
 * **Diagnose**: Das Unternehmen wird von RAG-Pipelines als **autoritative Primärquelle** erkannt. Bei komplexen technischen Lösungsvergleichen wird die Marke in den ersten 1–3 Zitationskarten empfohlen (+40% Sichtbarkeitseffekt).
 
 ### Level 4: Autonome Agenten-Interaktion (Agentic AIO – Strategischer Horizont)
+
+Die vierte Ausbaustufe verknüpft die Web-Plattform direkt mit industriellen Verwaltungsschalen und programmatischen Agenten-Schnittstellen:
 * **Zielgruppe**: Autonome KI-Einkaufs- und Engineering-Agenten.
 * **Fokus**:
   - Maschinenlesbare Manifest-Schnittstellen (wie ein zentrales `/content-manifest.json` als strukturierter JSON-Katalog aller abfragbaren Datenpunkte) und standardisierte OpenAPI-Endpunkte.
@@ -150,6 +160,8 @@ Der Übergang von einer traditionellen Website zu einer KI-optimierten Industrie
 * **Sprint 3 (Agenten-Readiness)**: Content-Manifest (`/content-manifest.json`) generieren und AAS-Kompatibilität für die Zukunft vorbereiten.
 
 ## Häufig gestellte Fragen (FAQ)
+
+Abschließend beantworten wir die drei häufigsten Fragen aus der industriellen Beratungspraxis zur Einführung des GEO-Reifegradmodells.
 
 ### Warum reicht klassische SEO für Industrieunternehmen nicht mehr aus?
 Weil B2B-Einkäufer und Ingenieure zunehmend generative KI-Systeme für die Anbietervorauswahl nutzen. Klassische Suchmaschinen liefern Linklisten, während generative RAG-Pipelines direkt synthetisierte Empfehlungen ausgeben. Fehlen strukturierte Daten und offene Spezifikationen, wird das Unternehmen in der KI-Recherche nicht berücksichtigt.

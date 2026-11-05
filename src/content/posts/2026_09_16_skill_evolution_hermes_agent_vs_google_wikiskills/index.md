@@ -167,6 +167,8 @@ Die folgende Matrix stellt die beiden Systeme über alle ingenieurtechnisch rele
 
 ### Detaillierte Analyse der Differenzen
 
+Ein genauerer Blick auf drei architektonische Schlüsselbereiche verdeutlicht, warum beide Ansätze unterschiedliche Schwerpunkte setzen.
+
 #### 1. Runtime-Pragmatismus vs. Formale Validierung
 Der Hermes Agent ist darauf optimiert, *jetzt* mit dem Entwickler zu arbeiten. Wenn ein Ingenieur dem Agenten sagt: *„Nutze für unsere Siemens-SPS ab jetzt immer den DB10-Block für Alarme“*, verarbeitet der Agent dies via `/learn` oder speichert es in `MEMORY.md`. Ein formaler Validierungsdatensatz existiert im Firmenalltag selten.
 
@@ -195,6 +197,8 @@ Als Brückenschlag zwischen beiden Welten schlagen wir in unserer ingenieurwisse
 
 ### Wie der WikiCurator im industriellen Betrieb arbeitet:
 
+Die hybride Architektur gliedert den Lebenszyklus autonomer Fähigkeiten in drei aufeinander abgestimmte Funktionsebenen:
+
 1. **Ausführungsschicht (Hermes Agent Body):**
    - Der Agent agiert als leichtgewichtiger, robuster Host-Prozess mit Multi-Surface-Anbindung (Terminal, Open WebUI, Messenger).
    - Skills werden im Format `agentskills.io` mit dreistufigem Progressive Disclosure vorgehalten.
@@ -222,6 +226,8 @@ Die beiden hier analysierten Systeme markieren diesen Wendepunkt:
 Unternehmen, die heute souveräne KI-Agenten aufbauen, sollten weder auf die Laufzeit-Pragmatik des Hermes Agent noch auf die Wissensdisziplin von WikiSkill verzichten. Die Zukunft gehört der symbiotischen Verknüpfung beider Welten.
 
 ### Weiterführende Ressourcen & Relevante Beiträge
+
+Für die vertiefte Auseinandersetzung mit den einzelnen Schichten unseres Referenzstacks empfehlen wir die folgenden Analysen:
 
 * **Grundlagen & Tech Stack:**
   * [Standardisierter Open-Source Agentic AI Tech Stack: Referenzarchitektur für souveräne Unternehmensanwendungen](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/)

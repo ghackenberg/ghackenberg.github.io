@@ -95,6 +95,8 @@ Die schmerzhafteste Erkenntnis unserer empirischen Testreihen war die Entdeckung
 > **Das 2D-Layout-Locking-Dilemma:**
 > Übergibt man einem Diffusionsmodell ein 2D-Weitwinkelfoto eines realen Zimmers als Bildreferenz (via `ImagePaths` bzw. Vision-Konditionierung) und fordert im Text-Prompt eine Nahaufnahme oder einen Perspektivenwechsel (z. B. *„Close-up shot of the desk facing the window“*), **rotiert das Modell die Kamera nicht im 3D-Raum**. Stattdessen friert es die 2D-Bounding-Boxen des Referenzbildes im latenten Raum ein und erzeugt surreale, schwebende Duplikate.
 
+Die folgende Gegenüberstellung verdeutlicht den visuellen Unterschied zwischen einer fehlgeschlagenen 2D-Weitwinkel-Konditionierung und unserer entkoppelten Steuerung über Room DNA und Fokus-Varianten:
+
 ![Diffusions-Kamerasteuerung im Vergleich: Warum 2D-Bildreferenzen in die Layout-Locking-Falle führen und wie Room DNA mit Fokus-Varianten das Problem löst](./layout_locking_comparison.svg "Diffusions-Kamerasteuerung im Vergleich")
 
 ### Warum geschieht das?
@@ -164,6 +166,8 @@ Zur Verwaltung dieser modularen Bausteine haben wir den Astro Content Layer ([`s
 ![Visual Systems Engineering Architecture: Die vier Schichten von der Astro-Kollektion über Agent Governance bis zur Diffusion Engine](./visual_asset_engine_architecture.svg "der Astro-Kollektion über Agent Governance bis zur Diffusion Engine - Visual Systems Engineering Architecture: Die vier Schichten")
 
 ### Das Schema in TypeScript ([`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts))
+
+Der folgende Auszug aus unserer Kollektionskonfiguration zeigt, wie Signature Objects, Umgebungen samt Fokus-Varianten und Charaktere typsicher miteinander verknüpft werden:
 
 ```typescript
 import { defineCollection, reference, z } from 'astro:content';
@@ -240,6 +244,9 @@ const characters = defineCollection({
 ```
 
 ### Die Vorteile der typisierten Modellierung:
+
+Aus dieser deklarativen Datenhaltung ergeben sich vier unmittelbare Qualitätsvorteile für den generativen Workflow:
+
 1. **Astro als Git-versionierter Knowledge Graph:** Während Astro primär als Web-Framework für inhaltsgetriebene Websites bekannt ist, fungiert sein Content Layer hier als **lokaler, typisierter Knowledge Graph**. Da alle Umgebungen, Objekte und Charaktere als Markdown-Dateien mit Zod-Validierung im Repository liegen, können multimodale KI-Agenten die Beziehungen direkt im Dateisystem abfragen – ganz ohne externe Graphdatenbank oder Vektor-Index.
 2. **Referenzielle Integrität:** Astro prüft beim Build (`npm run build`), ob alle verknüpften Umgebungen und Objekte tatsächlich existieren. Tippfehler in Pfaden oder IDs führen zu sofortigen Build-Fehlern statt stillen Halluzinationen.
 3. **Kamerakapazitäts-Schranke (`maxCharacters`):** Jede Fokus-Variante deklariert explizit, wie viele Personen in den Bildausschnitt passen. Ein Arbeitsplatz-Close-up limitiert die Szene auf maximal 1 Charakter; die Beamer-Bühne erlaubt bis zu 2 Personen; das gesamte Labor bis zu 6.
@@ -254,6 +261,9 @@ Anstelle eines unstrukturierten Fließtextes wird der Prompt in drei klar getren
 ![Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten von Foreground über Midground bis Background](./depth_zonation_layers.svg "Foreground über Midground bis Background - Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten")
 
 ### Warum funktioniert diese Staffelung so verlässlich?
+
+Die hohe Reproduzierbarkeit dieser Tiefenstaffelung beruht auf zwei komplementären Mechanismen:
+
 1. **Keine räumliche Ambiguität:** Das Diffusionsmodell muss nicht raten, ob das Gemälde vor oder hinter der Person platziert werden soll. Durch die explizite Zuweisung zu *Foreground*, *Midground* und *Background* wird die Aufmerksamkeitskarte entlang der simulierten Z-Achse strukturiert.
 2. **Harmonisierte Bildpfad-Konditionierung (`ImagePaths`):** Es werden maximal drei saubere Ankerbilder übergeben:
    - *Anker 1:* Personen-Portrait ([`src/content/characters/georg/portrait.png`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/characters/georg/portrait.png)) für Gesichtszüge und Haare.
@@ -352,6 +362,8 @@ Die Transformation generativer Bildmodelle von einem unberechenbaren Spielzeug z
 Mit dieser Architektur generieren wir in Sekunden druckreife Hero-Grafiken, Social Cards und Prozessdiagramme, die nahtlos in das Markenbild der Website passen – reproduzierbar, skalierbar und vollständig versionskontrolliert in Git.
 
 ### Weiterführende Ressourcen
+
+Die vollständigen Implementierungsdetails und Konfigurationsdateien sind direkt im öffentlichen GitHub-Repository einsehbar:
 
 * **Projekt-Leitlinien:** [`.agents/skills/image-generation/resources/style-guidelines.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/style-guidelines.md) – Spezifikation der Farbpalette, Linienstärken und Cel-Shading-Ausschlüsse.
 * **Agenten-Regeln:** [`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md) – Die exakten Protokolle für generative AI-Assistenten.

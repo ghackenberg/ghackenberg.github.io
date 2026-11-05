@@ -483,8 +483,8 @@ function run(): void {
         );
       }
 
-      // 1b(iv) Strict Mermaid node count (<= 5 distinct nodes) on modern/targeted posts
-      const enforceStrict = pubDateStr >= STRICT_GEO_CUTOFF_DATE || Boolean(targetSlugFilter);
+      // 1b(iv) Strict Mermaid node count (<= 5 distinct nodes) on modern posts (or with --strict)
+      const enforceStrict = pubDateStr >= STRICT_GEO_CUTOFF_DATE || process.argv.includes('--strict');
       if (enforceStrict) {
         const nodeCount = countMermaidNodes(diagramBody);
         if (nodeCount > MAX_MERMAID_NODES) {
@@ -495,8 +495,11 @@ function run(): void {
       }
     }
 
-    // 1b Strict GEO/AIO Gate (enforced on posts with pubDate >= '2026-10-16' or when passed a target slug CLI arg)
-    const enforceStrictGeo = pubDateStr >= STRICT_GEO_CUTOFF_DATE || Boolean(targetSlugFilter);
+    // 1a(vi) Editorial Prose Rhythm (universal across all posts): Every heading followed by a prose paragraph; no two structural blocks back-to-back without intervening prose
+    lintProseRhythm(relPath, bodyWithoutFourTicks, violations);
+
+    // 1b Strict GEO/AIO Gate (enforced on posts with pubDate >= '2026-10-16' or with --strict)
+    const enforceStrictGeo = pubDateStr >= STRICT_GEO_CUTOFF_DATE || process.argv.includes('--strict');
     if (enforceStrictGeo) {
       strictGeoChecked++;
       const lines = bodyWithoutFourTicks.trim().split(/\r?\n/);
@@ -603,8 +606,41 @@ function run(): void {
           `[${relPath}] Must include at least 1 question-framed "## " heading ending with "?" for GEO/AIO extractability.`
         );
       }
+    }
+  }
 
-      // (v) Editorial Prose Rhythm: Every heading followed by a prose paragraph; no two structural blocks back-to-back without intervening prose
+  // 2. Multi-Collection Prose Rhythm Sweep (projects, services, courses, publications, visualizations)
+  const OTHER_COLLECTIONS = ['projects', 'services', 'courses', 'publications', 'visualizations'];
+  let otherCollectionChecked = 0;
+
+  function collectCollectionMarkdownFiles(dir: string): string[] {
+    if (!fs.existsSync(dir)) return [];
+    const results: string[] = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === 'slides') continue;
+        results.push(...collectCollectionMarkdownFiles(fullPath));
+      } else if (entry.isFile() && /\.(?:md|mdx)$/i.test(entry.name)) {
+        results.push(fullPath);
+      }
+    }
+    return results.sort();
+  }
+
+  for (const colName of OTHER_COLLECTIONS) {
+    const colDir = path.resolve(ROOT_DIR, 'src', 'content', colName);
+    const mdFiles = collectCollectionMarkdownFiles(colDir);
+    for (const filePath of mdFiles) {
+      const relPath = path.relative(ROOT_DIR, filePath).replace(/\\/g, '/');
+      if (targetSlugFilter && !relPath.includes(targetSlugFilter)) {
+        continue;
+      }
+      otherCollectionChecked++;
+      const rawContent = fs.readFileSync(filePath, 'utf8');
+      const fmMatch = rawContent.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/);
+      const body = fmMatch ? fmMatch[1] : rawContent;
+      const bodyWithoutFourTicks = stripFourBacktickBlocks(body);
       lintProseRhythm(relPath, bodyWithoutFourTicks, violations);
     }
   }
@@ -619,7 +655,7 @@ function run(): void {
   }
 
   console.log(
-    `✅ [lint:posts] Validated ${universalChecked} post(s) (universal rules + unique SHA-256 hero image hashes) and ${strictGeoChecked} post(s) (strict GEO/AIO & <=5-node Mermaid gate) with 0 errors!`
+    `✅ [lint:posts] Validated ${universalChecked} post(s) (universal rules + prose rhythm + unique SHA-256 hero image hashes), ${strictGeoChecked} post(s) (strict GEO/AIO & <=5-node Mermaid gate), and ${otherCollectionChecked} multi-collection document(s) (prose rhythm) with 0 errors!`
   );
 }
 

@@ -67,6 +67,8 @@ Here is the migration workflow in detail:
 
 ![Migration Workflow vom PHP-Altsystem zu Astro](./workflow.svg "Automatisierter KI-Migrations-Workflow")
 
+The automated transformation pipeline executes in three sequential stages:
+
 1. **Legacy Source**: The migration script extracted raw XML and PHP content from my original database.
 2. **AI Translation**: Using Google Antigravity's agentic workspace tools, Gemini 3.5 Flash analyzed the structure of my old files, mapped attributes (e.g., date formats, tag arrays, image assets), and converted them into clean markdown/frontmatter.
 3. **Astro Schema Validation**: Since Astro supports schema validation out of the box using Zod, any incorrect format or missing field was caught during the translation phase, enabling immediate, automated fixes.
@@ -78,6 +80,8 @@ Everything ran completely smoothly in a matter of minutes, preserving all format
 The new setup completely decouples the content creation and compilation step from the content delivery step. The architecture below showcases the contrast between the old dynamic approach and the modern, static CDN-driven approach:
 
 ![Architektur-Vergleich zwischen Legacy PHP und modernem Astro Stack](./architecture.svg "Architektur-Vergleich: Dynamisches PHP vs. Statisches Astro CDN")
+
+Comparing the two deployment models highlights how request-time compute is replaced by build-time compilation:
 
 - **Old (Left)**: The client had to wait for Apache to compile the PHP template engine and retrieve values from the filesystem on every request.
 - **New (Right)**: The compiler runs locally or via CI/CD. The build output is a folder of optimized HTML, CSS, and JS files served directly from the GitHub Pages CDN.

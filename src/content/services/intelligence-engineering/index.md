@@ -54,6 +54,8 @@ Core architectural priorities include data sovereignty, predictable inference la
 
 ## Composable Modules
 
+Each engagement is organized around five composable architectural layers that address the full lifecycle of sovereign enterprise AI:
+
 1. **Model Serving**: Deployment and configuration of private inference runtimes (vLLM, TensorRT-LLM) and API routing gateways with authentication and rate limiting.
 2. **Knowledge Retrieval**: Hybrid retrieval pipelines pairing vector search (Qdrant) with property knowledge graphs (Neo4j) and structured session memory.
 3. **Tool Integration**: Connecting language models to databases, enterprise APIs, and local runtimes using the Model Context Protocol (MCP) and schema validation.

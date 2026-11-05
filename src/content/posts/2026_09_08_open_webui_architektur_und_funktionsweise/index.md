@@ -119,6 +119,8 @@ Ein häufig missverstandener Bereich von Open WebUI ist die Evolution seiner Erw
 
 ### Der Paradigmenwechsel: Von Legacy-Pipelines zu nativen Functions
 
+Die folgende Gegenüberstellung verdeutlicht den strukturellen Unterschied zwischen ausgelagerten Pipeline-Containern und der heutigen In-Process-Ausführung:
+
 ![Architektonischer Vergleich: Legacy Pipelines vs. Modern In-Process Functions](./open_webui_pipelines_vs_functions.svg "Architektonischer Vergleich")
 
 Früher erforderte jede benutzerdefinierte Pipeline einen separaten Hilfs-Container. Dieser Ansatz brachte gravierende Nachteile mit sich: erhöhte Latenz durch redundante HTTP-Hops, aufwendige Netzwerk-Konfigurationen und keinen direkten Zugriff auf den internen Anwendungszustand (Benutzerrollen, Datenbank-Objekte).
@@ -138,6 +140,8 @@ Wird ausgeführt, sobald der Benutzer-Turn im Backend eintrifft, noch bevor Kont
 * **Datenschutz & PII-Maskierung:** Automatische Anonymisierung von IBANs, Sozialversicherungsnummern, E-Mail-Adressen oder vertraulichen Projektnamen via Regex oder Named Entity Recognition (NER).
 * **Input-Guardrails:** Erkennung und Abwehr von Prompt-Injections, Jailbreak-Mustern und unzulässigen Inhalten.
 * **Dynamische Kontext-Injektion:** Anreicherung des Prompts mit tagesaktuellen Metadaten, Benutzerattributen oder Standortdaten.
+
+Das folgende Codebeispiel zeigt einen kompakten Inlet-Filter zur automatischen Maskierung von IBAN-Nummern vor der Modellübergabe:
 
 ```python
 class Filter:
@@ -223,6 +227,8 @@ In regulierten Unternehmensumgebungen darf eine KI-Plattform kein isoliertes Dat
 ![Enterprise IAM Governance und API-Dualismus in Open WebUI](./open_webui_governance_api_dualism.svg "Enterprise IAM Governance und API-Dualismus")
 
 ### Identitätsmanagement & Feingranulares RBAC
+
+Die Authentifizierungs- und Autorisierungsschicht koppelt externe Identity-Provider direkt an interne Arbeitsbereichs-Berechtigungen:
 * **Single Sign-On (SSO):** Standardisierte Anbindung an **Keycloak**, Microsoft Entra ID (Azure AD), Okta oder Google Workspace via OpenID Connect (OIDC) und OAuth2.
 * **Gruppen- & Rollen-Mapping:** Über OIDC-Token-Claims können Unternehmensrollen automatisch auf Open WebUI-Berechtigungen gemappt werden.
 * **Feingranulare Rechtevergabe:** Administratoren steuern dediziert, welche Nutzergruppen Modelle instanziieren, Dokumente in Wissensdatenbanken hochladen, Werkzeuge entwickeln oder externe Webrecherchen ausführen dürfen.

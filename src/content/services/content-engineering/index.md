@@ -53,6 +53,8 @@ The technical stack relies on static site generation, formal schema validation, 
 
 ## Composable Modules
 
+The engineering practice is structured into five modular workstreams that can be deployed independently or as an integrated publishing platform:
+
 1. **Content Modeling**: Definition of formal Zod schemas, typed collections, and taxonomy structures for digital content.
 2. **Channel Architecture**: Multi-channel syndication pipelines connecting canonical source repositories to web documentation and external platforms.
 3. **Design Systems**: Systematic tokenization of typography, palettes, and layout components across web and visual assets.

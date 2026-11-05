@@ -24,7 +24,11 @@ The following screenshots show the geometric structure of the distributor module
 Note that these geometric structures can be seen also in the geometric structure of the overall system.
 
 ![Pick and place unit crane illustration from Manufacturing systems case study completed!](./pick_and_place_unit_crane.png "Manufacturing systems case study completed! - Pick and place unit crane illustration")
+
+Next, the stamper module geometry defines the pneumatic press cylinder and the workpiece fixture beneath it:
 ![Pick and place unit stamp illustration from Manufacturing systems case study completed!](./pick_and_place_unit_stamp.png "Manufacturing systems case study completed! - Pick and place unit stamp illustration")
+
+Finally, the sorter module geometry models the discharge conveyor belt and its lateral sorting ramps:
 ![Pick and place unit conveyor illustration from Manufacturing systems case study completed!](./pick_and_place_unit_conveyor.png "Manufacturing systems case study completed! - Pick and place unit conveyor illustration")
 
 Another key feature of the modeling technique is the support for both geometric structure and behavior.
@@ -39,7 +43,11 @@ In particular, the following screenshots show the software controllers of the di
 As typical for many other modeling techniques, the controller behavior is modeled using a variant of [finite state machines](https://en.wikipedia.org/wiki/Finite-state_machine).
 
 ![Pick and place unit crane controller illustration from Manufacturing systems case study completed!](./pick_and_place_unit_crane_controller.png "Manufacturing systems case study completed! - Pick and place unit crane controller illustration")
+
+The second state chart specifies the control sequence of the stamping press during workpiece processing:
 ![Pick and place unit stamp controller illustration from Manufacturing systems case study completed!](./pick_and_place_unit_stamp_controller.png "Manufacturing systems case study completed! - Pick and place unit stamp controller illustration")
+
+The third state chart governs the conveyor drive and sorting actuator based on sensor triggers:
 ![Pick and place unit conveyor controller illustration from Manufacturing systems case study completed!](./pick_and_place_unit_conveyor_controller.png "Manufacturing systems case study completed! - Pick and place unit conveyor controller illustration")
 
 Currently, we are working on a video demonstrating the tool and its features.

@@ -11,6 +11,8 @@ image:
 It all started with drafting new versions of the RSS and mail logos, which can be found on the header of my blog:
 
 ![Mail illustration from Pen Sketches with MyPaint](./mail.png "Pen Sketches with MyPaint - Mail illustration")
+
+Alongside the mail icon, I also sketched a matching RSS feed emblem in the same hand-drawn style:
 ![Rss illustration from Pen Sketches with MyPaint](./rss.png "Pen Sketches with MyPaint - Rss illustration")
 
 Next a talk came into my mind when I was explaining a friend of mine the software architecture of my master thesis.
@@ -21,11 +23,15 @@ In this talk I used a similar visualization than the following to highlight the 
 While searching for further inspiration I picked random objects from my environment and imagination for the following to drawings:
 
 ![Candle illustration from Pen Sketches with MyPaint](./candle.png "Pen Sketches with MyPaint - Candle illustration")
+
+Complementing the candle sketch, the second still-life study depicts an open book with soft shading:
 ![Book illustration from Pen Sketches with MyPaint](./book.png "Pen Sketches with MyPaint - Book illustration")
 
 And finally I drew my attention onto the visualization of humans respectively activities, which is useful during the development and marketing of many software systems:
 
 ![Runner illustration from Pen Sketches with MyPaint](./runner.png "Pen Sketches with MyPaint - Runner illustration")
+
+To contrast athletic motion with manual craftsmanship, the final sketch portrays a construction worker in action:
 ![Worker illustration from Pen Sketches with MyPaint](./worker.png "Pen Sketches with MyPaint - Worker illustration")
 
 Note that these are all digital drawings! Isn't that amazing?!

@@ -175,6 +175,8 @@ Die Lösung bildet der in Keycloak produktionsreif integrierte **Standard Token 
 ![OAuth 2.0 Token Exchange (RFC 8693) Flow im Zusammenspiel zwischen Open WebUI, Hermes Agent und Keycloak](./keycloak_token_exchange_flow.svg "OAuth 2.0 Token Exchange (RFC")
 
 #### Der mathematisch-formale Ablauf des Token Exchange:
+
+Der Austausch des überprivilegierten Benutzer-Tokens gegen ein zweckgebundenes Agenten-Token durchläuft fünf kryptografisch gesicherte Schritte:
 1. **Delegations-Trigger:** Open WebUI übergibt dem Hermes Agent die Aufgabe zusammen mit dem aktuellen Benutzer-Token $T_{\text{user}}$ mit Scopes $S_{\text{full}} = \{\text{openid}, \text{ai:chat}, \text{db:read}, \text{db:write}, \text{admin}\}$.
 2. **Exchange Request:** Der Hermes Agent sendet einen Token-Exchange-Request an Keycloak:
    ```http
@@ -296,6 +298,8 @@ Um das nahtlose Ineinandergreifen aller Komponenten zu demonstrieren, betrachten
 ![End-to-End Security Walkthrough: Vollständiger kryptografischer Anfrage-Lebenszyklus im Sovereign AI Tech Stack](./keycloak_e2e_walkthrough.svg "End-to-End Security Walkthrough")
 
 ### Die Sicherheitsgarantien dieses Ablaufs:
+
+Aus diesem geschlossenen Delegations- und Prüfzyklus resultieren vier zentrale Sicherheitsgarantien für den Produktivbetrieb:
 1. **Kein Klartext-Secret im Umlauf:** Kein einziger statischer API-Key ist in Konfigurationsdateien exponiert.
 2. **Minimale Rechtevergabe:** Der Hermes Agent verfügt während des ERP-Aufrufs über keinerlei Schreibrechte; selbst bei erfolgreicher Prompt Injection ist das Manipulieren von Finanzdaten kryptografisch unmöglich.
 3. **Budgetkontrolle in Echtzeit:** LiteLLM liest das Monatsbudget direkt aus den Keycloak-Claims des Tokens und bricht die Inferenz ab, falls das Kontingent der Fakultät erschöpft ist.

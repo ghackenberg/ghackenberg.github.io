@@ -27,12 +27,16 @@ The **Sigma ForceAtlas2** visualization renders the semantic knowledge graph con
 
 ### Architectural Pipeline
 
+The Sigma.js execution pipeline combines four performance-oriented stages to maximize rendering throughput:
+
 - **WebGL Hardware Acceleration**: Unlike purely DOM- or 2D canvas-based graph renderers, Sigma.js offloads node, edge, and label rendering directly to the GPU shader pipelines.
 - **ForceAtlas2 Algorithm**: The spatial layout simulates repulsive forces between nodes and spring-like attractive forces along connecting edges, causing thematic clusters (such as AI, Software Architecture, and Industrial Informatics) to group organically.
 - **Dedicated Web Worker Offloading**: The physics simulation executes entirely in a secondary web worker thread, ensuring zoom, pan, and hover interactions on the main thread remain lag-free.
 - **Dynamic Node Sizing & Clustering**: Node diameters and label scales dynamically adjust based on topological centrality and content category.
 
 ### Engine Specifications
+
+The following table summarizes the hardware-accelerated architecture and scaling characteristics of the Sigma.js engine:
 
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
@@ -43,6 +47,8 @@ The **Sigma ForceAtlas2** visualization renders the semantic knowledge graph con
 | **State Persistence** | URL Query Parameters | Preserves camera and layout selections across sessions |
 
 ## Technical FAQ
+
+The sections below address GPU shader throughput, worker-thread offloading, and architectural trade-offs for large-scale graphs.
 
 ### Node Throughput
 

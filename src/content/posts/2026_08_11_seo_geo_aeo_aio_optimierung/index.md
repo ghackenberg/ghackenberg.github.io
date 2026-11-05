@@ -77,18 +77,26 @@ In der aktuellen Fachdiskussion kursieren verschiedene Akronyme für das Auffind
 | **AIO** (Artificial Intelligence Optimization) | Autonome Agenten & RAG-Pipelines | Strukturierte Tool-Calls, deterministische Extraktion | Model Context Protocol (MCP), Manifest-APIs, `llms [@willison-2024-llms-txt].txt` |
 
 ### 1. SEO (Search Engine Optimization)
+
+Klassische Suchmaschinenoptimierung bildet das technische Fundament für jede Form der Web-Auffindbarkeit:
 * **Zielgruppe**: Klassische Web-Crawler von Google, Bing und DuckDuckGo.
 * **Kernfokus**: Technische Crawlbarkeit, saubere HTML5-Hierarchie (`<h1>`–`<h6>`), schnelle Ladezeiten (Core Web Vitals), mobile Responsivität, OpenGraph-Tags, XML-Sitemaps und Keyword-Relevanz. Ohne saubere SEO-Indexierung haben auch KI-Crawler keine verlässliche Basis.
 
 ### 2. GEO (Generative Engine Optimization)
+
+Generative Engine Optimization erweitert dieses Fundament gezielt für sprachmodellbasierte Such- und Synthesesysteme:
 * **Zielgruppe**: Generative KI-Suchmaschinen und RAG-Systeme (Retrieval-Augmented Generation) wie Perplexity, ChatGPT Search, Claude und Gemini.
 * **Kernfokus**: Hochgradig zitierfähige Fakten, Standard-Formate wie `llms.txt`, eindeutige Knowledge-Graph-Verknüpfungen (`sameAs`), statistisch verifizierte Aussagen und explizite Bot-Freigaben in der `robots.txt`.
 
 ### 3. AEO (Answer Engine Optimization)
+
+Answer Engine Optimization richtet die Textdramaturgie auf direkte, sofort extrahierbare Faktenantworten aus:
 * **Zielgruppe**: Direct Answer Engines, Featured Snippets und Sprachassistenten (Siri, Alexa, Google AI Overviews).
 * **Kernfokus**: Das „Answer-First“-Muster (prägnante 40–60 Wörter Kernaussagen direkt unter Überschriften), strukturierte FAQs mit `FAQPage`-Schema sowie übersichtliche Datentabellen und Aufzählungslisten.
 
 ### 4. AIO (Artificial Intelligence Optimization)
+
+Artificial Intelligence Optimization adressiert schließlich die programmatische Schnittstelle zu autonomen Software-Agenten:
 * **Zielgruppe**: Autonome KI-Agenten, RAG-Pipelines und automatisierte Coding-Assistenten.
 * **Kernfokus**: Maschinenlesbare Manifest-APIs (`/content-manifest.json`), tiefgreifendes JSON-LD Schema.org Markup (`Person`, `ScholarlyArticle`, `SoftwareApplication`, `Course`, `Service`) und Bereitstellung strukturierter Agenten-Tools (MCP).
 

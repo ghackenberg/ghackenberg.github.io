@@ -66,6 +66,8 @@ Bevor wir in die feingranularen Ausführungszyklen einsteigen, veranschaulicht d
 
 ## 1. Die fundamentale Entwurfsphilosophie: «Body vs. Brain»
 
+Das zentrale Architekturprinzip des Hermes Agent besteht in der strikten Trennung zwischen dem zustandsbehafteten Laufzeitsystem und dem austauschbaren Sprachmodell.
+
 ### Die Entkopplung: Modellgewichte vs. Agenten-Harness
 
 In der AI-Community ist der Name **Hermes** vor allem durch die Modellserien von Nous Research bekannt (wie *Hermes 2 Pro* und *Hermes 3*), die Pionierarbeit bei der standardisierten Funktionsaufruf-Syntax (`<tool_call>`) und strukturiertem Reasoning für Open-Weights-Modelle leisteten. 
@@ -211,11 +213,15 @@ Level 1: skill_view(name)       ──► Vollständiges SKILL.md               
 Level 2: skill_view(name, path) ──► Spezifische Referenzdateien/Skripte    (on-demand)
 ```
 
+Diese drei Nachladestufen begrenzen den Token-Verbrauch im laufenden Dialog auf das absolut Notwendige:
+
 1. **Level 0 (Discovery):** Im System-Prompt liegt lediglich ein kompakter Index aller Skill-Namen und Kurzbeschreibungen ($\le 60$ Zeichen). Der Token-Footprint bleibt minimal.
 2. **Level 1 (Aktivierung):** Erst wenn eine Aufgabe eine bestimmte Fertigkeit erfordert (oder der Anwender den Slash-Befehl `/vllm-cluster-ops` eingibt), liest der Agent die Datei `SKILL.md` ein.
 3. **Level 2 (Deep Dive):** Umfangreiche Referenzdokumente, Skripte oder Schemata in Unterordnern (`references/`, `scripts/`, `templates/`) werden erst geladen, wenn eine konkrete Detailfrage dies verlangt.
 
 ### Anatomie einer standardkonformen `SKILL.md`
+
+Das folgende Beispiel zeigt den deklarativen Aufbau einer solchen Skill-Spezifikation mit YAML-Frontmatter und strukturierten Handlungsanweisungen:
 
 ```yaml
 ---
@@ -262,6 +268,8 @@ In unserem Artikel zu [WikiSkill und persistenter Wissensevolution](/posts/2026_
 Hermes Agent implementiert diesen evolutionären Lernzyklus auf zwei Ebenen:
 1. **Aktive Wissenskompilierung (`/learn`):** Ermöglicht dem Agenten, aus Rohdaten, Code-Repositories, Dokumentationen oder erfolgreichen Dialogverläufen eigenständig neue, standardkonforme Skills zu generieren.
 2. **Automatisierte Bibliotheks-Kuratierung (Der Curator):** Verhindert das unkontrollierte Wuchern redundanter, veralteter Fähigkeiten (*Skill Sprawl*).
+
+Das Zusammenspiel dieser beiden Mechanismen über den gesamten Lebenszyklus einer Fertigkeit hinweg ist im folgenden Diagramm dargestellt:
 
 ![Der Background Curator Lifecycle: Skill-Synthese, Inaktivitäts-Pruning und LLM-Konsolidierung](./hermes_agent_curator_lifecycle.svg "Der Background Curator Lifecycle")
 

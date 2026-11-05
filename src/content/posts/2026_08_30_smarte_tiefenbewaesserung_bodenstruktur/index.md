@@ -76,6 +76,8 @@ Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzus
 
 ### Der Schichtenaufbau im Detail
 
+Von der befahrbaren Oberfläche bis zum gewachsenen Untergrund gliedert sich das Profil in fünf funktionale Horizonte:
+
 1. **Sickerfähiges Öko-Pflaster (ca. 10 cm):**  
    Verbundsteinpflaster mit breiten, splittverfüllten Sickerfugen oder porösem Pflastergefüge. Dies erlaubt die direkte Vorort-Versickerung moderater Niederschläge und entlastet das kommunale Kanalnetz.
 2. **Bettungsschicht (3–5 cm):**  
@@ -114,10 +116,14 @@ Ein energie- und wassereffizientes System lebt von der intelligenten Verknüpfun
 ![IoT-Ventilsteuerung mit kabelloser Smart-Home-Anbindung](./smart_valve_control.jpg "Smart Valve Control")
 
 ### 1. Sensorik & Telemetrie
+
+Die kontinuierliche Erfassung des tatsächlichen Bodenwassergehalts erfolgt direkt in den relevanten Wurzelhorizonten:
 - **Kapazitive Bodenfeuchtesensoren (FDR/TDR-Prinzip):** In verschiedenen Tiefen ($20\,\text{cm}$ und $50\,\text{cm}$) positioniert, erfassen sie die volumetrische Bodenfeuchte ($\theta$ in Vol.-%) in Echtzeit über hochfrequente elektromagnetische Felder (*Frequency / Time Domain Reflectometry*).
 - **Kabellose Signalübertragung:** Extrem stromsparende Funkprotokolle (Zigbee, Thread oder LoRaWAN) ermöglichen mehrjährigen Batteriebetrieb der Erdsensoren.
 
 ### 2. Dezentrale Aktorik & Ventilboxen
+
+Auf der hydraulischen Ausführungsebene übernehmen robuste Magnetventile und Durchflussgeber die präzise Wasserdosierung:
 - **24V AC bistabile oder stromlos geschlossene Magnetventile:** Gewährleisten sicheres, leckagefreies Schalten der einzelnen Bewässerungskreise (z. B. getrennte Zonen für *Einfahrt-Bäume*, *Hecken* und *Staudenbeete*).
 - **Integrierte Impuls-Durchflussmesser (Flow Meter):** Digitale Durchflussmesser erfassen das tatsächlich ausgebrachte Wasservolumen in Litern. Treten Abweichungen zwischen Soll- und Ist-Durchfluss auf (z. B. Rohrbruch oder verstopfter Filter), schaltet das System die Zone automatisch ab und sendet eine Push-Warnung an das Dashboard.
 
@@ -136,6 +142,8 @@ Dabei gilt:
 Das System bewässert ausschließlich in den kühlen Nacht- oder frühen Morgenstunden ($03:00\text{--}06:00\,\text{Uhr}$), wenn der hydrostatische Druck im Pflanzengewebe optimal ist und keine Verdunstungsverluste auftreten. Bei prognostiziertem Regen stoppt die vorausschauende Wetter-Integration den Gießzyklus automatisch.
 
 ## 4. Hydraulischer Effizienzvergleich
+
+Die folgende Gegenüberstellung verdeutlicht die hydraulischen und pflanzenphysiologischen Vorteile der Unterflur-Tiefenbewässerung gegenüber konventionellen Verfahren:
 
 | Kriterium | Konventioneller Regner / Gießrand | Smart Subsurface Drip & Tiefenlanze |
 | :--- | :--- | :--- |

@@ -72,9 +72,13 @@ In human visual perception, **motion parallax** is a primary depth cue: objects 
 | **Row 2** | Midground | `w-52 sm:w-60 md:w-64` (256px) | ~42 px/s | ~65% | Compact Title, One-line Tagline |
 | **Row 3** | Background | `w-40 sm:w-48 md:w-52` (208px) | ~26 px/s | ~40% | Subtle Title only |
 
+The following kinematic schematic illustrates the velocity vectors and visual scaling across all three parallax tiers:
+
 ![Kinematisches Modell und mathematische Vektordiagramme der dreistufigen Parallaxe für das responsive Web-Rendering](./parallax_kinematics.svg "3-Tier Motion Parallax Model & Kinematics")
 
 ### Why this sizing and velocity ratio works
+
+Coupling geometric card dimensions with angular velocity yields three perceptual advantages:
 1. **Focus Separation**: Row 1 captures primary attention with generous 16:9 canvas areas, crisp typography, and an interactive hover indicator. Row 2 offers density and scanning speed. Row 3 provides ambient, horizon-like movement that gives the entire viewport a cinematic sense of depth.
 2. **Visual Rhythm**: Because each tier travels at a different velocity (~65, ~42, and ~26 px/s), cards in different rows constantly shift relative to each other. Vertically aligned repetitions never form, creating an organic, fluid visual tapestry.
 3. **Pure Artwork Aesthetic**: We explicitly removed textual category badges, colored outlines, and decorative emoji icons from the cards. Each card relies on a uniform dark glass border (`border-white/10 light:border-slate-200/80`), subtle hover elevation, and a dark scrim gradient. This ensures the illustrations and technical screenshots take center stage without visual clutter.
@@ -270,6 +274,8 @@ function setupGalleryEngine() {
 ```
 
 #### Why this architecture is optimal:
+
+Combining static HTML pre-rendering with synchronous client-side rehydration satisfies three critical engineering constraints simultaneously:
 - **Zero Repetition on Reload**: When the page reloads, the items displayed in the user's previous session are already recorded in `localStorage`. The selection algorithm penalizes them with the $0.05\times$ cooldown, while unread content receives the $12.0\times$ boost. The initial frame immediately renders completely fresh, unseen content.
 - **Zero Cumulative [@google-2024-optimize-cumulative] Layout Shift ($\text{CLS} = 0$)**: Because each card possesses strictly constrained dimensions (`aspect-video`, fixed responsive width containers) and a dark glass aesthetic, swapping `img.src`, `href`, and text nodes occurs in under 2 milliseconds without shifting the layout by a single pixel.
 - **Flawless Search & AI Discovery (SEO, GEO, AEO)**: Stateless web crawlers (Googlebot, Bingbot) and generative AI engines (Perplexity, SearchGPT) receive 45 semantic, pre-rendered `<a>` and `<img>` tags directly from the static HTML with zero reliance on client JavaScript execution.
@@ -286,7 +292,9 @@ A continuous visual animation must be respectful of device resources, touch ergo
    - If $|\Delta Y| > |\Delta X|$, the gesture is immediately classified as a page scroll: horizontal drag locks and the browser retains native vertical viewport control.
    - If $|\Delta X| > |\Delta Y|$, the gesture locks horizontally, smoothly scrubbing the parallax track.
    - **Click vs. Drag Disambiguation**: When navigating cards via touch, pointer displacements exceeding 12px suppress card link navigation in the capture phase, preventing accidental clicks when flicking or panning.
-5. **`prefers-reduced-motion` Compliance (WCAG 2.2)**: In accordance with WCAG 2.2 Success Criteria 2.2.2 (Pause, Stop, Hide) and 2.3.3 (Animation from Interactions), if the user has requested reduced motion in their operating system, the JavaScript animation loop is bypassed entirely. The CSS switches the tracks into native horizontal snap-scrolling containers:
+5. **`prefers-reduced-motion` Compliance (WCAG 2.2)**: In accordance with WCAG 2.2 Success Criteria 2.2.2 (Pause, Stop, Hide) and 2.3.3 (Animation from Interactions), if the user has requested reduced motion in their operating system, the JavaScript animation loop is bypassed entirely.
+
+The stylesheet automatically switches the tracks into native horizontal snap-scrolling containers:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -306,6 +314,8 @@ A continuous visual animation must be respectful of device resources, touch ergo
   }
 }
 ```
+
+Finally, to ensure visual polish along the horizontal boundaries of the gallery container, we apply a feathering mask:
 
 6. **Edge Masking**: Subtle CSS gradient masks (`mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)`) gracefully feather the cards into the viewport borders on both edges, preventing harsh clipping.
 

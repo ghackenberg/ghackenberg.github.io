@@ -27,12 +27,16 @@ The **3D Force Graph** visualization projects the website's interconnected netwo
 
 ### Architectural Pipeline
 
+The rendering and simulation pipeline combines four core subsystems to maintain interactive frame rates across three-dimensional topologies:
+
 - **Hardware Acceleration**: Three.js renders sphere meshes, glow shaders, and line geometry directly through WebGL draw calls, sustaining 60 FPS across complex topologies.
 - **3D Octree Physics**: N-body gravitational repulsion and spring tension evaluate across all three Cartesian axes (x, y, z), utilizing an octree structure for O(N log N) computational efficiency.
 - **Orbital Camera Navigation**: Full spherical orbit controls support 6-degree-of-freedom navigation (orbit rotation, panning, and distance zoom).
 - **Directional Particles**: Animated particle streams traverse link geometry via parametric curve interpolation, illustrating semantic dependency direction.
 
 ### Engine Specifications
+
+The following table summarizes the technical characteristics and performance profile of the 3D volumetric engine:
 
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
@@ -43,6 +47,8 @@ The **3D Force Graph** visualization projects the website's interconnected netwo
 | **Camera Control** | Spherical Orbit Controls | Intuitive perspective adjustment and depth-of-field exploration |
 
 ## Technical FAQ
+
+The sections below address common architectural questions regarding volumetric projection, particle rendering, and engine selection.
 
 ### Spatial Occlusion
 

@@ -27,12 +27,16 @@ The **D3 Force Layout** visualization leverages the modular physics simulation p
 
 ### Architectural Pipeline
 
+The simulation and SVG binding architecture relies on four core mechanisms to achieve crisp vector layouts:
+
 - **Modular Force Composition**: Independent force modules (`forceManyBody`, `forceLink`, `forceCenter`, `forceCollide`) compute vector displacement incrementally.
 - **Velocity Verlet Integration**: The numerical integrator updates particle positions and velocities each tick, maintaining kinetic momentum and realistic particle dampening.
 - **Alpha Decay Simulation**: An internal alpha cooling parameter decreases exponentially, transitioning the network from high-energy initial relaxation to a stable resting equilibrium.
 - **DOM-Driven Vector Styling**: Every node and connector exists as an explicit SVG element, enabling CSS styling, hardware-accelerated transforms, and high-DPI scaling.
 
 ### Engine Specifications
+
+The table below details the technical parameters and graphical strengths of the D3 vector simulation engine:
 
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
@@ -43,6 +47,8 @@ The **D3 Force Layout** visualization leverages the modular physics simulation p
 | **Layout Presets** | Force, Concentric, Columns | Programmatic transition easing between spatial arrangements |
 
 ## Technical FAQ
+
+The following answers explain the numerical physics integration, DOM scaling thresholds, and ideal use cases for D3.js.
 
 ### Numerical Integration
 

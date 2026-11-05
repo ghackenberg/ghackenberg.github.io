@@ -107,6 +107,8 @@ Das Autorenteam von Google Research überträgt dieses mächtige Prinzip nun auf
 * $\Phi$ ist das **Attribut-Mapping**, das jeder Kante ein dreiteiliges Regelwerk zuweist:
   $$\Phi(e) = (\text{condition}, \text{guidance}, \text{pitfalls})$$
 
+Die folgende Abbildung zeigt den strukturellen Aufbau eines solchen prozeduralen Übergangs im Detail:
+
 ![Struktur eines prozeduralen Übergangs: Triplett-Modell mit Vorbedingungen, Handlungsführung und Fallstricken](./prozedur_triplett_struktur.svg "Struktur eines prozeduralen Übergangs")
 
 ### Die Anatomie einer betrieblichen Kante am B2B-Praxisbeispiel
@@ -118,6 +120,8 @@ Betrachten wir den Übergang zwischen einer Bonitätsprüfung und der technische
    > *„Frage bei Standardartikeln die Lagerbestände in Werk 1 und Werk 2 ab. Liegt die Gesamtlieferzeit über 14 Arbeitstagen, frage automatisch die Express-Frachtkonditionen über die Speditions-API ab.“*
 3. **Bekannte Fallstricke (`pitfalls`):**
    > *„Bestätige unter keinen Umständen Teillieferungen unter dem Mindestauftragswert von 500 EUR, um ungedeckte Frachtnebenkosten zu verhindern.“*
+
+Im Gesamtzusammenhang fügt sich diese einzelne Kante nahtlos in das übergeordnete Prozessnetz der B2B-Auftragsprüfung ein:
 
 ![B2B-Auftragsprüfung als formaler Procedural Graph mit Kanten-Attribut-Inspektor](./prozessgraph_b2b_operations.svg "B2B-Auftragsprüfung als formaler Procedural Graph")
 
@@ -203,6 +207,8 @@ Im Unternehmensalltag muss ein Agent fehlerfrei mit ERP-Systemen (SAP, Microsoft
 * Gegenüber dem ungebundenen ReAct-Standard verringerte sich die Rate an Schnittstellen- und Formatierungsfehlern drastisch, da Kantenattribute als permanenter Parser- und Typisierungs-Filter fungieren.
 
 ### Die 3 Hebel für den Return on Investment (ROI)
+
+Aus kaufmännischer Perspektive verdichten sich diese technischen Verbesserungen auf drei messbare Wertschöpfungshebel:
 
 | ROI-Dimension | Vorher (Manuell / RPA / Naiver Agent) | Mit Procedural Graphs | Betriebswirtschaftlicher Nutzen |
 | :--- | :--- | :--- | :--- |

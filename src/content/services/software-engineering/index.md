@@ -54,6 +54,8 @@ Modern software systems require high operational reliability, readable and testa
 
 ## Composable Modules
 
+Each module addresses a critical stage of system delivery, from initial domain specification to production telemetry:
+
 1. **Requirements Engineering**: Rigorous elicitation, domain analysis, formal specification, and validation of functional and non-functional system constraints.
 2. **Software Architecture**: Domain-driven architectural design, modular decomposition, bounded contexts, and system-level trade-off analysis.
 3. **Software Construction**: High-discipline implementation adhering to clean code standards, strict type systems, and maintainable design patterns.

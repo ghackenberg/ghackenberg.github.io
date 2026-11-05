@@ -79,6 +79,8 @@ Die obere Auflageplatte verfügt über eine Reihe **präzise von links nach rech
 
 ### Konstruktive & Physikalische Schlüsselmerkmale
 
+Das Zusammenspiel aus Werkstoffwahl, Geometrie und Fluiddynamik lässt sich in fünf konstruktiven Kernpunkten zusammenfassen:
+
 - **Strömungsmechanische Konvektion statt thermischer Materialleitung:** Holz besitzt als organischer Werkstoff eine geringe Wärmeleitfähigkeit ($\lambda \approx 0{,}12\text{--}0{,}15\,\text{W}/(\text{m}\cdot\text{K})$) und fungiert physikalisch als thermischer Isolator. Die Kühlwirkung des Ständers beruht daher **nicht auf Wärmeleitung durch das Material**, sondern rein auf **Fluiddynamik und freier Konvektion** [@incropera-2007-fundamentals-heat]: Die Erhöhung um rund 45 mm und die gefrästen Querschlitze brechen die dünne thermische Grenzschicht über der Tischplatte auf, verhindern den Hitzestau und unterbinden die fatale thermische Re-Zirkulation vollständig.
 - **Horizontale Belüftungsschlitze (Maximale Massereduktion):** Anstelle eines dichten 2D-Gitters geben die parallelen Querschlitze den direkten Weg für den vertikalen Luftaustausch frei. Die Kontaktfläche zum Laptopgehäuse wird minimiert, während die strukturelle Steifigkeit für schwere 16"- bis 17"-Workstations voll erhalten bleibt.
 - **Skelettierte, offene Seitenwangen:** Die linken und rechten Standbeine sind als offene Rahmenkonstruktion ausgeführt. Dadurch kann kühle Raumluft von allen Seiten ungehindert unter das Notebook nachströmen, während heiße Abluft ohne Verwirbelungsbarrieren nach hinten und zur Seite entweicht.

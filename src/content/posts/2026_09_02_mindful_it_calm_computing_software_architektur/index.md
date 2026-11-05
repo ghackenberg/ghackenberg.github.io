@@ -117,6 +117,8 @@ Aufbauend auf der *Cognitive Load Theory* von John Sweller unterscheidet **Posit
 * **Extraneous Load minimieren:** Beseitigung von visuellen Störgeräuschen, inkonsistenten Navigationsstrukturen und redundantem Feedback.
 * **Germane Load maximieren:** Bereitstellung präziser mentaler Modelle, klarer Abstraktionen und nachvollziehbarer Systemzustände, die das Verstehen komplexer Zusammenhänge unterstützen.
 
+Die folgende Grafik verdeutlicht das Zusammenspiel von peripherer Wahrnehmung und kognitiver Ergonomie im Arbeitsgedächtnis:
+
 ![Calm Technology und Kognitive Ergonomie](./calm_technology_cognition.svg "Calm Technology Cognition")
 
 ## 3. Software-Architekturen & Engineering-Muster für Mindful Systems
@@ -187,6 +189,8 @@ Das klassische Monitoring bombardiert Ingenieure oft mit Hunderten Warnungen weg
 
 ### B. Asynchrone Engineering-Kultur
 
+Neben dem technischen Monitoring schützt eine bewusste Kommunikationsarchitektur die Fokuszeit von Entwicklungsteams vor permanenter Fragmentierung:
+
 * **ADRs (Architecture Decision Records) & RFCs (*Requests for Comments* – formale, schriftliche Entwurfsvorschläge zur asynchronen Teamdiskussion) vor Chat:** Technische Diskussionen finden strukturiert und asynchron in Markdown-Dokumenten und Versionskontrollsystemen statt – nicht in flüchtigen, stressigen Chat-Kanälen.
 * **Fokus-Blöcke & Batch-Reviews:** Pull Requests werden nicht im Minutentakt „zwischendurch“ begutachtet, sondern in dedizierten Review-Zeitfenstern, um *Attention Residue* zu vermeiden.
 
@@ -221,11 +225,15 @@ Mindful IT ist das Versprechen, Technologie wieder in den Dienst des Menschen zu
 
 ### Die Mindful-IT-Checkliste für dein nächstes Projekt
 
+Die folgenden sechs Prüffragen unterstützen Architektur- und Produktteams dabei, kognitive Resilienz direkt in den Systementwurf zu integrieren:
+
 1. **Interaktionsmuster prüfen:** Gibt es Push-Benachrichtigungen, die durch asynchrone Digest-Fenster oder Intentional-Pull ersetzt werden können?
 2. **Positive Friction einbauen:** Sind potenziell impulsive oder folgenreiche Nutzeraktionen durch bewusste Bedenkzeit-Schwellen geschützt?
 3. **Local-First evaluieren:** Kann der Kern des Datenmodells offline auf dem Client laufen (CRDTs, lokale Speicherung), um Latenzen und Cloud-Abhängigkeiten zu eliminieren?
 4. **Cognitive Load im CI/CD messen:** Werden Interfaces auf visuelle Einfachheit, klare Hierarchien und den Verzicht auf Dark Patterns automatisiert getestet?
 5. **KI als Schutzschild einsetzen:** Nutzt das System Sprachmodelle, um Informationsfluten zu bündeln und künstliche Dringlichkeit zu neutralisieren, statt zusätzlichen Content-Spam zu generieren?
 6. **SRE-Ruhe sicherstellen:** Werden Alarmierungsregeln auf echte Nutzer-SLOs begrenzt, um Alert Fatigue im Team dauerhaft zu verhindern?
+
+Zusammengefasst mündet dieser ingenieurwissenschaftliche Anspruch in ein klares Leitprinzip für moderne Softwaresysteme:
 
 > **Leitsatz:** Die höchste Kunst des Software-Engineerings im 21. Jahrhundert besteht nicht darin, die Aufmerksamkeit des Nutzers lückenlos zu fesseln, sondern Software so transparent, ruhig und kraftvoll zu bauen, dass der menschliche Geist frei bleibt für das Wesentliche.

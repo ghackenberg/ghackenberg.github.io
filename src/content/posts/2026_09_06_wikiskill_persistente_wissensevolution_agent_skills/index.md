@@ -130,11 +130,15 @@ WikiSkill formalisiert dieses Paradigma für die Evolution von Agentenfähigkeit
 Der Arbeitsbereich des Agentensystems wird in drei voneinander entkoppelte Schichten unterteilt:
 
 #### 1. Raw Layer (`raw/`)
+
+Die unterste Ebene bildet das unveränderliche Fundament aller gesammelten Ausführungserfahrungen:
 * **Charakteristik:** Unveränderlich (*Immutable*) und Append-Only.
 * **Inhalt:** Vollständige, detaillierte Ausführungstraces $\tau_i = (o_1, a_1, \dots, o_T, a_T)$ aller Trainingsaufgaben. Sie protokollieren die exakten multi-turn Interaktionen des Inferenz-Agenten, inklusive Reasoning-Gedankengängen (*Chain-of-Thought*), Werkzeugaufrufen (*Tool Calls*), Parametern, Environment-Rückmeldungen und finalen Ausgaben.
 * **Zweck:** Dient als unverfälschbare Evidenzbasis für nachgelagerte Diagnose-Agenten.
 
 #### 2. Wiki Layer (`wiki/`)
+
+Darüber liegt die kuratierte Wissensschicht, die Erkenntnisse über alle Iterationen hinweg dauerhaft bewahrt:
 * **Charakteristik:** **Persistent und kumulativ – wird niemals zurückgerollt!**
 * **Inhalt:**
   * `patterns/*.md`: Strukturierte Markdown-Dokumente, die jeweils ein spezifisches Fehlermuster (*Failure Mode*) oder eine erfolgreiche Lösungsstrategie beschreiben. Jedes Muster enthält eine Root-Cause-Analyse, Kontextbedingungen und konkrete Handlungs-Workarounds.
@@ -144,6 +148,8 @@ Der Arbeitsbereich des Agentensystems wird in drei voneinander entkoppelte Schic
 * **Zweck:** Bereitstellung von Langzeitbewusstsein. Der Optimierer weiß exakt, welche Hypothesen bereits getestet wurden, welche Modifikationen gescheitert sind und welche Fehlerbilder persistent auftreten.
 
 #### 3. Skills Layer (`skills/`)
+
+Die oberste Schicht repräsentiert das aktive, ausführbare Verhaltensrepertoire des Agenten:
 * **Charakteristik:** Ausführbar (*Executable*), modular und mutationsfähig.
 * **Inhalt:** Die aktiven Fertigkeiten $S = \{s_1, \dots, s_M\}$. Jede Fähigkeit resideiert in einem eigenen Verzeichnis mit zwei Kerndateien:
   * `SKILL.md`: Die eigentliche prozedurale Spezifikation mit YAML-Frontmatter (eindeutiger Name, Beschreibung), Anwendungsbedingungen, präzisen Schritt-für-Schritt-Instruktionen und Code-Mustern.
@@ -211,7 +217,11 @@ Die Autoren von Google Research haben WikiSkill einer rigorosen empirischen Übe
 
 ### A. Experimentelles Setup
 
+Die empirische Validierung stützt sich auf eine breit angelegte Matrix aus Domänen-Benchmarks, Modellgrößen und etablierten Vergleichsverfahren.
+
 #### 1. Benchmarks
+
+Zur Abdeckung unterschiedlicher kognitiver und werkzeuggestützter Anforderungen wurden fünf komplementäre Testumgebungen herangezogen:
 * **LiveMathematicianBench (LiveMath):** Mathematisches Schließen auf Expertenniveau mit Beweisskizzen.
 * **SealQA:** Komplexe Websuche mit dynamischer Informationsaggregation.
 * **SpreadSheetBench (SpreadSheet):** Mehrstufige Tabellenkalkulation und Datenmanipulation via Code.
@@ -219,6 +229,8 @@ Die Autoren von Google Research haben WikiSkill einer rigorosen empirischen Übe
 * **ALFWorld:** Interaktive, verkörperte (*Embodied*) Agenten-Entscheidungen in textbasierten Spielumgebungen.
 
 #### 2. Evaluierte Modelle
+
+Die Untersuchung evaluiert fünf Sprachmodelle unterschiedlicher Skalierungsstufen und Architekturen:
 * **Gemini-3.5-Flash** (Google DeepMind)
 * **Qwen-3.5-4B-Instruct** (Alibaba Cloud / Qwen Team)
 * **Qwen-3.5-9B-Instruct**
@@ -226,6 +238,8 @@ Die Autoren von Google Research haben WikiSkill einer rigorosen empirischen Übe
 * **Gemma-4-31B-It** (Google)
 
 #### 3. Verglichene Baselines
+
+Als Referenzpunkte dienen sowohl ein ungestützter Basisdurchlauf als auch drei aktuelle Skill-Evolutionsverfahren:
 * **No-Skill:** Ausführung ohne zusätzliche prozedurale Fertigkeiten.
 * **Trace2Skill (Ni et al., 2026):** Extraktion von Lektionen aus Traces ohne separate Wissensschicht.
 * **EvoSkill (Alzubi et al., 2026):** Führt eine kumulierte Historie früherer Vorschläge, vermischt jedoch Logs mit Prozeduren.
@@ -327,6 +341,8 @@ Um den WikiSkill-Ansatz in der Forschungs- und Entwicklungslandschaft präzise z
     ├── Agent-Harness-Optimierer (z. B. Meta-Harness, HarnessX)
     └── Dynamische Skill-Retrieval- & Routing-Systeme (z. B. SkillRet)
 ```
+
+Im Einzelnen lassen sich diese sieben Verfahrensklassen anhand ihrer architektonischen Wirkmechanismen wie folgt abgrenzen:
 
 1. **In-Context Learning & Few-Shot Trajektorien-Injektion:** Das unreflektierte Übergeben vergangener Interaktionsspuren direkt in das Prompt-Fenster des Modells (führt zu den bekannten Latenz-, Token- und Attention-Problemen).
 2. **Generalisierte automatische Prompt-Optimierer (z. B. GEPA, DSPy, OPRO):** Methoden, die Systemprompts über Meta-Prompts oder Gradienten-Surrogate iterativ verfeinern, jedoch keine strukturierten Werkzeug- und Skill-Dateisysteme verwalten.

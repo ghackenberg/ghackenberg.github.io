@@ -408,12 +408,16 @@ Procedural Graphs lösen dies durch eine explizite **Rejection Memory** $\mathca
 
 ### Die Phasen des Evolutions-Loops in TypeScript
 
+Der selbstlernende Optimierungszyklus durchläuft dabei vier streng voneinander getrennte Phasen:
+
 1. **Trace Aggregation:** Mastra zeichnet über seine Persistenzschicht sämtliche Ausführungspfade auf – inklusive Tool-Aufrufen, Latenzen, Token-Kosten und manuellen Mitarbeiterkorrekturen.
 2. **Refiner Agent ($M_{\text{refine}}$):** Ein dedizierter Analyse-Agent identifiziert systematische Fehlversuche oder Reibungspunkte in den Traces.
 3. **Rejection Filter ($\mathcal{H}_{\text{rejected}}$):** Vor jeder vorgeschlagenen Kanten-Mutation wird geprüft, ob eine äquivalente Änderung bereits in der Historie verworfen wurde.
 4. **Validation Gate (`@mastra/evals`):** Vor dem Deployment in die Produktion durchläuft der mutierte Graph eine automatisierte Test-Suite mit Benchmark-Fällen.
 
 ### Code: Implementierung der Rejection Memory & Evolution
+
+Die folgende Klasse kapselt das Fehlergedächtnis und prüft deterministisch, ob eine vorgeschlagene Kantenänderung bereits in einem früheren Zyklus gescheitert ist:
 
 ```typescript
 // src/procedural-graph/evolution.ts
@@ -501,6 +505,8 @@ Der minimale Startgraph (*Minimal Prior*) umfasst vier Knoten:
 3. `issue_credit_note`: Automatische Erstellung der Gutschrift im ERP.
 4. `human_escalation`: Manuelle Freigabe bei Beträgen über 1.000 € oder unklarer Schadenslage.
 
+In TypeScript wird dieser Prozessgraph samt seinen Kantenbedingungen und Eskalationsschwellen deklarativ als typisiertes Datenmodell definiert:
+
 ```typescript
 // src/workflows/complaint-graph.ts
 import { ProceduralGraphModel } from '../procedural-graph/schema';
@@ -582,6 +588,9 @@ export const b2bComplaintGraph: ProceduralGraphModel = {
 ```
 
 ### Was passiert zur Laufzeit?
+
+Trifft nun der konkrete Schadensfall im System ein, koordiniert die Laufzeitumgebung die Bearbeitung entlang der definierten Kantenattribute in sechs Schritten:
+
 1. Der Kunde meldet einen Schaden von **1.200 €**.
 2. Knoten `check_claim` wird erfolgreich durchlaufen.
 3. Vor dem Übergang zu `issue_credit_note` analysiert die Runtime Guidance Pipeline die Kantenattribute: Die Vorbedingung `Warenwert <= 500 EUR` ist verletzt!
@@ -595,6 +604,8 @@ export const b2bComplaintGraph: ProceduralGraphModel = {
 Die Verbindung von **Procedural Graphs** mit dem **Mastra TypeScript-Ökosystem** löst eines der dringlichsten Probleme moderner KI-Systeme: Sie beendet die falsche Dichotomie zwischen starren, wartungsintensiven RPA-Workflows und unberechenbaren, stochastisch driftenden ReAct-Agenten.
 
 ### Die 4 goldenen Regeln für die Praxis
+
+Für die erfolgreiche Einführung in produktiven Unternehmensumgebungen empfehlen sich vier architektonische Grundsätze:
 
 1. **Graphen als Wissen modellieren, nicht als Code:** Trennen Sie den Prozessgraphen strikt vom Ausführungscode. Der Graph gehört in den Zustandsspeicher (`PostgresStore`), nicht in statische TypeScript-Dateien.
 2. **Kantenattribute reichhaltig formulieren:** Der Wert eines Procedural Graphs liegt in seinen Kantenattributen. Investieren Sie Zeit in präzise `condition`-, `guidance`- und vor allem `pitfalls`-Texte.

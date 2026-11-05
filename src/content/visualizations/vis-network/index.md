@@ -27,12 +27,16 @@ The **Vis.js Network** visualization models the website's knowledge ecosystem in
 
 ### Interaction Model
 
+The interactive canvas architecture integrates four core mechanisms to deliver responsive spring-mass behavior:
+
 - **HTML5 Canvas 2D Rendering**: Vis.js utilizes an optimized 2D canvas context for smooth edge transitions, customizable node geometries, and glow-supported color encodings.
 - **Barnes-Hut Gravitational Simulation**: To accelerate n-body gravitational equations, the Barnes-Hut quadtree recursively divides 2D space into hierarchical quadrants, reducing computational complexity from $\mathcal{O}(n^2)$ to $\mathcal{O}(n \log n)$.
 - **Reactive Drag-and-Drop**: Nodes can be repositioned or pinned dynamically, causing connected sub-networks to re-stabilize organically according to physical spring laws.
 - **Hierarchical & Concentric Switching**: Supports instantaneous or ease-interpolated coordinate transitions between force-directed, radial, and column layouts.
 
 ### Engine Specifications
+
+The table below outlines the core rendering, physics, and interaction capabilities of the Vis.js Network engine:
 
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
@@ -43,6 +47,8 @@ The **Vis.js Network** visualization models the website's knowledge ecosystem in
 | **Layout Flexibility** | Concentric, Hierarchical & Force | Instant switching without destroying canvas context |
 
 ## Technical FAQ
+
+The following answers summarize the physical force equations and interactive design trade-offs of the Vis.js engine.
 
 ### Spring Simulation
 

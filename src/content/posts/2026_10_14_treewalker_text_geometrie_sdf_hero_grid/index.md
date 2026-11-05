@@ -112,6 +112,8 @@ Die folgende Architektur-Übersicht zeigt den qualitativen und quantitativen Unt
 | **Rendering-Effizienz (Canvas 2D)** | Einzelnes `ctx.fill()` pro Partikel erzeugt hunderte State-Changes pro Frame bei individueller Opazität. | Nicht anwendbar (rein deklaratives Text-Wrapping im Browser-Layout). | **10-Bucket Opacity Quantisierung** (`alphaBin = 0..9`) reduziert hunderte Punkte auf **maximal 10 Draw-Calls/Frame**. |
 | **Webfont- & First-Paint-Stabilität** | Anfällig für Flash of Unstyled Text (FOUT) und nachträgliche Geometrie-Sprünge beim Font-Swap. | Reflow bei Webfont-Ladevorgang verschiebt Zeilenumbrüche sichtbar. | Synchronisiertes Zwei-Barrieren-Gate (`document.fonts.ready` $\land$ `portrait:ready`) garantiert **CLS = 0**. |
 
+Sowohl die geometrische Zeilenvermessung als auch das reaktive Punktraster sind produktiv auf unserer Startseite im Einsatz:
+
 > [!TIP]
 > **Live-Implementierung im Quellcode:**  
 > Der vollständige Geometrie- und Platzierungs-Solver ist in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro) (Zeilen 1264–1617) implementiert; das kontinuierliche 2D-SDF-Gitter und die Feder-Dämpfer-Physik befinden sich in [`src/components/ReactiveDotGrid.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/ReactiveDotGrid.astro).

@@ -21,8 +21,14 @@ If that is the case then the velocity of the ball is reflected across the horizo
 This phenomena is depicted in the following picture series:
 
 ![Bounce one illustration from JavaScript Physics Simulation](./bounce_one.png "JavaScript Physics Simulation - Bounce one illustration")
+
+As the ball reaches the ground plane, the vertical velocity vector is inverted and dampened at the moment of impact:
 ![Bounce two illustration from JavaScript Physics Simulation](./bounce_two.png "JavaScript Physics Simulation - Bounce two illustration")
+
+Immediately after the rebound, the ball ascends along the reflected trajectory with reduced kinetic energy:
 ![Bounce three illustration from JavaScript Physics Simulation](./bounce_three.png "JavaScript Physics Simulation - Bounce three illustration")
+
+Finally, gravity decelerates the upward motion until the ball reaches its lower apex and begins the next cycle:
 ![Bounce four illustration from JavaScript Physics Simulation](./bounce_four.png "JavaScript Physics Simulation - Bounce four illustration")
 
 The behavior in case of collisions between two separate balls is a little more complex than that.
@@ -36,7 +42,11 @@ The effect of this procedure is visualized in the following picture series.
 Blue lines depict the components of the new velocities.
 
 ![Collision one illustration from JavaScript Physics Simulation](./collision_one.png "JavaScript Physics Simulation - Collision one illustration")
+
+At the exact point of contact, the velocity vectors are projected onto the orange collision axis and its orthogonal tangent:
 ![Collision two illustration from JavaScript Physics Simulation](./collision_two.png "JavaScript Physics Simulation - Collision two illustration")
+
+After exchanging momentum along the collision axis, the recombined blue velocity vectors guide both balls along their new diverging paths:
 ![Collision four illustration from JavaScript Physics Simulation](./collision_four.png "JavaScript Physics Simulation - Collision four illustration")
 
 If I find the time I will also make sure to compile a package of the prototype for download.

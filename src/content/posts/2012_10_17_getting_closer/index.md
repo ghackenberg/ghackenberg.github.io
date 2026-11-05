@@ -21,6 +21,8 @@ After sun power is gone the storage level drops to feed the refrigerators with e
 
 ![Temperature illustration from Getting Closer to Actual Balance](./temperature.png "Getting Closer to Actual Balance - Temperature illustration")
 
+Correspondingly, the second chart plots the battery state of charge as it buffers daytime solar peaks and discharges overnight:
+
 ![Level illustration from Getting Closer to Actual Balance](./level.png "Getting Closer to Actual Balance - Level illustration")
 
 In the next steps we plan to extend the model with other types of energy components.

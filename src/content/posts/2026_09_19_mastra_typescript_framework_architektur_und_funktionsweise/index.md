@@ -82,6 +82,8 @@ Das folgende Architekturmodell veranschaulicht die vier Schichten des Gesamtsyst
 
 ### Die vier Kernschichten im Überblick
 
+Jede dieser vier Schichten übernimmt innerhalb der Laufzeitumgebung eine klar abgegrenzte Verantwortung:
+
 1. **Schicht 1: Consuming Surfaces & Developer Interfaces**
    * **Mastra Studio (`mastra dev`):** Eine integrierte Entwickler-Workbench, die lokal auf Port `4111` startet. Sie bietet einen interaktiven visuellen Graph-Editor, Playground-Chats und detailliertes Tracing.
    * **Auto-generated REST & OpenAPI:** Jeder in Mastra registrierte Agent und Workflow wird automatisch als standardkonformer HTTP-Endpunkt exponiert – inklusive interaktiver Swagger-Dokumentation.
@@ -137,6 +139,8 @@ Mastra löst dieses Spannungsfeld durch eine saubere, erstklassige Trennung zwei
 ![Autonome Agenten vs. Deterministische Workflows in Mastra](./mastra_agent_vs_workflow.svg "Autonome Agenten vs. Deterministische Workflows")
 
 ### Wann nutzt man `Agent`, wann `Workflow`?
+
+Die Wahl zwischen beiden Primitiven richtet sich nach dem geforderten Grad an Vorhersehbarkeit, Unterbrechbarkeit und regulatorischer Nachvollziehbarkeit:
 
 | Kriterium | `Agent` Primitive | `Workflow` Primitive |
 | :--- | :--- | :--- |
@@ -260,7 +264,9 @@ Klassische Microservices scheitern an asynchronen Genehmigungen: Prozesse könne
 Mastra implementiert echtes **Durable Execution**:
 1. Ruft ein Schritt `await suspend()` auf, serialisiert Mastra den vollständigen Zustand des Workflows in die konfigurierte Datenbank (`PostgresStore`).
 2. Der HTTP-Aufruf wird beendet, ohne dass Server-Ressourcen belegt bleiben.
-3. Sobald der menschliche Entscheider im Dashboard oder ERP-System die Freigabe erteilt, wird der Workflow reaktiv über die API fortgesetzt:
+3. Sobald der menschliche Entscheider im Dashboard oder ERP-System die Freigabe erteilt, wird der Workflow reaktiv über die API fortgesetzt.
+
+Der folgende Codeausschnitt zeigt den programmatischen Wiederanlauf eines solchen pausierten Workflows anhand seiner `runId`:
 
 ```typescript
 // Fortsetzen des eingefrorenen Workflows nach Manager-Freigabe
@@ -281,6 +287,8 @@ Mastra setzt hierbei kompromisslos auf **Zod**:
 * Aus den Zod-Schemas generiert Mastra automatisch die JSON-Schema-Spezifikation für das Function Calling des Zielmodells.
 * Eingehende Argumente werden vor der Übergabe an die `execute`-Funktion strikt validiert.
 * Innerhalb von `execute` genießt der Entwickler 100 % statische Typsicherheit ohne manuelle Casts.
+
+Am Beispiel eines schreibgeschützten Datenbank-Tools lässt sich diese deklarative Verknüpfung aus Eingabe-, Ausgabe- und Ausführungslogik direkt nachvollziehen:
 
 ```typescript
 // src/mastra/tools/sql-query-tool.ts

@@ -78,6 +78,8 @@ Um politische Grabenkämpfe zwischen den Gemeinden zu vermeiden, baut das Konzep
 
 ### Die 6 Satelliten des Campus Almtal
 
+Jede der sechs Almtaler Gemeinden übernimmt im Verbund eine klar definierte thematische Leitfunktion:
+
 1. **Scharnstein (Der Inkubator & Hauptcampus):**  
    Scharnstein bildet das organisatorische Herzstück. Hier entsteht ein Bildungs-Hub (in Kooperation mit berufsbildenden höheren Schulen wie HTL/HAK und der FH OÖ) für industrielles Bauen, Automatisierung und Kreislaufwirtschaft. Leitbetriebe wie *Wolf System* und *Grüne Erde* werden direkt in die praxisnahe Ausbildung eingebunden.
 2. **Grünau im Almtal (Das Alpine Biosphären-Labor):**  
@@ -112,6 +114,8 @@ Ein Zukunftsprojekt dieser Größenordnung darf weder an knappen Gemeindebudgets
 - **20 % Fremdkapital & Gemeindebeteiligung (ca. 4 Mio. €):** Immobilienbesicherte Bankkredite und moderate Infrastrukturbeiträge der Gemeinden.
 
 ### Das 3-Ebenen-Wirkungsmodell (Potenzialanalyse):
+
+Aus volkswirtschaftlicher und unternehmerischer Sicht entfaltet die Trägergesellschaft ihre Wirkung auf drei komplementären Ebenen:
 1. **Finanzieller Rückfluss für Träger (Zielkorridor 3–5 % p.a.):** Miet- und Pachteinnahmen aus Reallaboren, Co-Working und Ausgründungen fließen an beteiligte Bürger und Betriebe zurück.
 2. **Corporate ROI für Betriebe:** Drastische Senkung von Rekrutierungskosten für technische Spitzenkräfte durch frühzeitiges Onboarding von Studierenden direkt vor Ort.
 3. **Regionale Wertschöpfung & Demografie:** Bei vollständiger Realisierung im Zielhorizont 2035 eröffnet der dezentrale Campus ein Potenzial für mehrere hundert direkte und indirekte Ganzjahres-Arbeits- und Ausbildungsplätze, stärkt die kommunale Steuerbasis und wirkt der Abwanderung junger Akademiker nachhaltig entgegen.
@@ -121,6 +125,8 @@ Ein Zukunftsprojekt dieser Größenordnung darf weder an knappen Gemeindebudgets
 Um Bedenken auszuräumen und Machbarkeit schrittweise zu beweisen, folgen wir einem klaren 4-Phasen-Modell:
 
 ![Roadmap 2026 bis 2030: Stufenplan zur Umsetzung](./roadmap_2026_2030.jpg "Roadmap 2026 bis 2030")
+
+Die vier aufeinander aufbauenden Ausbaustufen gliedern sich im Detail wie folgt:
 
 - **Phase 1: Validierung & Kernteam (H2/2026):** Veröffentlichung dieses Diskussionsentwurfs, Gespräche mit 5–10 Schlüsselakteuren und Gründung des Kernteams *"Initiative Almtal 2035"*.
 - **Phase 2: Proof of Concept & Gründung (2027):** Durchführung des ersten sichtbaren Pilotprojekts (z. B. *"Almtal Summer School"*) im Frühjahr 2027, gefolgt von der formellen Gründung der *Almtal AG* im Herbst 2027.

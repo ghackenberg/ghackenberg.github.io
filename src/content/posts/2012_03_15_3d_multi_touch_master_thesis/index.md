@@ -12,24 +12,23 @@ The thesis documents two approaches I have tried to implement computer vision ba
 The more promising approach is selected to implement a first prototype for evaluation with users.
 Finally, the findings are summarized and future work is listed.
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 items-stretch">
-  <div class="md:col-span-1 flex justify-center">
-
 ![Title detail from 3D Multi-Touch Master Thesis](./title.png "3D Multi-Touch Master Thesis - Title detail")
 
-  </div>
-  <div class="grid grid-cols-2 md:col-span-2 gap-4">
+The introduction motivates spatial hand tracking by examining visionary interaction paradigms such as *Minority Report*:
 
 ![Minority report detail from 3D Multi-Touch Master Thesis](./minority_report.png "3D Multi-Touch Master Thesis - Minority report detail")
 
+To reconstruct 3D hand postures from stereo cameras, the first approach models epipolar geometry and triangulation rays:
+
 ![Geometry detail from 3D Multi-Touch Master Thesis](./geometry.png "3D Multi-Touch Master Thesis - Geometry detail")
+
+The second approach evaluates machine learning classifiers and feature extraction pipelines for robust gesture recognition:
 
 ![Learning detail from 3D Multi-Touch Master Thesis](./learning.png "3D Multi-Touch Master Thesis - Learning detail")
 
-![Data model detail from 3D Multi-Touch Master Thesis](./data_model.png "3D Multi-Touch Master Thesis - Data model detail")
+Finally, a unified object-oriented data model integrates raw sensor frames, tracked hand blobs, and recognized interaction events:
 
-  </div>
-</div>
+![Data model detail from 3D Multi-Touch Master Thesis](./data_model.png "3D Multi-Touch Master Thesis - Data model detail")
 
 If you have feedback or questions please do not hestitate to contact me!
 Use the comment feature below to give other people the chance to engage into the discussion.

@@ -88,14 +88,20 @@ Wer Optimierungsmaßnahmen ausschließlich an der schieren Masse flüchtiger Kli
 Um den Return on Investment (ROI) von SEO- (*Search Engine Optimization*), GEO- (*Generative [@aggarwal-2024-geo] Engine Optimization* für KI-Suchsysteme wie Perplexity, ChatGPT Search oder Google AI Overviews) und AEO-Initiativen (*Answer Engine Optimization* für direkte Antwort- und Zitations-Engines) im industriellen B2B-Umfeld belastbar zu quantifizieren, müssen Controlling und Marketing auf drei neue Steuerungsgrößen umstellen:
 
 ### Metrik 1: Share of Model (SoM) / Citation Share
+
+Als primäre Sichtbarkeitskennzahl ersetzt der Share of Model die klassische Impression-Statistik:
 * **Definition**: Wie hoch ist der prozentuale Anteil, zu dem das eigene Unternehmen bei einem definierten Katalog von 50 bis 100 repräsentativen Branchen-Prompts (z. B. typische Einkäuferfragen zu Fertigungsverfahren, Normen und Werkstoffen) in ChatGPT, Perplexity, Claude und Gemini als empfohlene Lösung genannt wird?
 * **Messmethodik**: Automatisierte wöchentliche oder monatliche Test-Läufe, die standardisierte Prompts an die LLM-APIs senden und die Nennungshäufigkeit im direkten Vergleich zu den drei Hauptwettbewerbern protokollieren.
 
 ### Metrik 2: Entitäten-Präzision & Sentiment-Konsistenz
+
+Neben der reinen Nennungshäufigkeit entscheidet die inhaltliche Korrektheit der reproduzierten technischen Daten über den Beschaffungserfolg:
 * **Definition**: Werden die technischen Parameter und Kernkompetenzen von den KI-Modellen sachlich korrekt wiedergegeben?
 * **Der kritische Faktor**: Ein Zitat nützt wenig, wenn das Modell auf veraltete Daten zurückgreift und behauptet: *„Firma X fertigt nur bis 500 mm Drehdurchmesser“*, obwohl die Kapazität längst auf 1.200 mm erweitert wurde. Ein kontinuierliches Entitäten-Audit stellt sicher, dass RAG-Modelle die tatsächlichen Leistungsgrenzen abbilden.
 
 ### Metrik 3: Top-3-Präsenz im AI-Overview-Karussell
+
+Für den verbleibenden hochqualifizierten Verifikations-Traffic ist die Platzierung innerhalb der primären Quellenkarten ausschlaggebend:
 * Wie die [Authoritas-](https://www.authoritas.com/seo-ai-research-whitepapers) und [BrightEdge-Forschungsdaten](https://www.brightedge.com/resources/weekly-ai-search-insights) belegen, binden die ersten drei Zitationskarten in generativen Antwortboxen über **80% des verbleibenden Referral-Traffics**.
 * Ziel ist es daher nicht mehr, 50 verschiedene Keywords auf Position 7 zu halten, sondern bei den geschäftskritischen Kerntechnologien in den Top-3-Zitationskarten der generativen Engines verankert zu sein.
 
@@ -110,6 +116,8 @@ Das folgende Diagramm fasst das ROI-Paradoxon zusammen und stellt überholte Van
 Für das operative Monitoring von Share of Model und Zitationsanteilen stehen heute spezialisierte Lösungen zur Verfügung:
 
 ### Enterprise-Plattformen
+
+Mehrere spezialisierte SaaS-Plattformen unterstützen Unternehmen heute bei der automatisierten Erhebung dieser Zitationsmetriken:
 * **[Profound AI](https://www.tryprofound.com) & [Omnia](https://omnia.ai)**: Führende Plattformen zur kontinuierlichen Überwachung von Zitationsanteilen, Marken-Sentiment und Bot-Crawl-Aktivitäten über alle relevanten Sprachmodelle hinweg.
 * **[ZipTie](https://ziptie.dev) & [Peec AI](https://peec.ai)**: Schlanke Werkzeuge für B2B-Teams zum Aufbau eigener Prompt-Kataloge und zum automatisierten Benchmarking gegenüber Wettbewerbern.
 

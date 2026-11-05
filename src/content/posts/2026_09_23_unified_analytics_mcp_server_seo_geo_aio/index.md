@@ -67,6 +67,8 @@ Doch sobald wir die kontinuierliche Qualitätssicherung und Content-Optimierung 
 3. **Mangelndes Repository-Mapping:** Bestehende Analytics-Werkzeuge kennen die lokale Codebasis nicht. Sie wissen nicht, dass der relative Pfad `/posts/mein-artikel/` im Quellcode der Datei `src/content/posts/2026_09_23_mein_artikel/index.md` entspricht und welche Frontmatter-Attribute dort deklariert sind.
 4. **Fehlender geschlossener Regelkreis:** Ein Dashboard visualisiert Metriken rein passiv für Menschen. Es erlaubt dem Agenten jedoch nicht, eine erkannte *Striking-Distance-Chance* (Positionen 4–15) unmittelbar mit dem Markdown-AST abzugleichen, vor dem Git-Commit eine lokale AIO-Extraktionsprüfung durchzuführen und den Erfolg nach dem Deployment automatisiert zu re-auditieren.
 
+Die folgende Gegenüberstellung verdeutlicht den strukturellen Paradigmenwechsel zwischen einem klassischen Web-Dashboard und einer agentenintegrierten MCP-Schnittstelle:
+
 | Analysedimension | Menschliches Web-Dashboard (Plausible + GSC) | Autonomer Coding-Agent (Unified Analytics MCP) |
 | :--- | :--- | :--- |
 | **Primärer Nutzer** | Menschlicher Analyst / SEO-Manager im Web-Browser | Autonomer KI-Agent (IDE / CLI) im Quellcode-Repository |
@@ -180,6 +182,8 @@ Implementiert datengestützte Heuristiken, um ungenutzte Hebel im Content-Bestan
 * **High-Bounce-Performers:** Seiten mit starkem Such-Traffic, aber über 75% Absprungrate. Hier fehlt meist ein sofortiges direktes Antwort-Muster (*Answer-First*) am Textanfang.
 * **Hidden Champions:** Artikel mit außergewöhnlich langer Verweildauer (> 2,5 Minuten), die jedoch in Google kaum Impressionen erhalten und gezielte interne Verlinkungen aus Pillar-Artikeln benötigen.
 
+Das zurückgegebene Datenmodell bündelt die gefundenen Potenziale mitsamt Prioritätsstufe und konkreter Handlungsempfehlung:
+
 ```mermaid
 ---
 title: "Datenmodell von OpportunitiesResult"
@@ -247,6 +251,8 @@ Ein rein lokales, extrem schnelles Prüfwerkzeug, das Markdown-Dokumente (`src/c
 * Die **Answer-First-Dichte**: Steht unter zentralen `##`-Überschriften sofort ein prägnanter Definitionssatz (40–55 Wörter) ohne Floskeln?
 * Die **Struktur-Dichte**: Werden Vergleiche in Tabellen (`| ... |`) und Prozessschritte in nummerierten Listen geführt, die von generativen Engines (ChatGPT, Perplexity) bevorzugt zitiert werden?
 * Das Vorhandensein valider Frontmatter-Metadaten und barrierefreier Diagramm-Captions.
+
+Das folgende Klassendiagramm zeigt die Struktur des resultierenden Prüfberichts (`AioEvaluationResult`) und seine Teilbewertungen:
 
 ```mermaid
 ---
@@ -454,6 +460,8 @@ Um den MCP Server nahtlos in moderne Multi-Agenten-Umgebungen wie Antigravity od
    ````
 2. **Deklarative Agenten-Instruktionen:**  
    In den zentralen Agenten-Richtlinien unserer [`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md) ist die Nutzung des Servers vor jeder Inhaltsüberarbeitung und vor jedem Commit verbindlich vorgeschrieben.
+
+Der folgende Codeausschnitt veranschaulicht exemplarisch, wie die *Striking-Distance*-Heuristik intern implementiert ist:
 
 ```typescript
 // Auszug aus der Tool-Implementierung: Striking Distance Heuristik

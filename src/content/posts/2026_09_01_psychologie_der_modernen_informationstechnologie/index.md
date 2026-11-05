@@ -215,6 +215,8 @@ Das menschliche Gehirn ist evolutionär darauf programmiert, auf neuartige Umwel
 * **Präfrontaler Kortex & exekutive Ressourcenkontrolle:** Während der präfrontale Kortex für rationale Selbstkontrolle, zielgerichtete Handlungsplanung und Arbeitsgedächtnisfunktionen zuständig ist, reagiert das limbische System reflexartig auf emotionale Reize und Push-Mitteilungen. Permanente digitale Reize führen zu einer chronischen Erschöpfung exekutiver Kontrollressourcen. Zwar wurde das klassische Modell der Willenskraft als metabolischer Tank (*Ego Depletion* nach Baumeister) im Zuge großangelegter Replikationsstudien (*Hagger et al [@hagger-2016-multilab-preregistered]., 2016*) methodisch stark hinterfragt, moderne kognitionspsychologische Modelle (z. B. *Kurzban et al.* oder *Inzlicht & Schmeichel*) bestätigen jedoch unstrittig: Anhaltende exekutive Hemmprozesse gegenüber digitalen Ablenkungen führen zu messbarer mentaler Ermüdung und reduzierter kognitiver Leistungsfähigkeit.
 * **Task-Switching & Attention Residue:** Echte Multitasking-Fähigkeit ist eine neurokognitive Illusion. Wechselt ein Nutzer zwischen primärer Arbeit (z. B. Programmieren oder Konzeption) und einer Notification, entstehen hohe kognitive Wechselkosten. Studien der Aufmerksamkeitsforscherin Gloria Mark [@mark-2008-cost-interrupted] (*Mark, Gudith & Klocke, ACM CHI 2008*) zeigen, dass es nach einer Unterbrechung im Schnitt **rund 23 Minuten** dauert, bis die ursprüngliche Aufgabe wieder aufgenommen wird – wobei Wissensarbeiter meist zwei zwischengeschaltete Tasks einschieben und die verlorene Zeit anschließend durch gehetzteres Arbeiten unter deutlich höherem subjektivem Stress kompensieren. Das Phänomen des *Aufmerksamkeitsresiduums* (*Attention Residue*, Leroy 2009) beschreibt, dass kognitive Kapazitäten noch minutenlang an der vorangegangenen Störung gebunden bleiben.
 
+Das folgende Schema veranschaulicht dieses Zusammenspiel aus dopaminergen Reizschleifen, Aufmerksamkeitsresiduen und kognitiver Arbeitsgedächtnislast:
+
 ![Kognitive Belastung und Aufmerksamkeitsdynamik](./cognitive_load_attention.svg "Cognitive Load Attention")
 
 ### B. Kognitive Belastung & Informationsverarbeitung (Cognitive Load Theory)
@@ -236,6 +238,8 @@ Die Vernetzung von Milliarden Menschen über das World Wide Web und soziale Netz
 * **Echokammern & Affective Polarization:** Bestätigungsfehler (*Confirmation Bias*) führen dazu, dass Nutzer Informationen bevorzugen, die ihr bestehendes Weltbild stützen. Werden diese Präferenzen durch algorithmische Filter verstärkt, bilden sich geschlossene Resonanzräume, die zur gesellschaftlichen Polarisierung beitragen.
 
 ### D. Extended Mind, Transaktives Gedächtnis & Mensch-KI-Interaktion
+
+Durch die allgegenwärtige Verfügbarkeit von Suchmaschinen und generativen KI-Assistenten lagert der Mensch zunehmend kognitive Gedächtnis- und Urteilsprozesse an externe Systeme aus:
 
 * **Transaktives Gedächtnis & der "Google-Effekt":** Die *Extended Mind Thesis* (Clark [@clark-1998-extended-mind] & Chalmers) besagt, dass kognitive Prozesse nicht an der Schädeldecke enden, sondern physische und digitale Werkzeuge als externe Speicher einbinden. Die Forschung von Betsy Sparrow et al [@sparrow-2011-google-effects]. belegt: Wissen Menschen, dass Informationen im Internet permanent abrufbar sind, speichert das Gehirn nicht mehr den *Inhalt*, sondern primär den *Ort des Zugriffs* (*Digital Amnesia*).
 * **Automation Bias & De-Skilling:** Übermäßiges Vertrauen in automatisierte Systeme und KI-Assistenten führt dazu, dass menschliche Anwender Warnsignale übersehen oder eigene analytische Fähigkeiten verlernen (*kognitive Atrophie*).
@@ -301,16 +305,22 @@ Die praktische Anwendung psychologischer Mechanismen spiegelt sich in einer dive
 ![Kommerzielle Marktlandschaft und Software-Ökosysteme](./market_landscape_matrix.svg "Market Landscape Matrix")
 
 ### 1. B2C Attention- & Feed-Ökosysteme
+
+Im Endkundensegment dominieren globale Plattformen, deren Architektur auf maximale Verweildauer und Werbeimpressionen ausgelegt ist:
 * **Unternehmen:** ByteDance (TikTok Monolith Algorithm), Meta (Instagram/Reels Discovery Engine), YouTube (Deep Neural Recommenders), X (Twitter Open Source Heavy Ranker).
 * **Geschäftsmodell & Fokus:** Monetarisierung über zielgerichtete Werbung. Maximierung von Verweildauer, täglichen aktiven Nutzern (DAU) und Interaktionsfrequenz durch variable Belohnungspläne und algorithmische Personalisierung.
 
 ### 2. B2B Behavioral Analytics & Experimentation SaaS
+
+Für Produkt- und Wachstumsteams stellen spezialisierte B2B-Plattformen die Infrastruktur bereit, um Nutzerverhalten systematisch zu vermessen und zu steuern:
 * **Unternehmen & Tools:**
   * **Amplitude & Mixpanel:** Enterprise-Plattformen zur Kohortenanalyse und zum Triggern verhaltensbasierter Events.
   * **Statsig, LaunchDarkly & Optimizely:** Plattformen für multivariates A/B-Testing in Echtzeit. Ermöglichen Entwicklerteams, Tausende UI-Varianten parallel gegeneinander antreten zu lassen, um psychologische Reiz-Reaktions-Muster experimentell zu optimieren.
   * **Braze & OneSignal:** KI-gestützte Customer-Engagement-Plattformen zur automatisierten Ausspielung personalisierter Push-Nachrichten und In-App-Nudges.
 
 ### 3. Affective Computing, Emotion AI & Parasoziale KI-Companions
+
+Ein stark wachsendes Marktsegment adressiert unmittelbar die emotionale Wahrnehmung und soziale Bindung zwischen Mensch und Maschine:
 * **Unternehmen & Tools:**
   * **Hume AI:** Spezialisiert auf das Messen und Generieren expressiver, emotional nuancierter Stimm-Interfaces (*Empathic Voice Interface*).
   * **Affectiva / Smart Eye:** Automotive- und UX-Emotionserkennung mittels Gesichtsausdrucksanalyse (Facial Action Coding System).
@@ -318,6 +328,8 @@ Die praktische Anwendung psychologischer Mechanismen spiegelt sich in einer dive
   * **Character.ai & Replika:** KI-Begleiter zur Befriedigung des Bedürfnisses nach sozialer Nähe und parasozialem Austausch.
 
 ### 4. Digital Wellbeing & Cognitive Ergonomics (Der Gegenpol)
+
+Als bewusste Gegenbewegung zur Aufmerksamkeitsökonomie etabliert sich ein Ökosystem von Werkzeugen zum Schutz der kognitiven Selbstregulation:
 * **Unternehmen & Tools:**
   * **Opal, Freedom & Forest:** Consumer-Anwendungen zur Durchbrechung von Dopaminschleifen durch Hardware- und VPN-basierte App-Blockaden.
   * **Rize.io & RescueTime:** KI-gestützte Zeiterfassungs- und Fokus-Analyse-Tools, die Arbeitsgewohnheiten auswerten und Überlastungswarnungen ausgeben.
@@ -328,6 +340,8 @@ Die praktische Anwendung psychologischer Mechanismen spiegelt sich in einer dive
 Aus dem Aufeinandertreffen menschlicher Kognition und hochoptimierter IT-Systeme resultieren fundamentale Spannungsfelder:
 
 ![Das Autonomie-Paradoxon der Informationstechnologie](./autonomie_paradoxon.svg "Autonomie Paradoxon")
+
+Insbesondere drei strukturelle Zielkonflikte prägen die aktuelle Diskussion:
 
 1. **Das Autonomie-Paradoxon:** Je nahtloser und reibungsloser generative KI und Recommender-Systeme Aufgaben übernehmen, desto geringer wird der kognitive Eigenaufwand. Was kurzfristig Zeit spart, birgt langfristig das Risiko von *De-Skilling* und *Automation Bias* – die Fähigkeit zur eigenständigen Problemlösung verkümmert.
 2. **Die Polarisierungsfalle von Optimierungsmetriken:** Wenn Softwarearchitekturen ausschließlich auf messbare Verhaltenssignale (Klicks, Kommentare, Verweildauer) hin optimiert werden, bevorzugen Algorithmen evolutionär bedingt moralische Empörung und Sensationalismus, da diese die stärksten affektiven Reaktionen im menschlichen Gehirn auslösen.

@@ -139,6 +139,8 @@ LLMs leiden unter zwei systemischen Schwächen: begrenzten Kontextfenstern und v
 
 ![Hybride Datenarchitektur und Mem0-Langzeitgedächtnis](./hybrid_memory_architecture.svg "Hybrid Memory Architecture")
 
+Im Zusammenspiel erfüllen diese vier Datensysteme jeweils klar abgegrenzte Aufgaben innerhalb der Persistenzschicht:
+
 * **PostgreSQL**: Das relationale Rückgrat für transaktionale Integrität, strukturierte Geschäftsdaten, Systemprotokolle und LangGraph-Checkpoint-Tabellen.
 * **Qdrant**: Extrem performante, in Rust geschriebene Vektordatenbank für dichte semantische Ähnlichkeitssuche in unstrukturierten Dokumenten, Handbüchern und Quellcode.
 * **Neo4j (GraphRAG)**: Reine Vektorsuche scheitert an komplexen relationalen Abhängigkeiten („Welche Softwarekomponenten sind von Server X abhängig und wem gehört das Budget?“). Neo4j bildet relationale Unternehmens-Ontologien ab und ermöglicht echtes Graph-Reasoning.

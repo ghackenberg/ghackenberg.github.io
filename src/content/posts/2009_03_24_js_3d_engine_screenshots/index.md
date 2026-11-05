@@ -14,6 +14,8 @@ But with the new HTML 5 standard things might change due to the *canvas* element
 Here are sample screenshots from Firefox and Opera browsers (note that other browsers such as Microsoft Internet Explorer, Safari, and Opera are supported in principle as well):
 
 ![Firefox illustration from JavaScript 3D Engine Screenshots.](./firefox.gif "JavaScript 3D Engine Screenshots - Firefox illustration")
+
+For direct comparison, the second capture below shows the exact same 3D scene rendered inside the Opera browser:
 ![Opera illustration from JavaScript 3D Engine Screenshots.](./opera.gif "JavaScript 3D Engine Screenshots - Opera illustration")
 
 In this example real-time rotation was realized.

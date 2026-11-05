@@ -72,6 +72,8 @@ Bevor wir die internen Transformationsmechanismen und Routing-Algorithmen im Det
 Auf Systemebene unterscheidet LiteLLM zwischen zwei Betriebsmodi: einer leichtgewichtigen **Python-Bibliothek (SDK)** für embedded Programmierung und dem eigenständigen, produktionsreifen **LiteLLM Proxy Server**. Im Enterprise-Stack bildet der Proxy Server das Herzstück der Inferenz-Infrastruktur.
 
 ### Dualität: Python SDK vs. Standalone Proxy Gateway
+
+Je nach Integrationskontext bietet LiteLLM zwei komplementäre Bereitstellungsformen:
 1. **Python SDK (`litellm.completion`, `acompletion`, `Router`):**
    Erlaubt es Entwicklern, innerhalb von Python-Anwendungen (wie dem [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/)) mit einem einheitlichen Aufruf über 100 LLMs anzusprechen. Alle modellspezifischen Parameter werden im Speicher in standardisierte Pydantic-Objekte gewandelt.
 2. **LiteLLM Proxy Gateway (FastAPI ASGI Server):**
@@ -230,6 +232,8 @@ Klassische Hash-Verfahren versagen, wenn Nutzer semantisch identische Fragen mit
 Für diese Szenarien schaltet LiteLLM ein **Semantic Cache Subsystem** vor, das auf einer Vektordatenbank (z. B. [Qdrant](/tags/neo4j/), Redis mit RediSearch oder Valkey) operiert:
 
 ![Entscheidungsfluss des semantischen Vektor-Cachings in LiteLLM mit Cosinus-Schwellenwert-Prüfung](./litellm_semantic_cache_flow.svg "Entscheidungsfluss des semantischen Vektor-Cachings in LiteLLM")
+
+Die semantische Ähnlichkeitsprüfung vollzieht sich dabei in vier deterministischen Schritten:
 
 1. Der Prompt $q$ wird über ein schlankes lokales Embedding-Modell (z. B. `all-MiniLM-L6-v2`) in einen dichten Vektor $\mathbf{e} = E(q) \in \mathbb{R}^d$ überführt.
 2. Im Vektorindex wird der ähnlichste gespeicherte Cache-Eintrag $\mathbf{v}_{k^*}$ ermittelt.

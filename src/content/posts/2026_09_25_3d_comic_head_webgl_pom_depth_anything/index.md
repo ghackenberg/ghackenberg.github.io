@@ -77,6 +77,8 @@ Jede dieser vier Stufen löst eine konkrete physikalische oder visuelle Hürde:
 3. **Monokulare Tiefenschätzung via [Depth Anything V2](https://depth-anything-v2.github.io/):** Aus den fünf zweidimensionalen RGB-Bildern rekonstruiert ein Vision-Transformer (ViT) die zugehörigen 2.5D-Höhenfelder. Ein exponentieller Alpha-Roll-off an den Rändern stellt sicher, dass keine senkrechten Tiefenklippen entstehen.
 4. **Hardwarebeschleunigtes Raymarching via [WebGL 1.0](https://www.khronos [@group-2014-webgl].org/webgl/):** Im Browser durchwandert der Fragment-Shader das Höhenfeld in 40 Z-Schritten. Eine probilistische Finite State Machine (FSM) steuert organische Übergänge und Textur-Crossfades bei konstant 60 FPS – vollständig ohne externe 3D-Engines.
 
+Im direkten Architekturvergleich mit klassischen Polygon-Engines zeigt sich die hohe Ressourceneffizienz dieses 2.5D-Ansatzes:
+
 | Kriterium | Three.js / Babylon 3D Mesh | 2.5D WebGL POM (Depth Anything) |
 | :--- | :--- | :--- |
 | **Geometrie & Datenvolumen** | Zehntausende Polygone (glTF/GLB), mehrere Megabyte Asset-Download. | Zero-Mesh (ein Screen-Aligned Quad), 2D-RGB- und Tiefentextur unter 200 KB. |
@@ -106,6 +108,8 @@ Damit das spätere Überblenden zwischen den Mimik-Zuständen im WebGL-Shader oh
 
 1. **Ableitung aus `default`:** Ausgehend vom offenen Lächeln (`default`) wurden das Zwinkern (`wink`, rechtes Auge geschlossen), das beidseitige Blinzeln (`blink`, beide Augen geschlossen, Mund offen) sowie der ruhige Gesichtsausdruck mit geschlossenem Mund (`closed_mouth`) erzeugt.
 2. **Ableitung aus `closed_mouth`:** Um den Zustand mit geschlossenem Mund und gleichzeitig geschlossenen Augen (`closed_mouth_blink`) zu erhalten, diente **nicht** das Ursprungsbild als Basis, sondern die bereits geschlossene Mundpartie von `closed_mouth`. Dadurch bleibt die geschlossene Lippenkontur beim Blinzeln vollkommen stabil.
+
+Der folgende Abstammungsbaum verdeutlicht diese zweistufige Ableitungshierarchie der fünf Mimik-Zustände:
 
 ![Hierarchischer Abstammungsbaum der fünf konsistenten Facial Expressions](./facial_expression_derivation.svg "Abstammung und Entstehung der Facial Expressions")
 

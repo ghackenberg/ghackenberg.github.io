@@ -108,7 +108,9 @@ Um von KI-Systemen und industriellen Beschaffungs-Agenten als Spitzenanbieter id
 ### Hebel 1: Spezifikationsmatrizen im nativen DOM statt im PDF
 Technische Leistungsdaten dürfen nicht in statischen PDF-Drucklayouts gefangen sein, sondern gehören direkt in das semantische HTML-Dokument:
 * Strukturierte Datentabellen mit standardisierten Einheiten (SI-Einheiten, ISO-Passungen, Rockwell-Härtegraden).
-* Eine leichtgewichtige Markdown-Aggregationsdatei ([`/llms.txt`](https://llmstxt.org)), die dem Sprachmodell auf minimalem Token-Raum eine vollständige Auflistung aller Baureihen, Arbeitsräume, Fertigungstoleranzen und Werkstofffreigaben liefert:
+* Eine leichtgewichtige Markdown-Aggregationsdatei ([`/llms.txt`](https://llmstxt.org)), die dem Sprachmodell auf minimalem Token-Raum eine vollständige Auflistung aller Baureihen, Arbeitsräume, Fertigungstoleranzen und Werkstofffreigaben liefert.
+
+Das folgende Beispiel illustriert den kompakten Aufbau einer solchen maschinenlesbaren Produktspezifikation:
 
 ```markdown
 # Präzisions-Zerspanungstechnik Musterbau GmbH - Maschinenlesbare Produktspezifikation
@@ -141,10 +143,14 @@ Das folgende Architekturdiagramm veranschaulicht den Übergang von isolierten Ma
 Während B2C-Shops auf Consumer-Traffic optimieren, müssen B2B-Unternehmen überwachen, wie sie in Fachdialogen generativer Modelle wahrgenommen werden:
 
 ### Kommerzielle Enterprise-Plattformen
+
+Für das automatisierte Marken- und Zitations-Monitoring haben sich spezialisierte Analyseplattformen etabliert:
 * **[Profound AI](https://www.tryprofound.com) & [Omnia](https://omnia.ai)**: Spezialisierte Plattformen zur Analyse, wie Unternehmensentitäten von KI-Bots interpretiert werden, inklusive Erkennung fehlerhafter Datenattributionen.
 * **[ZipTie](https://ziptie.dev) & [Peec AI](https://peec.ai)**: B2B-Monitoring-Werkzeuge zur Überprüfung der Zitationshäufigkeit bei komplexen fachspezifischen Prompt-Katalogen.
 
 ### Open-Source & Standard-Tooling
+
+Für die technische Bereitstellung und Validierung strukturierter Industriedaten stehen quelloffene Referenzwerkzeuge bereit:
 * **[Eclipse BaSyx](https://eclipse.dev/basyx/) & AAS-Suite**: Open-Source-Implementierungen der Asset Administration Shell zur Erzeugung strukturierter Teilmodelle, die via JSON-LD auf Web-Endpunkte gespiegelt werden können.
 * **[W3C RDF- und Schema-Validatoren](https://validator.w3.org)**: Offene Standards zur Verifikation strukturierter Entitätsgraphen vor dem Rollout.
 

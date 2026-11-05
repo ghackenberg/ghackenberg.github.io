@@ -226,6 +226,8 @@ The following matrix compares our double-buffered GPU shader approach against a 
 
 ## Frequently Asked Questions (FAQ)
 
+Below are concise answers to key implementation questions regarding WebGL FBO ping-pong simulation and CPU-GPU synchronization:
+
 ### What is FBO ping-pong buffering in Three.js?
 FBO (Framebuffer Object) ping-pong buffering utilizes two alternating render targets (`renderTargetA` and `renderTargetB`). Because a WebGL shader cannot read from and write to the same texture simultaneously, Target A supplies the previous state as input while the fragment shader computes the new physical state onto Target B. The targets are swapped each frame, allowing continuous state evolution without data hazards.
 

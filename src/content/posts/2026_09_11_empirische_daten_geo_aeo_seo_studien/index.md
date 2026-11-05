@@ -126,18 +126,26 @@ Bevor wir aus diesen Zahlen handfeste architektonische Konsequenzen für das Web
 Um diese Daten strategisch richtig zu gewichten, müssen wir die jeweilige Methodik kritisch hinterfragen. Weder akademische Studien noch Industriereporte liefern ein ungetrübtes Bild.
 
 ### Qualitätsdimension 1: Interne Validität & Kausalität
+
+Hinsichtlich der Nachweisbarkeit echter Ursache-Wirkungs-Zusammenhänge unterscheiden sich beide Publikationstypen fundamental:
 * **Peer-Reviewed (Hoch)**: Studien wie KDD '24 isolieren Variablen sauber. Durch kontrollierte A/B-Modifikationen identischer Basistexte im *GEO-bench* lässt sich zweifelsfrei belegen, dass das Hinzufügen von Statistiken den Ausschlag für den Sichtbarkeitsgewinn gibt – und nicht zufällige PageSpeed-Schwankungen oder Backlink-Profile.
 * **Industrie (Mittel bis Gering)**: Industriebenchmarks beobachten Korrelationen im freien Feld (*Wild Field Data*). Wenn Seiten mit hoher Wortanzahl häufiger zitiert werden, bedeutet dies nicht zwingend, dass LLMs lange Texte bevorzugen – es kann schlicht daran liegen, dass längere Texte mehr Entitäten abdecken.
 
 ### Qualitätsdimension 2: Aktualität & Feedback-Schleifen
+
+Bei der Geschwindigkeit, mit der Modell- und Algorithmus-Updates abgebildet werden, kehrt sich das Verhältnis um:
 * **Peer-Reviewed (Träge, Latenz 6–18 Monate)**: Der wissenschaftliche Begutachtungsprozess dauert Monate. In dieser Zeit aktualisieren OpenAI, Google und Anthropic ihre Retrieval- und Reranking-Modelle mehrfach. Ein KDD-Paper von 2024 beschreibt mitunter Modellversionen, die im Produktiveinsatz bereits durch Mixture-of-Experts-Architekturen ersetzt wurden.
 * **Industrie (Extrem hoch, Real-Time)**: Tools wie BrightEdge erfassen Algorithmen-Updates von Google (z. B. AI-Overview-Rollouts in neuen Ländern) innerhalb von Tagen. Für operative Taktiken sind diese Daten unersetzlich.
 
 ### Qualitätsdimension 3: Unabhängigkeit & Commercial Bias
+
+Ein besonders kritischer Prüfpunkt betrifft die wirtschaftlichen Anreize hinter den veröffentlichten Kennzahlen:
 * **Peer-Reviewed (Hoch)**: Transparente Offenlegung von Interessenskonflikten, kein Zwang zum Produktverkauf.
 * **Industrie (Vorsicht geboten – Systemischer Incentive-Bias)**: SEO-Software-Anbieter (wie Semrush, BrightEdge, Authoritas) leben davon, dass Unternehmen Angst vor Sichtbarkeitsverlusten haben. Meldungen wie *„60% CTR-Einbruch!“* sind exzellentes Marketing für den Verkauf teurer Enterprise-Monitoring-Suiten. Zahlen müssen stets bereinigt um PR-Dramatisierung betrachtet werden.
 
 ### Qualitätsdimension 4: Datenzugang & Reproduzierbarkeit
+
+Auch bei der Nachprüfbarkeit der zugrunde liegenden Stichproben zeigen sich deutliche strukturelle Unterschiede:
 * **Peer-Reviewed (Offen)**: Repositories, Datensätze und Prompts stehen auf GitHub oder arXiv zur Verfügung.
 * **Industrie (Proprietäre Black-Box)**: Keyword-Sets und Sampling-Verfahren bleiben Geschäftsgeheimnis. Oft sind die Datensätze stark auf US-amerikanische, kaufkräftige B2B-/B2C-Keywords verzerrt.
 

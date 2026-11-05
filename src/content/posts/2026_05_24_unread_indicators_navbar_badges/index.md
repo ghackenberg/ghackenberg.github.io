@@ -73,6 +73,8 @@ To achieve a **flicker-free experience**, we designed a decoupled synchronizatio
 
 ### Architectural Trade-offs: Client Notification Strategies
 
+The table below compares three common notification state architectures across layout stability, server overhead, and storage constraints:
+
 | Architecture Approach | Initial Paint Flicker (CLS) | Server Overhead | Offline & Privacy Support | Code Complexity | Storage [@w3c-2016-storage-second] & Sync Constraints |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Server-Rendered DB Query** | None (Zero CLS) | High (Requires DB & Auth per request) | Poor (Server dependency) | High (Backend stack needed) | Cross-device synchronized via user account |
@@ -92,6 +94,8 @@ To make indicators render instantly, we split our system into three layers:
 1. **Build-Time Manifest Generation**: A static endpoint compiled during deployment.
 2. **Synchronous Inline Painting**: A tiny render-blocking inline script that uses local cache to update the UI before the browser paints.
 3. **Background Asynchronous Syncing**: A full-featured module that tracks user navigation, fetches the latest manifest, updates `localStorage`, and handles new items.
+
+The diagram below illustrates how these three layers interact across build time and client runtime:
 
 ![Entkoppelte Systemarchitektur für flackerfreies Laden von Lesezuständen](./architecture.svg "Systemarchitektur: Build-Time Manifest und Client-Time Cache")
 
@@ -167,6 +171,8 @@ The sequence diagram below displays the step-by-step workflow of the client stat
 By utilizing the cached manifest cache from the *previous* session, the client is able to execute Step 2 synchronously. When the background fetch completes in Step 4, if there is a discrepancy (e.g., a new article was published since the user last refreshed), the UI updates smoothly, ensuring they always have accurate, real-time unread counts without sacrificing performance.
 
 ## Frequently Asked Questions (FAQ)
+
+Below are concise answers to the most common engineering questions regarding zero-CLS client-side notification badges:
 
 ### What causes layout shift when loading client-side badges?
 Layout shifts (CLS) occur when asynchronous JavaScript scripts inject HTML elements into the DOM after the browser has already finished rendering and painting the initial page. On static websites, this creates a visible flicker where navigation bars initially render flat, then suddenly shift down or expand as badges appear.

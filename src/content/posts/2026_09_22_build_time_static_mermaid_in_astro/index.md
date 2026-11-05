@@ -87,6 +87,8 @@ graph TB
 
 ### Die Nachteile von Client-Side Mermaid im Detail:
 
+Das herkömmliche Rendering im Browser bringt drei gravierende technische Schwachstellen mit sich:
+
 1. **Massiver JavaScript-Payload:** Das offizielle Mermaid-Bundle wiegt unkomprimiert rund 1,5 bis 2 Megabyte (selbst minifiziert und komprimiert ~350–500 KB). Für einen Blog-Post, der vielleicht zwei einfache Pfeildiagramme enthält, ein unverhältnismäßig hoher Preis.
 2. **Cumulative Layout Shift (CLS):** Während des Ladens der Seite sieht der Leser zunächst einen unformatierten Textblock oder einen Ladespinner. Sobald das Script initialisiert wird, springt der Content abrupt nach unten. Das verschlechtert die Core Web Vitals und stört den Lesefluss spürbar.
 3. **Batterie- und CPU-Last auf Mobilgeräten:** Die Layoutberechnungen (z. B. via D3, Dagre oder ELK) werden auf die Endgeräte der Besucher abgewälzt.
@@ -124,6 +126,8 @@ flowchart TB
 
 ### Der Mehrwert unseres Ansatzes für Suchsysteme:
 
+Durch die Auslieferung von vorberechnetem Inline-SVG zusammen mit dem strukturierten Diagramm-Quelltext profitieren drei zentrale Dimensionen der Auffindbarkeit:
+
 * **Traditionelles SEO (Googlebot):** Google bevorzugt Seiten ohne lange Rendering-Warteschlangen. Da das Vektordiagramm als valides SVG (W3C SVG 2 [@w3c-2018-svg2]) direkt im ersten HTML-Paket enthalten ist, können Textlabels im Diagramm sofort tokenisiert und indexiert werden – ohne dass ein Headless-Chrome des Suchmaschinenbetreibers erst Client-JavaScript nachladen muss.
 * **GEO & AIO (Generative Engine Optimization):** Moderne KI-Suchmaschinen wie Perplexity, SearchGPT oder Claude Crawlers parsen Webseiten häufig rein textbasiert im Fast-Path ohne JavaScript-Ausführung. Indem wir die Original-Mermaid-Quelle strukturiert in einem semantischen `<details>`-Element mitliefern, können Sprachmodelle die exakte Graph-Topologie, Kantenrelationen und Abhängigkeiten fehlerfrei rekonstruieren und in KI-Zusammenfassungen zitieren.
 * **Barrierefreiheit (Accessibility):** Screenreader können `<figure>`, `aria-label` sowie die Vektortexte unmittelbar interpretieren, ohne auf asynchrone DOM-Mutationen warten zu müssen.
@@ -160,6 +164,8 @@ sequenceDiagram
 ```
 
 ### Die Kernkomponenten der Architektur:
+
+Das Zusammenspiel zwischen AST-Transformation, Dateisystem-Cache und Headless-Browser stützt sich auf drei gezielte Designprinzipien:
 
 1. **AST-Interzeption vor Shiki:** Das Plugin fängt Codeblöcke mit `lang === 'mermaid'` in der Remark-Phase ab – noch bevor Astros integrierter Syntax-Highlighter (Shiki) versucht, den Mermaid-Code als gewöhnlichen Quelltext hervorzuheben.
 2. **Deterministisches Disk-Caching:** Jedes Diagramm wird zusammen mit der Konfiguration gehasht (`sha256`). Befindet sich das SVG bereits im `.cache/mermaid/`-Verzeichnis, wird es in Mikrosekunden synchron von der SSD gelesen. Puppeteer wird in diesem Fall gar nicht erst gestartet!

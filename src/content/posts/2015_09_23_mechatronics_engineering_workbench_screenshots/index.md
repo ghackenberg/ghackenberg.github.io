@@ -26,8 +26,14 @@ The requirement states that the transportation process is finished within a pred
 In the given case the simulation-based test can be finished successfully and the requirement is fulfilled.
 
 ![Simulation 0 illustration from First mechatronics engineering workbench screenshots!](./simulation_0.png "First mechatronics engineering workbench screenshots! - Simulation 0 illustration")
+
+As the simulation advances, the conveyor belt moves the gray workpiece forward from the entry point along the transport axis:
 ![Simulation 1 illustration from First mechatronics engineering workbench screenshots!](./simulation_1.png "First mechatronics engineering workbench screenshots! - Simulation 1 illustration")
+
+In the third stage, the workpiece approaches the transfer junction and triggers the positioning sensor:
 ![Simulation 2 illustration from First mechatronics engineering workbench screenshots!](./simulation_2.png "First mechatronics engineering workbench screenshots! - Simulation 2 illustration")
+
+Finally, the workpiece reaches the target exit sphere within the required time budget, completing the verification run:
 ![Simulation 3 illustration from First mechatronics engineering workbench screenshots!](./simulation_3.png "First mechatronics engineering workbench screenshots! - Simulation 3 illustration")
 
 In the coming weeks I plan to prepare a YouTube video explaining the tool and the underlying engineering method in greater detail.

@@ -133,6 +133,8 @@ The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/g
 
 ![3D Force Graph Preview](./3d-force.png "3d Force")
 
+Key capabilities of the 3D Force Graph implementation include:
+
 - **Volumetric Rendering**: Users can rotate, zoom, and pan around the network using an orbit controller.
 - **Dynamic Particles**: To show connections actively, we enabled directional particles traveling along links.
 - **Three.js Context**: Built on WebGL, it runs fluidly at 60 FPS even with complex force calculations.
@@ -141,6 +143,8 @@ The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/g
 The Vis.js engine ([vis-network/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/vis-network/engine.js)) provides an incredibly smooth 2D canvas visualization.
 
 ![Vis.js Network Preview](./vis-network.png "Vis Network")
+
+Core interactive characteristics of the Vis.js Canvas renderer include:
 
 - **Elastic Physics**: Nodes react like spring-mass dampers, settling into place with organic bouncing effects.
 - **Custom Shapes & Labels**: Each node type (Tag, Post, Publication) is color-coded and sized proportionally based on its degree of connections, with custom font configurations matching our typography.
