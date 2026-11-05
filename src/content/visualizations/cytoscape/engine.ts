@@ -1,5 +1,5 @@
 import cytoscape, { type Core, type NodeSingular, type EventObjectNode } from 'cytoscape';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, getGraphStyleTokens } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
@@ -33,6 +33,9 @@ const engine: CytoscapeEngine = {
 
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     const tokens = getThemeTokens(isLight);
+    const styleTokens = getGraphStyleTokens(isLight);
+    const baseDiameter = styleTokens.nodeRadius * 2;
+    const hoverDiameter = baseDiameter * styleTokens.nodeHoverScale;
 
     this.cy = cytoscape({
       container: container,
@@ -43,18 +46,11 @@ const engine: CytoscapeEngine = {
           selector: 'node',
           style: {
             'background-color': (node: NodeSingular) => getNodeColor(node, isLight),
-            'label': 'data(name)',
-            'width': 'data(size)',
-            'height': 'data(size)',
-            'color': tokens.textHeading,
-            'font-size': '10px',
-            'font-family': 'Outfit, Inter, sans-serif',
-            'font-weight': 600,
-            'text-valign': 'center',
-            'text-halign': 'right',
-            'text-margin-x': 4,
-            'border-width': '2px',
-            'border-color': tokens.background,
+            'label': '',
+            'width': baseDiameter,
+            'height': baseDiameter,
+            'border-width': '1.5px',
+            'border-color': (node: NodeSingular) => getNodeColor(node, isLight),
             'overlay-opacity': 0,
             'transition-property': 'background-color, border-color, width, height',
             'transition-duration': 0.2
@@ -63,8 +59,8 @@ const engine: CytoscapeEngine = {
         {
           selector: 'edge',
           style: {
-            'width': 1.5,
-            'line-color': isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
+            'width': styleTokens.edgeWidth,
+            'line-color': styleTokens.edgeColor,
             'target-arrow-color': tokens.border,
             'curve-style': 'bezier'
           }
@@ -72,22 +68,26 @@ const engine: CytoscapeEngine = {
         {
           selector: 'node:selected',
           style: {
-            'border-width': '3px',
-            'border-color': tokens.nodeDefault
+            'width': hoverDiameter,
+            'height': hoverDiameter,
+            'border-width': '2.5px',
+            'border-color': styleTokens.nodeHoverBorderColor
           }
         },
         {
           selector: 'node.hovered',
           style: {
-            'border-width': '3px',
-            'border-color': (node: NodeSingular) => getNodeColor(node, Boolean(this.isLight))
+            'width': hoverDiameter,
+            'height': hoverDiameter,
+            'border-width': '2.5px',
+            'border-color': styleTokens.nodeHoverBorderColor
           }
         },
         {
           selector: 'edge.hovered-edge',
           style: {
-            'width': 2.25,
-            'line-color': isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)'
+            'width': styleTokens.edgeHoverWidth,
+            'line-color': styleTokens.edgeHoverColor
           }
         }
       ],
@@ -201,20 +201,39 @@ const engine: CytoscapeEngine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to node labels and edges based on theme
+    // Apply color update to nodes and edges based on theme
     const tokens = getThemeTokens(isLight);
+    const styleTokens = getGraphStyleTokens(isLight);
+    const baseDiameter = styleTokens.nodeRadius * 2;
+    const hoverDiameter = baseDiameter * styleTokens.nodeHoverScale;
     this.cy.style()
       .selector('node').style({
-        'color': tokens.textHeading,
-        'border-color': tokens.background,
+        'width': baseDiameter,
+        'height': baseDiameter,
+        'border-width': '1.5px',
+        'border-color': (node: NodeSingular) => getNodeColor(node, isLight),
         'background-color': (node: NodeSingular) => getNodeColor(node, isLight)
       })
+      .selector('node:selected').style({
+        'width': hoverDiameter,
+        'height': hoverDiameter,
+        'border-width': '2.5px',
+        'border-color': styleTokens.nodeHoverBorderColor
+      })
+      .selector('node.hovered').style({
+        'width': hoverDiameter,
+        'height': hoverDiameter,
+        'border-width': '2.5px',
+        'border-color': styleTokens.nodeHoverBorderColor
+      })
       .selector('edge').style({
-        'line-color': isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
+        'width': styleTokens.edgeWidth,
+        'line-color': styleTokens.edgeColor,
         'target-arrow-color': tokens.border
       })
       .selector('edge.hovered-edge').style({
-        'line-color': isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)'
+        'width': styleTokens.edgeHoverWidth,
+        'line-color': styleTokens.edgeHoverColor
       })
       .update();
 

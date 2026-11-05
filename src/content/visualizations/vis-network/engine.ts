@@ -1,16 +1,17 @@
 import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { GRAPH_COLORS, GRAPH_GROUP_NAMES } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, GRAPH_GROUP_NAMES, getGraphStyleTokens } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
 
 function getVisNodeColors(isLight: boolean) {
   const palette = GRAPH_COLORS[isLight ? 'light' : 'dark'];
+  const styleTokens = getGraphStyleTokens(isLight);
   return palette.map((color) => ({
     background: color,
     border: color,
-    highlight: { background: color, border: color },
-    hover: { background: color, border: color }
+    highlight: { background: color, border: styleTokens.nodeHoverBorderColor },
+    hover: { background: color, border: styleTokens.nodeHoverBorderColor }
   }));
 }
 
@@ -84,6 +85,7 @@ const engine: VisNetworkEngine = {
 
     const colors = getVisNodeColors(isLight);
     const themeTokens = getThemeTokens(isLight);
+    const styleTokens = getGraphStyleTokens(isLight);
     const groupNames = GRAPH_GROUP_NAMES;
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
@@ -107,34 +109,27 @@ const engine: VisNetworkEngine = {
         themeTokens,
       });
 
-      const isTagNode = n.group === 0;
       return {
         id: n.id,
-        label: isTagNode ? n.name : '',
+        label: '',
         title: card,
         shape: 'dot',
-        size: 10,
+        size: styleTokens.nodeRadius,
         x: (Math.random() - 0.5) * 500,
         y: (Math.random() - 0.5) * 500,
         rawGroup: n.group,
         color: colors[n.group],
         chosen: {
-          node: (values: { color?: string; borderColor?: string; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
+          node: (values: { color?: string; borderColor?: string; borderWidth?: number; size?: number; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
             if (hovering || selected) {
+              const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
               if (values.hoverBackground) values.color = values.hoverBackground;
-              if (values.hoverBorder) values.borderColor = values.hoverBorder;
+              values.borderColor = currentTokens.nodeHoverBorderColor;
+              values.borderWidth = 2.5;
+              values.size = currentTokens.nodeRadius * currentTokens.nodeHoverScale;
             }
           },
           label: false
-        },
-        font: {
-          color: themeTokens.textHeading,
-          size: 14,
-          face: 'Outfit, Inter, sans-serif',
-          align: 'center',
-          vadjust: isTagNode ? -18 : 0,
-          strokeWidth: isLight ? 2.5 : 3,
-          strokeColor: isLight ? themeTokens.background : themeTokens.textHeading
         }
       };
     }));
@@ -143,9 +138,12 @@ const engine: VisNetworkEngine = {
       id: `${c.sourceId}-${c.targetId}-${idx}`,
       from: c.sourceId,
       to: c.targetId,
+      width: styleTokens.edgeWidth,
+      hoverWidth: styleTokens.edgeHoverWidth,
       color: {
-        color: isLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255,255,255,0.15)',
-        highlight: isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255,255,255,0.35)'
+        color: styleTokens.edgeColor,
+        highlight: styleTokens.edgeHoverColor,
+        hover: styleTokens.edgeHoverColor
       }
     })));
 
@@ -157,7 +155,7 @@ const engine: VisNetworkEngine = {
     const extraInteraction = extraOptions.interaction || {};
     const interactionOptions = Object.assign({
       hover: true,
-      hoverConnectedEdges: false,
+      hoverConnectedEdges: true,
       tooltipDelay: 100,
       zoomView: false,
       dragView: true,
@@ -171,21 +169,25 @@ const engine: VisNetworkEngine = {
     this.options = {
       nodes: {
         shape: 'dot',
-        size: 10,
+        size: styleTokens.nodeRadius,
         chosen: {
-          node: (values: { color?: string; borderColor?: string; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
+          node: (values: { color?: string; borderColor?: string; borderWidth?: number; size?: number; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
             if (hovering || selected) {
+              const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
               if (values.hoverBackground) values.color = values.hoverBackground;
-              if (values.hoverBorder) values.borderColor = values.hoverBorder;
+              values.borderColor = currentTokens.nodeHoverBorderColor;
+              values.borderWidth = 2.5;
+              values.size = currentTokens.nodeRadius * currentTokens.nodeHoverScale;
             }
           },
           label: false
         },
         borderWidth: 1.5,
-        borderWidthSelected: 3
+        borderWidthSelected: 2.5
       },
       edges: {
-        width: 1,
+        width: styleTokens.edgeWidth,
+        hoverWidth: styleTokens.edgeHoverWidth,
         smooth: {
           enabled: true,
           type: 'continuous',
@@ -357,20 +359,16 @@ const engine: VisNetworkEngine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to node labels and edges based on theme
+    // Apply color update to nodes and edges based on theme
     const colors = getVisNodeColors(isLight);
-    const themeTokens = getThemeTokens(isLight);
+    const styleTokens = getGraphStyleTokens(isLight);
 
-    // Batch node styling updates (colors & fonts)
+    // Batch node styling updates (colors)
     const nodeUpdates: (VisNode & { rawGroup?: number })[] = [];
     this.visNodes?.forEach((node: VisCustomNode) => {
       nodeUpdates.push({
         id: node.id,
-        color: colors[node.rawGroup ?? 0] || colors[0],
-        font: {
-          color: themeTokens.textHeading,
-          strokeColor: isLight ? themeTokens.background : themeTokens.textHeading
-        }
+        color: colors[node.rawGroup ?? 0] || colors[0]
       });
     });
     this.visNodes?.update(nodeUpdates);
@@ -380,9 +378,12 @@ const engine: VisNetworkEngine = {
     this.visEdges?.forEach((edge: VisEdge) => {
       edgeUpdates.push({
         id: edge.id,
+        width: styleTokens.edgeWidth,
+        hoverWidth: styleTokens.edgeHoverWidth,
         color: {
-          color: isLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255,255,255,0.15)',
-          highlight: isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255,255,255,0.35)'
+          color: styleTokens.edgeColor,
+          highlight: styleTokens.edgeHoverColor,
+          hover: styleTokens.edgeHoverColor
         }
       });
     });

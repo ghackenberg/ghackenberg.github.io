@@ -1,9 +1,11 @@
 import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import { GRAPH_COLORS, type SigmaNode, type SigmaEdge } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, getGraphStyleTokens, type SigmaNode, type SigmaEdge } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
+
+const SIGMA_BASE_NODE_SIZE = 5;
 
 function getNodeColor(group: number, isLight: boolean): string {
   const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -62,29 +64,31 @@ const engine: SigmaEngine = {
     const edges = payload.sigma.edges;
     this.nodeMap = new Map(nodes.map(n => [n.id, n]));
 
+    const styleTokens = getGraphStyleTokens(isLight);
+
     nodes.forEach(n => {
       this.graph?.addNode(n.id, {
-        label: n.label,
+        label: '',
         x: n.x || Math.random(),
         y: n.y || Math.random(),
-        size: n.size * 3 + 2,
+        size: SIGMA_BASE_NODE_SIZE,
         group: n.group ?? 0,
         color: getNodeColor(n.group ?? 0, isLight)
       });
     });
 
-    const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
     edges.forEach(e => {
       this.graph?.addEdge(e.source, e.target, {
-        size: 1,
-        color: edgeColor
+        size: styleTokens.edgeWidth,
+        color: styleTokens.edgeColor
       });
     });
 
     const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
       defaultNodeColor: tokens.nodeDefault,
-      defaultEdgeColor: edgeColor,
+      defaultEdgeColor: styleTokens.edgeColor,
+      renderLabels: false,
       labelColor: { color: tokens.textHeading },
       labelFont: 'Outfit, Inter, sans-serif',
       labelSize: 10,
@@ -150,14 +154,21 @@ const engine: SigmaEngine = {
           viewportPos.y
         );
 
-        const highlightEdgeColor = currentIsLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)';
-        const baseEdgeColor = currentIsLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+        const currentTokens = getGraphStyleTokens(currentIsLight);
         const connectedEdges = new Set(this.graph.edges(node));
+
+        this.graph.forEachNode(nId => {
+          this.graph?.setNodeAttribute(
+            nId,
+            'size',
+            nId === node ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale : SIGMA_BASE_NODE_SIZE
+          );
+        });
 
         this.graph.forEachEdge(edge => {
           const isConnected = connectedEdges.has(edge);
-          this.graph?.setEdgeAttribute(edge, 'color', isConnected ? highlightEdgeColor : baseEdgeColor);
-          this.graph?.setEdgeAttribute(edge, 'size', isConnected ? 1.8 : 1);
+          this.graph?.setEdgeAttribute(edge, 'color', isConnected ? currentTokens.edgeHoverColor : currentTokens.edgeColor);
+          this.graph?.setEdgeAttribute(edge, 'size', isConnected ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth);
         });
         this.sigma.refresh();
       }
@@ -170,10 +181,13 @@ const engine: SigmaEngine = {
 
       if (this.graph && this.sigma) {
         const currentIsLight = Boolean(this.isLight);
-        const baseEdgeColor = currentIsLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+        const currentTokens = getGraphStyleTokens(currentIsLight);
+        this.graph.forEachNode(nId => {
+          this.graph?.setNodeAttribute(nId, 'size', SIGMA_BASE_NODE_SIZE);
+        });
         this.graph.forEachEdge(edge => {
-          this.graph?.setEdgeAttribute(edge, 'color', baseEdgeColor);
-          this.graph?.setEdgeAttribute(edge, 'size', 1);
+          this.graph?.setEdgeAttribute(edge, 'color', currentTokens.edgeColor);
+          this.graph?.setEdgeAttribute(edge, 'size', currentTokens.edgeWidth);
         });
         this.sigma.refresh();
       }
@@ -215,13 +229,13 @@ const engine: SigmaEngine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to node labels and edges based on theme
+    // Apply color update to nodes and edges based on theme
     const tokens = getThemeTokens(isLight);
-    const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-    const labelColor = tokens.textHeading;
+    const styleTokens = getGraphStyleTokens(isLight);
 
     this.graph.forEachEdge(edge => {
-      this.graph?.setEdgeAttribute(edge, 'color', edgeColor);
+      this.graph?.setEdgeAttribute(edge, 'color', styleTokens.edgeColor);
+      this.graph?.setEdgeAttribute(edge, 'size', styleTokens.edgeWidth);
     });
 
     this.graph.forEachNode(node => {
@@ -229,8 +243,8 @@ const engine: SigmaEngine = {
       this.graph?.setNodeAttribute(node, 'color', getNodeColor(grp, isLight));
     });
 
-    this.sigma.setSetting('labelColor', { color: labelColor });
-    this.sigma.setSetting('defaultEdgeColor', edgeColor);
+    this.sigma.setSetting('labelColor', { color: tokens.textHeading });
+    this.sigma.setSetting('defaultEdgeColor', styleTokens.edgeColor);
 
     const targets: Record<string, { x: number; y: number }> = {};
 

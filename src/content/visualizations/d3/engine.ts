@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
-import { GRAPH_COLORS, type GraphNodePayload } from '@commons/shared/graph-payload';
-import { getThemeTokens } from '@commons/shared/domain-themes';
+import { GRAPH_COLORS, getGraphStyleTokens, type GraphNodePayload } from '@commons/shared/graph-payload';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
@@ -101,10 +100,13 @@ const engine: D3Engine = {
     // Create D3 simulation
     this.simulation = d3.forceSimulation<D3Node>(this.nodes);
 
+    const styleTokens = getGraphStyleTokens(isLight);
+
     this.linkElements = this.svgGroup.selectAll<SVGLineElement, D3Link>(".link")
       .data(this.links)
       .enter().append("line")
-      .style("stroke-width", "1px");
+      .style("stroke", styleTokens.edgeColor)
+      .style("stroke-width", `${styleTokens.edgeWidth}px`);
 
     let dragStartX = 0;
     let dragStartY = 0;
@@ -142,18 +144,10 @@ const engine: D3Engine = {
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     
     this.nodeElements.append("circle")
-      .attr("r", d => d.size * 6 + 4)
+      .attr("r", styleTokens.nodeRadius)
       .style("fill", d => colors[d.group] || colors[0])
+      .style("stroke", d => colors[d.group] || colors[0])
       .style("stroke-width", "1.5px");
-
-    this.nodeElements.append("text")
-      .text(d => d.group === 0 ? d.name : "")
-      .attr("dx", d => d.size * 6 + 8)
-      .attr("dy", ".35em")
-      .style("font-size", "10px")
-      .style("font-family", "Outfit, Inter, sans-serif")
-      .style("font-weight", "600")
-      .style("pointer-events", "none");
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || 'd3');
@@ -183,49 +177,49 @@ const engine: D3Engine = {
       .on("mouseenter", (event: MouseEvent, d: D3Node) => {
         container.style.cursor = "pointer";
         const currentIsLight = Boolean(this.isLight);
+        const currentTokens = getGraphStyleTokens(currentIsLight);
         const [x, y] = d3.pointer(event, container);
         this.tooltipController?.show(d, currentIsLight, x, y);
 
-        const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-        const accentColor = groupColors[d.group] || groupColors[0];
         d3.select(event.currentTarget as SVGGElement)
           .select("circle")
-          .style("stroke", accentColor)
-          .style("stroke-width", "3px");
+          .attr("r", currentTokens.nodeRadius * currentTokens.nodeHoverScale)
+          .style("stroke", currentTokens.nodeHoverBorderColor)
+          .style("stroke-width", "2.5px");
 
-        const highlightStroke = currentIsLight ? "rgba(15, 23, 42, 0.35)" : "rgba(255, 255, 255, 0.35)";
-        const baseStroke = currentIsLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)";
         this.linkElements
           ?.style("stroke", (l: D3Link) => {
             const srcId = typeof l.source === 'object' ? l.source.id : l.source;
             const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
-            return srcId === d.id || tgtId === d.id ? highlightStroke : baseStroke;
+            return srcId === d.id || tgtId === d.id ? currentTokens.edgeHoverColor : currentTokens.edgeColor;
           })
           ?.style("stroke-width", (l: D3Link) => {
             const srcId = typeof l.source === 'object' ? l.source.id : l.source;
             const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
-            return srcId === d.id || tgtId === d.id ? "1.75px" : "1px";
+            return srcId === d.id || tgtId === d.id ? `${currentTokens.edgeHoverWidth}px` : `${currentTokens.edgeWidth}px`;
           });
       })
       .on("mousemove", (event: MouseEvent) => {
         const [x, y] = d3.pointer(event, container);
         this.tooltipController?.move(x, y);
       })
-      .on("mouseleave", (event: MouseEvent) => {
+      .on("mouseleave", (event: MouseEvent, d: D3Node) => {
         container.style.cursor = "default";
         this.tooltipController?.hide();
 
         const currentIsLight = Boolean(this.isLight);
-        const tokens = getThemeTokens(currentIsLight);
+        const currentTokens = getGraphStyleTokens(currentIsLight);
+        const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+        const baseColor = groupColors[d.group] || groupColors[0];
         d3.select(event.currentTarget as SVGGElement)
           .select("circle")
-          .style("stroke", tokens.background)
+          .attr("r", currentTokens.nodeRadius)
+          .style("stroke", baseColor)
           .style("stroke-width", "1.5px");
 
-        const baseStroke = currentIsLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)";
         this.linkElements
-          ?.style("stroke", baseStroke)
-          ?.style("stroke-width", "1px");
+          ?.style("stroke", currentTokens.edgeColor)
+          ?.style("stroke-width", `${currentTokens.edgeWidth}px`);
       })
       .on("click", (_event: MouseEvent, d: D3Node) => {
         if (!wasDragged) {
@@ -285,11 +279,11 @@ const engine: D3Engine = {
     if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
     if (this.width <= 0 || this.height <= 0) return;
 
+    const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const n of this.nodes) {
-      const r = (n.size || 1) * 6 + 4;
       const left = (n.x || 0) - r - 10;
-      const right = (n.x || 0) + r + 80; // approximate label length
+      const right = (n.x || 0) + r + 10;
       const top = (n.y || 0) - r - 10;
       const bottom = (n.y || 0) + r + 10;
 
@@ -340,13 +334,18 @@ const engine: D3Engine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to D3 texts and circles based on theme
-    const tokens = getThemeTokens(isLight);
-    this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
-    this.nodeElements.selectAll("circle").style("stroke", tokens.background);
-    this.nodeElements.selectAll("text").style("fill", tokens.textHeading);
+    // Apply color update to D3 circles and links based on theme
+    const styleTokens = getGraphStyleTokens(isLight);
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    this.nodeElements.selectAll<SVGCircleElement, D3Node>("circle").style("fill", d => colors[d.group] || colors[0]);
+    this.linkElements
+      .style("stroke", styleTokens.edgeColor)
+      .style("stroke-width", `${styleTokens.edgeWidth}px`);
+    this.nodeElements
+      .selectAll<SVGCircleElement, D3Node>("circle")
+      .attr("r", styleTokens.nodeRadius)
+      .style("fill", d => colors[d.group] || colors[0])
+      .style("stroke", d => colors[d.group] || colors[0])
+      .style("stroke-width", "1.5px");
 
     if (layout === 'radial') {
       const cx = this.width / 2;

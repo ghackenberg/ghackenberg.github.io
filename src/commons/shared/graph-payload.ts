@@ -1,5 +1,5 @@
 import type { getImage } from "astro:assets";
-import { DOMAIN_METADATA } from "./domain-themes";
+import { DOMAIN_METADATA, getThemeTokens } from "./domain-themes";
 import { formatDate } from "./format";
 
 export interface GraphNodePayload {
@@ -121,6 +121,31 @@ export const GRAPH_COLORS = {
     DOMAIN_METADATA.visualizations.colors.light  // 8: Visualization
   ]
 };
+
+export interface GraphStyleTokens {
+  edgeColor: string;
+  edgeHoverColor: string;
+  edgeSolidColor: string;
+  edgeWidth: number;
+  edgeHoverWidth: number;
+  nodeRadius: number;
+  nodeHoverScale: number;
+  nodeHoverBorderColor: string;
+}
+
+export function getGraphStyleTokens(isLight: boolean): GraphStyleTokens {
+  const themeTokens = getThemeTokens(isLight);
+  return {
+    edgeColor: isLight ? 'rgba(15, 23, 42, 0.16)' : 'rgba(255, 255, 255, 0.16)',
+    edgeHoverColor: isLight ? 'rgba(15, 23, 42, 0.45)' : 'rgba(255, 255, 255, 0.45)',
+    edgeSolidColor: themeTokens.textSubtle,
+    edgeWidth: 1.2,
+    edgeHoverWidth: 2.2,
+    nodeRadius: 8,
+    nodeHoverScale: 1.25,
+    nodeHoverBorderColor: themeTokens.textHeading
+  };
+}
 
 export interface TagCounts {
   posts: Record<string, number>;
@@ -613,12 +638,13 @@ export async function buildGraphPayload(options: {
   }));
 
   // 4. Sigma nodes & edges
+  const defaultStyleTokens = getGraphStyleTokens(false);
   const sigmaNodes: SigmaNode[] = visNodes.map(n => ({
     id: n.id,
     label: n.name,
     x: (Math.random() - 0.5) * 100,
     y: (Math.random() - 0.5) * 100,
-    size: 2,
+    size: 5,
     rawSize: n.size,
     group: n.group,
     color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],
@@ -632,8 +658,8 @@ export async function buildGraphPayload(options: {
     id: `${conn.sourceId}--${conn.targetId}`,
     source: conn.sourceId,
     target: conn.targetId,
-    size: 1,
-    color: "rgba(255,255,255,0.07)"
+    size: defaultStyleTokens.edgeWidth,
+    color: defaultStyleTokens.edgeColor
   }));
 
   return {

@@ -1,5 +1,5 @@
 import ForceGraph3D from '3d-force-graph';
-import { GRAPH_COLORS, type GraphNodePayload } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, getGraphStyleTokens, type GraphNodePayload } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
@@ -75,7 +75,7 @@ const engine: Force3DEngine = {
     // Cache nodes and connections with full rich metadata
     this.nodes = payload['3d-force'].nodes.map((n) => ({
       ...n,
-      val: n.size * 5 + 3,
+      val: 6,
       color: colors[n.group] || colors[0]
     }));
 
@@ -112,14 +112,19 @@ const engine: Force3DEngine = {
       .nodeLabel(() => '')
       .nodeVal('val')
       .nodeColor('color')
+      .linkOpacity(0.28)
       .linkColor((l: Force3DLink) => {
         const currentIsLight = Boolean(this.isLight);
+        const currentTokens = getGraphStyleTokens(currentIsLight);
         if (isLinkConnected(l, this.hoveredNodeId)) {
-          return currentIsLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)';
+          return currentTokens.nodeHoverBorderColor;
         }
-        return currentIsLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255, 255, 255, 0.08)';
+        return currentTokens.edgeSolidColor;
       })
-      .linkWidth((l: Force3DLink) => isLinkConnected(l, this.hoveredNodeId) ? 2.2 : 1.2)
+      .linkWidth((l: Force3DLink) => {
+        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
+        return isLinkConnected(l, this.hoveredNodeId) ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth;
+      })
       .linkDirectionalParticles(2)
       .linkDirectionalParticleWidth(1.5)
       .linkDirectionalParticleSpeed(0.006)
