@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic showing the 100x100 coordinate geometry of the DT-1 H-Bridge emblem and the SHA-256 content-addressed Puppeteer rasterization pipeline">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Glows -->
+  <circle cx="240" cy="144" r="92" fill="var(--svg-node-green-bg)" opacity="0.26" />
+  <ellipse cx="240" cy="356" rx="200" ry="74" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+
+  <!-- Title -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">DT-1 H-BRIDGE GEOMETRY &amp; COMPILER</text>
+
+  <!-- ===================================================================
+       TOP ZONE: 100x100 COORDINATE BLUEPRINT OF DT-1 H-BRIDGE
+       =================================================================== -->
+  <!-- Scaled 1.3x Blueprint Box Centered at (240, 140): x=175..305, y=75..205 -->
+  <rect x="175" y="75" width="130" height="130" rx="28" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.6" />
+
+  <!-- Recessed Crossbar (30,58 34,42 70,42 66,58 -> scaled in 130x130 from (175,75)) -->
+  <polygon points="214,150 219,130 266,130 261,150" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+
+  <!-- Left Slanted Pillar (18,78 30,22 44,22 32,78) -->
+  <polygon points="198,176 214,104 232,104 216,176" fill="var(--svg-card)" stroke="var(--svg-node-green-text)" stroke-width="2.2" />
+
+  <!-- Right Slanted Pillar (56,78 68,22 82,22 70,78) -->
+  <polygon points="248,176 263,104 282,104 266,176" fill="var(--svg-card)" stroke="var(--svg-node-green-text)" stroke-width="2.2" />
+
+  <!-- Vertex Dots -->
+  <circle cx="214" cy="104" r="3.5" fill="var(--svg-node-green-border)" />
+  <circle cx="198" cy="176" r="3.5" fill="var(--svg-node-green-border)" />
+  <circle cx="282" cy="104" r="3.5" fill="var(--svg-node-green-border)" />
+  <circle cx="266" cy="176" r="3.5" fill="var(--svg-node-green-border)" />
+
+  <!-- Left Callout Label -->
+  <line x1="150" y1="104" x2="208" y2="104" stroke="var(--svg-line)" stroke-width="1.6" stroke-dasharray="3,3" />
+  <text x="142" y="100" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Slanted Pillars</text>
+  <text x="142" y="118" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">(18,78 → 44,22)</text>
+
+  <!-- Right Callout Label -->
+  <line x1="270" y1="140" x2="330" y2="140" stroke="var(--svg-line)" stroke-width="1.6" stroke-dasharray="3,3" />
+  <text x="338" y="136" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">H-Crossbar</text>
+  <text x="338" y="154" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">(30,58 → 70,42)</text>
+
+  <text x="240" y="228" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-secondary)">viewBox=&quot;0 0 100 100&quot; • rx=&quot;22&quot; Soft Sage Core</text>
+
+  <!-- Curved Horizon Divider -->
+  <path d="M 32 248 Q 240 264 448 248" fill="none" stroke="var(--svg-line)" stroke-width="1.8" stroke-dasharray="6,6" />
+
+  <!-- ===================================================================
+       BOTTOM ZONE: CONTENT-ADDRESSED PUPPETEER RASTERIZATION PIPELINE
+       =================================================================== -->
+  <text x="240" y="282" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-blue-text)">SHA-256 CONTENT-ADDRESSED RASTERIZER</text>
+
+  <!-- Step 1 (Left, cx=88, cy=348): SHA-256 Input Hash -->
+  <circle cx="88" cy="348" r="32" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <text x="88" y="354" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-node-blue-text)">#256</text>
+  <text x="88" y="402" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">Input Hash</text>
+  <text x="88" y="420" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">&lt; 5 ms Cache Hit</text>
+
+  <path d="M 124 348 H 198" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-end="url(#arr-blue)" />
+
+  <!-- Step 2 (Center, cx=240, cy=348): style.textContent Viewport -->
+  <circle cx="240" cy="348" r="32" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <rect x="222" y="334" width="36" height="28" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <polyline points="230,344 236,348 230,352" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <line x1="240" y1="352" x2="250" y2="352" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linecap="round" />
+  <text x="240" y="402" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">textContent</text>
+  <text x="240" y="420" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">Zero innerHTML</text>
+
+  <path d="M 276 348 H 350" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+
+  <!-- Step 3 (Right, cx=392, cy=348): .cache/branding/ PNGs -->
+  <circle cx="392" cy="348" r="32" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  <polyline points="380,348 389,357 405,339" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="392" y="402" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">.cache/branding</text>
+  <text x="392" y="420" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Bit-Exact PNGs</text>
+
+  <!-- Bottom Caption Pill -->
+  <rect x="64" y="436" width="352" height="32" rx="16" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+  <text x="240" y="457" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-secondary)">branding-assets.ts • Seed 42 Park-Miller LCG</text>
+</svg>

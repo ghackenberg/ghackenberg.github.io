@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Radial constellation of five graph engines sharing centralized style tokens and Preact viewport-clamped hover tooltips">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arrow-spoke" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-accent-stroke)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Constellation Halo -->
+  <circle cx="240" cy="240" r="160" fill="var(--svg-accent-fill)" opacity="0.28" />
+  <circle cx="240" cy="240" r="126" fill="none" stroke="var(--svg-border)" stroke-width="1.5" stroke-dasharray="5,5" />
+
+  <!-- Header -->
+  <text x="240" y="34" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-fg)" text-anchor="middle" letter-spacing="0.05em">FIVE GRAPH ENGINES, ONE TOOLTIP KERNEL</text>
+  <text x="240" y="55" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">Zero On-Canvas Labels (label: '') + Shared Preact Hover Overlay</text>
+
+  <!-- Radial Spokes from Central Kernel (240, 240) to 5 Engines -->
+  <!-- Spoke 1: Top (D3.js SVG at 240, 106) -->
+  <line x1="240" y1="192" x2="240" y2="140" stroke="var(--svg-accent-stroke)" stroke-width="2.2" marker-end="url(#arrow-spoke)" />
+  <!-- Spoke 2: Top-Right (vis-network at 382, 178) -->
+  <line x1="284" y1="220" x2="348" y2="192" stroke="var(--svg-accent-stroke)" stroke-width="2.2" marker-end="url(#arrow-spoke)" />
+  <!-- Spoke 3: Bottom-Right (Cytoscape.js at 346, 342) -->
+  <line x1="274" y1="272" x2="318" y2="314" stroke="var(--svg-accent-stroke)" stroke-width="2.2" marker-end="url(#arrow-spoke)" />
+  <!-- Spoke 4: Bottom-Left (Sigma.js WebGL at 134, 342) -->
+  <line x1="206" y1="272" x2="162" y2="314" stroke="var(--svg-accent-stroke)" stroke-width="2.2" marker-end="url(#arrow-spoke)" />
+  <!-- Spoke 5: Top-Left (3D Force Three.js at 98, 178) -->
+  <line x1="196" y1="220" x2="132" y2="192" stroke="var(--svg-accent-stroke)" stroke-width="2.2" marker-end="url(#arrow-spoke)" />
+
+  <!-- ==================== CENTRAL KERNEL: graph-payload.ts + vis-tooltip.tsx ==================== -->
+  <g transform="translate(240, 240)">
+    <circle cx="0" cy="0" r="46" fill="var(--svg-accent-fill)" stroke="var(--svg-accent-stroke)" stroke-width="2.8" />
+    <!-- Tooltip Card + Token Icon -->
+    <rect x="-20" y="-16" width="40" height="26" rx="5" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="2" />
+    <line x1="-12" y1="-7" x2="12" y2="-7" stroke="var(--svg-accent-stroke)" stroke-width="2" />
+    <line x1="-12" y1="1" x2="6" y2="1" stroke="var(--svg-muted)" stroke-width="1.8" />
+    <polygon points="-5,10 5,10 0,17" fill="var(--svg-accent-stroke)" />
+  </g>
+  <text x="240" y="299" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-accent-text)" text-anchor="middle">vis-tooltip.tsx</text>
+
+  <!-- ==================== ENGINE 1 (TOP): D3.js SVG DOM ==================== -->
+  <g transform="translate(240, 104)">
+    <circle cx="0" cy="0" r="28" fill="var(--svg-surface)" stroke="var(--svg-success-stroke)" stroke-width="2.4" />
+    <!-- Vector Bézier Nodes Icon -->
+    <circle cx="-9" cy="6" r="4" fill="var(--svg-success-stroke)" />
+    <circle cx="9" cy="-6" r="4" fill="var(--svg-success-stroke)" />
+    <path d="M -9 6 Q 0 -8 9 -6" fill="none" stroke="var(--svg-success-stroke)" stroke-width="2" />
+  </g>
+  <text x="328" y="98" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">D3.js SVG</text>
+  <text x="328" y="116" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-success-text)" text-anchor="middle">DOM &lt;g&gt;</text>
+
+  <!-- ==================== ENGINE 2 (TOP-RIGHT): vis-network Canvas ==================== -->
+  <g transform="translate(382, 178)">
+    <circle cx="0" cy="0" r="28" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="2.4" />
+    <!-- Spring Network Icon -->
+    <circle cx="-10" cy="-6" r="4" fill="var(--svg-accent-stroke)" />
+    <circle cx="10" cy="-6" r="4" fill="var(--svg-accent-stroke)" />
+    <circle cx="0" cy="10" r="4" fill="var(--svg-accent-stroke)" />
+    <polygon points="-10,-6 10,-6 0,10" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="1.8" />
+  </g>
+  <text x="382" y="224" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">vis-network</text>
+  <text x="382" y="242" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">2D Canvas</text>
+
+  <!-- ==================== ENGINE 3 (BOTTOM-RIGHT): Cytoscape.js ==================== -->
+  <g transform="translate(346, 342)">
+    <circle cx="0" cy="0" r="28" fill="var(--svg-surface)" stroke="var(--svg-warning-stroke)" stroke-width="2.4" />
+    <!-- Batch Graph Grid Icon -->
+    <rect x="-11" y="-11" width="9" height="9" rx="2" fill="none" stroke="var(--svg-warning-stroke)" stroke-width="2" />
+    <rect x="2" y="2" width="9" height="9" rx="2" fill="none" stroke="var(--svg-warning-stroke)" stroke-width="2" />
+    <line x1="-2" y1="-2" x2="2" y2="2" stroke="var(--svg-warning-stroke)" stroke-width="2" />
+  </g>
+  <text x="346" y="388" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Cytoscape.js</text>
+  <text x="346" y="406" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-warning-text)" text-anchor="middle">cy.batch()</text>
+
+  <!-- ==================== ENGINE 4 (BOTTOM-LEFT): Sigma.js WebGL ==================== -->
+  <g transform="translate(134, 342)">
+    <circle cx="0" cy="0" r="28" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="2.4" />
+    <!-- GPU Shader Lightning / Quad Icon -->
+    <polygon points="2,-13 -9,2 0,2 -2,13 9,-2 0,-2" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="1.8" stroke-linejoin="round" />
+  </g>
+  <text x="134" y="388" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Sigma.js</text>
+  <text x="134" y="406" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-accent-text)" text-anchor="middle">2D WebGL</text>
+
+  <!-- ==================== ENGINE 5 (TOP-LEFT): Three.js 3d-force-graph ==================== -->
+  <g transform="translate(98, 178)">
+    <circle cx="0" cy="0" r="28" fill="var(--svg-surface)" stroke="var(--svg-success-stroke)" stroke-width="2.4" />
+    <!-- 3D Wireframe Cube / Globe Icon -->
+    <polygon points="0,-14 12,-7 12,7 0,14 -12,7 -12,-7" fill="none" stroke="var(--svg-success-stroke)" stroke-width="1.8" />
+    <polyline points="-12,-7 0,0 12,-7" fill="none" stroke="var(--svg-success-stroke)" stroke-width="1.6" />
+    <line x1="0" y1="0" x2="0" y2="14" stroke="var(--svg-success-stroke)" stroke-width="1.6" />
+  </g>
+  <text x="98" y="224" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">3D Force</text>
+  <text x="98" y="242" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-success-text)" text-anchor="middle">Three.js WebGL</text>
+
+  <!-- Bottom Summary Pill -->
+  <rect x="34" y="428" width="412" height="36" rx="18" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.5" />
+  <text x="240" y="451" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Shared Tokens (graph-payload.ts) &amp; Clamped Tooltips</text>
+</svg>

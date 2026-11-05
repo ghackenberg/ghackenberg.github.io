@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic illustrating the central DT-1 H-Bridge vector geometry radiating across Browser Favicon, PWA Icons, React Email Header, and 100x100 Institution Logos">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Star Glow -->
+  <circle cx="240" cy="248" r="144" fill="var(--svg-card)" opacity="0.65" />
+  <circle cx="240" cy="248" r="88" fill="var(--svg-node-green-bg)" opacity="0.24" />
+  <circle cx="240" cy="248" r="122" fill="none" stroke="var(--svg-line)" stroke-width="1.5" stroke-dasharray="5,5" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">MULTI-TARGET BRAND SYNCHRONIZATION</text>
+  <text x="240" y="54" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Single 100×100 Coordinate Grid Across Web, Email &amp; Institutions</text>
+
+  <!-- Radiating Curved Streams from Center Hub (240, 248) -->
+  <path d="M 206 218 Q 164 176 128 144" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+  <path d="M 274 218 Q 316 176 352 144" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-end="url(#arr-blue)" />
+  <path d="M 206 278 Q 164 320 128 352" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.2" marker-end="url(#arr-purple)" />
+  <path d="M 274 278 Q 316 320 352 352" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2.2" marker-end="url(#arr-amber)" />
+
+  <!-- ===================================================================
+       CENTRAL HUB (cx=240, cy=248): DT-1 H-BRIDGE VECTOR MASTER
+       =================================================================== -->
+  <circle cx="240" cy="248" r="44" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.6" />
+  <rect x="216" y="224" width="48" height="48" rx="11" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <polygon points="225,262 231,234 238,234 232,262" fill="var(--svg-node-green-text)" />
+  <polygon points="242,262 248,234 255,234 249,262" fill="var(--svg-node-green-text)" />
+  <polygon points="231,252 233,244 249,244 247,252" fill="var(--svg-node-green-border)" />
+
+  <text x="240" y="312" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-text)">DT-1 Master</text>
+  <text x="240" y="330" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">100×100 Grid</text>
+
+  <!-- ===================================================================
+       TARGET 1 (Top-Left, cx=96, cy=114): Browser Tab & OpenGraph
+       =================================================================== -->
+  <circle cx="96" cy="114" r="32" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  <rect x="76" y="98" width="40" height="30" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-green-text)" stroke-width="2" />
+  <line x1="76" y1="107" x2="116" y2="107" stroke="var(--svg-node-green-text)" stroke-width="1.8" />
+  <circle cx="83" cy="102.5" r="1.8" fill="var(--svg-node-green-border)" />
+  <text x="96" y="166" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-text)">favicon.svg</text>
+  <text x="96" y="184" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Tab &amp; OG Card</text>
+
+  <!-- ===================================================================
+       TARGET 2 (Top-Right, cx=384, cy=114): PWA & Apple Touch Icons
+       =================================================================== -->
+  <circle cx="384" cy="114" r="32" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <!-- Smartphone App Icon -->
+  <rect x="371" y="95" width="26" height="38" rx="5" fill="var(--svg-card)" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <circle cx="384" cy="127" r="2" fill="var(--svg-node-blue-border)" />
+  <rect x="377" y="102" width="14" height="14" rx="3" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="384" y="166" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">icon-192.png</text>
+  <text x="384" y="184" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">PWA &amp; iOS Home</text>
+
+  <!-- ===================================================================
+       TARGET 3 (Bottom-Left, cx=96, cy=380): React Email Header Badge
+       =================================================================== -->
+  <circle cx="96" cy="380" r="32" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <!-- Envelope Icon -->
+  <rect x="76" y="366" width="40" height="28" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <polyline points="76,368 96,382 116,368" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linejoin="round" />
+  <text x="96" y="432" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">EmailShell.tsx</text>
+  <text x="96" y="450" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">40×40 Header Img</text>
+
+  <!-- ===================================================================
+       TARGET 4 (Bottom-Right, cx=384, cy=380): InstitutionLogo.astro
+       =================================================================== -->
+  <circle cx="384" cy="380" r="32" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.2" />
+  <!-- Classical Pediment / Institution Columns Icon -->
+  <polygon points="384,361 366,371 402,371" fill="var(--svg-card)" stroke="var(--svg-node-amber-text)" stroke-width="1.8" stroke-linejoin="round" />
+  <line x1="372" y1="373" x2="372" y2="391" stroke="var(--svg-node-amber-text)" stroke-width="2.2" />
+  <line x1="384" y1="373" x2="384" y2="391" stroke="var(--svg-node-amber-text)" stroke-width="2.2" />
+  <line x1="396" y1="373" x2="396" y2="391" stroke="var(--svg-node-amber-text)" stroke-width="2.2" />
+  <line x1="366" y1="393" x2="402" y2="393" stroke="var(--svg-node-amber-text)" stroke-width="2.2" />
+  <text x="384" y="432" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-amber-text)">InstitutionLogo</text>
+  <text x="384" y="450" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">--color-inst-* Grid</text>
+</svg>

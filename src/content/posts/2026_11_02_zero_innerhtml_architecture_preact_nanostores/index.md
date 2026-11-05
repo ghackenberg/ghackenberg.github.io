@@ -63,13 +63,19 @@ Auditing all 49 client-side scripts in [`SYSTEM-009`](https://github.com/ghacken
 
 To eliminate copy-paste drift before touching the rendering layer, Phase 1 consolidated the 7 inline ES5 URL pre-filters (`?tag=`, `?q=`, `?page=`, `?lang=`, `?trl=`) into a single parameterized [`CatalogPreFilter.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/CatalogPreFilter.astro) component and unified 4 scattered clipboard scripts into [`clipboard.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/clipboard.ts) with `WeakMap` timer state and `astro:page-load` lifecycle support. We then replaced all 6 imperative `.innerHTML` sinks with typed Preact `.tsx` islands [@miller-2021-islands-architecture]:
 
-![Mental-model diagram contrasting blocked imperative innerHTML script sprawl with declarative Preact VDOM islands, Nanostores state atoms, and Dual-JSX routing](./zero-innerhtml-preact-islands.svg "Zero-innerHTML Preact Islands and AST Security Gate")
+![Semantic vector infographic contrasting 49-script client sprawl and 6 raw innerHTML XSS sinks with consolidated CatalogPreFilter.astro, clipboard.ts, and typed Preact .tsx VDOM islands](./client-script-deduplication-islands.svg "49-Script Client Audit Deduplication and Preact Island Migration")
+
+Replacing string-concatenated DOM templates with typed Preact `.tsx` islands guarantees automatic contextual text escaping across every tooltip, pagination bar, and analytics inspector while shrinking duplicated inline scripts.
 
 ## How Do Preact Islands Coexist with Server-Side React Email?
 
 We configure `"jsxImportSource": "preact"` globally in [`tsconfig.json`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/tsconfig.json) so interactive client `.tsx` islands compile into lightweight Preact virtual DOM nodes, while explicitly annotating our four server-side newsletter templates under `src/commons/server/email/` with `/** @jsxImportSource react */` compiler pragmas and synchronizing cross-island browser state through tiny, framework-agnostic Nanostores reactive state atoms [@miller-2021-islands-architecture].
 
-This Dual-JSX routing keeps server-only `@react-email/components` rendering untouched while allowing interactive browser components—such as [`pagination.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/pagination.tsx), [`vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx), and [`dev-sankey-view.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/dev-sankey-view.tsx)—to share a tiny ~3 KB VDOM runtime and centralized reactive state in [`stores.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/stores.ts):
+This Dual-JSX routing keeps server-only `@react-email/components` rendering untouched while allowing interactive browser components—such as [`pagination.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/pagination.tsx), [`vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx), and [`dev-sankey-view.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/dev-sankey-view.tsx)—to share a tiny ~3 KB VDOM runtime and centralized reactive state in [`stores.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/stores.ts).
+
+![Semantic vector infographic showing Dual-JSX compiler routing between client Preact .tsx islands synchronized via Nanostores and server-side React Email templates](./dual-jsx-preact-nanostores.svg "Dual-JSX Compiler Routing and Nanostores Reactive State Bus")
+
+The simplified excerpt below shows how `stores.ts` and `pagination.tsx` combine Nanostores atoms and maps with Preact's `render()` entrypoint:
 
 ```tsx
 // src/commons/client/stores.ts & pagination.tsx (simplified)
@@ -100,6 +106,8 @@ export function mountPaginationNumbers(
 ## Enforcing a Zero-innerHTML Policy via ESLint and AST Gates
 
 Because manual code review alone cannot prevent future contributors or autonomous AI agents from reintroducing `.innerHTML` mutations, we enforce a two-layer mechanical gate: AST-level ESLint restrictions in [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) coupled with a full-directory source scanner in [`validate-architecture.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-architecture.ts) that also inspects raw `<script is:inline>` blocks [@weinberger-2011-xss-sanitization; @west-2016-csp3].
+
+![Semantic vector infographic of the two-layer mechanical Zero-innerHTML security gate combining ESLint AST restrictions with the validate-architecture.ts inline script scanner](./zero-innerhtml-ast-security-gate.svg "Two-Layer Mechanical Zero-innerHTML ESLint and AST Security Gate")
 
 Because [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) simultaneously sets `'eslint-comments/no-use': ['error', { allow: [] }]`, neither human developers nor autonomous coding agents can suppress the ban with `eslint-disable` comments:
 

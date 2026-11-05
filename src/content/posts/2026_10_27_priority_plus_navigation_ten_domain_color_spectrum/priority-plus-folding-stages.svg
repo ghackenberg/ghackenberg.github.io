@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic illustrating Priority+ navigation folding stages across 1440px Wide, 960px Medium, and 480px Compact viewports with synchronous pre-paint CLS=0 lock">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Background Halos -->
+  <ellipse cx="240" cy="106" rx="208" ry="52" fill="var(--svg-node-green-bg)" opacity="0.22" />
+  <ellipse cx="240" cy="236" rx="194" ry="52" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+  <ellipse cx="240" cy="368" rx="180" ry="56" fill="var(--svg-node-purple-bg)" opacity="0.22" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">PRIORITY+ RESPONSIVE FOLDING</text>
+
+  <!-- ===================================================================
+       STAGE 1: 1440PX WIDE VIEWPORT (ALL 10 ITEMS VISIBLE)
+       =================================================================== -->
+  <text x="44" y="66" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">1440px Desktop</text>
+  <text x="436" y="66" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-green-subtext)">data-nav-count=&quot;10&quot;</text>
+
+  <!-- Browser Navbar Frame 1 -->
+  <rect x="36" y="76" width="408" height="52" rx="26" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <!-- Brand DT-1 Mini Emblem -->
+  <circle cx="64" cy="102" r="16" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <text x="64" y="107" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">GH</text>
+
+  <!-- Nav Item Pills (Representing 1..10 Fitted) -->
+  <rect x="92" y="88" width="58" height="28" rx="14" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="121" y="107" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-green-text)">Posts</text>
+
+  <rect x="158" y="88" width="64" height="28" rx="14" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="190" y="107" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-green-text)">Papers</text>
+
+  <rect x="230" y="88" width="60" height="28" rx="14" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="260" y="107" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-green-text)">Talks</text>
+
+  <rect x="298" y="88" width="54" height="28" rx="14" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="325" y="107" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-green-text)">...10</text>
+
+  <!-- Verified Check Circle -->
+  <circle cx="414" cy="102" r="14" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+  <polyline points="408,102 412,107 421,97" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Flow Arrow 1 -> 2 -->
+  <path d="M 240 132 V 164" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-blue)" />
+  <text x="252" y="153" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-secondary)">Viewport Shrinks</text>
+
+  <!-- ===================================================================
+       STAGE 2: 960PX MEDIUM VIEWPORT (6 VISIBLE + MORE MEGADROPDOWN)
+       =================================================================== -->
+  <text x="64" y="190" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">960px Tablet</text>
+  <text x="416" y="190" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-blue-subtext)">data-nav-count=&quot;6&quot;</text>
+
+  <!-- Browser Navbar Frame 2 -->
+  <rect x="56" y="200" width="368" height="52" rx="26" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <circle cx="84" cy="226" r="16" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <text x="84" y="231" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">GH</text>
+
+  <rect x="110" y="212" width="58" height="28" rx="14" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="139" y="231" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-blue-text)">Posts</text>
+
+  <rect x="176" y="212" width="64" height="28" rx="14" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="208" y="231" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-blue-text)">Papers</text>
+
+  <rect x="248" y="212" width="52" height="28" rx="14" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="274" y="231" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-blue-text)">...6</text>
+
+  <!-- More +4 Trigger Button -->
+  <rect x="312" y="210" width="98" height="32" rx="16" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2" />
+  <text x="361" y="231" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-amber-text)">+4 More ▾</text>
+
+  <!-- Flow Arrow 2 -> 3 -->
+  <path d="M 240 256 V 288" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-purple)" />
+  <text x="252" y="277" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-secondary)">Right-to-Left Fold</text>
+
+  <!-- ===================================================================
+       STAGE 3: 480PX COMPACT MOBILE (2 VISIBLE + GLASSMORPHIC DRAWER)
+       =================================================================== -->
+  <text x="96" y="314" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">480px Mobile</text>
+  <text x="384" y="314" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-purple-subtext)">data-nav-count=&quot;2&quot;</text>
+
+  <!-- Browser Navbar Frame 3 -->
+  <rect x="88" y="324" width="304" height="52" rx="26" fill="var(--svg-card)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <circle cx="116" cy="350" r="16" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+  <text x="116" y="355" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-purple-text)">GH</text>
+
+  <rect x="142" y="336" width="58" height="28" rx="14" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+  <text x="171" y="355" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-purple-text)">Posts</text>
+
+  <rect x="208" y="336" width="56" height="28" rx="14" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+  <text x="236" y="355" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-purple-text)">...2</text>
+
+  <!-- More +8 Trigger Button -->
+  <rect x="276" y="334" width="102" height="32" rx="16" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2" />
+  <text x="327" y="355" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-amber-text)">+8 More ▾</text>
+
+  <!-- Curved Arrow from +8 More to Bottom Lock Pill -->
+  <path d="M 327 368 Q 327 404 280 416" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2" marker-end="url(#arr-amber)" />
+
+  <!-- ===================================================================
+       BOTTOM SUMMARY PILL: PRE-PAINT SYNCHRONOUS CLS = 0 LOCK
+       =================================================================== -->
+  <rect x="52" y="418" width="376" height="44" rx="22" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <!-- Lock Icon Inside Pill -->
+  <rect x="74" y="438" width="16" height="12" rx="2.5" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" />
+  <path d="M 78 438 V 433 A 4 4 0 0 1 86 433 V 438" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" />
+  <text x="252" y="445" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Pre-Paint Synchronous Lock (CLS = 0.00)</text>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic of the two-layer mechanical Zero-innerHTML security gate combining ESLint AST restrictions with the validate-architecture.ts inline script scanner">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Glows -->
+  <circle cx="240" cy="96" r="58" fill="var(--svg-node-blue-bg)" opacity="0.26" />
+  <circle cx="128" cy="252" r="68" fill="var(--svg-node-red-bg)" opacity="0.22" />
+  <circle cx="352" cy="252" r="68" fill="var(--svg-node-purple-bg)" opacity="0.24" />
+  <ellipse cx="240" cy="418" rx="184" ry="42" fill="var(--svg-node-green-bg)" opacity="0.25" />
+
+  <!-- Title -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">TWO-LAYER ZERO-INNERHTML AST GATE</text>
+
+  <!-- ===================================================================
+       TOP SOURCE HUB (cx=240, cy=96): REPOSITORY CLIENT SOURCE TREE
+       =================================================================== -->
+  <circle cx="240" cy="96" r="34" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
+  <rect x="222" y="78" width="36" height="36" rx="5" fill="var(--svg-card)" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <line x1="229" y1="88" x2="251" y2="88" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <line x1="229" y1="96" x2="251" y2="96" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <line x1="229" y1="104" x2="243" y2="104" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+
+  <text x="240" y="148" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">src/**/*.{ts,tsx,astro}</text>
+  <text x="240" y="166" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">All Modules &amp; Inline Scripts</text>
+
+  <!-- Split Streams to Gate 1 and Gate 2 -->
+  <path d="M 204 110 Q 136 138 128 202" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-end="url(#arr-blue)" />
+  <path d="M 276 110 Q 344 138 352 202" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.2" marker-end="url(#arr-purple)" />
+
+  <!-- ===================================================================
+       LEFT GATE (cx=128, cy=252): eslint.config.ts AST BAN
+       =================================================================== -->
+  <circle cx="128" cy="252" r="38" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2.4" />
+  <!-- Shield with Prohibited Slash -->
+  <path d="M 128 224 L 150 233 V 250 C 150 266, 128 276, 128 276 C 128 276, 106 266, 106 250 V 233 Z" fill="var(--svg-card)" stroke="var(--svg-node-red-text)" stroke-width="2" />
+  <circle cx="128" cy="250" r="10" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.2" />
+  <line x1="121" y1="243" x2="135" y2="257" stroke="var(--svg-node-red-border)" stroke-width="2.2" />
+
+  <text x="128" y="310" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">eslint.config.ts</text>
+  <text x="128" y="329" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-red-subtext)">AST Property &amp; Call Ban</text>
+  <text x="128" y="347" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">+ Zero eslint-disable</text>
+
+  <!-- ===================================================================
+       RIGHT GATE (cx=352, cy=252): validate-architecture.ts SCANNER
+       =================================================================== -->
+  <circle cx="352" cy="252" r="38" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.4" />
+  <!-- Magnifying Lens over Script Tag Icon -->
+  <circle cx="348" cy="248" r="13" fill="var(--svg-card)" stroke="var(--svg-node-purple-text)" stroke-width="2.2" />
+  <line x1="358" y1="258" x2="368" y2="268" stroke="var(--svg-node-purple-text)" stroke-width="2.8" stroke-linecap="round" />
+  <text x="348" y="253" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-purple-text)">JS</text>
+
+  <text x="352" y="310" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">Architecture Gate</text>
+  <text x="352" y="329" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-purple-subtext)">Full-Tree Regex Audit</text>
+  <text x="352" y="347" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Audits &lt;script is:inline&gt;</text>
+
+  <!-- Converging Streams to Bottom CI Shield -->
+  <path d="M 128 358 Q 140 390 194 402" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+  <path d="M 352 358 Q 340 390 286 402" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+
+  <!-- ===================================================================
+       BOTTOM SUMMARY PILL: UNBYPASSABLE CI RELEASE GATE
+       =================================================================== -->
+  <rect x="48" y="408" width="384" height="46" rx="23" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  <circle cx="80" cy="431" r="13" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <polyline points="74,431 79,436 87,426" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="252" y="436" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Unbypassable CI Gate: 0 DOM XSS Injection Sinks</text>
+</svg>

@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Parametric power-decay curves coupling node scale, foreground color retention, edge stroke width, and discrete z-index layers over effective hop distance">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Chart Glow -->
+  <ellipse cx="256" cy="196" rx="180" ry="110" fill="var(--svg-accent-fill)" opacity="0.28" />
+
+  <!-- Header -->
+  <text x="240" y="36" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-fg)" text-anchor="middle" letter-spacing="0.05em">COUPLED POWER-DECAY CURVES f(d_eff)</text>
+  <text x="240" y="58" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-accent-text)" text-anchor="middle">f(d) = f_min + (f_max - f_min)&#183;(1 - (d / 4)^&#947;)</text>
+
+  <!-- ==================== COORDINATE AXES (x: 84..436, y: 92..284) ==================== -->
+  <!-- Horizontal Grid Lines -->
+  <line x1="84" y1="96" x2="436" y2="96" stroke="var(--svg-border)" stroke-width="1" stroke-dasharray="4,4" />
+  <line x1="84" y1="186" x2="436" y2="186" stroke="var(--svg-border)" stroke-width="1" stroke-dasharray="4,4" />
+  <line x1="84" y1="276" x2="436" y2="276" stroke="var(--svg-fg)" stroke-width="1.8" />
+  <!-- Vertical Axis -->
+  <line x1="84" y1="88" x2="84" y2="276" stroke="var(--svg-fg)" stroke-width="1.8" />
+
+  <!-- Y-Axis Labels -->
+  <text x="72" y="101" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-fg)" text-anchor="end">f_max</text>
+  <text x="72" y="191" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="end">0.50</text>
+  <text x="72" y="279" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-fg)" text-anchor="end">f_min</text>
+
+  <!-- X-Axis Hop Ticks & Labels (d_eff = 0, 1, 2, 3, 4) -->
+  <text x="84" y="302" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">d=0</text>
+  <text x="172" y="302" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-muted)" text-anchor="middle">d=1</text>
+  <text x="260" y="302" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-muted)" text-anchor="middle">d=2</text>
+  <text x="348" y="302" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-muted)" text-anchor="middle">d=3</text>
+  <text x="436" y="302" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">d=4</text>
+
+  <!-- ==================== THREE CONCAVE POWER-DECAY CURVES ==================== -->
+  <!-- Curve 1: Color Retention (gamma = 1.35, 1.0 -> 0.20) -->
+  <path d="M 84 96 C 180 102, 300 160, 436 254" fill="none" stroke="var(--svg-success-stroke)" stroke-width="3" />
+  <circle cx="84" cy="96" r="5" fill="var(--svg-success-stroke)" />
+  <circle cx="260" cy="158" r="5" fill="var(--svg-success-stroke)" />
+  <circle cx="436" cy="254" r="5" fill="var(--svg-success-stroke)" />
+  <text x="308" y="136" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-success-text)">Color (&#947;=1.35)</text>
+
+  <!-- Curve 2: Node Scale (gamma = 1.25, 2.1x -> 0.40x) -->
+  <path d="M 84 96 C 172 114, 288 184, 436 266" fill="none" stroke="var(--svg-accent-stroke)" stroke-width="3" />
+  <circle cx="172" cy="126" r="5" fill="var(--svg-accent-stroke)" />
+  <circle cx="348" cy="224" r="5" fill="var(--svg-accent-stroke)" />
+  <circle cx="436" cy="266" r="5" fill="var(--svg-accent-stroke)" />
+  <text x="208" y="204" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-text)">Scale 2.1x&#8594;0.4x (&#947;=1.25)</text>
+
+  <!-- Curve 3: Edge Stroke Width (gamma = 1.10, 3.0px -> 0.8px) -->
+  <path d="M 84 96 C 160 132, 276 212, 436 274" fill="none" stroke="var(--svg-warning-stroke)" stroke-width="2.4" stroke-dasharray="6,4" />
+  <text x="150" y="256" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-warning-text)">Edge 3.0&#8594;0.8px</text>
+
+  <!-- Curved Horizon Divider -->
+  <path d="M 28 326 Q 240 340 452 326" fill="none" stroke="var(--svg-border)" stroke-width="1.5" stroke-dasharray="6,6" />
+
+  <!-- ==================== BOTTOM ZONE: DEPTH-ORDERED Z-INDEX STACK ==================== -->
+  <text x="240" y="362" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-fg)" text-anchor="middle" letter-spacing="0.04em">DISCRETE HOP Z-ORDER &amp; 750MS COSINE EASING</text>
+
+  <!-- 5 Hop Z-Index Badges aligned with d=0..4 -->
+  <g transform="translate(84, 398)">
+    <circle cx="0" cy="0" r="22" fill="var(--svg-accent-fill)" stroke="var(--svg-accent-stroke)" stroke-width="2.4" />
+    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="var(--svg-accent-text)" text-anchor="middle">z=40</text>
+  </g>
+  <g transform="translate(172, 398)">
+    <circle cx="0" cy="0" r="20" fill="var(--svg-success-fill)" stroke="var(--svg-success-stroke)" stroke-width="2.2" />
+    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-success-text)" text-anchor="middle">z=30</text>
+  </g>
+  <g transform="translate(260, 398)">
+    <circle cx="0" cy="0" r="19" fill="var(--svg-surface)" stroke="var(--svg-accent-stroke)" stroke-width="1.8" />
+    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-fg)" text-anchor="middle">z=20</text>
+  </g>
+  <g transform="translate(348, 398)">
+    <circle cx="0" cy="0" r="18" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.6" />
+    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--svg-muted)" text-anchor="middle">z=10</text>
+  </g>
+  <g transform="translate(436, 398)">
+    <circle cx="0" cy="0" r="16" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.4" />
+    <text x="0" y="5" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500" fill="var(--svg-muted)" text-anchor="middle">z=1</text>
+  </g>
+
+  <!-- Bottom Caption Pill -->
+  <rect x="44" y="432" width="392" height="32" rx="16" fill="var(--svg-surface)" stroke="var(--svg-border)" stroke-width="1.5" />
+  <text x="240" y="453" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-fg)" text-anchor="middle">Foreground Ego Rings Render Above Dimmed Background</text>
+</svg>

@@ -71,7 +71,9 @@ Script-driven Priority+ navigation prevents layout collisions by measuring real-
 
 When our platform expanded to nine content collections (`posts`, `publications`, `presentations`, `courses`, `projects`, `services`, `newsletters`, `visualizations`, and `tags`) alongside [`about.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/about.astro) and [`contact.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/contact.astro) (extracted from [`index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro) to keep the homepage lean), fixed CSS media queries (`@media (min-width: 1120px)`) failed [@marcotte-2010-responsive-web-design]. In [`Navbar.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/Navbar.astro), `__evaluateNavbarPriority` computes `availableWidth` against pre-calibrated fallback widths (`[46, 46, 92, 102, 62, 62, 62, 102, 90, 44]`) and sets `data-nav-count`, `data-mobile-sponsor`, and `data-brand-mode` (`full` $\rightarrow$ `title` $\rightarrow$ `compact`) before first paint, then re-evaluates on `ResizeObserver` and `document.fonts.ready`.
 
-![Priority+ geometric folding stages across 1440px, 960px, and 480px viewports paired with the 10-stop Aurora domain color spectrum from 164° Sage to 274° Mauve](./priority-plus-aurora-spectrum.svg "Priority+ Geometric Folding Stages and 10-Stop Aurora Domain Spectrum")
+![Semantic vector infographic illustrating Priority+ navigation folding stages across 1440px desktop, 960px tablet, and 480px mobile viewports with synchronous pre-paint CLS=0 lock](./priority-plus-folding-stages.svg "Priority+ Responsive Folding Stages and Pre-Paint Lock")
+
+Because `[data-nav-count]` is applied synchronously in the inline `<head>` script before the browser paints the document body, visitors never experience a flash of overflowing navigation links or a layout shift when switching routes.
 
 ## Why Did We Engineer a Ten-Stop Aurora Color Spectrum?
 
@@ -82,11 +84,19 @@ Early iterations relied on four ad-hoc Tailwind utility colors, causing semantic
 - **Soft Nordic Pastel Light Mode (`:root.light`)**: Pairs desaturated pastel accents (`#4ea28b` Soft Sage to `#8f61b3` Muted Mauve) against an `#ebf2f8` surface for glare-free reading.
 - **Ultra-Subtle Dark Mode (`:root`)**: Pairs calibrated luminous stops (`#469b84` to `#9261b8`) with translucent `bg-domain-*/10` badges and `hover:border-domain-*/40` card frames on `#030712`.
 
+The diagram below maps all ten hue stops from $164^\circ$ Soft Sage to $274^\circ$ Muted Mauve alongside the dual-surface light and dark mode calibration:
+
+![Semantic vector infographic of the 10-stop Aurora domain color spectrum rotating from 164 degree Soft Sage to 274 degree Muted Mauve across Nordic Pastel Light and Ultra-Subtle Dark modes](./aurora-ten-domain-spectrum.svg "10-Stop Aurora Domain Color Spectrum and Dual-Theme Calibration")
+
 ## Enforcing Domain Parity and Color Tokens via Static Linters
 
 Static linters enforce domain sequence parity and color token hygiene by scanning every Astro component, stylesheet, and TypeScript module during continuous integration. Our verification scripts [`lint-colors.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/lint-colors.ts) and [`lint-domains.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/lint-domains.ts) execute thirty-eight deterministic governance rules that reject hardcoded hexadecimal literals, raw Tailwind palette classes, and out-of-order domain sections before build compilation.
 
-Design systems decay rapidly when components bypass semantic tokens with raw Tailwind utilities (`text-blue-500`) or reorder domain sections across overview pages. By anchoring `CONTENT_DOMAINS` in [`domain-themes.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/domain-themes.ts), [`lint-colors.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/lint-colors.ts) (7 token rules) and [`lint-domains.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/lint-domains.ts) (31 structural rules) enforce 100% cross-site parity:
+Design systems decay rapidly when components bypass semantic tokens with raw Tailwind utilities (`text-blue-500`) or reorder domain sections across overview pages. By anchoring `CONTENT_DOMAINS` in [`domain-themes.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/domain-themes.ts), [`lint-colors.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/lint-colors.ts) (7 token rules) and [`lint-domains.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/lint-domains.ts) (31 structural rules) enforce 100% cross-site parity.
+
+![Semantic vector infographic showing CONTENT_DOMAINS feeding into lint-colors.ts 7 token rules and lint-domains.ts 31 sequence parity rules to enforce design system integrity](./domain-color-linter-gates.svg "38-Rule Static Domain and Color Token Governance Pipeline")
+
+The TypeScript excerpt below illustrates how `CONTENT_DOMAINS` anchors both the raw palette regex check in `lint-colors.ts` and the canonical sequence verification in `lint-domains.ts`:
 
 ```typescript
 export const CONTENT_DOMAINS: readonly ContentDomain[] = [

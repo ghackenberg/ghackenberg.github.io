@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic contrasting sandboxed SVG text nodes causing Flash of Invisible Text in favicons with instant synchronous vector path geometry">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Zone Glows -->
+  <ellipse cx="240" cy="112" rx="204" ry="74" fill="var(--svg-node-red-bg)" opacity="0.24" />
+  <ellipse cx="240" cy="342" rx="204" ry="84" fill="var(--svg-node-green-bg)" opacity="0.24" />
+
+  <!-- ===================================================================
+       TOP HALF: SANDBOXED SVG <TEXT> FAILURE (FOIT & FALLBACK)
+       =================================================================== -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-red-text)">SVG &lt;TEXT&gt; IN FAVICON SANDBOX (FOIT)</text>
+
+  <!-- Node 1 (Left, cx=92, cy=98): External @font-face WOFF2 -->
+  <circle cx="92" cy="98" r="34" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <!-- Font File Icon -->
+  <rect x="76" y="79" width="32" height="38" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-red-text)" stroke-width="2" />
+  <text x="92" y="104" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">Aa</text>
+  <text x="92" y="152" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">@font-face</text>
+  <text x="92" y="170" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-red-subtext)">Remote / Base64</text>
+
+  <!-- Blocked Wire 1 -> 2 -->
+  <path d="M 130 98 H 196" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.2" stroke-dasharray="5,4" />
+  <line x1="157" y1="90" x2="169" y2="106" stroke="var(--svg-node-red-border)" stroke-width="2.6" />
+  <line x1="169" y1="90" x2="157" y2="106" stroke="var(--svg-node-red-border)" stroke-width="2.6" />
+
+  <!-- Node 2 (Center, cx=240, cy=98): Browser Security Sandbox -->
+  <circle cx="240" cy="98" r="34" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.2" />
+  <!-- Shield / Lock Wall -->
+  <path d="M 240 74 L 258 81 V 96 C 258 109, 240 118, 240 118 C 240 118, 222 109, 222 96 V 81 Z" fill="var(--svg-card)" stroke="var(--svg-node-amber-text)" stroke-width="2" />
+  <line x1="232" y1="96" x2="248" y2="96" stroke="var(--svg-node-amber-border)" stroke-width="2.6" stroke-linecap="round" />
+  <text x="240" y="152" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-amber-text)">&lt;img&gt; Sandbox</text>
+  <text x="240" y="170" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">Sync Frame-0 Decode</text>
+
+  <!-- Wire 2 -> 3 -->
+  <path d="M 278 98 H 344" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2.2" marker-end="url(#arr-red)" />
+
+  <!-- Node 3 (Right, cx=388, cy=98): Broken / Blank Tab Favicon -->
+  <circle cx="388" cy="98" r="34" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <rect x="368" y="82" width="40" height="32" rx="5" fill="var(--svg-card)" stroke="var(--svg-node-red-text)" stroke-width="2" stroke-dasharray="4,3" />
+  <text x="388" y="103" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">?</text>
+  <text x="388" y="152" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">Blank Tab Icon</text>
+  <text x="388" y="170" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-red-subtext)">FOIT / Serif Drift</text>
+
+  <!-- ===================================================================
+       CURVED HORIZON DIVIDER
+       =================================================================== -->
+  <path d="M 28 202 Q 240 218 452 202" fill="none" stroke="var(--svg-line)" stroke-width="1.8" stroke-dasharray="6,6" />
+
+  <!-- ===================================================================
+       BOTTOM HALF: BUILD-TIME VECTOR <PATH> & <POLYGON> COMPILATION
+       =================================================================== -->
+  <text x="240" y="236" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-green-text)">SELF-CONTAINED VECTOR &lt;POLYGON&gt; PATHS</text>
+
+  <!-- Left Node (cx=116, cy=320): Explicit Bezier / Polygon Vertices -->
+  <circle cx="116" cy="320" r="38" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
+  <!-- Polygon Vertex Constellation Icon -->
+  <polygon points="100,334 108,302 132,302 124,334" fill="var(--svg-card)" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <circle cx="100" cy="334" r="3.2" fill="var(--svg-node-blue-border)" />
+  <circle cx="108" cy="302" r="3.2" fill="var(--svg-node-blue-border)" />
+  <circle cx="132" cy="302" r="3.2" fill="var(--svg-node-blue-border)" />
+  <circle cx="124" cy="334" r="3.2" fill="var(--svg-node-blue-border)" />
+  <text x="116" y="378" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">Pure Coordinates</text>
+  <text x="116" y="396" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">0 Font Dependencies</text>
+
+  <!-- Direct Synchronous Stream -->
+  <path d="M 160 320 H 312" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.6" marker-end="url(#arr-green)" />
+  <rect x="192" y="290" width="96" height="24" rx="12" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="240" y="307" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">0.4 KB SVG</text>
+
+  <!-- Right Node (cx=364, cy=320): Instant Crisp DT-1 H-Bridge Tab Icon -->
+  <circle cx="364" cy="320" r="38" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.4" />
+  <!-- Mini DT-1 H-Bridge Emblem -->
+  <rect x="342" y="298" width="44" height="44" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <polygon points="350,333 355,307 362,307 357,333" fill="var(--svg-node-green-text)" />
+  <polygon points="367,333 372,307 379,307 374,333" fill="var(--svg-node-green-text)" />
+  <polygon points="355,324 357,316 373,316 371,324" fill="var(--svg-node-green-border)" />
+  <text x="364" y="378" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-text)">DT-1 H-Bridge</text>
+  <text x="364" y="396" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Instant Frame-0 Render</text>
+
+  <!-- Bottom Summary Bar -->
+  <rect x="52" y="420" width="376" height="42" rx="21" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <text x="240" y="446" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">100% Deterministic Across Browser Tabs &amp; Sandboxes</text>
+</svg>

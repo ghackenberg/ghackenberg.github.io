@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic contrasting 49-script client sprawl and 6 raw innerHTML XSS sinks with consolidated CatalogPreFilter.astro, clipboard.ts, and typed Preact .tsx VDOM islands">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Zone Glows -->
+  <ellipse cx="240" cy="112" rx="206" ry="74" fill="var(--svg-node-red-bg)" opacity="0.24" />
+  <ellipse cx="240" cy="344" rx="206" ry="86" fill="var(--svg-node-green-bg)" opacity="0.24" />
+
+  <!-- ===================================================================
+       TOP HALF: 49-SCRIPT CLIENT SPRAWL & RAW .INNERHTML SINKS
+       =================================================================== -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-red-text)">LEGACY 49-SCRIPT SPRAWL &amp; XSS SINKS</text>
+
+  <!-- Node 1 (Left, cx=88, cy=98): 7x Inline ES5 Filters -->
+  <circle cx="88" cy="98" r="34" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <rect x="78" y="79" width="24" height="30" rx="3" fill="var(--svg-card)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+  <rect x="70" y="87" width="24" height="30" rx="3" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-text)" stroke-width="2" />
+  <text x="82" y="107" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-amber-text)">×7</text>
+  <text x="88" y="152" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-amber-text)">7× ES5 Filters</text>
+  <text x="88" y="170" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">~525 Duplicated Lines</text>
+
+  <!-- Node 2 (Center, cx=240, cy=98): 6x Raw .innerHTML Sinks -->
+  <circle cx="240" cy="98" r="34" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2.2" stroke-dasharray="6,4" />
+  <!-- Warning Hazard Triangle Icon -->
+  <polygon points="240,74 262,112 218,112" fill="var(--svg-card)" stroke="var(--svg-node-red-text)" stroke-width="2.2" stroke-linejoin="round" />
+  <line x1="240" y1="86" x2="240" y2="99" stroke="var(--svg-node-red-text)" stroke-width="2.4" stroke-linecap="round" />
+  <circle cx="240" cy="106" r="1.8" fill="var(--svg-node-red-text)" />
+  <text x="240" y="152" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-text)">6× .innerHTML</text>
+  <text x="240" y="170" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-red-subtext)">Untyped XSS Surface</text>
+
+  <!-- Node 3 (Right, cx=392, cy=98): 4x Scattered Clipboard Scripts -->
+  <circle cx="392" cy="98" r="34" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2" stroke-dasharray="6,4" />
+  <rect x="376" y="80" width="32" height="36" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-amber-text)" stroke-width="2" />
+  <rect x="384" y="75" width="16" height="8" rx="2" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-text)" stroke-width="1.8" />
+  <text x="392" y="105" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-amber-text)">×4</text>
+  <text x="392" y="152" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-amber-text)">4× Copy Scripts</text>
+  <text x="392" y="170" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">Global Timer Leaks</text>
+
+  <!-- ===================================================================
+       CURVED HORIZON DIVIDER WITH SYSTEM-009 MIGRATION ARROWS
+       =================================================================== -->
+  <path d="M 28 202 Q 240 218 452 202" fill="none" stroke="var(--svg-line)" stroke-width="1.8" stroke-dasharray="6,6" />
+  <path d="M 88 180 V 252" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+  <path d="M 240 180 V 252" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+  <path d="M 392 180 V 252" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+  <!-- ===================================================================
+       BOTTOM HALF: DEDUPLICATED MODULES & TYPED PREACT VDOM ISLANDS
+       =================================================================== -->
+  <text x="240" y="238" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-node-green-text)">DECLARATIVE PREACT VDOM ARCHITECTURE</text>
+
+  <!-- Node 1 Bottom (Left, cx=88, cy=306): CatalogPreFilter.astro -->
+  <circle cx="88" cy="306" r="34" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <!-- Funnel Filter Icon -->
+  <polygon points="70,292 106,292 93,307 93,322 83,318 83,307" fill="var(--svg-card)" stroke="var(--svg-node-blue-text)" stroke-width="2" stroke-linejoin="round" />
+  <text x="88" y="360" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">CatalogPreFilter</text>
+  <text x="88" y="378" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">1 Shared Astro Component</text>
+
+  <!-- Node 2 Bottom (Center, cx=240, cy=306): 6x Typed Preact .tsx Islands -->
+  <circle cx="240" cy="306" r="38" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.6" />
+  <!-- Atomic Orbital + Lock Icon -->
+  <ellipse cx="240" cy="306" rx="24" ry="10" fill="none" stroke="var(--svg-node-green-text)" stroke-width="1.8" transform="rotate(-30 240 306)" />
+  <ellipse cx="240" cy="306" rx="24" ry="10" fill="none" stroke="var(--svg-node-green-text)" stroke-width="1.8" transform="rotate(30 240 306)" />
+  <circle cx="240" cy="306" r="5" fill="var(--svg-node-green-border)" />
+  <text x="240" y="362" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-text)">Preact .tsx Islands</text>
+  <text x="240" y="380" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Auto-Escaped VDOM (~3 KB)</text>
+
+  <!-- Node 3 Bottom (Right, cx=392, cy=306): clipboard.ts -->
+  <circle cx="392" cy="306" r="34" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <rect x="376" y="288" width="32" height="36" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-blue-text)" stroke-width="2" />
+  <polyline points="383,306 389,312 401,299" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="392" y="360" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">clipboard.ts</text>
+  <text x="392" y="378" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">WeakMap Lifecycle</text>
+
+  <!-- Bottom Summary Bar -->
+  <rect x="48" y="414" width="384" height="44" rx="22" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <text x="240" y="441" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">SYSTEM-009: 0 Raw .innerHTML Sinks Across 49 Scripts</text>
+</svg>

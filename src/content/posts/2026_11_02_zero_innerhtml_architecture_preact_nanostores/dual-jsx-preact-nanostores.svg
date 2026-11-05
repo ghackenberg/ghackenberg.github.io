@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic showing Dual-JSX compiler routing between client Preact .tsx islands synchronized via Nanostores and server-side React Email templates">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Glows -->
+  <circle cx="240" cy="94" r="56" fill="var(--svg-node-blue-bg)" opacity="0.28" />
+  <circle cx="132" cy="248" r="68" fill="var(--svg-node-green-bg)" opacity="0.24" />
+  <circle cx="348" cy="248" r="68" fill="var(--svg-node-purple-bg)" opacity="0.24" />
+  <ellipse cx="240" cy="404" rx="184" ry="48" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">DUAL-JSX COMPILER &amp; NANOSTORES BUS</text>
+
+  <!-- ===================================================================
+       TOP ROUTER HUB (cx=240, cy=92): tsconfig.json JSX ROUTER
+       =================================================================== -->
+  <circle cx="240" cy="92" r="34" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
+  <!-- Code Brackets < /> Icon -->
+  <polyline points="230,84 222,92 230,100" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <polyline points="250,84 258,92 250,100" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <line x1="243" y1="81" x2="237" y2="103" stroke="var(--svg-node-blue-border)" stroke-width="2" stroke-linecap="round" />
+
+  <text x="240" y="144" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">tsconfig.json</text>
+  <text x="240" y="162" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Dual-JSX Target Router</text>
+
+  <!-- Diverging Compiler Streams -->
+  <path d="M 204 106 Q 140 134 132 198" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+  <path d="M 276 106 Q 340 134 348 198" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.2" marker-end="url(#arr-purple)" />
+
+  <!-- ===================================================================
+       LEFT BRANCH (cx=132, cy=244): CLIENT PREACT ISLANDS (~3 KB)
+       =================================================================== -->
+  <circle cx="132" cy="244" r="36" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.4" />
+  <ellipse cx="132" cy="244" rx="22" ry="9" fill="none" stroke="var(--svg-node-green-text)" stroke-width="1.8" transform="rotate(-30 132 244)" />
+  <ellipse cx="132" cy="244" rx="22" ry="9" fill="none" stroke="var(--svg-node-green-text)" stroke-width="1.8" transform="rotate(30 132 244)" />
+  <circle cx="132" cy="244" r="4.5" fill="var(--svg-node-green-border)" />
+
+  <text x="132" y="300" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-text)">Client: Preact</text>
+  <text x="132" y="318" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-green-subtext)">jsxImportSource: preact</text>
+  <text x="132" y="336" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Tooltip, Sankey &amp; Pager</text>
+
+  <!-- ===================================================================
+       RIGHT BRANCH (cx=348, cy=244): SERVER REACT EMAIL (0 KB CLIENT)
+       =================================================================== -->
+  <circle cx="348" cy="244" r="36" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.4" />
+  <rect x="328" y="230" width="40" height="28" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  <polyline points="328,232 348,246 368,232" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linejoin="round" />
+
+  <text x="348" y="300" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">Server: React Email</text>
+  <text x="348" y="318" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="600" fill="var(--svg-node-purple-subtext)">@jsxImportSource react</text>
+  <text x="348" y="336" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">4 SSG Email Compilers</text>
+
+  <!-- Connection from Client Preact to Bottom Nanostores State Bus -->
+  <path d="M 132 346 Q 152 380 196 392" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-start="url(#arr-green)" marker-end="url(#arr-blue)" />
+
+  <!-- ===================================================================
+       BOTTOM REACTIVE STATE HUB: NANOSTORES (stores.ts)
+       =================================================================== -->
+  <rect x="52" y="388" width="376" height="68" rx="34" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <circle cx="96" cy="422" r="22" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <!-- Connected State Atoms Icon -->
+  <circle cx="89" cy="417" r="4" fill="var(--svg-node-blue-text)" />
+  <circle cx="103" cy="417" r="4" fill="var(--svg-node-blue-text)" />
+  <circle cx="96" cy="429" r="4" fill="var(--svg-node-blue-text)" />
+  <line x1="89" y1="417" x2="103" y2="417" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <line x1="89" y1="417" x2="96" y2="429" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <line x1="103" y1="417" x2="96" y2="429" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+
+  <text x="268" y="416" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-blue-text)">Nanostores Reactive State Bus</text>
+  <text x="268" y="438" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">$themeSetting atom &amp; $paginationPages map</text>
+</svg>

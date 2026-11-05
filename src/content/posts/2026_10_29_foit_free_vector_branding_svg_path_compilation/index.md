@@ -68,13 +68,19 @@ When browsers load an SVG via `<link rel="icon">` or `<img>`, strict security sa
 
 In Chromium's image decoding pipeline, tab favicons are rasterized synchronously on the first frame before asynchronous font streams resolve [@daggett-2018-css-fonts-3]. Converting typography and geometric emblems into explicit `<path>` and `<polygon>` coordinates eliminates runtime font resolution altogether [@bellamy-royds-2015-svg-text; @w3c-2018-svg2].
 
-![Comparison between runtime SVG text failure (FOIT) in sandboxed browser contexts and build-time vector path compilation with the DT-1 H-Bridge emblem](./foit-vector-path-compilation.svg "FOIT-Free Vector Path Compilation and DT-1 H-Bridge Geometry")
+![Semantic vector infographic contrasting sandboxed SVG text nodes causing Flash of Invisible Text in favicons with instant synchronous vector path geometry](./foit-sandbox-vs-vector-paths.svg "Sandboxed SVG Text FOIT Failure vs. Synchronous Vector Polygon Paths")
+
+By shipping pure geometric primitives without `@font-face` stylesheets or embedded WOFF2 buffers, the favicon payload drops to roughly $0.4\text{ KB}$ and renders deterministically on Frame 0 across every desktop and mobile browser engine.
 
 ## How Do We Compile Glyphs and the DT-1 H-Bridge Logo into Vector Paths?
 
 We eliminate runtime font dependencies by compiling TrueType glyph contours (`cmap`, `hmtx`, `loca`, `glyf`) into cubic and quadratic Bezier `<path>` outlines or synthesizing our pure geometric DT-1 H-Bridge `<polygon>` emblem in [`src/commons/server/branding-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/branding-assets.ts) [@w3c-2018-svg2; @bellamy-royds-2015-svg-text]. A SHA-256 content-addressed Puppeteer pipeline then rasterizes deterministic PNG derivatives only when source templates change.
 
-Instead of shipping a 19 KB Base64 font inside `favicon.svg`, we first built an on-the-fly WOFF1 TrueType outline compiler before unifying on the borderless plain-color **DT-1 H-Bridge** geometry in [`src/pages/_internal/icon.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/_internal/icon.astro) and [`src/pages/_internal/og.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/_internal/og.astro): a Soft Sage rounded square (`rx="22"`, `#469b84`), two slanted white pillars (`18,78 30,22 44,22 32,78` and `56,78 68,22 82,22 70,78`), and a recessed `#cae8df` crossbar (`30,58 34,42 70,42 66,58`). When rasterizing PNG icons in [`src/commons/server/branding-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/branding-assets.ts), we inject transparent viewport overrides via `style.textContent` rather than `innerHTML` to satisfy our strict zero-`innerHTML` gate:
+Instead of shipping a 19 KB Base64 font inside `favicon.svg`, we first built an on-the-fly WOFF1 TrueType outline compiler before unifying on the borderless plain-color **DT-1 H-Bridge** geometry in [`src/pages/_internal/icon.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/_internal/icon.astro) and [`src/pages/_internal/og.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/_internal/og.astro): a Soft Sage rounded square (`rx="22"`, `#469b84`), two slanted white pillars (`18,78 30,22 44,22 32,78` and `56,78 68,22 82,22 70,78`), and a recessed `#cae8df` crossbar (`30,58 34,42 70,42 66,58`).
+
+![Semantic vector infographic showing the 100x100 coordinate geometry of the DT-1 H-Bridge emblem and the SHA-256 content-addressed Puppeteer rasterization pipeline](./dt1-hbridge-path-compiler.svg "DT-1 H-Bridge 100x100 Coordinate Blueprint and SHA-256 Rasterizer")
+
+When rasterizing PNG icons in [`src/commons/server/branding-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/branding-assets.ts), we inject transparent viewport overrides via `style.textContent` rather than `innerHTML` to satisfy our strict zero-`innerHTML` gate:
 
 ```typescript
 // src/commons/server/branding-assets.ts
@@ -95,7 +101,11 @@ const buffer = (await page.screenshot({ omitBackground: true })) as Buffer;
 
 To maintain visual parity beyond browser tabs, [`src/commons/server/email/EmailShell.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/EmailShell.tsx) replaces legacy CSS text badges with our pre-rendered `icon-192x192.png` H-Bridge asset across all transactional and campaign email headers. Simultaneously, [`src/pages/about.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/about.astro) and [`src/components/InstitutionLogo.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/InstitutionLogo.astro) harmonize academic and industry marks on a normalized `100x100` coordinate grid using adaptive Nordic pastel tokens [@w3c-2018-svg2; @bellamy-royds-2015-svg-text].
 
-Email clients frequently strip custom webfonts and CSS gradients, so [`src/commons/server/email/EmailShell.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/EmailShell.tsx) embeds the deterministic `40x40` rasterized DT-1 badge directly alongside the header lockup. On [`src/pages/about.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/about.astro), [`src/components/InstitutionLogo.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/InstitutionLogo.astro) pairs the self-hosted H-Bridge geometry (`color-mix(in srgb, var(--color-brand-primary) 28%, white)`) with optically centered institution marks (`--color-inst-*`):
+Email clients frequently strip custom webfonts and CSS gradients, so [`src/commons/server/email/EmailShell.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/EmailShell.tsx) embeds the deterministic `40x40` rasterized DT-1 badge directly alongside the header lockup.
+
+![Semantic vector infographic illustrating the central DT-1 H-Bridge vector geometry radiating across Browser Favicon, PWA Icons, React Email Header, and 100x100 Institution Logos](./multi-target-brand-geometry.svg "Multi-Target Brand Geometry Synchronization Across Web, PWA, Email, and Institutions")
+
+On [`src/pages/about.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/about.astro), [`src/components/InstitutionLogo.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/InstitutionLogo.astro) pairs the self-hosted H-Bridge geometry (`color-mix(in srgb, var(--color-brand-primary) 28%, white)`) with optically centered institution marks (`--color-inst-*`), while `EmailShell.tsx` renders the shared rasterized asset:
 
 ```tsx
 // src/commons/server/email/EmailShell.tsx
