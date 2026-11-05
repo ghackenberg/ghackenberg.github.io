@@ -1,9 +1,11 @@
 import ForceGraph3D from '3d-force-graph';
 import {
   GRAPH_COLORS,
+  HIGHLIGHT_TRANSITION_MS,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
+  interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedEdgeStyle,
   type GraphNodePayload
@@ -14,6 +16,8 @@ import { createGraphTooltipController, type GraphTooltipController } from '@comm
 export interface Force3DNode extends GraphNodePayload {
   val: number;
   color: string;
+  displayVal?: number;
+  displayColor?: string;
   x?: number;
   y?: number;
   z?: number;
@@ -25,6 +29,8 @@ export interface Force3DNode extends GraphNodePayload {
 export interface Force3DLink {
   source: string | Force3DNode;
   target: string | Force3DNode;
+  displayColor?: string;
+  displayWidth?: number;
 }
 
 export interface Force3DNavigationControls {
@@ -52,6 +58,8 @@ export interface Force3DEngine {
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
   animationFrameId: number | null;
+  highlightFrameId: number | null;
+  applyHighlight?(immediate?: boolean): void;
   init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
@@ -81,6 +89,7 @@ const engine: Force3DEngine = {
   resizeObserver: null,
   initialized: false,
   animationFrameId: null,
+  highlightFrameId: null,
 
   async init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.container = container;
@@ -93,17 +102,22 @@ const engine: Force3DEngine = {
     this.lastOrderSignature = '';
     this.lastDraggedAt = 0;
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+    const initialStyleTokens = getGraphStyleTokens(isLight);
     
     // Cache nodes and connections with full rich metadata
     this.nodes = payload['3d-force'].nodes.map((n) => ({
       ...n,
       val: 6,
-      color: colors[n.group] || colors[0]
+      displayVal: 6,
+      color: colors[n.group] || colors[0],
+      displayColor: colors[n.group] || colors[0]
     }));
 
     this.links = payload['3d-force'].connections.map((c) => ({
       source: c.sourceId,
-      target: c.targetId
+      target: c.targetId,
+      displayColor: initialStyleTokens.edgeColor,
+      displayWidth: initialStyleTokens.edgeWidth
     }));
 
     let hasMousePosition = false;
@@ -126,19 +140,92 @@ const engine: Force3DEngine = {
     const utmMedium = String(extraOptions.utmMedium || '3d-force');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
-    const refreshHighlight = () => {
+    const refreshHighlight = (immediate = false) => {
+      if (this.highlightFrameId) {
+        cancelAnimationFrame(this.highlightFrameId);
+        this.highlightFrameId = null;
+      }
       const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
-      this.activeDistances = activeNodeId && this.adjacency
+      const dists = activeNodeId && this.adjacency
         ? computeHopDistances(activeNodeId, this.adjacency)
         : null;
-      if (this.graph) {
-        this.graph
-          .nodeColor(this.graph.nodeColor())
-          .nodeVal(this.graph.nodeVal())
-          .linkColor(this.graph.linkColor())
-          .linkWidth(this.graph.linkWidth());
+      this.activeDistances = dists;
+
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+
+      const nodeTrans = (this.nodes || []).map((n) => {
+        const baseColor = palette[n.group] || palette[0];
+        const startColor = n.displayColor || baseColor;
+        const startVal = n.displayVal ?? n.val;
+        const targetColor = dists
+          ? getAttenuatedNodeColor(baseColor, dists.get(n.id), currentIsLight)
+          : baseColor;
+        const targetVal = dists && n.id === activeNodeId
+          ? n.val * Math.pow(currentTokens.nodeHoverScale, 3)
+          : n.val;
+        return { node: n, startColor, targetColor, startVal, targetVal };
+      });
+
+      const linkTrans = (this.links || []).map((l) => {
+        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+        const startColor = l.displayColor || currentTokens.edgeColor;
+        const startWidth = l.displayWidth ?? currentTokens.edgeWidth;
+        const targetStyle = dists
+          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight)
+          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+        return {
+          link: l,
+          startColor,
+          targetColor: targetStyle.color,
+          startWidth,
+          targetWidth: targetStyle.width
+        };
+      });
+
+      const renderStep = (ease: number) => {
+        for (const nt of nodeTrans) {
+          nt.node.displayColor = interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          nt.node.displayVal = nt.startVal + (nt.targetVal - nt.startVal) * ease;
+        }
+        for (const lt of linkTrans) {
+          lt.link.displayColor = interpolateHexColor(lt.startColor, lt.targetColor, ease);
+          lt.link.displayWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+        }
+        if (this.graph) {
+          this.graph
+            .nodeColor(this.graph.nodeColor())
+            .nodeVal(this.graph.nodeVal())
+            .linkColor(this.graph.linkColor())
+            .linkWidth(this.graph.linkWidth());
+        }
+      };
+
+      if (immediate) {
+        renderStep(1);
+        return;
       }
+
+      const startTime = performance.now();
+      const step = (now: number) => {
+        if (!this.graph) {
+          this.highlightFrameId = null;
+          return;
+        }
+        const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        renderStep(ease);
+        if (progress < 1) {
+          this.highlightFrameId = requestAnimationFrame(step);
+        } else {
+          this.highlightFrameId = null;
+        }
+      };
+      this.highlightFrameId = requestAnimationFrame(step);
     };
+    this.applyHighlight = refreshHighlight;
 
     const tokens = getThemeTokens(isLight);
     const initialWidth = container.clientWidth || 800;
@@ -150,44 +237,20 @@ const engine: Force3DEngine = {
       .backgroundColor(tokens.canvasBg)
       .showNavInfo(false)
       .nodeLabel(() => '')
-      .nodeVal((n: Force3DNode) => {
-        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-        const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
-        return n.id === activeNodeId
-          ? n.val * Math.pow(currentTokens.nodeHoverScale, 3)
-          : n.val;
-      })
+      .nodeVal((n: Force3DNode) => n.displayVal ?? n.val)
       .nodeColor((n: Force3DNode) => {
         const currentIsLight = Boolean(this.isLight);
         const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-        const baseColor = palette[n.group] || palette[0];
-        if (!this.activeDistances) return baseColor;
-        return getAttenuatedNodeColor(baseColor, this.activeDistances.get(n.id), currentIsLight);
+        return n.displayColor || palette[n.group] || palette[0];
       })
       .linkOpacity(1)
       .linkColor((l: Force3DLink) => {
-        const currentIsLight = Boolean(this.isLight);
-        const currentTokens = getGraphStyleTokens(currentIsLight);
-        if (!this.activeDistances) return currentTokens.edgeColor;
-        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
-        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
-        return getAttenuatedEdgeStyle(
-          this.activeDistances.get(srcId),
-          this.activeDistances.get(tgtId),
-          currentIsLight
-        ).color;
+        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
+        return l.displayColor || currentTokens.edgeColor;
       })
       .linkWidth((l: Force3DLink) => {
-        const currentIsLight = Boolean(this.isLight);
-        const currentTokens = getGraphStyleTokens(currentIsLight);
-        if (!this.activeDistances) return currentTokens.edgeWidth;
-        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
-        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
-        return getAttenuatedEdgeStyle(
-          this.activeDistances.get(srcId),
-          this.activeDistances.get(tgtId),
-          currentIsLight
-        ).width;
+        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
+        return l.displayWidth ?? currentTokens.edgeWidth;
       })
       .onNodeHover((node: Force3DNode | null) => {
         const hovered = node;
@@ -446,10 +509,7 @@ const engine: Force3DEngine = {
     this.nodes.forEach(n => {
       n.color = colors[n.group] || colors[0];
     });
-    this.graph
-      .nodeColor(this.graph.nodeColor())
-      .linkColor(this.graph.linkColor())
-      .linkWidth(this.graph.linkWidth());
+    this.applyHighlight?.(true);
 
     if (this.initialized && !layoutChanged) {
       return;
@@ -562,6 +622,10 @@ const engine: Force3DEngine = {
   },
 
   destroy() {
+    if (this.highlightFrameId) {
+      cancelAnimationFrame(this.highlightFrameId);
+      this.highlightFrameId = null;
+    }
     if (this.recenterTimeout) {
       clearTimeout(this.recenterTimeout);
       this.recenterTimeout = null;

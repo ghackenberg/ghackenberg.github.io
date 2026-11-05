@@ -2,11 +2,15 @@ import cytoscape, { type Core, type NodeSingular, type EdgeSingular, type EventO
 import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
+  HIGHLIGHT_TRANSITION_MS,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
+  interpolateHexColor,
   getAttenuatedNodeColor,
-  getAttenuatedEdgeStyle
+  getAttenuatedEdgeStyle,
+  getNodeHopZIndex,
+  getEdgeHopZIndex
 } from '@commons/shared/graph-payload';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
@@ -31,7 +35,8 @@ export interface CytoscapeEngine {
   cy: Core | null;
   tooltipController: GraphTooltipController | null;
   hoveredNodeId?: string | null;
-  applyHighlight?(activeId: string | null): void;
+  highlightFrameId?: number | null;
+  applyHighlight?(activeId: string | null, immediate?: boolean): void;
   currentLayout?: string;
   isLight?: boolean;
   initialized?: boolean;
@@ -116,55 +121,133 @@ const engine: CytoscapeEngine = {
     });
     const adjacency = buildGraphAdjacency(rawEdges);
 
-    const applyHighlight = (activeId: string | null) => {
+    const applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.cy) return;
+      if (this.highlightFrameId) {
+        cancelAnimationFrame(this.highlightFrameId);
+        this.highlightFrameId = null;
+      }
+
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const currentBaseDiameter = currentTokens.nodeRadius * 2;
       const currentHoverDiameter = currentBaseDiameter * currentTokens.nodeHoverScale;
+      const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
 
-      if (!activeId) {
-        this.cy.batch(() => {
-          this.cy?.nodes().forEach((n: NodeSingular) => {
-            const baseColor = getNodeColor(n, currentIsLight);
-            n.data({
-              displayColor: baseColor,
-              displaySize: currentBaseDiameter
-            });
-          });
-          this.cy?.edges().forEach((e: EdgeSingular) => {
-            e.data({
-              displayColor: currentTokens.edgeColor,
-              displayWidth: currentTokens.edgeWidth
-            });
-          });
+      const nodeTrans: {
+        node: NodeSingular;
+        startColor: string;
+        targetColor: string;
+        startSize: number;
+        targetSize: number;
+        targetZIndex: number;
+      }[] = [];
+
+      this.cy.nodes().forEach((n: NodeSingular) => {
+        const id = n.id();
+        const baseColor = getNodeColor(n, currentIsLight);
+        const startColor = String(n.data('displayColor') || baseColor);
+        const startSize = Number(n.data('displaySize') || currentBaseDiameter);
+        const hopDist = dists ? dists.get(id) : undefined;
+        const targetColor = dists
+          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+          : baseColor;
+        const targetSize = dists && id === activeId ? currentHoverDiameter : currentBaseDiameter;
+        const targetZIndex = dists ? getNodeHopZIndex(hopDist) : 10;
+        nodeTrans.push({ node: n, startColor, targetColor, startSize, targetSize, targetZIndex });
+      });
+
+      const edgeTrans: {
+        edge: EdgeSingular;
+        startColor: string;
+        targetColor: string;
+        startWidth: number;
+        targetWidth: number;
+        targetZIndex: number;
+      }[] = [];
+
+      this.cy.edges().forEach((e: EdgeSingular) => {
+        const srcId = e.source().id();
+        const tgtId = e.target().id();
+        const startColor = String(e.data('displayColor') || currentTokens.edgeColor);
+        const startWidth = Number(e.data('displayWidth') || currentTokens.edgeWidth);
+        const dSrc = dists ? dists.get(srcId) : undefined;
+        const dTgt = dists ? dists.get(tgtId) : undefined;
+        const targetStyle = dists
+          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
+          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+        const targetZIndex = dists ? getEdgeHopZIndex(dSrc, dTgt) : 1;
+        edgeTrans.push({
+          edge: e,
+          startColor,
+          targetColor: targetStyle.color,
+          startWidth,
+          targetWidth: targetStyle.width,
+          targetZIndex
         });
+      });
+
+      if (dists) {
+        this.cy.batch(() => {
+          for (const nt of nodeTrans) {
+            nt.node.data('displayZIndex', nt.targetZIndex);
+          }
+          for (const et of edgeTrans) {
+            et.edge.data('displayZIndex', et.targetZIndex);
+          }
+        });
+      }
+
+      const renderStep = (ease: number, applyZIndex: boolean) => {
+        this.cy?.batch(() => {
+          for (const nt of nodeTrans) {
+            const nextData: Record<string, string | number> = {
+              displayColor: interpolateHexColor(nt.startColor, nt.targetColor, ease),
+              displaySize: nt.startSize + (nt.targetSize - nt.startSize) * ease
+            };
+            if (applyZIndex) {
+              nextData.displayZIndex = nt.targetZIndex;
+            }
+            nt.node.data(nextData);
+          }
+          for (const et of edgeTrans) {
+            const nextData: Record<string, string | number> = {
+              displayColor: interpolateHexColor(et.startColor, et.targetColor, ease),
+              displayWidth: et.startWidth + (et.targetWidth - et.startWidth) * ease
+            };
+            if (applyZIndex) {
+              nextData.displayZIndex = et.targetZIndex;
+            }
+            et.edge.data(nextData);
+          }
+        });
+      };
+
+      if (immediate) {
+        renderStep(1, true);
         return;
       }
 
-      const dists = computeHopDistances(activeId, adjacency);
-      this.cy.batch(() => {
-        this.cy?.nodes().forEach((n: NodeSingular) => {
-          const id = n.id();
-          const baseColor = getNodeColor(n, currentIsLight);
-          n.data({
-            displayColor: getAttenuatedNodeColor(baseColor, dists.get(id), currentIsLight),
-            displaySize: id === activeId ? currentHoverDiameter : currentBaseDiameter
-          });
-        });
-        this.cy?.edges().forEach((e: EdgeSingular) => {
-          const srcId = e.source().id();
-          const tgtId = e.target().id();
-          const style = getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight);
-          e.data({
-            displayColor: style.color,
-            displayWidth: style.width
-          });
-        });
-      });
+      const startTime = performance.now();
+      const step = (now: number) => {
+        if (!this.cy) {
+          this.highlightFrameId = null;
+          return;
+        }
+        const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const isFinal = progress >= 1;
+        renderStep(ease, isFinal && !dists);
+        if (!isFinal) {
+          this.highlightFrameId = requestAnimationFrame(step);
+        } else {
+          this.highlightFrameId = null;
+        }
+      };
+      this.highlightFrameId = requestAnimationFrame(step);
     };
     this.applyHighlight = applyHighlight;
-    applyHighlight(null);
+    applyHighlight(null, true);
 
     this.cy.style()
       .selector('node').style({
@@ -172,6 +255,7 @@ const engine: CytoscapeEngine = {
         'border-color': 'data(displayColor)',
         'width': 'data(displaySize)',
         'height': 'data(displaySize)',
+        'z-index': (node: NodeSingular) => Number(node.data('displayZIndex') ?? 10),
         'border-width': '1.5px',
         'label': '',
         'overlay-opacity': 0
@@ -179,6 +263,7 @@ const engine: CytoscapeEngine = {
       .selector('edge').style({
         'line-color': 'data(displayColor)',
         'width': 'data(displayWidth)',
+        'z-index': (edge: EdgeSingular) => Number(edge.data('displayZIndex') ?? 1),
         'curve-style': 'straight'
       })
       .update();
@@ -754,7 +839,7 @@ const engine: CytoscapeEngine = {
     }
 
     // Apply color update to nodes and edges based on theme (and preserve any active highlight)
-    this.applyHighlight?.(this.hoveredNodeId ?? null);
+    this.applyHighlight?.(this.hoveredNodeId ?? null, true);
 
     if (!this.initialized || layoutChanged || forceRecompute) {
       const targets = this.computeLayoutTargets(layout, false);
@@ -763,6 +848,10 @@ const engine: CytoscapeEngine = {
   },
 
   destroy() {
+    if (this.highlightFrameId) {
+      cancelAnimationFrame(this.highlightFrameId);
+      this.highlightFrameId = null;
+    }
     if (this.physicsFrameId) {
       cancelAnimationFrame(this.physicsFrameId);
       this.physicsFrameId = null;

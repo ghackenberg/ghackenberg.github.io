@@ -3,14 +3,25 @@ import { DataSet } from 'vis-data';
 import {
   GRAPH_COLORS,
   GRAPH_GROUP_NAMES,
+  HIGHLIGHT_TRANSITION_MS,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
+  interpolateHexColor,
   getAttenuatedNodeColor,
-  getAttenuatedEdgeStyle
+  getAttenuatedEdgeStyle,
+  getNodeHopZIndex,
+  getEdgeHopZIndex
 } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
+
+interface VisNetworkWithBody extends Network {
+  body?: {
+    nodeIndices?: (string | number)[];
+    edgeIndices?: (string | number)[];
+  };
+}
 
 function getVisNodeColors(isLight: boolean) {
   const palette = GRAPH_COLORS[isLight ? 'light' : 'dark'];
@@ -48,6 +59,13 @@ export interface VisNetworkPayload {
 
 export interface VisCustomNode extends VisNode {
   rawGroup?: number;
+  displayColor?: string;
+  displaySize?: number;
+}
+
+export interface VisCustomEdge extends VisEdge {
+  displayColor?: string;
+  displayWidth?: number;
 }
 
 export interface VisNetworkExtraOptions extends Options {
@@ -61,12 +79,13 @@ export interface VisNetworkEngine {
   nodes?: VisPayloadNode[];
   connections?: VisPayloadConnection[];
   visNodes?: DataSet<VisCustomNode> | null;
-  visEdges?: DataSet<VisEdge> | null;
+  visEdges?: DataSet<VisCustomEdge> | null;
   options?: Options;
   network?: Network | null;
   isDragging?: boolean;
   hoveredNodeId?: string | null;
   draggedNodeId?: string | null;
+  highlightFrameId?: number | null;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
   dragStabilizeTimeout?: ReturnType<typeof setTimeout> | null;
@@ -75,7 +94,7 @@ export interface VisNetworkEngine {
   resizeObserver?: ResizeObserver | null;
   intersectionObserver?: IntersectionObserver | null;
   animationFrameId?: number | null;
-  applyHighlight?(activeId: string | null): void;
+  applyHighlight?(activeId: string | null, immediate?: boolean): void;
   init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions?: VisNetworkExtraOptions): Promise<VisNetworkEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
@@ -128,34 +147,29 @@ const engine: VisNetworkEngine = {
         title: card,
         shape: 'dot',
         size: styleTokens.nodeRadius,
+        displaySize: styleTokens.nodeRadius,
+        displayColor: groupColors[n.group] || groupColors[0],
         x: (Math.random() - 0.5) * 500,
         y: (Math.random() - 0.5) * 500,
         rawGroup: n.group,
         color: colors[n.group],
-        chosen: {
-          node: (values: { color?: string; borderColor?: string; borderWidth?: number; size?: number; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
-            if (hovering || selected) {
-              const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-              if (values.hoverBackground) values.color = values.hoverBackground;
-              values.borderColor = values.color;
-              values.size = currentTokens.nodeRadius * currentTokens.nodeHoverScale;
-            }
-          },
-          label: false
-        }
+        chosen: false
       };
     }));
 
-    this.visEdges = new DataSet<VisEdge>((this.connections || []).map((c, idx) => ({
+    this.visEdges = new DataSet<VisCustomEdge>((this.connections || []).map((c, idx) => ({
       id: `${c.sourceId}-${c.targetId}-${idx}`,
       from: c.sourceId,
       to: c.targetId,
       width: styleTokens.edgeWidth,
-      hoverWidth: styleTokens.edgeHoverWidth,
+      hoverWidth: styleTokens.edgeWidth,
+      displayWidth: styleTokens.edgeWidth,
+      displayColor: styleTokens.edgeColor,
+      chosen: false,
       color: {
         color: styleTokens.edgeColor,
-        highlight: styleTokens.edgeHoverColor,
-        hover: styleTokens.edgeHoverColor
+        highlight: styleTokens.edgeColor,
+        hover: styleTokens.edgeColor
       }
     })));
 
@@ -167,7 +181,7 @@ const engine: VisNetworkEngine = {
     const extraInteraction = extraOptions.interaction || {};
     const interactionOptions = Object.assign({
       hover: true,
-      hoverConnectedEdges: true,
+      hoverConnectedEdges: false,
       tooltipDelay: 100,
       zoomView: false,
       dragView: false,
@@ -182,23 +196,14 @@ const engine: VisNetworkEngine = {
       nodes: {
         shape: 'dot',
         size: styleTokens.nodeRadius,
-        chosen: {
-          node: (values: { color?: string; borderColor?: string; borderWidth?: number; size?: number; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
-            if (hovering || selected) {
-              const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-              if (values.hoverBackground) values.color = values.hoverBackground;
-              values.borderColor = values.color;
-              values.size = currentTokens.nodeRadius * currentTokens.nodeHoverScale;
-            }
-          },
-          label: false
-        },
+        chosen: false,
         borderWidth: 1.5,
-        borderWidthSelected: 2.5
+        borderWidthSelected: 1.5
       },
       edges: {
         width: styleTokens.edgeWidth,
-        hoverWidth: styleTokens.edgeHoverWidth,
+        hoverWidth: styleTokens.edgeWidth,
+        chosen: false,
         smooth: {
           enabled: true,
           type: 'continuous',
@@ -268,74 +273,155 @@ const engine: VisNetworkEngine = {
 
     const adjacency = buildGraphAdjacency(this.connections || []);
 
-    this.applyHighlight = (activeId: string | null) => {
+    this.applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.visNodes || !this.visEdges) return;
+      if (this.highlightFrameId) {
+        cancelAnimationFrame(this.highlightFrameId);
+        this.highlightFrameId = null;
+      }
+
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const palette = GRAPH_COLORS[currentIsLight ? 'light' : 'dark'];
+      const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
 
-      if (!activeId) {
-        const nodeColors = getVisNodeColors(currentIsLight);
-        const nodeUpdates: VisCustomNode[] = (this.nodes || []).map((n) => ({
-          id: n.id,
-          size: currentTokens.nodeRadius,
-          color: nodeColors[n.group] || nodeColors[0]
-        }));
+      const nodeTrans: {
+        id: string | number;
+        startColor: string;
+        targetColor: string;
+        startSize: number;
+        targetSize: number;
+      }[] = [];
+
+      this.visNodes.forEach((node: VisCustomNode) => {
+        const id = String(node.id);
+        const grp = node.rawGroup ?? 0;
+        const baseColor = palette[grp] || palette[0];
+        const startColor = node.displayColor || baseColor;
+        const startSize = node.displaySize ?? currentTokens.nodeRadius;
+        const hopDist = dists ? dists.get(id) : undefined;
+        const targetColor = dists
+          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+          : baseColor;
+        const targetSize = dists && id === activeId
+          ? currentTokens.nodeRadius * currentTokens.nodeHoverScale
+          : currentTokens.nodeRadius;
+        nodeTrans.push({
+          id: node.id!,
+          startColor,
+          targetColor,
+          startSize,
+          targetSize
+        });
+      });
+
+      const edgeTrans: {
+        id: string | number;
+        startColor: string;
+        targetColor: string;
+        startWidth: number;
+        targetWidth: number;
+      }[] = [];
+      const edgeZMap = new Map<string, number>();
+
+      this.visEdges.forEach((edge: VisCustomEdge) => {
+        const edgeId = String(edge.id);
+        const dSrc = dists ? dists.get(String(edge.from)) : undefined;
+        const dTgt = dists ? dists.get(String(edge.to)) : undefined;
+        const startColor = edge.displayColor || currentTokens.edgeColor;
+        const startWidth = edge.displayWidth ?? currentTokens.edgeWidth;
+        const targetStyle = dists
+          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
+          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+        if (dists) {
+          edgeZMap.set(edgeId, getEdgeHopZIndex(dSrc, dTgt));
+        }
+        edgeTrans.push({
+          id: edge.id!,
+          startColor,
+          targetColor: targetStyle.color,
+          startWidth,
+          targetWidth: targetStyle.width
+        });
+      });
+
+      const applyZOrder = () => {
+        if (!dists) return;
+        const internalBody = (this.network as VisNetworkWithBody | null | undefined)?.body;
+        if (internalBody?.edgeIndices) {
+          internalBody.edgeIndices.sort(
+            (a, b) => (edgeZMap.get(String(a)) ?? 1) - (edgeZMap.get(String(b)) ?? 1)
+          );
+        }
+        if (internalBody?.nodeIndices) {
+          internalBody.nodeIndices.sort(
+            (a, b) => getNodeHopZIndex(dists.get(String(a))) - getNodeHopZIndex(dists.get(String(b)))
+          );
+        }
+      };
+
+      const renderStep = (ease: number) => {
+        if (!this.visNodes || !this.visEdges) return;
+        const nodeUpdates: VisCustomNode[] = nodeTrans.map((nt) => {
+          const c = interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          const s = nt.startSize + (nt.targetSize - nt.startSize) * ease;
+          return {
+            id: nt.id,
+            size: s,
+            displaySize: s,
+            displayColor: c,
+            color: {
+              background: c,
+              border: c,
+              highlight: { background: c, border: c },
+              hover: { background: c, border: c }
+            }
+          };
+        });
         this.visNodes.update(nodeUpdates);
 
-        const edgeUpdates: VisEdge[] = [];
-        this.visEdges.forEach((edge: VisEdge) => {
-          edgeUpdates.push({
-            id: edge.id,
-            width: currentTokens.edgeWidth,
-            hoverWidth: currentTokens.edgeHoverWidth,
+        const edgeUpdates: VisCustomEdge[] = edgeTrans.map((et) => {
+          const c = interpolateHexColor(et.startColor, et.targetColor, ease);
+          const w = et.startWidth + (et.targetWidth - et.startWidth) * ease;
+          return {
+            id: et.id,
+            width: w,
+            hoverWidth: w,
+            displayWidth: w,
+            displayColor: c,
             color: {
-              color: currentTokens.edgeColor,
-              highlight: currentTokens.edgeHoverColor,
-              hover: currentTokens.edgeHoverColor
+              color: c,
+              highlight: c,
+              hover: c
             }
-          });
+          };
         });
         this.visEdges.update(edgeUpdates);
+        applyZOrder();
+        this.network?.redraw();
+      };
+
+      if (immediate) {
+        renderStep(1);
         return;
       }
 
-      const dists = computeHopDistances(activeId, adjacency);
-      const nodeUpdates: VisCustomNode[] = (this.nodes || []).map((n) => {
-        const baseColor = palette[n.group] || palette[0];
-        const c = getAttenuatedNodeColor(baseColor, dists.get(n.id), currentIsLight);
-        return {
-          id: n.id,
-          size: n.id === activeId ? currentTokens.nodeRadius * currentTokens.nodeHoverScale : currentTokens.nodeRadius,
-          color: {
-            background: c,
-            border: c,
-            highlight: { background: c, border: c },
-            hover: { background: c, border: c }
-          }
-        };
-      });
-      this.visNodes.update(nodeUpdates);
-
-      const edgeUpdates: VisEdge[] = [];
-      this.visEdges.forEach((edge: VisEdge) => {
-        const style = getAttenuatedEdgeStyle(
-          dists.get(String(edge.from)),
-          dists.get(String(edge.to)),
-          currentIsLight
-        );
-        edgeUpdates.push({
-          id: edge.id,
-          width: style.width,
-          hoverWidth: style.width,
-          color: {
-            color: style.color,
-            highlight: style.color,
-            hover: style.color
-          }
-        });
-      });
-      this.visEdges.update(edgeUpdates);
+      const startTime = performance.now();
+      const step = (now: number) => {
+        if (!this.visNodes || !this.visEdges) {
+          this.highlightFrameId = null;
+          return;
+        }
+        const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        renderStep(ease);
+        if (progress < 1) {
+          this.highlightFrameId = requestAnimationFrame(step);
+        } else {
+          this.highlightFrameId = null;
+        }
+      };
+      this.highlightFrameId = requestAnimationFrame(step);
     };
 
     if (interactionOptions.dragNodes) {
@@ -598,7 +684,7 @@ const engine: VisNetworkEngine = {
     this.isLight = isLight;
 
     // Apply color update to nodes and edges based on theme (and preserve any active highlight)
-    this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null);
+    this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
 
     if (!layoutChanged) {
       this.network.setOptions({ physics: { enabled: false } });
@@ -636,6 +722,10 @@ const engine: VisNetworkEngine = {
   },
 
   pause() {
+    if (this.highlightFrameId) {
+      cancelAnimationFrame(this.highlightFrameId);
+      this.highlightFrameId = null;
+    }
     if (this.dragStabilizeTimeout) {
       clearTimeout(this.dragStabilizeTimeout);
       this.dragStabilizeTimeout = null;

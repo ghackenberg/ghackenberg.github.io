@@ -3,11 +3,15 @@ import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import {
   GRAPH_COLORS,
+  HIGHLIGHT_TRANSITION_MS,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
+  interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedEdgeStyle,
+  getNodeHopZIndex,
+  getEdgeHopZIndex,
   type SigmaNode,
   type SigmaEdge
 } from '@commons/shared/graph-payload';
@@ -38,7 +42,8 @@ export interface SigmaEngine {
   nodeMap: Map<string, SigmaNodeData> | null;
   tooltipController: GraphTooltipController | null;
   hoveredNodeId?: string | null;
-  applyHighlight?(activeNodeId: string | null): void;
+  highlightFrameId?: number | null;
+  applyHighlight?(activeNodeId: string | null, immediate?: boolean): void;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
   container: HTMLElement | null;
   payload?: SigmaPayload;
@@ -95,6 +100,7 @@ const engine: SigmaEngine = {
         x: nx,
         y: ny,
         size: SIGMA_BASE_NODE_SIZE,
+        zIndex: 1,
         group: n.group ?? 0,
         color: getNodeColor(n.group ?? 0, isLight)
       });
@@ -103,7 +109,8 @@ const engine: SigmaEngine = {
     edges.forEach(e => {
       this.graph?.addEdge(e.source, e.target, {
         size: styleTokens.edgeWidth,
-        color: styleTokens.edgeColor
+        color: styleTokens.edgeColor,
+        zIndex: 1
       });
     });
 
@@ -136,6 +143,7 @@ const engine: SigmaEngine = {
       defaultNodeColor: tokens.nodeDefault,
       defaultEdgeColor: styleTokens.edgeColor,
       renderLabels: false,
+      zIndex: true,
       labelColor: { color: tokens.textHeading },
       labelFont: 'Outfit, Inter, sans-serif',
       labelSize: 10,
@@ -215,49 +223,121 @@ const engine: SigmaEngine = {
     this.isLight = isLight;
     const adjacency = buildGraphAdjacency(edges);
 
-    const applyHighlight = (activeNodeId: string | null) => {
+    const applyHighlight = (activeNodeId: string | null, immediate = false) => {
       if (!this.graph || !this.sigma) return;
-      const currentIsLight = Boolean(this.isLight);
-      const currentTokens = getGraphStyleTokens(currentIsLight);
-
-      if (!activeNodeId) {
-        this.graph.forEachNode(nId => {
-          const grp = (this.graph?.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
-          this.graph?.setNodeAttribute(nId, 'size', SIGMA_BASE_NODE_SIZE);
-          this.graph?.setNodeAttribute(nId, 'color', getNodeColor(grp, currentIsLight));
-        });
-        this.graph.forEachEdge(edge => {
-          this.graph?.setEdgeAttribute(edge, 'color', currentTokens.edgeColor);
-          this.graph?.setEdgeAttribute(edge, 'size', currentTokens.edgeWidth);
-        });
-        this.sigma.refresh();
-        return;
+      if (this.highlightFrameId) {
+        cancelAnimationFrame(this.highlightFrameId);
+        this.highlightFrameId = null;
       }
 
-      const dists = computeHopDistances(activeNodeId, adjacency);
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const dists = activeNodeId ? computeHopDistances(activeNodeId, adjacency) : null;
+
+      const nodeTrans: {
+        id: string;
+        startColor: string;
+        targetColor: string;
+        startSize: number;
+        targetSize: number;
+        targetZIndex: number;
+      }[] = [];
 
       this.graph.forEachNode(nId => {
         const grp = (this.graph?.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
         const baseColor = getNodeColor(grp, currentIsLight);
-        this.graph?.setNodeAttribute(
-          nId,
-          'size',
-          nId === activeNodeId ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale : SIGMA_BASE_NODE_SIZE
-        );
-        this.graph?.setNodeAttribute(
-          nId,
-          'color',
-          getAttenuatedNodeColor(baseColor, dists.get(nId), currentIsLight)
-        );
+        const startColor = String(this.graph?.getNodeAttribute(nId, 'color') || baseColor);
+        const startSize = Number(this.graph?.getNodeAttribute(nId, 'size') || SIGMA_BASE_NODE_SIZE);
+        const hopDist = dists ? dists.get(nId) : undefined;
+        const targetColor = dists
+          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+          : baseColor;
+        const targetSize = dists && nId === activeNodeId
+          ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale
+          : SIGMA_BASE_NODE_SIZE;
+        const targetZIndex = dists ? getNodeHopZIndex(hopDist) : 1;
+        nodeTrans.push({ id: nId, startColor, targetColor, startSize, targetSize, targetZIndex });
       });
+
+      const edgeTrans: {
+        id: string;
+        startColor: string;
+        targetColor: string;
+        startSize: number;
+        targetSize: number;
+        targetZIndex: number;
+      }[] = [];
 
       this.graph.forEachEdge(edge => {
         const [src, tgt] = this.graph!.extremities(edge);
-        const style = getAttenuatedEdgeStyle(dists.get(src), dists.get(tgt), currentIsLight);
-        this.graph?.setEdgeAttribute(edge, 'color', style.color);
-        this.graph?.setEdgeAttribute(edge, 'size', style.width);
+        const startColor = String(this.graph?.getEdgeAttribute(edge, 'color') || currentTokens.edgeColor);
+        const startSize = Number(this.graph?.getEdgeAttribute(edge, 'size') || currentTokens.edgeWidth);
+        const dSrc = dists ? dists.get(src) : undefined;
+        const dTgt = dists ? dists.get(tgt) : undefined;
+        const targetStyle = dists
+          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
+          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+        const targetZIndex = dists ? getEdgeHopZIndex(dSrc, dTgt) : 1;
+        edgeTrans.push({
+          id: edge,
+          startColor,
+          targetColor: targetStyle.color,
+          startSize,
+          targetSize: targetStyle.width,
+          targetZIndex
+        });
       });
-      this.sigma.refresh();
+
+      if (dists) {
+        for (const nt of nodeTrans) {
+          this.graph.setNodeAttribute(nt.id, 'zIndex', nt.targetZIndex);
+        }
+        for (const et of edgeTrans) {
+          this.graph.setEdgeAttribute(et.id, 'zIndex', et.targetZIndex);
+        }
+      }
+
+      const renderStep = (ease: number, applyZIndex: boolean) => {
+        if (!this.graph || !this.sigma) return;
+        for (const nt of nodeTrans) {
+          this.graph.setNodeAttribute(nt.id, 'color', interpolateHexColor(nt.startColor, nt.targetColor, ease));
+          this.graph.setNodeAttribute(nt.id, 'size', nt.startSize + (nt.targetSize - nt.startSize) * ease);
+          if (applyZIndex) {
+            this.graph.setNodeAttribute(nt.id, 'zIndex', nt.targetZIndex);
+          }
+        }
+        for (const et of edgeTrans) {
+          this.graph.setEdgeAttribute(et.id, 'color', interpolateHexColor(et.startColor, et.targetColor, ease));
+          this.graph.setEdgeAttribute(et.id, 'size', et.startSize + (et.targetSize - et.startSize) * ease);
+          if (applyZIndex) {
+            this.graph.setEdgeAttribute(et.id, 'zIndex', et.targetZIndex);
+          }
+        }
+        this.sigma.refresh();
+      };
+
+      if (immediate) {
+        renderStep(1, true);
+        return;
+      }
+
+      const startTime = performance.now();
+      const step = (now: number) => {
+        if (!this.graph || !this.sigma) {
+          this.highlightFrameId = null;
+          return;
+        }
+        const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const isFinal = progress >= 1;
+        renderStep(ease, isFinal && !dists);
+        if (!isFinal) {
+          this.highlightFrameId = requestAnimationFrame(step);
+        } else {
+          this.highlightFrameId = null;
+        }
+      };
+      this.highlightFrameId = requestAnimationFrame(step);
     };
     this.applyHighlight = applyHighlight;
 
@@ -601,7 +681,7 @@ const engine: SigmaEngine = {
     const styleTokens = getGraphStyleTokens(isLight);
     this.sigma.setSetting('labelColor', { color: tokens.textHeading });
     this.sigma.setSetting('defaultEdgeColor', styleTokens.edgeColor);
-    this.applyHighlight?.(this.hoveredNodeId ?? null);
+    this.applyHighlight?.(this.hoveredNodeId ?? null, true);
 
     if (!layoutChanged) {
       this.sigma.refresh();
@@ -714,6 +794,10 @@ const engine: SigmaEngine = {
   },
 
   destroy() {
+    if (this.highlightFrameId) {
+      cancelAnimationFrame(this.highlightFrameId);
+      this.highlightFrameId = null;
+    }
     if (this.physicsFrameId) {
       cancelAnimationFrame(this.physicsFrameId);
       this.physicsFrameId = null;

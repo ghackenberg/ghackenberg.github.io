@@ -211,6 +211,8 @@ function parseHexRgb(hex: string): [number, number, number] {
   return [r, g, b];
 }
 
+export const HIGHLIGHT_TRANSITION_MS = 180;
+
 export function blendHexColor(fgHex: string, bgHex: string, retention: number): string {
   const clamped = Math.max(0, Math.min(1, retention));
   if (clamped >= 1) return fgHex;
@@ -220,6 +222,12 @@ export function blendHexColor(fgHex: string, bgHex: string, retention: number): 
   const g = Math.round(bgG + (fgG - bgG) * clamped).toString(16).padStart(2, '0');
   const b = Math.round(bgB + (fgB - bgB) * clamped).toString(16).padStart(2, '0');
   return `#${r}${g}${b}`;
+}
+
+export function interpolateHexColor(fromHex: string, toHex: string, t: number): string {
+  if (t <= 0) return fromHex;
+  if (t >= 1) return toHex;
+  return blendHexColor(toHex, fromHex, t);
 }
 
 export function getAttenuatedNodeColor(
@@ -268,6 +276,25 @@ export function getAttenuatedEdgeStyle(
     color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.12),
     width: styleTokens.edgeWidth
   };
+}
+
+export function getNodeHopZIndex(hopDistance: number | undefined): number {
+  const d = hopDistance ?? Infinity;
+  if (d <= 0) return 40;
+  if (d === 1) return 30;
+  if (d === 2) return 20;
+  return 1;
+}
+
+export function getEdgeHopZIndex(
+  sourceDistance: number | undefined,
+  targetDistance: number | undefined
+): number {
+  const dSrc = sourceDistance ?? Infinity;
+  const dTgt = targetDistance ?? Infinity;
+  if (dSrc === 0 || dTgt === 0) return 30;
+  if (Math.max(dSrc, dTgt) <= 2) return 15;
+  return 1;
 }
 
 export interface TagCounts {
