@@ -200,7 +200,7 @@ const engine: VisNetworkEngine = {
         solver: 'forceAtlas2Based',
         forceAtlas2Based: {
           gravitationalConstant: -50,
-          centralGravity: 0.01,
+          centralGravity: 0.025,
           springLength: 80,
           springConstant: 0.08,
           damping: 0.4
@@ -302,7 +302,7 @@ const engine: VisNetworkEngine = {
 
         if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, true);
+          this.animateTo(targets, 400);
           return;
         }
 
@@ -310,7 +310,6 @@ const engine: VisNetworkEngine = {
           if (this.network && !this.isDragging) {
             this.network.setOptions({ physics: { enabled: false } });
             this.network.stopSimulation();
-            this.network.fit({ animation: { duration: 350, easingFunction: 'easeInOutQuad' } });
           }
           if (this.dragStabilizeTimeout) {
             clearTimeout(this.dragStabilizeTimeout);
@@ -323,7 +322,7 @@ const engine: VisNetworkEngine = {
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
         }
-        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 650);
+        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 800);
       });
     }
 

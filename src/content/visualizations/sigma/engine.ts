@@ -96,13 +96,29 @@ const engine: SigmaEngine = {
       });
     });
 
-    // Pre-solve initial ForceAtlas2 layout so initial render is immediately organic
+    // Pre-solve initial ForceAtlas2 layout and center around (0, 0) so initial render is immediately organic
     forceAtlas2.assign(this.graph, {
       iterations: 100,
       settings: {
         gravity: 0.8
       }
     });
+    let initSumX = 0;
+    let initSumY = 0;
+    let initCount = 0;
+    this.graph.forEachNode(node => {
+      initSumX += (this.graph?.getNodeAttribute(node, 'x') as number) || 0;
+      initSumY += (this.graph?.getNodeAttribute(node, 'y') as number) || 0;
+      initCount++;
+    });
+    if (initCount > 0) {
+      const meanX = initSumX / initCount;
+      const meanY = initSumY / initCount;
+      this.graph.forEachNode(node => {
+        this.graph?.setNodeAttribute(node, 'x', ((this.graph?.getNodeAttribute(node, 'x') as number) || 0) - meanX);
+        this.graph?.setNodeAttribute(node, 'y', ((this.graph?.getNodeAttribute(node, 'y') as number) || 0) - meanY);
+      });
+    }
 
     const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
@@ -158,6 +174,25 @@ const engine: SigmaEngine = {
 
         this.graph.setNodeAttribute(draggedNode, 'x', pinnedX);
         this.graph.setNodeAttribute(draggedNode, 'y', pinnedY);
+
+        let sumX = 0;
+        let sumY = 0;
+        let count = 0;
+        this.graph.forEachNode(nId => {
+          sumX += (this.graph?.getNodeAttribute(nId, 'x') as number) || 0;
+          sumY += (this.graph?.getNodeAttribute(nId, 'y') as number) || 0;
+          count++;
+        });
+        if (count > 0) {
+          const shiftX = (sumX / count) * 0.08;
+          const shiftY = (sumY / count) * 0.08;
+          this.graph.forEachNode(nId => {
+            if (nId === draggedNode) return;
+            this.graph?.setNodeAttribute(nId, 'x', ((this.graph?.getNodeAttribute(nId, 'x') as number) || 0) - shiftX);
+            this.graph?.setNodeAttribute(nId, 'y', ((this.graph?.getNodeAttribute(nId, 'y') as number) || 0) - shiftY);
+          });
+        }
+
         this.sigma.refresh();
 
         this.physicsFrameId = requestAnimationFrame(stepPhysics);
@@ -244,24 +279,33 @@ const engine: SigmaEngine = {
             }
           });
 
+          let sumX = 0;
+          let sumY = 0;
+          let count = 0;
           this.graph.forEachNode(node => {
-            targets[node] = {
-              x: this.graph?.getNodeAttribute(node, 'x') as number,
-              y: this.graph?.getNodeAttribute(node, 'y') as number
-            };
+            const tx = this.graph?.getNodeAttribute(node, 'x') as number;
+            const ty = this.graph?.getNodeAttribute(node, 'y') as number;
+            targets[node] = { x: tx, y: ty };
+            sumX += tx;
+            sumY += ty;
+            count++;
             this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
             this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
           });
+          if (count > 0) {
+            const meanX = sumX / count;
+            const meanY = sumY / count;
+            for (const node of Object.keys(targets)) {
+              targets[node].x -= meanX;
+              targets[node].y -= meanY;
+            }
+          }
 
-          this.sigma?.setCustomBBox(null);
-          this.animateTo(targets, 400, undefined, true);
+          this.animateTo(targets, 400, undefined, false);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.sigma?.setCustomBBox(null);
-          this.animateTo(targets, 400, undefined, true);
+          this.animateTo(targets, 400, undefined, false);
         }
-      } else {
-        this.sigma?.setCustomBBox(null);
       }
     });
 
@@ -376,10 +420,12 @@ const engine: SigmaEngine = {
       this.updateLayout(layout, isLight);
     }
     
-    // Zoom to fit the graph
+    // Zoom to fit the graph and lock initial bounding box so node drags never cause camera jumps
     setTimeout(() => {
       if (this.sigma) {
         this.sigma.setCustomBBox(null);
+        this.sigma.refresh();
+        this.sigma.setCustomBBox(this.sigma.getBBox());
         this.sigma.getCamera().animatedReset();
       }
     }, 100);
@@ -396,6 +442,7 @@ const engine: SigmaEngine = {
           if (this.sigma) {
             this.sigma.setCustomBBox(null);
             this.sigma.refresh();
+            this.sigma.setCustomBBox(this.sigma.getBBox());
             this.sigma.getCamera().animatedReset();
           }
         }
@@ -557,15 +604,28 @@ const engine: SigmaEngine = {
         }
       });
 
-      // Read resulting targets and reset graph to starting positions
+      // Read resulting targets centered around (0, 0) and reset graph to starting positions
+      let sumX = 0;
+      let sumY = 0;
+      let count = 0;
       this.graph.forEachNode(node => {
-        targets[node] = {
-          x: this.graph?.getNodeAttribute(node, 'x') as number,
-          y: this.graph?.getNodeAttribute(node, 'y') as number
-        };
+        const tx = this.graph?.getNodeAttribute(node, 'x') as number;
+        const ty = this.graph?.getNodeAttribute(node, 'y') as number;
+        targets[node] = { x: tx, y: ty };
+        sumX += tx;
+        sumY += ty;
+        count++;
         this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
         this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
       });
+      if (count > 0) {
+        const meanX = sumX / count;
+        const meanY = sumY / count;
+        for (const node of Object.keys(targets)) {
+          targets[node].x -= meanX;
+          targets[node].y -= meanY;
+        }
+      }
 
       this.animateTo(targets, 600, undefined, true);
     }
@@ -616,6 +676,8 @@ const engine: SigmaEngine = {
         this.animationFrameId = null;
         if (resetCamera && this.sigma) {
           this.sigma.setCustomBBox(null);
+          this.sigma.refresh();
+          this.sigma.setCustomBBox(this.sigma.getBBox());
           this.sigma.getCamera().animatedReset({ duration: 400 });
         }
       }

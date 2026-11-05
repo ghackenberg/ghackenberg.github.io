@@ -155,10 +155,16 @@ const engine: CytoscapeEngine = {
     const solvedForce: Record<string, { x: number; y: number }> = {};
     const simNodes: CySimNode[] = [];
     const simNodeMap = new Map<string, CySimNode>();
+    let initSumX = 0;
+    let initSumY = 0;
+    let initCount = 0;
 
     this.cy.nodes().forEach((n: NodeSingular) => {
       const pos = n.position();
       solvedForce[n.id()] = { x: pos.x, y: pos.y };
+      initSumX += pos.x;
+      initSumY += pos.y;
+      initCount++;
       const sn: CySimNode = {
         id: n.id(),
         group: Number(n.data('group') ?? 0),
@@ -169,6 +175,8 @@ const engine: CytoscapeEngine = {
       simNodeMap.set(sn.id, sn);
     });
     this.forcePositions = solvedForce;
+    const initCx = initSumX / Math.max(1, initCount);
+    const initCy = initSumY / Math.max(1, initCount);
 
     const simLinks: CySimLink[] = [];
     this.cy.edges().forEach((e: EdgeSingular) => {
@@ -216,11 +224,6 @@ const engine: CytoscapeEngine = {
           this.physicsFrameId = requestAnimationFrame(stepPhysics);
         } else {
           this.physicsFrameId = null;
-          this.cy?.animate({
-            fit: { eles: this.cy.elements(), padding: 30 },
-            duration: 350,
-            easing: 'ease-in-out-cubic'
-          });
         }
       };
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
@@ -240,13 +243,9 @@ const engine: CytoscapeEngine = {
       }
 
       if (this.currentLayout === 'force' && this.dragSimulation) {
-        let sumX = 0;
-        let sumY = 0;
         const allNodes = this.cy?.nodes() || [];
         allNodes.forEach((n: NodeSingular) => {
           const p = n.position();
-          sumX += p.x;
-          sumY += p.y;
           const sn = simNodeMap.get(n.id());
           if (sn) {
             sn.x = p.x;
@@ -257,10 +256,10 @@ const engine: CytoscapeEngine = {
             sn.fy = n.id() === grabbedNodeId ? p.y : null;
           }
         });
-        const count = Math.max(1, allNodes.length);
         this.dragSimulation
-          .force('x', d3.forceX<CySimNode>(sumX / count).strength(0.02))
-          .force('y', d3.forceY<CySimNode>(sumY / count).strength(0.02))
+          .force('center', null)
+          .force('x', d3.forceX<CySimNode>(initCx).strength(0.06))
+          .force('y', d3.forceY<CySimNode>(initCy).strength(0.06))
           .alphaTarget(0.3)
           .alpha(0.35);
         startForcePhysicsLoop();
@@ -319,12 +318,17 @@ const engine: CytoscapeEngine = {
           if (this.forcePositions) {
             this.forcePositions[node.id()] = { x: pos.x, y: pos.y };
           }
-          this.dragSimulation.alphaTarget(0).alpha(0.3);
+          this.dragSimulation
+            .force('center', d3.forceCenter<CySimNode>(initCx, initCy).strength(0.12))
+            .force('x', d3.forceX<CySimNode>(initCx).strength(0.08))
+            .force('y', d3.forceY<CySimNode>(initCy).strength(0.08))
+            .alphaTarget(0)
+            .alpha(0.35);
           settleFramesRemaining = 45;
           startForcePhysicsLoop();
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const targets = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false, true);
+          this.animateTo(targets, 400, undefined, false, false);
         }
       } else {
         settleFramesRemaining = 0;

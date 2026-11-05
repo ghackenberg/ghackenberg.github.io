@@ -213,17 +213,9 @@ const engine: Force3DEngine = {
           } catch {
             // Suppress
           }
-          if (this.recenterTimeout) clearTimeout(this.recenterTimeout);
-          this.recenterTimeout = setTimeout(() => {
-            try {
-              this.graph?.zoomToFit(400, 40);
-            } catch {
-              // Suppress
-            }
-          }, 450);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, true);
+          this.animateTo(targets, 400, undefined, false);
         }
       })
       .onNodeClick((node: Force3DNode) => {

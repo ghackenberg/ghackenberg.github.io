@@ -148,12 +148,6 @@ const engine: D3Engine = {
         if (!event.active) {
           this.simulation?.alphaTarget(0).alpha(0.35).restart();
         }
-        if (wasDragged) {
-          if (this.fitTimeout) clearTimeout(this.fitTimeout);
-          this.fitTimeout = setTimeout(() => {
-            this.fitToView(400);
-          }, 450);
-        }
       });
 
     this.nodeElements = this.svgGroup.selectAll<SVGGElement, D3Node>(".node")
@@ -495,10 +489,10 @@ const engine: D3Engine = {
       this.simulation
         .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(linkDist).strength(0.3))
         .force("charge", d3.forceManyBody().strength(charge))
-        .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+        .force("center", d3.forceCenter(this.width / 2, this.height / 2).strength(0.15))
         .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 12).strength(0.8))
-        .force("x", d3.forceX(this.width / 2).strength(0.04))
-        .force("y", d3.forceY(this.height / 2).strength(0.04));
+        .force("x", d3.forceX(this.width / 2).strength(0.06))
+        .force("y", d3.forceY(this.height / 2).strength(0.06));
     }
 
     // Trigger transition
