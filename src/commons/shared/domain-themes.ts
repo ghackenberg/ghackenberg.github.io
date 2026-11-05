@@ -43,8 +43,6 @@ export interface DomainMetadata {
   colors: DomainColorTokens;
   bgClass: string;
   textClass: string;
-  headingGradientClass: string;
-  bgGradientClass: string;
   badgeClasses: string;
   borderHoverClass: string;
   glowShadowClass: string;
@@ -66,8 +64,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-posts',
     textClass: 'text-domain-posts',
-    headingGradientClass: 'heading-gradient-domain-posts',
-    bgGradientClass: 'bg-gradient-domain-posts',
     badgeClasses: 'bg-domain-posts/10 text-domain-posts border-domain-posts/20',
     borderHoverClass: 'hover:border-domain-posts/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(130,196,192,0.22)]',
@@ -87,8 +83,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-publications',
     textClass: 'text-domain-publications',
-    headingGradientClass: 'heading-gradient-domain-publications',
-    bgGradientClass: 'bg-gradient-domain-publications',
     badgeClasses: 'bg-domain-publications/10 text-domain-publications border-domain-publications/20',
     borderHoverClass: 'hover:border-domain-publications/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(134,187,198,0.22)]',
@@ -108,8 +102,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-presentations',
     textClass: 'text-domain-presentations',
-    headingGradientClass: 'heading-gradient-domain-presentations',
-    bgGradientClass: 'bg-gradient-domain-presentations',
     badgeClasses: 'bg-domain-presentations/10 text-domain-presentations border-domain-presentations/20',
     borderHoverClass: 'hover:border-domain-presentations/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(137,175,200,0.22)]',
@@ -129,8 +121,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-courses',
     textClass: 'text-domain-courses',
-    headingGradientClass: 'heading-gradient-domain-courses',
-    bgGradientClass: 'bg-gradient-domain-courses',
     badgeClasses: 'bg-domain-courses/10 text-domain-courses border-domain-courses/20',
     borderHoverClass: 'hover:border-domain-courses/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(147,170,204,0.22)]',
@@ -150,8 +140,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-projects',
     textClass: 'text-domain-projects',
-    headingGradientClass: 'heading-gradient-domain-projects',
-    bgGradientClass: 'bg-gradient-domain-projects',
     badgeClasses: 'bg-domain-projects/10 text-domain-projects border-domain-projects/20',
     borderHoverClass: 'hover:border-domain-projects/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(154,165,208,0.22)]',
@@ -171,8 +159,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-services',
     textClass: 'text-domain-services',
-    headingGradientClass: 'heading-gradient-domain-services',
-    bgGradientClass: 'bg-gradient-domain-services',
     badgeClasses: 'bg-domain-services/10 text-domain-services border-domain-services/20',
     borderHoverClass: 'hover:border-domain-services/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(161,161,211,0.22)]',
@@ -192,8 +178,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-newsletters',
     textClass: 'text-domain-newsletters',
-    headingGradientClass: 'heading-gradient-domain-newsletters',
-    bgGradientClass: 'bg-gradient-domain-newsletters',
     badgeClasses: 'bg-domain-newsletters/10 text-domain-newsletters border-domain-newsletters/20',
     borderHoverClass: 'hover:border-domain-newsletters/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(174,165,213,0.22)]',
@@ -213,8 +197,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-visualizations',
     textClass: 'text-domain-visualizations',
-    headingGradientClass: 'heading-gradient-domain-visualizations',
-    bgGradientClass: 'bg-gradient-domain-visualizations',
     badgeClasses: 'bg-domain-visualizations/10 text-domain-visualizations border-domain-visualizations/20',
     borderHoverClass: 'hover:border-domain-visualizations/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(183,165,213,0.22)]',
@@ -234,8 +216,6 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     },
     bgClass: 'bg-domain-tags',
     textClass: 'text-domain-tags',
-    headingGradientClass: 'heading-gradient-domain-tags',
-    bgGradientClass: 'bg-gradient-domain-tags',
     badgeClasses: 'bg-domain-tags/10 text-domain-tags border-domain-tags/20',
     borderHoverClass: 'hover:border-domain-tags/40',
     glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(192,165,213,0.22)]',
@@ -302,20 +282,6 @@ export function getDomainColorHex(domain: ContentDomain, mode: 'dark' | 'light' 
  */
 export function getDomainBadgeClasses(domain: ContentDomain): string {
   return DOMAIN_METADATA[domain]?.badgeClasses ?? 'bg-domain-presentations/10 text-domain-presentations border-domain-presentations/20';
-}
-
-/**
- * Returns unified heading gradient class for a domain.
- */
-export function getDomainHeadingGradientClass(domain: ContentDomain): string {
-  return DOMAIN_METADATA[domain]?.headingGradientClass ?? 'heading-gradient-brand';
-}
-
-/**
- * Returns unified background gradient class for a domain.
- */
-export function getDomainBgGradientClass(domain: ContentDomain): string {
-  return DOMAIN_METADATA[domain]?.bgGradientClass ?? 'bg-gradient-brand';
 }
 
 /**

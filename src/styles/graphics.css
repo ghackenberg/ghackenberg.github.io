@@ -1,6 +1,9 @@
 /**
  * Centralized Graphics & Diagram Styling Architecture
  * Standardized SVG Design Tokens for adaptive dark/light themes.
+ * Maintains two orthogonally decoupled token families:
+ *   - Family A: 10-Stop Aurora Domain Spectrum (--svg-accent-1-* .. --svg-accent-10-*)
+ *   - Family B: Semantic Status & Archetype Nodes (--svg-node-{blue,purple,amber,green,red}-*)
  */
 
 :root,
@@ -19,36 +22,97 @@ svg,
   --svg-text-secondary: #94a3b8;
   --svg-text-muted: #64748b;
 
-  /* Node Archetypes (Dark Mode Defaults) */
+  /* Family B: Semantic Status & Archetype Nodes (Soft Nordic Pastel, Dark Mode) */
   /* Blue Archetype (Orchestration, Control Plane, Invariants) */
-  --svg-node-blue-bg: #1e3a8a;
-  --svg-node-blue-border: #3b82f6;
-  --svg-node-blue-text: #ffffff;
-  --svg-node-blue-subtext: #bfdbfe;
+  --svg-node-blue-bg: #17223a;
+  --svg-node-blue-border: #4f76b0;
+  --svg-node-blue-text: #eff6ff;
+  --svg-node-blue-subtext: #a6bce0;
 
   /* Purple Archetype (Probabilistic, ReAct, Autonomy) */
-  --svg-node-purple-bg: #581c87;
-  --svg-node-purple-border: #a855f7;
-  --svg-node-purple-text: #ffffff;
-  --svg-node-purple-subtext: #e9d5ff;
+  --svg-node-purple-bg: #261c3f;
+  --svg-node-purple-border: #8261b8;
+  --svg-node-purple-text: #faf5ff;
+  --svg-node-purple-subtext: #c8b3e6;
 
   /* Amber Archetype (Fail-Safe, Human-in-the-Loop, Warnings) */
-  --svg-node-amber-bg: #78350f;
-  --svg-node-amber-border: #f59e0b;
-  --svg-node-amber-text: #ffffff;
-  --svg-node-amber-subtext: #fef08a;
+  --svg-node-amber-bg: #2d2215;
+  --svg-node-amber-border: #b88a4b;
+  --svg-node-amber-text: #fefce8;
+  --svg-node-amber-subtext: #dfc49a;
 
   /* Green Archetype (Verified, Safe Output, Success) */
-  --svg-node-green-bg: #064e3b;
-  --svg-node-green-border: #10b981;
-  --svg-node-green-text: #ffffff;
-  --svg-node-green-subtext: #a7f3d0;
+  --svg-node-green-bg: #132c2a;
+  --svg-node-green-border: #469b84;
+  --svg-node-green-text: #f0fdf9;
+  --svg-node-green-subtext: #9bd4c3;
 
   /* Red Archetype (Errors, Violations, Strict Alerts) */
-  --svg-node-red-bg: #450a0a;
-  --svg-node-red-border: #ef4444;
-  --svg-node-red-text: #ffffff;
-  --svg-node-red-subtext: #fecaca;
+  --svg-node-red-bg: #2e161b;
+  --svg-node-red-border: #b5545b;
+  --svg-node-red-text: #fef2f2;
+  --svg-node-red-subtext: #e2a5aa;
+
+  /* Family A: 10-Stop Aurora Domain Spectrum (Dark Mode) */
+  /* Stop 1: 164° Soft Sage (About / Brand) */
+  --svg-accent-1-bg: #132c2a;
+  --svg-accent-1-border: #469b84;
+  --svg-accent-1-text: #f0fdf9;
+  --svg-accent-1-subtext: #9bd4c3;
+
+  /* Stop 2: 176° Misty Teal (Posts) */
+  --svg-accent-2-bg: #132c2e;
+  --svg-accent-2-border: #469b95;
+  --svg-accent-2-text: #f0fdfa;
+  --svg-accent-2-subtext: #9bd4cf;
+
+  /* Stop 3: 190° Dusty Cyan (Publications) */
+  --svg-accent-3-bg: #142933;
+  --svg-accent-3-border: #47909e;
+  --svg-accent-3-text: #f0f9ff;
+  --svg-accent-3-subtext: #9ccbd6;
+
+  /* Stop 4: 204° Slate Sky (Presentations) */
+  --svg-accent-4-bg: #152536;
+  --svg-accent-4-border: #4a81a5;
+  --svg-accent-4-text: #f0f9ff;
+  --svg-accent-4-subtext: #a1c2db;
+
+  /* Stop 5: 216° Dusty Blue (Courses) */
+  --svg-accent-5-bg: #17223a;
+  --svg-accent-5-border: #4f76b0;
+  --svg-accent-5-text: #eff6ff;
+  --svg-accent-5-subtext: #a6bce0;
+
+  /* Stop 6: 228° Periwinkle Slate (Projects) */
+  --svg-accent-6-bg: #1a1f3d;
+  --svg-accent-6-border: #5a6cb5;
+  --svg-accent-6-text: #eef2ff;
+  --svg-accent-6-subtext: #aeb7e3;
+
+  /* Stop 7: 240° Muted Indigo (Services) */
+  --svg-accent-7-bg: #1c1c3f;
+  --svg-accent-7-border: #6161b8;
+  --svg-accent-7-text: #eef2ff;
+  --svg-accent-7-subtext: #b3b3e6;
+
+  /* Stop 8: 252° Soft Iris (Newsletters) */
+  --svg-accent-8-bg: #211c3f;
+  --svg-accent-8-border: #7261b8;
+  --svg-accent-8-text: #f5f3ff;
+  --svg-accent-8-subtext: #beb3e6;
+
+  /* Stop 9: 263° Dusty Lavender (Visualizations) */
+  --svg-accent-9-bg: #261c3f;
+  --svg-accent-9-border: #8261b8;
+  --svg-accent-9-text: #faf5ff;
+  --svg-accent-9-subtext: #c8b3e6;
+
+  /* Stop 10: 274° Muted Mauve (Tags) */
+  --svg-accent-10-bg: #2b1c3f;
+  --svg-accent-10-border: #9261b8;
+  --svg-accent-10-text: #faf5ff;
+  --svg-accent-10-subtext: #d2b3e6;
 }
 
 /* Explicit Light Mode Block (In-app toggle overrides OS settings) */
@@ -70,36 +134,97 @@ html[data-theme-setting="light"] .svg-diagram svg {
   --svg-text-secondary: #475569;
   --svg-text-muted: #64748b;
 
-  /* Node Archetypes (Light Mode) */
+  /* Family B: Semantic Status & Archetype Nodes (Soft Nordic Pastel, Light Mode) */
   /* Blue Archetype */
-  --svg-node-blue-bg: #eff6ff;
-  --svg-node-blue-border: #2563eb;
-  --svg-node-blue-text: #1e40af;
-  --svg-node-blue-subtext: #1d4ed8;
+  --svg-node-blue-bg: #eff3f9;
+  --svg-node-blue-border: #5679ae;
+  --svg-node-blue-text: #243959;
+  --svg-node-blue-subtext: #355078;
 
   /* Purple Archetype */
-  --svg-node-purple-bg: #faf5ff;
-  --svg-node-purple-border: #9333ea;
-  --svg-node-purple-text: #6b21a8;
-  --svg-node-purple-subtext: #7e22ce;
+  --svg-node-purple-bg: #f5f0fa;
+  --svg-node-purple-border: #8061b3;
+  --svg-node-purple-text: #3b2a5c;
+  --svg-node-purple-subtext: #533d7d;
 
   /* Amber Archetype */
-  --svg-node-amber-bg: #fffbeb;
-  --svg-node-amber-border: #d97706;
-  --svg-node-amber-text: #92400e;
-  --svg-node-amber-subtext: #b45309;
+  --svg-node-amber-bg: #faf5ed;
+  --svg-node-amber-border: #b08243;
+  --svg-node-amber-text: #5c3d14;
+  --svg-node-amber-subtext: #7a521d;
 
   /* Green Archetype */
-  --svg-node-green-bg: #f0fdf4;
-  --svg-node-green-border: #16a34a;
-  --svg-node-green-text: #166534;
-  --svg-node-green-subtext: #15803d;
+  --svg-node-green-bg: #eef7f4;
+  --svg-node-green-border: #4ea28b;
+  --svg-node-green-text: #1f4d40;
+  --svg-node-green-subtext: #2e6b5a;
 
   /* Red Archetype */
-  --svg-node-red-bg: #fef2f2;
-  --svg-node-red-border: #dc2626;
-  --svg-node-red-text: #991b1b;
-  --svg-node-red-subtext: #b91c1c;
+  --svg-node-red-bg: #faeff0;
+  --svg-node-red-border: #ba5d64;
+  --svg-node-red-text: #5c1f24;
+  --svg-node-red-subtext: #7a2b31;
+
+  /* Family A: 10-Stop Aurora Domain Spectrum (Light Mode) */
+  /* Stop 1: 164° Soft Sage */
+  --svg-accent-1-bg: #eef7f4;
+  --svg-accent-1-border: #4ea28b;
+  --svg-accent-1-text: #1f4d40;
+  --svg-accent-1-subtext: #2e6b5a;
+
+  /* Stop 2: 176° Misty Teal */
+  --svg-accent-2-bg: #eef7f6;
+  --svg-accent-2-border: #4ea29c;
+  --svg-accent-2-text: #1f4d4a;
+  --svg-accent-2-subtext: #2e6b67;
+
+  /* Stop 3: 190° Dusty Cyan */
+  --svg-accent-3-bg: #eef6f8;
+  --svg-accent-3-border: #5097a5;
+  --svg-accent-3-text: #204850;
+  --svg-accent-3-subtext: #2f646e;
+
+  /* Stop 4: 204° Slate Sky */
+  --svg-accent-4-bg: #eef4f8;
+  --svg-accent-4-border: #5186a9;
+  --svg-accent-4-text: #214054;
+  --svg-accent-4-subtext: #315973;
+
+  /* Stop 5: 216° Dusty Blue */
+  --svg-accent-5-bg: #eff3f9;
+  --svg-accent-5-border: #5679ae;
+  --svg-accent-5-text: #243959;
+  --svg-accent-5-subtext: #355078;
+
+  /* Stop 6: 228° Periwinkle Slate */
+  --svg-accent-6-bg: #f0f1f9;
+  --svg-accent-6-border: #5a6baf;
+  --svg-accent-6-text: #273159;
+  --svg-accent-6-subtext: #38467a;
+
+  /* Stop 7: 240° Muted Indigo */
+  --svg-accent-7-bg: #f0f0fa;
+  --svg-accent-7-border: #5d5db1;
+  --svg-accent-7-text: #29295c;
+  --svg-accent-7-subtext: #3b3b7c;
+
+  /* Stop 8: 252° Soft Iris */
+  --svg-accent-8-bg: #f3f0fa;
+  --svg-accent-8-border: #7161b3;
+  --svg-accent-8-text: #332a5c;
+  --svg-accent-8-subtext: #483d7d;
+
+  /* Stop 9: 263° Dusty Lavender */
+  --svg-accent-9-bg: #f5f0fa;
+  --svg-accent-9-border: #8061b3;
+  --svg-accent-9-text: #3b2a5c;
+  --svg-accent-9-subtext: #533d7d;
+
+  /* Stop 10: 274° Muted Mauve */
+  --svg-accent-10-bg: #f7f0fa;
+  --svg-accent-10-border: #8f61b3;
+  --svg-accent-10-text: #432a5c;
+  --svg-accent-10-subtext: #5d3d7d;
 }
 
 /* Explicit Dark Mode Block */
@@ -121,36 +246,97 @@ html[data-theme-setting="dark"] .svg-diagram svg {
   --svg-text-secondary: #94a3b8;
   --svg-text-muted: #64748b;
 
-  /* Node Archetypes (Dark Mode) */
+  /* Family B: Semantic Status & Archetype Nodes (Soft Nordic Pastel, Dark Mode) */
   /* Blue Archetype */
-  --svg-node-blue-bg: #1e3a8a;
-  --svg-node-blue-border: #3b82f6;
-  --svg-node-blue-text: #ffffff;
-  --svg-node-blue-subtext: #bfdbfe;
+  --svg-node-blue-bg: #17223a;
+  --svg-node-blue-border: #4f76b0;
+  --svg-node-blue-text: #eff6ff;
+  --svg-node-blue-subtext: #a6bce0;
 
   /* Purple Archetype */
-  --svg-node-purple-bg: #581c87;
-  --svg-node-purple-border: #a855f7;
-  --svg-node-purple-text: #ffffff;
-  --svg-node-purple-subtext: #e9d5ff;
+  --svg-node-purple-bg: #261c3f;
+  --svg-node-purple-border: #8261b8;
+  --svg-node-purple-text: #faf5ff;
+  --svg-node-purple-subtext: #c8b3e6;
 
   /* Amber Archetype */
-  --svg-node-amber-bg: #78350f;
-  --svg-node-amber-border: #f59e0b;
-  --svg-node-amber-text: #ffffff;
-  --svg-node-amber-subtext: #fef08a;
+  --svg-node-amber-bg: #2d2215;
+  --svg-node-amber-border: #b88a4b;
+  --svg-node-amber-text: #fefce8;
+  --svg-node-amber-subtext: #dfc49a;
 
   /* Green Archetype */
-  --svg-node-green-bg: #064e3b;
-  --svg-node-green-border: #10b981;
-  --svg-node-green-text: #ffffff;
-  --svg-node-green-subtext: #a7f3d0;
+  --svg-node-green-bg: #132c2a;
+  --svg-node-green-border: #469b84;
+  --svg-node-green-text: #f0fdf9;
+  --svg-node-green-subtext: #9bd4c3;
 
   /* Red Archetype */
-  --svg-node-red-bg: #450a0a;
-  --svg-node-red-border: #ef4444;
-  --svg-node-red-text: #ffffff;
-  --svg-node-red-subtext: #fecaca;
+  --svg-node-red-bg: #2e161b;
+  --svg-node-red-border: #b5545b;
+  --svg-node-red-text: #fef2f2;
+  --svg-node-red-subtext: #e2a5aa;
+
+  /* Family A: 10-Stop Aurora Domain Spectrum (Dark Mode) */
+  /* Stop 1: 164° Soft Sage */
+  --svg-accent-1-bg: #132c2a;
+  --svg-accent-1-border: #469b84;
+  --svg-accent-1-text: #f0fdf9;
+  --svg-accent-1-subtext: #9bd4c3;
+
+  /* Stop 2: 176° Misty Teal */
+  --svg-accent-2-bg: #132c2e;
+  --svg-accent-2-border: #469b95;
+  --svg-accent-2-text: #f0fdfa;
+  --svg-accent-2-subtext: #9bd4cf;
+
+  /* Stop 3: 190° Dusty Cyan */
+  --svg-accent-3-bg: #142933;
+  --svg-accent-3-border: #47909e;
+  --svg-accent-3-text: #f0f9ff;
+  --svg-accent-3-subtext: #9ccbd6;
+
+  /* Stop 4: 204° Slate Sky */
+  --svg-accent-4-bg: #152536;
+  --svg-accent-4-border: #4a81a5;
+  --svg-accent-4-text: #f0f9ff;
+  --svg-accent-4-subtext: #a1c2db;
+
+  /* Stop 5: 216° Dusty Blue */
+  --svg-accent-5-bg: #17223a;
+  --svg-accent-5-border: #4f76b0;
+  --svg-accent-5-text: #eff6ff;
+  --svg-accent-5-subtext: #a6bce0;
+
+  /* Stop 6: 228° Periwinkle Slate */
+  --svg-accent-6-bg: #1a1f3d;
+  --svg-accent-6-border: #5a6cb5;
+  --svg-accent-6-text: #eef2ff;
+  --svg-accent-6-subtext: #aeb7e3;
+
+  /* Stop 7: 240° Muted Indigo */
+  --svg-accent-7-bg: #1c1c3f;
+  --svg-accent-7-border: #6161b8;
+  --svg-accent-7-text: #eef2ff;
+  --svg-accent-7-subtext: #b3b3e6;
+
+  /* Stop 8: 252° Soft Iris */
+  --svg-accent-8-bg: #211c3f;
+  --svg-accent-8-border: #7261b8;
+  --svg-accent-8-text: #f5f3ff;
+  --svg-accent-8-subtext: #beb3e6;
+
+  /* Stop 9: 263° Dusty Lavender */
+  --svg-accent-9-bg: #261c3f;
+  --svg-accent-9-border: #8261b8;
+  --svg-accent-9-text: #faf5ff;
+  --svg-accent-9-subtext: #c8b3e6;
+
+  /* Stop 10: 274° Muted Mauve */
+  --svg-accent-10-bg: #2b1c3f;
+  --svg-accent-10-border: #9261b8;
+  --svg-accent-10-text: #faf5ff;
+  --svg-accent-10-subtext: #d2b3e6;
 }
 
 /* Media query for standalone SVGs / system preference */
@@ -171,35 +357,96 @@ html[data-theme-setting="dark"] .svg-diagram svg {
     --svg-text-secondary: #475569;
     --svg-text-muted: #64748b;
 
-    /* Node Archetypes (Light Mode) */
+    /* Family B: Semantic Status & Archetype Nodes (Soft Nordic Pastel, Light Mode) */
     /* Blue Archetype */
-    --svg-node-blue-bg: #eff6ff;
-    --svg-node-blue-border: #2563eb;
-    --svg-node-blue-text: #1e40af;
-    --svg-node-blue-subtext: #1d4ed8;
+    --svg-node-blue-bg: #eff3f9;
+    --svg-node-blue-border: #5679ae;
+    --svg-node-blue-text: #243959;
+    --svg-node-blue-subtext: #355078;
 
     /* Purple Archetype */
-    --svg-node-purple-bg: #faf5ff;
-    --svg-node-purple-border: #9333ea;
-    --svg-node-purple-text: #6b21a8;
-    --svg-node-purple-subtext: #7e22ce;
+    --svg-node-purple-bg: #f5f0fa;
+    --svg-node-purple-border: #8061b3;
+    --svg-node-purple-text: #3b2a5c;
+    --svg-node-purple-subtext: #533d7d;
 
     /* Amber Archetype */
-    --svg-node-amber-bg: #fffbeb;
-    --svg-node-amber-border: #d97706;
-    --svg-node-amber-text: #92400e;
-    --svg-node-amber-subtext: #b45309;
+    --svg-node-amber-bg: #faf5ed;
+    --svg-node-amber-border: #b08243;
+    --svg-node-amber-text: #5c3d14;
+    --svg-node-amber-subtext: #7a521d;
 
     /* Green Archetype */
-    --svg-node-green-bg: #f0fdf4;
-    --svg-node-green-border: #16a34a;
-    --svg-node-green-text: #166534;
-    --svg-node-green-subtext: #15803d;
+    --svg-node-green-bg: #eef7f4;
+    --svg-node-green-border: #4ea28b;
+    --svg-node-green-text: #1f4d40;
+    --svg-node-green-subtext: #2e6b5a;
 
     /* Red Archetype */
-    --svg-node-red-bg: #fef2f2;
-    --svg-node-red-border: #dc2626;
-    --svg-node-red-text: #991b1b;
-    --svg-node-red-subtext: #b91c1c;
+    --svg-node-red-bg: #faeff0;
+    --svg-node-red-border: #ba5d64;
+    --svg-node-red-text: #5c1f24;
+    --svg-node-red-subtext: #7a2b31;
+
+    /* Family A: 10-Stop Aurora Domain Spectrum (Light Mode) */
+    /* Stop 1: 164° Soft Sage */
+    --svg-accent-1-bg: #eef7f4;
+    --svg-accent-1-border: #4ea28b;
+    --svg-accent-1-text: #1f4d40;
+    --svg-accent-1-subtext: #2e6b5a;
+
+    /* Stop 2: 176° Misty Teal */
+    --svg-accent-2-bg: #eef7f6;
+    --svg-accent-2-border: #4ea29c;
+    --svg-accent-2-text: #1f4d4a;
+    --svg-accent-2-subtext: #2e6b67;
+
+    /* Stop 3: 190° Dusty Cyan */
+    --svg-accent-3-bg: #eef6f8;
+    --svg-accent-3-border: #5097a5;
+    --svg-accent-3-text: #204850;
+    --svg-accent-3-subtext: #2f646e;
+
+    /* Stop 4: 204° Slate Sky */
+    --svg-accent-4-bg: #eef4f8;
+    --svg-accent-4-border: #5186a9;
+    --svg-accent-4-text: #214054;
+    --svg-accent-4-subtext: #315973;
+
+    /* Stop 5: 216° Dusty Blue */
+    --svg-accent-5-bg: #eff3f9;
+    --svg-accent-5-border: #5679ae;
+    --svg-accent-5-text: #243959;
+    --svg-accent-5-subtext: #355078;
+
+    /* Stop 6: 228° Periwinkle Slate */
+    --svg-accent-6-bg: #f0f1f9;
+    --svg-accent-6-border: #5a6baf;
+    --svg-accent-6-text: #273159;
+    --svg-accent-6-subtext: #38467a;
+
+    /* Stop 7: 240° Muted Indigo */
+    --svg-accent-7-bg: #f0f0fa;
+    --svg-accent-7-border: #5d5db1;
+    --svg-accent-7-text: #29295c;
+    --svg-accent-7-subtext: #3b3b7c;
+
+    /* Stop 8: 252° Soft Iris */
+    --svg-accent-8-bg: #f3f0fa;
+    --svg-accent-8-border: #7161b3;
+    --svg-accent-8-text: #332a5c;
+    --svg-accent-8-subtext: #483d7d;
+
+    /* Stop 9: 263° Dusty Lavender */
+    --svg-accent-9-bg: #f5f0fa;
+    --svg-accent-9-border: #8061b3;
+    --svg-accent-9-text: #3b2a5c;
+    --svg-accent-9-subtext: #533d7d;
+
+    /* Stop 10: 274° Muted Mauve */
+    --svg-accent-10-bg: #f7f0fa;
+    --svg-accent-10-border: #8f61b3;
+    --svg-accent-10-text: #432a5c;
+    --svg-accent-10-subtext: #5d3d7d;
   }
 }

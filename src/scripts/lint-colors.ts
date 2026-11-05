@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { CONTENT_DOMAINS, DOMAIN_METADATA } from '@commons/shared/domain-themes';
 
 /**
  * Color & Design Token Governance Linter
@@ -7,7 +8,7 @@ import path from 'node:path';
  * 1. Rule 1: No Hardcoded Hex Colors in templates, style blocks, or code files.
  * 2. Rule 2: No Deprecated Legacy Classes (.border-white/5, .border-white/10, .bg-white/5, light:!bg-white, light:!border-slate-200/90).
  * 3. Rule 3: No Ad-hoc Tailwind Palette Bypasses in Content & Components (bypassing canonical domain or brand tokens).
- * 4. Rule 4: Domain Metadata Purity in src/commons/shared/domain-themes.ts (badgeClasses canonical tokens).
+ * 4. Rule 4: Domain Metadata Purity & Cross-Layer Token Parity (domain-themes.ts, theme.css, graphics.css).
  * 5. Rule 5: Card Architecture Token Integrity (CompactRelatedCard DOMAIN_THEMES, services modules domain-services purity).
  * 6. Rule 6: Presentation Slide Accent Governance (No 'neutral' accents; No manual step accents in <Pipeline>; No 'accent=' attribute on <BentoCard>; No raw Tailwind palette classes in slide MDX).
  * 7. Rule 7: Zero Legacy Brand Color Tokens (No brand-blue, brand-yellow, brand-purple, brand-green).
@@ -206,21 +207,33 @@ if (rule3Violations === 0) {
 }
 
 // ============================================================================
-// Rule 4: Domain Metadata Purity in src/commons/shared/domain-themes.ts
+// Rule 4: Domain Metadata Purity & Cross-Layer Token Parity
 // ============================================================================
 if (verbose) {
-  console.log('Auditing Rule 4: Domain Metadata Purity...');
+  console.log('Auditing Rule 4: Domain Metadata Purity & Cross-Layer Token Parity...');
 }
 
 const DOMAIN_THEMES_PATH = path.resolve(SRC_DIR, 'commons', 'shared', 'domain-themes.ts');
+const THEME_CSS_PATH = path.resolve(SRC_DIR, 'styles', 'theme.css');
+const GRAPHICS_CSS_PATH = path.resolve(SRC_DIR, 'styles', 'graphics.css');
 let rule4Violations = 0;
+
+function extractCssVarMap(blockContent: string, prefix: string): Map<string, string> {
+  const map = new Map<string, string>();
+  const regex = new RegExp(`(${prefix}[a-z0-9-]+)\\s*:\\s*([^;]+);`, 'gi');
+  let m: RegExpExecArray | null;
+  while ((m = regex.exec(blockContent)) !== null) {
+    map.set(m[1].trim(), m[2].trim().toLowerCase());
+  }
+  return map;
+}
 
 if (fs.existsSync(DOMAIN_THEMES_PATH)) {
   const rel = path.relative(ROOT_DIR, DOMAIN_THEMES_PATH).replace(/\\/g, '/');
   const content = fs.readFileSync(DOMAIN_THEMES_PATH, 'utf8');
   const lines = content.split(/\r?\n/);
 
-  // Check DOMAIN_METADATA badgeClasses for raw palette classes or non-domain tokens
+  // 4a. Check DOMAIN_METADATA badgeClasses for raw palette classes or non-domain tokens
   lines.forEach((line, idx) => {
     if (line.includes('badgeClasses:')) {
       const match = line.match(/badgeClasses:\s*['"`]([^'"`]+)['"`]/);
@@ -248,10 +261,169 @@ if (fs.existsSync(DOMAIN_THEMES_PATH)) {
   rule4Violations++;
 }
 
-if (rule4Violations === 0) {
-  success('Rule 4 passed: DOMAIN_METADATA badgeClasses strictly adhere to canonical domain tokens.');
+// 4b, 4c, 4d: Cross-Layer Token Parity across theme.css, domain-themes.ts, and graphics.css
+if (fs.existsSync(THEME_CSS_PATH) && fs.existsSync(GRAPHICS_CSS_PATH)) {
+  const themeContent = fs.readFileSync(THEME_CSS_PATH, 'utf8');
+  const graphicsContent = fs.readFileSync(GRAPHICS_CSS_PATH, 'utf8');
+
+  // Extract @theme (dark) and :root.light (light) blocks from src/styles/theme.css
+  const darkThemeMatch = themeContent.match(/@theme\s*\{([\s\S]*?)\}/);
+  const lightThemeMatch = themeContent.match(/:root\.light,\s*\.light\s*\{([\s\S]*?)\}/);
+
+  if (!darkThemeMatch || !lightThemeMatch) {
+    error('src/styles/theme.css must contain both @theme { ... } and :root.light, .light { ... } blocks.');
+    rule4Violations++;
+  } else {
+    const themeDarkVars = extractCssVarMap(darkThemeMatch[1], '--color-');
+    const themeLightVars = extractCssVarMap(lightThemeMatch[1], '--color-');
+
+    // Extract the 4 declaration blocks in src/styles/graphics.css containing --svg-bg
+    const svgBlocks: Map<string, string>[] = [];
+    const blockRegex = /\{([^{}]*--svg-bg\s*:[^{}]*)\}/g;
+    let blockMatch: RegExpExecArray | null;
+    while ((blockMatch = blockRegex.exec(graphicsContent)) !== null) {
+      svgBlocks.push(extractCssVarMap(blockMatch[1], '--svg-'));
+    }
+
+    if (svgBlocks.length !== 4) {
+      error(`src/styles/graphics.css must contain exactly 4 selector blocks (:root, html.light, html.dark, @media light); found ${svgBlocks.length}.`);
+      rule4Violations++;
+    } else {
+      const [svgDarkRoot, svgLightExplicit, svgDarkExplicit, svgLightMedia] = svgBlocks;
+
+      // 4b. Verify internal block symmetry in src/styles/graphics.css
+      // Dark Block 1 (:root) === Dark Block 3 (html.dark)
+      for (const [key, val] of svgDarkRoot.entries()) {
+        if (svgDarkExplicit.get(key) !== val) {
+          error(`src/styles/graphics.css Dark Mode asymmetry for "${key}": :root has "${val}" vs html.dark has "${svgDarkExplicit.get(key) ?? 'missing'}".`);
+          rule4Violations++;
+        }
+      }
+      for (const key of svgDarkExplicit.keys()) {
+        if (!svgDarkRoot.has(key)) {
+          error(`src/styles/graphics.css Dark Mode asymmetry: "${key}" exists in html.dark but is missing in :root.`);
+          rule4Violations++;
+        }
+      }
+
+      // Light Block 2 (html.light) === Light Block 4 (@media prefers-color-scheme: light)
+      for (const [key, val] of svgLightExplicit.entries()) {
+        if (svgLightMedia.get(key) !== val) {
+          error(`src/styles/graphics.css Light Mode asymmetry for "${key}": html.light has "${val}" vs @media light has "${svgLightMedia.get(key) ?? 'missing'}".`);
+          rule4Violations++;
+        }
+      }
+      for (const key of svgLightMedia.keys()) {
+        if (!svgLightExplicit.has(key)) {
+          error(`src/styles/graphics.css Light Mode asymmetry: "${key}" exists in @media light but is missing in html.light.`);
+          rule4Violations++;
+        }
+      }
+
+      // 4c. Family A Parity: 10-Stop Aurora Spectrum (--color-accent-1..10 <-> --svg-accent-1..10-border <-> DOMAIN_METADATA)
+      for (let stop = 1; stop <= 10; stop++) {
+        const accentVar = `--color-accent-${stop}`;
+        const darkHex = themeDarkVars.get(accentVar);
+        const lightHex = themeLightVars.get(accentVar);
+
+        if (!darkHex || !lightHex) {
+          error(`Missing ${accentVar} in src/styles/theme.css (@theme or :root.light).`);
+          rule4Violations++;
+          continue;
+        }
+
+        const svgBorderVar = `--svg-accent-${stop}-border`;
+        const svgDarkBorder = svgDarkRoot.get(svgBorderVar);
+        const svgLightBorder = svgLightExplicit.get(svgBorderVar);
+
+        if (svgDarkBorder !== darkHex) {
+          error(`Family A Dark Mode mismatch for Stop ${stop}: theme.css ${accentVar} is "${darkHex}" vs graphics.css ${svgBorderVar} is "${svgDarkBorder ?? 'missing'}".`);
+          rule4Violations++;
+        }
+        if (svgLightBorder !== lightHex) {
+          error(`Family A Light Mode mismatch for Stop ${stop}: theme.css ${accentVar} is "${lightHex}" vs graphics.css ${svgBorderVar} is "${svgLightBorder ?? 'missing'}".`);
+          rule4Violations++;
+        }
+
+        for (const suffix of ['bg', 'text', 'subtext']) {
+          const tokenName = `--svg-accent-${stop}-${suffix}`;
+          if (!svgDarkRoot.has(tokenName) || !svgLightExplicit.has(tokenName)) {
+            error(`Missing required SVG spectrum token "${tokenName}" in src/styles/graphics.css.`);
+            rule4Violations++;
+          }
+        }
+      }
+
+      // Check DOMAIN_METADATA colors (Stops 2..10 correspond to CONTENT_DOMAINS[0..8])
+      CONTENT_DOMAINS.forEach((domain, idx) => {
+        const stop = idx + 2;
+        const accentVar = `--color-accent-${stop}`;
+        const expectedDark = themeDarkVars.get(accentVar);
+        const expectedLight = themeLightVars.get(accentVar);
+        const meta = DOMAIN_METADATA[domain];
+
+        if (meta.colors.dark.toLowerCase() !== expectedDark) {
+          error(`DOMAIN_METADATA["${domain}"].colors.dark ("${meta.colors.dark}") does not match theme.css ${accentVar} ("${expectedDark}").`);
+          rule4Violations++;
+        }
+        if (meta.colors.light.toLowerCase() !== expectedLight) {
+          error(`DOMAIN_METADATA["${domain}"].colors.light ("${meta.colors.light}") does not match theme.css ${accentVar} ("${expectedLight}").`);
+          rule4Violations++;
+        }
+      });
+
+      // 4d. Family B Parity: Semantic Callout Tokens <-> SVG Status Node Archetypes (Orthogonally Decoupled)
+      const CALLOUT_TO_SVG_NODE: ReadonlyArray<{ callout: string; node: string }> = [
+        { callout: '--color-callout-note', node: '--svg-node-blue-border' },
+        { callout: '--color-callout-tip', node: '--svg-node-green-border' },
+        { callout: '--color-callout-important', node: '--svg-node-purple-border' },
+        { callout: '--color-callout-warning', node: '--svg-node-amber-border' },
+        { callout: '--color-callout-caution', node: '--svg-node-red-border' },
+      ];
+
+      for (const { callout, node } of CALLOUT_TO_SVG_NODE) {
+        const darkCallout = themeDarkVars.get(callout);
+        const lightCallout = themeLightVars.get(callout);
+        const darkNode = svgDarkRoot.get(node);
+        const lightNode = svgLightExplicit.get(node);
+
+        if (!darkCallout || !lightCallout) {
+          error(`Missing semantic callout token "${callout}" in src/styles/theme.css.`);
+          rule4Violations++;
+          continue;
+        }
+        if (darkCallout.includes('var(') || lightCallout.includes('var(')) {
+          error(`Semantic callout token "${callout}" in src/styles/theme.css must use an explicit hex value (orthogonally decoupled from --color-accent-*).`);
+          rule4Violations++;
+        }
+        if (darkCallout !== darkNode) {
+          error(`Family B Dark Mode mismatch: theme.css ${callout} ("${darkCallout}") !== graphics.css ${node} ("${darkNode ?? 'missing'}").`);
+          rule4Violations++;
+        }
+        if (lightCallout !== lightNode) {
+          error(`Family B Light Mode mismatch: theme.css ${callout} ("${lightCallout}") !== graphics.css ${node} ("${lightNode ?? 'missing'}").`);
+          rule4Violations++;
+        }
+      }
+
+      // Ensure zero var(--color-accent-*) or var(--svg-accent-*) cross-references inside graphics.css
+      for (const [key, val] of [...svgDarkRoot.entries(), ...svgLightExplicit.entries()]) {
+        if (val.includes('var(--color-accent-') || val.includes('var(--svg-accent-')) {
+          error(`Forbidden cross-family variable reference in src/styles/graphics.css: ${key}: ${val}. Status and spectrum families must remain orthogonally decoupled.`);
+          rule4Violations++;
+        }
+      }
+    }
+  }
 } else {
-  console.log(`⚠️  Rule 4 detected ${rule4Violations} domain metadata purity violation(s).\n`);
+  error('Missing src/styles/theme.css or src/styles/graphics.css.');
+  rule4Violations++;
+}
+
+if (rule4Violations === 0) {
+  success('Rule 4 passed: DOMAIN_METADATA purity and cross-layer token parity (theme.css <-> domain-themes.ts <-> graphics.css) verified.');
+} else {
+  console.log(`⚠️  Rule 4 detected ${rule4Violations} domain metadata or cross-layer token parity violation(s).\n`);
 }
 
 // ============================================================================

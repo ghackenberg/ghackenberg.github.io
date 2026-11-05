@@ -1,5 +1,5 @@
 import { trackEvent } from './telemetry';
-import { renderPaginationControls, type PaginationTheme } from '@commons/client/pagination';
+import { renderPaginationControls } from '@commons/client/pagination';
 
 export interface DropdownFilterConfig {
   selectSelector: string;
@@ -22,7 +22,7 @@ export interface PaginationConfig {
   pageSize: number;
   navSelector: string;
   pageParamKey?: string;
-  theme?: 'blue' | 'purple' | 'yellow' | 'green' | 'indigo';
+
   domain?: string;
   scrollToSelector?: string;
 }
@@ -615,7 +615,7 @@ export class ClientListFilter {
 
     // 6. Handle Pagination or Direct Visibility
     if (this.config.pagination) {
-      const { pageSize, theme = 'blue' } = this.config.pagination;
+      const { pageSize } = this.config.pagination;
       const totalPages = Math.max(1, Math.ceil(totalMatching / pageSize));
 
       if (this.currentPage > totalPages) {
@@ -646,7 +646,7 @@ export class ClientListFilter {
           this.paginationNavElement.classList.add('hidden');
         } else {
           this.paginationNavElement.classList.remove('hidden');
-          this.renderPaginationControls(totalPages, theme);
+          this.renderPaginationControls(totalPages);
         }
       }
     } else {
@@ -901,14 +901,14 @@ export class ClientListFilter {
     });
   }
 
-  private renderPaginationControls(totalPages: number, theme: PaginationTheme) {
+  private renderPaginationControls(totalPages: number) {
     if (!this.paginationNavElement) return;
     renderPaginationControls({
       navElement: this.paginationNavElement,
       currentPage: this.currentPage,
       totalPages,
       domain: this.config.pagination?.domain,
-      theme,
+
     });
   }
 

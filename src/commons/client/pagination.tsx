@@ -1,14 +1,11 @@
 import { render } from 'preact';
 import { setPaginationPage } from './stores';
 
-export type PaginationTheme = 'blue' | 'purple' | 'yellow' | 'green' | 'indigo';
-
 export interface RenderPaginationOptions {
   navElement: HTMLElement;
   currentPage: number;
   totalPages: number;
   domain?: string;
-  theme?: PaginationTheme;
 }
 
 export interface SectionPaginationOptions {
@@ -125,14 +122,10 @@ export function renderPaginationControls({
   currentPage,
   totalPages,
   domain,
-  theme = 'blue',
 }: RenderPaginationOptions): void {
-  const activeClass = domain
-    ? `bg-domain-${domain} shadow-lg shadow-domain-${domain}/20`
-    : `bg-gradient-${theme} shadow-lg shadow-brand-${theme}/20`;
-  const hoverBorderClass = domain
-    ? `hover:border-domain-${domain}/30`
-    : `hover:border-brand-${theme}/30`;
+  const resolvedDomain = domain || 'posts';
+  const activeClass = `bg-domain-${resolvedDomain} shadow-lg shadow-domain-${resolvedDomain}/20`;
+  const hoverBorderClass = `hover:border-domain-${resolvedDomain}/30`;
 
   const prevBtn = navElement.querySelector<HTMLButtonElement>('[data-action="prev"]');
   const nextBtn = navElement.querySelector<HTMLButtonElement>('[data-action="next"]');

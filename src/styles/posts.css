@@ -380,7 +380,7 @@
   font-weight: 750;
   letter-spacing: -0.01em;
   color: var(--color-text-heading);
-  background: #111b33;
+  background: rgb(17, 27, 51);
   border: none !important;
   border-radius: 0 !important;
   border-bottom: 2px solid var(--color-border-medium) !important;
@@ -391,7 +391,7 @@
 
 :root.light .responsive-table-wrapper th,
 .light .responsive-table-wrapper th {
-  background: #f1f5f9;
+  background: rgb(241, 245, 249);
   border-bottom-color: rgba(203, 213, 225, 0.85) !important;
   color: var(--color-text-heading);
 }
@@ -423,14 +423,14 @@
   position: sticky;
   inset-inline-start: 0;
   z-index: 1;
-  background: #0d152a;
+  background: rgb(13, 21, 42);
 }
 
 :root.light .responsive-table-wrapper tbody th:first-child,
 .light .responsive-table-wrapper tbody th:first-child,
 :root.light .responsive-table-wrapper tbody td:first-child,
 .light .responsive-table-wrapper tbody td:first-child {
-  background: #f8fafc;
+  background: rgb(248, 250, 252);
 }
 
 :root.light .responsive-table-wrapper td,
@@ -449,7 +449,7 @@
 
 .responsive-table-wrapper tr:hover td:first-child,
 .responsive-table-wrapper tr:hover th:first-child {
-  background: #131e3a;
+  background: rgb(19, 30, 58);
 }
 
 :root.light .responsive-table-wrapper tr:hover td,
@@ -461,7 +461,7 @@
 .light .responsive-table-wrapper tr:hover td:first-child,
 :root.light .responsive-table-wrapper tr:hover th:first-child,
 .light .responsive-table-wrapper tr:hover th:first-child {
-  background: #f1f5f9;
+  background: rgb(241, 245, 249);
 }
 
 /* Sortable Column Headers */
@@ -473,12 +473,12 @@
 }
 
 .responsive-table-wrapper th[data-sortable="true"]:hover {
-  background: #172442;
+  background: rgb(23, 36, 66);
 }
 
 :root.light .responsive-table-wrapper th[data-sortable="true"]:hover,
 .light .responsive-table-wrapper th[data-sortable="true"]:hover {
-  background: #e2e8f0;
+  background: rgb(226, 232, 240);
 }
 
 .table-sort-icon {
@@ -536,7 +536,7 @@
 
   :root.light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr,
   .light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr {
-    background: #ffffff;
+    background: rgb(255, 255, 255);
     border-color: rgba(203, 213, 225, 0.85);
   }
 
@@ -552,7 +552,7 @@
 
   :root.light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :first-child,
   .light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :first-child {
-    background: #f1f5f9 !important;
+    background: rgb(241, 245, 249) !important;
     border-bottom-color: rgba(203, 213, 225, 0.85) !important;
   }
 
@@ -598,7 +598,7 @@
 
 :root.light .responsive-table-wrapper[data-table-view="cards"] tbody tr,
 .light .responsive-table-wrapper[data-table-view="cards"] tbody tr {
-  background: #ffffff;
+  background: rgb(255, 255, 255);
   border-color: rgba(203, 213, 225, 0.85);
 }
 
@@ -614,7 +614,7 @@
 
 :root.light .responsive-table-wrapper[data-table-view="cards"] tbody tr > :first-child,
 .light .responsive-table-wrapper[data-table-view="cards"] tbody tr > :first-child {
-  background: #f1f5f9 !important;
+  background: rgb(241, 245, 249) !important;
   border-bottom-color: rgba(203, 213, 225, 0.85) !important;
 }
 
@@ -692,7 +692,7 @@ figure.artifact-card {
 
 :root.light .artifact-card-badge,
 .light .artifact-card-badge {
-  color: #475569;
+  color: var(--color-text-subtle);
 }
 
 .artifact-card-controls,
@@ -787,8 +787,8 @@ figure.code-snippet .artifact-card-body pre {
 /* Shiki Dual-Theme Light Mode Switch (Inline & Fullscreen Code Blocks) */
 :root.light pre.astro-code,
 .light pre.astro-code {
-  color: var(--shiki-light, #24292e) !important;
-  background-color: var(--shiki-light-bg, #ffffff) !important;
+  color: var(--shiki-light, rgb(36, 41, 46)) !important;
+  background-color: var(--shiki-light-bg, rgb(255, 255, 255)) !important;
 }
 
 :root.light pre.astro-code span,
@@ -817,7 +817,7 @@ figcaption.artifact-card-footer {
 .light figcaption.artifact-card-footer {
   background: rgba(241, 245, 249, 0.88);
   border-top-color: rgba(203, 213, 225, 0.85);
-  color: #475569;
+  color: var(--color-text-subtle);
 }
 
 .table-deck-btn,
@@ -870,7 +870,7 @@ figcaption.artifact-card-footer {
 .light .table-deck-btn,
 :root.light .media-expand-btn,
 .light .media-expand-btn {
-  background: #ffffff;
+  background: rgb(255, 255, 255);
   border-color: rgba(203, 213, 225, 0.9);
   color: var(--color-text-main);
 }
@@ -879,7 +879,7 @@ figcaption.artifact-card-footer {
 .light .table-deck-btn:hover:not(:disabled),
 :root.light .media-expand-btn:hover:not(:disabled),
 .light .media-expand-btn:hover:not(:disabled) {
-  background: #f1f5f9;
+  background: rgb(241, 245, 249);
   border-color: var(--color-current-domain, var(--color-domain-posts));
 }
 
@@ -1132,7 +1132,7 @@ html.light .media-lightbox-footer,
 
 :root.light .media-lightbox-title,
 .light .media-lightbox-title {
-  color: #475569;
+  color: var(--color-text-subtle);
 }
 
 /* ==========================================================================

@@ -15,12 +15,12 @@
   --font-handwriting: "Caveat", cursive, sans-serif;
   --color-brand-primary: var(--color-accent-1);  /* Cross-site primary brand highlight */
   
-  /* Semantic Callout Alert Tokens */
-  --color-callout-note: #3b82f6;
-  --color-callout-tip: #10b981;
-  --color-callout-important: #a855f7;
-  --color-callout-warning: #f59e0b;
-  --color-callout-caution: #ef4444;
+  /* Semantic Callout Alert Tokens (Soft Nordic Pastel, Orthogonally Decoupled) */
+  --color-callout-note: #4f76b0;
+  --color-callout-tip: #469b84;
+  --color-callout-important: #8261b8;
+  --color-callout-warning: #b88a4b;
+  --color-callout-caution: #b5545b;
   
   /* Semantic variables that shift between modes */
   --color-text-main: #f3f4f6;       /* Default gray-100 */
@@ -121,11 +121,11 @@
   /* Semantic variable shifts in light mode */
   --color-brand-primary: var(--color-accent-1);
 
-  --color-callout-note: #2563eb;
-  --color-callout-tip: #059669;
-  --color-callout-important: #9333ea;
-  --color-callout-warning: #d97706;
-  --color-callout-caution: #dc2626;
+  --color-callout-note: #5679ae;
+  --color-callout-tip: #4ea28b;
+  --color-callout-important: #8061b3;
+  --color-callout-warning: #b08243;
+  --color-callout-caution: #ba5d64;
 
   --color-text-main: #334155;     /* Slate 700 */
   --color-text-heading: #0f172a;  /* Slate 900 */
@@ -229,28 +229,4 @@
     color: var(--color-text-main);
     transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
-}
-
-/* Unified Heading Gradient Utilities */
-.heading-gradient-brand {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, #469b84, #4a81a5, #6161b8, #9261b8);
-}
-
-:root.light .heading-gradient-brand,
-.light .heading-gradient-brand {
-  background-image: linear-gradient(to right, #4ea28b, #5186a9, #5d5db1, #8f61b3);
-}
-
-
-/* Unified Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
-.bg-gradient-brand {
-  background-image: linear-gradient(to right, #469b84, #4a81a5, #6161b8, #9261b8);
-}
-
-:root.light .bg-gradient-brand,
-.light .bg-gradient-brand {
-  background-image: linear-gradient(to right, #4ea28b, #5186a9, #5d5db1, #8f61b3);
 }

@@ -10,7 +10,7 @@ import { CONTENT_DOMAINS } from '@commons/shared/domain-themes';
  * 3. Detail pages must use `<TagChip />` component and not hardcoded colored tag chips
  * 4. Detail page `<h1>` has no colored heading gradient
  * 5. Preview cards must use canonical centered "Read More" buttons
- * 6. Disallow heading-gradient-domain-* completely; restrict heading-gradient-brand to permitted brand elements
+ * 6. Disallow heading-gradient-* and bg-gradient-(brand|domain-*) completely across all pages, layouts, and components
  * 7. `src/pages/projects/[slug].astro` must not define or use legacy `accentColor`
  * 8. `src/components/TrlCard.astro` supports and defaults to `domain="projects"`
  * 9. Non-posts detail pages in `src/pages/` must not reference `--color-brand-primary` or `--color-brand-blue`
@@ -195,38 +195,31 @@ if (cardButtonViolations === 0) {
   success('All 10 preview cards (including CourseModuleCard & ServiceModuleCard) use canonical centered "Read More" button blueprint.');
 }
 
-// 6. Heading gradient governance:
-// 6a. Disallow heading-gradient-domain-* completely across all pages and components
+// 6. Heading and background gradient governance:
+// 6a. Disallow heading-gradient-domain-* and bg-gradient-domain-* completely across all pages, layouts, and components
+const layoutFiles = getAstroFiles(path.resolve(SRC_DIR, 'layouts'));
+const allAuditedFiles = [...pageFiles, ...componentFiles, ...layoutFiles];
+
 let domainHeadingGradientViolations = 0;
-for (const file of websiteFiles) {
+for (const file of allAuditedFiles) {
   const content = fs.readFileSync(file, 'utf8');
-  if (/heading-gradient-domain-[a-z0-9_-]+/i.test(content)) {
+  if (/(?:heading|bg)-gradient-domain-[a-z0-9_-]+/i.test(content)) {
     const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
-    error(`Forbidden domain heading gradient found in ${rel}. All section and page headings must use clean text.`);
+    error(`Forbidden domain gradient class found in ${rel}. All section and page headings, dividers, and buttons must use solid domain tokens.`);
     domainHeadingGradientViolations++;
   }
 }
 if (domainHeadingGradientViolations === 0) {
-  success('Zero heading-gradient-domain-* found across all pages and components (clean text headings).');
+  success('Zero heading-gradient-domain-* or bg-gradient-domain-* found across all pages, layouts, and components.');
 }
 
-// 6b. Restrict heading-gradient-brand strictly to permitted brand elements
-const layoutFiles = getAstroFiles(path.resolve(SRC_DIR, 'layouts'));
-const allAuditedFiles = [...websiteFiles, ...layoutFiles];
-
-const ALLOWED_BRAND_GRADIENT_FILES = new Set([
-  path.resolve(PAGES_DIR, 'index.astro'),
-  path.resolve(COMPONENTS_DIR, 'Navbar.astro'),
-  path.resolve(COMPONENTS_DIR, 'ImageGalleryMarquee.astro'),
-  path.resolve(SRC_DIR, 'layouts', 'Layout.astro'),
-]);
-
+// 6b. Disallow heading-gradient-brand and bg-gradient-brand completely across all pages, layouts, and components
 let brandGradientViolations = 0;
 for (const file of allAuditedFiles) {
   const content = fs.readFileSync(file, 'utf8');
-  if (content.includes('heading-gradient-brand') && !ALLOWED_BRAND_GRADIENT_FILES.has(path.resolve(file))) {
+  if (/\b(?:heading|bg)-gradient-brand\b/.test(content)) {
     const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
-    error(`Unauthorized heading-gradient-brand found in ${rel}. Only permitted brand elements on homepage/navbar/layout may use heading-gradient-brand.`);
+    error(`Forbidden brand gradient class found in ${rel}. Use solid brand/accent tokens instead.`);
     brandGradientViolations++;
   }
 }
@@ -252,7 +245,7 @@ if (fs.existsSync(indexPageFile)) {
 }
 
 if (brandGradientViolations === 0) {
-  success('heading-gradient-brand is strictly restricted to permitted brand elements on homepage and navbar/layout.');
+  success('Zero heading-gradient-brand or bg-gradient-brand found across all pages, layouts, and components.');
 }
 
 // 7. projects/[slug].astro must not contain accentColor
@@ -353,8 +346,8 @@ if (engineViolations === 0) {
 
 // 12. Graph legends in index.astro and visualizations/[slug].astro strictly use bg-domain-* classes
 const LEGEND_PAGES = [
-  path.resolve(PAGES_DIR, 'visualizations', '[slug].astro'),
   path.resolve(PAGES_DIR, 'index.astro'),
+  path.resolve(PAGES_DIR, 'visualizations', '[slug].astro'),
 ];
 let legendViolations = 0;
 for (const file of LEGEND_PAGES) {
@@ -850,7 +843,7 @@ if (fs.existsSync(PUBLICATIONS_DIR)) {
   }
 }
 if (publicationDirViolations === 0) {
-  success('All publication directories in src/content/publications strictly start with YYYY_MM-DD_ matching their pubDate.');
+  success('All publication directories in src/content/publications strictly start with YYYY_MM_DD_ matching their pubDate.');
 }
 
 // 30. Preview Card Inventory, Deterministic Truncation & Option 3 Chip Gate

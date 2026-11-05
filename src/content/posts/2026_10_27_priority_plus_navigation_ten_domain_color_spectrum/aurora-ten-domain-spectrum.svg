@@ -10,84 +10,84 @@
 
   <!-- Ambient Spectrum Glows -->
   <circle cx="240" cy="196" r="144" fill="var(--svg-card)" opacity="0.65" />
-  <ellipse cx="144" cy="168" rx="90" ry="70" fill="var(--svg-node-green-bg)" opacity="0.28" />
-  <ellipse cx="240" cy="130" rx="90" ry="66" fill="var(--svg-node-blue-bg)" opacity="0.28" />
-  <ellipse cx="336" cy="168" rx="90" ry="70" fill="var(--svg-node-purple-bg)" opacity="0.28" />
+  <ellipse cx="144" cy="168" rx="90" ry="70" fill="var(--svg-accent-1-bg)" opacity="0.28" />
+  <ellipse cx="240" cy="130" rx="90" ry="66" fill="var(--svg-accent-5-bg)" opacity="0.28" />
+  <ellipse cx="336" cy="168" rx="90" ry="70" fill="var(--svg-accent-10-bg)" opacity="0.28" />
 
   <!-- Title -->
   <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">10-STOP AURORA HUE SPECTRUM</text>
   <text x="240" y="54" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)">Preattentive Domain Progression (164° Sage → 274° Mauve)</text>
 
   <!-- Connecting Orbital Arcs Across the 2x5 Spectrum Nodes -->
-  <path d="M 64 114 Q 240 84 416 114" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" stroke-dasharray="5,4" />
-  <path d="M 416 114 C 452 156, 452 204, 416 236" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" stroke-dasharray="4,4" />
-  <path d="M 64 236 Q 240 266 416 236" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" stroke-dasharray="5,4" />
+  <path d="M 64 114 Q 240 84 416 114" fill="none" stroke="var(--svg-accent-3-border)" stroke-width="2" stroke-dasharray="5,4" />
+  <path d="M 416 114 C 452 156, 452 204, 416 236" fill="none" stroke="var(--svg-accent-6-border)" stroke-width="2" stroke-dasharray="4,4" />
+  <path d="M 64 236 Q 240 266 416 236" fill="none" stroke="var(--svg-accent-9-border)" stroke-width="2" stroke-dasharray="5,4" />
 
   <!-- ===================================================================
-       ROW 1: STOPS 1..5 (164° SAGE TO 212° AZURE)
+       ROW 1: STOPS 1..5 (164° SAGE TO 216° BLUE)
        =================================================================== -->
-  <!-- Stop 1: Brand (164°) -->
-  <circle cx="64" cy="114" r="24" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.4" />
-  <text x="64" y="119" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">164°</text>
-  <text x="64" y="156" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Brand</text>
-  <text x="64" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Sage</text>
+  <!-- Stop 1: Brand (164° Soft Sage) -->
+  <circle cx="64" cy="114" r="24" fill="var(--svg-accent-1-bg)" stroke="var(--svg-accent-1-border)" stroke-width="2.4" />
+  <text x="64" y="119" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-1-text)">164°</text>
+  <text x="64" y="156" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-1-text)">Brand</text>
+  <text x="64" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-1-subtext)">Sage</text>
 
-  <!-- Stop 2: Posts (176°) -->
-  <circle cx="152" cy="104" r="24" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.4" />
-  <text x="152" y="109" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">176°</text>
-  <text x="152" y="146" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Posts</text>
-  <text x="152" y="163" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-green-subtext)">Mint</text>
+  <!-- Stop 2: Posts (176° Misty Teal) -->
+  <circle cx="152" cy="104" r="24" fill="var(--svg-accent-2-bg)" stroke="var(--svg-accent-2-border)" stroke-width="2.4" />
+  <text x="152" y="109" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-2-text)">176°</text>
+  <text x="152" y="146" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-2-text)">Posts</text>
+  <text x="152" y="163" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-2-subtext)">Teal</text>
 
-  <!-- Stop 3: Papers (188°) -->
-  <circle cx="240" cy="98" r="24" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
-  <text x="240" y="103" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">188°</text>
-  <text x="240" y="140" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">Papers</text>
-  <text x="240" y="157" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Teal</text>
+  <!-- Stop 3: Papers (190° Dusty Cyan) -->
+  <circle cx="240" cy="98" r="24" fill="var(--svg-accent-3-bg)" stroke="var(--svg-accent-3-border)" stroke-width="2.4" />
+  <text x="240" y="103" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-3-text)">190°</text>
+  <text x="240" y="140" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-3-text)">Papers</text>
+  <text x="240" y="157" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-3-subtext)">Cyan</text>
 
-  <!-- Stop 4: Talks (200°) -->
-  <circle cx="328" cy="104" r="24" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
-  <text x="328" y="109" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">200°</text>
-  <text x="328" y="146" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">Talks</text>
-  <text x="328" y="163" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Cyan</text>
+  <!-- Stop 4: Talks (204° Slate Sky) -->
+  <circle cx="328" cy="104" r="24" fill="var(--svg-accent-4-bg)" stroke="var(--svg-accent-4-border)" stroke-width="2.4" />
+  <text x="328" y="109" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-4-text)">204°</text>
+  <text x="328" y="146" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-4-text)">Talks</text>
+  <text x="328" y="163" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-4-subtext)">Sky</text>
 
-  <!-- Stop 5: Courses (212°) -->
-  <circle cx="416" cy="114" r="24" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
-  <text x="416" y="119" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">212°</text>
-  <text x="416" y="156" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">Courses</text>
-  <text x="416" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Sky</text>
+  <!-- Stop 5: Courses (216° Dusty Blue) -->
+  <circle cx="416" cy="114" r="24" fill="var(--svg-accent-5-bg)" stroke="var(--svg-accent-5-border)" stroke-width="2.4" />
+  <text x="416" y="119" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-5-text)">216°</text>
+  <text x="416" y="156" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-5-text)">Courses</text>
+  <text x="416" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-5-subtext)">Blue</text>
 
   <!-- ===================================================================
-       ROW 2: STOPS 6..10 (224° COBALT TO 274° MAUVE)
+       ROW 2: STOPS 6..10 (228° SLATE TO 274° MAUVE)
        =================================================================== -->
-  <!-- Stop 6: Projects (224°) -->
-  <circle cx="64" cy="236" r="24" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.4" />
-  <text x="64" y="241" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">224°</text>
-  <text x="64" y="278" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-blue-text)">Projects</text>
-  <text x="64" y="295" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-blue-subtext)">Cobalt</text>
+  <!-- Stop 6: Projects (228° Periwinkle Slate) -->
+  <circle cx="64" cy="236" r="24" fill="var(--svg-accent-6-bg)" stroke="var(--svg-accent-6-border)" stroke-width="2.4" />
+  <text x="64" y="241" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-6-text)">228°</text>
+  <text x="64" y="278" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-6-text)">Projects</text>
+  <text x="64" y="295" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-6-subtext)">Slate</text>
 
-  <!-- Stop 7: Services (236°) -->
-  <circle cx="152" cy="246" r="24" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.4" />
-  <text x="152" y="251" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-purple-text)">236°</text>
-  <text x="152" y="288" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">Services</text>
-  <text x="152" y="305" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">Indigo</text>
+  <!-- Stop 7: Services (240° Muted Indigo) -->
+  <circle cx="152" cy="246" r="24" fill="var(--svg-accent-7-bg)" stroke="var(--svg-accent-7-border)" stroke-width="2.4" />
+  <text x="152" y="251" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-7-text)">240°</text>
+  <text x="152" y="288" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-7-text)">Services</text>
+  <text x="152" y="305" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-7-subtext)">Indigo</text>
 
-  <!-- Stop 8: News (248°) -->
-  <circle cx="240" cy="252" r="24" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.4" />
-  <text x="240" y="257" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-purple-text)">248°</text>
-  <text x="240" y="294" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">News</text>
-  <text x="240" y="311" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">Iris</text>
+  <!-- Stop 8: News (252° Soft Iris) -->
+  <circle cx="240" cy="252" r="24" fill="var(--svg-accent-8-bg)" stroke="var(--svg-accent-8-border)" stroke-width="2.4" />
+  <text x="240" y="257" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-8-text)">252°</text>
+  <text x="240" y="294" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-8-text)">News</text>
+  <text x="240" y="311" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-8-subtext)">Iris</text>
 
-  <!-- Stop 9: Visuals (260°) -->
-  <circle cx="328" cy="246" r="24" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.4" />
-  <text x="328" y="251" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-purple-text)">260°</text>
-  <text x="328" y="288" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">Visuals</text>
-  <text x="328" y="305" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">Violet</text>
+  <!-- Stop 9: Visuals (263° Dusty Lavender) -->
+  <circle cx="328" cy="246" r="24" fill="var(--svg-accent-9-bg)" stroke="var(--svg-accent-9-border)" stroke-width="2.4" />
+  <text x="328" y="251" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-9-text)">263°</text>
+  <text x="328" y="288" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-9-text)">Visuals</text>
+  <text x="328" y="305" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-9-subtext)">Lavender</text>
 
-  <!-- Stop 10: Tags (274°) -->
-  <circle cx="416" cy="236" r="24" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.4" />
-  <text x="416" y="241" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-amber-text)">274°</text>
-  <text x="416" y="278" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-amber-text)">Tags</text>
-  <text x="416" y="295" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">Mauve</text>
+  <!-- Stop 10: Tags (274° Muted Mauve) -->
+  <circle cx="416" cy="236" r="24" fill="var(--svg-accent-10-bg)" stroke="var(--svg-accent-10-border)" stroke-width="2.4" />
+  <text x="416" y="241" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-10-text)">274°</text>
+  <text x="416" y="278" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-accent-10-text)">Tags</text>
+  <text x="416" y="295" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-10-subtext)">Mauve</text>
 
   <!-- Curved Horizon Divider -->
   <path d="M 32 332 Q 240 348 448 332" fill="none" stroke="var(--svg-line)" stroke-width="1.8" stroke-dasharray="6,6" />
@@ -107,13 +107,13 @@
   <text x="128" y="457" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-amber-subtext)">Pastel on #ebf2f8</text>
 
   <!-- Bidirectional Sync Link -->
-  <path d="M 164 388 H 316" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" stroke-dasharray="4,4" />
+  <path d="M 164 388 H 316" fill="none" stroke="var(--svg-accent-5-border)" stroke-width="2" stroke-dasharray="4,4" />
   <text x="240" y="380" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-text-secondary)">getThemeTokens()</text>
 
   <!-- Right Lens: Ultra-Subtle Dark Mode (cx=352, cy=388) -->
-  <circle cx="352" cy="388" r="28" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <circle cx="352" cy="388" r="28" fill="var(--svg-accent-10-bg)" stroke="var(--svg-accent-10-border)" stroke-width="2.2" />
   <!-- Crescent Moon Icon -->
-  <path d="M 356 377 A 11 11 0 1 0 364 395 A 9 9 0 1 1 356 377 Z" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2.2" stroke-linejoin="round" />
-  <text x="352" y="438" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-purple-text)">Subtle Dark</text>
-  <text x="352" y="457" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-node-purple-subtext)">Luminous on #030712</text>
+  <path d="M 356 377 A 11 11 0 1 0 364 395 A 9 9 0 1 1 356 377 Z" fill="none" stroke="var(--svg-accent-10-text)" stroke-width="2.2" stroke-linejoin="round" />
+  <text x="352" y="438" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-accent-10-text)">Subtle Dark</text>
+  <text x="352" y="457" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-accent-10-subtext)">Luminous on #030712</text>
 </svg>
