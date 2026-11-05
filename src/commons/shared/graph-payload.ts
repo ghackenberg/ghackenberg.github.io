@@ -241,12 +241,12 @@ export function getAttenuatedNodeColor(
   isLight: boolean
 ): string {
   const d = hopDistance ?? Infinity;
-  if (d <= 0) return baseColor;
+  if (d <= 1) return baseColor;
   const canvasBg = getThemeTokens(isLight).canvasBg;
-  let retention = 0.14;
-  if (d === 1) {
-    retention = 0.90;
-  } else if (d === 2) {
+  let retention = 0.20;
+  if (d === 2) {
+    retention = 0.72;
+  } else if (d === 3) {
     retention = 0.42;
   }
   return blendHexColor(baseColor, canvasBg, retention);
@@ -272,13 +272,19 @@ export function getAttenuatedEdgeStyle(
   const maxDist = Math.max(dSrc, dTgt);
   if (maxDist <= 2) {
     return {
-      color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.35),
+      color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.75),
+      width: styleTokens.edgeWidth
+    };
+  }
+  if (maxDist === 3) {
+    return {
+      color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.42),
       width: styleTokens.edgeWidth
     };
   }
 
   return {
-    color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.12),
+    color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.18),
     width: styleTokens.edgeWidth
   };
 }
@@ -288,6 +294,7 @@ export function getNodeHopZIndex(hopDistance: number | undefined): number {
   if (d <= 0) return 40;
   if (d === 1) return 30;
   if (d === 2) return 20;
+  if (d === 3) return 10;
   return 1;
 }
 
@@ -298,7 +305,9 @@ export function getEdgeHopZIndex(
   const dSrc = sourceDistance ?? Infinity;
   const dTgt = targetDistance ?? Infinity;
   if (dSrc === 0 || dTgt === 0) return 30;
-  if (Math.max(dSrc, dTgt) <= 2) return 15;
+  const maxDist = Math.max(dSrc, dTgt);
+  if (maxDist <= 2) return 20;
+  if (maxDist === 3) return 10;
   return 1;
 }
 
