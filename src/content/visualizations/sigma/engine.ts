@@ -213,10 +213,19 @@ const engine: SigmaEngine = {
     }, 100);
 
     // Bind ResizeObserver to handle container size changes dynamically
-    this.resizeObserver = new ResizeObserver(() => {
-      if (this.sigma) {
-        this.sigma.refresh();
-        this.sigma.getCamera().animatedReset();
+    let lastWidth = container.clientWidth;
+    let lastHeight = container.clientHeight;
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (Math.abs(width - lastWidth) >= 2 || Math.abs(height - lastHeight) >= 2) {
+          lastWidth = width;
+          lastHeight = height;
+          if (this.sigma) {
+            this.sigma.refresh();
+            this.sigma.getCamera().animatedReset();
+          }
+        }
       }
     });
     this.resizeObserver.observe(container);

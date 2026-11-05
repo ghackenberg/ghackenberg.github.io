@@ -333,6 +333,8 @@ export interface ThemeTokens {
   canvasBg: string;
   border: string;
   nodeDefault: string;
+  edgeBase: string;
+  edgeHover: string;
 }
 
 /**
@@ -347,5 +349,7 @@ export function getThemeTokens(isLight: boolean): ThemeTokens {
     canvasBg: isLight ? '#f8fafc' : '#090d16',
     border: isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255, 255, 255, 0.1)',
     nodeDefault: isLight ? '#5679ae' : '#4f76b0',
+    edgeBase: isLight ? '#94a3b8' : '#475569',
+    edgeHover: isLight ? '#1e293b' : '#e2e8f0',
   };
 }

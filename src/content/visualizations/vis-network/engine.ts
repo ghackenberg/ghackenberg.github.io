@@ -6,12 +6,11 @@ import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
 
 function getVisNodeColors(isLight: boolean) {
   const palette = GRAPH_COLORS[isLight ? 'light' : 'dark'];
-  const styleTokens = getGraphStyleTokens(isLight);
   return palette.map((color) => ({
     background: color,
     border: color,
-    highlight: { background: color, border: styleTokens.nodeHoverBorderColor },
-    hover: { background: color, border: styleTokens.nodeHoverBorderColor }
+    highlight: { background: color, border: color },
+    hover: { background: color, border: color }
   }));
 }
 
@@ -124,8 +123,7 @@ const engine: VisNetworkEngine = {
             if (hovering || selected) {
               const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
               if (values.hoverBackground) values.color = values.hoverBackground;
-              values.borderColor = currentTokens.nodeHoverBorderColor;
-              values.borderWidth = 2.5;
+              values.borderColor = values.color;
               values.size = currentTokens.nodeRadius * currentTokens.nodeHoverScale;
             }
           },
@@ -175,8 +173,7 @@ const engine: VisNetworkEngine = {
             if (hovering || selected) {
               const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
               if (values.hoverBackground) values.color = values.hoverBackground;
-              values.borderColor = currentTokens.nodeHoverBorderColor;
-              values.borderWidth = 2.5;
+              values.borderColor = values.color;
               values.size = currentTokens.nodeRadius * currentTokens.nodeHoverScale;
             }
           },

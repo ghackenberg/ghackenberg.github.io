@@ -178,14 +178,16 @@ const engine: D3Engine = {
         container.style.cursor = "pointer";
         const currentIsLight = Boolean(this.isLight);
         const currentTokens = getGraphStyleTokens(currentIsLight);
+        const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+        const baseColor = groupColors[d.group] || groupColors[0];
         const [x, y] = d3.pointer(event, container);
         this.tooltipController?.show(d, currentIsLight, x, y);
 
         d3.select(event.currentTarget as SVGGElement)
           .select("circle")
           .attr("r", currentTokens.nodeRadius * currentTokens.nodeHoverScale)
-          .style("stroke", currentTokens.nodeHoverBorderColor)
-          .style("stroke-width", "2.5px");
+          .style("stroke", baseColor)
+          .style("stroke-width", "1.5px");
 
         this.linkElements
           ?.style("stroke", (l: D3Link) => {
@@ -256,6 +258,7 @@ const engine: D3Engine = {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (width <= 0 || height <= 0) continue;
+        if (Math.abs(width - this.width) < 2 && Math.abs(height - this.height) < 2) continue;
         this.width = width;
         this.height = height;
         if (this.svg) {

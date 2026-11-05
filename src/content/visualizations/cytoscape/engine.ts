@@ -1,6 +1,5 @@
 import cytoscape, { type Core, type NodeSingular, type EventObjectNode } from 'cytoscape';
 import { GRAPH_COLORS, getGraphStyleTokens } from '@commons/shared/graph-payload';
-import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
@@ -15,9 +14,14 @@ export interface CytoscapeEngine {
   tooltipController: GraphTooltipController | null;
   currentLayout?: string;
   isLight?: boolean;
+  initialized?: boolean;
+  forcePositions?: Record<string, { x: number; y: number }> | null;
+  animationFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
-  updateLayout(layout: string, isLight: boolean): void;
+  computeLayoutTargets(layout: string): Record<string, { x: number; y: number }>;
+  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number): void;
+  updateLayout(layout: string, isLight: boolean, forceRecompute?: boolean): void;
   destroy(): void;
 }
 
@@ -29,13 +33,18 @@ const engine: CytoscapeEngine = {
   ],
   cy: null,
   tooltipController: null,
+  initialized: false,
+  forcePositions: null,
+  animationFrameId: null,
   resizeObserver: null,
 
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
-    const tokens = getThemeTokens(isLight);
     const styleTokens = getGraphStyleTokens(isLight);
     const baseDiameter = styleTokens.nodeRadius * 2;
     const hoverDiameter = baseDiameter * styleTokens.nodeHoverScale;
+
+    this.initialized = false;
+    this.forcePositions = null;
 
     this.cy = cytoscape({
       container: container,
@@ -51,9 +60,7 @@ const engine: CytoscapeEngine = {
             'height': baseDiameter,
             'border-width': '1.5px',
             'border-color': (node: NodeSingular) => getNodeColor(node, isLight),
-            'overlay-opacity': 0,
-            'transition-property': 'background-color, border-color, width, height',
-            'transition-duration': 0.2
+            'overlay-opacity': 0
           }
         },
         {
@@ -61,8 +68,7 @@ const engine: CytoscapeEngine = {
           style: {
             'width': styleTokens.edgeWidth,
             'line-color': styleTokens.edgeColor,
-            'target-arrow-color': tokens.border,
-            'curve-style': 'bezier'
+            'curve-style': 'straight'
           }
         },
         {
@@ -70,8 +76,8 @@ const engine: CytoscapeEngine = {
           style: {
             'width': hoverDiameter,
             'height': hoverDiameter,
-            'border-width': '2.5px',
-            'border-color': styleTokens.nodeHoverBorderColor
+            'border-width': '1.5px',
+            'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
           }
         },
         {
@@ -79,8 +85,8 @@ const engine: CytoscapeEngine = {
           style: {
             'width': hoverDiameter,
             'height': hoverDiameter,
-            'border-width': '2.5px',
-            'border-color': styleTokens.nodeHoverBorderColor
+            'border-width': '1.5px',
+            'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
           }
         },
         {
@@ -175,19 +181,63 @@ const engine: CytoscapeEngine = {
       this.tooltipController?.hide();
     });
 
-    // Cache parameters for ResizeObserver
+    // Solve initial force layout synchronously and cache positions
+    this.cy.layout({
+      name: 'cose',
+      animate: false,
+      fit: true,
+      padding: 30,
+      randomize: true,
+      idealEdgeLength: () => 100,
+      nodeOverlap: 20,
+      componentSpacing: 100,
+      nodeRepulsion: () => 400000,
+      edgeElasticity: () => 100,
+      nestingFactor: 5,
+      gravity: 80,
+      numIter: 1000
+    } as cytoscape.CoseLayoutOptions).run();
+
+    const solvedForce: Record<string, { x: number; y: number }> = {};
+    this.cy.nodes().forEach((n: NodeSingular) => {
+      const pos = n.position();
+      solvedForce[n.id()] = { x: pos.x, y: pos.y };
+    });
+    this.forcePositions = solvedForce;
+
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Run initial layout
-    this.updateLayout(layout, isLight);
+    if (layout !== 'force') {
+      const initialTargets = this.computeLayoutTargets(layout);
+      this.cy.batch(() => {
+        this.cy?.nodes().forEach((n: NodeSingular) => {
+          const t = initialTargets[n.id()];
+          if (t) n.position(t);
+        });
+      });
+      this.cy.fit(undefined, 30);
+    }
 
-    // Bind ResizeObserver to handle container size changes dynamically
-    this.resizeObserver = new ResizeObserver(() => {
-      if (this.cy) {
-        this.cy.resize();
-        if (this.currentLayout !== undefined && this.isLight !== undefined) {
-          this.updateLayout(this.currentLayout, this.isLight);
+    this.initialized = true;
+
+    // Bind ResizeObserver to handle container size changes dynamically with dimension threshold
+    let lastWidth = container.clientWidth;
+    let lastHeight = container.clientHeight;
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (Math.abs(width - lastWidth) >= 2 || Math.abs(height - lastHeight) >= 2) {
+          lastWidth = width;
+          lastHeight = height;
+          if (this.cy) {
+            this.cy.resize();
+            if (this.currentLayout === 'columns' && this.isLight !== undefined) {
+              this.updateLayout(this.currentLayout, this.isLight, true);
+            } else {
+              this.cy.fit(undefined, 30);
+            }
+          }
         }
       }
     });
@@ -196,13 +246,175 @@ const engine: CytoscapeEngine = {
     return this;
   },
 
-  updateLayout(layout: string, isLight: boolean) {
+  computeLayoutTargets(layout: string): Record<string, { x: number; y: number }> {
+    const targets: Record<string, { x: number; y: number }> = {};
+    if (!this.cy) return targets;
+
+    if (layout === 'radial') {
+      const startingPos: Record<string, { x: number; y: number }> = {};
+      this.cy.nodes().forEach((n: NodeSingular) => {
+        const p = n.position();
+        startingPos[n.id()] = { x: p.x, y: p.y };
+      });
+
+      this.cy.batch(() => {
+        this.cy?.layout({
+          name: 'concentric',
+          animate: false,
+          fit: false,
+          concentric: function(node: NodeSingular) {
+            return node.data('group') === 0 ? 2 : 1;
+          },
+          levelWidth: function() { return 1; }
+        } as cytoscape.ConcentricLayoutOptions).run();
+
+        this.cy?.nodes().forEach((n: NodeSingular) => {
+          const p = n.position();
+          targets[n.id()] = { x: p.x, y: p.y };
+          const s = startingPos[n.id()];
+          if (s) n.position(s);
+        });
+      });
+      return targets;
+    }
+
+    if (layout === 'columns') {
+      const width = this.cy.width() || 800;
+      const height = this.cy.height() || 500;
+      const nodes = this.cy.nodes();
+
+      const posts = nodes.filter((n: NodeSingular) => n.data('group') === 1);
+      const publications = nodes.filter((n: NodeSingular) => n.data('group') === 2);
+      const presentations = nodes.filter((n: NodeSingular) => n.data('group') === 3);
+      const tags = nodes.filter((n: NodeSingular) => n.data('group') === 0);
+      const courses = nodes.filter((n: NodeSingular) => n.data('group') === 4);
+      const projects = nodes.filter((n: NodeSingular) => n.data('group') === 5);
+      const services = nodes.filter((n: NodeSingular) => n.data('group') === 6);
+      const newsletters = nodes.filter((n: NodeSingular) => n.data('group') === 7);
+      const visualizations = nodes.filter((n: NodeSingular) => n.data('group') === 8);
+
+      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
+      const isMobile = width < 768 || window.innerWidth < 768;
+
+      if (isMobile) {
+        categories.forEach((catNodes, catIdx) => {
+          const rowY = (catIdx + 1) * (height / (categories.length + 1));
+          catNodes.forEach((n: NodeSingular, idx: number) => {
+            targets[n.id()] = {
+              x: (idx + 1) * (width / (catNodes.length + 1)),
+              y: rowY
+            };
+          });
+        });
+      } else {
+        categories.forEach((catNodes, catIdx) => {
+          const colX = (catIdx + 1) * (width / (categories.length + 1));
+          catNodes.forEach((n: NodeSingular, idx: number) => {
+            targets[n.id()] = {
+              x: colX,
+              y: (idx + 1) * (height / (catNodes.length + 1))
+            };
+          });
+        });
+      }
+      return targets;
+    }
+
+    // default: force directed
+    if (this.forcePositions) {
+      return this.forcePositions;
+    }
+
+    const startingPos: Record<string, { x: number; y: number }> = {};
+    this.cy.nodes().forEach((n: NodeSingular) => {
+      const p = n.position();
+      startingPos[n.id()] = { x: p.x, y: p.y };
+    });
+
+    this.cy.batch(() => {
+      this.cy?.layout({
+        name: 'cose',
+        animate: false,
+        fit: false,
+        randomize: false,
+        idealEdgeLength: () => 100,
+        nodeOverlap: 20,
+        componentSpacing: 100,
+        nodeRepulsion: () => 400000,
+        edgeElasticity: () => 100,
+        nestingFactor: 5,
+        gravity: 80,
+        numIter: 1000
+      } as cytoscape.CoseLayoutOptions).run();
+
+      this.cy?.nodes().forEach((n: NodeSingular) => {
+        const p = n.position();
+        targets[n.id()] = { x: p.x, y: p.y };
+        const s = startingPos[n.id()];
+        if (s) n.position(s);
+      });
+    });
+
+    this.forcePositions = targets;
+    return targets;
+  },
+
+  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600) {
     if (!this.cy) return;
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    const startTime = performance.now();
+    const startPositions: Record<string, { x: number; y: number }> = {};
+    this.cy.nodes().forEach((n: NodeSingular) => {
+      const p = n.position();
+      startPositions[n.id()] = { x: p.x, y: p.y };
+    });
+
+    const step = (time: number) => {
+      if (!this.cy) return;
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const ease = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      this.cy.batch(() => {
+        this.cy?.nodes().forEach((n: NodeSingular) => {
+          const id = n.id();
+          const start = startPositions[id];
+          const target = targets[id];
+          if (start && target) {
+            n.position({
+              x: start.x + (target.x - start.x) * ease,
+              y: start.y + (target.y - start.y) * ease
+            });
+          }
+        });
+      });
+
+      this.cy.fit(undefined, 30);
+
+      if (progress < 1) {
+        this.animationFrameId = requestAnimationFrame(step);
+      } else {
+        this.animationFrameId = null;
+      }
+    };
+
+    this.animationFrameId = requestAnimationFrame(step);
+  },
+
+  updateLayout(layout: string, isLight: boolean, forceRecompute = false) {
+    if (!this.cy) return;
+    const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
 
     // Apply color update to nodes and edges based on theme
-    const tokens = getThemeTokens(isLight);
     const styleTokens = getGraphStyleTokens(isLight);
     const baseDiameter = styleTokens.nodeRadius * 2;
     const hoverDiameter = baseDiameter * styleTokens.nodeHoverScale;
@@ -217,19 +429,18 @@ const engine: CytoscapeEngine = {
       .selector('node:selected').style({
         'width': hoverDiameter,
         'height': hoverDiameter,
-        'border-width': '2.5px',
-        'border-color': styleTokens.nodeHoverBorderColor
+        'border-width': '1.5px',
+        'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
       })
       .selector('node.hovered').style({
         'width': hoverDiameter,
         'height': hoverDiameter,
-        'border-width': '2.5px',
-        'border-color': styleTokens.nodeHoverBorderColor
+        'border-width': '1.5px',
+        'border-color': (node: NodeSingular) => getNodeColor(node, isLight)
       })
       .selector('edge').style({
         'width': styleTokens.edgeWidth,
-        'line-color': styleTokens.edgeColor,
-        'target-arrow-color': tokens.border
+        'line-color': styleTokens.edgeColor
       })
       .selector('edge.hovered-edge').style({
         'width': styleTokens.edgeHoverWidth,
@@ -237,86 +448,17 @@ const engine: CytoscapeEngine = {
       })
       .update();
 
-    if (layout === 'radial') {
-      this.cy.layout({
-        name: 'concentric',
-        concentric: function(node: NodeSingular) {
-          return node.data('group') === 0 ? 2 : 1;
-        },
-        levelWidth: function() { return 1; },
-        animate: true,
-        animationDuration: 600
-      } as cytoscape.ConcentricLayoutOptions).run();
-    } else if (layout === 'columns') {
-      const width = this.cy.width();
-      const height = this.cy.height();
-      const nodes = this.cy.nodes();
-
-      const posts = nodes.filter((n: NodeSingular) => n.data('group') === 1);
-      const publications = nodes.filter((n: NodeSingular) => n.data('group') === 2);
-      const presentations = nodes.filter((n: NodeSingular) => n.data('group') === 3);
-      const tags = nodes.filter((n: NodeSingular) => n.data('group') === 0);
-      const courses = nodes.filter((n: NodeSingular) => n.data('group') === 4);
-      const projects = nodes.filter((n: NodeSingular) => n.data('group') === 5);
-      const services = nodes.filter((n: NodeSingular) => n.data('group') === 6);
-      const newsletters = nodes.filter((n: NodeSingular) => n.data('group') === 7);
-      const visualizations = nodes.filter((n: NodeSingular) => n.data('group') === 8);
-
-      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-      const pos: Record<string, { x: number; y: number }> = {};
-      const isMobile = width < 768 || window.innerWidth < 768;
-      
-      if (isMobile) {
-        categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx + 1) * (height / (categories.length + 1));
-          catNodes.forEach((n: NodeSingular, idx: number) => {
-            pos[n.id()] = {
-              x: (idx + 1) * (width / (catNodes.length + 1)),
-              y: rowY
-            };
-          });
-        });
-      } else {
-        categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx + 1) * (width / (categories.length + 1));
-          catNodes.forEach((n: NodeSingular, idx: number) => {
-            pos[n.id()] = {
-              x: colX,
-              y: (idx + 1) * (height / (catNodes.length + 1))
-            };
-          });
-        });
-      }
-
-      this.cy.layout({
-        name: 'preset',
-        positions: (nodeId: string) => {
-          return pos[nodeId] || { x: 0, y: 0 };
-        },
-        animate: true,
-        animationDuration: 600
-      } as cytoscape.PresetLayoutOptions).run();
-    } else {
-      // default: force directed
-      this.cy.layout({
-        name: 'cose',
-        idealEdgeLength: () => 100,
-        nodeOverlap: 20,
-        refresh: 20,
-        fit: true,
-        padding: 30,
-        randomize: true,
-        componentSpacing: 100,
-        nodeRepulsion: () => 400000,
-        edgeElasticity: () => 100,
-        nestingFactor: 5,
-        gravity: 80,
-        numIter: 1000
-      } as cytoscape.CoseLayoutOptions).run();
+    if (!this.initialized || layoutChanged || forceRecompute) {
+      const targets = this.computeLayoutTargets(layout);
+      this.animateTo(targets);
     }
   },
 
   destroy() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
@@ -329,6 +471,7 @@ const engine: CytoscapeEngine = {
       this.cy.destroy();
       this.cy = null;
     }
+    this.forcePositions = null;
   }
 };
 

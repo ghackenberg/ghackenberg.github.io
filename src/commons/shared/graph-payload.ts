@@ -125,25 +125,21 @@ export const GRAPH_COLORS = {
 export interface GraphStyleTokens {
   edgeColor: string;
   edgeHoverColor: string;
-  edgeSolidColor: string;
   edgeWidth: number;
   edgeHoverWidth: number;
   nodeRadius: number;
   nodeHoverScale: number;
-  nodeHoverBorderColor: string;
 }
 
 export function getGraphStyleTokens(isLight: boolean): GraphStyleTokens {
   const themeTokens = getThemeTokens(isLight);
   return {
-    edgeColor: isLight ? 'rgba(15, 23, 42, 0.16)' : 'rgba(255, 255, 255, 0.16)',
-    edgeHoverColor: isLight ? 'rgba(15, 23, 42, 0.45)' : 'rgba(255, 255, 255, 0.45)',
-    edgeSolidColor: themeTokens.textSubtle,
-    edgeWidth: 1.2,
-    edgeHoverWidth: 2.2,
+    edgeColor: themeTokens.edgeBase,
+    edgeHoverColor: themeTokens.edgeHover,
+    edgeWidth: 1.5,
+    edgeHoverWidth: 2.5,
     nodeRadius: 8,
-    nodeHoverScale: 1.25,
-    nodeHoverBorderColor: themeTokens.textHeading
+    nodeHoverScale: 1.25
   };
 }
 

@@ -105,29 +105,32 @@ const engine: Force3DEngine = {
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     const tokens = getThemeTokens(isLight);
+    const initialWidth = container.clientWidth || 800;
+    const initialHeight = container.clientHeight || 500;
     this.graph = ForceGraph3D()(container)
+      .width(initialWidth)
+      .height(initialHeight)
       .graphData({ nodes: this.nodes, links: this.links })
       .backgroundColor(tokens.canvasBg)
       .showNavInfo(false)
       .nodeLabel(() => '')
-      .nodeVal('val')
+      .nodeVal((n: Force3DNode) => {
+        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
+        return n.id === this.hoveredNodeId
+          ? n.val * Math.pow(currentTokens.nodeHoverScale, 3)
+          : n.val;
+      })
       .nodeColor('color')
-      .linkOpacity(0.28)
+      .linkOpacity(1)
       .linkColor((l: Force3DLink) => {
         const currentIsLight = Boolean(this.isLight);
         const currentTokens = getGraphStyleTokens(currentIsLight);
-        if (isLinkConnected(l, this.hoveredNodeId)) {
-          return currentTokens.nodeHoverBorderColor;
-        }
-        return currentTokens.edgeSolidColor;
+        return isLinkConnected(l, this.hoveredNodeId) ? currentTokens.edgeHoverColor : currentTokens.edgeColor;
       })
       .linkWidth((l: Force3DLink) => {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
         return isLinkConnected(l, this.hoveredNodeId) ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth;
       })
-      .linkDirectionalParticles(2)
-      .linkDirectionalParticleWidth(1.5)
-      .linkDirectionalParticleSpeed(0.006)
       .onNodeHover((node: Force3DNode | null) => {
         const hovered = node;
         this.hoveredNodeId = hovered ? hovered.id : null;
@@ -154,6 +157,7 @@ const engine: Force3DEngine = {
 
         if (this.graph) {
           this.graph
+            .nodeVal(this.graph.nodeVal())
             .linkColor(this.graph.linkColor())
             .linkWidth(this.graph.linkWidth());
         }
@@ -195,11 +199,17 @@ const engine: Force3DEngine = {
       controls.enableZoom = false;
     }
 
+    let lastWidth = initialWidth;
+    let lastHeight = initialHeight;
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
-        if (this.graph) {
-          this.graph.width(width).height(height);
+        if (width > 0 && height > 0 && (Math.abs(width - lastWidth) >= 2 || Math.abs(height - lastHeight) >= 2)) {
+          lastWidth = width;
+          lastHeight = height;
+          if (this.graph) {
+            this.graph.width(width).height(height);
+          }
         }
       }
     });
@@ -208,6 +218,16 @@ const engine: Force3DEngine = {
     this.initialized = false;
     this.updateLayout(layout, isLight);
     this.initialized = true;
+
+    setTimeout(() => {
+      if (this.graph) {
+        try {
+          this.graph.zoomToFit(400, 40);
+        } catch {
+          // Suppress if graph is already destroyed
+        }
+      }
+    }, 350);
 
     return this;
   },
