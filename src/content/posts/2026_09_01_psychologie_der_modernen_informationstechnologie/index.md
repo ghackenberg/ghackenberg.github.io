@@ -247,6 +247,7 @@ Durch die allgegenwärtige Verfügbarkeit von Suchmaschinen und generativen KI-A
 
 Die folgende Synthese stellt die wichtigsten psychologischen Phänomene den typischen persuasiven Mustern kommerzieller Plattformen und human-zentrierten Gegenmaßnahmen (*Calm Computing*) gegenüber:
 
+<!-- caption: "Synthese zentraler kognitionspsychologischer Effekte, korrespondierender persuasiver Dark Patterns und menschenzentrierter Calm-Computing-Gegenmaßnahmen." -->
 | Kognitiver Faktor | Psychologischer Wirkmechanismus | Persuasives Software-Muster | Human-Centered Gegenmaßnahme |
 | :--- | :--- | :--- | :--- |
 | **Attention Residue** | 23 Minuten Rekonzentrationszeit nach Störung | Synchrone Push-Mitteilungen & rote Badges | Asynchrone Batch-Zustellung & Do-Not-Disturb |

@@ -104,6 +104,7 @@ Wenn physische Anpassungen nicht ausreichen, tritt die digitale Assistenz in Int
 
 Ein zentraler Fokus unserer Forschungsarbeit liegt auf den unterschiedlichen Rahmenbedingungen im Corporate Office im Vergleich zur häuslichen Wohnumgebung. Ein Universalsystem greift hier zu kurz; die Anforderungen unterscheiden sich grundlegend:
 
+<!-- caption: "Gegenüberstellung der räumlichen, sensorischen und datenschutzrechtlichen Rahmenbedingungen für KI-gestützte Ergonomiesysteme im Corporate Office und im Homeoffice." -->
 | Anforderungsdimension | Büroarbeitsumgebung (Corporate Office) | Häusliche Wohnumgebung (Homeoffice) |
 | :--- | :--- | :--- |
 | **Raum- & Möbelkontext** | Standardisierte Büromöbel, dedizierte Arbeitsflächen, oft Shared-Desking / Hot-Desking. | Variable Raumbedingungen, multifunktionale Nutzung (z.B. Esszimmer), oft eingeschränktes Platzangebot. |

@@ -29,7 +29,7 @@ Currently, there is a simple functional API for creating and linking nodes as we
 
 Nodes are instantiated as SVG circles, and links are established with target optimal distances:
 
-```javascript
+```javascript caption="Graph topology initialization creating seven SVG nodes and linking them with target edge lengths."
 // Create 7 graph nodes
 for (var i = 0; i < 7; i++) {
   createNode();
@@ -66,7 +66,7 @@ The layout engine uses spring-electrical force dynamics to iteratively move node
 
 The engine configures damping, step sizes, and canvas boundaries:
 
-```javascript
+```javascript caption="Simulation parameters defining force damping, canvas dimensions, and active evaluation thresholds."
 var stepsize = 0.25;       // Percentage of the force sum applied per step
 var randomsize = 0;         // Random perturbation size in pixels
 var width = 800;            // Width of the SVG canvas
@@ -79,7 +79,7 @@ var edge_threshold = 1;     // Percentage of edges evaluated per step
 
 In each iteration, the engine computes the distance vector between linked nodes and accumulates attraction or repulsion forces based on deviations from the target edge length:
 
-```javascript
+```javascript caption="Pairwise spring force accumulation loop computing directional displacement vectors from edge length deviations."
 for (var j = 0; j < nodes.length; j++) {
   if (Math.random() < edge_threshold && weights[i] && weights[i][j]) {
     var diffx = posx[j] - posx[i];
@@ -98,7 +98,7 @@ for (var j = 0; j < nodes.length; j++) {
 
 Finally, the displacement vectors are damped by `stepsize` and applied directly to the SVG circle elements:
 
-```javascript
+```javascript caption="Coordinate integration step applying damped force vectors to SVG circle cx and cy attributes."
 for (var i = 0; i < nodes.length; i++) {
   posx[i] += updatex[i] * stepsize + ((Math.random() - 0.5) * factors[i]);
   posy[i] += updatey[i] * stepsize + ((Math.random() - 0.5) * factors[i]);

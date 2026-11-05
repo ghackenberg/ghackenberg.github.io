@@ -38,6 +38,7 @@ The Sigma.js execution pipeline combines four performance-oriented stages to max
 
 The following table summarizes the hardware-accelerated architecture and scaling characteristics of the Sigma.js engine:
 
+<!-- caption: "Technical specifications and WebGL worker-thread scaling characteristics of the Sigma.js ForceAtlas2 graph engine." -->
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
 | **Rendering Engine** | WebGL 2.0 Shader Pipeline | Hardware acceleration directly on GPU; stable 60 FPS |

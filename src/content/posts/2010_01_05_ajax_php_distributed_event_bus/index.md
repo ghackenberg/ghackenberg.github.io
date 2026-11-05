@@ -39,7 +39,7 @@ If this limit is reached, the oldest entries are being deleted saving space for 
 This is an effective method for saving hard disk memory on your system which is also used by many other applications and software packages like *DB2*.
 The format of the log file is defined as follows:
 
-```xml
+```xml caption="Circular XML event log format storing timestamped client messages on the server."
 <channel>
   <item timestamp="1262600000" microseconds="0.1234" client="123456" type="message">
     <content>Hello World!</content>
@@ -70,7 +70,7 @@ The core of the client deployment is a general *JavaScript API* which allows to 
 
 Every browser instance generates a random client ID upon entry. When an event is dispatched or published, HTTP POST sends the payload to `post.php`:
 
-```javascript
+```javascript caption="Client-side event dispatcher and asynchronous XMLHttpRequest publisher targeting post.php."
 var client = Math.round(Math.random() * 1000000);
 var handlers = new Object();
 
@@ -95,7 +95,7 @@ function Publish(type, content) {
 
 The `Connect` function initiates long-polling against `channel.php`. As soon as the server closes the response stream after a timeout or new events, it recursively reconnects using the latest timestamps:
 
-```javascript
+```javascript caption="Recursive AJAX long-polling loop subscribing to incremental channel updates via HTTP GET."
 function Connect(timestamp, microseconds) {
   var channel = new XMLHttpRequest();
   channel.onreadystatechange = function() {
@@ -113,7 +113,7 @@ function Connect(timestamp, microseconds) {
 
 Clients register callbacks for distinct event types without coupling components together:
 
-```javascript
+```javascript caption="Publish-subscribe handler registry for binding and unbinding typed client event listeners."
 function Register(type, handler) {
   if (!handlers[type]) {
     handlers[type] = new Array();
@@ -135,7 +135,7 @@ function Unregister(type, handler) {
 
 To demonstrate the API, we wire an HTML chat interface to the distributed event bus:
 
-```javascript
+```javascript caption="Chat application wiring that publishes form messages and appends incoming events to the DOM list."
 function Say(form) {
   Publish("message", form.content.value);
   form.content.value = "";
@@ -163,7 +163,7 @@ The backend is driven by two lightweight PHP scripts that manage the file-based 
 
 The consumer script holds open an HTTP connection for up to 25 seconds, querying `channel.xml` with a shared read lock (`LOCK_SH`):
 
-```php
+```php caption="Long-polling PHP consumer script reading new events from channel.xml under a shared file lock."
 <?php
 header("Cache-Control: no-cache, must-revalidate");
 header("Content-Type: text/xml");
@@ -198,7 +198,7 @@ while (time() - $start < 25) {
 
 When a client submits an event, `post.php` acquires an exclusive lock (`LOCK_EX`), appends the new `<item>`, and automatically removes items older than 10 seconds to maintain a fixed file size:
 
-```php
+```php caption="PHP event ingestion script appending new XML items and evicting expired entries under an exclusive lock."
 <?php
 $lock = fopen("access.lock", "r");
 while (!flock($lock, LOCK_EX)) {

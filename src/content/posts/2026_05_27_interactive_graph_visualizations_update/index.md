@@ -75,6 +75,7 @@ The modular multi-engine visualization architecture decouples graph layout logic
 
 When architecting web-based graph systems, evaluating trade-offs such as **Sigma.js vs. Cytoscape.js** or integrating a **Three.js network graph** dictates whether rendering should happen via 2D Canvas, SVG, or WebGL:
 
+<!-- caption: "Comparison of web-based graph visualization libraries across rendering backend, node capacity, primary strengths, and architectural trade-offs." -->
 | Engine | Rendering Engine | Node Capacity | Key Strengths | Primary Limitation |
 | :--- | :--- | :--- | :--- | :--- |
 | **Sigma.js** | WebGL 2.0 | 50,000+ nodes | Hardware-accelerated GPU pipelines, ForceAtlas2 worker offloading | Limited compound node nesting and DOM styling |
@@ -87,7 +88,7 @@ Originally, the logic for loading libraries and initializing the graphs was cram
 
 Every engine conforms to a unified interface:
 
-```javascript
+```javascript caption="Unified ES module lifecycle contract implemented by all five interactive graph visualization engines."
 export default {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
@@ -102,7 +103,7 @@ export default {
 
 The Astro template [[slug].astro](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/pages/visualizations/%5Bslug%5D.astro) dynamically imports the selected engine at runtime using code splitting:
 
-```javascript
+```javascript caption="Dynamic runtime import loading the selected graph engine module on demand via code splitting."
 const engineModule = await import(`../../content/visualizations/${type}/engine.js`);
 const engine = engineModule.default;
 activeInstance = await engine.init(container, payload, currentLayout, isLight);
@@ -114,6 +115,7 @@ This drastically reduces the initial page bundle size, loading dependencies like
 
 Alongside our existing Cytoscape, D3, and Sigma engines, we introduced two new visualization engines:
 
+<!-- caption: "Summary matrix of the five integrated graph visualization engines comparing rendering pipelines, physics solvers, computational complexity, and target use cases." -->
 | Engine | Rendering Backend | Node Capacity | Primary Physics Model | Computational Complexity | Best Architectural Use Case |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Sigma.js** | WebGL 2.0 Shader Pipeline | 1,000–50,000+ | ForceAtlas2 [@jacomy-2014-forceatlas2-continuous] (Web Worker) | $O(N \log N)$ (Quadtree approximation) | Massive networks requiring high FPS throughput |
@@ -164,7 +166,7 @@ $$f(t) = \begin{cases} 4t^3 & \text{if } t < 0.5 \\ 1 - \frac{(-2t + 2)^3}{2} & 
 
 This is implemented in Javascript using `requestAnimationFrame`:
 
-```javascript
+```javascript caption="Cubic ease-in-out coordinate interpolation loop smoothly animating nodes between layout transitions."
 animateTo(targets, duration = 600) {
   const startTime = performance.now();
   const startPositions = this.network.getPositions(); // Fetch current positions
@@ -208,7 +210,7 @@ The website supports light and dark modes. Network graphs rendered on a canvas o
 
 To bridge this gap, we set up a custom listener for theme changes:
 
-```javascript
+```javascript caption="Global event listener synchronizing active graph canvas palettes with light and dark theme switches."
 window.addEventListener('theme-changed', () => {
   const isLight = document.documentElement.classList.contains('light');
   if (activeInstance) {
@@ -234,7 +236,7 @@ When users discover a layout they like (e.g., concentric rings in Vis.js), navig
 
 When a layout is selected from the dropdown:
 
-```javascript
+```javascript caption="Dropdown change handler persisting the active graph layout mode into the browser URL query string."
 selector.addEventListener('change', (e) => {
   const newLayout = e.target.value;
   if (activeInstance) {

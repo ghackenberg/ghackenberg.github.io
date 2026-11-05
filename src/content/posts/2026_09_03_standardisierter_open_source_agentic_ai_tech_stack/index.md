@@ -90,6 +90,7 @@ In unserer Beratungspraxis an der Schnittstelle zwischen angewandter Spitzenfors
 
 Ein belastbarer KI-Stack darf kein unübersichtlicher Flickenteppich aus Python-Skripten sein. Wir strukturieren die Gesamtlösung in sechs klar abgegrenzte, modular austauschbare Architekturschichten:
 
+<!-- caption: "Sechs-Schichten-Referenzarchitektur des standardisierten Open-Source Agentic AI Tech-Stacks mit Zuordnung der Kerntechnologien und Systemverantwortlichkeiten." -->
 | Schicht | Funktionale Domäne | Kerntechnologien | Primäre Verantwortung |
 | :--- | :--- | :--- | :--- |
 | **6. User Experience & Control** | Mensch-Maschine-Schnittstelle | **Open WebUI** | Ergonomische Fachanwender-Workspaces, Dokumenten-RAG & Generative UI |

@@ -90,7 +90,7 @@ Comparing the two deployment models highlights how request-time compute is repla
 
 One of the best features of the relaunch is Astro's type-safe **Content Collections**. Powered by TypeScript and Zod schemas, we can guarantee that all content has correct frontmatter values. For example, my blog posts schema ensures every post contains a valid title, date, and description:
 
-```typescript
+```typescript caption="Astro Content Collection definition enforcing compile-time Zod schema validation for blog post frontmatter."
 const posts = defineCollection({
   loader: glob({
     base: './src/content/posts',

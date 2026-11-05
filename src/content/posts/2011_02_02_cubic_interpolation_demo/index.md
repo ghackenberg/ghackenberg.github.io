@@ -12,6 +12,7 @@ image:
 
 In the above visualization the colors of the 3D points have a specific meaning, which is explained in the following table:
 
+<!-- caption: "Color-coded legend mapping 3D point categories to measured pixel samples, 1D interpolated strips, and the final 2D bicubic surface point." -->
 | Color | Description | Example |
 | :--- | :--- | :--- |
 | <span class="font-bold text-red-500">Red</span> | Measured data point | Measured brightness of pixel `(x,y)` in a digital image |

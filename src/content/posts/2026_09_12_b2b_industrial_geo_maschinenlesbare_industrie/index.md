@@ -112,7 +112,7 @@ Technische Leistungsdaten dürfen nicht in statischen PDF-Drucklayouts gefangen 
 
 Das folgende Beispiel illustriert den kompakten Aufbau einer solchen maschinenlesbaren Produktspezifikation:
 
-```markdown
+```markdown caption="Maschinenlesbare B2B-Produktspezifikation im llms.txt-Format mit ISO-Toleranzen, Werkstofffreigaben und AAS-Schnittstellen."
 # Präzisions-Zerspanungstechnik Musterbau GmbH - Maschinenlesbare Produktspezifikation
 > Zertifiziert nach ISO 9001:2015 und IATF 16949 für Luftfahrt und Automotive.
 

@@ -68,6 +68,7 @@ Dieser Ablauf eliminiert den traditionellen Bruch zwischen Analyse-Dashboards un
 
 Reine Klick- oder Impression-Zahlen reichen in modernen Multi-Agenten-Pipelines nicht aus, um fundierte Entscheidungen zu treffen. Unser MCP-Server verknüpft GSC-Suchmetriken mit Plausible-Engagement-Signalen über vier deterministische Heuristiken:
 
+<!-- caption: "Vergleich klassischer SEO-Arbeitsweisen mit der automatisierten, agentenbasierten MCP-Optimierungspipeline." -->
 | Optimierungs-Dimension | Klassischer SEO-Workflow | Agentenbasierte MCP-Pipeline |
 | :--- | :--- | :--- |
 | **Datenerfassung** | Manuelle Inspektion separater Dashboards (GSC vs. Analytics) | Automatisierte Normalisierung und Join via [`aggregator.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/analytics/services/aggregator.ts) |
@@ -122,7 +123,7 @@ Statt über 130 Fachbeiträge einzeln zu evaluieren, scannt das Werkzeug das ges
 
 ### 2. Objektiver Wirkungsnachweis mit `diff_aio_impact`
 Vor jedem Commit validiert der Agent das tatsächliche Delta gegen Git `HEAD`. Statt vager Vermutungen liefert das Tool harte Kennzahlen für das Commit-Log:
-```text
+```text caption="Ausgabe des Git-Delta-Audits diff_aio_impact mit ausgewiesenem Score-Zuwachs und strukturellen Netto-Verbesserungen."
 ScoreBefore: 50 -> ScoreAfter: 95 (+45 Punkte)
 Deltas: +4 Direct Answers, +1 Vergleichstabelle, +4 W-Fragen-Überschriften
 ```
@@ -141,7 +142,7 @@ Um Verwirrung bei multimodalen KI-Crawlern zu vermeiden, etablierten wir ein str
 
 Der vielleicht mächtigste Baustein des MCP-Servers ist das Werkzeug `evaluate_aio_extractability`. Es führt eine deterministische statische Analyse lokaler Markdown-Dateien durch und bewertet deren Tauglichkeit für generative Antwortmaschinen auf einer Skala von 0 bis 100 Punkten.
 
-```typescript
+```typescript caption="Programmatischer MCP-Tool-Aufruf von evaluate_aio_extractability zur statischen Prüfung einer Markdown-Quelldatei."
 // Aufruf des MCP-Tools aus dem Agenten-Kontext
 const evaluation = await call_mcp_tool({
   ServerName: "unified-analytics",

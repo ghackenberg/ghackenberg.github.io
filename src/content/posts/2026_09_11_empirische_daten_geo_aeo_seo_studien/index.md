@@ -106,6 +106,7 @@ Auf der ACM SIGIR 2026 wurden zwei entscheidende Studien zu Google AI Overviews 
 
 Parallel zur akademischen Forschung erheben SEO-Software-Anbieter und Digital-Intelligence-Plattformen kontinuierlich Live-Telemetriedaten auf Millionen von SERP-Seiten. Diese Daten spiegeln das reale Marktgeschehen wider, unterliegen jedoch anderen methodischen Rahmenbedingungen.
 
+<!-- caption: "Übersicht zentraler Industrie- und Live-Telemetriestudien zu Zero-Click-Raten, AIO-Quellenauswahl und Klickverteilung." -->
 | Datenquelle / Report | Untersuchte Stichprobe | Zentrale empirische Kernaussage | Relevanz für Web-Engineering |
 | :--- | :--- | :--- | :--- |
 | **[SparkToro & Similarweb / Datos](https://sparktoro.com/blog/2024-zero-click-search-study/ [@fishkin-2024-zero-click])** (2024–2026) | &gt;1 Milliarde Google-Suchanfragen (USA &amp; EU) | **Zero-Click-Rate steigt auf 68.01%** (2024: 60.45%). Bei Vorhandensein von AI Overviews bricht die CTR der Top-1-Organik um **58%** ein. | Traditioneller Referral-Traffic sinkt; die bloße Markennennung im Fließtext der KI wird zur primären Währung. |

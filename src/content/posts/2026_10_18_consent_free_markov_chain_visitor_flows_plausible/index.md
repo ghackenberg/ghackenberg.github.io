@@ -96,6 +96,7 @@ references:
 
 Consent-free visitor flow reconstruction is a stateless web telemetry architecture that captures multi-step internal navigation paths without cookies, `localStorage`, `sessionStorage`, or persistent session identifiers. By combining ephemeral same-origin `document.referrer` step transitions (`prev_page`) with first-order Markov chain models and Hamilton Largest Remainder apportionment, engineering teams achieve 100% ePrivacy-compliant path analytics without consent banners.
 
+<!-- caption: "Architectural comparison of cookie-based session tracking, client ephemeral flow IDs, and stateless same-origin document.referrer Markov flows." -->
 | Architectural Dimension | Cookie / LocalStorage Session Tracking (GA4) | Client Ephemeral `flow_id` (`sessionStorage` / `window.name`) | Stateless Same-Origin `document.referrer` (`prev_page`) + 1st-Order Markov Flows (`hackenberg.tech`) |
 | :--- | :--- | :--- | :--- |
 | **Terminal Storage Write (`Art. 5(3) ePrivacy`)** | Writes persistent `_ga` cookies or `localStorage` tokens to user terminal equipment | Writes tab-scoped `sessionStorage` or `window.name` state into browser memory | **Zero client storage writes**; reads standard transient HTTP navigation metadata (`document.referrer`) |
@@ -126,7 +127,7 @@ By eliminating `flow_id`, `step`, `sessionStorage` writes, and `window.name` sta
 
 Instead of gating telemetry behind a modal banner, our initialization routine in [`src/commons/client/telemetry.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/telemetry.ts) respects voluntary browser-level privacy signals (`navigator.globalPrivacyControl` and `navigator.doNotTrack`) and actively scrubs any legacy `window.name` flow prefixes left over from older browser sessions:
 
-```typescript
+```typescript caption="Stateless Plausible tracker initialization respecting GPC/DNT signals and scrubbing legacy window.name tokens."
 // Excerpt from src/commons/client/telemetry.ts
 export function initAnalytics(): void {
   if (typeof window === 'undefined' || isAnalyticsInitialized) return;
@@ -185,7 +186,7 @@ Crucially, `document.referrer` is an intrinsic, transient property of the HTTP/H
 
 The following helper functions in `src/commons/client/telemetry.ts` implement this stateless pathname normalization and predecessor extraction:
 
-```typescript
+```typescript caption="Stateless same-origin document.referrer normalization into canonical prev_page transition edges."
 // Excerpt from src/commons/client/telemetry.ts
 function normalizeInternalPathname(rawPathname: string): string {
   const clean = (rawPathname || '/').split('?')[0].split('#')[0].trim() || '/';
@@ -244,7 +245,7 @@ Once events are ingested with `prev_page` properties, how do we reconstruct the 
 
 In graph-theoretic terms, let $G = (V, E)$ be the directed navigation graph where vertices $V$ represent normalized internal URL paths augmented with an external source boundary state $s_{\text{entry}}$ and termination states $\{s_{\text{bounce}}, s_{\text{exit}}\}$. For any focal vertex $p \in V$, our server-side function `getPlausibleVisitorFlow()` in [`src/commons/server/analytics/clients/plausible.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/analytics/clients/plausible.ts) executes six concurrent HTTP breakdown queries via `Promise.all` against the Plausible Stats API [@plausible-2024-stats-api]:
 
-```typescript
+```typescript caption="Six concurrent Plausible Stats API breakdown queries reconstructing inbound, outbound, and action flows."
 // Excerpt from src/commons/server/analytics/clients/plausible.ts
 const [
   prevPagesRaw,
@@ -349,7 +350,7 @@ In `getPlausibleMarkovFlow()` within [`src/commons/server/analytics/clients/plau
 
 Here is the core implementation in [`src/commons/server/analytics/clients/plausible.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/analytics/clients/plausible.ts):
 
-```typescript
+```typescript caption="First-order Markov boundary flow partitioning across direct entries, upstream inflow, bounces, and downstream exits."
 // Excerpt from getPlausibleMarkovFlow() in src/commons/server/analytics/clients/plausible.ts
 const sumUpstream = upstreamPages.reduce((acc, item) => acc + item.visitors, 0);
 const sumDownstream = downstreamPages.reduce((acc, item) => acc + item.visitors, 0);
@@ -410,7 +411,7 @@ To eliminate rounding drift mathematically, `scaleItemsToTargetTotal` in [`src/c
 
 By construction, Hamilton's method satisfies the **Quota Rule** ($|n_i - q_i| < 1$ for every branch $i$) and guarantees exact conservation of flow ($\sum_{i=1}^k n_i = T$) in $O(k \log k)$ time [@balinski-1982-fair-representation]:
 
-```typescript
+```typescript caption="Hamilton Largest Remainder apportionment enforcing exact integer flow conservation across Sankey branches."
 // Excerpt from src/commons/server/analytics/clients/plausible.ts
 const scaleItemsToTargetTotal = (
   items: VisitorFlowItem[],

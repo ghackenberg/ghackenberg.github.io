@@ -69,6 +69,7 @@ Doch sobald wir die kontinuierliche Qualitätssicherung und Content-Optimierung 
 
 Die folgende Gegenüberstellung verdeutlicht den strukturellen Paradigmenwechsel zwischen einem klassischen Web-Dashboard und einer agentenintegrierten MCP-Schnittstelle:
 
+<!-- caption: "Struktureller Vergleich zwischen einem manuellen Web-Analytics-Dashboard und dem autonomen Unified Analytics MCP Server." -->
 | Analysedimension | Menschliches Web-Dashboard (Plausible + GSC) | Autonomer Coding-Agent (Unified Analytics MCP) |
 | :--- | :--- | :--- |
 | **Primärer Nutzer** | Menschlicher Analyst / SEO-Manager im Web-Browser | Autonomer KI-Agent (IDE / CLI) im Quellcode-Repository |
@@ -463,7 +464,7 @@ Um den MCP Server nahtlos in moderne Multi-Agenten-Umgebungen wie Antigravity od
 
 Der folgende Codeausschnitt veranschaulicht exemplarisch, wie die *Striking-Distance*-Heuristik intern implementiert ist:
 
-```typescript
+```typescript caption="Filter- und Sortierlogik zur Identifikation von Striking-Distance-Suchanfragen auf den Positionen 4 bis 15."
 // Auszug aus der Tool-Implementierung: Striking Distance Heuristik
 export function calculateStrikingDistance(queries: SearchConsoleRow[]) {
   return queries

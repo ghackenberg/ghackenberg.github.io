@@ -69,6 +69,7 @@ In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend 
 
 In der aktuellen Fachdiskussion kursieren verschiedene Akronyme für das Auffinden digitaler Inhalte. Wichtig ist festzuhalten: **GEO, AEO und AIO sind keine Gegensätze zum klassischen SEO**, sondern evolutionäre Erweiterungen, die auf denselben Fundamenten – sauberem HTML5, semantischer Autorität, schneller Auslieferung und strukturierten Daten – aufbauen. Wie *Aggarwal et al [@aggarwal-2024-geo]. (ACM KDD 2024)* in ihrer richtungsweisenden Benchmark-Studie zu Generative Engine Optimization nachgewiesen haben, korreliert die Zitationshäufigkeit in generativen Systemen stark mit fundierten Belegen, präzisen Faktenzitaten und technischer Maschinenlesbarkeit.
 
+<!-- caption: "Systematische Abgrenzung von SEO, GEO, AEO und AIO hinsichtlich primärer Zielsysteme, technischer Kernmetriken und eingesetzter Web-Standards." -->
 | Dimension | Primäre Zielgruppe | Technische Kernmetriken | Hauptwerkzeuge & Standards |
 | :--- | :--- | :--- | :--- |
 | **SEO** (Search Engine Optimization) | Klassische Web-Crawler (Google, Bing) | Ladezeiten (CWV), HTML-Hierarchie, Backlinks, Meta-Tags | XML-Sitemaps, Google Search Console, OpenGraph |
@@ -120,7 +121,7 @@ Um Verwechslungen bei KI-Modellen zu vermeiden und Dr. Georg Hackenberg als eind
 
 ### Schritt 3: KI-Bot-Freigaben & RSS 2.0 Syndikation
 In der `public/robots.txt` wurden KI-Such-Crawler explizit freigeschaltet:
-```txt
+```txt caption="Konfiguration der robots.txt zur expliziten Freigabe autorisierter KI-Such-Crawler und Referenzierung von llms.txt."
 User-agent: GPTBot
 Allow: /
 

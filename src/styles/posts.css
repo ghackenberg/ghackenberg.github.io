@@ -282,6 +282,8 @@
    Universal Responsive Markdown Tables (Mobile UX & Dark/Light Mode)
    ========================================================================== */
 .responsive-table-wrapper {
+  container-type: inline-size;
+  position: relative;
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
@@ -295,87 +297,842 @@
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
+.table-figure .responsive-table-wrapper,
+.code-snippet pre,
+.image-figure img {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.responsive-table-wrapper:has(.responsive-table-scroll) {
+  overflow-x: visible;
+}
+
+.responsive-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
 :root.light .responsive-table-wrapper,
 .light .responsive-table-wrapper {
-  background: rgba(248, 250, 252, 0.8);
+  background: rgba(248, 250, 252, 0.85);
   border-color: rgba(226, 232, 240, 0.9);
   box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
   scrollbar-color: rgba(15, 23, 42, 0.2) transparent;
 }
 
-.responsive-table-wrapper::-webkit-scrollbar {
+:root.light .responsive-table-scroll,
+.light .responsive-table-scroll {
+  scrollbar-color: rgba(15, 23, 42, 0.2) transparent;
+}
+
+.responsive-table-wrapper::-webkit-scrollbar,
+.responsive-table-scroll::-webkit-scrollbar {
   height: 6px;
 }
 
-.responsive-table-wrapper::-webkit-scrollbar-track {
+.responsive-table-wrapper::-webkit-scrollbar-track,
+.responsive-table-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.responsive-table-wrapper::-webkit-scrollbar-thumb {
+.responsive-table-wrapper::-webkit-scrollbar-thumb,
+.responsive-table-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 9999px;
 }
 
 :root.light .responsive-table-wrapper::-webkit-scrollbar-thumb,
-.light .responsive-table-wrapper::-webkit-scrollbar-thumb {
+.light .responsive-table-wrapper::-webkit-scrollbar-thumb,
+:root.light .responsive-table-scroll::-webkit-scrollbar-thumb,
+.light .responsive-table-scroll::-webkit-scrollbar-thumb {
   background: rgba(15, 23, 42, 0.2);
 }
 
-/* Inner Table Structure */
+/* Inner Table Structure (Desktop / Grid Default) */
 .responsive-table-wrapper table {
   display: table !important;
-  width: max-content;
+  width: 100%;
   min-width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin: 0 !important;
   border: none !important;
+  border-radius: 0 !important;
   background: transparent !important;
   font-size: 0.9rem;
 }
 
+.responsive-table-wrapper thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+  border-radius: 0 !important;
+}
+
 .responsive-table-wrapper th {
-  padding: 0.9rem 1.25rem;
+  padding: 0.85rem 1.1rem;
   text-align: left;
   font-weight: 750;
   letter-spacing: -0.01em;
   color: var(--color-text-heading);
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 2px solid var(--color-border-medium);
-  white-space: nowrap;
+  background: #111b33;
+  border: none !important;
+  border-radius: 0 !important;
+  border-bottom: 2px solid var(--color-border-medium) !important;
+  min-width: 7.5rem;
+  vertical-align: middle;
+  user-select: none;
 }
 
 :root.light .responsive-table-wrapper th,
 .light .responsive-table-wrapper th {
-  background: rgba(241, 245, 249, 0.9);
-  border-bottom-color: rgba(203, 213, 225, 0.8);
+  background: #f1f5f9;
+  border-bottom-color: rgba(203, 213, 225, 0.85) !important;
   color: var(--color-text-heading);
 }
 
+.responsive-table-wrapper tbody,
+.responsive-table-wrapper tr {
+  border-radius: 0;
+}
+
 .responsive-table-wrapper td {
-  padding: 0.85rem 1.25rem;
+  padding: 0.8rem 1.1rem;
   color: var(--color-text-main);
-  border-bottom: 1px solid var(--color-border-subtle);
-  line-height: 1.6;
+  border: none !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--color-border-subtle) !important;
+  line-height: 1.58;
   vertical-align: top;
+  min-width: 7.5rem;
+}
+
+.responsive-table-wrapper th:first-child,
+.responsive-table-wrapper td:first-child {
+  min-width: 9rem;
+}
+
+/* Sticky First Column in Grid View */
+.responsive-table-wrapper tbody th:first-child,
+.responsive-table-wrapper tbody td:first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background: #0d152a;
+}
+
+:root.light .responsive-table-wrapper tbody th:first-child,
+.light .responsive-table-wrapper tbody th:first-child,
+:root.light .responsive-table-wrapper tbody td:first-child,
+.light .responsive-table-wrapper tbody td:first-child {
+  background: #f8fafc;
 }
 
 :root.light .responsive-table-wrapper td,
 .light .responsive-table-wrapper td {
-  border-bottom-color: rgba(226, 232, 240, 0.8);
+  border-bottom-color: rgba(226, 232, 240, 0.8) !important;
   color: var(--color-text-main);
 }
 
 .responsive-table-wrapper tr:last-child td {
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 .responsive-table-wrapper tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.responsive-table-wrapper tr:hover td:first-child,
+.responsive-table-wrapper tr:hover th:first-child {
+  background: #131e3a;
 }
 
 :root.light .responsive-table-wrapper tr:hover td,
 .light .responsive-table-wrapper tr:hover td {
-  background: rgba(15, 23, 42, 0.02);
+  background: rgba(15, 23, 42, 0.025);
+}
+
+:root.light .responsive-table-wrapper tr:hover td:first-child,
+.light .responsive-table-wrapper tr:hover td:first-child,
+:root.light .responsive-table-wrapper tr:hover th:first-child,
+.light .responsive-table-wrapper tr:hover th:first-child {
+  background: #f1f5f9;
+}
+
+/* Sortable Column Headers */
+.responsive-table-wrapper th[data-sortable="true"] {
+  position: relative;
+  padding-right: 2.1rem !important;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.responsive-table-wrapper th[data-sortable="true"]:hover {
+  background: #172442;
+}
+
+:root.light .responsive-table-wrapper th[data-sortable="true"]:hover,
+.light .responsive-table-wrapper th[data-sortable="true"]:hover {
+  background: #e2e8f0;
+}
+
+.table-sort-icon {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0;
+  line-height: 1;
+  pointer-events: none;
+  font-size: 0.75rem;
+  opacity: 0.45;
+}
+
+.responsive-table-wrapper th[aria-sort="ascending"] .table-sort-icon,
+.responsive-table-wrapper th[aria-sort="descending"] .table-sort-icon {
+  opacity: 1;
+  color: var(--color-current-domain, var(--color-domain-posts));
+}
+
+/* Mobile Stacked Cards (@container < 640px when not forced to grid, OR when explicitly toggled to cards) */
+@container (width < 640px) {
+  .responsive-table-wrapper:not([data-table-view="grid"]) thead {
+    display: none !important;
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) [data-table-view-btn="cards"] {
+    border-color: var(--color-current-domain, var(--color-domain-posts));
+    background: color-mix(in srgb, var(--color-current-domain, var(--color-domain-posts)) 18%, transparent);
+    color: var(--color-text-heading);
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) [data-table-scroll] {
+    display: none;
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) table,
+  .responsive-table-wrapper:not([data-table-view="grid"]) tbody,
+  .responsive-table-wrapper:not([data-table-view="grid"]) tr,
+  .responsive-table-wrapper:not([data-table-view="grid"]) th,
+  .responsive-table-wrapper:not([data-table-view="grid"]) td {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr {
+    margin: 0.75rem !important;
+    width: calc(100% - 1.5rem) !important;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-medium);
+    background: rgba(15, 23, 42, 0.55);
+    overflow: hidden;
+  }
+
+  :root.light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr,
+  .light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr {
+    background: #ffffff;
+    border-color: rgba(203, 213, 225, 0.85);
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :first-child {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-bottom: 1px solid var(--color-border-medium) !important;
+    padding: 0.75rem 1rem;
+  }
+
+  :root.light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :first-child,
+  .light .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :first-child {
+    background: #f1f5f9 !important;
+    border-bottom-color: rgba(203, 213, 225, 0.85) !important;
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :not(:first-child) {
+    padding: 0.65rem 1rem;
+  }
+
+  .responsive-table-wrapper:not([data-table-view="grid"]) tbody tr > :not(:first-child)::before {
+    content: attr(data-label) ": ";
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-subtle);
+    margin-bottom: 0.2rem;
+  }
+}
+
+/* Explicit Cards View Mode (even on wider screens when user clicks "Cards") */
+.responsive-table-wrapper[data-table-view="cards"] thead {
+  display: none !important;
+}
+
+.responsive-table-wrapper[data-table-view="cards"] table,
+.responsive-table-wrapper[data-table-view="cards"] tbody,
+.responsive-table-wrapper[data-table-view="cards"] tr,
+.responsive-table-wrapper[data-table-view="cards"] th,
+.responsive-table-wrapper[data-table-view="cards"] td {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.responsive-table-wrapper[data-table-view="cards"] tbody tr {
+  margin: 0.75rem !important;
+  width: calc(100% - 1.5rem) !important;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-medium);
+  background: rgba(15, 23, 42, 0.55);
+  overflow: hidden;
+}
+
+:root.light .responsive-table-wrapper[data-table-view="cards"] tbody tr,
+.light .responsive-table-wrapper[data-table-view="cards"] tbody tr {
+  background: #ffffff;
+  border-color: rgba(203, 213, 225, 0.85);
+}
+
+.responsive-table-wrapper[data-table-view="cards"] tbody tr > :first-child {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-bottom: 1px solid var(--color-border-medium) !important;
+  padding: 0.75rem 1rem;
+}
+
+:root.light .responsive-table-wrapper[data-table-view="cards"] tbody tr > :first-child,
+.light .responsive-table-wrapper[data-table-view="cards"] tbody tr > :first-child {
+  background: #f1f5f9 !important;
+  border-bottom-color: rgba(203, 213, 225, 0.85) !important;
+}
+
+.responsive-table-wrapper[data-table-view="cards"] tbody tr > :not(:first-child) {
+  padding: 0.65rem 1rem;
+}
+
+.responsive-table-wrapper[data-table-view="cards"] tbody tr > :not(:first-child)::before {
+  content: attr(data-label) ": ";
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-subtle);
+  margin-bottom: 0.2rem;
+}
+
+/* ==========================================================================
+   Unified 3-Band Artifact Card (figure.artifact-card)
+   Shared across SVG Diagrams, Mermaid Diagrams, Raster Images, Code Snippets,
+   and Markdown Tables — Build-Time HTML, Zero Flicker on First Paint
+   ========================================================================== */
+figure.artifact-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  margin: 2rem auto;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-medium);
+  background: rgba(15, 23, 42, 0.45);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+:root.light figure.artifact-card,
+.light figure.artifact-card {
+  background: rgba(248, 250, 252, 0.88);
+  border-color: rgba(203, 213, 225, 0.9);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+}
+
+.artifact-card-header,
+.table-deck-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: rgba(15, 23, 42, 0.65);
+  flex-shrink: 0;
+}
+
+:root.light .artifact-card-header,
+.light .artifact-card-header,
+:root.light .table-deck-toolbar,
+.light .table-deck-toolbar {
+  background: rgba(241, 245, 249, 0.92);
+  border-bottom-color: rgba(203, 213, 225, 0.85);
+}
+
+.artifact-card-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  user-select: none;
+}
+
+:root.light .artifact-card-badge,
+.light .artifact-card-badge {
+  color: #475569;
+}
+
+.artifact-card-controls,
+.table-deck-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.artifact-card-body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+figure.svg-diagram .artifact-card-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+figure.mermaid-diagram .artifact-card-body {
+  padding: 1.25rem 1.5rem !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+
+figure.svg-diagram .artifact-card-body > svg {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+figure.mermaid-diagram .mermaid-svg {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+figure.mermaid-diagram .mermaid-svg > svg {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+figure.image-figure .artifact-card-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block;
+}
+
+figure.image-figure .artifact-card-body > img {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+figure.code-snippet .artifact-card-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block;
+}
+
+figure.code-snippet .artifact-card-body pre {
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+}
+
+/* Shiki Dual-Theme Light Mode Switch (Inline & Fullscreen Code Blocks) */
+:root.light pre.astro-code,
+.light pre.astro-code {
+  color: var(--shiki-light, #24292e) !important;
+  background-color: var(--shiki-light-bg, #ffffff) !important;
+}
+
+:root.light pre.astro-code span,
+.light pre.astro-code span {
+  color: var(--shiki-light) !important;
+  background-color: transparent !important;
+}
+
+figure.table-figure .artifact-card-body {
+  padding: 0;
+}
+
+figcaption.artifact-card-footer {
+  margin: 0 !important;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--color-border-subtle);
+  background: rgba(15, 23, 42, 0.58);
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-text-subtle);
+}
+
+:root.light figcaption.artifact-card-footer,
+.light figcaption.artifact-card-footer {
+  background: rgba(241, 245, 249, 0.88);
+  border-top-color: rgba(203, 213, 225, 0.85);
+  color: #475569;
+}
+
+.table-deck-btn,
+.media-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.26rem 0.58rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 0.45rem;
+  border: 1px solid var(--color-border-medium);
+  background: rgba(30, 41, 59, 0.65);
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.table-deck-btn:hover:not(:disabled),
+.media-expand-btn:hover:not(:disabled) {
+  border-color: var(--color-current-domain, var(--color-domain-posts));
+  color: var(--color-text-heading);
+  background: rgba(51, 65, 85, 0.8);
+}
+
+.table-deck-btn[aria-pressed="true"],
+.responsive-table-wrapper[data-table-view="cards"] [data-table-view-btn="cards"],
+.responsive-table-wrapper[data-table-view="grid"] [data-table-view-btn="grid"] {
+  border-color: var(--color-current-domain, var(--color-domain-posts));
+  background: color-mix(in srgb, var(--color-current-domain, var(--color-domain-posts)) 18%, transparent);
+  color: var(--color-text-heading);
+}
+
+@container (width >= 640px) {
+  .responsive-table-wrapper:not([data-table-view="cards"]) [data-table-view-btn="grid"] {
+    border-color: var(--color-current-domain, var(--color-domain-posts));
+    background: color-mix(in srgb, var(--color-current-domain, var(--color-domain-posts)) 18%, transparent);
+    color: var(--color-text-heading);
+  }
+}
+
+.table-deck-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+:root.light .table-deck-btn,
+.light .table-deck-btn,
+:root.light .media-expand-btn,
+.light .media-expand-btn {
+  background: #ffffff;
+  border-color: rgba(203, 213, 225, 0.9);
+  color: var(--color-text-main);
+}
+
+:root.light .table-deck-btn:hover:not(:disabled),
+.light .table-deck-btn:hover:not(:disabled),
+:root.light .media-expand-btn:hover:not(:disabled),
+.light .media-expand-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: var(--color-current-domain, var(--color-domain-posts));
+}
+
+figure.svg-diagram .artifact-card-body > svg,
+figure.mermaid-diagram .mermaid-svg,
+figure.image-figure .artifact-card-body > img {
+  cursor: zoom-in;
+}
+
+/* ==========================================================================
+   Clean Gallery-Style Fullscreen Modal (<dialog>)
+   Follows modern-web-guidance: dialog, light-dismiss-a-dialog,
+   prevent-page-scroll-under-modal-dialog
+   ========================================================================== */
+dialog.media-lightbox-dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog.media-lightbox-dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+:root.light dialog.media-lightbox-dialog::backdrop,
+html.light dialog.media-lightbox-dialog::backdrop,
+.light dialog.media-lightbox-dialog::backdrop {
+  background-color: rgba(15, 23, 42, 0.25) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+dialog.media-lightbox-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: min(96vw, 1360px);
+  height: min(92vh, 920px);
+  max-width: 96vw;
+  max-height: 92vh;
+  margin: auto;
+  padding: 0;
+  border-radius: 1.5rem;
+  border: 1px solid var(--color-element-border-medium);
+  background: var(--color-bg-pane);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--color-gray-100);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  dialog.media-lightbox-dialog[open] {
+    border-radius: 1rem;
+  }
+}
+
+:root.light dialog.media-lightbox-dialog[open],
+html.light dialog.media-lightbox-dialog[open],
+.light dialog.media-lightbox-dialog[open] {
+  background-color: rgb(255, 255, 255) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: rgb(30, 41, 59) !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
+}
+
+.media-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--color-element-border);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+:root.light .media-lightbox-header,
+html.light .media-lightbox-header,
+.light .media-lightbox-header {
+  background-color: rgb(255, 255, 255) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.media-lightbox-header form {
+  margin: 0;
+  display: inline-flex;
+}
+
+.media-lightbox-stage {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-lightbox-stage[data-stage-type="table"],
+.media-lightbox-stage[data-stage-type="code"] {
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+}
+
+.media-lightbox-stage .responsive-table-wrapper,
+.media-lightbox-stage .artifact-card-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+.media-lightbox-stage[data-stage-type="table"] table {
+  width: 100% !important;
+  min-width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+.media-lightbox-stage[data-stage-type="svg"] .artifact-card-body,
+.media-lightbox-stage[data-stage-type="image"] .artifact-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  overflow: hidden;
+}
+
+.media-lightbox-stage[data-stage-type="mermaid"] .artifact-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1.5rem 2rem !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.media-lightbox-stage[data-stage-type="code"] .artifact-card-body {
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+.media-lightbox-stage pre {
+  flex: 1;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  overflow: auto;
+  padding: 1rem 1.25rem;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.media-lightbox-stage img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.media-lightbox-stage svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+}
+
+.media-lightbox-stage .mermaid-svg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.media-lightbox-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.7rem 1.25rem;
+  border-top: 1px solid var(--color-element-border);
+  background: rgba(255, 255, 255, 0.02);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+:root.light .media-lightbox-footer,
+html.light .media-lightbox-footer,
+.light .media-lightbox-footer {
+  background-color: rgb(248, 250, 252) !important;
+  border-top-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.media-lightbox-title {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  text-align: center;
+  font-size: 0.82rem !important;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-text-subtle);
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+:root.light .media-lightbox-title,
+.light .media-lightbox-title {
+  color: #475569;
 }
 
 /* ==========================================================================

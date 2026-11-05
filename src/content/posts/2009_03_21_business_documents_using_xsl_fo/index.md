@@ -32,7 +32,7 @@ I'll demonstrate this setup using an example bill.
 The primary benefit of this architecture is the strict decoupling between structured business data and presentation layout.
 The source XML document holds the invoice metadata, client address, and individual line items without any styling information:
 
-```xml
+```xml caption="Structured XML invoice payload containing metadata, recipient address, and line items."
 <?xml version="1.0" encoding="UTF-8"?>
 <bill>
   <about>
@@ -82,7 +82,7 @@ To avoid duplicating corporate letterheads, margins, and sender information acro
 
 The master stylesheet sets up the physical A4 page dimensions, margins, and defines the header (`xsl-region-before`), body (`xsl-region-body`), and footer (`xsl-region-after`):
 
-```xml
+```xml caption="XSL-FO page master definition for A4 portrait geometry and body/header/footer regions."
 <fo:layout-master-set>
   <fo:simple-page-master master-name="A4-portrait" page-height="29.7cm" page-width="21.0cm" margin="2cm">
     <fo:region-body margin-top="1.5cm" margin-bottom="7.5cm"/>
@@ -96,7 +96,7 @@ The master stylesheet sets up the physical A4 page dimensions, margins, and defi
 
 The header and footer are placed inside `fo:static-content` containers, ensuring they repeat across all pages. The footer includes structured contact details and bank connection data positioned with absolute side-by-side containers:
 
-```xml
+```xml caption="Static footer block container rendering two-column contact and bank account details."
 <fo:static-content flow-name="xsl-region-after">
   <fo:block-container line-height="1.4" font-size="8pt" border-before-style="solid" border-before-color="black" border-before-width="1pt">
     <fo:block-container>
@@ -119,7 +119,7 @@ The header and footer are placed inside `fo:static-content` containers, ensuring
 
 The recipient template extracts the dynamic customer data passed into the stylesheet, applying conditional salutations based on gender attributes:
 
-```xml
+```xml caption="XSLT recipient address template with conditional gender-based salutation logic."
 <xsl:template name="recipient">
   <fo:block font-size="7pt" text-decoration="underline" padding-after="7pt">Hans Muster, Musterstrasse XX, YYYYY Musterstadt</fo:block>
   <fo:block>
@@ -152,7 +152,7 @@ Now, we define the concrete invoice template `Bill.xsl`. It inherits the master 
 
 The invoice stylesheet begins by importing `Letter.xsl` and binding the document's `<recipient>` node to the parameter expected by the parent template:
 
-```xml
+```xml caption="Invoice stylesheet header importing the master letter layout and binding the Euro decimal format."
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
   <xsl:import href="Letter.xsl"/>
   <xsl:param name="recipient" select="/bill/recipient"/>
@@ -163,7 +163,7 @@ The invoice stylesheet begins by importing `Letter.xsl` and binding the document
 
 Inside the main `<xsl:template match="/bill">`, we render the invoice title, invoice number, issue date, and service period into a clean two-column metadata block:
 
-```xml
+```xml caption="XSL-FO block container positioning invoice number, date, and service period metadata."
 <fo:block-container space-after="30pt">
   <fo:block-container position="absolute" left="11.4cm" top="0cm" font-size="8pt">
     <fo:block>Rechnungsnummer: <xsl:value-of select="about/number"/></fo:block>
@@ -178,7 +178,7 @@ Inside the main `<xsl:template match="/bill">`, we render the invoice title, inv
 
 To display the invoiced positions clearly, we build an `fo:table` with proportional column widths and alternate the background color of each table row using the modulo operator `position() mod 2`:
 
-```xml
+```xml caption="Dynamic XSL-FO invoice table with proportional column widths and alternating row colors."
 <fo:table table-layout="fixed" width="100%" space-before="9pt" space-after="9pt">
   <fo:table-column column-width="proportional-column-width(1)"/>
   <fo:table-column column-width="proportional-column-width(7)"/>
@@ -210,7 +210,7 @@ To display the invoiced positions clearly, we build an `fo:table` with proportio
 
 Because XSLT 1.0 is a purely functional transformation language without mutable accumulator variables, computing the invoice grand total requires a recursive template that traverses sibling nodes (`following-sibling::entry`):
 
-```xml
+```xml caption="Recursive XSLT 1.0 template accumulating line item quantities and costs into a formatted grand total."
 <xsl:template name="sum">
   <xsl:param name="partial">0</xsl:param>
   <xsl:param name="item" select="entries/entry[position() = 1]"/>

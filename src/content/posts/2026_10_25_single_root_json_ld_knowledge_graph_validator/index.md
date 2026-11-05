@@ -84,6 +84,7 @@ references:
 
 A **Single-Root JSON-LD Knowledge Graph** compiles every page's structured metadata into a unified W3C JSON-LD 1.1 `@graph` array [@sporny-2020-json-ld11] anchored by deterministic `@id` URIs [@guha-2016-schema-org; @hogan-2021-knowledge-graphs], verified at build time by a six-gate SHACL-inspired constraint validator [@knublauch-2017-shacl] and synchronized with `llms.txt` for zero-drift search and LLM discovery.
 
+<!-- caption: "Architectural comparison of fragmented template snippets, runtime SEO plugins, and single-root @graph compilation with six-gate postbuild validation." -->
 | Architectural Dimension | 1. Fragmented Template Snippets | 2. Runtime SEO Plugins | 3. Single-Root `@graph` + Postbuild Compiler ([`validate-jsonld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-jsonld.ts)) |
 | :--- | :--- | :--- | :--- |
 | **Graph Topology & Entity Identity** | Disconnected `<script>` blocks mint anonymous blank nodes (`_:b0`) that fracture identity across pages. | Component-scoped JSON trees duplicate `Person` and `Organization` properties without cross-page normalization. | **Single-root `@graph` star topology** linking canonical `@id` anchors (`#person`, `#website`, `#webpage`, `#article`, `#breadcrumb`). |
@@ -125,7 +126,7 @@ Maintaining separate metadata pipelines for search engines and autonomous LLM ag
 
 When an LLM agent fetches `/llms.txt`, [`src/pages/llms.txt.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/llms.txt.ts) queries all 8 content collections alongside `degrees`, `experiences`, and `src/content/profiles/`—the exact records used by `buildAboutPageSchemas()` and `buildTagsOverviewSchemas()` to populate `Person.sameAs`, `alumniOf`, `hasCredential`, and `knowsAbout`:
 
-```typescript
+```typescript caption="Shared PERSON_REF anchor and collection-driven degree and profile serialization across json-ld.ts and llms.txt.ts."
 // Excerpt from src/commons/server/json-ld.ts & src/pages/llms.txt.ts
 export const PERSON_REF = {
   '@type': 'Person',

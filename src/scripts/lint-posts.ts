@@ -35,6 +35,7 @@ interface MarkdownBlock {
   type: MarkdownBlockType;
   startLine: number;
   detail: string;
+  hasCaption?: boolean;
 }
 
 const STRUCTURAL_BLOCKS = new Set<MarkdownBlockType>(['table', 'code', 'list', 'image', 'blockquote']);
@@ -58,6 +59,9 @@ function parseMarkdownBlocks(markdown: string): MarkdownBlock[] {
     // 1. Fenced code / mermaid block
     if (trimmed.startsWith('```')) {
       const fenceInfo = trimmed.slice(3).trim() || 'code';
+      const isMermaid = /^mermaid\b/i.test(fenceInfo);
+      const captionMatch = fenceInfo.match(/\bcaption="([^"]+)"/) || fenceInfo.match(/\bcaption='([^']+)'/);
+      const hasCaption = isMermaid || Boolean(captionMatch && captionMatch[1].trim().length > 0);
       i++;
       while (i < lines.length && !lines[i].trim().startsWith('```')) {
         i++;
@@ -65,7 +69,7 @@ function parseMarkdownBlocks(markdown: string): MarkdownBlock[] {
       if (i < lines.length) {
         i++; // consume closing ```
       }
-      blocks.push({ type: 'code', startLine, detail: `\`\`\`${fenceInfo}` });
+      blocks.push({ type: 'code', startLine, detail: `\`\`\`${fenceInfo}`, hasCaption });
       continue;
     }
 
@@ -76,12 +80,29 @@ function parseMarkdownBlocks(markdown: string): MarkdownBlock[] {
       continue;
     }
 
-    // 3. Markdown Table
+    // 3a. Markdown Table preceded by <!-- caption: "..." -->
+    const tableCaptionMatch = trimmed.match(/^<!--\s*caption:\s*"([^"]+)"\s*-->$/i);
+    if (tableCaptionMatch) {
+      const hasNonEmptyCaption = tableCaptionMatch[1].trim().length > 0;
+      i++;
+      while (i < lines.length && lines[i].trim() === '') {
+        i++;
+      }
+      if (i < lines.length && lines[i].trim().startsWith('|')) {
+        while (i < lines.length && lines[i].trim().startsWith('|')) {
+          i++;
+        }
+        blocks.push({ type: 'table', startLine, detail: 'Markdown table', hasCaption: hasNonEmptyCaption });
+      }
+      continue;
+    }
+
+    // 3b. Markdown Table without preceding <!-- caption: "..." -->
     if (trimmed.startsWith('|')) {
       while (i < lines.length && lines[i].trim().startsWith('|')) {
         i++;
       }
-      blocks.push({ type: 'table', startLine, detail: 'Markdown table' });
+      blocks.push({ type: 'table', startLine, detail: 'Markdown table', hasCaption: false });
       continue;
     }
 
@@ -138,6 +159,7 @@ function parseMarkdownBlocks(markdown: string): MarkdownBlock[] {
         curTrim === '' ||
         curTrim.startsWith('```') ||
         /^#{1,6}\s+/.test(curTrim) ||
+        /^<!--\s*caption:\s*"([^"]+)"\s*-->$/i.test(curTrim) ||
         curTrim.startsWith('|') ||
         curTrim.startsWith('>') ||
         /^!\[[^\]]*\]\([^)]+\)\s*$/.test(curTrim) ||
@@ -159,6 +181,18 @@ function lintProseRhythm(relPath: string, bodyWithoutFourTicks: string, violatio
   for (let i = 0; i < blocks.length; i++) {
     const cur = blocks[i];
     const next = blocks[i + 1];
+
+    // Caption enforcement on tables and non-Mermaid code blocks
+    if (cur.type === 'table' && !cur.hasCaption) {
+      violations.push(
+        `[${relPath}] Table at body L${cur.startLine} is missing a preceding <!-- caption: "..." --> comment.`
+      );
+    }
+    if (cur.type === 'code' && !cur.hasCaption) {
+      violations.push(
+        `[${relPath}] Code block (${cur.detail}) at body L${cur.startLine} is missing a mandatory caption="..." attribute on the opening fence.`
+      );
+    }
 
     // Rule A: Every heading must be immediately followed by a prose paragraph
     if (cur.type === 'heading') {
@@ -515,6 +549,7 @@ function run(): void {
         lineIdx < lines.length &&
         lines[lineIdx].trim() !== '' &&
         !lines[lineIdx].startsWith('#') &&
+        !lines[lineIdx].trim().startsWith('<!--') &&
         !lines[lineIdx].startsWith('|') &&
         !lines[lineIdx].startsWith('>') &&
         !lines[lineIdx].startsWith('```')
@@ -578,6 +613,7 @@ function run(): void {
           j < lines.length &&
           lines[j].trim() !== '' &&
           !lines[j].startsWith('#') &&
+          !lines[j].trim().startsWith('<!--') &&
           !lines[j].startsWith('|') &&
           !lines[j].startsWith('>') &&
           !lines[j].startsWith('```') &&

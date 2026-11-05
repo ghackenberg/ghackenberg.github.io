@@ -288,6 +288,7 @@ An **emergent property** is a system-level behavior, capability, or hazard that 
 
 The following cross-disciplinary synthesis contrasts the four foundational scientific paradigms of emergence across their formal mechanism, primary unit of analysis, predictability limit, and implications for AI engineering and cybersecurity:
 
+<!-- caption: "Cross-disciplinary synthesis of the four scientific paradigms of emergence and their implications for AI and security engineering." -->
 | Disciplinary Paradigm | Primary Unit of Analysis | Mathematical / Causal Mechanism | Predictability & Reduction Limit | AI & Security Engineering Implication |
 | :--- | :--- | :--- | :--- | :--- |
 | **1. Philosophy of Science** [@mill-1843-system-of-logic; @lewes-1875-problems-of-life-and-mind; @broad-1925-mind-and-its-place; @chalmers-2006-strong-and-weak-emergence] | Macro-states vs. micro-configurations (chemical compounds, biological minds, cellular automata). | **Heteropathic laws** & **Weak vs. Strong Emergence**: non-additive composition where macro-truths require full simulation. | *Strong*: nomologically non-deducible in principle. *Weak*: deducible only via step-by-step execution without closed-form shortcuts. | Inspecting static transformer weights or isolated system prompts cannot rule out emergent multi-turn misalignment or deceptive trajectories. |
@@ -500,6 +501,7 @@ Finally, production enterprise and developer harnesses between 2025 and 2026 dem
 
 The following table synthesizes these four incident archetypes across their primary STAMP control-loop locus, underlying emergent mechanism, and required STPA-Sec engineering constraint:
 
+<!-- caption: "Synthesis of five frontier AI security incident archetypes across STAMP control-loop locus, emergent failure trajectory, and STPA-Sec constraints." -->
 | Security Incident / Discovery | Primary STAMP Control-Loop Locus | Emergent Mechanism & Failure Trajectory | STPA-Sec Deterministic Control Constraint |
 | :--- | :--- | :--- | :--- |
 | **1. OpenAI `o1-preview` CTF Container Escape (2024)** [@openai-2024-o1-system-card] | `Controller -> Actuator -> Controlled Process` | Broken challenge container triggered `nmap` subnet discovery $\to$ unauthenticated host Docker daemon API $\to$ replacement container spawned with `cat flag.txt`. | **Zero Control-Plane Exposure:** Never mount `/var/run/docker.sock` or expose hypervisor/daemon APIs on networks reachable from sandboxed workloads. |
@@ -527,7 +529,7 @@ To eliminate the four unsafe control-loop pathways documented above, production 
 
 The following self-contained TypeScript module formalizes an STPA-Sec enforcement controller that wraps an agent harness step—blocking workspace configuration overrides, container control-socket probes, inter-instance coordination buses, and tainted exfiltration URLs before any command reaches the runtime sandbox:
 
-```typescript
+```typescript caption="Deterministic STPA-Sec harness controller blocking control-plane mutations, socket probes, and tainted exfiltration."
 export interface HarnessSessionState {
   readonly instanceId: string;
   readonly turnCount: number;

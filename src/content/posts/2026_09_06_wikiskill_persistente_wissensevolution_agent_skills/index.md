@@ -95,7 +95,7 @@ Da das manuelle Verfassen von Skills für Hunderte Werkzeuge zeitaufwendig und f
 
 In der Praxis leiden bisherige Frameworks (wie *EvoSkill*, *Trace2Skill* oder *SkillOpt*) jedoch unter drei gravierenden strukturellen Schwächen:
 
-```
+```text caption="Schematischer Ablauf der Optimization Amnesia durch unprotokollierte Rollbacks in monolithischen Skill-Optimierern."
 Bisheriger monolithischer Ansatz (Amnesie-Gefahr):
 [Rohe Trajektorien τ] ──(Direktes Patching)──> [Kandidaten-Skill S'] ──(Validierung)
                                                           │
@@ -249,6 +249,7 @@ Als Referenzpunkte dienen sowohl ein ungestützter Basisdurchlauf als auch drei 
 
 Tabelle 1 fasst die durchschnittliche Testleistung über alle Benchmarks hinweg zusammen (Mittelwerte aus 3 unabhängigen Durchläufen mit gepaartem Bootstrap-Test bei $p < 0{,}05$):
 
+<!-- caption: "Benchmark-Ergebnisse von WikiSkill im Vergleich zu No-Skill-Baselines und aktuellen Skill-Evolutionsverfahren über vier verschiedene Open-Weight- und Frontier-Modelle." -->
 | Inferenz-Modell | No-Skill | Trace2Skill | EvoSkill | SkillOpt | **WikiSkill** | $\Delta$ zur stärksten Baseline |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Qwen-3.5-4B** | 26.2 % | 31.8 % | 33.4 % | 35.2 % | **38.5 %** | **+3.3 %** |
@@ -284,6 +285,7 @@ Gleichzeitig zeigt sich, dass hochwertige prozedurale Skills fehlende Modellpara
 
 Ein zentrales Versprechen modularer Agent Skills ist ihre Portabilität. In Experimenten untersuchten Tang et al., was passiert, wenn Fähigkeiten, die von Modell A evolviert wurden, zur Inferenzzeit von Modell B ausgeführt werden:
 
+<!-- caption: "Zero-Shot-Skill-Transfer-Ergebnisse bei der Ausführung von durch größere Quellmodelle evolvierten Agent Skills auf kleineren Zielmodellen." -->
 | Quellmodell (Skill-Evolvierer) | Zielmodell (Inferenz-Ausführung) | Benchmark | Baseline (No-Skill) | Self-Evolved | **Transferred Skill** |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | **Qwen-3.6-27B** | Qwen-3.5-9B | SpreadSheet | 24.3 % | 33.6 % | **50.5 %** |
@@ -301,6 +303,7 @@ Hieraus lassen sich zwei entscheidende ingenieurtechnische Erkenntnisse ableiten
 
 Um die Kausalität der Wiki-Schicht zweifelsfrei nachzuweisen, führten die Autoren kontrollierte Ablationen mit Gemini-3.5-Flash durch:
 
+<!-- caption: "Ablationsstudie mit Gemini-3.5-Flash zum isolierten Leistungsbeitrag des persistenten LLM-Wikis während der Skill-Synthese und zur Inferenzzeit." -->
 | Konfiguration | Skill Proposer hat Wiki-Zugriff? | Inferenz-Agent hat Wiki-Zugriff? | Durchschnittlicher Benchmark-Score |
 | :---: | :---: | :---: | :---: |
 | Baseline ohne Wiki | ❌ Nein | ❌ Nein | 48.7 % |
@@ -317,7 +320,7 @@ Zwei zentrale Befunde sind für Systemarchitekten von herausragender Bedeutung:
 
 Um den WikiSkill-Ansatz in der Forschungs- und Entwicklungslandschaft präzise zu verorten, liefert die folgende Übersicht eine strukturierte Kategorisierung konkurrierender und komplementärer Paradigmen. Entsprechend dem Fokus dieser Analyse werden diese Ansätze hier lediglich zur Abgrenzung aufgeführt und nicht weiter vertieft:
 
-```
+```text caption="Taxonomische Einordnung konkurrierender und komplementärer Optimierungs- und Gedächtnisparadigmen für KI-Agenten."
 Übersicht alternativer Optimierungs- und Gedächtnisparadigmen:
 │
 ├── 1. Reine Kontext- & Prompting-Verfahren

@@ -83,6 +83,7 @@ In der Entwickler-Community existieren hochentwickelte und beliebte Open-Source-
 
 Die folgende Vergleichsmatrix fasst die Kernunterschiede unserer Custom Presentation Engine gegenüber den verbreiteten Alternativen zusammen:
 
+<!-- caption: "Vergleichsmatrix zwischen Cloud-Embeds, etablierten Markdown-Frameworks (Reveal.js, Slidev) und unserer maßgeschneiderten Astro Presentation Engine." -->
 | Feature / Architektur-Dimension | Cloud Embeds (Google / Pitch) | Reveal.js / Slidev | Custom Astro Engine |
 | :--- | :--- | :--- | :--- |
 | **Hosting & Ownership** | Fremdserver / Cloud-Lock-in | Eigener Server / SPA | Vollständig self-hosted via Astro SSG |
@@ -211,7 +212,7 @@ Neuronale Sprachsynthese-Engines stolpern im Deutschen häufig über englische F
 
 In [`src/content/presentations/tts-lexicon.json`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/presentations/tts-lexicon.json) pflegen wir ein zentrales Konfigurations-Lexikon:
 
-```json
+```json caption="Ausschnitt aus tts-lexicon.json zur phonetischen Normalisierung englischer Fachbegriffe und technischer Akronyme."
 {
   "acronyms": {
     "RAG": "R-A-G",
@@ -237,7 +238,7 @@ Das Node.js-Buildskript [`generate-presentation-audio.ts`](https://github.com/gh
 
 Über das Paket `edge-tts-universal` und die deutsche Stimme `de-DE-ConradNeural` streamt das Buildskript das Audiosignal. Die Synthese liefert nicht nur das MP3-Audio, sondern zu jedem gesprochenen Wort ein präzises Offset:
 
-```json
+```json caption="Generierte Cue-Zeitstempel-Zuordnung mit sekundengenauen Audio-Offsets für die visuelle Folien-Synchronisation."
 {
   "col-classic": 4.12,
   "col-modern": 8.75

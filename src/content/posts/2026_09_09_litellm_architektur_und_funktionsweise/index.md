@@ -87,6 +87,7 @@ Das FastAPI-Backend von LiteLLM ist konsequent **stateless** konzipiert. Eingehe
 ### Die Persistenz- und State-Topologie
 Um Hochverfügbarkeit und feingranulare Abrechnung im Cluster sicherzustellen, stützt sich LiteLLM auf eine zweigeteilte Persistenzschicht:
 
+<!-- caption: "Zweistufige Persistenzarchitektur von LiteLLM aus verteiltem Redis-In-Memory-State-Bus und relationalem PostgreSQL-Audit-Speicher." -->
 | Persistenz-Tier | Technologie | Primäre Aufgaben & Datenstrukturen | Latenzanforderung |
 | :--- | :--- | :--- | :--- |
 | **Distributed State Bus & Cache** | **Redis Cluster** (oder Valkey) | • Sliding Window Counter für RPM/TPM-Rate-Limits<br>• Virtual Key Auth Cache (`enable_redis_auth_cache`)<br>• Exact-Match Response Caching (SHA-256 Hashes)<br>• Worker-Heartbeats (`LiteLLM_ProxyWorkerHeartbeat`) | $< 1\,\text{ms}$ (In-Memory) |
@@ -109,6 +110,7 @@ Das architektonische Meisterstück von LiteLLM ist seine universelle Übersetzun
 ### Protokoll- und Payload-Transformation
 Die folgende Übersicht illustriert, wie LiteLLM die divergenten Datenmodelle führender LLM-Provider auf das OpenAI-Referenzmodell abbildet:
 
+<!-- caption: "Protokoll- und Schema-Mapping des LiteLLM Unified Interface zwischen dem OpenAI-Referenzstandard, Anthropic Claude, AWS Bedrock und Google Vertex AI." -->
 | Funktionsbereich | OpenAI Referenz-Standard | Anthropic Claude API | AWS Bedrock (Converse API) | Google Vertex AI / Gemini |
 | :--- | :--- | :--- | :--- | :--- |
 | **Endpunkt** | `/v1/chat/completions` | `/v1/messages` | `converse` / `converse_stream` | `generateContent` |
@@ -121,7 +123,7 @@ Die folgende Übersicht illustriert, wie LiteLLM die divergenten Datenmodelle f�
 Bei gestreamten Antworten via **Server-Sent Events (SSE)** senden unterschiedliche Backends hochgradig inkonsistente Chunks. Anthropic emittiert beispielsweise separate `content_block_start`-, `content_block_delta`- und `message_stop`-Events, während OpenAI textuelle Fragmente in `choices[0].delta.content` liefert.
 
 LiteLLM fängt diese Streams ab und vereinheitlicht sie in standardkonforme OpenAI-SSE-Events:
-```
+```json caption="Auf das OpenAI-SSE-Schema normalisiertes Streaming-Chunk-Event des LiteLLM Proxy."
 data: {"id":"chatcmpl-xyz","choices":[{"delta":{"content":"Hallo"},"finish_reason":null}]}
 ```
 
@@ -176,7 +178,7 @@ Tritt bei einem Backend-Knoten ein schwerwiegender Fehler auf (HTTP 429, 500, 50
 ### Kaskadierende Fallback-Ketten
 Reicht ein Retry auf demselben Deployment nicht aus, aktiviert LiteLLM kaskadierende Fallback-Ketten (*Failover Chains*). In der Praxis konfigurieren wir für geschäftskritische Systeme eine vierstufige Resilienz-Hierarchie:
 
-```yaml
+```yaml caption="LiteLLM-Router-Konfiguration mit primärem vLLM-Cluster, sekundärem GPU-Backup und Cloud-Fallback-Kaskade."
 model_list:
   # Primäres lokales vLLM-Cluster (Souverän, On-Premises)
   - model_name: enterprise-gpt
@@ -265,7 +267,7 @@ LiteLLM erlaubt die nahtlose Einbettung von Sicherheitsprüfungen direkt in den 
 #### 1. Microsoft Presidio (Automatisierte PII-Maskierung)
 Vor der Weiterleitung an ein externes Modell analysiert Presidio den Prompt auf personenbezogene Daten (PII/PHI) wie Kreditkartennummern, E-Mail-Adressen oder IBANs und ersetzt diese durch neutrale Platzhalter (`[REDACTED_IBAN]`):
 
-```yaml
+```yaml caption="Deklarative Pre-Call-Guardrail-Konfiguration mit Microsoft Presidio zur automatisierten PII-Maskierung."
 guardrails:
   - guardrail_name: "enterprise-pii-masking"
     litellm_params:

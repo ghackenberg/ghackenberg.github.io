@@ -628,6 +628,10 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
 
     <!-- Page Modals (e.g. SlideReferencesModal, PrivacyModal) -->
     <slot name="modals" />
+    <script>
+      import { initMediaDeck } from "@commons/client/media-deck";
+      initMediaDeck();
+    </script>
     {isDev && (
       <>
         <DevStudioShell currentPath={Astro.url.pathname + (Astro.url.search || '')} />

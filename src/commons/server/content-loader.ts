@@ -10,9 +10,18 @@ const TRACKED_ASSET_EXT_REGEX = /\.(svg|png|jpe?g|webp|avif|gif)$/i;
 const MARKDOWN_EXT_REGEX = /\.(md|mdx)$/i;
 const RELATIVE_ASSET_REF_REGEX = /(?:!\[[^\]]*\]\(|src=["']|:\s*["']?)(\.\.?\/[^"'\s)]+\.(?:svg|png|jpe?g|webp|avif|gif))/gi;
 
+const GLOBAL_MARKDOWN_PIPELINE_FILES = [
+  'astro.config.ts',
+  'src/plugins/rehype-inline-svg.ts',
+  'src/plugins/rehype-responsive-tables.ts',
+  'src/plugins/rehype-code-captions.ts',
+  'src/plugins/remark-mermaid.ts',
+  'src/styles/graphics.css',
+] as const;
+
 /**
  * Computes a deterministic fingerprint string across all tracked visual assets (.svg, .png, .jpg, .webp, etc.)
- * co-located with or referenced by a Markdown/MDX entry.
+ * co-located with or referenced by a Markdown/MDX entry, plus the global Markdown/SVG pipeline plugins and stylesheet.
  */
 function computeEntryAssetFingerprint(mdFilePath: string, mdContents: string): string {
   const entryDir = path.dirname(mdFilePath);
@@ -58,17 +67,11 @@ function computeEntryAssetFingerprint(mdFilePath: string, mdContents: string): s
     }
   }
 
-  if (assetPaths.size === 0) return '';
-
   const sortedPaths = [...assetPaths].sort((a, b) => a.localeCompare(b));
   const parts: string[] = [];
-  let hasSvg = false;
 
   for (const assetPath of sortedPaths) {
     try {
-      if (assetPath.toLowerCase().endsWith('.svg')) {
-        hasSvg = true;
-      }
       const relKey = path.relative(entryDir, assetPath).replace(/\\/g, '/');
       const contentHash = getFileContentHash(assetPath, 16);
       parts.push(`${relKey}:${contentHash}`);
@@ -77,19 +80,12 @@ function computeEntryAssetFingerprint(mdFilePath: string, mdContents: string): s
     }
   }
 
-  if (hasSvg) {
-    const graphicsCssPath = path.resolve('src/styles/graphics.css');
-    if (fs.existsSync(graphicsCssPath)) {
+  // Unconditionally include hashes of all 4 Markdown plugins and graphics.css for every Markdown entry
+  for (const relPipelineFile of GLOBAL_MARKDOWN_PIPELINE_FILES) {
+    const absPipelinePath = path.resolve(relPipelineFile);
+    if (fs.existsSync(absPipelinePath)) {
       try {
-        parts.push(`graphics.css:${getFileContentHash(graphicsCssPath, 16)}`);
-      } catch {
-        // ignore
-      }
-    }
-    const rehypeInlineSvgPath = path.resolve('src/plugins/rehype-inline-svg.ts');
-    if (fs.existsSync(rehypeInlineSvgPath)) {
-      try {
-        parts.push(`rehype-inline-svg.ts:${getFileContentHash(rehypeInlineSvgPath, 16)}`);
+        parts.push(`${path.basename(relPipelineFile)}:${getFileContentHash(absPipelinePath, 16)}`);
       } catch {
         // ignore
       }
@@ -240,32 +236,37 @@ export function assetAwareGlob(options: Parameters<typeof glob>[0]): Loader {
       await baseLoader.load(enhancedContext);
 
       if (context.watcher) {
+        context.watcher.add(path.resolve(rootDir, 'src/plugins'));
+        context.watcher.add(path.resolve(rootDir, 'src/styles/graphics.css'));
+
         const pendingAssetPaths = new Set<string>();
         let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+        let pipelineDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
         const onFsEvent = (changedPath: string) => {
           const resolved = path.resolve(changedPath);
           const norm = resolved.replace(/\\/g, '/');
 
           if (
-            (norm.endsWith('/src/styles/graphics.css') ||
-              norm.endsWith('/src/plugins/rehype-inline-svg.ts')) &&
+            (norm.includes('/src/plugins/') || norm.endsWith('/src/styles/graphics.css')) &&
             globChangeHandler
           ) {
-            for (const mdFile of mdFileByBaseDigest.values()) {
-              try {
-                const mdDir = path.dirname(mdFile);
-                const hasSvgInDir =
-                  fs.existsSync(mdDir) &&
-                  fs.readdirSync(mdDir).some((f) => f.toLowerCase().endsWith('.svg'));
-                if (hasSvgInDir) {
-                  indexMarkdownFile(mdFile);
-                  void globChangeHandler(mdFile);
-                }
-              } catch {
-                // ignore
-              }
+            if (pipelineDebounceTimer) {
+              clearTimeout(pipelineDebounceTimer);
             }
+            pipelineDebounceTimer = setTimeout(() => {
+              pipelineDebounceTimer = undefined;
+              for (const mdFile of mdFileByBaseDigest.values()) {
+                try {
+                  if (fs.existsSync(mdFile)) {
+                    indexMarkdownFile(mdFile);
+                    void globChangeHandler?.(mdFile);
+                  }
+                } catch {
+                  // ignore
+                }
+              }
+            }, 150);
             return;
           }
 

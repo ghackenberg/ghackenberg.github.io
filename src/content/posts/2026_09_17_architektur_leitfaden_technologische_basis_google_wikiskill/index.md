@@ -100,6 +100,7 @@ Auf Basis dieser Kriterien haben wir fünf prominente technologische Grundlagen 
 
 ![Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra [@team-2024-mastra] vs. Pi Agent vs. PydanticAI [@colvin-2024-pydantic-ai] vs. Hermes vs. LangGraph](./wikiskill_technologie_matrix.svg "Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes")
 
+<!-- caption: "Bewertungsmatrix fünf führender Agenten-Frameworks hinsichtlich Charakteristik, Implementierungsaufwand und Eignung für WikiSkill." -->
 | Technologische Basis | Kern-Charakteristik | Implementierungs-Aufwand für WikiSkill | Eignung für WikiSkill | Typisches Einsatzfeld |
 | :--- | :--- | :--- | :--- | :--- |
 | **Mastra (TypeScript)** | Workflow- & Agent-Framework mit nativer Graph-/Branch-Logik und Telemetrie. | **Niedrig bis Mittel:** Gating-Loop lässt sich 1:1 als typisierter DAG-Workflow abbilden. | **Hervorragend** | Moderner Web-Stack, PWAs, interaktive Dashboards & SaaS |
@@ -125,7 +126,7 @@ Für die Umsetzung des WikiSkill-Musters bietet dieser Ansatz folgende architekt
 
 Das folgende Codebeispiel demonstriert die Implementierung des deterministischen WikiSkill-Gatings als typisierter Mastra-Workflow:
 
-```typescript
+```typescript caption="Deterministisches WikiSkill-Gating in Mastra mit Benchmark-Schwellenwertprüfung zwischen Commit und Rollback."
 // Beispiel: Deterministisches WikiSkill-Gating als Mastra-Workflow
 import { createWorkflow, createStep } from '@mastra/core';
 import { z } from 'zod';

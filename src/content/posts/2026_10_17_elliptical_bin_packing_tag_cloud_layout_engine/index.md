@@ -104,6 +104,7 @@ A **2D Elliptical Bin-Packing Tag Cloud Layout Engine** is a deterministic clien
 
 The table below contrasts naive CSS flexbox wrapping and randomized canvas spiral clouds against our deterministic 2D elliptical DOM bin-packing engine implemented on `hackenberg.tech`:
 
+<!-- caption: "Architectural comparison of naive CSS flexbox wrapping, randomized spiral clouds, and deterministic 2D elliptical DOM bin-packing." -->
 | Architectural Dimension | Naive CSS Flexbox (`flex-wrap: wrap`) | Randomized Canvas / SVG Spiral Clouds (`Wordle`) | 2D Elliptical DOM Bin-Packing (`hackenberg.tech`) |
 | :--- | :--- | :--- | :--- |
 | **Spatial Silhouette** | Rigid rectangular bounding box or ragged bottom row with unaligned outer edges. | Arbitrary 2D Archimedean spiral; prone to vertical overflow or unreadable rotated text. | Deterministic parametric ellipse ($R \in \{5, 6\}$ rows) with smooth chord-width tapering. |
@@ -169,7 +170,7 @@ $$\tau_i = \begin{cases} \dfrac{c_i - c_{\min}}{c_{\max} - c_{\min}} & \text{if 
 
 The piecewise mapping in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro#L281-L299) clamps `minTagCount` via `Math.min(..., 1)` so that $\tau_i$ always normalizes against a near-zero baseline floor ($\le 1$), and assigns responsive Tailwind utility classes for mobile (`< 640px`), tablet (`sm:`), and desktop (`md:`) viewports:
 
-```typescript
+```typescript caption="Server-side normalized frequency ratio calculation and four-tier typographic class assignment."
 const maxTagCount = Math.max(...tagCloudList.map(t => t.totalCount), 1);
 const minTagCount = Math.min(...tagCloudList.map(t => t.totalCount), 1);
 
@@ -208,7 +209,7 @@ A common shortcut in SSR tag cloud implementations is estimating pill width $w_i
 
 To obtain ground-truth pixel geometry without hardcoding fragile font-metric lookup tables, Stage 1 of `runEllipticalBinPacking()` in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro#L3600-L3618) temporarily mounts all 21 `.bin-tag-node` elements and `#bin-overflow-node` into a single flat flex container (`#bin-packing-rows`) and queries the W3C CSSOM View [`getBoundingClientRect()`](https://www.w3.org/TR/cssom-view-1/#dom-element-getboundingclientrect) API [@w3c-2016-cssom-view]:
 
-```typescript
+```typescript caption="Stage 1 flat DOM mounting and sub-pixel width measurement via getBoundingClientRect()."
 const isMobile = containerW < 460;
 const gapPx = isMobile ? 6 : 10;
 const effectiveW = Math.min(containerW, 920);
@@ -269,7 +270,7 @@ At the equator ($u_r = 0$), $E(0) = 1.0$ and $C_r = W_{\text{eff}}$. At the top 
 
 Finally, before placing any content tags, the solver pre-allocates the width of `#bin-overflow-node` ($w_{\text{overflow}}$) inside the bottom row ($r = R - 1$), guaranteeing that the `+X remaining` archive link is always anchored at the bottom-right periphery of the ellipse:
 
-```typescript
+```typescript caption="Stage 2 parametric elliptical chord capacity calculation and bottom-row overflow reservation."
 const rows: EllipticalRow[] = [];
 for (let r = 0; r < numRows; r++) {
   const u = midRow > 0 ? (r - midRow) / midRow : 0; // [-1, +1]
@@ -320,7 +321,7 @@ In **Phase 1**, we isolate the top 7 core tags (`coreItems`, $\text{rank} \in \{
 
 The TypeScript implementation below shows how Phase 1 anchors the `#1` tag at the equator and distributes the remaining six core tags across `centralRows`:
 
-```typescript
+```typescript caption="Phase 1 center-outward core anchoring for the top seven highest-frequency topic tags."
 // 3. Phase 1: Place top-frequency tags (rank 0..6) into the central rows first so the largest pills anchor the center
 const centralRows = centerOutwardRows.filter((r) => Math.abs(r.u) <= 0.72);
 const coreItems = measured.filter((m) => m.rank < 7);
@@ -368,7 +369,7 @@ We resolve this tension via an **adaptive convex combination** $S(r, i)$ that sw
 
 $$S(r, i) = \begin{cases} 0.65\, f_i + 0.35\, s_{\text{rank}, i} & \text{if } |I_r| = 1 \quad \text{(Anti-Orphan Complementary Mode)} \\[4pt] 0.65\, s_{\text{rank}, i} + 0.35\, f_i & \text{if } |I_r| \neq 1 \quad \text{(Rank-Priority Mode)} \end{cases}$$
 
-```typescript
+```typescript caption="Phase 2 best-fit subset-sum gap filling with adaptive anti-orphan convex scoring."
 // 4. Phase 2: Best-Fit Subset-Sum Gap Filling across all rows from center outward
 // Pair long tags with shorter tags so rows reach their elliptical target envelope without 1-pill gaps
 centerOutwardRows.forEach((row) => {
@@ -408,7 +409,7 @@ After Phase 2 assigns a subset of pills $I_r$ to each row $r$, the items inside 
 
 In **Phase 3**, we sort each row's assigned items ascending by rank ($a.\text{rank} - b.\text{rank}$, so the most prominent tag is at index $k = 0$) and interleave them into an output array `orderedRowItems` using a **pendulum permutation** (`unshift` for odd indices $k$, `push` for even indices $k$):
 
-```typescript
+```typescript caption="Phase 3 pendulum permutation centering the highest-ranked tag within each horizontal row."
 // Sort row items by rank ascending (most important first) then pendulum-interleave so peak is in row center
 const sortedRowItems = row.items.slice().sort((a, b) => a.rank - b.rank);
 const orderedRowItems: typeof sortedRowItems = [];
@@ -447,7 +448,7 @@ At the end of `runEllipticalBinPacking()`, [`src/pages/index.astro`](https://git
 
 $$N_{\text{rest,dyn}} = N_{\text{rest,base}} + |\mathcal{U}_{\text{unplaced}}|, \qquad C_{\text{rest,dyn}} = C_{\text{rest,base}} + \sum_{m \in \mathcal{U}_{\text{unplaced}}} c_m$$
 
-```typescript
+```typescript caption="Non-destructive overflow pooling into #bin-packing-pool and dynamic badge counter updates."
 // Move any unplaced tags to hidden pool & dynamically update the +X remaining badge and tooltip
 const unplacedItems = measured.filter((m) => !m.placed);
 let extraOverflowItemsSum = 0;
@@ -486,7 +487,7 @@ Finally, to guarantee zero Cumulative Layout Shift (CLS = 0), prevent duplicate 
 
 The initialization sequence below wires `ResizeObserver` and `document.fonts.ready` around `runEllipticalBinPacking()`:
 
-```typescript
+```typescript caption="Wiring ResizeObserver and document.fonts.ready around runEllipticalBinPacking()."
 runEllipticalBinPacking();
 const binResizeObserver = new ResizeObserver(() => {
   requestAnimationFrame(runEllipticalBinPacking);

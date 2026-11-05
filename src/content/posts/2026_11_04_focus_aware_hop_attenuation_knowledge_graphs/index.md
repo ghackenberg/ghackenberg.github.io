@@ -54,6 +54,7 @@ references:
 
 Focus-aware hop attenuation is a degree-of-interest graph rendering heuristic that replaces integer breadth-first search steps with a continuous effective hop distance $d_{\text{eff}} \in [0, 4]$ [@furnas-1986-fisheye-views; @herman-2000-graph-visualization-survey]. Implemented in [`graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts), it bounds ego-network expansion via a 16-node focus budget, logarithmic hub penalties, and parametric power-decay curves.
 
+<!-- caption: "Comparison of graph ego-network highlighting strategies across distance metrics, scale-free hub behavior, and visual retention profiles." -->
 | Highlighting Strategy | Distance Metric | Scale-Free Hub Behavior | Visual Retention Profile |
 | :--- | :--- | :--- | :--- |
 | **1-Hop Binary Highlighting** | Discrete $d \in \{0, 1, \infty\}$ | Collapses on popular tag hubs; hides indirect semantic bridges | Binary step function (full opacity vs. uniform dimming) |
@@ -80,7 +81,7 @@ In [`computeHopDistances`](https://github.com/ghackenberg/ghackenberg.github.io/
 
 First, if direct 1-hop neighbors exceed `directHubSoftThreshold: 8`, shell 1 receives a crowding offset $d_{\text{eff}, 1} = 1 + 0.60 \cdot \text{clamp}((\lvert S_1 \rvert - 8) / 16, 0, 1)$. For outer shells $d \in \{2..4\}$, each candidate parent $u \in S_{d-1}$ incurs a logarithmic degree penalty above baseline 4, while multiple shared parents divide the excess penalty and `budgetDist` enforces the 16-node focus horizon:
 
-```typescript
+```typescript caption="Logarithmic hub degree penalty and shared-parent triangulation discount in computeHopDistances."
 const stepCost =
   1 +
   HOP_ATTENUATION_CONFIG.hubPenaltyWeight *

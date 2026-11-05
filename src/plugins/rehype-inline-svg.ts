@@ -167,23 +167,23 @@ function createFigureElement(
     const maxSvgWidthPx = Math.round(
       Math.max(320, Math.min(880, Math.min(vbWidth, rawTargetSvgWidth)))
     );
-    const maxFigureWidthPx = maxSvgWidthPx + 34;
-
     const existingStyle = ($svg.attr('style') || '').trim();
     const cleanStyle = existingStyle.replace(/max-width\s*:\s*[^;]+;?/gi, '').trim();
-    $svg.attr(
-      'style',
-      cleanStyle ? `${cleanStyle}; max-width: ${maxSvgWidthPx}px` : `max-width: ${maxSvgWidthPx}px`
-    );
-    figureMaxStyleAttr = ` style="max-width: ${maxFigureWidthPx}px"`;
+    if (cleanStyle) {
+      $svg.attr('style', cleanStyle);
+    } else {
+      $svg.removeAttr('style');
+    }
+    figureMaxStyleAttr = ` style="max-width: ${maxSvgWidthPx}px"`;
   }
 
   const existingClass = $svg.attr('class') || '';
-  const classNames = new Set(existingClass.split(/\s+/).filter(Boolean));
+  const classNames = new Set(existingClass.split(/\s+/).filter((c) => Boolean(c) && c !== 'mx-auto'));
+  classNames.add('block');
   classNames.add('w-full');
   classNames.add('h-auto');
   classNames.add('max-w-full');
-  classNames.add('mx-auto');
+  classNames.add('m-0');
   $svg.attr('class', Array.from(classNames).join(' '));
 
   $svg.attr('role', 'img');
@@ -243,12 +243,18 @@ function createFigureElement(
   const contentUrl = computeContentUrl(src, resolvedPath);
 
   const figureHtml = `
-<figure class="svg-diagram my-8 mx-auto w-full overflow-hidden rounded-2xl border border-element-border bg-element-bg/50 p-2 sm:p-4"${figureMaxStyleAttr} data-diagram-title="${escapeAttr(title)}" data-diagram-caption="${escapeAttr(alt)}" data-svg-hash="${escapeAttr(hash)}">
+<figure class="svg-diagram artifact-card my-8 mx-auto w-full"${figureMaxStyleAttr} data-diagram-title="${escapeAttr(title)}" data-diagram-caption="${escapeAttr(alt)}" data-svg-hash="${escapeAttr(hash)}">
   <meta itemprop="name" content="${escapeAttr(title)}" />
   <meta itemprop="description" content="${escapeAttr(alt)}" />
   <meta itemprop="contentUrl" content="${escapeAttr(contentUrl)}" />
-  <div class="w-full overflow-x-auto flex justify-center">${svgContent}</div>
-  <figcaption class="mt-2 text-center text-xs text-slate-400 light:text-slate-600 font-medium">${escapeHtml(alt)}</figcaption>
+  <div class="artifact-card-header">
+    <span class="artifact-card-badge">SVG</span>
+    <div class="artifact-card-controls">
+      <button type="button" class="table-deck-btn" data-media-fullscreen="true" aria-label="Open diagram in fullscreen: ${escapeAttr(title || alt)}" title="Fullscreen">⤢</button>
+    </div>
+  </div>
+  <div class="artifact-card-body">${svgContent}</div>
+  <figcaption class="artifact-card-footer">${escapeHtml(alt)}</figcaption>
 </figure>`.trim();
 
   const tree = fromHtml(figureHtml, { fragment: true });

@@ -76,6 +76,7 @@ In den vergangenen zwei Jahrzehnten wurden IT-Systeme primär auf Metriken optim
 
 Mindful IT definiert den Erfolg von Software grundlegend neu:
 
+<!-- caption: "Architektonische Gegenüberstellung aufmerksamkeits-extraktiver Plattformen und besonnener Mindful-IT-Systeme entlang von Zielmetriken, Benachrichtigungslogik und Datenhaltung." -->
 | Dimension | Attention-Extractive Systems (Status Quo) | Mindful IT & Calm Computing (Neues Paradigma) |
 | :--- | :--- | :--- |
 | **Primäre Zielmetrik** | Verweildauer, Klicks, Interaktionsfrequenz | *Time Well Spent*, Aufgabenqualität, mentale Klarheit |

@@ -75,6 +75,7 @@ To achieve a **flicker-free experience**, we designed a decoupled synchronizatio
 
 The table below compares three common notification state architectures across layout stability, server overhead, and storage constraints:
 
+<!-- caption: "Architectural comparison of server-rendered database queries, reactive UI islands, and synchronous inline script hydration across layout shift, server overhead, and offline privacy." -->
 | Architecture Approach | Initial Paint Flicker (CLS) | Server Overhead | Offline & Privacy Support | Code Complexity | Storage [@w3c-2016-storage-second] & Sync Constraints |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Server-Rendered DB Query** | None (Zero CLS) | High (Requires DB & Auth per request) | Poor (Server dependency) | High (Backend stack needed) | Cross-device synchronized via user account |
@@ -102,7 +103,7 @@ The diagram below illustrates how these three layers interact across build time 
 ### 1. Build-Time Content Manifest
 First, we created a dynamic endpoint `src/pages/content-manifest.json.ts` that runs during the Astro build process. It fetches all content collections, extracts their URLs and publication timestamps (validated by Zod schemas), and output a single, pre-compiled static JSON file:
 
-```typescript
+```typescript caption="Build-time Astro endpoint compiling collection URLs and publication timestamps into content-manifest.json."
 export async function GET() {
   const posts = await getCollection("posts");
   const courses = await getCollection("courses");
@@ -127,7 +128,7 @@ To completely prevent the layout flash, we injected a synchronous, inlined scrip
 
 Because this script is inlined and simple, it executes synchronously during the initial HTML rendering loop. It reads the user's notification state and the cached content manifest directly from `localStorage`, instantly toggling the visibility of `.unread-dot` and `.nav-badge` DOM nodes **before the browser executes the first paint**:
 
-```html
+```html caption="Synchronous inline script reading localStorage before first paint to reveal unread indicators without layout shift."
 <script is:inline>
   (function() {
     const STORAGE_KEY = 'gh_site_notifications_v1';

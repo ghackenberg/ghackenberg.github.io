@@ -38,6 +38,7 @@ The interactive canvas architecture integrates four core mechanisms to deliver r
 
 The table below outlines the core rendering, physics, and interaction capabilities of the Vis.js Network engine:
 
+<!-- caption: "Technical specifications and interactive spring-damper physics characteristics of the Vis.js Network canvas engine." -->
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
 | **Rendering Engine** | HTML5 2D Canvas API | High-fidelity rendering with custom fonts, badges, and glows |

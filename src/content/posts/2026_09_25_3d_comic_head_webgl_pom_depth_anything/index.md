@@ -79,6 +79,7 @@ Jede dieser vier Stufen löst eine konkrete physikalische oder visuelle Hürde:
 
 Im direkten Architekturvergleich mit klassischen Polygon-Engines zeigt sich die hohe Ressourceneffizienz dieses 2.5D-Ansatzes:
 
+<!-- caption: "Architekturvergleich zwischen klassischen 3D-Polygon-Meshes in Three.js/Babylon.js und dem mesh-freien 2.5D-WebGL-POM-Verfahren." -->
 | Kriterium | Three.js / Babylon 3D Mesh | 2.5D WebGL POM (Depth Anything) |
 | :--- | :--- | :--- |
 | **Geometrie & Datenvolumen** | Zehntausende Polygone (glTF/GLB), mehrere Megabyte Asset-Download. | Zero-Mesh (ein Screen-Aligned Quad), 2D-RGB- und Tiefentextur unter 200 KB. |
@@ -145,7 +146,7 @@ Der Algorithmus in unserem Fragment-Shader ([`src/components/DepthPortrait.astro
 ### 1. Initialer Sichtstrahl und Discard-Test
 Trifft das Fragment auf den transparenten Hintergrund, bricht der Shader sofort ab (`discard`). Das verhindert, dass Strahlen aus dem Hintergrund in die Seitenwand des Kopfes hineinragen:
 
-```glsl
+```glsl caption="Früher Alpha-Discard-Test im GLSL-Fragment-Shader zur Unterdrückung von Hintergrund-Strahlenartefakten."
 vec4 initColorCurr = texture2D(u_curr_image, v_uv);
 vec4 initColorNext = texture2D(u_next_image, v_uv);
 float initAlpha = mix(initColorCurr.a, initColorNext.a, u_blend);
@@ -158,7 +159,7 @@ if (initAlpha < 0.05) {
 ### 2. Raymarching über 40 Tiefenscheiben
 Der Sichtstrahl wandert von der vordersten Ebene ($z = 1.0$) schrittweise in die Tiefe ($z = 0.0$). An jedem Schritt berechnet der Shader den Versatz der Texturkoordinate relativ zum Drehpunkthorizont ($pivotZ = 0.40$):
 
-```glsl
+```glsl caption="Iteratives 40-Stufen-Raymarching durch das gemischte Tiefenfeld relativ zum Drehpunkthorizont pivotZ."
 float stepSize = 1.0 / float(NUM_STEPS); // NUM_STEPS = 40
 for (int i = 0; i <= NUM_STEPS; i++) {
   currZ = 1.0 - float(i) * stepSize;
@@ -188,7 +189,7 @@ Dieser Schritt eliminiert unschöne Treppenstufen (Slicing-Artefakte) vollständ
 ### 4. Dynamische Normalenberechnung und Beleuchtung
 Um das Porträt greifbar zu machen, berechnet der Shader den Normalenvektor der Oberfläche on-the-fly aus den partiellen Ableitungen der Tiefenkarte:
 
-```glsl
+```glsl caption="Finite-Differenzen-Ableitung des Oberflächen-Normalenvektors aus benachbarten Texeln der Tiefenkarte."
 vec2 texel = vec2(0.003, 0.003);
 float dL = mix(texture2D(u_curr_depth, finalUV - vec2(texel.x, 0.0)).r, texture2D(u_next_depth, finalUV - vec2(texel.x, 0.0)).r, u_blend);
 float dR = mix(texture2D(u_curr_depth, finalUV + vec2(texel.x, 0.0)).r, texture2D(u_next_depth, finalUV + vec2(texel.x, 0.0)).r, u_blend);
@@ -259,6 +260,7 @@ Der Verzicht auf ein vollwertiges 3D-Framework bringt messbare Vorteile für Lad
 
 Die folgende Benchmark-Gegenüberstellung verdeutlicht die Architektur-Vorteile im Vergleich zu herkömmlichen 3D-Meshes und statischen Grafiken:
 
+<!-- caption: "Benchmark-Gegenüberstellung von Payload, Plastizität, Core Web Vitals und GPU-Last zwischen 3D-Mesh, WebGL POM und statischem Bild." -->
 | Kriterium | Vollwertiges 3D-Mesh (Three.js / GLTF) | WebGL POM (Depth Anything V2) | Statisches Bild (Klassischer Fallback) |
 | :--- | :--- | :--- | :--- |
 | **Payload & Transfer** | ~3.5 MB – 8.0 MB (Geometrie, Rig & Lib) | **&lt; 450 KB** (Alle Texturen + 8 KB JS) | &lt; 80 KB (Einzelbild) |

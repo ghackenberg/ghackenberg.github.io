@@ -58,6 +58,7 @@ references:
 
 Scaling a personal knowledge platform from three initial sections to ten distinct content domains breaks static media-query navigation bars and ad-hoc color palettes [@marcotte-2010-responsive-web-design]. We engineered a zero-flicker Priority+ navigation engine in [`Navbar.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/Navbar.astro) paired with a ten-stop Aurora color spectrum in [`domain-themes.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/domain-themes.ts) to guarantee preattentive visual orientation and zero layout shifts.
 
+<!-- caption: "Architectural comparison of static breakpoint hamburgers, multi-row wrapping navbars, and script-driven Priority+ navigation with a 10-stop Aurora color spectrum." -->
 | Architectural Dimension | Static Breakpoint Hamburger | Multi-Row Wrapping Navbar | Script-Driven Priority+ & Aurora Spectrum |
 | :--- | :--- | :--- | :--- |
 | **Viewport Utilization** | Hides all links below `1120px` | Wraps unpredictably into 2–3 rows | Exposes $k \in \{1..10\}$ visible items dynamically |
@@ -98,7 +99,7 @@ Design systems decay rapidly when components bypass semantic tokens with raw Tai
 
 The TypeScript excerpt below illustrates how `CONTENT_DOMAINS` anchors both the raw palette regex check in `lint-colors.ts` and the canonical sequence verification in `lint-domains.ts`:
 
-```typescript
+```typescript caption="Canonical CONTENT_DOMAINS tuple anchoring raw Tailwind palette rejection in lint-colors.ts and sequence verification in lint-domains.ts."
 export const CONTENT_DOMAINS: readonly ContentDomain[] = [
   'posts', 'publications', 'presentations', 'courses',
   'projects', 'services', 'newsletters', 'visualizations', 'tags',

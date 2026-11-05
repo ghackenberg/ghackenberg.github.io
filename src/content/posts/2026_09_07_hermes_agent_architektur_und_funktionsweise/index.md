@@ -92,6 +92,7 @@ Der **Body** stellt die langlebige Software-Infrastruktur dar. Hier residieren:
 ### Das Gehirn als austauschbare Inferenz-Komponente
 Das **Brain** ist eine reine Rechenressource. Hermes Agent abstrahiert Modellanbieter über drei standardisierte Inferenzmodi, die zur Laufzeit transparent aufgelöst werden:
 
+<!-- caption: "Übersicht der drei standardisierten API-Ausführungsmodi im Hermes Agent zur transparenten Abstraktion heterogener LLM-Provider." -->
 | API-Ausführungsmodus | Zielsysteme / Provider | Client-Klasse | Besonderheiten & Protokoll |
 | :--- | :--- | :--- | :--- |
 | **`chat_completions`** | Lokales vLLM, OpenRouter, Nous Portal, OpenAI | `openai.OpenAI` | Standardisiertes Function Calling, Streaming-Deltas, OpenAI Message Schema |
@@ -153,7 +154,7 @@ In unserer Untersuchung zum [sitzungsübergreifenden Langzeitgedächtnis via Mem
 
 Hermes Agent implementiert ein zweistufiges, komplementäres Gedächtnismodell: einen **strikt begrenzten, gecachten Sofortkontext** für die aktive Arbeit und eine **volltextindizierte Transkript-Persistenz** für historische Recherchen.
 
-```
+```text caption="Verzeichnisstruktur des Hermes Agent mit zeichenbegrenzten Markdown-Speichern und SQLite-FTS5-Transkriptdatenbank."
 ~/.hermes/
 ├── memories/
 │   ├── MEMORY.md          # 2.200 Chars (~800 Tokens)  – System-, Projekt- & Umgebungswissen
@@ -173,6 +174,7 @@ Hermes Agent löst dies durch das **Frozen-Snapshot-Prinzip**:
 
 Um Prompt-Verwässerung zu verhindern, unterliegen die beiden Speicherdateien harten Zeichengrenzen:
 
+<!-- caption: "Speicherarchitektur und harte Zeichenobergrenzen der persistenten Kontextdateien MEMORY.md und USER.md zur Vermeidung von Prompt-Verwässerung." -->
 | Datei | Zweck & Semantik | Obergrenze | Typischer Umfang |
 | :--- | :--- | :--- | :--- |
 | **`MEMORY.md`** | Systemfakten, Projektkonventionen, Pfade, Tool-Eigenheiten, Lessons Learned | **2.200 Zeichen** (~800 Tokens) | 8–15 kompakte Sektionen |
@@ -186,7 +188,7 @@ Der Agent verwaltet diesen Speicher aktiv über das Werkzeug `memory`:
 
 Läuft der Speicher über die Kapazitätsgrenze, bricht das System nicht stillschweigend ab, sondern wirft einen strukturierten Fehler zurück, der den Agenten zur sofortigen Konsolidierung zwingt:
 
-```json
+```json caption="Strukturierte Fehlerrückmeldung bei Überschreitung des 2.200-Zeichen-Limits zur Erzwingung einer Speicherkonsolidierung."
 {
   "success": false,
   "error": "Memory at 2,100/2,200 chars. Adding this entry (250 chars) would exceed the limit. Consolidate now: use 'replace' to merge overlapping entries into shorter ones or 'remove' stale entries, then retry.",
@@ -207,7 +209,7 @@ Statische Systemprompts, die hunderte Werkzeugdefinitionen auf einmal enthalten,
 
 Fertigkeiten residieren dateibasiert unter `~/.hermes/skills/` und folgen dem **Progressive-Disclosure-Muster**:
 
-```
+```text caption="Dreistufiges Progressive-Disclosure-Muster zum bedarfsgerechten Nachladen von Agent-Skills."
 Level 0: skills_list()          ──► [{name, description, category}, ...]   (~3.000 Tokens)
 Level 1: skill_view(name)       ──► Vollständiges SKILL.md                 (on-demand)
 Level 2: skill_view(name, path) ──► Spezifische Referenzdateien/Skripte    (on-demand)
@@ -223,7 +225,7 @@ Diese drei Nachladestufen begrenzen den Token-Verbrauch im laufenden Dialog auf 
 
 Das folgende Beispiel zeigt den deklarativen Aufbau einer solchen Skill-Spezifikation mit YAML-Frontmatter und strukturierten Handlungsanweisungen:
 
-```yaml
+```yaml caption="Standardkonforme SKILL.md-Spezifikation nach agentskills.io mit Metadaten, Prozeduren und Fallback-Regeln."
 ---
 name: vllm-cluster-ops
 description: Betrieb, Skalierung und Monitoring lokaler vLLM-Inferenzknoten
@@ -293,6 +295,7 @@ Dabei gilt das Gebot der **Paket-Integrität**: Sämtliche Hilfsskripte, Referen
 
 Im direkten Vergleich mit der [Google WikiSkill-Architektur](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) zeigen sich interessante architektonische Parallelen und Differenzen:
 
+<!-- caption: "Architekturvergleich zwischen dem pragmatischen Hermes Agent Curator und der dreischichtigen Google WikiSkill-Wissensentkopplung." -->
 | Kriterium | Hermes Agent (Curator) | Google WikiSkill (arXiv:2608.27454) |
 | :--- | :--- | :--- |
 | **Architektur-Modell** | Pragmatische 2-Ebenen-Struktur (`skills/` + `.archive/`) | Strikte 3-Schichten-Entkopplung (`raw/`, `wiki/`, `skills/`) |

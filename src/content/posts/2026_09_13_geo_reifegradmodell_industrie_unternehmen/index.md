@@ -91,6 +91,7 @@ Das GEO-Reifegradmodell für Industrieunternehmen klassifiziert Webpräsenzen in
 
 Die folgende Übersichtstabelle fasst die Zielgruppen, technologischen Schwerpunkte und geschäftlichen Auswirkungen der vier Stufen zusammen:
 
+<!-- caption: "Vierstufiges GEO-Reifegradmodell für Industrieunternehmen mit Zielgruppen, technologischem Fokus und Geschäftseffekt." -->
 | Reifegrad | Primäre Zielgruppe | Technologischer Fokus | Typische Fehlerquelle | Zitations- und Business-Effekt |
 | :--- | :--- | :--- | :--- | :--- |
 | **Level 1: SEO-Baseline** | Klassische Such-Crawler (Googlebot) | HTML5, Responsivität, Basis-Metadaten | Gated PDFs hinter Kontaktformularen | Faktisch unsichtbar für generative [@aggarwal-2024-geo] RAG-Systeme |

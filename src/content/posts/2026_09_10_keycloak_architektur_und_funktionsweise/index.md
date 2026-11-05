@@ -100,6 +100,7 @@ Das Herzstück der Quarkus-basierten Keycloak-Distribution bildet ein asynchrone
 ### Die Persistenz- und Cache-Topologie
 Um enterprise-typische Anforderungen an Hochverfügbarkeit und Sub-Millisekunden-Latenzen zu erfüllen, setzt Keycloak auf eine zweistufige Persistenzarchitektur:
 
+<!-- caption: "Zweistufige Enterprise-Persistenzarchitektur von Keycloak mit verteiltem Infinispan-In-Memory-Cache und transaktionaler PostgreSQL-Datenhaltung." -->
 | Schicht | Technologie | Primäre Aufgaben & Datenstrukturen | Konsistenzmodell |
 | :--- | :--- | :--- | :--- |
 | **Distributed In-Memory Cache** | **Infinispan** (via JGroups TCP) | • Aktive User Sessions (`authenticationSessions`)<br>• Login-Failure-Counter & Brute-Force-Tracking<br>• Action Tokens & Einmal-Codes (`authorization_code`)<br>• Realm-, Client- und Rollen-Metadaten-Cache | Eventual Consistency (verteilt mit Replikationsfaktor $N=2$) |
@@ -129,7 +130,7 @@ In Keycloak ist jeder Service, der Authentifizierung anfordert oder Ressourcen s
 ### Protocol Mappers & Dynamische Claims-Injektion
 Ein zentraler Mehrwert von Keycloak für unseren AI Stack sind **Protocol Mappers**. Sie reichern die erzeugten JWTs mit dynamischen Attributen an, die von nachgelagerten Schichten zur Laufzeit ausgewertet werden:
 
-```json
+```json caption="Signiertes Keycloak-JWT-Payload mit injizierten Mandanten-, Kostenstellen- und Modellfreigabe-Claims."
 {
   "exp": 1789045200,
   "iat": 1789041600,
@@ -179,7 +180,7 @@ Die Lösung bildet der in Keycloak produktionsreif integrierte **Standard Token 
 Der Austausch des überprivilegierten Benutzer-Tokens gegen ein zweckgebundenes Agenten-Token durchläuft fünf kryptografisch gesicherte Schritte:
 1. **Delegations-Trigger:** Open WebUI übergibt dem Hermes Agent die Aufgabe zusammen mit dem aktuellen Benutzer-Token $T_{\text{user}}$ mit Scopes $S_{\text{full}} = \{\text{openid}, \text{ai:chat}, \text{db:read}, \text{db:write}, \text{admin}\}$.
 2. **Exchange Request:** Der Hermes Agent sendet einen Token-Exchange-Request an Keycloak:
-   ```http
+   ```http caption="OAuth 2.0 Token-Exchange-Request (RFC 8693) des Hermes Agent zur Anforderung eines downscoped Datenbank-Tokens."
    POST /realms/enterprise-ai/protocol/openid-connect/token HTTP/1.1
    Host: auth.company.internal
    Content-Type: application/x-www-form-urlencoded
@@ -199,7 +200,7 @@ Der Austausch des überprivilegierten Benutzer-Tokens gegen ein zweckgebundenes 
    * Keycloak vollzieht ein **Downscoping**: Schreibrechte (`db:write`) werden strikt entfernt; das neue Token enthält nur die Schnittmenge $S_{\text{downscoped}} = S_{\text{requested}} \cap S_{\text{user}} = \{\text{db:read}\}$.
 4. **Token-Ausstellung mit Actor Claim:**
    Das emittierte Token $T_{\text{agent}}$ transportiert die kryptografische Delegationskette über den standardisierten `act`-Claim:
-   ```json
+   ```json caption="Ausgestelltes Agenten-Token mit reduziertem Lesescope (db:read) und dokumentierter Delegationskette im act-Claim."
    {
      "sub": "georg.hackenberg",
      "act": {

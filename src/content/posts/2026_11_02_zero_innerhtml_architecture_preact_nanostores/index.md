@@ -50,6 +50,7 @@ references:
 
 A **Zero-`innerHTML` Client Architecture** eliminates cross-site scripting (XSS) sinks and untyped string concatenation by replacing imperative `.innerHTML` mutations with declarative Preact virtual DOM islands [@miller-2021-islands-architecture], reactive Nanostores state atoms, and static ESLint and filesystem gates that mechanically forbid raw HTML DOM injection across all client scripts [@weinberger-2011-xss-sanitization; @west-2016-csp3].
 
+<!-- caption: "Architectural comparison of imperative innerHTML templates, full-page SPA hydration, and Preact/Nanostores islands guarded by a static Zero-innerHTML AST gate." -->
 | Architectural Dimension | Imperative `.innerHTML` Templates | Full-Page SPA Hydration | Preact/Nanostores Islands + Zero-`innerHTML` AST Gate (`SYSTEM-009`) |
 | :--- | :--- | :--- | :--- |
 | **DOM XSS Surface** | High (manual `escapeHtml()` or unescaped template strings) [@weinberger-2011-xss-sanitization] | Low (automatic VDOM text escaping), but large runtime footprint | Zero raw HTML sinks; 100% contextual VDOM escaping + CI AST ban [@west-2016-csp3] |
@@ -77,7 +78,7 @@ This Dual-JSX routing keeps server-only `@react-email/components` rendering unto
 
 The simplified excerpt below shows how `stores.ts` and `pagination.tsx` combine Nanostores atoms and maps with Preact's `render()` entrypoint:
 
-```tsx
+```tsx caption="Reactive Nanostores state atoms and declarative Preact JSX pagination rendering in stores.ts and pagination.tsx."
 // src/commons/client/stores.ts & pagination.tsx (simplified)
 import { atom, map } from 'nanostores';
 import { render } from 'preact';
@@ -111,7 +112,7 @@ Because manual code review alone cannot prevent future contributors or autonomou
 
 Because [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) simultaneously sets `'eslint-comments/no-use': ['error', { allow: [] }]`, neither human developers nor autonomous coding agents can suppress the ban with `eslint-disable` comments:
 
-```ts
+```ts caption="Unbypassable ESLint AST rules forbidding innerHTML, outerHTML, and insertAdjacentHTML in eslint.config.ts."
 // eslint.config.ts — Unbypassable Zero-innerHTML AST Gate
 'no-restricted-properties': [
   'error',

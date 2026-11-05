@@ -408,21 +408,24 @@ export default function remarkMermaid() {
       const { darkSvg, lightSvg, contentUrl } = await renderMermaidDiagrams(code, filePath, title);
 
       const html = `
-<figure class="mermaid-diagram my-8 flex flex-col items-center w-full overflow-x-auto" role="figure" aria-label="${escapeHtml(title!)}" data-diagram-title="${escapeHtml(title!)}" data-diagram-caption="${escapeHtml(caption!)}">
+<figure class="mermaid-diagram artifact-card my-8 w-full" role="figure" aria-label="${escapeHtml(title!)}" data-diagram-title="${escapeHtml(title!)}" data-diagram-caption="${escapeHtml(caption!)}">
   <meta itemprop="contentUrl" content="${escapeHtml(contentUrl)}" />
   <meta itemprop="name" content="${escapeHtml(title!)}" />
   <meta itemprop="description" content="${escapeHtml(caption!)}" />
+  <div class="artifact-card-header"><span class="artifact-card-badge">Mermaid</span><div class="artifact-card-controls"><button type="button" class="table-deck-btn" data-media-fullscreen="true" aria-label="Open diagram in fullscreen: ${escapeHtml(title!)}" title="Fullscreen">⤢</button></div></div>
+  <div class="artifact-card-body flex flex-col items-center w-full">
   <div class="mermaid-svg mermaid-dark justify-center w-full max-w-full">
     ${darkSvg}
   </div>
   <div class="mermaid-svg mermaid-light justify-center w-full max-w-full">
     ${lightSvg}
   </div>
-  <figcaption class="sr-only">${escapeHtml(caption!)}</figcaption>
-  <details class="mermaid-source mt-3 text-xs text-slate-400 w-full text-center group">
-    <summary class="cursor-pointer hover:text-slate-200 transition-colors select-none py-1 inline-block">View Diagram Source</summary>
-    <pre class="bg-slate-900/80 p-3 mt-1 rounded text-left overflow-x-auto border border-slate-800 text-slate-300 font-mono text-xs"><code>${escapeHtml(code)}</code></pre>
-  </details>
+  </div>
+  <figcaption class="artifact-card-footer">${escapeHtml(caption!)}</figcaption>
+
+
+
+
 </figure>`.trim();
 
       const htmlNode: Html = {

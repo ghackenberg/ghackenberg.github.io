@@ -176,6 +176,7 @@ An **agent harness** is the deterministic runtime execution loop, environment ab
 
 The following taxonomy classifies the four architectural generations of agent harnesses across their interface abstraction, state and context lifecycle, verification mechanism, and representative frameworks:
 
+<!-- caption: "Taxonomy of the four architectural generations of agent harnesses across interface abstraction, state management, and verification." -->
 | Harness Generation & Archetype | Interface Abstraction | State & Context Management | Verification Mechanism | Representative Systems & Benchmarks |
 | :--- | :--- | :--- | :--- | :--- |
 | **1. Classical Test & RL Environment Harnesses** | Discrete numeric or symbolic action spaces (`env.step(action)`) and deterministic test drivers/stubs. | Markovian state vectors $s_t \in \mathcal{S}$ or isolated per-test fixture memory resets. | Exact assertion comparators (`assertEquals`) and scalar reward signals $r_t \in \mathbb{R}$. | xUnit Test Harnesses, OpenAI Gym [@brockman-2016-openai-gym] |
@@ -265,7 +266,7 @@ Historically, every agent framework defined bespoke JSON schemas and transport g
 
 The following self-contained TypeScript example illustrates the core control loop of a modern agent harness—combining history folding, bounded observation truncation, and a pre-commit syntax guard that rejects broken edits before they mutate workspace state:
 
-```typescript
+```typescript caption="Core Agent-Computer Interface (ACI) execution loop with windowed viewing, pre-commit syntax guards, and history folding."
 export interface ToolCall {
   readonly name: 'view_file' | 'edit_lines' | 'run_tests';
   readonly args: Record<string, string | number>;
@@ -420,6 +421,7 @@ Consequently, deploying an open-ended autonomous harness is an engineering trade
 
 A second critical distinction separates **benchmark evaluation harnesses** (such as the official evaluation runners in SWE-bench [@jimenez-2024-swebench] and OSWorld [@xie-2024-osworld]) from **production execution harnesses** deployed in live engineering workflows:
 
+<!-- caption: "Comparison of benchmark evaluation harnesses (SWE-bench / OSWorld) and production enterprise execution harnesses." -->
 | Architectural Property | Benchmark Evaluation Harness (`SWE-bench` / `OSWorld`) | Production Execution Harness (Enterprise / IDE / CI Runtime) |
 | :--- | :--- | :--- |
 | **Primary Objective** | Reproducible scientific grading ($F2P \land P2P$ test pass rates) across frozen repository commits. | Safe, auditable task completion on live, evolving repositories and external production APIs. |
@@ -443,7 +445,7 @@ Even as foundation models advertise context windows of $128\text{K}$ to $1\text{
 
 The following TypeScript orchestrator illustrates how a parent Control Plane delegates scoped tasks to an isolated worker loop and records only the distilled synthesis:
 
-```typescript
+```typescript caption="Hierarchical control-plane orchestrator delegating scoped tasks to isolated worker subagent contexts."
 export interface WorkerBriefing {
   readonly role: string;
   readonly objective: string;

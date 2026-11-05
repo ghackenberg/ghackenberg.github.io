@@ -83,6 +83,7 @@ Das Backend ist als asynchrone Python-Anwendung auf Basis von **FastAPI** und **
 ### Persistenz- und Skalierungs-Topologie
 Zur Speicherung von Benutzerkonten, Konversationshistorien, Prompt-Vorlagen und Zugriffsrechten setzt das Backend auf **SQLAlchemy ORM** mit **Alembic-Migrationen**:
 
+<!-- caption: "Gegenüberstellung der empfohlenen Datenbank-, Cache- und Vektorspeicher-Topologien von Open WebUI vom lokalen Einzelcontainer bis zum hochverfügbaren Enterprise-Cluster." -->
 | Betriebsszenario | Primärdatenbank | Session- & State-Cache | Vektordatenbank (RAG) | Typische Topologie |
 | :--- | :--- | :--- | :--- | :--- |
 | **Lokale Workstation / Labor** | SQLite 3 (integriert) | In-Memory | ChromaDB (lokal/embedded) | Single Docker Container |
@@ -143,7 +144,7 @@ Wird ausgeführt, sobald der Benutzer-Turn im Backend eintrifft, noch bevor Kont
 
 Das folgende Codebeispiel zeigt einen kompakten Inlet-Filter zur automatischen Maskierung von IBAN-Nummern vor der Modellübergabe:
 
-```python
+```python caption="In-Process Inlet-Filter in Open WebUI zur automatischen Maskierung von IBAN-Daten vor der Modellübergabe."
 class Filter:
     def __init__(self):
         self.valves = None

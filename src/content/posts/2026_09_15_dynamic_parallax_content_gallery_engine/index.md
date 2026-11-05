@@ -66,6 +66,7 @@ Rather than creating a single horizontal slider or a uniform grid, the gallery i
 
 In human visual perception, **motion parallax** is a primary depth cue: objects closer to the observer sweep across the visual field at a higher angular velocity than objects situated further away. We applied this principle directly to the layout [@cutting-1995-perceiving-layout] by coupling **card scale, content fidelity, and linear speed**:
 
+<!-- caption: "Kinematic parameters and visual scaling across the three horizontal parallax gallery tiers." -->
 | Tier | Role | Card Dimensions | Base Velocity | Relative Speed | Content Fidelity |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Row 1** | Foreground | `w-64 sm:w-72 md:w-80` (320px) | ~65 px/s | 100% | Title, Subtitle / Tagline, Directional Hint |
@@ -112,7 +113,7 @@ When the first child element of a track has completely scrolled past the left ed
    - Update `img.src` and `img.alt`
    - Update `title` and `tagline` text nodes
 4. We move the element to the end of the flex container:
-   ```javascript
+   ```javascript caption="DOM node recycling step appending the off-screen card to the end of the flex track."
    track.el.appendChild(firstCard);
    ```
 
@@ -124,7 +125,7 @@ To the user's eye, the visible cards continue moving at an uninterrupted 60/120 
 
 Rather than selecting a dozen arbitrary favorites at build time, our Astro page template aggregates the **entire site archive**:
 
-```typescript
+```typescript caption="Build-time aggregation of all six content collections into the unified gallery archive pool."
 // src/pages/index.astro
 const categoryBuckets = [
   postGalleryItems,                      // 120+ illustrated technical articles
@@ -143,7 +144,7 @@ One of the most distracting flaws in multi-track sliders is seeing the exact sam
 
 Our recycling engine eliminates this by maintaining an **In-Use Set**:
 
-```typescript
+```typescript caption="Active DOM card ID set filtering the candidate pool to prevent simultaneous on-screen duplicates."
 // Collect all IDs currently active across all tracks
 const inUseIds = new Set<string>();
 viewport.querySelectorAll<HTMLElement>('.gallery-card[data-id]').forEach(c => {
@@ -183,7 +184,7 @@ Recent content is approximately $5\times$ more likely to appear, yet the 2009 ar
 ### Factor 2: LocalStorage LRU Display History
 To give the gallery a "memory", the client records impression timestamps in `localStorage` under `gh_gallery_impressions`:
 
-```typescript
+```typescript caption="Loading the persistent client-side impression timestamp ledger from localStorage."
 let seenLedger: Record<string, number> = loadSeenLedger();
 ```
 
@@ -197,7 +198,7 @@ $$f_{\text{display}} = \min\left(1.0,\; 0.05 + 0.95 \cdot \frac{\Delta t_{\text{
 
 *(Rationale: Average web session durations typically range from 2 to 5 minutes. A 12-minute strict window guarantees zero visual duplication within a single session, while the 48-minute linear recovery smoothly reintroduces older archive items if a visitor returns within the same hour).*
 
-```typescript
+```typescript caption="Two-factor weighted roulette-wheel selection combining publication recency decay with LRU cooldown recovery."
 function pickNextItem(
   catalog: GalleryItem[],
   inUseIds: Set<string>,
@@ -253,7 +254,7 @@ A subtle architectural challenge arises when marrying a client-side LRU tracking
 
 To solve this, we implemented **synchronous full client-side rehydration on mount**:
 
-```typescript
+```typescript caption="Synchronous client-side rehydration replacing static build-time cards with personalized unseen items on mount."
 // src/components/ImageGalleryMarquee.astro
 function setupGalleryEngine() {
   inMemorySeenLedger = loadSeenLedger();
@@ -296,7 +297,7 @@ A continuous visual animation must be respectful of device resources, touch ergo
 
 The stylesheet automatically switches the tracks into native horizontal snap-scrolling containers:
 
-```css
+```css caption="WCAG 2.2 prefers-reduced-motion fallback converting parallax tracks into native horizontal snap-scroll containers."
 @media (prefers-reduced-motion: reduce) {
   .gallery-viewport {
     mask-image: none;

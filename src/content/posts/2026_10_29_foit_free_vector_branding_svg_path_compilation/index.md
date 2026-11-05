@@ -56,6 +56,7 @@ references:
 
 Embedding `<text>` nodes with external `@font-face` rules inside standalone SVG favicons triggers Flash of Invisible Text (FOIT) and broken fallback glyphs in sandboxed browser contexts [@w3c-2018-svg2; @daggett-2018-css-fonts-3]. Compiling brand monograms and our DT-1 H-Bridge emblem into self-contained vector primitives at build time guarantees deterministic rendering across tabs, PWA icons, and email headers [@bellamy-royds-2015-svg-text].
 
+<!-- caption: "Comparison of SVG favicon branding strategies across external font requests, sandbox behavior, payload size, and multi-target rendering consistency." -->
 | Branding Strategy | External Font Request | Favicon Sandbox Behavior | Payload Size | Multi-Target Consistency |
 | :--- | :--- | :--- | :--- | :--- |
 | **SVG `<text>` + Remote `@font-face`** | Blocked in `<img>` / tab icons | Blank icon (FOIT) or serif fallback | $\approx 0.6\text{ KB}$ (broken) | Low (OS-dependent fonts) |
@@ -82,7 +83,7 @@ Instead of shipping a 19 KB Base64 font inside `favicon.svg`, we first built an 
 
 When rasterizing PNG icons in [`src/commons/server/branding-assets.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/branding-assets.ts), we inject transparent viewport overrides via `style.textContent` rather than `innerHTML` to satisfy our strict zero-`innerHTML` gate:
 
-```typescript
+```typescript caption="Zero-innerHTML transparent background injection and document.fonts.ready barrier in branding-assets.ts."
 // src/commons/server/branding-assets.ts
 await page.evaluateOnNewDocument(() => {
   const style = document.createElement('style');
@@ -107,7 +108,7 @@ Email clients frequently strip custom webfonts and CSS gradients, so [`src/commo
 
 On [`src/pages/about.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/about.astro), [`src/components/InstitutionLogo.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/InstitutionLogo.astro) pairs the self-hosted H-Bridge geometry (`color-mix(in srgb, var(--color-brand-primary) 28%, white)`) with optically centered institution marks (`--color-inst-*`), while `EmailShell.tsx` renders the shared rasterized asset:
 
-```tsx
+```tsx caption="Embedding the pre-rasterized 40x40 DT-1 H-Bridge icon inside EmailShell.tsx for cross-client email header parity."
 // src/commons/server/email/EmailShell.tsx
 <table role="presentation" cellPadding="0" cellSpacing="0" border={0}>
   <tbody>

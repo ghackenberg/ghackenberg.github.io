@@ -83,7 +83,7 @@ $$sDiff = sL - nSL$$
 
 If $sDiff > 0$, water flows out to the neighbor; if $sDiff < 0$, water flows in. To prevent numerical instability and wild oscillations (where water sloshes back and forth indefinitely), we apply a **safety flux clamp** derived from the Courant [@courant-1928-partiellen-differenzengleichungen]-Friedrichs-Lewy (CFL) stability criterion in fluid dynamics ($\Delta t \le \frac{\Delta x}{c}$, where wave propagation speed $c = \sqrt{g \cdot h}$). On fixed grid cell resolutions ($\Delta x$) with discrete frame steps ($\Delta t$), unconstrained explicit Euler integration causes rapid divergence if outflux exceeds local cell volume. In our fragment shader [simulation.frag.ts](https://github.com/ghackenberg/delta-dynamics/blob/876638e87911a90beb547c9262720479a8cbd70a/src/shaders/water/simulation.frag.ts#L65-L73), outflow is capped at $30\%$ of the current cell's water depth:
 
-```glsl
+```glsl caption="GLSL fragment shader computing lateral surface water diffusion with a 30% CFL stability flux clamp."
 float sDiff = sL - nSL;
 if (sDiff > 0.0001) {
     float f = sDiff * 0.22; // flow rate coefficient
@@ -110,7 +110,7 @@ $$gL = th - 0.5 + \left(\frac{gw}{ac}\right) \times 0.5$$
 
 Groundwater flows laterally between adjacent cells following a simplified version of **Darcy's Law**, where the flow rate is proportional to the hydraulic gradient ($gL - nGL$) and restricted by a much lower diffusion coefficient ($0.005$) compared to surface water ($0.22$):
 
-```glsl
+```glsl caption="Subsurface aquifer diffusion shader modeling lateral groundwater exchange via Darcy's Law."
 float nGL = nSurface.r - 0.5 + (nAC > 0.0 ? (nWater.g / nAC) * 0.5 : 0.0);
 float gDiff = gL - nGL;
 if (gDiff > 0.0001) {
@@ -159,7 +159,7 @@ In each simulation step, we:
 
 This swap occurs inside [waterSystem.ts](https://github.com/ghackenberg/delta-dynamics/blob/876638e87911a90beb547c9262720479a8cbd70a/src/systems/waterSystem.ts#L169-L191):
 
-```typescript
+```typescript caption="Double-buffered WebGL render target ping-pong step in Three.js updating the GPU hydrology state."
 public step(rain: number, inflow: number, seaLevel: number, time: number, ...) {
     this.computeMaterial.uniforms.uWater.value = this.renderTargetA.texture;
     this.computeMaterial.uniforms.uRain.value = rain;
@@ -193,7 +193,7 @@ If we displacement-map a 3D grid mesh using raw water depths, dry cells would dr
 2. **Neighbor Level Averaging**: In the vertex shader [surface.vert.ts](https://github.com/ghackenberg/delta-dynamics/blob/876638e87911a90beb547c9262720479a8cbd70a/src/shaders/water/surface.vert.ts#L24-L54), we look up the 4 corner points of the quad and interpolate their `visualSL` values.
 3. **Dry-Vertex Sinking**: If a vertex has no wet neighbors, we set its height to `h - 0.05` (sinking it slightly below the terrain) to hide it.
 4. **Wave Animation**: If the local water depth is greater than $0.05$, we add a small time-based sine wave to give the water a gentle ripple:
-   ```glsl
+   ```glsl caption="Vertex shader displacement adding time-dependent sine ripples to active surface water cells."
    if (sw_interp > 0.05) {
      transformed.y += sin(uTime * 2.0 + (position.x + position.z) * 5.0) * 0.005;
    }
@@ -203,7 +203,7 @@ If we displacement-map a 3D grid mesh using raw water depths, dry cells would dr
 The fragment shader [surface.frag.ts](https://github.com/ghackenberg/delta-dynamics/blob/876638e87911a90beb547c9262720479a8cbd70a/src/shaders/water/surface.frag.ts#L19-L87) styles the water surface using depth-based gradients and custom highlights:
 
 1. **Depth-Based Color**: We calculate the depth ($vDepth$) as the difference between the water surface height and the terrain height. We mix a vibrant sky blue (shallow) and a dark navy blue (deep) using `smoothstep`:
-   ```glsl
+   ```glsl caption="Fragment shader interpolating shallow and deep water colors across smoothstep depth gradients."
    vec3 shallowColor = vec3(0.2, 0.5, 0.8);
    vec3 deepColor = vec3(0.02, 0.1, 0.3);
    vec3 waterColor = mix(shallowColor, deepColor, smoothstep(0.0, 0.5, vDepth));
@@ -216,6 +216,7 @@ The fragment shader [surface.frag.ts](https://github.com/ghackenberg/delta-dynam
 
 The following matrix compares our double-buffered GPU shader approach against a traditional CPU JavaScript implementation across performance, memory footprint, and visual fidelity:
 
+<!-- caption: "Performance and architectural comparison between a single-threaded CPU JavaScript cellular loop and the double-buffered WebGL GPU FBO ping-pong shader pipeline." -->
 | Architecture Dimension | JavaScript CPU Cellular Loop | WebGL GPU FBO Ping-Pong Pipeline |
 | :--- | :--- | :--- |
 | **Frame Calculation Time** | 14.5 ms to 28.0 ms (causes stutter) | 0.4 ms to 0.8 ms (sub-millisecond) |

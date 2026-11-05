@@ -104,6 +104,7 @@ Die Kombination aus zeilenexakter DOM-Textvermessung mittels `document.createTre
 
 Die folgende Architektur-Übersicht zeigt den qualitativen und quantitativen Unterschied zwischen klassischer CSS-Block-Geometrie, CSS Shapes und unserer sub-elementaren `TreeWalker` + 2D-SDF-Pipeline:
 
+<!-- caption: "Architektur- und Leistungsvergleich zwischen klassischem CSS Grid/Flexbox, CSS Shapes und der sub-elementaren TreeWalker- und 2D-SDF-Pipeline." -->
 | Dimension | Klassisches CSS Grid / Flexbox (`getBoundingClientRect`) | CSS Shapes (`shape-outside`) | Sub-Element `TreeWalker` + 2D-SDF-Pipeline (`hackenberg.tech`) |
 | :--- | :--- | :--- | :--- |
 | **Geometrische Auflösung** | Grobe Element-Box (`max-w-2xl`); ignoriert vorzeitige Zeilenumbrüche und verschenkt rechtsseitigen Freiraum. | Fließtext umfließt ein statisches Float-Bild; keine Rückkopplung der Textkontur an Canvas-Hintergründe. | Zeilenexakte `Range.getClientRects()`-Vermessung jedes Textknotens; präzises 1D-Intervall-Merging (`bands[]`). |
@@ -148,7 +149,7 @@ Würde man lediglich `el.getClientRects()` auf dem Eltern-Element `<p>` aufrufen
 
 Da unsere Überschrift Farbverlaufs-Spans (`<span class="heading-gradient-brand">`) und der Biografie-Text zahlreiche `<strong>`-Elemente enthält, reicht eine flache Iteration über `childNodes` nicht aus. Der im WHATWG DOM Standard [@whatwg-2024-dom-treewalker] spezifizierte `TreeWalker` mit der Bitmaske `NodeFilter.SHOW_TEXT` besucht jeden Textknoten in Dokumentreihenfolge ohne Rekursions-Overhead:
 
-```javascript
+```javascript caption="Traversierung aller DOM-Textknoten mittels TreeWalker und zeilenexakte Vermessung über Range.getClientRects()."
 const gridRect = heroGrid.getBoundingClientRect();
 const rawRects = [];
 
@@ -180,7 +181,7 @@ Für die Trust-Pills (`#hero-trust-pills`) und die Aktionsleiste (`#hero-actions
 
 Weil eine einzelne visuelle Bildschirmzeile aus mehreren DOM-Textknoten bestehen kann (beispielsweise normaler Text gefolgt von einem `<strong>`-Knoten in derselben Zeile), liefert `rawRects` zunächst mehrere Teilrechtecke auf gleicher vertikaler Höhe. Wir sortieren `rawRects` aufsteigend nach `top` und verschmelzen vertikal überlappende Rechtecke zu disjunkten horizontalen Konturbändern `bands[]`:
 
-```javascript
+```javascript caption="1D-Intervall-Merging vertikal überlappender Client-Rechtecke zu disjunkten horizontalen Zeilenbändern."
 rawRects.sort(function (a, b) { return a.top - b.top; });
 
 const bands = [];
@@ -229,7 +230,7 @@ Der Solver in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenbe
 
 1. **Kandidat A – „Rechts-Mittig" (`sizeRightCenter`):**
    Auf Desktop- und breiten Tablet-Viewports soll das Porträt vertikal zentriert rechts neben dem gesamten Textblock schweben. Da eine größere Kantenlänge $S$ das vertikale Intervall $[(H - S)/2, (H + S)/2]$ aufweitet und dadurch potenziell längere Textzeilen in der Mitte einschließt, sucht der Solver absteigend ab $S_{\max} = \min(480, H)$ das größte Quadrat $S$, das kollisionsfrei in die verbleibende Breite passt:
-   ```javascript
+   ```javascript caption="Absteigende Suche nach der maximalen kollisionsfreien Porträt-Kantenlänge S für die zentrierte rechte Kandidatenposition."
    let sizeRightCenter = 0;
    let reqLeftRightCenter = 0;
    const maxPossibleRightCenter = Math.min(480, gridHeight);
@@ -286,7 +287,7 @@ $$h = \frac{\max(k - |a - b|, 0)}{k}, \qquad \text{smin}(a, b, k) = \min(a, b) -
 
 In [`ReactiveDotGrid.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/ReactiveDotGrid.astro#L150-L185) bestimmen wir für jeden Punkt des $22\text{ px}$-Gitters die zwei kleinsten Distanzen $d_1 \le d_2$ zu allen um `CLEARANCE_X = 16` Pixel und `CLEARANCE_Y = 14` Pixel aufgeweiteten Zeilenbändern und verschmelzen sie mit Radius $k = 12$:
 
-```typescript
+```typescript caption="Auswertung des 2D Signed Distance Fields über alle Zeilenbänder mit polynomieller Quilez-smin-Verschmelzung."
 let d1 = Infinity;
 let d2 = Infinity;
 for (let i = 0; i < bands.length; i++) {
@@ -328,7 +329,7 @@ Um trotz hunderter individuell abgedunkelter und animierter Gitterpunkte konstan
 
 Im unmittelbaren Modus (*Immediate Mode*) der HTML5 Canvas 2D API ist nicht die Berechnung von `Math.sin` oder `ctx.arc` der Flaschenhals, sondern das ständige Umschalten von `ctx.fillStyle` und das Absenden hunderter einzelner `ctx.fill()`-Befehle an den Grafiktreiber. Da sich die statische Randabschwächung `alphaFactor = textAlpha * cornerAlpha` jedes Punktes nur bei einem Resize ändert, diskretisieren wir sie bereits in `rebuildLattice()` in zehn Stufen und sortieren das Punkt-Array aufsteigend nach `alphaBin`:
 
-```typescript
+```typescript caption="Quantisierung der kontinuierlichen Randopazität in zehn diskrete Alpha-Buckets und Vorsortierung des Punkt-Arrays."
 const alphaFactor = textAlpha * cornerAlpha;
 if (alphaFactor < 0.04) continue;
 
@@ -339,7 +340,7 @@ dots.sort((a, b) => a.alphaBin - b.alphaBin);
 
 In der `draw()`-Schleife iteriert der Renderer über die zehn Buckets $b \in \{0, \dots, 9\}$, setzt `ctx.fillStyle` ein einziges Mal pro Bucket und fügt alle zugehörigen Kreise mittels `ctx.moveTo(x + r, y)` und `ctx.arc(x, y, r, 0, Math.PI * 2)` demselben Subpfad hinzu:
 
-```typescript
+```typescript caption="Gebündelte Canvas-2D-Render-Schleife mit maximal zehn Pfad- und fill()-Aufrufen pro Frame über alle Opazitäts-Buckets."
 for (let bin = 0; bin < 10; bin++) {
   if (idx >= len || dots[idx].alphaBin > bin) continue;
 

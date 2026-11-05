@@ -300,7 +300,7 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
     font-weight: 700;
     transition: color 0.5s ease;
   }
-  .post-body :global(img) {
+  .post-body :global(img:not(.artifact-card-body img)) {
     border-radius: 1rem;
     border: 1px solid var(--color-border-medium);
     max-width: 100%;
@@ -310,11 +310,11 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
     display: inline-block;
     vertical-align: middle;
   }
-  .post-body :global(img:hover) {
+  .post-body :global(img:not(.artifact-card-body img):hover) {
     border-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.01);
   }
-  :global(.light) .post-body :global(img:hover) {
+  :global(.light) .post-body :global(img:not(.artifact-card-body img):hover) {
     border-color: rgba(15, 23, 42, 0.2);
   }
   /* Center block images */
@@ -337,7 +337,7 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
   :global(.light) .post-body :global(iframe) {
     background: rgba(255, 255, 255, 0.4);
   }
-  .post-body :global(pre) {
+  .post-body :global(pre:not(.artifact-card-body pre)) {
     background: rgba(3, 7, 18, 0.6);
     border: 1px solid var(--color-border-subtle);
     border-radius: 0.75rem;
@@ -348,12 +348,12 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
     margin-bottom: 1.5rem;
     color: var(--color-text-main);
   }
-  :global(.light) .post-body :global(pre) {
+  :global(.light) .post-body :global(pre:not(.artifact-card-body pre)) {
     background: rgba(255, 255, 255, 0.6);
     color: var(--color-text-main);
   }
   /* Markdown Tables Styling */
-  .post-body :global(table) {
+  .post-body :global(table:not(.artifact-card-body table)) {
     width: 100%;
     border-collapse: collapse;
     margin: 2rem 0;
@@ -362,10 +362,10 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
     overflow: hidden;
     border: 1px solid var(--color-border-subtle);
   }
-  :global(.light) .post-body :global(table) {
+  :global(.light) .post-body :global(table:not(.artifact-card-body table)) {
     background: rgba(15, 23, 42, 0.03);
   }
-  .post-body :global(th) {
+  .post-body :global(table:not(.artifact-card-body table) th) {
     background: rgba(255, 255, 255, 0.05);
     padding: 0.875rem 1.25rem;
     text-align: left;
@@ -374,16 +374,16 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
     border-bottom: 1px solid var(--color-border-medium);
     transition: color 0.5s ease, border-color 0.5s ease;
   }
-  :global(.light) .post-body :global(th) {
+  :global(.light) .post-body :global(table:not(.artifact-card-body table) th) {
     background: rgba(15, 23, 42, 0.05);
   }
-  .post-body :global(td) {
+  .post-body :global(table:not(.artifact-card-body table) td) {
     padding: 0.875rem 1.25rem;
     color: var(--color-text-main);
     border-bottom: 1px solid var(--color-border-subtle);
     transition: color 0.5s ease, border-color 0.5s ease;
   }
-  .post-body :global(tr:last-child td) {
+  .post-body :global(table:not(.artifact-card-body table) tr:last-child td) {
     border-bottom: none;
   }
 

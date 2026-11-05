@@ -103,7 +103,7 @@ Jede dieser vier Schichten übernimmt innerhalb der Laufzeitumgebung eine klar a
 
 In einem typischen Mastra-Projekt fungiert eine zentrale Einstiegsdatei (`src/mastra/index.ts`) als Single Source of Truth. Alle Komponenten werden deklarativ registriert, wodurch TypeScript über das gesamte System hinweg vollständige Autovervollständigung und statische Typprüfung gewährleisten kann:
 
-```typescript
+```typescript caption="Zentrale Mastra-Instanz in src/mastra/index.ts mit registrierten Agenten, Workflows, PostgreSQL-Speicher und Pino-Logger."
 // src/mastra/index.ts
 import { Mastra } from '@mastra/core';
 import { PostgresStore } from '@mastra/store-pg';
@@ -142,6 +142,7 @@ Mastra löst dieses Spannungsfeld durch eine saubere, erstklassige Trennung zwei
 
 Die Wahl zwischen beiden Primitiven richtet sich nach dem geforderten Grad an Vorhersehbarkeit, Unterbrechbarkeit und regulatorischer Nachvollziehbarkeit:
 
+<!-- caption: "Entscheidungsmatrix zwischen dem stochastischen Agent-Primitiv und dem deterministischen Workflow-Primitiv in Mastra." -->
 | Kriterium | `Agent` Primitive | `Workflow` Primitive |
 | :--- | :--- | :--- |
 | **Ausführungsmodell** | Stochastisch, LLM-geführt (ReAct) | Deterministisch, Graph-basiert (DAG / State Machine) |
@@ -155,7 +156,7 @@ Die Wahl zwischen beiden Primitiven richtet sich nach dem geforderten Grad an Vo
 
 Ein Mastra-Agent kombiniert Instruktionen, ein Sprachmodell, ein Gedächtnis und eine Sammlung typisierter Werkzeuge. Er analysiert Benutzereingaben, entscheidet autonom über nötige Tool-Aufrufe, konsumiert die Rückgabewerte und iteriert, bis das Ziel erreicht ist:
 
-```typescript
+```typescript caption="Deklaration eines autonomen SRE-Agenten in Mastra mit Infrastruktur-Tools und KV-Cache-schonendem Bounded Memory."
 // src/mastra/agents/devops-agent.ts
 import { Agent } from '@mastra/core/agent';
 import { Memory } from '@mastra/memory';
@@ -192,7 +193,7 @@ export const devOpsAgent = new Agent({
 
 Ein Mastra-Workflow ist eine gerichtete Zustandsmaschine. Schritte werden mit `createStep()` definiert, wobei jeder Schritt Eingabe- und Ausgabe-Schemas via **Zod** deklariert. Der Compiler erzwingt, dass der Ausgabe-Typ von Schritt $N$ exakt mit dem Eingabe-Typ von Schritt $N+1$ übereinstimmt:
 
-```typescript
+```typescript caption="Mehrstufiger Mastra-Workflow mit Zod-Ein-/Ausgabe-Verträgen und transaktionalem Human-in-the-Loop-Suspend ab 10.000 EUR."
 // src/mastra/workflows/order-workflow.ts
 import { createStep, createWorkflow } from '@mastra/core/workflows';
 import { z } from 'zod';
@@ -268,7 +269,7 @@ Mastra implementiert echtes **Durable Execution**:
 
 Der folgende Codeausschnitt zeigt den programmatischen Wiederanlauf eines solchen pausierten Workflows anhand seiner `runId`:
 
-```typescript
+```typescript caption="Reaktives Fortsetzen eines pausierten Mastra-Workflows über resumeStream() nach erfolgter Manager-Freigabe."
 // Fortsetzen des eingefrorenen Workflows nach Manager-Freigabe
 const run = await orderProcessingWorkflow.resumeStream({
   runId: 'run-uuid-12345',
@@ -290,7 +291,7 @@ Mastra setzt hierbei kompromisslos auf **Zod**:
 
 Am Beispiel eines schreibgeschützten Datenbank-Tools lässt sich diese deklarative Verknüpfung aus Eingabe-, Ausgabe- und Ausführungslogik direkt nachvollziehen:
 
-```typescript
+```typescript caption="Typsicheres Datenbank-Abfragewerkzeug mit createTool(), Zod-Parameterprüfung und Schreibzugriffs-Guard."
 // src/mastra/tools/sql-query-tool.ts
 import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
@@ -332,7 +333,7 @@ Das von Anthropic initiierte **Model Context Protocol (MCP)** – ein offener, J
 
 Möchte ein Mastra-Agent auf bestehende MCP-Server der Open-Source-Community (z. B. GitHub, Postgres, Slack oder Filesystem) zugreifen, bindet `MCPClient` diese per `stdio` (lokaler Subprozess) oder `SSE` (HTTP-Stream) ein:
 
-```typescript
+```typescript caption="Einbindung externer GitHub- und PostgreSQL-MCP-Server über Mastra MCPClient via stdio und SSE."
 // src/mastra/mcp-client.ts
 import { MCPClient } from '@mastra/mcp';
 import { Agent } from '@mastra/core/agent';
@@ -366,7 +367,7 @@ export const gitOpsAgent = new Agent({
 
 Umgekehrt können eigene Mastra-Tools und Workflows als MCP-Server exponiert werden. Dadurch stehen Firmen-APIs sofort in Cursor IDE, Windsurf oder der Claude Desktop App zur Verfügung – ohne eine Zeile Integrationscode für die jeweilige Anwendung schreiben zu müssen:
 
-```typescript
+```typescript caption="Bereitstellung interner Mastra-Werkzeuge als standardkonformer MCP-Server über Standard-I/O."
 // src/mastra/mcp-server.ts
 import { MCPServer } from '@mastra/mcp';
 import { sqlQueryTool } from './tools/sql-query-tool';
@@ -390,7 +391,7 @@ Ein produktionsreifes System erfordert mehr als smarte Prompts: Es verlangt fund
 ### Semantisches Retrieval (RAG)
 Mastra bringt integrierte Vektorabstraktionen (`MastraVector`) mit nativer Unterstützung für `pgvector`, `Pinecone`, `Chroma` und `LibSQL` mit:
 
-```typescript
+```typescript caption="Semantische Ähnlichkeitssuche mit Metadaten-Filter auf einem PostgreSQL-pgvector-Index in Mastra."
 import { MastraVector } from '@mastra/vector';
 import { PgVector } from '@mastra/vector-pg';
 
@@ -413,7 +414,7 @@ const results = await vectorStore.query({
 
 Eines der innovativsten Features von Mastra ist das integrierte Evaluations-Paket. Statt Agenten nach Bauchgefühl zu testen, können Entwickler automatisierte Grader in ihre Unit- und Integrationstests einbinden:
 
-```typescript
+```typescript caption="Automatisierte CI/CD-Qualitätsprüfung eines Mastra-Agenten mittels Faithfulness- und Relevance-Scorern."
 import { evaluate } from '@mastra/evals';
 import { FaithfulnessScorer, RelevanceScorer } from '@mastra/evals/scorers';
 
@@ -437,7 +438,7 @@ Die Qualität eines Frameworks entscheidet sich nicht zuletzt am Entwickler-Work
 
 ### Mastra Studio: Lokales Debugging mit visueller Transparenz
 Mit dem Befehl:
-```powershell
+```powershell caption="Start der lokalen Mastra-Studio-Entwicklungsumgebung auf Port 4111."
 npx mastra dev
 ```
 startet das Framework die lokale Entwicklungsumgebung unter `http://localhost:4111`. Entwickler erhalten:
@@ -455,6 +456,7 @@ Da Mastra rein auf TypeScript und Standard-Web-APIs aufbaut, lässt es sich flex
 
 Um die richtige Technologieentscheidung zu treffen, hilft ein direkter Vergleich mit den etablierten Alternativen unserer Architektur-Serie:
 
+<!-- caption: "Architekturvergleich zwischen Mastra, dem Nous Research Hermes Agent und LangGraph im Enterprise-KI-Stack." -->
 | Dimension | Mastra | Nous Research Hermes Agent | LangGraph (Python) |
 | :--- | :--- | :--- | :--- |
 | **Primäre Sprache** | **TypeScript** (First-Class) | Python | Python (mit JS-Port) |

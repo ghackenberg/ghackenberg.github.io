@@ -98,6 +98,7 @@ Vor der Generierung des ersten Antwort-Tokens muss das Modell den gesamten Promp
 #### 3. Das empirische „Lost in the Middle“-Phänomen
 Dass ein LLM 128k Tokens als Input akzeptiert, bedeutet keineswegs, dass es die enthaltenen Informationen homogen verarbeitet. In ihrer wegweisenden empirischen Studie wiesen **Nelson F. Liu et al [@liu-2024-lost-in-middle]. (Stanford University, UC Berkeley, Carnegie Mellon University)** das Phänomen des *„Lost in the Middle“* nach (*Transactions of the Association for Computational Linguistics*, 2024):
 
+<!-- caption: "Empirische Retrieval- und Reasoning-Genauigkeit in Abhängigkeit von der Informationsposition im Kontextfenster nach dem Lost-in-the-Middle-Effekt." -->
 | Position der relevanten Information im Kontext | Typische Retrieval- / Reasoning-Genauigkeit |
 | :--- | :--- |
 | **Am Anfang (Top 0–10 %)** | **~80–88 %** |
@@ -141,7 +142,7 @@ Gedächtniseinträge werden nicht in einem amorphen Topf gesammelt, sondern stri
 ### 2. Atomare Faktenextraktion statt fixes Chunking
 Anstatt Konversationen blind in gleich große Token-Blöcke zu zerschneiden, nutzt Mem0 ein spezialisiertes Extraktionsmodell (*Extractor LLM*). Dieses zerlegt eingehende Interaktionen in **atomare, eigenständige Propositionen**:
 
-```text
+```text caption="Transformation einer natürlichsprachlichen Dialogaussage in isolierte, atomare Fakten durch das Extractor-LLM."
 Eingabe: "Wir haben das Projekt von MySQL auf PostgreSQL 16 migriert und 
           nutzen jetzt strikt snake_case für Tabellennamen."
 
@@ -155,6 +156,7 @@ Jeder Fakt steht für sich allein, ist semantisch hochkonzentriert und frei von 
 ### 3. Der dynamische Memory-Lifecycle (CRUD-Entscheidungs-Engine)
 Sobald neue atomare Fakten vorliegen, durchsucht Mem0 die bestehende Gedächtnisbasis nach semantisch ähnlichen Einträgen. Anschließend entscheidet eine LLM-gestützte Logik deterministisch über eine von vier Operationen:
 
+<!-- caption: "Entscheidungsmatrix der vier deterministischen Gedächtnisoperationen (ADD, UPDATE, DELETE, NOOP) in der Mem0-Konsolidierungspipeline." -->
 | Operation | Auslöser / Bedingung | Aktion im Gedächtnissystem |
 | :--- | :--- | :--- |
 | **`ADD`** | Der Fakt repräsentiert neues, bisher unbekanntes Wissen. | Speicherung als neue Erinnerung mit Zeitstempel. |
@@ -180,7 +182,7 @@ So elegant das Lifecycle-Modell von Mem0 ist, dürfen Software-Architekten die d
 ### 6. Selektive Kontext-Injektion
 Bei einer neuen Nutzeranfrage ruft Mem0 nicht Tausende Zeilen Text ab, sondern lediglich die **Top-$k$ relevantesten atomaren Fakten**. Diese werden formatiert in den System-Prompt injiziert:
 
-```markdown
+```markdown caption="Token-effiziente Injektion der relevantesten atomaren Nutzerfakten in den System-Prompt."
 <user_memory>
 - Bevorzugt TypeScript mit strikter Typisierung vor Python.
 - Arbeitet an der FH Oberösterreich, Campus Wels.
@@ -205,6 +207,7 @@ LoCoMo ist ein standardisierter Evaluations-Datensatz für langlebige Dialoge. E
 
 Im empirischen Vergleich mit Standard-RAG, Full-Context-Prompting und kommerziellen Lösungen (wie der OpenAI Assistants/Memory-API) zeigt Mem0 signifikante Überlegenheit:
 
+<!-- caption: "Benchmark-Vergleich von Mem0 und Mem0g gegenüber Full-Context-Prompting, naivem RAG und kommerziellen Memory-APIs hinsichtlich Genauigkeit, Token-Verbrauch und p95-Latenz." -->
 | Evaluations-Metrik | Full-Context Baseline | Naives RAG (Chunks) | OpenAI Native Memory | **Mem0 (Vektor)** | **Mem0g (Graph)** |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **LoCoMo Accuracy (Gesamt)** | ~74,2 % | ~68,5 % | ~73,4 % | **~90,1 %** | **92,5 %** |

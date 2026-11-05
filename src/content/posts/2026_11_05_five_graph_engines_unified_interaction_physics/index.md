@@ -64,6 +64,7 @@ references:
 
 **Unified Multi-Engine Graph Physics** synchronizes hover tooltips, 60fps drag adaptation, dynamic hop z-ordering, and 750ms sine transitions across five heterogeneous web renderers, spanning D3.js SVG [@bostock-2011-d3], `vis-network` Canvas, Cytoscape.js Canvas [@franz-2016-cytoscape-js], Sigma.js WebGL [@jacomy-2014-forceatlas2], and Three.js `3d-force-graph`, by decoupling visual tokens in [`graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts) and Preact overlays in [`vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx) from engine-specific draw loops.
 
+<!-- caption: "Comparison of the five interactive graph engines across rendering pipelines, 60fps live drag solvers, and dynamic hop z-ordering strategies." -->
 | Graph Engine | Render Pipeline | Live Drag Solver (`force` / `radial` & `columns`) | Z-Order Strategy |
 | :--- | :--- | :--- | :--- |
 | **[`d3/engine.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/d3/engine.ts)** | Retained SVG DOM [@bostock-2011-d3] | Native `d3.forceSimulation` `alphaTarget(0.3)` / live `recomputeSlotTargets(true)` | `.sort()` on SVG `<line>` & `<g>` DOM nodes |
@@ -90,7 +91,7 @@ Achieving 60fps drag adaptation without disorienting camera jumps requires coupl
 
 Because Cytoscape's initial `cose` layout is static and Sigma's WebGL renderer lacks a built-in drag spring loop, we drive live `force` dragging in [`cytoscape/engine.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/cytoscape/engine.ts) via an auxiliary `d3.forceSimulation` flushed inside `cy.batch()` and in [`sigma/engine.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/sigma/engine.ts) by running two `forceAtlas2.assign` iterations per animation frame while locking the camera (`setCustomBBox`) and shifting unpinned nodes by 8% of mean centroid drift. In `radial` and `columns` modes, dragging a node recomputes normalized polar angles $\theta = \operatorname{atan2}(y - c_y, x - c_x)$ or column coordinates (`useCurrentOrder = true`) and smoothly animates peer nodes into newly vacated slots when the ordering signature changes:
 
-```ts
+```ts caption="Per-frame ForceAtlas2 drag solver with 8% mean centroid drift compensation in sigma/engine.ts."
 // src/content/visualizations/sigma/engine.ts — 60fps ForceAtlas2 drag loop with steady centroid
 const pinnedX = this.graph.getNodeAttribute(draggedNode, 'x') as number;
 const pinnedY = this.graph.getNodeAttribute(draggedNode, 'y') as number;

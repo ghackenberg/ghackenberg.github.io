@@ -175,7 +175,7 @@ Das Zusammenspiel zwischen AST-Transformation, Dateisystem-Cache und Headless-Br
 
 Seit den neuesten Astro-Versionen werden Markdown-Plugins direkt über das Unified-Ökosystem [@titus-2024-unified] übergeben. In unserer [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) fügt sich das Plugin wie folgt ein:
 
-```javascript
+```javascript caption="Registrierung des statischen remarkMermaid-Plugins und der KaTeX-Mathematik-Pipeline in astro.config.ts."
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';

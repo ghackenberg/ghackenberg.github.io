@@ -147,6 +147,7 @@ references:
 
 The following architectural comparison contrasts vision and DOM-scraping browser agents, backend or `stdio` Model Context Protocol servers, and in-page W3C WebMCP across their execution substrate, state and authentication sharing, token efficiency, and failure modes:
 
+<!-- caption: "Architectural comparison of vision/DOM-scraping browser agents, backend MCP servers, and in-page W3C WebMCP (document.modelContext)." -->
 | Architectural Dimension | 1. Vision & DOM-Scraping Browser Agents | 2. Backend / `stdio` MCP Servers | 3. In-Page W3C WebMCP (`document.modelContext`) |
 | :--- | :--- | :--- | :--- |
 | **Primary Interface & Transport** | Multimodal viewport screenshots, accessibility (a11y) trees, and synthetic XPath/CSS mouse/keyboard events [@deng-2023-mind2web; @zhou-2024-webarena]. | Out-of-process JSON-RPC 2.0 over `stdio` or HTTP/SSE (e.g., [`src/tools/unified-analytics.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/tools/unified-analytics.ts)) [@mcp-specification-2024]. | Browser-native `document.modelContext` WebIDL API and declarative `<form toolname="...">` attributes [@walderman-2026-webmcp]. |
@@ -199,7 +200,7 @@ To understand how WebMCP operates under the hood, we must examine the normative 
 
 The specification extends the standard DOM `Document` interface with a `[SameObject]` attribute `modelContext` of type `ModelContext`, accessible only within a `[SecureContext]` (HTTPS or `localhost`) on `Window` realms [@walderman-2026-webmcp]:
 
-```typescript
+```typescript caption="Normative W3C WebMCP WebIDL interface definitions for document.modelContext and RegisteredTool."
 // Normative WebIDL from W3C WebMCP Specification (Walderman et al., 2026, Sections 4.1–4.3)
 partial interface Document {
   [SecureContext, SameObject] readonly attribute ModelContext modelContext;
@@ -321,7 +322,7 @@ sequenceDiagram
 
 The following self-contained TypeScript module demonstrates how a modern web application registers both a read-only query tool and a consequential mutation tool using the normative `await document.modelContext.registerTool(tool, options)` contract, complete with `AbortController` teardown, `exposedTo` origin allowlisting, and `ToolExecuteCallbackOptions` (`{ signal }`) propagation [@walderman-2026-webmcp]:
 
-```typescript
+```typescript caption="Production TypeScript registration of read-only and consequential WebMCP tools with AbortSignal teardown."
 // Ambient WebIDL type declarations aligned with W3C WebMCP (Walderman et al., 2026)
 export interface ToolAnnotations {
   readonly readOnlyHint?: boolean;
@@ -515,7 +516,7 @@ What about millions of server-rendered or progressive-enhancement web pages that
 
 The following HTML and JavaScript snippet demonstrates a declarative WebMCP form that auto-synthesizes its JSON Schema 2020-12 input contract and returns structured JSON via `event.respondWith()`:
 
-```html
+```html caption="Declarative WebMCP HTML form with toolname/tooldescription attributes and SubmitEvent.respondWith() handling."
 <!-- Declarative WebMCP HTML Form: Auto-synthesizes JSON Schema 2020-12 from HTML5 constraints -->
 <form
   id="ci-bisect-form"
@@ -613,7 +614,7 @@ How do standalone engineering harnesses like **Google Antigravity** (the environ
 
 The MCP server configuration below enables the experimental WebMCP CDP domain in `chrome-devtools-mcp`:
 
-```json
+```json caption="MCP server configuration enabling the experimental WebMCP Chrome DevTools Protocol domain."
 {
   "mcpServers": {
     "chrome-devtools": {
@@ -630,7 +631,7 @@ The MCP server configuration below enables the experimental WebMCP CDP domain in
 
 And if a coding agent invokes `evaluate_script` directly via CDP, the discovery-and-invocation handshake resolves `getTools()`, locates the target `RegisteredTool` handle, and parses the JSON string returned by `executeTool()`:
 
-```javascript
+```javascript caption="Universal Chrome DevTools Protocol evaluate_script bridge for discovering and invoking in-page WebMCP tools."
 // Universal CDP evaluate_script bridge for Google Antigravity / Claude Code
 async () => {
   if (!document.modelContext) return { supported: false, tools: [] };
@@ -726,6 +727,7 @@ As we proved in our systems-theoretic analysis of [Emergent Properties and Nancy
 
 To synthesize these empirical and security trade-offs into an actionable engineering blueprint, the following decision matrix defines when software architects should deploy `/llms.txt`, Backend MCP, In-Page W3C WebMCP, or Headless DOM/CDP Actuation:
 
+<!-- caption: "Architectural decision matrix for selecting between /llms.txt, backend MCP servers, in-page W3C WebMCP, and headless CDP DOM actuation." -->
 | Integration Tier | Target Workload & Use Case | Auth & State Boundary | Recommended Protocol & Implementation |
 | :--- | :--- | :--- | :--- |
 | **Tier 1: Read-Only Knowledge & Docs** | Technical blog posts, API documentation, academic catalogs, and static marketing pages. | Public, stateless, cacheable at the CDN edge. | Semantic HTML5, JSON-LD, Answer-First GEO blocks, and static `/llms.txt` Markdown feeds. |

@@ -92,7 +92,7 @@ $$\Phi(e) = (\text{condition}, \text{guidance}, \text{pitfalls})$$
 
 Dank Mastras nativer Zod-Integration können wir dieses mathematische Modell direkt in typensichere TypeScript-Definitionen überführen:
 
-```typescript
+```typescript caption="Zod-Schemadefinitionen für Prozedurknoten, Kantenattribute Phi(e) und das Gesamtmodell des Procedural Graphs."
 // src/procedural-graph/schema.ts
 import { z } from 'zod';
 
@@ -145,7 +145,7 @@ export type ProceduralGraphModel = z.infer<typeof ProceduralGraphModelSchema>;
 
 Um den Graphen zur Laufzeit abzufragen und im Offline-Zyklus zu mutieren, kapseln wir den Zugriff in einer typsicheren Speicher-Abstraktion, die nahtlos an Mastras `PostgresStore` oder `LibSQLStore` anknüpft:
 
-```typescript
+```typescript caption="Typsichere Speicher-Abstraktion zur Extraktion der gerichteten 2-Hop-Nachbarschaft eines Prozedurknotens."
 // src/procedural-graph/store.ts
 import { ProceduralGraphModel, ProceduralNode, ProceduralEdge } from './schema';
 
@@ -221,7 +221,7 @@ Der eigentliche Task Solver Agent ($\pi$) erhält $g_t$ dynamisch in seinen Kont
 
 In Mastra lässt sich diese Orchestrierung elegant als modulare Pipeline ausdrücken:
 
-```typescript
+```typescript caption="Dreistufiger Mastra-Laufzeit-Workflow für Subgraph-Extraktion, Generative Soft Guidance und Solver-Ausführung."
 // src/procedural-graph/runtime-workflow.ts
 import { createStep, createWorkflow } from '@mastra/core';
 import { z } from 'zod';
@@ -369,7 +369,7 @@ Im realen Unternehmensalltag scheitern Agenten selten am Textverständnis, sonde
 
 Hier spielt Mastra seinen entscheidenden Vorteil aus: Über das native **MCP-Gateway** können standardisierte MCP-Server direkt eingebunden und als typsichere Mastra-Tools registriert werden.
 
-```typescript
+```typescript caption="Anbindung interner SAP-ERP- und Exchange-Mail-Gateways über Mastras MCPClient via SSE und stdio."
 // src/tools/mcp-enterprise-tools.ts
 import { MCPClient } from '@mastra/mcp';
 
@@ -419,7 +419,7 @@ Der selbstlernende Optimierungszyklus durchläuft dabei vier streng voneinander 
 
 Die folgende Klasse kapselt das Fehlergedächtnis und prüft deterministisch, ob eine vorgeschlagene Kantenänderung bereits in einem früheren Zyklus gescheitert ist:
 
-```typescript
+```typescript caption="Implementierung des RejectionMemoryStore zur dauerhaften Sperrung bereits gescheiterter Kanten-Mutationen."
 // src/procedural-graph/evolution.ts
 import { z } from 'zod';
 import { ProceduralGraphModel, ProceduralEdge } from './schema';
@@ -465,7 +465,7 @@ export class RejectionMemoryStore {
 
 Mit dieser Speicherschicht ausgestattet, kann der Refiner-Agent gezielt neue Kanten vorschlagen, ohne bekannte Sackgassen zu wiederholen:
 
-```typescript
+```typescript caption="Refiner-Funktion zur Synthese neuer Graph-Korrekturen unter Einschluss der verworfenen Mutationshistorie."
 // src/procedural-graph/refiner.ts
 import { ProceduralGraphModel, ProceduralEdge } from './schema';
 import { RejectionMemoryStore } from './evolution';
@@ -507,7 +507,7 @@ Der minimale Startgraph (*Minimal Prior*) umfasst vier Knoten:
 
 In TypeScript wird dieser Prozessgraph samt seinen Kantenbedingungen und Eskalationsschwellen deklarativ als typisiertes Datenmodell definiert:
 
-```typescript
+```typescript caption="Vollständige Instanziierung des B2B-Reklamationsgraphen mit vier Knoten und attributierten Eskalationskanten."
 // src/workflows/complaint-graph.ts
 import { ProceduralGraphModel } from '../procedural-graph/schema';
 

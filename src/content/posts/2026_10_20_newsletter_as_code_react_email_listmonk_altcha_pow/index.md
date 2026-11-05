@@ -79,6 +79,7 @@ Sovereign Newsletter-as-Code replaces third-party email platforms and fragile da
 
 The following architectural comparison contrasts cloud SaaS newsletter providers, raw self-hosted Listmonk setups with manual WYSIWYG editing, and our Git-driven Newsletter-as-Code architecture:
 
+<!-- caption: "Architectural comparison of cloud SaaS newsletter providers, manual Listmonk setups, and Git-native Newsletter-as-Code." -->
 | Architectural Dimension | SaaS Newsletter Platforms (Substack / Mailchimp) | Raw Self-Hosted Listmonk (Manual WYSIWYG Editing) | Sovereign Newsletter-as-Code (`hackenberg.tech`) |
 | :--- | :--- | :--- | :--- |
 | **Source of Truth & Versioning** | Proprietary cloud database; no Git history, branch previews, or atomic rollbacks. | Mutable PostgreSQL rows edited in browser forms; template changes bypass code review. | **100% Git-native** Markdown issues (`src/content/newsletters/`) and typed TSX email templates. |
@@ -107,7 +108,7 @@ When operating a technical publication and academic portfolio, email dispatches 
 
 In our architecture, every newsletter issue resides in `src/content/newsletters/<slug>/index.md` using the canonical `YYYY_MM_DD_<topic_slug>` directory convention. The YAML frontmatter declares the issue metadata alongside six typed slug arrays referencing items across the repository's primary content collections:
 
-```yaml
+```yaml caption="Declarative newsletter issue frontmatter referencing cross-domain content collection slugs."
 issueNumber: 1
 title: "Sovereign Agentic Workflows, Slide-as-Code & Real-Time Web Geometry"
 subtitle: "Architecture notes and recent deep-dives from hackenberg.tech"
@@ -131,7 +132,7 @@ Notice what is intentionally absent from this schema: there are no `draft` flags
 
 During compilation, [`src/commons/server/email/newsletter-loader.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/newsletter-loader.ts) iterates through `DOMAIN_COLLECTION_CONFIG` and resolves each referenced slug directly from `src/content/<collection>/<slug>/index.md`:
 
-```typescript
+```typescript caption="Build-time cross-collection metadata resolution and existence verification in newsletter-loader.ts."
 function resolveFeaturedItem(
   contentRootDir: string,
   collectionDir: string,
@@ -202,7 +203,7 @@ If an engineering team renders a full React Email `<Html>` document for each new
 
 During `renderNewsletterIssueEmail()`, all three representations are compiled concurrently via `Promise.all`:
 
-```typescript
+```typescript caption="Concurrent React Email compilation of standalone HTML, inner Listmonk campaign fragments, and plain-text fallbacks."
 function stripOuterDocumentWrapper(rawHtml: string): string {
   return rawHtml
     .replace(/<!DOCTYPE[^>]*>/gi, '')
@@ -246,7 +247,7 @@ We prevent escaping collisions using two deterministic post-processing passes:
 
 The implementation of `extractInnerFragment()` below demonstrates how the outer HTML wrapper is stripped before unescaping Go template expressions:
 
-```typescript
+```typescript caption="Stripping outer HTML wrappers and unescaping Go html/template expressions inside transactional templates."
 function extractInnerFragment(rawHtml: string): string {
   const withoutDoctype = rawHtml.replace(/<!DOCTYPE[^>]*>/i, '');
   const bodyMatch = withoutDoctype.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
@@ -319,7 +320,7 @@ sequenceDiagram
 
 Restarting the Listmonk Docker container on every `git push` when no template files have changed wastes CI time and briefly interrupts active connections. In [`src/scripts/sync-newsletters.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/sync-newsletters.ts), `syncStaticTemplatesViaSsh()` computes the local SHA-256 digest of all 12 managed static files (the 8 transactional email templates, `public/templates/index.html`, and `public/static/{style.css,logo.svg,favicon.png}`):
 
-```typescript
+```typescript caption="Computing local SHA-256 digests for zero-downtime SSH static template synchronization."
 function computeFileSha256(filePath: string): string {
   const content = fs.readFileSync(filePath);
   return crypto.createHash('sha256').update(content).digest('hex');
@@ -381,7 +382,7 @@ Second, outside the candidate loop, the worker pre-allocates a single 64-word me
 
 $$\text{totalBlocks} = (\text{len} + 9 + 63) \gg 6, \qquad \text{totalBytes} = \text{totalBlocks} \ll 6$$
 
-```javascript
+```javascript caption="Pre-allocating 32-bit target registers and reusable 128-byte SHA-256 blocks in the ALTCHA Web Worker."
 function solvePoW(salt, challengeHex, maxNumber) {
   const t0 = parseInt(challengeHex.slice(0, 8), 16) | 0;
   const t1 = parseInt(challengeHex.slice(8, 16), 16) | 0;
@@ -426,7 +427,7 @@ $$\Sigma_1(e) = \operatorname{ROTR}^6(e) \oplus \operatorname{ROTR}^{11}(e) \opl
 
 $$\Sigma_0(a) = \operatorname{ROTR}^2(a) \oplus \operatorname{ROTR}^{13}(a) \oplus \operatorname{ROTR}^{22}(a), \qquad \operatorname{Maj}(a, b, c) = (a \land b) \oplus (a \land c) \oplus (b \land c)$$
 
-```javascript
+```javascript caption="Zero-allocation 32-bit integer SHA-256 compression rounds and register short-circuit comparison."
       for (let i = 0; i < 64; i++) {
         const S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
         const ch = (e & f) ^ (~e & g);

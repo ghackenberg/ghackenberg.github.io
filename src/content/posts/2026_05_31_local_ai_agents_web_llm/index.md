@@ -89,7 +89,7 @@ The main thread runs the Three.js render loop and updates entity coordinates, wh
 
 Below is the implementation of our Web Worker, `webLlmWorker.ts`. It listens for messages from the main thread, initializes the `CreateEngine` engine from Web-LLM, downloads model files, and executes completion prompts.
 
-```typescript
+```typescript caption="Dedicated Web Worker initializing the MLC Web-LLM WebGPU engine and executing schema-constrained completions."
 // src/workers/webLlmWorker.ts
 import { CreateEngine, type ChatCompletionRequest, type InitProgressCallback } from "@mlc-ai/web-llm";
 
@@ -159,7 +159,7 @@ self.onmessage = async (event: MessageEvent) => {
 
 On the main thread, we wrap this worker in a client class (`WebLlmClient.ts`) that manages callbacks using Promises to turn message-passing into clean, async method calls:
 
-```typescript
+```typescript caption="Promise-based main-thread client wrapper managing asynchronous message passing with the Web-LLM worker."
 // src/services/WebLlmClient.ts
 export class WebLlmClient {
   private worker: Worker;
@@ -231,7 +231,7 @@ In a game simulation loop, parsing conversational sentences using regex is error
 
 Here is how we define the schema for our agent's decision:
 
-```json
+```json caption="JSON Schema grammar definition constraining agent LLM outputs to valid action enums and 2D target coordinates."
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
@@ -256,7 +256,7 @@ Here is how we define the schema for our agent's decision:
 
 By enforcing this schema, the model is physically incapable of outputting normal text. It is forced to output a valid JSON string matching the format:
 
-```json
+```json caption="Example structured JSON action payload emitted by the grammar-constrained local language model."
 {
   "action": "MOVE_TO",
   "targetCoordinates": [12, 45],
@@ -270,7 +270,7 @@ In the simulation, every agent (e.g., an animal or citizen entity) runs a tick u
 
 The prompt construction follows a clean, descriptive format:
 
-```typescript
+```typescript caption="Prompt template serializing agent vitals and nearby resource coordinates into the LLM context window."
 const agentStatePrompt = `
 Your current state:
 - Health: ${agent.health}/100
@@ -292,7 +292,7 @@ The system prompt sets the roleplay context, restricting the agent to act logica
 
 Once the worker returns the structured JSON, we parse it and inject it directly into the agent's behavior engine:
 
-```typescript
+```typescript caption="Behavior dispatch logic parsing the structured JSON decision and triggering entity pathfinding or actions."
 const decisionStr = await llmClient.generate(agentStatePrompt, systemPrompt, actionSchema);
 const decision = JSON.parse(decisionStr);
 

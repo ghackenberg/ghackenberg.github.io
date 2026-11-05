@@ -94,6 +94,7 @@ Verlässliche Agenten-Architekturen im Enterprise-Einsatz verbinden probabilisti
 
 Die folgende Gegenüberstellung verdeutlicht, wie sich autonome ReAct-Schleifen von formalen Zustandsautomaten und prozeduralen Graphen in Kernmetriken der Zuverlässigkeit unterscheiden:
 
+<!-- caption: "Vergleich von autonomen ReAct-Loops, hierarchischen Statecharts und prozeduralen Graphen hinsichtlich Auditierbarkeit, Latenz und Fehlertoleranz." -->
 | Dimension | Autonome ReAct-Loops | Hierarchische Statecharts | Prozedurale Graphen (DAGs) |
 | :--- | :--- | :--- | :--- |
 | **Autonomie vs. Auditierbarkeit** | Maximale dynamische Autonomie; Black-Box-Entscheidungen erschweren Nachvollziehbarkeit und Compliance-Audits. | Balanciert; formale Zustandsräume ermöglichen deterministische Pfad-Rekonstruktion und Prüfbarkeit. | Geringe Autonomie; vollständig deterministische Kontrollflüsse mit lückenlosem, statischem Audit-Trail. |
@@ -189,7 +190,7 @@ Bleibt das Delta über zwei aufeinanderfolgende Runden identisch null ($\Delta \
 
 Das folgende TypeScript-Listing demonstriert die Implementierung eines solchen deterministischen Simplex-Guards:
 
-```typescript
+```typescript caption="Deterministischer SimplexSafetyController in TypeScript zur Überwachung von Turn-Limits, Token-Budgets und Zustands-Hashes."
 import { z } from 'zod';
 
 export const AgentStateSchema = z.enum([
@@ -277,6 +278,7 @@ Der produktionsreife Betrieb von KI-Agenten in Unternehmen erfordert den methodi
 
 Die folgende Checkliste fasst die architektonischen Invarianten zusammen, die jedes unternehmenskritische Agentensystem erfüllen muss:
 
+<!-- caption: "Fünf-Punkte-Checkliste der architektonischen Sicherheitsinvarianten für produktive Enterprise-Agentensysteme." -->
 | Nr. | Architektonische Invariante | Zweck & Schutzmechanismus |
 | :--- | :--- | :--- |
 | **1** | **Simplex Safety Envelope** | Kapselung des probabilistischen Sprachmodells in einen deterministischen Sicherheitsrahmen; sofortiger Entzug der Ausführungsautorität bei Invariantenbruch. |

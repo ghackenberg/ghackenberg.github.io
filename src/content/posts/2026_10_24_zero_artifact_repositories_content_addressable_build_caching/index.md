@@ -140,6 +140,7 @@ A **Zero-Artifact Git Repository** enforces a strict Hermetic Source-Only Invari
 
 The following architectural trade-off matrix contrasts four common approaches to managing heavy derived media and build artifacts across static site generators, documentation platforms, and Slide-as-Code repositories:
 
+<!-- caption: "Architectural comparison of in-tree binary commits, Git LFS pointers, uncached CI rebuilds, and content-addressable build caching." -->
 | Architectural Dimension | 1. In-Tree Binary Commits (`git add *.mp3 *.pdf`) | 2. Git LFS Pointer Offloading (`git-lfs`) | 3. Naive Uncached CI Re-Generation | 4. Zero-Artifact Content-Addressable Cache (`.cache/*`) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Git Object Store & Packfile Scaling** | Every edit mints a new immutable blob in Git's content-addressable DAG [@bird-2009-promises-perils-mining-git]; entropy-coded streams defeat VCDIFF delta windows [@korn-2002-rfc3284-vcdiff], causing monotonic $\mathcal{O}(N \cdot S)$ packfile bloat. | Keeps `.git/objects` small via SHA-256 pointer files, but couples clones to paid LFS bandwidth quotas and external storage servers. | Zero binary bloat in Git ($0\text{ B}$ tracked derived outputs), maintaining pure text diffs across all commits. | **Zero binary bloat in Git** ($-229.89\text{ MiB}$ / $-241.05\text{ MB}$ across $601$ purged files); Git tracks only declarative Markdown, MDX, TypeScript, and CSS. |
@@ -238,7 +239,7 @@ $$\pi_{\text{visual}}(F \oplus \delta_{\text{vo}}) \;=\; \pi_{\text{visual}}(F) 
 
 In [`src/commons/server/slide-fingerprint.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/slide-fingerprint.ts) (lines 77–128), `extractSlideVisualContent()` and `computeSlideVisualHash()` implement this exact projection and combine it with a global `styleHash` (`computeSlideStyleHash()`, which hashes `ENGINE_VERSION = 'v1.2'`, `src/styles/theme.css` with non-slide `@import` lines stripped, `src/styles/slides.css`, [`src/pages/presentations/[slug]/print.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/presentations/%5Bslug%5D/print.astro), [`src/commons/shared/slide-cues.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/slide-cues.ts), and all `.astro`/`.js`/`.ts`/`.css` files under `src/components/slides/layouts` and `src/components/slides/primitives`):
 
-```typescript
+```typescript caption="Orthogonal visual projection stripping narrative voiceover and notes YAML keys for early-cutoff SHA-256 hashing."
 export function extractSlideVisualContent(content: string): string {
   const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   let visualFrontmatter = '';
@@ -339,7 +340,7 @@ and folds 14 pre-seeded coefficient pairs (`CS64_COEFFICIENTS` scaled by `CS64_F
 
 $$\texttt{Sec-MS-GEC} \;=\; \operatorname{HEX}_{\text{upper}}\!\big(\operatorname{LE32}(\text{cs}_0) \mathbin{\Vert} \operatorname{LE32}(\text{cs}_1)\big) \;\mathbin{\Vert}\; \texttt{"-"} \;\mathbin{\Vert}\; \operatorname{HEX}_{\text{upper}}(D)$$
 
-```typescript
+```typescript caption="Generating time-quantized Sec-MS-GEC v2 tokens via pre-seeded SHA-256 and cs64Digest word mixing."
 export function generateSecMsGecV2(unixTimestampSec?: number): string {
   let ticks = unixTimestampSec !== undefined ? unixTimestampSec : Date.now() / 1000 + clockSkewSeconds;
   ticks += WIN_EPOCH;
@@ -363,7 +364,7 @@ What happens if a developer workstation or ephemeral CI container has a local sy
 
 In [`src/commons/server/edge-tts.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/edge-tts.ts) (lines 393–403 and 589–603), `openEdgeTtsTurn()` intercepts the `response` event on the rejected HTTP upgrade request, parses the authoritative server timestamp from `res.headers['date']`, updates the module-level `clockSkewSeconds` offset ($\Delta t_{\text{skew}} \leftarrow \Delta t_{\text{skew}} + (t_{\text{server}} - t_{\text{client}})$), and `EdgeTtsCommunicate.stream()` transparently retries the turn once with a newly quantized `Sec-MS-GEC` token:
 
-```typescript
+```typescript caption="Self-healing clock-skew recovery parsing the server Date header on HTTP 403 WebSocket handshake rejections."
 req.on('response', (res) => {
   const dateHeader = res.headers['date'];
   if (res.statusCode === 403 && typeof dateHeader === 'string') {
@@ -410,7 +411,7 @@ $$z_{k+1} \;=\; (16{,}807 \cdot z_k) \bmod 2{,}147{,}483{,}647, \qquad u_{k+1} \
 
 Because $7^5$ is a primitive root modulo $2^{31}-1$ [@park-1988-random-number-generators], this recurrence has a full period of $2^{31}-2$ and produces the exact same floating-point sequence $(u_1, u_2, \dots, u_{430})$ across every OS, CPU architecture, and Node.js version:
 
-```typescript
+```typescript caption="Park-Miller Minimal Standard LCG (seed = 42) synthesizing deterministic OpenGraph starfield coordinates."
 function generateDeterministicStarsSvgMarkup(starFill: string): string {
   let seed = 42;
   const random = (): number => {
@@ -457,6 +458,7 @@ Migrating our repository to the three-tier content-addressable `.cache/` archite
 
 The table below summarizes the exact file counts, byte footprints, hash algorithms, and cache hit behaviors measured across our production repository (`ghackenberg.github.io`) after completing the four-stage migration (`branding`, `slides-audio`, `slides-pdf`, and dead thumbnail removal):
 
+<!-- caption: "Empirical storage savings, cache locations, fingerprinting mechanisms, and warm build latencies across all derived artifact tiers." -->
 | Subsystem / Artifact Tier | Tracked Files Removed from Git | Working-Tree Footprint Eliminated | Out-of-Tree Cache Location | Fingerprint & Early-Cutoff Mechanism | Warm Local `verify` Latency | Warm CI Cache Hit Latency |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Tier 1: Branding, Favicon & OG Cards** | $8\text{ files}$ (`favicon.svg`, $6\times$ `icon.png`, `og-share-preview.png`) | **$0.65\text{ MiB}$** ($683{,}455\text{ B}$) | `.cache/branding/` | `SHA-256` over `og.astro` + `icon.astro` + `branding-assets.ts` + Park-Miller LCG ($z_0 = 42$) [@park-1988-random-number-generators] | **$< 5\text{ ms}$** (`manifest.inputHash` match) | **$< 1\text{ s}$** (`actions/cache/restore`) |

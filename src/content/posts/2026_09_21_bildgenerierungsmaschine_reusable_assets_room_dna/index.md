@@ -169,7 +169,7 @@ Zur Verwaltung dieser modularen Bausteine haben wir den Astro Content Layer ([`s
 
 Der folgende Auszug aus unserer Kollektionskonfiguration zeigt, wie Signature Objects, Umgebungen samt Fokus-Varianten und Charaktere typsicher miteinander verknüpft werden:
 
-```typescript
+```typescript caption="Relationale Astro-Kollektionsschemata für Signature Objects, Environments mit Fokus-Varianten und Characters."
 import { defineCollection, reference, z } from 'astro:content';
 
 // 1. Signature Objects (0% Occlusion Flat-Lays)
@@ -274,7 +274,7 @@ Die hohe Reproduzierbarkeit dieser Tiefenstaffelung beruht auf zwei komplementä
 
 Wie greifen diese Bausteine in der Praxis ineinander? Betrachten wir die Konfiguration der Fokus-Variante `workplace-focus` in [`src/content/environments/home-office-almtal/index.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/environments/home-office-almtal/index.md):
 
-```yaml
+```yaml caption="Deklaration der Fokus-Variante workplace-focus mit Sichtbarkeitsfilter und dreistufiger Depth Zonation."
 variants:
   - name: "workplace-focus"
     shotType: "three-quarters"
@@ -291,7 +291,7 @@ variants:
 
 Soll der KI-Agent nun eine illustrative Szene für einen Artikel über Software-Architektur generieren, fragt er diesen Datensatz ab und setzt ihn mit den Attributen des Protagonisten (`georg`) zu folgendem deterministischen Prompt zusammen:
 
-```text
+```text caption="Synthetisierter Bildgenerierungs-Prompt mit Foreground-, Midground- und Background-Schichten sowie drei ImagePaths-Ankern."
 PROMPT:
 A dynamic scene inside a modern timber home office in Grünau im Almtal.
 - Foreground: Standing desk edge with a black mechanical keyboard, mouse, a small succulent, and an ALMTAL ceramic mug.
@@ -313,7 +313,7 @@ Das Diffusionsmodell erhält somit drei exakt aufeinander abgestimmte Konditioni
 
 Damit autonome AI-Coding-Assistenten (wie Google Antigravity, Claude Code oder Cursor) diese Regeln bei jeder Programmerweiterung verlässlich befolgen, sind die Workflows direkt in den Systemregeln des Repositories ([`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md)) verankert:
 
-```markdown
+```markdown caption="Verbindliches Fünf-Punkte-Protokoll in AGENTS.md zur Steuerung autonomer Bildgenerierungs-Agenten."
 ## 1. Visual Style & Image Generation Protocol
 Whenever asked to generate or modify an image (preview, hero, social card, or diagram):
 1. Protagonist & Character Discovery Protocol:
@@ -350,6 +350,7 @@ Dies ist keine rein subjektive Design-Entscheidung, sondern ein **ingenieurwisse
 
 Die Transformation generativer Bildmodelle von einem unberechenbaren Spielzeug zu einem industriell nutzbaren Produktionswerkzeug erfordert denselben Paradigmenwechsel, den die Softwareentwicklung vor Jahrzehnten durchlaufen hat: **Modularisierung, saubere Schnittstellen und strikte Entkopplung**.
 
+<!-- caption: "Methodischer Vergleich zwischen traditionellem Ad-hoc-Prompting und reproduzierbarem Visual Systems Engineering mit Room DNA." -->
 | Dimension | Traditioneller Prompt-Ansatz | Visual Systems Engineering |
 | :--- | :--- | :--- |
 | **Raumbeschreibung** | Ad-hoc Freitext-Prompts | Strukturierte **Room DNA** (Architektur, Materialien, Licht) |

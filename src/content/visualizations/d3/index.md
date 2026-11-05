@@ -38,6 +38,7 @@ The simulation and SVG binding architecture relies on four core mechanisms to ac
 
 The table below details the technical parameters and graphical strengths of the D3 vector simulation engine:
 
+<!-- caption: "Technical specifications and vector rendering capabilities of the D3.js force-directed SVG graph engine." -->
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
 | **Rendering Backend** | Scalable Vector Graphics (SVG) | Pixel-perfect vector scaling and crisp typography at any resolution |

@@ -210,6 +210,7 @@ Im Unternehmensalltag muss ein Agent fehlerfrei mit ERP-Systemen (SAP, Microsoft
 
 Aus kaufmännischer Perspektive verdichten sich diese technischen Verbesserungen auf drei messbare Wertschöpfungshebel:
 
+<!-- caption: "Gegenüberstellung der drei betriebswirtschaftlichen ROI-Hebel von Procedural Graphs gegenüber manuellen Prozessen und naiven Agenten." -->
 | ROI-Dimension | Vorher (Manuell / RPA / Naiver Agent) | Mit Procedural Graphs | Betriebswirtschaftlicher Nutzen |
 | :--- | :--- | :--- | :--- |
 | **Durchlaufzeit (Speed)** | Stunden bis Tage (Liegezeiten auf Mitarbeiter-Schreibtischen) | Sekunden bis wenige Minuten (Echtzeit-Durchlauf) | Schnellere Reaktionszeiten im Vertrieb, höhere Kundenzufriedenheit, schnellere Fakturierung. |

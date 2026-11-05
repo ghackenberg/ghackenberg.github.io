@@ -16,6 +16,7 @@ import rehypeKatex from 'rehype-katex';
 import rehypeResponsiveTables from '@plugins/rehype-responsive-tables.js';
 import rehypeCallouts from '@plugins/rehype-callouts.js';
 import rehypeInlineSvg from '@plugins/rehype-inline-svg.js';
+import rehypeCodeCaptions, { remarkCodeCaptions } from '@plugins/rehype-code-captions.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -71,7 +72,7 @@ function copyContentAssets(): AstroIntegration {
             pluginDebounceTimer = setTimeout(() => {
               pluginDebounceTimer = undefined;
               void server.restart();
-            }, 300);
+            }, 250);
           } else if (
             normPath.startsWith(`${contentDir}/`) &&
             /\.(svg|png|jpe?g|webp|avif|gif)$/i.test(normPath)
@@ -912,13 +913,18 @@ export default defineConfig({
   ],
   markdown: {
     shikiConfig: {
+      themes: {
+        dark: 'github-dark',
+        light: 'github-light',
+      },
+      defaultColor: 'dark',
       langAlias: {
         webidl: 'typescript',
       },
     },
     processor: unified({
-      remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid, remarkSlideCues, remarkCitations],
-      rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts, rehypeInlineSvg],
+      remarkPlugins: [remarkMath, remarkValidateImages, remarkCodeCaptions, remarkMermaid, remarkSlideCues, remarkCitations],
+      rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts, rehypeInlineSvg, rehypeCodeCaptions],
     }),
   },
   vite: {

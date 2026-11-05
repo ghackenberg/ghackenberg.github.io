@@ -126,6 +126,7 @@ Während die passive Konvektion des offenen Holzständers für die allermeisten 
 
 *Test-Setup: 16-Zoll Mobile Workstation mit NVIDIA GeForce RTX 4080 Laptop GPU (150 W maximales TGP). Messung nach 45 Minuten kontinuierlicher Volllast (Blender Cycles GPU-Rendering + ComfyUI Diffusions-Batch), Umgebungstemperatur $21\,^\circ\text{C}$. Schallpegelmessung nach DIN EN ISO 11201 mit A-Bewertung bei 50 cm typischem Ohrabstand.*
 
+<!-- caption: "Empirischer Messvergleich verschiedener Laptop-Kühlszenarien unter 150-W-GPU-Dauerlast hinsichtlich Hotspot-Temperatur, Thermal Throttling und Schalldruckpegel." -->
 | Kühlszenario | GPU Hotspot ($T_j$) | Taktabfall (Throttling) | Lautstärke @ 50cm | Ästhetik & Stromverbrauch |
 | :--- | :--- | :--- | :--- | :--- |
 | **Flach auf Schreibtisch** | $96\text{--}102\,^\circ\text{C}$ | 20–35 % Taktverlust | 52 dB(A) (hochfrequent) | Hohe Erwärmung der Tischplatte |

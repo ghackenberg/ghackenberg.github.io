@@ -89,7 +89,7 @@ Die von Nous Research entwickelte Architektur des **Hermes Agent** zeichnet sich
 ### A. Dateibasierte Kapselung nach `agentskills.io`
 Im Hermes Agent sind Fähigkeiten nicht im Code vergraben, sondern liegen als lesbare Verzeichnisse unter `~/.hermes/skills/`. Jedes Verzeichnis enthält eine kanonische `SKILL.md` mit YAML-Frontmatter:
 
-```yaml
+```yaml caption="Kanonisches YAML-Frontmatter einer SKILL.md im Hermes Agent mit OT-Tags und Toolset-Anforderungen."
 name: industrial-plc-modbus-diag
 description: Diagnose und Registerabfrage für Modbus-TCP SPS-Steuerungen
 version: 1.1.0
@@ -152,6 +152,7 @@ Jede Evolutionsrunde $k$ durchläuft vier spezialisierte Rollen:
 
 Die folgende Matrix stellt die beiden Systeme über alle ingenieurtechnisch relevanten Dimensionen gegenüber:
 
+<!-- caption: "Architektonischer Systemvergleich zwischen dem Nous Research Hermes Agent und Google WikiSkills über zehn Entwurfsdimensionen." -->
 | Vergleichsdimension | Hermes Agent (Nous Research) | Google WikiSkills (arXiv:2608.27454) |
 | :--- | :--- | :--- |
 | **Primäres Entwurfsziel** | Langlebiger Produktivbegleiter & 24/7-Serverlaufzeit | Formale, automatisierte Offline-Skill-Optimierung |

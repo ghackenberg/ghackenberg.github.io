@@ -38,6 +38,7 @@ The rendering and simulation pipeline combines four core subsystems to maintain 
 
 The following table summarizes the technical characteristics and performance profile of the 3D volumetric engine:
 
+<!-- caption: "Technical specifications and architectural advantages of the 3D Force WebGL volumetric graph engine." -->
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
 | **Rendering Backend** | WebGL 2.0 & Three.js | Hardware-accelerated 3D meshes and custom fragment shaders |

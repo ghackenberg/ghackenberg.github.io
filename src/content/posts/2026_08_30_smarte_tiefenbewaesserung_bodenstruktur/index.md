@@ -145,6 +145,7 @@ Das System bewässert ausschließlich in den kühlen Nacht- oder frühen Morgens
 
 Die folgende Gegenüberstellung verdeutlicht die hydraulischen und pflanzenphysiologischen Vorteile der Unterflur-Tiefenbewässerung gegenüber konventionellen Verfahren:
 
+<!-- caption: "Hydraulischer und pflanzenphysiologischer Vergleich zwischen konventioneller Oberflächenbewässerung und sensorgesteuerter Unterflur-Tiefenbewässerung." -->
 | Kriterium | Konventioneller Regner / Gießrand | Smart Subsurface Drip & Tiefenlanze |
 | :--- | :--- | :--- |
 | **Applikationswirkungsgrad** | $50\text{--}65\,\%$ (hohe Verdunstung) | **$> 90\text{--}95\,\%$** (Verdunstung minimiert) |

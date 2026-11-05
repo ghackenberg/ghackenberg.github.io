@@ -38,6 +38,7 @@ The analytical and rendering pipeline integrates four specialized capabilities f
 
 The following table outlines the primary technical specifications and structural advantages of the Cytoscape.js runtime:
 
+<!-- caption: "Technical specifications and analytical capabilities of the Cytoscape.js 2D canvas graph engine." -->
 | Feature | Specification | Architectural Advantage |
 | :--- | :--- | :--- |
 | **Rendering Backend** | HTML5 2D Canvas | Clean vector-like rendering with high text readability |
