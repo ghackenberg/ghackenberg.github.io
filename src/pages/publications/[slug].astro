@@ -140,6 +140,7 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
             <h2 id="bibtex-citation-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 !border-b-0 !pb-0 !mb-0 !mt-0">BibTeX Citation</h2>
             <button 
               id="copy-bibtex-btn"
+              data-copy-target="#bibtex-content"
               data-track-event="High Intent: Copy BibTeX"
               data-track-id={pub.id}
               class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 flex items-center space-x-2"
@@ -147,7 +148,7 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
               <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
               </svg>
-              <span id="copy-btn-text">Copy Citation</span>
+              <span id="copy-btn-text" data-copy-label>Copy Citation</span>
             </button>
           </div>
           <pre id="bibtex-content" class="bg-gray-950/80 p-5 rounded-2xl border border-element-border text-gray-300 font-mono text-xs overflow-x-auto leading-relaxed select-all">{pub.data.bibtex}</pre>
@@ -168,29 +169,7 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
 </Layout>
 
 <script>
-  // Copy Bibtex logic
-  const copyBtn = document.getElementById('copy-bibtex-btn');
-  const bibtexContent = document.getElementById('bibtex-content');
-  const copyBtnText = document.getElementById('copy-btn-text');
+  import { initClipboard } from "@commons/client/clipboard";
 
-  if (copyBtn && bibtexContent && copyBtnText) {
-    copyBtn.addEventListener('click', () => {
-      const text = bibtexContent.textContent?.trim() || '';
-      navigator.clipboard.writeText(text).then(() => {
-        // Visual feedback
-        copyBtnText.textContent = 'Copied!';
-        copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        copyBtn.classList.add('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
-        
-        // Reset after 2.5 seconds
-        setTimeout(() => {
-          copyBtnText.textContent = 'Copy Citation';
-          copyBtn.classList.remove('bg-brand-primary/20', 'text-brand-primary', 'border-brand-primary/30');
-          copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy citation: ', err);
-      });
-    });
-  }
+  initClipboard();
 </script>

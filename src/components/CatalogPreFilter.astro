@@ -1,0 +1,116 @@
+---
+interface ExtraFilterParam {
+  paramKey: string;
+  dataAttribute: string;
+  buttonIdPrefix?: string;
+}
+
+interface Props {
+  itemSelector: string;
+  noResultsId: string;
+  searchAttributes?: string[];
+  pageSize?: number;
+  extraParam?: ExtraFilterParam;
+}
+
+const {
+  itemSelector,
+  noResultsId,
+  searchAttributes = ["data-title", "data-desc", "data-tags"],
+  pageSize,
+  extraParam,
+} = Astro.props;
+---
+
+<!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
+<script is:inline define:vars={{ itemSelector, noResultsId, searchAttributes, pageSize, extraParam }}>
+  (function() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var rawTags = params.getAll('tag');
+      var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+      var q = (params.get('q') || '').trim().toLowerCase();
+      var page = parseInt(params.get('page') || '1', 10);
+      if (isNaN(page) || page < 1) page = 1;
+
+      var extraVal = extraParam ? (params.get(extraParam.paramKey) || '').trim().toLowerCase() : '';
+
+      var hasTag = tags.length > 0;
+      var hasQ = Boolean(q);
+      var hasExtra = Boolean(extraVal);
+      var isNonDefaultPage = Boolean(pageSize) && page > 1;
+
+      if (hasExtra && extraParam && extraParam.buttonIdPrefix) {
+        var extraBtn = document.getElementById(extraParam.buttonIdPrefix + extraVal);
+        if (extraBtn) extraBtn.classList.add('active');
+      }
+
+      if (!hasTag && !hasQ && !hasExtra && !isNonDefaultPage) return;
+
+      var items = document.querySelectorAll(itemSelector);
+      var matching = [];
+
+      items.forEach(function(item) {
+        var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+        var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
+
+        var matchesQ = !hasQ || searchAttributes.some(function(attr) {
+          return (item.getAttribute(attr) || '').toLowerCase().indexOf(q) !== -1;
+        });
+
+        var matchesExtra = !hasExtra || !extraParam || ((item.getAttribute(extraParam.dataAttribute) || '').toLowerCase() === extraVal);
+
+        if (matchesTag && matchesQ && matchesExtra) {
+          matching.push(item);
+          if (!pageSize) {
+            item.classList.add('is-matched');
+            item.classList.remove('hidden');
+            item.style.display = '';
+          }
+        } else {
+          item.classList.remove('is-matched');
+          item.classList.add('hidden');
+          item.style.display = 'none';
+        }
+      });
+
+      if (pageSize) {
+        var start = (page - 1) * pageSize;
+        var end = start + pageSize;
+        for (var i = 0; i < matching.length; i++) {
+          if (i >= start && i < end) {
+            matching[i].classList.add('is-matched');
+            matching[i].classList.remove('hidden');
+            matching[i].style.display = '';
+          } else {
+            matching[i].classList.remove('is-matched');
+            matching[i].classList.add('hidden');
+            matching[i].style.display = 'none';
+          }
+        }
+      }
+
+      var noResults = document.getElementById(noResultsId);
+      if (noResults) {
+        if (matching.length === 0) {
+          noResults.classList.remove('hidden');
+          noResults.style.display = '';
+        } else {
+          noResults.classList.add('hidden');
+          noResults.style.display = 'none';
+        }
+      }
+
+      var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+      if (countEl && (hasTag || hasQ || hasExtra)) {
+        var availTags = new Set();
+        matching.forEach(function(item) {
+          var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+          itags.forEach(function(t) { if (t) availTags.add(t); });
+        });
+        countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
+        countEl.classList.add('is-synced');
+      }
+    } catch {}
+  })();
+</script>

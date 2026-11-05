@@ -1,4 +1,5 @@
 import { trackEvent } from './telemetry';
+import { renderPaginationControls, type PaginationTheme } from '@commons/client/pagination';
 
 export interface DropdownFilterConfig {
   selectSelector: string;
@@ -44,19 +45,6 @@ export interface FilterConfig {
 interface FilterWindow extends Window {
   __activeFilterInstance?: ClientListFilter;
   __popstateRegistered?: boolean;
-}
-
-function getPageNumbers(current: number, total: number): (number | string)[] {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
-  if (current <= 4) {
-    return [1, 2, 3, 4, 5, '...', total];
-  }
-  if (current >= total - 3) {
-    return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
-  }
-  return [1, '...', current - 1, current, current + 1, '...', total];
 }
 
 function removeHighlights(root: HTMLElement) {
@@ -913,53 +901,15 @@ export class ClientListFilter {
     });
   }
 
-  private renderPaginationControls(totalPages: number, theme: 'blue' | 'purple' | 'yellow' | 'green' | 'indigo') {
+  private renderPaginationControls(totalPages: number, theme: PaginationTheme) {
     if (!this.paginationNavElement) return;
-
-    const domain = this.config.pagination?.domain;
-    const activeClass = domain 
-      ? `bg-domain-${domain} shadow-lg shadow-domain-${domain}/20` 
-      : `bg-gradient-${theme} shadow-lg shadow-brand-${theme}/20`;
-    const hoverBorderClass = domain 
-      ? `hover:border-domain-${domain}/30` 
-      : `hover:border-brand-${theme}/30`;
-
-    const prevBtn = this.paginationNavElement.querySelector<HTMLButtonElement>('[data-action="prev"]');
-    const nextBtn = this.paginationNavElement.querySelector<HTMLButtonElement>('[data-action="next"]');
-    const numbersContainer = this.paginationNavElement.querySelector<HTMLElement>('.page-numbers-container');
-
-    if (prevBtn) {
-      if (this.currentPage <= 1) {
-        prevBtn.disabled = true;
-        prevBtn.className = "prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
-      } else {
-        prevBtn.disabled = false;
-        prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
-      }
-    }
-
-    if (nextBtn) {
-      if (this.currentPage >= totalPages) {
-        nextBtn.disabled = true;
-        nextBtn.className = "next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
-      } else {
-        nextBtn.disabled = false;
-        nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
-      }
-    }
-
-    if (numbersContainer) {
-      const pageNumbers = getPageNumbers(this.currentPage, totalPages);
-      numbersContainer.innerHTML = pageNumbers.map((num) => {
-        if (typeof num === 'string') {
-          return '<span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>';
-        }
-        if (num === this.currentPage) {
-          return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white ${activeClass} cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
-        }
-        return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
-      }).join('');
-    }
+    renderPaginationControls({
+      navElement: this.paginationNavElement,
+      currentPage: this.currentPage,
+      totalPages,
+      domain: this.config.pagination?.domain,
+      theme,
+    });
   }
 
   private updateUrlParams(pushToHistory: boolean = false) {

@@ -457,114 +457,142 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
 
     </Container>
 
-    <!-- Synchronous inline script for Zero-Flicker on first paint -->
+    <!-- Synchronous inline script for Zero-Flicker on first paint & unified Priority+ layout calculator -->
     <script is:inline>
       (function() {
-        try {
-          var header = document.getElementById('site-header');
-          var container = document.getElementById('nav-container');
-          var brand = document.getElementById('nav-brand');
-          var actions = document.getElementById('desktop-actions');
-          if (!header || !container) return;
+        var itemIds = [
+          'about', 'posts', 'publications', 'presentations',
+          'courses', 'projects', 'services', 'visualizations', 'newsletters', 'tags'
+        ];
+        var fallbackWidths = [46, 46, 92, 102, 62, 62, 62, 102, 90, 44];
+        var minLogoGap = 40;
+        var navActionsGap = 20;
+        var minBurgerGap = 10;
+        var monoWidth = 40;
+        var brandGap = 12;
+        var gap = 16;
 
-          var cs = window.getComputedStyle(container);
-          var padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
-          var innerWidth = (container.clientWidth || window.innerWidth) - padX;
+        function evaluateNavbarPriority() {
+          try {
+            var header = document.getElementById('site-header');
+            var container = document.getElementById('nav-container');
+            var brand = document.getElementById('nav-brand');
+            var desktopNav = document.getElementById('desktop-nav');
+            var actions = document.getElementById('desktop-actions');
+            if (!header || !container) return;
 
-          // Measure intrinsic brand lockup widths while data-brand-mode="full" is active
-          var titleEl = brand ? brand.querySelector('.nav-logo-title') : null;
-          var subtitleEl = brand ? brand.querySelector('.nav-logo-subtitle') : null;
-          var monoWidth = 40;
-          var brandGap = 12;
-          var titleW = Math.max(titleEl ? Math.ceil(titleEl.getBoundingClientRect().width || titleEl.offsetWidth) : 0, 150);
-          var subtitleW = Math.max(subtitleEl ? Math.ceil(subtitleEl.getBoundingClientRect().width || subtitleEl.offsetWidth) : 0, 205);
-          header.setAttribute('data-title-w', String(titleW));
-          header.setAttribute('data-subtitle-w', String(subtitleW));
+            var cs = window.getComputedStyle(container);
+            var padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+            var innerWidth = (container.clientWidth || window.innerWidth) - padX;
 
-          var brandTitleWidth = monoWidth + brandGap + titleW;
-          var brandFullWidth = monoWidth + brandGap + Math.max(titleW, subtitleW);
-          var actionsWidth = (actions && actions.offsetWidth) ? actions.offsetWidth : 198;
-          var minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
-          var navActionsGap = 20;
+            var titleEl = brand ? brand.querySelector('.nav-logo-title') : null;
+            var subtitleEl = brand ? brand.querySelector('.nav-logo-subtitle') : null;
+            var liveTitleW = titleEl ? Math.ceil(titleEl.getBoundingClientRect().width || titleEl.offsetWidth) : 0;
+            var liveSubtitleW = subtitleEl ? Math.ceil(subtitleEl.getBoundingClientRect().width || subtitleEl.offsetWidth) : 0;
 
-          var availableWidth = innerWidth - brandFullWidth - actionsWidth - minLogoGap - navActionsGap;
+            var cachedTitleW = Math.max(parseInt(header.getAttribute('data-title-w') || '150', 10), 150);
+            var cachedSubtitleW = Math.max(parseInt(header.getAttribute('data-subtitle-w') || '205', 10), 205);
+            var titleW = liveTitleW > 0 ? Math.max(liveTitleW, 150) : cachedTitleW;
+            var subtitleW = liveSubtitleW > 0 ? Math.max(liveSubtitleW, 205) : cachedSubtitleW;
 
-          // Calibrated baseline item widths (About, Posts, Publications, Presentations, Courses, Projects, Services, Visualizations, Newsletters, Tags)
-          var itemWidths = [46, 46, 92, 102, 62, 62, 62, 102, 90, 44];
-          var gap = 16;
-          var moreWidth = 60;
+            header.setAttribute('data-title-w', String(titleW));
+            header.setAttribute('data-subtitle-w', String(subtitleW));
 
-          // Needed width for count = 10 (all 10 items shown, More ▾ is hidden)
-          var sum10 = 0;
-          for (var i = 0; i < 10; i++) sum10 += itemWidths[i];
-          var needed10 = sum10 + 9 * gap;
+            var brandTitleWidth = monoWidth + brandGap + titleW;
+            var brandFullWidth = monoWidth + brandGap + Math.max(titleW, subtitleW);
+            var actionsWidth = (actions && actions.offsetWidth) ? actions.offsetWidth : 198;
+            var availableWidth = innerWidth - brandFullWidth - actionsWidth - minLogoGap - navActionsGap;
 
-          // Needed width for count = k (1..9, items 1..k + More ▾ trigger)
-          var needed = { 10: needed10 };
-          var runningSum = 0;
-          for (var k = 1; k <= 9; k++) {
-            runningSum += itemWidths[k - 1];
-            needed[k] = runningSum + k * gap + moreWidth;
-          }
-
-          if (availableWidth < needed[1]) {
-            header.setAttribute('data-nav-mode', 'burger');
-            var mobileActionsWithHeart = 128;
-            var mobileActionsNoHeart = 84;
-            var minBurgerGap = 10;
-            if (innerWidth - mobileActionsWithHeart - minBurgerGap >= brandFullWidth) {
-              header.setAttribute('data-mobile-sponsor', 'bar');
-              header.setAttribute('data-brand-mode', 'full');
-            } else {
-              header.setAttribute('data-mobile-sponsor', 'menu');
-              var availableBrandWidth = innerWidth - mobileActionsNoHeart - minBurgerGap;
-              if (availableBrandWidth >= brandFullWidth) {
-                header.setAttribute('data-brand-mode', 'full');
-              } else if (availableBrandWidth >= brandTitleWidth) {
-                header.setAttribute('data-brand-mode', 'title');
-              } else {
-                header.setAttribute('data-brand-mode', 'compact');
-              }
+            var measuredWidths = [];
+            for (var idx = 0; idx < itemIds.length; idx++) {
+              var el = desktopNav ? desktopNav.querySelector('[data-nav-item="' + itemIds[idx] + '"]') : null;
+              var elW = el ? (el.getBoundingClientRect().width || el.offsetWidth || 0) : 0;
+              measuredWidths.push(Math.max(elW, fallbackWidths[idx]));
             }
-          } else {
-            header.setAttribute('data-nav-mode', 'desktop');
-            header.setAttribute('data-mobile-sponsor', 'bar');
-            header.setAttribute('data-brand-mode', 'full');
-            var chosen = 1;
-            if (availableWidth >= needed[10]) {
-              chosen = 10;
-            } else {
-              for (var c = 9; c >= 1; c--) {
-                if (availableWidth >= needed[c]) {
-                  chosen = c;
-                  break;
+
+            var moreContainerEl = document.getElementById('more-dropdown-container');
+            var moreW = moreContainerEl ? (moreContainerEl.getBoundingClientRect().width || moreContainerEl.offsetWidth || 0) : 0;
+            var moreWidth = Math.max(moreW, 60);
+
+            var sum10 = 0;
+            for (var i = 0; i < 10; i++) sum10 += measuredWidths[i];
+            var needed = { 10: sum10 + 9 * gap };
+            var runningSum = 0;
+            for (var k = 1; k <= 9; k++) {
+              runningSum += measuredWidths[k - 1];
+              needed[k] = runningSum + k * gap + moreWidth;
+            }
+
+            if (availableWidth < needed[1]) {
+              header.setAttribute('data-nav-mode', 'burger');
+              var mobileActionsWithHeart = 128;
+              var mobileActionsNoHeart = 84;
+              if (innerWidth - mobileActionsWithHeart - minBurgerGap >= brandFullWidth) {
+                header.setAttribute('data-mobile-sponsor', 'bar');
+                header.setAttribute('data-brand-mode', 'full');
+              } else {
+                header.setAttribute('data-mobile-sponsor', 'menu');
+                var availableBrandWidth = innerWidth - mobileActionsNoHeart - minBurgerGap;
+                if (availableBrandWidth >= brandFullWidth) {
+                  header.setAttribute('data-brand-mode', 'full');
+                } else if (availableBrandWidth >= brandTitleWidth) {
+                  header.setAttribute('data-brand-mode', 'title');
+                } else {
+                  header.setAttribute('data-brand-mode', 'compact');
                 }
               }
-            }
-            header.setAttribute('data-nav-count', String(chosen));
-
-            var activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
-            var moreTrigger = document.getElementById('more-dropdown-trigger');
-            if (moreTrigger) {
-              var isMoreActive = (activePriority > 0 && activePriority > chosen);
-              moreTrigger.setAttribute('data-more-active', isMoreActive ? 'true' : 'false');
-            }
-
-            var menu = document.getElementById('more-dropdown-menu');
-            if (menu && moreTrigger && container) {
-              var mWidth = (chosen >= 7 && chosen <= 9) ? 320 : 560;
-              var tRect = moreTrigger.getBoundingClientRect();
-              var cRect = container.getBoundingClientRect();
-              var dLeft = tRect.right - mWidth;
-              var minL = Math.max(cRect.left + 8, 16);
-              if (dLeft < minL) {
-                menu.style.right = '-' + Math.round(minL - dLeft) + 'px';
+            } else {
+              header.setAttribute('data-nav-mode', 'desktop');
+              header.setAttribute('data-mobile-sponsor', 'bar');
+              header.setAttribute('data-brand-mode', 'full');
+              var chosen = 1;
+              if (availableWidth >= needed[10]) {
+                chosen = 10;
               } else {
-                menu.style.right = '0px';
+                for (var c = 9; c >= 1; c--) {
+                  if (availableWidth >= needed[c]) {
+                    chosen = c;
+                    break;
+                  }
+                }
+              }
+              header.setAttribute('data-nav-count', String(chosen));
+
+              var activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
+              var moreTrigger = document.getElementById('more-dropdown-trigger');
+              if (moreTrigger) {
+                var isMoreActive = (activePriority > 0 && activePriority > chosen);
+                moreTrigger.setAttribute('data-more-active', isMoreActive ? 'true' : 'false');
+              }
+
+              var menu = document.getElementById('more-dropdown-menu');
+              if (menu && moreTrigger && container) {
+                var mWidth = (chosen >= 7 && chosen <= 9) ? 320 : 560;
+                var tRect = moreTrigger.getBoundingClientRect();
+                var cRect = container.getBoundingClientRect();
+                var dLeft = tRect.right - mWidth;
+                var minL = Math.max(cRect.left + 8, 16);
+                if (dLeft < minL) {
+                  menu.style.right = '-' + Math.round(minL - dLeft) + 'px';
+                } else {
+                  menu.style.right = '0px';
+                }
+              }
+
+              var mobileMenuEl = document.getElementById('mobile-menu');
+              if (mobileMenuEl && !mobileMenuEl.classList.contains('hidden')) {
+                mobileMenuEl.classList.add('hidden');
+                var hamburgerEl = document.getElementById('hamburger-icon');
+                var closeIconEl = document.getElementById('close-icon');
+                if (hamburgerEl) hamburgerEl.classList.remove('hidden');
+                if (closeIconEl) closeIconEl.classList.add('hidden');
               }
             }
-          }
-        } catch (e) {}
+          } catch {}
+        }
+
+        window.__evaluateNavbarPriority = evaluateNavbarPriority;
+        evaluateNavbarPriority();
       })();
     </script>
   </header>
@@ -689,194 +717,43 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
     });
   }
 
+  interface NavbarWindow extends Window {
+    __evaluateNavbarPriority?: () => void;
+    __navbarResizeBound?: boolean;
+  }
+
+  let priorityRafId: number | null = null;
+  function schedulePriorityEvaluation() {
+    if (priorityRafId !== null) cancelAnimationFrame(priorityRafId);
+    priorityRafId = requestAnimationFrame(() => {
+      priorityRafId = null;
+      (window as NavbarWindow).__evaluateNavbarPriority?.();
+    });
+  }
+
   // Dynamic Greedy / Priority+ Navigation Engine
   function initPriorityNav() {
-    const header = document.getElementById('site-header');
     const container = document.getElementById('nav-container');
-    const brand = document.getElementById('nav-brand');
-    const desktopNav = document.getElementById('desktop-nav');
-    const desktopActions = document.getElementById('desktop-actions');
-    const moreTrigger = document.getElementById('more-dropdown-trigger');
-    const menuEl = document.getElementById('mobile-menu');
-    const hamburgerEl = document.getElementById('hamburger-icon');
-    const closeIconEl = document.getElementById('close-icon');
+    if (!container) return;
 
-    if (!header || !container || !brand || !desktopNav || !desktopActions) return;
-
-    const activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
-    const titleEl = brand.querySelector<HTMLElement>('.nav-logo-title');
-    const subtitleEl = brand.querySelector<HTMLElement>('.nav-logo-subtitle');
-
-    let cachedTitleW = Math.max(parseInt(header.getAttribute('data-title-w') || '150', 10), 150);
-    let cachedSubtitleW = Math.max(parseInt(header.getAttribute('data-subtitle-w') || '205', 10), 205);
-
-    // Query all 10 direct items in canonical sequence
-    const itemIds = [
-      'about', 'posts', 'publications', 'presentations',
-      'courses', 'projects', 'services', 'visualizations', 'newsletters', 'tags'
-    ];
-    const fallbackWidths = [46, 46, 92, 102, 62, 62, 62, 102, 90, 44];
-    const minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
-    const navActionsGap = 20;
-    const minBurgerGap = 10;
-    const monoWidth = 40;
-    const brandGap = 12;
-    const gap = 16;
-
-    const moreContainerEl = document.getElementById('more-dropdown-container');
-
-    const repositionMoreDropdown = () => {
-      const moreMenu = document.getElementById('more-dropdown-menu');
-      if (!moreMenu || !moreTrigger || !container) return;
-
-      const currentCount = parseInt(header.getAttribute('data-nav-count') || '10', 10);
-      const menuWidth = (currentCount >= 7 && currentCount <= 9) ? 320 : 560;
-
-      const triggerRect = moreTrigger.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-
-      const desiredLeft = triggerRect.right - menuWidth;
-      const minLeft = Math.max(containerRect.left + 8, 16);
-
-      if (desiredLeft < minLeft) {
-        const offset = Math.round(minLeft - desiredLeft);
-        moreMenu.style.right = `-${offset}px`;
-      } else {
-        moreMenu.style.right = '0px';
-      }
-    };
-
-    let rafId: number | null = null;
-
-    const updateNavPriority = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const cs = window.getComputedStyle(container);
-        const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
-        const innerWidth = container.clientWidth - padX;
-
-        const liveTitleW = titleEl ? Math.ceil(titleEl.getBoundingClientRect().width || titleEl.offsetWidth) : 0;
-        const liveSubtitleW = subtitleEl ? Math.ceil(subtitleEl.getBoundingClientRect().width || subtitleEl.offsetWidth) : 0;
-        if (liveTitleW > 0) cachedTitleW = liveTitleW;
-        if (liveSubtitleW > 0) cachedSubtitleW = liveSubtitleW;
-
-        const brandTitleWidth = monoWidth + brandGap + cachedTitleW;
-        const brandFullWidth = monoWidth + brandGap + Math.max(cachedTitleW, cachedSubtitleW);
-        const actionsWidth = desktopActions.offsetWidth || 198;
-
-        const availableWidth = innerWidth - brandFullWidth - actionsWidth - minLogoGap - navActionsGap;
-
-        // Measure live widths of items or use calibrated fallbacks
-        const measuredWidths = itemIds.map((id, index) => {
-          const el = desktopNav.querySelector<HTMLElement>(`[data-nav-item="${id}"]`);
-          return Math.max(el?.getBoundingClientRect().width || el?.offsetWidth || 0, fallbackWidths[index]);
-        });
-
-        const measuredMoreWidth = Math.max(
-          moreContainerEl?.getBoundingClientRect().width || moreContainerEl?.offsetWidth || 0,
-          60
-        );
-
-        // Compute needed widths:
-        // Count 10: all 10 items shown, More ▾ trigger is hidden
-        const sum10 = measuredWidths.reduce((a, b) => a + b, 0);
-        const needed10 = sum10 + 9 * gap;
-
-        // Count 1..9: items 1..k + More ▾ trigger
-        const needed: Record<number, number> = { 10: needed10 };
-        let runningSum = 0;
-        for (let k = 1; k <= 9; k++) {
-          runningSum += measuredWidths[k - 1];
-          needed[k] = runningSum + k * gap + measuredMoreWidth;
-        }
-
-        let nextMode: 'burger' | 'desktop';
-        let nextBrandMode: 'full' | 'title' | 'compact' = 'full';
-        let nextMobileSponsor: 'bar' | 'menu' = 'bar';
-        let nextCount = 1;
-
-        if (availableWidth < needed[1]) {
-          nextMode = 'burger';
-          const mobileActionsWithHeart = 128;
-          const mobileActionsNoHeart = 84;
-          if (innerWidth - mobileActionsWithHeart - minBurgerGap >= brandFullWidth) {
-            nextMobileSponsor = 'bar';
-            nextBrandMode = 'full';
-          } else {
-            nextMobileSponsor = 'menu';
-            const availableBrandWidth = innerWidth - mobileActionsNoHeart - minBurgerGap;
-            if (availableBrandWidth >= brandFullWidth) {
-              nextBrandMode = 'full';
-            } else if (availableBrandWidth >= brandTitleWidth) {
-              nextBrandMode = 'title';
-            } else {
-              nextBrandMode = 'compact';
-            }
-          }
-        } else {
-          nextMode = 'desktop';
-          nextMobileSponsor = 'bar';
-          nextBrandMode = 'full';
-          if (availableWidth >= needed[10]) {
-            nextCount = 10;
-          } else {
-            for (let c = 9; c >= 1; c--) {
-              if (availableWidth >= needed[c]) {
-                nextCount = c;
-                break;
-              }
-            }
-          }
-        }
-
-        if (header.getAttribute('data-nav-mode') !== nextMode) {
-          header.setAttribute('data-nav-mode', nextMode);
-        }
-        if (header.getAttribute('data-mobile-sponsor') !== nextMobileSponsor) {
-          header.setAttribute('data-mobile-sponsor', nextMobileSponsor);
-        }
-        if (header.getAttribute('data-brand-mode') !== nextBrandMode) {
-          header.setAttribute('data-brand-mode', nextBrandMode);
-        }
-
-        if (nextMode === 'desktop') {
-          if (header.getAttribute('data-nav-count') !== String(nextCount)) {
-            header.setAttribute('data-nav-count', String(nextCount));
-          }
-
-          repositionMoreDropdown();
-
-          if (moreTrigger) {
-            const isMoreActive = (activePriority > 0 && activePriority > nextCount);
-            const activeAttr = isMoreActive ? 'true' : 'false';
-            if (moreTrigger.getAttribute('data-more-active') !== activeAttr) {
-              moreTrigger.setAttribute('data-more-active', activeAttr);
-            }
-          }
-
-          // Close mobile menu if switching to desktop
-          if (menuEl && !menuEl.classList.contains('hidden')) {
-            menuEl.classList.add('hidden');
-            hamburgerEl?.classList.remove('hidden');
-            closeIconEl?.classList.add('hidden');
-          }
-        }
-      });
-    };
-
-    updateNavPriority();
+    schedulePriorityEvaluation();
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(() => {
-        updateNavPriority();
+        schedulePriorityEvaluation();
       });
     }
 
-    window.addEventListener('resize', updateNavPriority, { passive: true });
+    const navWin = window as NavbarWindow;
+    if (!navWin.__navbarResizeBound) {
+      navWin.__navbarResizeBound = true;
+      window.addEventListener('resize', schedulePriorityEvaluation, { passive: true });
+    }
 
-    if (window.ResizeObserver) {
+    if (window.ResizeObserver && container.dataset.priorityObserved !== 'true') {
+      container.dataset.priorityObserved = 'true';
       const ro = new ResizeObserver(() => {
-        updateNavPriority();
+        schedulePriorityEvaluation();
       });
       ro.observe(container);
     }
@@ -963,28 +840,16 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       setTheme(nextSetting);
     };
 
-    // Clean listeners by replacing elements with clones to avoid memory leaks/double-listeners
     const desktopBtn = document.getElementById('theme-cycle-btn-desktop');
     const mobileBtn = document.getElementById('theme-cycle-btn-mobile');
-    
-    if (desktopBtn) {
-      const clone = desktopBtn.cloneNode(true);
-      desktopBtn.replaceWith(clone);
-    }
-    if (mobileBtn) {
-      const clone = mobileBtn.cloneNode(true);
-      mobileBtn.replaceWith(clone);
-    }
 
-    // Bind click handlers to newly cloned elements
-    const newDesktopBtn = document.getElementById('theme-cycle-btn-desktop');
-    const newMobileBtn = document.getElementById('theme-cycle-btn-mobile');
-
-    if (newDesktopBtn) {
-      newDesktopBtn.addEventListener('click', cycleTheme);
+    if (desktopBtn && desktopBtn.dataset.themeInitialized !== 'true') {
+      desktopBtn.dataset.themeInitialized = 'true';
+      desktopBtn.addEventListener('click', cycleTheme);
     }
-    if (newMobileBtn) {
-      newMobileBtn.addEventListener('click', cycleTheme);
+    if (mobileBtn && mobileBtn.dataset.themeInitialized !== 'true') {
+      mobileBtn.dataset.themeInitialized = 'true';
+      mobileBtn.addEventListener('click', cycleTheme);
     }
 
     // Apply initial tooltips based on current theme setting
@@ -995,13 +860,13 @@ const activeNavCssVar = activeNavItem ? (NAV_DOMAIN_STYLES[activeNavItem.id]?.cs
       dark: 'Theme: Dark (Click to switch to System)'
     };
     const initialTip = initialTooltipMap[currentTheme] || 'Toggle theme';
-    if (newDesktopBtn) {
-      newDesktopBtn.setAttribute('title', initialTip);
-      newDesktopBtn.setAttribute('aria-label', initialTip);
+    if (desktopBtn) {
+      desktopBtn.setAttribute('title', initialTip);
+      desktopBtn.setAttribute('aria-label', initialTip);
     }
-    if (newMobileBtn) {
-      newMobileBtn.setAttribute('title', initialTip);
-      newMobileBtn.setAttribute('aria-label', initialTip);
+    if (mobileBtn) {
+      mobileBtn.setAttribute('title', initialTip);
+      mobileBtn.setAttribute('aria-label', initialTip);
     }
   };
 

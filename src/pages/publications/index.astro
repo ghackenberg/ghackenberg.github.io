@@ -5,8 +5,10 @@ import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import PublicationCard from "@components/PublicationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
+import { getPageNumbers } from "@commons/client/pagination";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -20,19 +22,6 @@ const itemTags = publications.map(p => (p.data.tags || []).map(t => t.toLowerCas
 
 const PUBS_PER_PAGE = 12;
 const totalPages = Math.ceil(publications.length / PUBS_PER_PAGE);
-
-function getPageNumbers(current: number, total: number): (number | string)[] {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
-  if (current <= 4) {
-    return [1, 2, 3, 4, 5, '...', total];
-  }
-  if (current >= total - 3) {
-    return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
-  }
-  return [1, '...', current - 1, current, current + 1, '...', total];
-}
 
 const rawFirstPubIcon = publications.find((pub) => pub.data.image)?.data.image;
 const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== null && 'src' in rawFirstPubIcon ? rawFirstPubIcon.src : rawFirstPubIcon;
@@ -70,20 +59,6 @@ const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== 
       pageSize={PUBS_PER_PAGE}
     />
 
-    <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
-    <script is:inline>
-      (function() {
-        var params = new URLSearchParams(window.location.search);
-        var rawTags = params.getAll('tag');
-        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
-        var hasQ = Boolean((params.get('q') || '').trim());
-        var page = parseInt(params.get('page') || '1', 10);
-        if (hasTag || hasQ || page > 1) {
-          document.documentElement.classList.add('has-filter-query');
-        }
-      })();
-    </script>
-
     <!-- Publications Grid (3-2-1) -->
     {publications.length === 0 ? (
       <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
@@ -117,85 +92,12 @@ const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== 
           })}
         </div>
 
-        <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
-        <script is:inline>
-          (function() {
-            try {
-              var params = new URLSearchParams(window.location.search);
-              var rawTags = params.getAll('tag');
-              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
-              var q = (params.get('q') || '').trim().toLowerCase();
-              var page = parseInt(params.get('page') || '1', 10);
-              if (isNaN(page) || page < 1) page = 1;
-
-              var hasTag = tags.length > 0;
-              var hasQ = Boolean(q);
-              var isNonDefaultPage = page > 1;
-
-              if (!hasTag && !hasQ && !isNonDefaultPage) return;
-
-              var items = document.querySelectorAll('.publication-card-item');
-              var matching = [];
-
-              items.forEach(function(item) {
-                var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
-                var title = item.getAttribute('data-title') || '';
-                var author = item.getAttribute('data-author') || '';
-                var book = item.getAttribute('data-book') || '';
-                var tagsStr = item.getAttribute('data-tags') || '';
-
-                var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
-                var matchesQ = !hasQ || (title.indexOf(q) !== -1 || author.indexOf(q) !== -1 || book.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
-
-                if (matchesTag && matchesQ) {
-                  matching.push(item);
-                } else {
-                  item.classList.remove('is-matched');
-                  item.classList.add('hidden');
-                  item.style.display = 'none';
-                }
-              });
-
-              var pageSize = 12;
-              var start = (page - 1) * pageSize;
-              var end = start + pageSize;
-
-              matching.forEach(function(item, idx) {
-                if (idx >= start && idx < end) {
-                  item.classList.add('is-matched');
-                  item.classList.remove('hidden');
-                  item.style.display = '';
-                } else {
-                  item.classList.remove('is-matched');
-                  item.classList.add('hidden');
-                  item.style.display = 'none';
-                }
-              });
-
-              var noResults = document.getElementById('no-publications-message');
-              if (noResults) {
-                if (matching.length === 0) {
-                  noResults.classList.remove('hidden');
-                  noResults.style.display = '';
-                } else {
-                  noResults.classList.add('hidden');
-                  noResults.style.display = 'none';
-                }
-              }
-
-              var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
-              if (countEl && (hasTag || hasQ)) {
-                var availTags = new Set();
-                matching.forEach(function(item) {
-                  var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
-                  itags.forEach(function(t) { if (t) availTags.add(t); });
-                });
-                countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
-                countEl.classList.add('is-synced');
-              }
-            } catch(e) {}
-          })();
-        </script>
+        <CatalogPreFilter
+          itemSelector=".publication-card-item"
+          noResultsId="no-publications-message"
+          searchAttributes={["data-title", "data-author", "data-book", "data-tags"]}
+          pageSize={PUBS_PER_PAGE}
+        />
 
         <!-- Pagination Controls -->
         {totalPages > 1 && (
