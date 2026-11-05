@@ -8,6 +8,7 @@ import {
   computeHopDistances,
   interpolateHexColor,
   getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
@@ -184,11 +185,12 @@ const engine: D3Engine = {
         const baseColor = groupColors[n.group] || groupColors[0];
         const startColor = n.displayColor || baseColor;
         const startRadius = n.displayRadius ?? currentTokens.nodeRadius;
+        const hopDist = dists ? dists.get(n.id) : undefined;
         const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, dists.get(n.id), currentIsLight)
+          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
           : baseColor;
-        const targetRadius = dists && n.id === activeId
-          ? currentTokens.nodeRadius * currentTokens.nodeHoverScale
+        const targetRadius = dists
+          ? currentTokens.nodeRadius * getAttenuatedNodeScale(hopDist)
           : currentTokens.nodeRadius;
         return { node: n, startColor, targetColor, startRadius, targetRadius };
       });

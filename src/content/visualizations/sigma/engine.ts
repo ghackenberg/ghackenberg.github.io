@@ -10,6 +10,7 @@ import {
   computeHopDistances,
   interpolateHexColor,
   getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
@@ -257,8 +258,8 @@ const engine: SigmaEngine = {
         const targetColor = dists
           ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
           : baseColor;
-        const targetSize = dists && nId === activeNodeId
-          ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale
+        const targetSize = dists
+          ? SIGMA_BASE_NODE_SIZE * getAttenuatedNodeScale(hopDist)
           : SIGMA_BASE_NODE_SIZE;
         const targetZIndex = dists ? getNodeHopZIndex(hopDist) : 1;
         nodeTrans.push({ id: nId, startColor, targetColor, startSize, targetSize, targetZIndex });

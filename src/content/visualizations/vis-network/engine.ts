@@ -10,6 +10,7 @@ import {
   computeHopDistances,
   interpolateHexColor,
   getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex
@@ -308,8 +309,8 @@ const engine: VisNetworkEngine = {
         const targetColor = dists
           ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
           : baseColor;
-        const targetSize = dists && id === activeId
-          ? currentTokens.nodeRadius * currentTokens.nodeHoverScale
+        const targetSize = dists
+          ? currentTokens.nodeRadius * getAttenuatedNodeScale(hopDist)
           : currentTokens.nodeRadius;
         nodeTrans.push({
           id: node.id!,

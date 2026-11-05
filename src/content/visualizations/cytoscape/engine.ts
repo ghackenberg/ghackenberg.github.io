@@ -9,6 +9,7 @@ import {
   computeHopDistances,
   interpolateHexColor,
   getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex
@@ -136,7 +137,6 @@ const engine: CytoscapeEngine = {
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const currentBaseDiameter = currentTokens.nodeRadius * 2;
-      const currentHoverDiameter = currentBaseDiameter * currentTokens.nodeHoverScale;
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
 
       const nodeTrans: {
@@ -157,7 +157,9 @@ const engine: CytoscapeEngine = {
         const targetColor = dists
           ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
           : baseColor;
-        const targetSize = dists && id === activeId ? currentHoverDiameter : currentBaseDiameter;
+        const targetSize = dists
+          ? currentBaseDiameter * getAttenuatedNodeScale(hopDist)
+          : currentBaseDiameter;
         const targetZIndex = dists ? getNodeHopZIndex(hopDist) : 10;
         nodeTrans.push({ node: n, startColor, targetColor, startSize, targetSize, targetZIndex });
       });

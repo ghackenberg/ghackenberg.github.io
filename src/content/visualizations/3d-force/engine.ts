@@ -8,6 +8,7 @@ import {
   computeHopDistances,
   interpolateHexColor,
   getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
@@ -165,11 +166,12 @@ const engine: Force3DEngine = {
         const baseColor = palette[n.group] || palette[0];
         const startColor = n.displayColor || baseColor;
         const startVal = n.displayVal ?? n.val;
+        const hopDist = dists ? dists.get(n.id) : undefined;
         const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, dists.get(n.id), currentIsLight)
+          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
           : baseColor;
-        const targetVal = dists && n.id === activeNodeId
-          ? n.val * Math.pow(currentTokens.nodeHoverScale, 3)
+        const targetVal = dists
+          ? n.val * Math.pow(getAttenuatedNodeScale(hopDist), 3)
           : n.val;
         return { node: n, startColor, targetColor, startVal, targetVal };
       });

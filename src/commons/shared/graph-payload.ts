@@ -168,10 +168,37 @@ export function buildGraphAdjacency(
   return adjacency;
 }
 
+export interface HopCurveParams {
+  max: number;
+  min: number;
+  exponent: number;
+  maxHops?: number;
+}
+
+export const HOP_ATTENUATION_CONFIG = {
+  maxHops: 4,
+  nodeColor: { max: 1.0, min: 0.20, exponent: 1.35 },
+  nodeScale: { max: 2.10, min: 0.40, exponent: 1.25 },
+  edgeColor: { max: 1.0, min: 0.18, exponent: 1.20 },
+  edgeWidth: { max: 3.0, min: 0.80, exponent: 1.10 }
+} as const;
+
+export function computeHopCurve(
+  hopDistance: number | undefined,
+  params: HopCurveParams
+): number {
+  const maxHops = params.maxHops ?? HOP_ATTENUATION_CONFIG.maxHops;
+  const d = hopDistance ?? Infinity;
+  if (d <= 0) return params.max;
+  if (!Number.isFinite(d) || d >= maxHops) return params.min;
+  const u = Math.max(0, Math.min(1, d / maxHops));
+  return params.min + (params.max - params.min) * (1 - Math.pow(u, params.exponent));
+}
+
 export function computeHopDistances(
   startNodeId: string,
   adjacency: Map<string, Set<string>>,
-  maxHops = 3
+  maxHops: number = HOP_ATTENUATION_CONFIG.maxHops
 ): Map<string, number> {
   const distances = new Map<string, number>();
   distances.set(startNodeId, 0);
@@ -235,20 +262,18 @@ export function interpolateHexColor(fromHex: string, toHex: string, t: number): 
   return blendHexColor(toHex, fromHex, t);
 }
 
+export function getAttenuatedNodeScale(hopDistance: number | undefined): number {
+  return computeHopCurve(hopDistance, HOP_ATTENUATION_CONFIG.nodeScale);
+}
+
 export function getAttenuatedNodeColor(
   baseColor: string,
   hopDistance: number | undefined,
   isLight: boolean
 ): string {
-  const d = hopDistance ?? Infinity;
-  if (d <= 1) return baseColor;
+  const retention = computeHopCurve(hopDistance, HOP_ATTENUATION_CONFIG.nodeColor);
+  if (retention >= 1) return baseColor;
   const canvasBg = getThemeTokens(isLight).canvasBg;
-  let retention = 0.20;
-  if (d === 2) {
-    retention = 0.72;
-  } else if (d === 3) {
-    retention = 0.42;
-  }
   return blendHexColor(baseColor, canvasBg, retention);
 }
 
@@ -264,28 +289,26 @@ export function getAttenuatedEdgeStyle(
   if (dSrc === 0 || dTgt === 0) {
     return {
       color: styleTokens.edgeHoverColor,
-      width: styleTokens.edgeHoverWidth
+      width: HOP_ATTENUATION_CONFIG.edgeWidth.max
     };
   }
 
   const canvasBg = getThemeTokens(isLight).canvasBg;
   const maxDist = Math.max(dSrc, dTgt);
-  if (maxDist <= 2) {
-    return {
-      color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.75),
-      width: styleTokens.edgeWidth
-    };
-  }
-  if (maxDist === 3) {
-    return {
-      color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.42),
-      width: styleTokens.edgeWidth
-    };
-  }
+  const edgeHop = Number.isFinite(maxDist) ? Math.max(0, maxDist - 1) : Infinity;
+  const edgeMaxHops = Math.max(1, HOP_ATTENUATION_CONFIG.maxHops - 1);
+  const retention = computeHopCurve(edgeHop, {
+    ...HOP_ATTENUATION_CONFIG.edgeColor,
+    maxHops: edgeMaxHops
+  });
+  const width = computeHopCurve(edgeHop, {
+    ...HOP_ATTENUATION_CONFIG.edgeWidth,
+    maxHops: edgeMaxHops
+  });
 
   return {
-    color: blendHexColor(styleTokens.edgeColor, canvasBg, 0.18),
-    width: styleTokens.edgeWidth
+    color: blendHexColor(styleTokens.edgeColor, canvasBg, retention),
+    width
   };
 }
 
