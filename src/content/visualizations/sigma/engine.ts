@@ -1,30 +1,17 @@
 import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, type SigmaNode, type SigmaEdge } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
+import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 function getNodeColor(group: number, isLight: boolean): string {
   const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
   return colors[group] || colors[0];
 }
 
-export interface SigmaNodeData {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
-  size: number;
-  group: number;
-  color: string;
-}
-
-export interface SigmaEdgeData {
-  id: string;
-  source: string;
-  target: string;
-  color?: string;
-}
+export type SigmaNodeData = SigmaNode;
+export type SigmaEdgeData = SigmaEdge;
 
 export interface SigmaPayload {
   sigma: {
@@ -37,12 +24,16 @@ export interface SigmaEngine {
   layouts: { id: string; label: string }[];
   graph: Graph | null;
   sigma: Sigma | null;
+  nodeMap: Map<string, SigmaNodeData> | null;
+  tooltipController: GraphTooltipController | null;
+  mouseMoveHandler: ((e: MouseEvent) => void) | null;
+  container: HTMLElement | null;
   payload?: SigmaPayload;
   currentLayout?: string;
   isLight?: boolean;
   resizeObserver: ResizeObserver | null;
   animationFrameId: number | null;
-  init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean): Promise<SigmaEngine>;
+  init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<SigmaEngine>;
   updateLayout(layout: string, isLight: boolean): void;
   animateTo(targets: Record<string, { x: number; y: number }>, duration?: number): void;
   destroy(): void;
@@ -56,14 +47,20 @@ const engine: SigmaEngine = {
   ],
   graph: null,
   sigma: null,
+  nodeMap: null,
+  tooltipController: null,
+  mouseMoveHandler: null,
+  container: null,
   resizeObserver: null,
   animationFrameId: null,
 
-  async init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean) {
+  async init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
+    this.container = container;
     this.graph = new Graph();
     this.payload = payload;
     const nodes = payload.sigma.nodes;
     const edges = payload.sigma.edges;
+    this.nodeMap = new Map(nodes.map(n => [n.id, n]));
 
     nodes.forEach(n => {
       this.graph?.addNode(n.id, {
@@ -84,6 +81,8 @@ const engine: SigmaEngine = {
       });
     });
 
+    this.tooltipController = createGraphTooltipController(container);
+
     const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
       defaultNodeColor: tokens.nodeDefault,
@@ -91,10 +90,15 @@ const engine: SigmaEngine = {
       labelColor: { color: tokens.textHeading },
       labelFont: 'Outfit, Inter, sans-serif',
       labelSize: 10,
+      defaultDrawNodeHover: () => {},
       allowInvalidContainer: true,
       enableCameraZooming: false
     });
     this.sigma.getCamera().enabledZooming = false;
+
+    const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
+    const utmMedium = String(extraOptions.utmMedium || 'sigma');
+    const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     this.sigma.on('clickNode', ({ node }: { node: string }) => {
       if (
@@ -108,9 +112,80 @@ const engine: SigmaEngine = {
         node.startsWith('/visualizations/') ||
         node.startsWith('/tags/')
       ) {
-        window.location.href = node;
+        const targetUrl = new URL(node, window.location.origin);
+        targetUrl.searchParams.set('utm_source', utmSource);
+        targetUrl.searchParams.set('utm_medium', utmMedium);
+        targetUrl.searchParams.set('utm_campaign', utmCampaign);
+        window.location.href = targetUrl.pathname + targetUrl.search;
       }
     });
+
+    let hoveredNodeId: string | null = null;
+
+    this.sigma.on('enterNode', ({ node }: { node: string }) => {
+      hoveredNodeId = node;
+      container.style.cursor = 'pointer';
+
+      const currentIsLight = Boolean(this.isLight);
+      const rawNode = this.nodeMap?.get(node);
+      if (rawNode && this.sigma && this.graph) {
+        const nx = this.graph.getNodeAttribute(node, 'x') as number;
+        const ny = this.graph.getNodeAttribute(node, 'y') as number;
+        const viewportPos = this.sigma.graphToViewport({ x: nx, y: ny });
+
+        this.tooltipController?.show(
+          {
+            id: rawNode.id,
+            name: rawNode.label,
+            size: rawNode.rawSize ?? rawNode.size,
+            group: rawNode.group,
+            typeLabel: rawNode.typeLabel,
+            description: rawNode.description,
+            date: rawNode.date,
+            image: rawNode.image,
+            tags: rawNode.tags
+          },
+          currentIsLight,
+          viewportPos.x,
+          viewportPos.y
+        );
+
+        const highlightEdgeColor = currentIsLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)';
+        const baseEdgeColor = currentIsLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+        const connectedEdges = new Set(this.graph.edges(node));
+
+        this.graph.forEachEdge(edge => {
+          const isConnected = connectedEdges.has(edge);
+          this.graph?.setEdgeAttribute(edge, 'color', isConnected ? highlightEdgeColor : baseEdgeColor);
+          this.graph?.setEdgeAttribute(edge, 'size', isConnected ? 1.8 : 1);
+        });
+        this.sigma.refresh();
+      }
+    });
+
+    this.sigma.on('leaveNode', () => {
+      hoveredNodeId = null;
+      container.style.cursor = 'default';
+      this.tooltipController?.hide();
+
+      if (this.graph && this.sigma) {
+        const currentIsLight = Boolean(this.isLight);
+        const baseEdgeColor = currentIsLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+        this.graph.forEachEdge(edge => {
+          this.graph?.setEdgeAttribute(edge, 'color', baseEdgeColor);
+          this.graph?.setEdgeAttribute(edge, 'size', 1);
+        });
+        this.sigma.refresh();
+      }
+    });
+
+    this.mouseMoveHandler = (e: MouseEvent) => {
+      if (hoveredNodeId) {
+        const rect = container.getBoundingClientRect();
+        this.tooltipController?.move(e.clientX - rect.left, e.clientY - rect.top);
+      }
+    };
+    container.addEventListener('mousemove', this.mouseMoveHandler);
 
     this.currentLayout = layout;
     this.isLight = isLight;
@@ -311,10 +386,20 @@ const engine: SigmaEngine = {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    if (this.container && this.mouseMoveHandler) {
+      this.container.removeEventListener('mousemove', this.mouseMoveHandler);
+      this.mouseMoveHandler = null;
+      this.container = null;
+    }
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
+    }
     if (this.sigma) {
       this.sigma.kill();
       this.sigma = null;
     }
+    this.nodeMap = null;
     this.graph = null;
   }
 };

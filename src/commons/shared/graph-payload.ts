@@ -26,6 +26,12 @@ export interface CytoscapeElement {
     group?: number;
     color?: string;
     size?: number;
+    rawSize?: number;
+    typeLabel?: string;
+    description?: string;
+    date?: string;
+    image?: string;
+    tags?: string[];
     source?: string;
     target?: string;
   };
@@ -37,8 +43,14 @@ export interface SigmaNode {
   x: number;
   y: number;
   size: number;
+  rawSize?: number;
   group: number;
   color: string;
+  typeLabel?: string;
+  description?: string;
+  date?: string;
+  image?: string;
+  tags?: string[];
 }
 
 export interface SigmaEdge {
@@ -60,7 +72,7 @@ export interface EnginePayloads {
     elements: CytoscapeElement[];
   };
   d3: {
-    nodes: Array<{ id: string; name: string; size: number; group: number }>;
+    nodes: GraphNodePayload[];
     connections: GraphConnectionPayload[];
   };
   sigma: {
@@ -68,7 +80,7 @@ export interface EnginePayloads {
     edges: SigmaEdge[];
   };
   '3d-force': {
-    nodes: Array<{ id: string; name: string; size: number; group: number }>;
+    nodes: GraphNodePayload[];
     connections: GraphConnectionPayload[];
   };
 }
@@ -567,7 +579,13 @@ export async function buildGraphPayload(options: {
         name: node.name,
         group: node.group,
         color: GRAPH_COLORS.dark[node.group] || GRAPH_COLORS.dark[0],
-        size: node.group === 0 ? (node.size * 12 + 10) : (node.size * 10 + 6)
+        size: node.group === 0 ? (node.size * 12 + 10) : (node.size * 10 + 6),
+        rawSize: node.size,
+        typeLabel: node.typeLabel,
+        description: node.description,
+        date: node.date,
+        image: node.image,
+        tags: node.tags
       }
     });
   });
@@ -582,11 +600,16 @@ export async function buildGraphPayload(options: {
   });
 
   // 3. D3 / 3D-force nodes & connections
-  const d3Nodes = visNodes.map(n => ({
+  const d3Nodes: GraphNodePayload[] = visNodes.map(n => ({
     id: n.id,
     name: n.name,
     size: n.size,
-    group: n.group
+    group: n.group,
+    typeLabel: n.typeLabel,
+    description: n.description,
+    date: n.date,
+    image: n.image,
+    tags: n.tags
   }));
 
   // 4. Sigma nodes & edges
@@ -596,8 +619,14 @@ export async function buildGraphPayload(options: {
     x: (Math.random() - 0.5) * 100,
     y: (Math.random() - 0.5) * 100,
     size: n.group === 0 ? Math.max(n.size * 2, 3) : 2,
+    rawSize: n.size,
     group: n.group,
-    color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0]
+    color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],
+    typeLabel: n.typeLabel,
+    description: n.description,
+    date: n.date,
+    image: n.image,
+    tags: n.tags
   }));
   const sigmaEdges: SigmaEdge[] = visConnections.map(conn => ({
     id: `${conn.sourceId}--${conn.targetId}`,

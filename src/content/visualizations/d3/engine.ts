@@ -1,12 +1,9 @@
 import * as d3 from 'd3';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, type GraphNodePayload } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
+import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
-export interface D3Node extends d3.SimulationNodeDatum {
-  id: string;
-  name: string;
-  size: number;
-  group: number;
+export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
   targetX?: number;
   targetY?: number;
 }
@@ -18,7 +15,7 @@ export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
 
 export interface D3Payload {
   d3: {
-    nodes: { id: string; name: string; size: number; group: number }[];
+    nodes: GraphNodePayload[];
     connections: { sourceId: string; targetId: string }[];
   };
 }
@@ -35,11 +32,12 @@ export interface D3Engine {
   simulation: d3.Simulation<D3Node, D3Link> | null;
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
+  tooltipController: GraphTooltipController | null;
   currentLayout?: string;
   isLight?: boolean;
   fitTimeout?: ReturnType<typeof setTimeout>;
   resizeObserver: ResizeObserver | null;
-  init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean): Promise<D3Engine>;
+  init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<D3Engine>;
   fitToView(duration?: number): void;
   updateLayout(layout: string, isLight: boolean): void;
   destroy(): void;
@@ -61,9 +59,10 @@ const engine: D3Engine = {
   simulation: null,
   linkElements: null,
   nodeElements: null,
+  tooltipController: null,
   resizeObserver: null,
 
-  async init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean) {
+  async init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.width = container.offsetWidth || 800;
     this.height = container.offsetHeight || 500;
 
@@ -96,6 +95,9 @@ const engine: D3Engine = {
 
     this.svg.call(this.zoom).on('wheel.zoom', null);
 
+    // Create shared floating tooltip controller
+    this.tooltipController = createGraphTooltipController(container);
+
     // Create D3 simulation
     this.simulation = d3.forceSimulation<D3Node>(this.nodes);
 
@@ -104,13 +106,24 @@ const engine: D3Engine = {
       .enter().append("line")
       .style("stroke-width", "1px");
 
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let wasDragged = false;
+
     const dragBehavior = d3.drag<SVGGElement, D3Node>()
       .on("start", (event, d) => {
+        dragStartX = event.x;
+        dragStartY = event.y;
+        wasDragged = false;
         if (!event.active) this.simulation?.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
       })
       .on("drag", (event, d) => {
+        if (Math.hypot(event.x - dragStartX, event.y - dragStartY) > 6) {
+          wasDragged = true;
+          this.tooltipController?.hide();
+        }
         d.fx = event.x;
         d.fy = event.y;
       })
@@ -123,6 +136,7 @@ const engine: D3Engine = {
     this.nodeElements = this.svgGroup.selectAll<SVGGElement, D3Node>(".node")
       .data(this.nodes)
       .enter().append("g")
+      .style("cursor", "pointer")
       .call(dragBehavior);
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -133,28 +147,94 @@ const engine: D3Engine = {
       .style("stroke-width", "1.5px");
 
     this.nodeElements.append("text")
+      .text(d => d.group === 0 ? d.name : "")
       .attr("dx", d => d.size * 6 + 8)
       .attr("dy", ".35em")
-      .style("font-size", "9px")
+      .style("font-size", "10px")
       .style("font-family", "Outfit, Inter, sans-serif")
-      .style("font-weight", "500")
+      .style("font-weight", "600")
       .style("pointer-events", "none");
 
-    this.nodeElements.on("dblclick", (_event, d) => {
+    const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
+    const utmMedium = String(extraOptions.utmMedium || 'd3');
+    const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
+
+    const navigateToNode = (d: D3Node) => {
       if (
-        d.id.startsWith('/posts/') ||
-        d.id.startsWith('/publications/') ||
-        d.id.startsWith('/presentations/') ||
-        d.id.startsWith('/projects/') ||
-        d.id.startsWith('/courses/') ||
-        d.id.startsWith('/services/') ||
-        d.id.startsWith('/newsletters/') ||
-        d.id.startsWith('/visualizations/') ||
-        d.id.startsWith('/tags/')
+        d.id.startsWith('/posts') ||
+        d.id.startsWith('/publications') ||
+        d.id.startsWith('/presentations') ||
+        d.id.startsWith('/projects') ||
+        d.id.startsWith('/courses') ||
+        d.id.startsWith('/services') ||
+        d.id.startsWith('/newsletters') ||
+        d.id.startsWith('/visualizations') ||
+        d.id.startsWith('/tags')
       ) {
-        window.location.href = d.id;
+        const targetUrl = new URL(d.id, window.location.origin);
+        targetUrl.searchParams.set('utm_source', utmSource);
+        targetUrl.searchParams.set('utm_medium', utmMedium);
+        targetUrl.searchParams.set('utm_campaign', utmCampaign);
+        window.location.href = targetUrl.pathname + targetUrl.search;
       }
-    });
+    };
+
+    this.nodeElements
+      .on("mouseenter", (event: MouseEvent, d: D3Node) => {
+        container.style.cursor = "pointer";
+        const currentIsLight = Boolean(this.isLight);
+        const [x, y] = d3.pointer(event, container);
+        this.tooltipController?.show(d, currentIsLight, x, y);
+
+        const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+        const accentColor = groupColors[d.group] || groupColors[0];
+        d3.select(event.currentTarget as SVGGElement)
+          .select("circle")
+          .style("stroke", accentColor)
+          .style("stroke-width", "3px");
+
+        const highlightStroke = currentIsLight ? "rgba(15, 23, 42, 0.35)" : "rgba(255, 255, 255, 0.35)";
+        const baseStroke = currentIsLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)";
+        this.linkElements
+          ?.style("stroke", (l: D3Link) => {
+            const srcId = typeof l.source === 'object' ? l.source.id : l.source;
+            const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
+            return srcId === d.id || tgtId === d.id ? highlightStroke : baseStroke;
+          })
+          ?.style("stroke-width", (l: D3Link) => {
+            const srcId = typeof l.source === 'object' ? l.source.id : l.source;
+            const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
+            return srcId === d.id || tgtId === d.id ? "1.75px" : "1px";
+          });
+      })
+      .on("mousemove", (event: MouseEvent) => {
+        const [x, y] = d3.pointer(event, container);
+        this.tooltipController?.move(x, y);
+      })
+      .on("mouseleave", (event: MouseEvent) => {
+        container.style.cursor = "default";
+        this.tooltipController?.hide();
+
+        const currentIsLight = Boolean(this.isLight);
+        const tokens = getThemeTokens(currentIsLight);
+        d3.select(event.currentTarget as SVGGElement)
+          .select("circle")
+          .style("stroke", tokens.background)
+          .style("stroke-width", "1.5px");
+
+        const baseStroke = currentIsLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)";
+        this.linkElements
+          ?.style("stroke", baseStroke)
+          ?.style("stroke-width", "1px");
+      })
+      .on("click", (_event: MouseEvent, d: D3Node) => {
+        if (!wasDragged) {
+          navigateToNode(d);
+        }
+      })
+      .on("dblclick", (_event: MouseEvent, d: D3Node) => {
+        navigateToNode(d);
+      });
 
     this.simulation.on("tick", () => {
       this.linkElements
@@ -264,7 +344,7 @@ const engine: D3Engine = {
     const tokens = getThemeTokens(isLight);
     this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
     this.nodeElements.selectAll("circle").style("stroke", tokens.background);
-    this.nodeElements.selectAll("text").style("fill", tokens.textMain);
+    this.nodeElements.selectAll("text").style("fill", tokens.textHeading);
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodeElements.selectAll<SVGCircleElement, D3Node>("circle").style("fill", d => colors[d.group] || colors[0]);
 
@@ -376,6 +456,10 @@ const engine: D3Engine = {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
+    }
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
     }
     if (this.simulation) {
       this.simulation.stop();

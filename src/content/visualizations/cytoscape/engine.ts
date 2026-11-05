@@ -1,6 +1,7 @@
-import cytoscape, { type Core, type NodeSingular } from 'cytoscape';
+import cytoscape, { type Core, type NodeSingular, type EventObjectNode } from 'cytoscape';
 import { GRAPH_COLORS } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
+import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
   const grp = node.data('group') ?? 0;
@@ -11,10 +12,11 @@ function getNodeColor(node: NodeSingular, isLight: boolean): string {
 export interface CytoscapeEngine {
   layouts: { id: string; label: string }[];
   cy: Core | null;
+  tooltipController: GraphTooltipController | null;
   currentLayout?: string;
   isLight?: boolean;
   resizeObserver: ResizeObserver | null;
-  init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean): Promise<CytoscapeEngine>;
+  init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
   updateLayout(layout: string, isLight: boolean): void;
   destroy(): void;
 }
@@ -26,10 +28,13 @@ const engine: CytoscapeEngine = {
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
   cy: null,
+  tooltipController: null,
   resizeObserver: null,
 
-  async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean) {
+  async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     const tokens = getThemeTokens(isLight);
+    this.tooltipController = createGraphTooltipController(container);
+
     this.cy = cytoscape({
       container: container,
       userZoomingEnabled: false,
@@ -71,10 +76,28 @@ const engine: CytoscapeEngine = {
             'border-width': '3px',
             'border-color': tokens.nodeDefault
           }
+        },
+        {
+          selector: 'node.hovered',
+          style: {
+            'border-width': '3px',
+            'border-color': (node: NodeSingular) => getNodeColor(node, Boolean(this.isLight))
+          }
+        },
+        {
+          selector: 'edge.hovered-edge',
+          style: {
+            'width': 2.25,
+            'line-color': isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)'
+          }
         }
       ],
       layout: { name: 'null' }
     });
+
+    const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
+    const utmMedium = String(extraOptions.utmMedium || 'cytoscape');
+    const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     this.cy.on('tap', 'node', function(evt) {
       const node = evt.target;
@@ -90,8 +113,65 @@ const engine: CytoscapeEngine = {
         id.startsWith('/visualizations/') ||
         id.startsWith('/tags/')
       ) {
-        window.location.href = id;
+        const targetUrl = new URL(id, window.location.origin);
+        targetUrl.searchParams.set('utm_source', utmSource);
+        targetUrl.searchParams.set('utm_medium', utmMedium);
+        targetUrl.searchParams.set('utm_campaign', utmCampaign);
+        window.location.href = targetUrl.pathname + targetUrl.search;
       }
+    });
+
+    const getCoords = (evt: EventObjectNode) => {
+      if (evt.originalEvent) {
+        const rect = container.getBoundingClientRect();
+        return {
+          x: evt.originalEvent.clientX - rect.left,
+          y: evt.originalEvent.clientY - rect.top
+        };
+      }
+      return {
+        x: evt.renderedPosition?.x ?? 0,
+        y: evt.renderedPosition?.y ?? 0
+      };
+    };
+
+    this.cy.on('mouseover', 'node', (evt: EventObjectNode) => {
+      container.style.cursor = 'pointer';
+      const node = evt.target;
+      node.addClass('hovered');
+      node.connectedEdges().addClass('hovered-edge');
+
+      const data = node.data();
+      const coords = getCoords(evt);
+      this.tooltipController?.show(
+        {
+          id: String(data.id),
+          name: String(data.name || ''),
+          size: Number(data.rawSize ?? data.size ?? 1),
+          group: Number(data.group ?? 0),
+          typeLabel: data.typeLabel,
+          description: data.description,
+          date: data.date,
+          image: data.image,
+          tags: data.tags
+        },
+        Boolean(this.isLight),
+        coords.x,
+        coords.y
+      );
+    });
+
+    this.cy.on('mousemove', 'node', (evt: EventObjectNode) => {
+      const coords = getCoords(evt);
+      this.tooltipController?.move(coords.x, coords.y);
+    });
+
+    this.cy.on('mouseout', 'node', (evt: EventObjectNode) => {
+      container.style.cursor = 'default';
+      const node = evt.target;
+      node.removeClass('hovered');
+      node.connectedEdges().removeClass('hovered-edge');
+      this.tooltipController?.hide();
     });
 
     // Cache parameters for ResizeObserver
@@ -120,13 +200,22 @@ const engine: CytoscapeEngine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    // Apply color update to node labels based on theme
+    // Apply color update to node labels and edges based on theme
     const tokens = getThemeTokens(isLight);
-    this.cy.style().selector('node').style({
-      'color': tokens.textHeading,
-      'border-color': tokens.background,
-      'background-color': (node: NodeSingular) => getNodeColor(node, isLight)
-    }).update();
+    this.cy.style()
+      .selector('node').style({
+        'color': tokens.textHeading,
+        'border-color': tokens.background,
+        'background-color': (node: NodeSingular) => getNodeColor(node, isLight)
+      })
+      .selector('edge').style({
+        'line-color': isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
+        'target-arrow-color': tokens.border
+      })
+      .selector('edge.hovered-edge').style({
+        'line-color': isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)'
+      })
+      .update();
 
     if (layout === 'radial') {
       this.cy.layout({
@@ -211,6 +300,10 @@ const engine: CytoscapeEngine = {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
+    }
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
     }
     if (this.cy) {
       this.cy.destroy();

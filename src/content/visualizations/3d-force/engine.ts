@@ -1,13 +1,11 @@
 import ForceGraph3D from '3d-force-graph';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, type GraphNodePayload } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
+import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
-export interface Force3DNode {
-  id: string;
-  name: string;
+export interface Force3DNode extends GraphNodePayload {
   val: number;
   color: string;
-  group: number;
   x?: number;
   y?: number;
   z?: number;
@@ -17,8 +15,8 @@ export interface Force3DNode {
 }
 
 export interface Force3DLink {
-  source: string;
-  target: string;
+  source: string | Force3DNode;
+  target: string | Force3DNode;
 }
 
 export interface Force3DNavigationControls {
@@ -31,13 +29,25 @@ export interface Force3DEngine {
   nodes: Force3DNode[] | null;
   links: Force3DLink[] | null;
   graph: ReturnType<typeof ForceGraph3D> | null;
+  tooltipController: GraphTooltipController | null;
+  hoveredNodeId: string | null;
+  mouseMoveHandler: ((e: MouseEvent) => void) | null;
+  container: HTMLElement | null;
+  isLight?: boolean;
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
   animationFrameId: number | null;
-  init(container: HTMLElement, payload: { '3d-force': { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean): Promise<Force3DEngine>;
+  init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   updateLayout(layout: string, isLight: boolean): void;
   animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number): void;
   destroy(): void;
+}
+
+function isLinkConnected(link: Force3DLink, hoveredId: string | null): boolean {
+  if (!hoveredId) return false;
+  const srcId = typeof link.source === 'object' ? link.source.id : link.source;
+  const tgtId = typeof link.target === 'object' ? link.target.id : link.target;
+  return srcId === hoveredId || tgtId === hoveredId;
 }
 
 const engine: Force3DEngine = {
@@ -49,20 +59,24 @@ const engine: Force3DEngine = {
   nodes: null,
   links: null,
   graph: null,
+  tooltipController: null,
+  hoveredNodeId: null,
+  mouseMoveHandler: null,
+  container: null,
   resizeObserver: null,
   initialized: false,
   animationFrameId: null,
 
-  async init(container: HTMLElement, payload: { '3d-force': { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean) {
+  async init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
+    this.container = container;
+    this.isLight = isLight;
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     
-    // Cache nodes and connections
+    // Cache nodes and connections with full rich metadata
     this.nodes = payload['3d-force'].nodes.map((n) => ({
-      id: n.id,
-      name: n.name,
+      ...n,
       val: n.size * 5 + 3,
-      color: colors[n.group] || colors[0],
-      group: n.group
+      color: colors[n.group] || colors[0]
     }));
 
     this.links = payload['3d-force'].connections.map((c) => ({
@@ -70,32 +84,92 @@ const engine: Force3DEngine = {
       target: c.targetId
     }));
 
+    this.tooltipController = createGraphTooltipController(container);
+
+    let lastMouseX = container.clientWidth / 2;
+    let lastMouseY = container.clientHeight / 2;
+
+    this.mouseMoveHandler = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      lastMouseX = e.clientX - rect.left;
+      lastMouseY = e.clientY - rect.top;
+      if (this.hoveredNodeId) {
+        this.tooltipController?.move(lastMouseX, lastMouseY);
+      }
+    };
+    container.addEventListener('mousemove', this.mouseMoveHandler);
+
+    const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
+    const utmMedium = String(extraOptions.utmMedium || '3d-force');
+    const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
+
     const tokens = getThemeTokens(isLight);
     this.graph = ForceGraph3D()(container)
       .graphData({ nodes: this.nodes, links: this.links })
       .backgroundColor(tokens.canvasBg)
       .showNavInfo(false)
-      .nodeLabel('name')
+      .nodeLabel('')
       .nodeVal('val')
       .nodeColor('color')
-      .linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)')
-      .linkWidth(1.2)
+      .linkColor((l: Force3DLink) => {
+        const currentIsLight = Boolean(this.isLight);
+        if (isLinkConnected(l, this.hoveredNodeId)) {
+          return currentIsLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255, 255, 255, 0.35)';
+        }
+        return currentIsLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255, 255, 255, 0.08)';
+      })
+      .linkWidth((l: Force3DLink) => isLinkConnected(l, this.hoveredNodeId) ? 2.2 : 1.2)
       .linkDirectionalParticles(2)
       .linkDirectionalParticleWidth(1.5)
       .linkDirectionalParticleSpeed(0.006)
-      .onNodeClick((node: { id: string }) => {
+      .onNodeHover((node: Force3DNode | null) => {
+        const hovered = node;
+        this.hoveredNodeId = hovered ? hovered.id : null;
+        container.style.cursor = hovered ? 'pointer' : 'default';
+
+        if (hovered) {
+          let x = lastMouseX;
+          let y = lastMouseY;
+          if (this.graph && typeof hovered.x === 'number' && typeof hovered.y === 'number' && typeof hovered.z === 'number') {
+            try {
+              const screenCoords = this.graph.graph2ScreenCoords(hovered.x, hovered.y, hovered.z);
+              if (screenCoords && typeof screenCoords.x === 'number' && typeof screenCoords.y === 'number') {
+                x = screenCoords.x;
+                y = screenCoords.y;
+              }
+            } catch {
+              // Fall back to pointer coordinates
+            }
+          }
+          this.tooltipController?.show(hovered, Boolean(this.isLight), x, y);
+        } else {
+          this.tooltipController?.hide();
+        }
+
+        if (this.graph) {
+          this.graph
+            .linkColor(this.graph.linkColor())
+            .linkWidth(this.graph.linkWidth());
+        }
+      })
+      .onNodeClick((node: Force3DNode) => {
+        const clicked = node;
         if (
-          node.id.startsWith('/posts/') ||
-          node.id.startsWith('/publications/') ||
-          node.id.startsWith('/presentations/') ||
-          node.id.startsWith('/projects/') ||
-          node.id.startsWith('/courses/') ||
-          node.id.startsWith('/services/') ||
-          node.id.startsWith('/newsletters/') ||
-          node.id.startsWith('/visualizations/') ||
-          node.id.startsWith('/tags/')
+          clicked.id.startsWith('/posts/') ||
+          clicked.id.startsWith('/publications/') ||
+          clicked.id.startsWith('/presentations/') ||
+          clicked.id.startsWith('/projects/') ||
+          clicked.id.startsWith('/courses/') ||
+          clicked.id.startsWith('/services/') ||
+          clicked.id.startsWith('/newsletters/') ||
+          clicked.id.startsWith('/visualizations/') ||
+          clicked.id.startsWith('/tags/')
         ) {
-          window.location.href = node.id;
+          const targetUrl = new URL(clicked.id, window.location.origin);
+          targetUrl.searchParams.set('utm_source', utmSource);
+          targetUrl.searchParams.set('utm_medium', utmMedium);
+          targetUrl.searchParams.set('utm_campaign', utmCampaign);
+          window.location.href = targetUrl.pathname + targetUrl.search;
         }
       });
 
@@ -126,11 +200,12 @@ const engine: Force3DEngine = {
 
   updateLayout(layout: string, isLight: boolean) {
     if (!this.graph || !this.nodes) return;
+    this.isLight = isLight;
 
     // Apply color update based on theme
     const tokens = getThemeTokens(isLight);
     this.graph.backgroundColor(tokens.canvasBg);
-    this.graph.linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)');
+    this.graph.linkColor(this.graph.linkColor());
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodes.forEach(n => {
@@ -302,6 +377,16 @@ const engine: Force3DEngine = {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
     }
+    if (this.container && this.mouseMoveHandler) {
+      this.container.removeEventListener('mousemove', this.mouseMoveHandler);
+      this.mouseMoveHandler = null;
+      this.container = null;
+    }
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
+    }
+    this.hoveredNodeId = null;
     if (this.graph) {
       this.graph.pauseAnimation();
       this.graph.graphData({ nodes: [], links: [] });

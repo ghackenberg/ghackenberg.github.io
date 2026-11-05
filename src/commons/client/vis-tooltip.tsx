@@ -1,4 +1,6 @@
 import { render } from 'preact';
+import { GRAPH_COLORS, GRAPH_GROUP_NAMES } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 
 export interface VisTooltipNodeData {
   id: string;
@@ -174,4 +176,103 @@ export function renderVisNetworkTooltip(
   props: VisNetworkTooltipProps
 ): void {
   render(<VisNetworkTooltip {...props} />, container);
+}
+
+export interface GraphTooltipController {
+  show(node: VisTooltipNodeData, isLight: boolean, x?: number, y?: number): void;
+  move(x: number, y: number): void;
+  hide(): void;
+  destroy(): void;
+}
+
+export function createGraphTooltipController(container: HTMLElement): GraphTooltipController {
+  const tooltipEl = document.createElement('div');
+  tooltipEl.className = 'vis-tooltip';
+  tooltipEl.style.position = 'absolute';
+  tooltipEl.style.pointerEvents = 'none';
+  tooltipEl.style.opacity = '0';
+  tooltipEl.style.visibility = 'hidden';
+  tooltipEl.style.left = '0px';
+  tooltipEl.style.top = '0px';
+
+  const cardEl = document.createElement('div');
+  cardEl.style.fontFamily = 'Outfit, Inter, sans-serif';
+  cardEl.style.width = '250px';
+  cardEl.style.maxWidth = '270px';
+  cardEl.style.boxSizing = 'border-box';
+  cardEl.style.whiteSpace = 'normal';
+  cardEl.style.overflowWrap = 'break-word';
+  cardEl.style.wordBreak = 'break-word';
+
+  tooltipEl.appendChild(cardEl);
+  container.appendChild(tooltipEl);
+
+  let lastX = 0;
+  let lastY = 0;
+
+  function updatePosition(x: number, y: number) {
+    lastX = x;
+    lastY = y;
+
+    const cWidth = container.clientWidth || 800;
+    const cHeight = container.clientHeight || 500;
+    const tWidth = tooltipEl.offsetWidth || 278;
+    const tHeight = tooltipEl.offsetHeight || 160;
+    const offset = 16;
+    const pad = 12;
+
+    let left = x + offset;
+    if (left + tWidth + pad > cWidth) {
+      left = x - tWidth - offset;
+    }
+    left = Math.max(pad, Math.min(left, Math.max(pad, cWidth - tWidth - pad)));
+
+    let top = y + offset;
+    if (top + tHeight + pad > cHeight) {
+      top = y - tHeight - offset;
+    }
+    top = Math.max(pad, Math.min(top, Math.max(pad, cHeight - tHeight - pad)));
+
+    tooltipEl.style.left = `${Math.round(left)}px`;
+    tooltipEl.style.top = `${Math.round(top)}px`;
+  }
+
+  return {
+    show(node: VisTooltipNodeData, isLight: boolean, x?: number, y?: number) {
+      const themeTokens = getThemeTokens(isLight);
+      const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
+      const typeLabel = node.typeLabel || GRAPH_GROUP_NAMES[node.group] || 'Item';
+      const accentColor = groupColors[node.group] || themeTokens.nodeDefault;
+      const tagColor = groupColors[0];
+
+      render(
+        <VisNetworkTooltip
+          node={node}
+          typeLabel={typeLabel}
+          accentColor={accentColor}
+          tagColor={tagColor}
+          themeTokens={themeTokens}
+        />,
+        cardEl
+      );
+
+      tooltipEl.style.visibility = 'visible';
+      tooltipEl.style.opacity = '1';
+      updatePosition(x ?? lastX, y ?? lastY);
+    },
+
+    move(x: number, y: number) {
+      updatePosition(x, y);
+    },
+
+    hide() {
+      tooltipEl.style.opacity = '0';
+      tooltipEl.style.visibility = 'hidden';
+    },
+
+    destroy() {
+      render(null, cardEl);
+      tooltipEl.remove();
+    },
+  };
 }
