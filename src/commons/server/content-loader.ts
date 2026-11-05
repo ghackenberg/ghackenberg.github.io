@@ -204,16 +204,17 @@ export function assetAwareGlob(options: Parameters<typeof glob>[0]): Loader {
 
       const wrappedWatcher: FSWatcher | undefined = context.watcher
         ? new Proxy(context.watcher, {
-            get(target, prop, receiver) {
+            get(target, prop) {
               if (prop === 'on') {
                 return (event: string, listener: (changedPath: string) => void) => {
                   if (event === 'change' && !globChangeHandler) {
                     globChangeHandler = listener;
                   }
-                  return Reflect.get(target, prop, receiver).call(target, event, listener);
+                  return target.on(event, listener);
                 };
               }
-              return Reflect.get(target, prop, receiver);
+              const value = Reflect.get(target, prop, target);
+              return typeof value === 'function' ? value.bind(target) : value;
             },
           })
         : undefined;

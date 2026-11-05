@@ -271,6 +271,19 @@ export default function rehypeInlineSvg() {
     }
     const mdPath: string = rawPath;
     const svgDependencies = new Set<string>();
+    const inlinedSrcs = new Set<string>();
+
+    function recordInlinedImg(imgEl: Element) {
+      const src = String(imgEl.properties?.src || '').trim();
+      if (src) {
+        inlinedSrcs.add(src);
+        try {
+          inlinedSrcs.add(decodeURI(src));
+        } catch {
+          // ignore malformed URI
+        }
+      }
+    }
 
     function transformChildren(parent: HastParent) {
       if (!Array.isArray(parent.children)) {
@@ -289,6 +302,7 @@ export default function rehypeInlineSvg() {
           if (soleImg) {
             const figure = createFigureElement(soleImg, mdPath, svgDependencies);
             if (figure) {
+              recordInlinedImg(soleImg);
               parent.children[i] = figure;
               continue;
             }
@@ -299,6 +313,7 @@ export default function rehypeInlineSvg() {
         if (child.type === 'element' && isLocalSvgImg(child)) {
           const figure = createFigureElement(child, mdPath, svgDependencies);
           if (figure) {
+            recordInlinedImg(child);
             parent.children[i] = figure;
             continue;
           }
@@ -314,6 +329,12 @@ export default function rehypeInlineSvg() {
     transformChildren(tree);
 
     if (file && svgDependencies.size > 0) {
+      const astroData = (file.data as { astro?: { localImagePaths?: string[] } } | undefined)?.astro;
+      if (astroData && Array.isArray(astroData.localImagePaths) && inlinedSrcs.size > 0) {
+        astroData.localImagePaths = astroData.localImagePaths.filter(
+          (p) => !inlinedSrcs.has(p) && !inlinedSrcs.has(decodeURI(p)) && !p.toLowerCase().endsWith('.svg')
+        );
+      }
       file.data = {
         ...file.data,
         inlineSvgDependencies: [...svgDependencies],
