@@ -4,6 +4,7 @@ import forceAtlas2 from 'graphology-layout-forceatlas2';
 import {
   GRAPH_COLORS,
   HIGHLIGHT_TRANSITION_MS,
+  easeHighlightTransition,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
@@ -222,9 +223,13 @@ const engine: SigmaEngine = {
     this.hoveredNodeId = null;
     this.isLight = isLight;
     const adjacency = buildGraphAdjacency(edges);
+    let lastHighlightedNodeId: string | null = null;
 
     const applyHighlight = (activeNodeId: string | null, immediate = false) => {
       if (!this.graph || !this.sigma) return;
+      if (!immediate && activeNodeId === lastHighlightedNodeId) return;
+      lastHighlightedNodeId = activeNodeId;
+
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
         this.highlightFrameId = null;
@@ -328,7 +333,7 @@ const engine: SigmaEngine = {
           return;
         }
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
-        const ease = 1 - Math.pow(1 - progress, 3);
+        const ease = easeHighlightTransition(progress);
         const isFinal = progress >= 1;
         renderStep(ease, isFinal && !dists);
         if (!isFinal) {

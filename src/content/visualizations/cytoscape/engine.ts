@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
   HIGHLIGHT_TRANSITION_MS,
+  easeHighlightTransition,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
@@ -120,9 +121,13 @@ const engine: CytoscapeEngine = {
       rawEdges.push({ source: e.source().id(), target: e.target().id() });
     });
     const adjacency = buildGraphAdjacency(rawEdges);
+    let lastHighlightedNodeId: string | null = null;
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.cy) return;
+      if (!immediate && activeId === lastHighlightedNodeId) return;
+      lastHighlightedNodeId = activeId;
+
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
         this.highlightFrameId = null;
@@ -235,7 +240,7 @@ const engine: CytoscapeEngine = {
           return;
         }
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
-        const ease = 1 - Math.pow(1 - progress, 3);
+        const ease = easeHighlightTransition(progress);
         const isFinal = progress >= 1;
         renderStep(ease, isFinal && !dists);
         if (!isFinal) {

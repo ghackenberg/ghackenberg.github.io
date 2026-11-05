@@ -4,6 +4,7 @@ import {
   GRAPH_COLORS,
   GRAPH_GROUP_NAMES,
   HIGHLIGHT_TRANSITION_MS,
+  easeHighlightTransition,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
@@ -272,9 +273,13 @@ const engine: VisNetworkEngine = {
     }
 
     const adjacency = buildGraphAdjacency(this.connections || []);
+    let lastHighlightedNodeId: string | null = null;
 
     this.applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.visNodes || !this.visEdges) return;
+      if (!immediate && activeId === lastHighlightedNodeId) return;
+      lastHighlightedNodeId = activeId;
+
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
         this.highlightFrameId = null;
@@ -413,7 +418,7 @@ const engine: VisNetworkEngine = {
           return;
         }
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
-        const ease = 1 - Math.pow(1 - progress, 3);
+        const ease = easeHighlightTransition(progress);
         renderStep(ease);
         if (progress < 1) {
           this.highlightFrameId = requestAnimationFrame(step);

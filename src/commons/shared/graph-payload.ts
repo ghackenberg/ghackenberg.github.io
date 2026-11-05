@@ -211,7 +211,12 @@ function parseHexRgb(hex: string): [number, number, number] {
   return [r, g, b];
 }
 
-export const HIGHLIGHT_TRANSITION_MS = 180;
+export const HIGHLIGHT_TRANSITION_MS = 750;
+
+export function easeHighlightTransition(progress: number): number {
+  const clamped = Math.max(0, Math.min(1, progress));
+  return -(Math.cos(Math.PI * clamped) - 1) / 2;
+}
 
 export function blendHexColor(fgHex: string, bgHex: string, retention: number): string {
   const clamped = Math.max(0, Math.min(1, retention));

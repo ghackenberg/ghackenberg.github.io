@@ -2,6 +2,7 @@ import ForceGraph3D from '3d-force-graph';
 import {
   GRAPH_COLORS,
   HIGHLIGHT_TRANSITION_MS,
+  easeHighlightTransition,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
@@ -140,12 +141,17 @@ const engine: Force3DEngine = {
     const utmMedium = String(extraOptions.utmMedium || '3d-force');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
+    let lastHighlightedNodeId: string | null = null;
+
     const refreshHighlight = (immediate = false) => {
+      const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
+      if (!immediate && activeNodeId === lastHighlightedNodeId) return;
+      lastHighlightedNodeId = activeNodeId;
+
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
         this.highlightFrameId = null;
       }
-      const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
       const dists = activeNodeId && this.adjacency
         ? computeHopDistances(activeNodeId, this.adjacency)
         : null;
@@ -215,7 +221,7 @@ const engine: Force3DEngine = {
           return;
         }
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
-        const ease = 1 - Math.pow(1 - progress, 3);
+        const ease = easeHighlightTransition(progress);
         renderStep(ease);
         if (progress < 1) {
           this.highlightFrameId = requestAnimationFrame(step);

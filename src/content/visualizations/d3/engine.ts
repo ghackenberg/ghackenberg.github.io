@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
   HIGHLIGHT_TRANSITION_MS,
+  easeHighlightTransition,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
@@ -139,6 +140,7 @@ const engine: D3Engine = {
     let dragStartY = 0;
     let wasDragged = false;
     let isReorderingDom = false;
+    let lastHighlightedNodeId: string | null = null;
     this.hoveredNodeId = null;
     this.draggedNodeId = null;
 
@@ -150,6 +152,9 @@ const engine: D3Engine = {
     );
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
+      if (!immediate && activeId === lastHighlightedNodeId) return;
+      lastHighlightedNodeId = activeId;
+
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
         this.highlightFrameId = null;
@@ -234,7 +239,7 @@ const engine: D3Engine = {
       const startTime = performance.now();
       const step = (now: number) => {
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
-        const ease = 1 - Math.pow(1 - progress, 3);
+        const ease = easeHighlightTransition(progress);
         renderStep(ease);
         if (progress < 1) {
           this.highlightFrameId = requestAnimationFrame(step);
