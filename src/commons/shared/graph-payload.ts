@@ -177,6 +177,10 @@ export interface HopCurveParams {
 
 export const HOP_ATTENUATION_CONFIG = {
   maxHops: 4,
+  focusBudgetNodes: 16,
+  directHubSoftThreshold: 8,
+  hubDegreeBaseline: 4,
+  hubPenaltyWeight: 0.65,
   nodeColor: { max: 1.0, min: 0.20, exponent: 1.35 },
   nodeScale: { max: 2.10, min: 0.40, exponent: 1.25 },
   edgeColor: { max: 1.0, min: 0.18, exponent: 1.20 },
@@ -200,8 +204,11 @@ export function computeHopDistances(
   adjacency: Map<string, Set<string>>,
   maxHops: number = HOP_ATTENUATION_CONFIG.maxHops
 ): Map<string, number> {
-  const distances = new Map<string, number>();
-  distances.set(startNodeId, 0);
+  const rawHops = new Map<string, number>();
+  const shells: string[][] = Array.from({ length: maxHops + 1 }, () => []);
+  rawHops.set(startNodeId, 0);
+  shells[0].push(startNodeId);
+
   const queue: [string, number][] = [[startNodeId, 0]];
   let head = 0;
 
@@ -211,14 +218,84 @@ export function computeHopDistances(
     const neighbors = adjacency.get(current);
     if (!neighbors) continue;
     for (const neighbor of neighbors) {
-      if (!distances.has(neighbor)) {
+      if (!rawHops.has(neighbor)) {
         const nextDist = dist + 1;
-        distances.set(neighbor, nextDist);
+        rawHops.set(neighbor, nextDist);
+        shells[nextDist].push(neighbor);
         if (nextDist < maxHops) {
           queue.push([neighbor, nextDist]);
         }
       }
     }
+  }
+
+  const distances = new Map<string, number>();
+  const minPathCost = new Map<string, number>();
+  distances.set(startNodeId, 0);
+  minPathCost.set(startNodeId, 0);
+
+  const shell1 = shells[1] ?? [];
+  const shell1Count = shell1.length;
+  const crowdFactor = Math.max(
+    0,
+    Math.min(
+      1,
+      (shell1Count - HOP_ATTENUATION_CONFIG.directHubSoftThreshold) /
+        HOP_ATTENUATION_CONFIG.focusBudgetNodes
+    )
+  );
+  const dEff1 = 1 + 0.60 * crowdFactor;
+
+  for (const u of shell1) {
+    distances.set(u, dEff1);
+    minPathCost.set(u, dEff1);
+  }
+
+  let cumulativeBeforeShell = 1 + shell1Count;
+
+  for (let d = 2; d <= maxHops; d++) {
+    const shell = shells[d] ?? [];
+    if (shell.length === 0) continue;
+
+    const budgetDist =
+      maxHops * (cumulativeBeforeShell / HOP_ATTENUATION_CONFIG.focusBudgetNodes);
+
+    for (const v of shell) {
+      const neighbors = adjacency.get(v);
+      let bestParentCost = Infinity;
+      let sharedParents = 0;
+
+      if (neighbors) {
+        for (const u of neighbors) {
+          if (rawHops.get(u) !== d - 1) continue;
+          sharedParents++;
+          const degU = adjacency.get(u)?.size ?? 1;
+          const stepCost =
+            1 +
+            HOP_ATTENUATION_CONFIG.hubPenaltyWeight *
+              Math.log2(
+                Math.max(HOP_ATTENUATION_CONFIG.hubDegreeBaseline, degU) /
+                  HOP_ATTENUATION_CONFIG.hubDegreeBaseline
+              );
+          const candidateCost = (minPathCost.get(u) ?? (d - 1)) + stepCost;
+          if (candidateCost < bestParentCost) {
+            bestParentCost = candidateCost;
+          }
+        }
+      }
+
+      const parentCount = Math.max(1, sharedParents);
+      const resolvedBestCost = Number.isFinite(bestParentCost) ? bestParentCost : d;
+      const hubAdjustedDist = d + Math.max(0, resolvedBestCost - d) / parentCount;
+      const dEff = Math.max(hubAdjustedDist, budgetDist);
+
+      minPathCost.set(v, dEff);
+      if (dEff < maxHops) {
+        distances.set(v, dEff);
+      }
+    }
+
+    cumulativeBeforeShell += shell.length;
   }
 
   return distances;
@@ -315,9 +392,9 @@ export function getAttenuatedEdgeStyle(
 export function getNodeHopZIndex(hopDistance: number | undefined): number {
   const d = hopDistance ?? Infinity;
   if (d <= 0) return 40;
-  if (d === 1) return 30;
-  if (d === 2) return 20;
-  if (d === 3) return 10;
+  if (d < 1.8) return 30;
+  if (d < 2.8) return 20;
+  if (d < 3.8) return 10;
   return 1;
 }
 
@@ -329,8 +406,8 @@ export function getEdgeHopZIndex(
   const dTgt = targetDistance ?? Infinity;
   if (dSrc === 0 || dTgt === 0) return 30;
   const maxDist = Math.max(dSrc, dTgt);
-  if (maxDist <= 2) return 20;
-  if (maxDist === 3) return 10;
+  if (maxDist < 2.8) return 20;
+  if (maxDist < 3.8) return 10;
   return 1;
 }
 
