@@ -46,6 +46,23 @@ function stripFourBacktickBlocks(markdown: string): string {
   return result.join('\n');
 }
 
+function stripFencedAndInlineCode(markdown: string): string {
+  const lines = markdown.split(/\r?\n/);
+  const result: string[] = [];
+  let inFencedBlock = false;
+
+  for (const line of lines) {
+    if (line.trim().startsWith('```')) {
+      inFencedBlock = !inFencedBlock;
+      continue;
+    }
+    if (!inFencedBlock) {
+      result.push(line.replace(/`[^`]*`/g, ''));
+    }
+  }
+  return result.join('\n');
+}
+
 function countAnswerFirstWords(text: string): number {
   const cleaned = text
     .replace(CITATION_GROUP_REGEX, '')
@@ -264,9 +281,21 @@ function run(): void {
       }
     }
 
-    // 1a(iv) No --- horizontal rule immediately before ## References or ## Referenzen
+    // 1a(iv) No --- horizontal rule immediately before ## References or ## Referenzen, no inline <svg>, and no manual ## References / ## Referenzen heading
     if (/^---\s*\r?\n+#+\s*(?:References|Referenzen)\b/im.test(bodyWithoutFourTicks)) {
       violations.push(`[${relPath}] Contains forbidden "---" horizontal divider immediately before References section.`);
+    }
+
+    const proseWithoutCode = stripFencedAndInlineCode(bodyWithoutFourTicks);
+    if (/<svg\b/i.test(proseWithoutCode)) {
+      violations.push(
+        `[${relPath}] Contains forbidden inline <svg> element. Extract SVG diagrams into standalone .svg files in the post directory and embed via ![caption](./diagram.svg "title").`
+      );
+    }
+    if (/^##\s+(?:References|Referenzen)\b/im.test(proseWithoutCode)) {
+      violations.push(
+        `[${relPath}] Contains redundant manual "## References" / "## Referenzen" heading. src/pages/posts/[slug].astro renders <h2 id="references"> automatically from frontmatter references.`
+      );
     }
 
     // 1a(v) Every ```mermaid block has valid YAML frontmatter with distinct title and caption and zero raw HTML tags
@@ -310,7 +339,7 @@ function run(): void {
         const nodeCount = countMermaidNodes(diagramBody);
         if (nodeCount > MAX_MERMAID_NODES) {
           violations.push(
-            `[${relPath}] Mermaid block #${i + 1} ("${mTitle}") has ${nodeCount} distinct nodes, exceeding the maximum of ${MAX_MERMAID_NODES}. Escalate complex topologies to inline SVG.`
+            `[${relPath}] Mermaid block #${i + 1} ("${mTitle}") has ${nodeCount} distinct nodes, exceeding the maximum of ${MAX_MERMAID_NODES}. Escalate complex topologies to standalone SVG.`
           );
         }
       }

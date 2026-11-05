@@ -1,36 +1,38 @@
 ---
 name: svg-graphics
-description: Author, embed, and style deterministic inline SVG architecture diagrams, flowcharts, and technical schematics with adaptive light/dark themes.
+description: Author, embed, and style deterministic standalone SVG architecture diagrams, flowcharts, and technical schematics with adaptive light/dark themes.
 ---
 
 # SVG Graphics (Deterministic Vector Architecture & Schematics)
 
-This skill governs the creation, styling, and embedding of responsive, accessible inline SVG diagrams for architecture blueprints, execution pipelines, and technical schematics.
+This skill governs the creation, styling, and embedding of responsive, accessible standalone `.svg` diagrams for architecture blueprints, execution pipelines, and technical schematics.
 
-## 1. When to Use Inline SVG
-- **Deterministic Layouts**: Multi-tier architecture diagrams, decision trees, control loops, and pipelines exceeding 4–5 nodes where Mermaid scaling breaks or lacks brand styling.
-- **Visual Precision**: Exact coordinate control over node dimensions, connection paths, badges, icons, and micro-typography.
-- **Escalation Target**: Primary escalation target from `mermaid-diagrams` when layout complexity demands responsive typography and custom themes.
+## 1. Standalone `.svg` Files & Mental-Model Visual-First Rule
+- **Mandatory Standalone `.svg` Files (Zero Inline `<svg>` in Markdown)**: Save every SVG diagram as a standalone `.svg` file co-located in the content directory (e.g. `src/content/posts/<slug>/<diagram-name>.svg`) and embed it via standard Markdown image syntax with distinct caption and title:
+  `![Descriptive caption explaining the visual topology](./<diagram-name>.svg "Concise Distinct Diagram Title")`
+  Never embed raw `<svg>` tags directly inside `.md` or `.mdx` content files (blocked deterministically by `npm run lint:posts`).
+- **Mental-Model Visual-First Rule**: Diagrams must communicate topological structure at a glance using rich geometric primitives (`<circle>`, `<polygon>`, `<path>`, concentric rings, Bezier curves, dashed boundaries, and status icons) paired with **concise 1–3 word labels**. Never turn an SVG into a wall of multi-sentence text boxes.
+- **Escalation Target**: Primary escalation target from `mermaid-diagrams` when layout complexity exceeds 5 nodes or demands custom coordinate geometry and adaptive themes.
 
 ## 2. Standard ViewBox & Responsive Sizing
 Always configure explicit `viewBox` coordinates with responsive scaling:
-- **Aspect & Dimensions**:
-  - Wide Architecture Overview: `viewBox="0 0 880 380"` or `viewBox="0 0 880 440"`
-  - Standard Technical Schematic: `viewBox="0 0 800 420"`
-  - Compact Flow / Component Box: `viewBox="0 0 720 320"`
-- **Container Sizing**: Set `width="100%"`, `height="auto"`, and `role="img"` on `<svg>`. Always supply descriptive `aria-label` or `<title>` for accessibility.
-- **Safe Padding**: Keep at least 20px padding from canvas edges (e.g. min `x=24`, max `x=856` on 880-wide canvas) to prevent stroke clipping.
+- **Primary Standard — Square / Near-Square (`1:1` Aspect Ratio)**:
+  - **Standard Post & Article Illustration**: `viewBox="0 0 640 640"` (or near-square `viewBox="0 0 640 560"` / `viewBox="0 0 640 680"`).
+  - **Mobile + Desktop Ergonomics**: A `640x640` ($1:1$) canvas scales down by less than $2\times$ on portrait mobile viewports (`393px` wide) while scaling cleanly to 100% container width (`w-full h-auto max-w-full`) across both mobile and desktop viewports. Structure diagrams into **2–3 vertical tiers** or a **2×2 grid** rather than wide horizontal ribbons (`880x340`) that shrink text to illegible sizes on smartphones.
+  - **Slide-Deck Wide Exception**: Wide aspect ratios (`viewBox="0 0 800 420"` or `880 380`) should only be used when embedding inside landscape `16:9` presentation slides.
+- **Root `<svg>` Attributes**: Include `xmlns="http://www.w3.org/2000/svg"`, `width="100%"`, `height="auto"`, `role="img"`, and a descriptive `aria-label` on the root `<svg>`.
+- **Safe Padding**: Keep at least 20px–24px padding from canvas edges (e.g. min `x=24`, max `x=616` on a `640`-wide canvas) to prevent stroke clipping.
 
 ## 3. Typography & Font Hierarchy
 Use system sans-serif fonts consistent with site typography:
 - **Font Stack**: `font-family="Outfit, Inter, system-ui, -apple-system, sans-serif"`
 - **Hierarchy**:
-  - Section / Container Header: `font-size="14"`, `font-weight="700"`, letter-spacing `0.05em`, uppercase.
-  - Primary Node Title: `font-size="13"` or `14"`, `font-weight="600"`.
-  - Secondary Metadata / Subtitle: `font-size="11"` or `12"`, `font-weight="400"`.
-  - Badges / Status Pills: `font-size="10"`, `font-weight="600"`.
+  - Section / Container Header: `font-size="13"` or `"14"`, `font-weight="700"`, letter-spacing `0.05em`, uppercase.
+  - Primary Node Title: `font-size="12"` or `"13"`, `font-weight="600"` or `"700"`, 1–3 words maximum.
+  - Secondary Metadata / Subtitle: `font-size="10"` or `"11"`, `font-weight="400"`, concise metric or token name.
+  - Badges / Status Pills: `font-size="9"` or `"10"`, `font-weight="600"`.
 - **Text Alignment**: Use `text-anchor="middle"` for centered node labels, `dominant-baseline="central"` or `dominant-baseline="middle"` for vertical centering.
-- **Horizontal Character-Width Budget**: In `Outfit`/`Inter`, average proportional character advance is $\approx 0.56 \times \text{font-size}$ (up to $\approx 0.62 \times \text{font-size}$ for uppercase/bold or `letter-spacing`). Ensure every `<text>` element maintains at least `12px–14px` horizontal padding inside its enclosing `<rect>` container (`x_left + text_width <= rect_right - 12`). Never place multi-sentence paragraphs inside a single unwrapped `<text>` node; split long descriptions across stacked `<text>` lines. Enforced deterministically by `npm run lint:svgs`.
+- **Horizontal Character-Width Budget**: In `Outfit`/`Inter`, average proportional character advance is $\approx 0.56 \times \text{font-size}$ (up to $\approx 0.62 \times \text{font-size}$ for uppercase/bold or `letter-spacing`). Ensure every `<text>` element maintains at least `12px–14px` horizontal padding inside its enclosing `<rect>` container (`x_left + text_width <= rect_right - 12`). Never place multi-sentence paragraphs inside `<text>` nodes. Enforced deterministically by `npm run lint:svgs`.
 
 ## 4. Brand Color Tokens & Node Archetypes
 All colors and visual archetypes are centralized in `src/styles/graphics.css`. Every SVG imports these tokens to guarantee seamless dark/light theme switching:
@@ -41,7 +43,7 @@ All colors and visual archetypes are centralized in `src/styles/graphics.css`. E
 - **Red Archetype (`--svg-node-red-*`)**: Errors, violations, strict alerts, and terminal failure paths.
 
 ## 5. Centralized Theme Contract (`/styles/graphics.css`)
-Inline and standalone SVGs must import the centralized stylesheet. Hardcoded `#...` hex colors on diagram elements are strictly prohibited and enforced by `npm run lint:svgs`:
+Standalone SVGs must import the centralized stylesheet. Hardcoded `#...` hex colors on diagram elements are strictly prohibited and enforced by `npm run lint:svgs`:
 - **Centralized Import Block**: Embed a `<style>` block inside `<svg><defs>`:
   ```xml
   <defs>
@@ -62,10 +64,10 @@ Inline and standalone SVGs must import the centralized stylesheet. Hardcoded `#.
     - `fill="var(--svg-text-secondary)"`: Subtitles, descriptions, and labels.
     - `fill="var(--svg-text-muted)"`: Captions, timestamps, and metadata.
   - **Node Archetype Tokens**:
-    - Backgrounds: `var(--svg-node-blue-bg)`, `var(--svg-node-purple-bg)`, `var(--svg-node-amber-bg)`, `var(--svg-node-green-bg)`.
-    - Borders: `var(--svg-node-blue-border)`, `var(--svg-node-purple-border)`, `var(--svg-node-amber-border)`, `var(--svg-node-green-border)`.
-    - Titles: `var(--svg-node-blue-text)`, `var(--svg-node-purple-text)`, `var(--svg-node-amber-text)`, `var(--svg-node-green-text)`.
-    - Subtext / Bullet Points: `var(--svg-node-blue-subtext)`, `var(--svg-node-purple-subtext)`, `var(--svg-node-amber-subtext)`, `var(--svg-node-green-subtext)`.
+    - Backgrounds: `var(--svg-node-blue-bg)`, `var(--svg-node-purple-bg)`, `var(--svg-node-amber-bg)`, `var(--svg-node-green-bg)`, `var(--svg-node-red-bg)`.
+    - Borders: `var(--svg-node-blue-border)`, `var(--svg-node-purple-border)`, `var(--svg-node-amber-border)`, `var(--svg-node-green-border)`, `var(--svg-node-red-border)`.
+    - Titles: `var(--svg-node-blue-text)`, `var(--svg-node-purple-text)`, `var(--svg-node-amber-text)`, `var(--svg-node-green-text)`, `var(--svg-node-red-text)`.
+    - Subtext: `var(--svg-node-blue-subtext)`, `var(--svg-node-purple-subtext)`, `var(--svg-node-amber-subtext)`, `var(--svg-node-green-subtext)`, `var(--svg-node-red-subtext)`.
 
 ## 6. Markers, Connectors & Connective Elements
 - **Arrowhead Markers**: Define arrow markers in `<defs>` using archetype tokens:
@@ -78,12 +80,12 @@ Inline and standalone SVGs must import the centralized stylesheet. Hardcoded `#.
   - Use `<path>` with orthogonal routing (`d="M ... H ... V ..."` or smooth bezier curves `d="M ... C ..."`).
   - Stroke: `stroke="var(--svg-node-blue-border)"`, `stroke-width="1.5"` or `2`.
   - Dashed lines for fallback or asynchronous signals: `stroke-dasharray="4,3"`.
-  - Connective pills: Use archetype background and border tokens for "OK", "VERLETZUNG", or status chips.
+  - Connective pills: Use archetype background and border tokens for status chips.
 
 ## 7. Clean Output & Linting Checklist
-1. Import `@import url('/styles/graphics.css');` inside `<defs><style>`.
-2. Zero hardcoded hex colors (`#...`) in `fill` or `stroke` attributes on graphical elements (enforced by `npm run lint:svgs`).
-3. Text blocks use explicit `x` and `y` baseline coordinates without overlapping or exceeding their enclosing `<rect>` or root `viewBox` horizontal bounds (enforced by `npm run lint:svgs`).
-4. Node rectangles use rounded corners (`rx="6"` to `rx="10"`).
-5. All elements have distinct IDs or semantic class names.
-6. Run `npm run lint:svgs` to guarantee compliance.
+1. Save as a standalone `.svg` file and reference via `![Descriptive caption](./<name>.svg "Distinct Title")` (never raw inline `<svg>` in Markdown).
+2. Import `@import url('/styles/graphics.css');` inside `<defs><style>`.
+3. Zero hardcoded hex colors (`#...`) in `fill` or `stroke` attributes on graphical elements (enforced by `npm run lint:svgs`).
+4. Visual-first geometry with concise 1–3 word labels; text blocks use explicit `x` and `y` baseline coordinates without overflowing their enclosing `<rect>` or root `viewBox` horizontal bounds (enforced by `npm run lint:svgs`).
+5. Node rectangles use rounded corners (`rx="6"` to `rx="10"`).
+6. All elements have distinct IDs or semantic class names.

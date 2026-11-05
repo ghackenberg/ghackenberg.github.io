@@ -141,9 +141,7 @@ Das vollständige Visionsdokument liegt aktuell als **Version 0.1 (Initialer Dis
     style="color: #ffffff !important; text-decoration: none;"
     class="inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-bold !text-white !no-underline bg-brand-primary hover:bg-brand-primary/90 transition-all shadow-lg hover:shadow-brand-primary/25"
   >
-    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-    </svg>
+    <span aria-hidden="true" class="text-white">⬇</span>
     <span style="color: #ffffff !important;" class="!text-white">Vision Almtal 2035 (PDF herunterladen)</span>
   </a>
 </div>

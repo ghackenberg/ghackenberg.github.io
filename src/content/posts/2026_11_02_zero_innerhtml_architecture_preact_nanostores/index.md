@@ -1,0 +1,123 @@
+---
+title: "Zero-innerHTML Client Architecture: Declarative Preact Islands, Nanostores, and AST Security Gates"
+pubDate: 2026-11-02
+description: "How a 49-script client audit led us to deduplicate 7 inline ES5 catalog pre-filters, migrate 6 raw .innerHTML DOM sinks to Preact .tsx islands and Nanostores alongside server-side React Email, and enforce a Zero-innerHTML policy via ESLint and AST gates."
+inLanguage: "en"
+tags:
+  - software-architecture
+  - web-development
+  - typescript
+  - cybersecurity
+  - state-management
+image:
+  src: "./hero.jpg"
+  title: "Zero-innerHTML Client Architecture with Preact Islands and AST Security Gates"
+  description: "Architectural timber drafting table blueprint in the Grünau im Almtal office contrasting blocked imperative .innerHTML DOM sinks with verified Preact VDOM islands and Nanostores state atoms."
+references:
+  - id: "weinberger-2011-xss-sanitization"
+    type: "inproceedings"
+    authors:
+      - name: "Joel Weinberger"
+      - name: "Prateek Saxena"
+      - name: "Devdatta Akhawe"
+      - name: "Matthew Finifter"
+      - name: "Richard Shin"
+      - name: "Dawn Song"
+    title: "A Systematic Analysis of XSS Sanitization in Web Application Frameworks"
+    booktitle: "Computer Security – ESORICS 2011 (LNCS, vol. 6879)"
+    year: 2011
+    pages: "150--171"
+    doi: "10.1007/978-3-642-23822-2_9"
+    url: "https://doi.org/10.1007/978-3-642-23822-2_9"
+  - id: "miller-2021-islands-architecture"
+    type: "online"
+    authors:
+      - name: "Jason Miller"
+    title: "Islands Architecture"
+    year: 2020
+    siteName: "jasonformat.com"
+    url: "https://jasonformat.com/islands-architecture/"
+  - id: "west-2016-csp3"
+    type: "online"
+    authors:
+      - name: "Mike West"
+      - name: "Antonio Sartori"
+    title: "Content Security Policy Level 3"
+    year: 2023
+    siteName: "W3C Working Draft"
+    url: "https://www.w3.org/TR/CSP3/"
+---
+
+A **Zero-`innerHTML` Client Architecture** eliminates cross-site scripting (XSS) sinks and untyped string concatenation by replacing imperative `.innerHTML` mutations with declarative Preact virtual DOM islands [@miller-2021-islands-architecture], reactive Nanostores state atoms, and static ESLint and filesystem gates that mechanically forbid raw HTML DOM injection across all client scripts [@weinberger-2011-xss-sanitization; @west-2016-csp3].
+
+| Architectural Dimension | Imperative `.innerHTML` Templates | Full-Page SPA Hydration | Preact/Nanostores Islands + Zero-`innerHTML` AST Gate (`SYSTEM-009`) |
+| :--- | :--- | :--- | :--- |
+| **DOM XSS Surface** | High (manual `escapeHtml()` or unescaped template strings) [@weinberger-2011-xss-sanitization] | Low (automatic VDOM text escaping), but large runtime footprint | Zero raw HTML sinks; 100% contextual VDOM escaping + CI AST ban [@west-2016-csp3] |
+| **Client JS Payload** | 0 KB framework overhead, but high inline script duplication | 40–130+ KB global hydration bundle across static prose | ~3 KB Preact runtime scoped strictly to interactive islands [@miller-2021-islands-architecture] |
+| **State Synchronization** | Fragile `window.*` globals, `.className` overwrites, `cloneNode(true)` | Monolithic context providers and route-level re-renders | Tiny reactive `atom` and `map` stores in [`stores.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/stores.ts) |
+| **Enforcement Mechanism** | Code review discipline only (prone to regression) | Framework conventions (bypassable via `dangerouslySetInnerHTML`) | Unbypassable ESLint `no-restricted-properties` + full-tree regex gate |
+
+## What Structural Flaws Did Our 49-Script Client Audit Reveal?
+
+Auditing all 49 client-side scripts in [`SYSTEM-009`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/backlog/system/009-client-script-deduplication-and-preact-dom-hardening.md) exposed two systemic liabilities: 7 duplicated ~75-line ES5 `<script is:inline>` pre-filter blocks across catalog pages and 6 raw `.innerHTML` sinks—including unescaped node metadata in graph tooltips and 600 lines of string-concatenated SVG/HTML in our analytics Sankey inspector [@weinberger-2011-xss-sanitization].
+
+To eliminate copy-paste drift before touching the rendering layer, Phase 1 consolidated the 7 inline ES5 URL pre-filters (`?tag=`, `?q=`, `?page=`, `?lang=`, `?trl=`) into a single parameterized [`CatalogPreFilter.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/CatalogPreFilter.astro) component and unified 4 scattered clipboard scripts into [`clipboard.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/clipboard.ts) with `WeakMap` timer state and `astro:page-load` lifecycle support. We then replaced all 6 imperative `.innerHTML` sinks with typed Preact `.tsx` islands [@miller-2021-islands-architecture]:
+
+![Mental-model diagram contrasting blocked imperative innerHTML script sprawl with declarative Preact VDOM islands, Nanostores state atoms, and Dual-JSX routing](./zero-innerhtml-preact-islands.svg "Zero-innerHTML Preact Islands and AST Security Gate")
+
+## How Do Preact Islands Coexist with Server-Side React Email?
+
+We configure `"jsxImportSource": "preact"` globally in [`tsconfig.json`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/tsconfig.json) so interactive client `.tsx` islands compile into lightweight Preact virtual DOM nodes, while explicitly annotating our four server-side newsletter templates under `src/commons/server/email/` with `/** @jsxImportSource react */` compiler pragmas and synchronizing cross-island browser state through tiny, framework-agnostic Nanostores reactive state atoms [@miller-2021-islands-architecture].
+
+This Dual-JSX routing keeps server-only `@react-email/components` rendering untouched while allowing interactive browser components—such as [`pagination.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/pagination.tsx), [`vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx), and [`dev-sankey-view.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/dev-sankey-view.tsx)—to share a tiny ~3 KB VDOM runtime and centralized reactive state in [`stores.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/stores.ts):
+
+```tsx
+// src/commons/client/stores.ts & pagination.tsx (simplified)
+import { atom, map } from 'nanostores';
+import { render } from 'preact';
+
+export const $themeSetting = atom<'system' | 'light' | 'dark'>('system');
+export const $paginationPages = map<Record<string, number>>({});
+
+export function mountPaginationNumbers(
+  container: HTMLElement,
+  navId: string,
+  pages: (number | string)[],
+  currentPage: number
+): void {
+  render(
+    <>
+      {pages.map((p, i) =>
+        typeof p === 'string' ? <span key={i}>...</span> : <button key={p} data-goto={p}>{p}</button>
+      )}
+    </>,
+    container
+  );
+  $paginationPages.setKey(navId, currentPage);
+}
+```
+
+## Enforcing a Zero-innerHTML Policy via ESLint and AST Gates
+
+Because manual code review alone cannot prevent future contributors or autonomous AI agents from reintroducing `.innerHTML` mutations, we enforce a two-layer mechanical gate: AST-level ESLint restrictions in [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) coupled with a full-directory source scanner in [`validate-architecture.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-architecture.ts) that also inspects raw `<script is:inline>` blocks [@weinberger-2011-xss-sanitization; @west-2016-csp3].
+
+Because [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) simultaneously sets `'eslint-comments/no-use': ['error', { allow: [] }]`, neither human developers nor autonomous coding agents can suppress the ban with `eslint-disable` comments:
+
+```ts
+// eslint.config.ts — Unbypassable Zero-innerHTML AST Gate
+'no-restricted-properties': [
+  'error',
+  {
+    property: 'innerHTML',
+    message: 'Direct .innerHTML assignment is forbidden. Use Preact JSX (.tsx) or textContent/replaceChildren.',
+  },
+  { property: 'outerHTML', message: 'Direct .outerHTML assignment is forbidden.' },
+],
+'no-restricted-syntax': [
+  'error',
+  {
+    selector: "CallExpression[callee.property.name='insertAdjacentHTML']",
+    message: 'insertAdjacentHTML() is forbidden. Use Preact JSX (.tsx) or safe DOM APIs.',
+  },
+],
+```

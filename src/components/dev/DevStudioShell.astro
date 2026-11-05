@@ -398,6 +398,28 @@ const { currentPath } = Astro.props;
   </main>
 </div>
 
+<script is:inline>
+  // Synchronous 0ms bootstrap: remove shell inside nested iframes or immediately start loading preview iframe
+  (function () {
+    const root = document.getElementById('dev-studio-root');
+    if (window.self !== window.top) {
+      if (root) root.remove();
+      return;
+    }
+    const savedDevice = localStorage.getItem('gh_dev_studio_device') || 'full';
+    if (savedDevice === 'full') {
+      const fullIframe = document.getElementById('dev-iframe-full');
+      if (fullIframe) {
+        const basePath = fullIframe.getAttribute('data-src') || window.location.pathname;
+        const urlObj = new URL(basePath, window.location.origin);
+        if (window.location.search && !urlObj.search) urlObj.search = window.location.search;
+        if (window.location.hash && !urlObj.hash) urlObj.hash = window.location.hash;
+        fullIframe.src = urlObj.pathname + urlObj.search + urlObj.hash;
+      }
+    }
+  })();
+</script>
+
 <script>
   import { renderVisitorFlowSankey, type DevSankeyData } from '@commons/client/dev-sankey';
   import {

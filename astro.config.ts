@@ -50,6 +50,47 @@ const mimeTypes: Record<string, string> = {
   '.css': 'text/css',
 };
 
+function findColocatedMarkdownFiles(svgFilePath: string, contentDirNorm: string): string[] {
+  const resolvedSvg = path.resolve(svgFilePath);
+  const svgDir = path.dirname(resolvedSvg);
+  const svgFileName = path.basename(resolvedSvg);
+  const candidateDirs: string[] = [svgDir];
+
+  const parentDir = path.dirname(svgDir);
+  if (parentDir.replace(/\\/g, '/').startsWith(`${contentDirNorm}/`)) {
+    candidateDirs.push(parentDir);
+  }
+
+  const slidesDir = path.join(svgDir, 'slides');
+  if (fs.existsSync(slidesDir)) {
+    candidateDirs.push(slidesDir);
+  }
+
+  const allMdFiles: string[] = [];
+  for (const dir of candidateDirs) {
+    if (!fs.existsSync(dir)) continue;
+    try {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (entry.isFile() && /\.(md|mdx)$/i.test(entry.name)) {
+          allMdFiles.push(path.join(dir, entry.name));
+        }
+      }
+    } catch {
+      // ignore unreadable directory
+    }
+  }
+
+  const referencingMdFiles = allMdFiles.filter((mdFile) => {
+    try {
+      return fs.readFileSync(mdFile, 'utf8').includes(svgFileName);
+    } catch {
+      return false;
+    }
+  });
+
+  return referencingMdFiles.length > 0 ? referencingMdFiles : allMdFiles;
+}
+
 function copyContentAssets(): AstroIntegration {
   return {
     name: 'copy-content-assets',
@@ -59,14 +100,53 @@ function copyContentAssets(): AstroIntegration {
         const contentDir = path.resolve('src/content').replace(/\\/g, '/');
         server.watcher.add(pluginsDir);
         server.watcher.add(contentDir);
+
+        const pendingSvgPaths = new Set<string>();
+        let svgDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+        let pluginDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
         const invalidateContentCacheOnAssetOrPluginChange = (changedPath: string) => {
           const normPath = path.resolve(changedPath).replace(/\\/g, '/');
-          if (
-            normPath.startsWith(`${pluginsDir}/`) ||
-            (normPath.startsWith(`${contentDir}/`) && normPath.toLowerCase().endsWith('.svg'))
+          if (normPath.startsWith(`${pluginsDir}/`)) {
+            if (pluginDebounceTimer) {
+              clearTimeout(pluginDebounceTimer);
+            }
+            pluginDebounceTimer = setTimeout(() => {
+              pluginDebounceTimer = undefined;
+              void server.restart();
+            }, 300);
+          } else if (
+            normPath.startsWith(`${contentDir}/`) &&
+            normPath.toLowerCase().endsWith('.svg')
           ) {
-            fs.rmSync(path.resolve('.astro/data-store.json'), { force: true });
-            void server.restart();
+            pendingSvgPaths.add(path.resolve(changedPath));
+            if (svgDebounceTimer) {
+              clearTimeout(svgDebounceTimer);
+            }
+            svgDebounceTimer = setTimeout(() => {
+              svgDebounceTimer = undefined;
+              const affectedMdFiles = new Set<string>();
+              for (const svgPath of pendingSvgPaths) {
+                for (const mdFile of findColocatedMarkdownFiles(svgPath, contentDir)) {
+                  affectedMdFiles.add(mdFile);
+                }
+              }
+              pendingSvgPaths.clear();
+              buildImageIndex();
+
+              const now = new Date();
+              for (const mdFile of affectedMdFiles) {
+                try {
+                  if (fs.existsSync(mdFile)) {
+                    fs.utimesSync(mdFile, now, now);
+                    server.watcher.emit('unlink', mdFile);
+                    server.watcher.emit('add', mdFile);
+                  }
+                } catch {
+                  // ignore transient Windows file lock during touch
+                }
+              }
+            }, 150);
           }
         };
         server.watcher.on('change', invalidateContentCacheOnAssetOrPluginChange);
@@ -881,8 +961,22 @@ export default defineConfig({
   vite: {
     customLogger: viteLogger,
     plugins: [tailwindcss(), vitePreSlideCues()],
+    server: {
+      watch: {
+        awaitWriteFinish: {
+          stabilityThreshold: 150,
+          pollInterval: 50,
+        },
+      },
+    },
     optimizeDeps: {
       include: [
+        'preact',
+        'preact/hooks',
+        'preact/jsx-runtime',
+        'preact/jsx-dev-runtime',
+        'nanostores',
+        '@nanostores/preact',
         'reveal.js',
         'howler',
         'cytoscape',

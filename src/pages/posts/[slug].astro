@@ -138,7 +138,7 @@ const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.or
     )}
 
     <!-- Table of Contents for deep content exploration -->
-    {tocHeadings.length >= 3 && (
+    {rawTocHeadings.length >= 5 && (
       <nav class="mb-10 p-6 rounded-2xl glass-card border border-element-border/80 shadow-sm" aria-label={ui.tocTitle}>
         <div class="text-xs font-bold text-domain-posts uppercase tracking-wider mb-3 flex items-center gap-2">
           <span class="text-base">📑</span>
