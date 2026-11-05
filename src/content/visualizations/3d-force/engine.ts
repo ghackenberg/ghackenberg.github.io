@@ -31,6 +31,7 @@ export interface Force3DEngine {
   graph: ReturnType<typeof ForceGraph3D> | null;
   tooltipController: GraphTooltipController | null;
   hoveredNodeId: string | null;
+  draggedNodeId: string | null;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
   container: HTMLElement | null;
   currentLayout?: string;
@@ -66,6 +67,7 @@ const engine: Force3DEngine = {
   graph: null,
   tooltipController: null,
   hoveredNodeId: null,
+  draggedNodeId: null,
   mouseMoveHandler: null,
   container: null,
   lastOrderSignature: '',
@@ -79,6 +81,8 @@ const engine: Force3DEngine = {
     this.container = container;
     this.currentLayout = undefined;
     this.isLight = isLight;
+    this.hoveredNodeId = null;
+    this.draggedNodeId = null;
     this.lastOrderSignature = '';
     this.lastDraggedAt = 0;
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -115,6 +119,15 @@ const engine: Force3DEngine = {
     const utmMedium = String(extraOptions.utmMedium || '3d-force');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
+    const refreshHighlight = () => {
+      if (this.graph) {
+        this.graph
+          .nodeVal(this.graph.nodeVal())
+          .linkColor(this.graph.linkColor())
+          .linkWidth(this.graph.linkWidth());
+      }
+    };
+
     const tokens = getThemeTokens(isLight);
     const initialWidth = container.clientWidth || 800;
     const initialHeight = container.clientHeight || 500;
@@ -127,7 +140,8 @@ const engine: Force3DEngine = {
       .nodeLabel(() => '')
       .nodeVal((n: Force3DNode) => {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-        return n.id === this.hoveredNodeId
+        const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
+        return n.id === activeNodeId
           ? n.val * Math.pow(currentTokens.nodeHoverScale, 3)
           : n.val;
       })
@@ -136,15 +150,21 @@ const engine: Force3DEngine = {
       .linkColor((l: Force3DLink) => {
         const currentIsLight = Boolean(this.isLight);
         const currentTokens = getGraphStyleTokens(currentIsLight);
-        return isLinkConnected(l, this.hoveredNodeId) ? currentTokens.edgeHoverColor : currentTokens.edgeColor;
+        const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
+        return isLinkConnected(l, activeNodeId) ? currentTokens.edgeHoverColor : currentTokens.edgeColor;
       })
       .linkWidth((l: Force3DLink) => {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-        return isLinkConnected(l, this.hoveredNodeId) ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth;
+        const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
+        return isLinkConnected(l, activeNodeId) ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth;
       })
       .onNodeHover((node: Force3DNode | null) => {
         const hovered = node;
         this.hoveredNodeId = hovered ? hovered.id : null;
+        if (this.draggedNodeId) {
+          this.tooltipController?.hide();
+          return;
+        }
         container.style.cursor = hovered ? 'pointer' : 'default';
 
         if (hovered) {
@@ -166,16 +186,15 @@ const engine: Force3DEngine = {
           this.tooltipController?.hide();
         }
 
-        if (this.graph) {
-          this.graph
-            .nodeVal(this.graph.nodeVal())
-            .linkColor(this.graph.linkColor())
-            .linkWidth(this.graph.linkWidth());
-        }
+        refreshHighlight();
       })
       .onNodeDrag((node: Force3DNode) => {
         this.lastDraggedAt = performance.now();
         this.tooltipController?.hide();
+        if (this.draggedNodeId !== node.id) {
+          this.draggedNodeId = node.id;
+          refreshHighlight();
+        }
         if (this.recenterTimeout) {
           clearTimeout(this.recenterTimeout);
           this.recenterTimeout = null;
@@ -204,6 +223,10 @@ const engine: Force3DEngine = {
       })
       .onNodeDragEnd((node: Force3DNode) => {
         this.lastDraggedAt = performance.now();
+        this.draggedNodeId = null;
+        this.hoveredNodeId = null;
+        container.style.cursor = 'default';
+        refreshHighlight();
         if (this.currentLayout === 'force') {
           node.fx = null;
           node.fy = null;
@@ -528,6 +551,7 @@ const engine: Force3DEngine = {
       this.tooltipController = null;
     }
     this.hoveredNodeId = null;
+    this.draggedNodeId = null;
     if (this.graph) {
       this.graph.pauseAnimation();
       this.graph.graphData({ nodes: [], links: [] });

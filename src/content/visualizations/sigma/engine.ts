@@ -200,11 +200,36 @@ const engine: SigmaEngine = {
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
     };
 
+    let hoveredNodeId: string | null = null;
+
+    const applyHighlight = (activeNodeId: string | null) => {
+      if (!this.graph || !this.sigma) return;
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const connectedEdges = activeNodeId ? new Set(this.graph.edges(activeNodeId)) : null;
+
+      this.graph.forEachNode(nId => {
+        this.graph?.setNodeAttribute(
+          nId,
+          'size',
+          nId === activeNodeId ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale : SIGMA_BASE_NODE_SIZE
+        );
+      });
+
+      this.graph.forEachEdge(edge => {
+        const isConnected = connectedEdges ? connectedEdges.has(edge) : false;
+        this.graph?.setEdgeAttribute(edge, 'color', isConnected ? currentTokens.edgeHoverColor : currentTokens.edgeColor);
+        this.graph?.setEdgeAttribute(edge, 'size', isConnected ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth);
+      });
+      this.sigma.refresh();
+    };
+
     this.sigma.on('downNode', (e) => {
       draggedNode = e.node;
       dragStartViewport = { x: e.event.x, y: e.event.y };
       wasDragged = false;
       this.tooltipController?.hide();
+      applyHighlight(e.node);
 
       if (this.sigma && !this.sigma.getCustomBBox()) {
         this.sigma.setCustomBBox(this.sigma.getBBox());
@@ -260,6 +285,9 @@ const engine: SigmaEngine = {
       }
 
       if (wasDragged) {
+        hoveredNodeId = null;
+        container.style.cursor = 'default';
+        applyHighlight(null);
         this.lastDraggedAt = performance.now();
         if (this.currentLayout === 'force' && this.graph) {
           const startingPos: Record<string, { x: number; y: number }> = {};
@@ -306,6 +334,8 @@ const engine: SigmaEngine = {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
           this.animateTo(targets, 400, undefined, false);
         }
+      } else {
+        applyHighlight(hoveredNodeId);
       }
     });
 
@@ -331,8 +361,6 @@ const engine: SigmaEngine = {
         window.location.href = targetUrl.pathname + targetUrl.search;
       }
     });
-
-    let hoveredNodeId: string | null = null;
 
     this.sigma.on('enterNode', ({ node }: { node: string }) => {
       if (draggedNode !== null) return;
@@ -363,45 +391,16 @@ const engine: SigmaEngine = {
           viewportPos.y
         );
 
-        const currentTokens = getGraphStyleTokens(currentIsLight);
-        const connectedEdges = new Set(this.graph.edges(node));
-
-        this.graph.forEachNode(nId => {
-          this.graph?.setNodeAttribute(
-            nId,
-            'size',
-            nId === node ? SIGMA_BASE_NODE_SIZE * currentTokens.nodeHoverScale : SIGMA_BASE_NODE_SIZE
-          );
-        });
-
-        this.graph.forEachEdge(edge => {
-          const isConnected = connectedEdges.has(edge);
-          this.graph?.setEdgeAttribute(edge, 'color', isConnected ? currentTokens.edgeHoverColor : currentTokens.edgeColor);
-          this.graph?.setEdgeAttribute(edge, 'size', isConnected ? currentTokens.edgeHoverWidth : currentTokens.edgeWidth);
-        });
-        this.sigma.refresh();
+        applyHighlight(node);
       }
     });
 
     this.sigma.on('leaveNode', () => {
       hoveredNodeId = null;
-      if (draggedNode === null) {
-        container.style.cursor = 'default';
-      }
       this.tooltipController?.hide();
-
-      if (this.graph && this.sigma) {
-        const currentIsLight = Boolean(this.isLight);
-        const currentTokens = getGraphStyleTokens(currentIsLight);
-        this.graph.forEachNode(nId => {
-          this.graph?.setNodeAttribute(nId, 'size', SIGMA_BASE_NODE_SIZE);
-        });
-        this.graph.forEachEdge(edge => {
-          this.graph?.setEdgeAttribute(edge, 'color', currentTokens.edgeColor);
-          this.graph?.setEdgeAttribute(edge, 'size', currentTokens.edgeWidth);
-        });
-        this.sigma.refresh();
-      }
+      if (draggedNode !== null) return;
+      container.style.cursor = 'default';
+      applyHighlight(null);
     });
 
     this.mouseMoveHandler = (e: MouseEvent) => {

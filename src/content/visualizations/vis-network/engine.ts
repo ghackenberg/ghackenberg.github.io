@@ -299,6 +299,7 @@ const engine: VisNetworkEngine = {
         if (!this.isDragging && (!params.nodes || params.nodes.length === 0)) return;
         this.isDragging = false;
         this.lastDraggedAt = performance.now();
+        this.network?.unselectAll();
 
         if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
@@ -327,6 +328,7 @@ const engine: VisNetworkEngine = {
     }
 
     this.network.on("click", (params: { nodes: string[] }) => {
+      this.network?.unselectAll();
       if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
       if (params.nodes.length > 0) {
         const targetPath = params.nodes[0];

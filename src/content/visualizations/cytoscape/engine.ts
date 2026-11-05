@@ -73,6 +73,7 @@ const engine: CytoscapeEngine = {
       userZoomingEnabled: false,
       userPanningEnabled: false,
       boxSelectionEnabled: false,
+      autounselectify: true,
       elements: payload.cytoscape.elements,
       style: [
         {
@@ -236,6 +237,10 @@ const engine: CytoscapeEngine = {
       grabStartPos = { x: pos.x, y: pos.y };
       wasDragged = false;
       this.tooltipController?.hide();
+      this.cy?.elements().removeClass('hovered hovered-edge');
+      node.addClass('hovered');
+      node.connectedEdges().addClass('hovered-edge');
+      container.style.cursor = 'grabbing';
 
       if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
@@ -306,6 +311,8 @@ const engine: CytoscapeEngine = {
       grabbedNodeId = null;
 
       if (wasDragged) {
+        this.cy?.elements().removeClass('hovered hovered-edge');
+        container.style.cursor = 'default';
         this.lastDraggedAt = performance.now();
         if (this.currentLayout === 'force' && this.dragSimulation) {
           const sn = simNodeMap.get(node.id());
@@ -331,6 +338,7 @@ const engine: CytoscapeEngine = {
           this.animateTo(targets, 400, undefined, false, false);
         }
       } else {
+        container.style.cursor = 'pointer';
         settleFramesRemaining = 0;
       }
     });
@@ -408,6 +416,7 @@ const engine: CytoscapeEngine = {
     });
 
     this.cy.on('mouseout', 'node', (evt: EventObjectNode) => {
+      if (grabbedNodeId !== null) return;
       container.style.cursor = 'default';
       const node = evt.target;
       node.removeClass('hovered');
