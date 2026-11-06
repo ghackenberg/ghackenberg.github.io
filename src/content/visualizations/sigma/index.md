@@ -63,7 +63,7 @@ Sigma.js eliminates rendering bottlenecks through three hardware-accelerated tec
 Sigma.js is the optimal architectural choice under specific network requirements:
 - **Large-Scale Graphs**: Ideal for medium-to-massive networks (1,000+ nodes) where frame rate and high throughput are paramount.
 - **Minimal CPU Overhead**: Offloads $n$-body calculations to secondary threads rather than bogging down browser interaction.
-- **Complementary Tooling**: Use [D3.js](/visualizations/d3/) for fine-grained SVG typography, [Cytoscape.js](/visualizations/cytoscape/) for compound hierarchies and shortest-path analytics, [Vis-Network](/visualizations/vis-network/) for tactile 2D canvas springs under 1,000 nodes, or [3D Force-Graph](/visualizations/3d-force/) for volumetric Three.js rendering.
+- **Complementary Tooling**: Use [D3.js](/visualizations/d3/) for fine-grained SVG typography, [Cytoscape.js](/visualizations/cytoscape/) for compound hierarchies and shortest-path analytics, [Vis-Network](/visualizations/vis-network/) for tactile 2D canvas springs under 1,000 nodes, or [3D Force-Graph](/visualizations/3d-force-graph/) for volumetric Three.js rendering.
 
 ### Reference Documentation
 

@@ -63,7 +63,7 @@ Vis.js calculates dynamic physical equilibrium through complementary forces:
 Vis.js provides clear design advantages for targeted network sizes:
 - **Tactile Interaction**: Supports fluid drag-and-drop, node pinning, and elastic cluster movement.
 - **Crisp Typography**: Renders high-fidelity vector text and custom pill badges cleanly on HTML5 canvas.
-- **Ideal Scale**: Perfectly optimized for networks of 50 to 1,000 nodes where individual label readability is paramount, complementing [Cytoscape.js](/visualizations/cytoscape/), [Sigma.js](/visualizations/sigma/), [D3.js](/visualizations/d3/), and [3D Force-Graph](/visualizations/3d-force/).
+- **Ideal Scale**: Perfectly optimized for networks of 50 to 1,000 nodes where individual label readability is paramount, complementing [Cytoscape.js](/visualizations/cytoscape/), [Sigma.js](/visualizations/sigma/), [D3.js](/visualizations/d3/), and [3D Force-Graph](/visualizations/3d-force-graph/).
 
 ### Reference Documentation
 

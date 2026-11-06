@@ -589,7 +589,7 @@ function getSemanticScriptPath(chunkInfo: { name: string; facadeModuleId?: strin
   }
 
   // 3. Code-split visualization engines -> scripts/visualizations/
-  const visEngines = ['3d-force', 'cytoscape', 'd3', 'sigma', 'vis-network', 'vis-data', 'graphology'];
+  const visEngines = ['3d-force-graph', '3d-force', 'cytoscape', 'd3', 'sigma', 'vis-network', 'vis-data', 'graphology'];
   const isVisEngine = visEngines.some((eng) => cleanName.toLowerCase().includes(eng) || cleanFacade.toLowerCase().includes(eng));
   if (isVisEngine || cleanFacade.includes('commons/visualizations') || cleanFacade.includes('components/visualizations/engines')) {
     const matchedEngine = visEngines.find((eng) => cleanName.toLowerCase().includes(eng) || cleanFacade.toLowerCase().includes(eng));
@@ -843,6 +843,9 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
 export default defineConfig({
   site: 'https://hackenberg.tech',
   trailingSlash: 'always',
+  redirects: {
+    '/visualizations/3d-force/': '/visualizations/3d-force-graph/',
+  },
   build: {
     assets: 'assets',
   },
@@ -855,7 +858,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/print/') && !page.includes('/_internal/'),
+      filter: (page) => !page.includes('/print/') && !page.includes('/_internal/') && !page.endsWith('/visualizations/3d-force/'),
       serialize(item) {
         try {
           const urlObj = new URL(item.url);

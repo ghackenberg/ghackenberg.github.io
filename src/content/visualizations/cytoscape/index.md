@@ -67,7 +67,7 @@ Unlike standard planar graph renderers, Cytoscape natively supports compound nod
 Cytoscape.js is the optimal tool when formal graph analysis and hierarchical structures take priority:
 - **Domain Modeling**: Ideal for software architecture dependencies, taxonomies, and entity ontologies.
 - **Hierarchical Trees**: Seamless rendering of directed acyclic graphs via Dagre integration.
-- **Complementary Tooling**: Use [Sigma.js](/visualizations/sigma/) when node counts exceed 5,000, [D3.js](/visualizations/d3/) for custom SVG document styling, [Vis-Network](/visualizations/vis-network/) for tactile 2D spring damping, or [3D Force-Graph](/visualizations/3d-force/) for volumetric WebGL exploration.
+- **Complementary Tooling**: Use [Sigma.js](/visualizations/sigma/) when node counts exceed 5,000, [D3.js](/visualizations/d3/) for custom SVG document styling, [Vis-Network](/visualizations/vis-network/) for tactile 2D spring damping, or [3D Force-Graph](/visualizations/3d-force-graph/) for volumetric WebGL exploration.
 
 ### Reference Documentation
 

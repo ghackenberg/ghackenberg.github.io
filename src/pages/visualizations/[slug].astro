@@ -66,7 +66,7 @@ const engineSwitcherItems = [
   { id: "sigma", label: "Sigma.js", badge: "WebGL 2.0" },
   { id: "d3", label: "D3.js", badge: "SVG DOM" },
   { id: "vis-network", label: "Vis-Network", badge: "Spring 2D" },
-  { id: "3d-force", label: "3D Force", badge: "Three.js" },
+  { id: "3d-force-graph", label: "3D Force", badge: "Three.js" },
 ];
 
 const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
@@ -291,6 +291,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       d3?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
       sigma?: { nodes: (VisNetworkNode & { label: string; x: number; y: number; color: string; rawSize?: number })[]; edges: { id: string; source: string; target: string; color?: string }[] };
       '3d-force'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
+      '3d-force-graph'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
       'vis-network'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
     }
 
@@ -356,8 +357,10 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             case 'sigma':
               engineModule = await import('../../content/visualizations/sigma/engine.ts');
               break;
+            case '3d-force-graph':
             case '3d-force':
-              engineModule = await import('../../content/visualizations/3d-force/engine.ts');
+              engineModule = await import('../../content/visualizations/3d-force-graph/engine.ts');
+              // canonical 3d-force-graph engine
               break;
             case 'vis-network':
               engineModule = await import('../../content/visualizations/vis-network/engine.ts');

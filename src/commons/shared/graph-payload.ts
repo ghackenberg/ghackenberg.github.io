@@ -79,6 +79,7 @@ export interface EnginePayloads {
     nodes: SigmaNode[];
     edges: SigmaEdge[];
   };
+  '3d-force-graph': { nodes: GraphNodePayload[]; connections: GraphConnectionPayload[] };
   '3d-force': {
     nodes: GraphNodePayload[];
     connections: GraphConnectionPayload[];
@@ -933,6 +934,7 @@ export async function buildGraphPayload(options: {
     cytoscape: { elements: cytoscapeElements },
     d3: { nodes: d3Nodes, connections: visConnections },
     sigma: { nodes: sigmaNodes, edges: sigmaEdges },
-    '3d-force': { nodes: d3Nodes, connections: visConnections }
+  '3d-force': { nodes: d3Nodes, connections: visConnections },
+    '3d-force-graph': { nodes: d3Nodes, connections: visConnections }
   };
 }

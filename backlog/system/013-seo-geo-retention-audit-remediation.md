@@ -59,7 +59,7 @@ Die Remediation gliedert sich in fünf klar abgegrenzte, inkrementell verifizier
      - [`src/content/visualizations/sigma.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/sigma.md) (`/visualizations/sigma/`)
      - [`src/content/visualizations/d3.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/d3.md) (`/visualizations/d3/`)
      - [`src/content/visualizations/vis-network.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/vis-network.md) (`/visualizations/vis-network/`)
-     - [`src/content/visualizations/3d-force.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/3d-force.md) (`/visualizations/3d-force/`)
+     - [`src/content/visualizations/3d-force-graph/index.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/3d-force-graph/index.md) (`/visualizations/3d-force-graph/`, kanonische URL-Ausrichtung auf das npm-Paket `3d-force-graph` inkl. permanentem GitHub-Pages-Redirect von `/visualizations/3d-force/` auf `/visualizations/3d-force-graph/` in [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts))
    - Gezielte Abdeckung der nachgefragten Suchbegriffe (`Cytoscape.js`, `Sigma.js`, `D3-Force`, `Vis-Network`, `3D Force Graph`, `Interactive Knowledge Graph Demo`, `WebGL vs. Canvas Benchmark`).
 
 2. **Above-the-Fold Engine-Switcher & Architektur-Linkleiste in [`src/pages/visualizations/[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/visualizations/[slug].astro):**

@@ -63,7 +63,7 @@ export interface Force3DEngine {
   animationFrameId: number | null;
   highlightFrameId: number | null;
   applyHighlight?(immediate?: boolean): void;
-  init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
+  init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number, excludeNodeId?: string, zoomToFitAfter?: boolean): void;
@@ -94,13 +94,14 @@ const engine: Force3DEngine = {
   animationFrameId: null,
   highlightFrameId: null,
 
-  async init(container: HTMLElement, payload: { '3d-force': { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
+  async init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.container = container;
     this.currentLayout = undefined;
     this.isLight = isLight;
     this.hoveredNodeId = null;
     this.draggedNodeId = null;
-    this.adjacency = buildGraphAdjacency(payload['3d-force'].connections);
+    const engineData = payload['3d-force-graph'] || payload['3d-force'] || { nodes: [], connections: [] };
+    this.adjacency = buildGraphAdjacency(engineData.connections);
     this.activeDistances = null;
     this.lastOrderSignature = '';
     this.lastDraggedAt = 0;
@@ -108,7 +109,7 @@ const engine: Force3DEngine = {
     const initialStyleTokens = getGraphStyleTokens(isLight);
     
     // Cache nodes and connections with full rich metadata
-    this.nodes = payload['3d-force'].nodes.map((n) => ({
+    this.nodes = engineData.nodes.map((n) => ({
       ...n,
       val: 6,
       displayVal: 6,
@@ -116,7 +117,7 @@ const engine: Force3DEngine = {
       displayColor: colors[n.group] || colors[0]
     }));
 
-    this.links = payload['3d-force'].connections.map((c) => ({
+    this.links = engineData.connections.map((c) => ({
       source: c.sourceId,
       target: c.targetId,
       displayColor: initialStyleTokens.edgeColor,
@@ -124,7 +125,7 @@ const engine: Force3DEngine = {
     }));
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
-    const utmMedium = String(extraOptions.utmMedium || '3d-force');
+    const utmMedium = String(extraOptions.utmMedium || '3d-force-graph');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     let lastHighlightedNodeId: string | null = null;

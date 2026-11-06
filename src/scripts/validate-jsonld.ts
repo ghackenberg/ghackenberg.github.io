@@ -304,6 +304,7 @@ for (const fullPath of auditedFiles) {
   const canonicalUrl = `https://hackenberg.tech/${relPath.replace(/\/index\.html$/, '/').replace(/^index\.html$/, '')}`;
 
   const htmlContent = fs.readFileSync(fullPath, 'utf8');
+  if (/<meta[^>]+http-equiv=["']refresh["']/i.test(htmlContent)) continue;
   const $ = cheerio.load(htmlContent);
   const scriptTags = $('script[type="application/ld+json"]');
 

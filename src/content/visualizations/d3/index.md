@@ -67,7 +67,7 @@ Because D3 manages native SVG elements directly in the browser DOM, each entity 
 D3.js is the preferred choice when graphical fidelity and precise typographic control outweigh raw entity counts:
 - **Publication Graphics**: Ideal for didactic figures, exportable vector diagrams, and technical case studies.
 - **DOM Interactivity**: Seamless integration with SVG filters, clip-paths, and CSS pseudo-classes.
-- **Complementary Tooling**: Use [Cytoscape.js](/visualizations/cytoscape/) for formal graph analytics, [Sigma.js](/visualizations/sigma/) for large-scale WebGL graphs exceeding 1,000 nodes, [Vis-Network](/visualizations/vis-network/) for HTML5 Canvas spring physics, or [3D Force-Graph](/visualizations/3d-force/) for 3D Three.js topologies.
+- **Complementary Tooling**: Use [Cytoscape.js](/visualizations/cytoscape/) for formal graph analytics, [Sigma.js](/visualizations/sigma/) for large-scale WebGL graphs exceeding 1,000 nodes, [Vis-Network](/visualizations/vis-network/) for HTML5 Canvas spring physics, or [3D Force-Graph](/visualizations/3d-force-graph/) for 3D Three.js topologies.
 
 ### Reference Documentation
 

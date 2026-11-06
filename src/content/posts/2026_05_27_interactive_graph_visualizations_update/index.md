@@ -261,7 +261,7 @@ If you are interested in advanced browser graphics and spatial shaders beyond gr
 Explore each engine live in action on the website:
 - [Sigma.js: ForceAtlas2 Network Graph](/visualizations/sigma/) – High-performance WebGL graph layout with web workers.
 - [Vis.js: Physics-Based Network Graph](/visualizations/vis-network/) – Smooth physics-driven 2D particle network on HTML5 canvas.
-- [3D Force: Volumetric Network Graph](/visualizations/3d-force/) – Immersive spatial exploration built on Three.js & WebGL.
+- [3D Force-Graph: Volumetric Network Graph](/visualizations/3d-force-graph/) – Immersive spatial exploration built on Three.js & WebGL.
 - [Cytoscape.js: Semantic Network Graph](/visualizations/cytoscape/) – Versatile graph-theoretical layouts.
 - [D3.js: Force-Directed Network Graph](/visualizations/d3/) – Physics-based force layout with delicate vector typography.
 
