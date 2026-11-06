@@ -1,5 +1,5 @@
 ---
-title: Schema.org ImageObject Knowledge Graphs & Build-Time Asset Governance in Astro
+title: "Schema.org ImageObject Graphs & Asset Governance in Astro"
 pubDate: 2026-10-16
 description: How we engineered a zero-fallback Schema.org ImageObject JSON-LD compiler, XML image sitemap enforcer, and 5-stage CI asset integrity validator in Astro.
 inLanguage: en
@@ -126,7 +126,7 @@ flowchart LR
   ImgObj -->|"license & acquireLicensePage"| Legal["Impressum Legal Endpoints"]
 ```
 
-To resolve the tension between immutable, content-hashed physical file URLs (`contentUrl`) and stable semantic graph URIs (`@id`), our architecture separates **physical storage addressing** from **logical entity identity**. Every visual artifact on `hackenberg.tech` is compiled into a first-class `ImageObject` [@schema-org-2024-imageobject] node whose `@id` is anchored deterministically to the canonical page URL and a hash-stripped semantic slug.
+To resolve the tension between immutable, content-hashed physical file URLs (`contentUrl`) and stable semantic graph URIs (`@id`), our architecture separates **physical storage addressing** from **logical entity identity**—an approach that directly underpins our [Single-Root JSON-LD 1.1 Knowledge Graph Validator](/posts/2026_10_25_single_root_json_ld_knowledge_graph_validator/), [Zero-Artifact Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/), [Three-Band Figure Cards and Adaptive SVG Color Governance](/posts/2026_11_07_three_band_figures_adaptive_svg_color_governance/), and [Astro Content-Layer Merkle Asset Digesting](/posts/2026_11_08_astro_content_layer_merkle_asset_digesting/). Every visual artifact on `hackenberg.tech` is compiled into a first-class `ImageObject` [@schema-org-2024-imageobject] node whose `@id` is anchored deterministically to the canonical page URL and a hash-stripped semantic slug.
 
 ## How Does Our Dual-Gate Zero-Fallback Pipeline Enforce Distinct Image Titles and Captions?
 

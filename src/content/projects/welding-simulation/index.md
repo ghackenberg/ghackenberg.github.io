@@ -1,5 +1,5 @@
 ---
-title: "Welding Simulation"
+title: "Welding Simulation: 3D Thermal Seam Modeling"
 trl: 4
 description: "Interactive physics-based simulation and 3D visualization tool for thermal welding processes and automated weld seam geometry estimation."
 tags: ["computer-graphics", "java", "manufacturing-engineering", "open-source", "simulation", "systems-engineering", "thermal-engineering"]

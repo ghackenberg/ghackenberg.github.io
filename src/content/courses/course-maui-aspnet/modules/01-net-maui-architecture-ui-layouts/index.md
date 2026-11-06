@@ -2,7 +2,7 @@
 title: ".NET MAUI Architecture & UI Layouts"
 courseId: "course-maui-aspnet"
 moduleNumber: "01"
-description: "Multi-platform client lifecycle, XAML layouts, flex controls, and platform-specific adaptations."
+description: "Cross-platform mobile and desktop app architecture with .NET MAUI: application lifecycle, responsive XAML layouts, FlexLayout, and platform handlers."
 order: 1
 topics:
   - "Project Structure & Multi-Targeting"

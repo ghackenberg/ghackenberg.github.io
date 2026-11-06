@@ -2,7 +2,7 @@
 title: "Echtzeitdatenbank Cloud Firestore"
 courseId: "kurs-typescript-firebase"
 moduleNumber: "04"
-description: "Collections, Documents, CRUD-Operationen, Subcollections und reaktive onSnapshot-Echtzeit-Listener."
+description: "Dokumentenbasierte Datenhaltung mit Cloud Firestore: Datenmodellierung in Collections, typsichere CRUD-Transaktionen, onSnapshot-Listener und Security Rules."
 order: 4
 topics:
   - "NoSQL-Datenmodellierung vs. RDBMS"

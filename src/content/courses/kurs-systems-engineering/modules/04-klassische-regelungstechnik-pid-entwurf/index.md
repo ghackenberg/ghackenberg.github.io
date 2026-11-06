@@ -2,7 +2,7 @@
 title: "Klassische Regelungstechnik & PID-Entwurf"
 courseId: "kurs-systems-engineering"
 moduleNumber: "04"
-description: "Rückkopplungsschleifen, Führungs- und Störverhalten, PID-Parametrierung und Anti-Windup."
+description: "Entwurf geschlossener Regelkreise: Führungs- und Störübertragungsfunktion, Charakteristik von P-, I- und D-Gliedern, Einstellregeln und Anti-Windup."
 order: 4
 topics:
   - "Offener vs. geschlossener Regelkreis"

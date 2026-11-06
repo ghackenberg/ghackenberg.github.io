@@ -1,6 +1,6 @@
 ---
-title: "D3.js: Force-Directed Network Graph"
-description: "Inspect interconnected topics and content nodes through a crisp, vector-based force simulation powered by D3.js and velocity Verlet numerical integration."
+title: "D3.js Force-Directed Network Graph Visualization"
+description: "Interactive D3.js force-directed network graph demo using d3-force Velocity Verlet integration, SVG vector typography, and Barnes-Hut quadtree physics."
 image:
   src: "./d3.png"
   title: "D3 Physics-Based Force Graph"
@@ -67,8 +67,8 @@ Because D3 manages native SVG elements directly in the browser DOM, each entity 
 D3.js is the preferred choice when graphical fidelity and precise typographic control outweigh raw entity counts:
 - **Publication Graphics**: Ideal for didactic figures, exportable vector diagrams, and technical case studies.
 - **DOM Interactivity**: Seamless integration with SVG filters, clip-paths, and CSS pseudo-classes.
-- **Complementary Tooling**: Use Cytoscape for formal graph analytics or Sigma.js for large-scale WebGL graphs exceeding 1,000 nodes.
+- **Complementary Tooling**: Use [Cytoscape.js](/visualizations/cytoscape/) for formal graph analytics, [Sigma.js](/visualizations/sigma/) for large-scale WebGL graphs exceeding 1,000 nodes, [Vis-Network](/visualizations/vis-network/) for HTML5 Canvas spring physics, or [3D Force-Graph](/visualizations/3d-force-graph/) for 3D Three.js topologies.
 
 ### Reference Documentation
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For deep dives into our topological hop-attenuation model and Voronoi touch picking over SVG and Canvas viewports, see [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

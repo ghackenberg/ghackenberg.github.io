@@ -26,8 +26,8 @@ const firstVisScreenshot = visualizations.find(v => v.data.image)?.data.image;
 ---
 
 <Layout 
-  title="Content Visualizations | Dr. Georg Hackenberg" 
-  description="Explore interactive real-time knowledge graphs, network diagrams, and WebGL visualizations connecting research, software projects, and topics."
+  title="Interactive WebGL & SVG Knowledge Graph Visualizations" 
+  description="Compare 5 interactive JavaScript knowledge graph engines (Cytoscape.js, Sigma.js, D3-Force, Vis-Network, 3D Force) with live WebGL and Canvas benchmarks."
   image={firstVisScreenshot}
   jsonLd={buildCollectionPageSchema("visualizations", visualizations.map((v) => ({ id: v.id })))}
 >

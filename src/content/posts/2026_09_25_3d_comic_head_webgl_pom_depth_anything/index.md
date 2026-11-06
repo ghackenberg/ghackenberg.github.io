@@ -1,7 +1,7 @@
 ---
-title: Interaktives 3D-Comic-Gesicht mit WebGL POM und Depth Anything V2
+title: "Interaktives 3D-Porträt mit WebGL POM & Depth Anything V2"
 pubDate: 2026-09-25
-description: Wie wir ein reales Porträtfoto über Gemini, Inpainting und Depth Anything V2 in ein lebendiges WebGL-POM-Gesicht mit adaptiver Mimik-State-Machine verwandelt haben.
+description: "Wie wir ein Porträtfoto über Gemini, Inpainting und Depth Anything V2 in ein interaktives WebGL-POM-Gesicht mit adaptiver Mimik-State-Machine wandeln."
 inLanguage: de
 tags:
   - webgl

@@ -1,7 +1,7 @@
 ---
-title: "Skill Evolution im Vergleich: Wie Nous Research (Hermes Agent) und Google (WikiSkills) das Gedächtnis autonomer Agenten transformieren"
+title: "Agent Skill Evolution: Hermes Agent vs. Google WikiSkill"
 pubDate: 2026-09-16
-description: "Eine softwaretechnische Vergleichsanalyse: Die pragmatische Runtime-Kuratierung des Hermes Agent trifft auf die formale 3-Schichten-Entkopplung von Google WikiSkills. Wie sich Optimization Amnesia, Progressive Disclosure und Continuous Learning in modernen Enterprise-Architekturen vereinen lassen."
+description: "Architekturvergleich zur Skill Evolution autonomer Agenten: Die Runtime-Kuratierung des Hermes Agent trifft auf die 3-Schichten-Logik von Google WikiSkill."
 tags:
   - agentic-ai
   - artificial-intelligence

@@ -1,5 +1,5 @@
 ---
-title: "Cloud Operations"
+title: "Cloud-Native Operations & Distributed Observability"
 serviceId: "software-engineering"
 description: "Cloud-native infrastructure orchestration, distributed observability with OpenTelemetry, resilient health probes, and automated incident mitigation."
 ctaText: "Inquire about Cloud Operations"

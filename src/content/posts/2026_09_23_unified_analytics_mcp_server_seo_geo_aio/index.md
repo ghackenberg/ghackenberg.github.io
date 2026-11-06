@@ -1,7 +1,7 @@
 ---
-title: "Vom Konzept zum Agenten-Werkzeug: Wie unser Unified Analytics MCP Server Search Console und Plausible für datengestützte GEO/AIO-Audits vereint"
+title: "Unified Analytics MCP Server für SEO-, GEO- & AIO-Audits"
 pubDate: 2026-09-23
-description: "Datengestützte Content-Optimierung im Zeitalter von KI-Suchmaschinen: Warum isolierte Web-Analytics versagen, wie unser nativer Model Context Protocol (MCP) Server Google Search Console und Plausible deterministisch zusammenführt, und wie Coding-Agenten Seiten vollautomatisch auditieren."
+description: "Wie unser nativer Model Context Protocol (MCP) Server Google Search Console und Plausible Analytics für automatisierte SEO-, GEO- und AIO-Audits vereint."
 tags:
   - aeo
   - agentic-ai

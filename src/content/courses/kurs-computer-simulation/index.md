@@ -1,6 +1,6 @@
 ---
-title: "Computer-Simulation"
-description: "Unterlagen für meinen Kurs in Computer-Simulation an der Fakultät für Technik und angewandte Naturwissenschaften der FH OÖ."
+title: "Computer-Simulation: Ereignisdiskrete & Hybride Systeme"
+description: "Hochschulkurs zu Computer-Simulation an der FH OÖ: Stochastische Modellierung, Discrete-Event-Engines in C#, DGL-Löser und statistische Validierung."
 repoName: "kurs-computer-simulation"
 learningGoals:
   - "Verstehen der mathematischen Grundlagen diskreter und kontinuierlicher Simulationsmodelle."

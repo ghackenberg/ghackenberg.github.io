@@ -1,7 +1,7 @@
 ---
-title: "IEEE VR 2011 in Singapore"
+title: "Presenting 3D Multi-Touch Research at IEEE VR 2011"
 pubDate: "2011-03-23"
-description: "Last week I went to Singapore to present the results of my Master thesis at IEEE VR 2011, one of the world's most prestigeous virtual reality conferences. It wa..."
+description: "Presenting our Master thesis research on 3D multi-touch interaction and hand tracking at the IEEE Virtual Reality (IEEE VR 2011) conference in Singapore."
 tags: ["conference", "slideshare-presentation", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 image:
   src: "./esplanade.jpg"

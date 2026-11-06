@@ -2,7 +2,7 @@
 title: "Business Intelligence & Dashboarding"
 courseId: "kurs-datenanalyse"
 moduleNumber: "05"
-description: "Aufbau interaktiver Dashboards, Chart-Junk-Vermeidung und KPI-Monitoring."
+description: "Visuelle Datenkommunikation und Business-Intelligence-Dashboarding: Wahrnehmungspsychologie nach Tufte, Vermeidung von Chart-Junk und KPI-Monitoring."
 order: 5
 topics:
   - "Wahl geeigneter Diagrammtypen"

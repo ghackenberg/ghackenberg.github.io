@@ -1,5 +1,5 @@
 ---
-title: "System Observability"
+title: "AI System Observability & OpenTelemetry Tracing"
 serviceId: "intelligence-engineering"
 description: "Implementing telemetry instrumentation, OpenTelemetry distributed tracing, token accounting, and interactive user steering interfaces for AI systems."
 ctaText: "Inquire about System Observability"

@@ -1,7 +1,7 @@
 ---
-title: "Empirische Daten zu GEO, AEO & SEO: Was Peer-Reviewed Studien und Industrie-Benchmarks zeigen"
+title: "Empirische Studien zu GEO, AEO & SEO: Daten & Benchmarks"
 pubDate: 2026-09-11
-description: "Wissenschaftlich fundierte Synthese empirischer Forschungsergebnisse zu Generative Engine Optimization (GEO) und Answer Engine Optimization (AEO): Peer-Reviewed vs. Non-Peer-Reviewed im kritischen Qualitäts- und Glaubwürdigkeitsvergleich."
+description: "Synthese empirischer Forschung zu Generative Engine Optimization (GEO) und Answer Engine Optimization (AEO): Peer-Reviewed Studien vs. Industrie-Daten."
 tags:
   - aeo
   - agentic-ai

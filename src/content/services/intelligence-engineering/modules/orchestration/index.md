@@ -1,7 +1,7 @@
 ---
-title: "Agentic Orchestration"
+title: "Stateful Multi-Agent Orchestration with LangGraph"
 serviceId: "intelligence-engineering"
-description: "Architecting multi-agent collaboration workflows as stateful, cyclic graphs with LangGraph, including conditional routing, persistent checkpoints, and human intervention gates."
+description: "Architecting multi-agent workflows as stateful cyclic graphs with LangGraph, featuring conditional routing, persistent checkpoints, and human-in-the-loop."
 ctaText: "Inquire about Agentic Orchestration"
 highlights:
   - "Stateful cyclic graph architectures built with LangGraph for iterative processing"

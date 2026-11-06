@@ -1,7 +1,7 @@
 ---
-title: "Spatial Systems IDE"
+title: "Spatial Systems IDE: Mechatronic 3D Modeling"
 trl: 4
-description: "Integrated Development Environment (IDE) for spatio-temporal systems enabling component-based modeling across mechanical, electrical, and software disciplines."
+description: "Integrated Development Environment (IDE) for spatio-temporal mechatronic systems enabling component-based 3D modeling across mechanics and electronics."
 repoName: "Spatial-Systems-IDE"
 tags: ["mechatronic-systems", "systems-engineering", "manufacturing-systems", "java", "simulation", "open-source", "software-systems"]
 accentColor: "blue"

@@ -1,7 +1,7 @@
 ---
-title: "Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und naive RAG scheitern – Problem, Architektur und empirische Evaluation von Mem0"
+title: "Langzeitgedächtnis für KI-Agenten: Mem0 vs. Full-Context"
 pubDate: 2026-09-04
-description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur stützen."
+description: "Warum Full-Context und naives RAG bei autonomen LLM-Agenten scheitern: Ingenieurwissenschaftliche Analyse und empirische Benchmarks der Mem0-Architektur."
 tags:
   - artificial-intelligence
   - agentic-ai

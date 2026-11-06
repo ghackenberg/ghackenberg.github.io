@@ -1,7 +1,7 @@
 ---
-title: "Zero-JS Mermaid in Astro: Warum wir Diagramme statisch vorrendern und wie Build-Time-SVGs für SEO, AIO und Core Web Vitals optimieren"
+title: "Zero-JS Mermaid in Astro: Statische Build-Time-SVGs"
 pubDate: 2026-09-22
-description: "Technische Schaubilder ohne Client-Overhead: Warum clientseitiges Mermaid das Web verlangsamt, wie unsere Build-Time-Pipeline mit Puppeteer und Astro Remark funktioniert, und wie maschinenlesbare Topologien modernen KI-Suchmaschinen (GEO/AIO) den Weg weisen."
+description: "Warum clientseitiges Mermaid die Core Web Vitals bremst und wie unsere Astro-Build-Time-Pipeline statische SVGs für SEO, GEO und KI-Agenten vorrendert."
 tags:
   - astro
   - software-architecture

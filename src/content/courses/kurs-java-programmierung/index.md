@@ -1,6 +1,6 @@
 ---
-title: "Java-Programmierung"
-description: "Unterlagen für meinen Einführungskurs in die Java-Programmierung an der Fakultät für Technik und angewandte Naturwissenschaften der FH OÖ."
+title: "Objektorientierte Programmierung & Konzepte mit Java"
+description: "Einführungskurs in die objektorientierte Java-Programmierung an der FH OÖ: JVM-Grundlagen, Klassen, Vererbung, Polymorphie, Generics und JUnit-Tests."
 repoName: "kurs-java-programmierung"
 learningGoals:
   - "Verständnis der Kernkonzepte der objektorientierten Programmierung (OOP) wie Vererbung und Polymorphie."

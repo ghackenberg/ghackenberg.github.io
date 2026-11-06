@@ -2,7 +2,7 @@
 title: "Grundlagen & Taxonomie der Simulation"
 courseId: "kurs-computer-simulation"
 moduleNumber: "01"
-description: "Einführung in Systembegriff, Modelle, Zeitfortschrittsmechanismen und Modellklassifikation."
+description: "Systemtheoretische Grundlagen der Computer-Simulation: Modellbegriff, Zustandsräume, Zeitfortschrittsmechanismen und Taxonomie nach Law/Kelton."
 order: 1
 topics:
   - "Systemgrenzen, Zustandsgrößen und Modellabstraktion"

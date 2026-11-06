@@ -1,7 +1,7 @@
 ---
-title: Zeilenexakte Text-Geometrie & 2D-SDF-Gitter mit TreeWalker im Hero-Layout
+title: "Zeilenexakte Text-Geometrie & 2D-SDF-Gitter mit TreeWalker"
 pubDate: 2026-10-14
-description: Wie wir mit TreeWalker, Range.getClientRects() und 2D Signed Distance Fields (Quilez smin) ein kollisionsfreies Hero-Layout mit 60 FPS Canvas-Batching bauten.
+description: "Wie wir mit TreeWalker, Range.getClientRects() und 2D Signed Distance Fields (Quilez smin) ein kollisionsfreies 60-FPS-Canvas-Hero-Layout konstruierten."
 inLanguage: de
 tags:
   - web-development

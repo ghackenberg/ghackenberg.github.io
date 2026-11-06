@@ -1,6 +1,6 @@
 ---
-title: "Software Engineering"
-description: "Engineering resilient, maintainable software systems through domain-driven architecture, contract-first API design, clean code construction, and automated CI/CD pipelines."
+title: "Software Engineering & Distributed System Architecture"
+description: "Engineering resilient, maintainable software systems through domain-driven architecture, contract-first API design, clean code, and CI/CD automation."
 order: 1
 ctaText: "Inquire about Software Engineering"
 pubDate: 2026-10-08

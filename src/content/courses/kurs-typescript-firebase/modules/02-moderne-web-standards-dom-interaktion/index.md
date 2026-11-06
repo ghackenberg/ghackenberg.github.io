@@ -2,7 +2,7 @@
 title: "Moderne Web-Standards & DOM-Interaktion"
 courseId: "kurs-typescript-firebase"
 moduleNumber: "02"
-description: "HTML5-Semantik, CSS3-Flexbox/Grid, typed DOM-Events und asynchrones JavaScript."
+description: "Standardkonforme Frontend-Architektur ohne Framework-Lock-in: Semantisches HTML5, responsive Layouts mit CSS Grid/Flexbox und typsichere DOM-Events."
 order: 2
 topics:
   - "DOM-Querying mit Type-Casting"

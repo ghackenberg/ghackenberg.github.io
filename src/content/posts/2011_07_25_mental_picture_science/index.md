@@ -1,7 +1,7 @@
 ---
-title: "A Mental Picture of Science."
+title: "A Mental Picture of Science & Engineering Research"
 pubDate: "2011-07-24"
-description: "Having worked for some time both in research and development and on my PhD, I started to reflect on my work to gain an observer's perspective. In this article I..."
+description: "Reflecting on the epistemological cycle between empirical observation, formal mathematical modeling, and software systems engineering."
 tags: ["drawing"]
 image:
   src: "./whiteboard.jpg"

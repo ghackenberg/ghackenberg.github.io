@@ -1,6 +1,6 @@
 ---
-title: "3D Force: Volumetric Network Graph"
-description: "Explore the portfolio's content and semantic connections as an interactive 3D volumetric graph powered by WebGL and Three.js, featuring orbital camera controls and spatial clustering."
+title: "3D Force-Graph WebGL & Three.js Network Visualization"
+description: "Interactive 3D Force-Graph network visualization built with Three.js and WebGL, featuring octree n-body physics, orbital camera controls, and particles."
 image:
   src: "./3d-force.png"
   title: "3D Network Graph in Spatial Space"
@@ -66,8 +66,8 @@ Dynamic particle animations visualize connection directionality without clutteri
 The 3D Force engine provides distinct architectural advantages for exploratory landscapes:
 - **Volumetric Exploration**: Best suited for discovering deep semantic clusters, citation lineages, and cross-discipline links.
 - **Visual Immersion**: Provides an engaging tactile overview of large institutional repositories.
-- **Complementary Tooling**: Use D3 for exact typographic layouts or Cytoscape for formal shortest-path algorithms.
+- **Complementary Tooling**: Use [D3.js](/visualizations/d3/) for exact typographic layouts, [Cytoscape.js](/visualizations/cytoscape/) for formal shortest-path algorithms, [Sigma.js](/visualizations/sigma/) for 2D WebGL shaders, or [Vis-Network](/visualizations/vis-network/) for 2D spring-damper physics.
 
 ### Reference Documentation
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For the underlying 1-hop/2-hop topological attenuation rules and pointer-picking mechanics, read [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

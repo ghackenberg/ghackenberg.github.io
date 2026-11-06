@@ -1,6 +1,6 @@
 ---
-title: "Intelligence Engineering"
-description: "Architecting sovereign on-premise and private cloud AI systems, covering private model serving, hybrid knowledge retrieval, Model Context Protocol (MCP) tooling, and stateful multi-agent orchestration."
+title: "Intelligence Engineering & Sovereign AI Agent Systems"
+description: "Architecting sovereign on-premise and private cloud AI systems: private vLLM serving, hybrid GraphRAG retrieval, MCP servers, and multi-agent workflows."
 order: 2
 ctaText: "Inquire about Intelligence Engineering"
 image:

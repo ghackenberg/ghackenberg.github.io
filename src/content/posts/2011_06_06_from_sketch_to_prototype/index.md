@@ -1,7 +1,7 @@
 ---
-title: "From Sketch to Prototype"
+title: "From Hand-Drawn UI Sketch to Functional Web Prototype"
 pubDate: "2011-06-05"
-description: "I have been long thinking how to reorganize my website to migrate from a pure blogging system to a more complete personal portfolio while keeping an original bu..."
+description: "Walking through the iterative design process from initial pen-and-paper wireframes to a database-backed interactive web portfolio prototype."
 tags: ["blog", "user-interface", "drawing"]
 image:
   src: "./backgrounds.png"

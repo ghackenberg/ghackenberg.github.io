@@ -1,7 +1,7 @@
 ---
-title: "Architektur und Funktionsweise von Open WebUI: Entkoppelte Human-in-the-Loop Orchestrierung, In-Process Functions, hybrides RAG und Enterprise Governance"
+title: "Open WebUI Architektur: Hybrides RAG & AI Orchestrierung"
 pubDate: 2026-09-08
-description: "Eine softwaretechnische Tiefenanalyse von Open WebUI: Wie die Entkopplung von SvelteKit und FastAPI echte Multi-Model-Souveränität schafft, warum In-Process Functions externe Pipelines ablösen, wie hybrides RAG mit BM25 und Cross-Encoder Präzision garantiert und welche Rolle die Plattform in Lehre, Forschung und Unternehmen einnimmt."
+description: "Tiefenanalyse von Open WebUI: Entkoppelte SvelteKit-FastAPI-Architektur, In-Process Functions, hybrides RAG mit BM25/Cross-Encoder und RBAC-Governance."
 tags:
   - open-webui
   - agentic-ai

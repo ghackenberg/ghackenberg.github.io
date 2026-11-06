@@ -1,5 +1,5 @@
 ---
-title: "Content Modeling"
+title: "Typed Content Modeling & Zod Schema Architecture"
 serviceId: "content-engineering"
 description: "Defining formal Zod content schemas, typed collections, entity-relationship models, and controlled taxonomies for structured content repositories."
 ctaText: "Inquire about Content Modeling"

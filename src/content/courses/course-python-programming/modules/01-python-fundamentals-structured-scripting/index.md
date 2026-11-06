@@ -2,7 +2,7 @@
 title: "Python Fundamentals & Structured Scripting"
 courseId: "course-python-programming"
 moduleNumber: "01"
-description: "Data types, memory models, conditional branches, iteration, functions, and exception handling."
+description: "Core Python programming fundamentals for engineers: dynamic typing, memory references, control flow, list comprehensions, and modular functions."
 order: 1
 topics:
   - "Variables, Strings, Lists, and Dictionaries"

@@ -1,7 +1,7 @@
 ---
-title: "Focus-Aware Hop Attenuation in Knowledge Graphs: Hub Penalties & Parametric Decay"
+title: "Focus-Aware Hop Attenuation in Web Knowledge Graphs"
 pubDate: 2026-11-04
-description: "How we replace unweighted k-hop BFS with focus-budgeted effective hop distances, logarithmic hub-degree penalties, and parametric power curves in interactive knowledge graphs."
+description: "How we replaced unweighted k-hop BFS with focus-budgeted effective hop distances, logarithmic hub-degree penalties, and parametric decay in web graphs."
 inLanguage: "en"
 tags:
   - knowledge-graphs
@@ -115,4 +115,4 @@ In [`HOP_ATTENUATION_CONFIG`](https://github.com/ghackenberg/ghackenberg.github.
 - **Edge Width & Retention (`getAttenuatedEdgeStyle`)**: Scales stroke width from $3.0\text{ px}$ to $0.80\text{ px}$ ($\gamma = 1.10$) and color retention from $1.0$ to $0.18$ ($\gamma = 1.20$) using shifted hop distance $\max(0, \max(d_{\text{src}}, d_{\text{tgt}}) - 1)$.
 - **Depth-Ordered Z-Indexing (`getNodeHopZIndex`)**: Assigns discrete layer priorities ($40 \rightarrow 30 \rightarrow 20 \rightarrow 10 \rightarrow 1$) so foreground ego-neighborhoods always render above attenuated background shells during $750\text{ ms}$ cosine-eased transitions.
 
-Together, these coupled power curves and discrete z-index layers guarantee that hovering or dragging any node produces a clear, flicker-free ego-neighborhood spotlight across every visualization engine.
+Together, these coupled power curves and discrete z-index layers guarantee that hovering or dragging any node produces a clear, flicker-free ego-neighborhood spotlight across every visualization engine—building upon our [May 2026 Interactive Graph Visualizations Update](/posts/2026_05_27_interactive_graph_visualizations_update/) and [2D Elliptical Bin-Packing Tag Cloud Layout Engine](/posts/2026_10_17_elliptical_bin_packing_tag_cloud_layout_engine/), while laying the mathematical foundation for [Five Graph Engines Under One Interaction Physics Contract](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/), [Voronoi Proximity Picking and 8-Way Tooltip Placement](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/), and live exploration in our [Cytoscape.js](/visualizations/cytoscape/) and [Sigma.js WebGL](/visualizations/sigma/) sandboxes.

@@ -2,7 +2,7 @@
 title: "Clean Architecture & Design Patterns"
 courseId: "kurs-software-engineering"
 moduleNumber: "03"
-description: "SOLID-Prinzipien, Kopplung und Kohäsion sowie Implementierung klassischer GoF-Entwurfsmuster."
+description: "Prinzipien wartbarer Softwarearchitektur: Hohe Kohäsion und lose Kopplung, SOLID-Designprinzipien, Dependency Inversion sowie klassische GoF-Entwurfsmuster."
 order: 3
 topics:
   - "SOLID-Prinzipien in der Praxis"

@@ -1,6 +1,6 @@
 ---
-title: "Vis.js: Physics-Based Network Graph"
-description: "Interact with dynamic topic clusters and relational data through tactile drag-and-drop physics and spring-mass damping powered by Vis.js."
+title: "Vis-Network Physics Graph Visualization in Canvas"
+description: "Interactive Vis-Network HTML5 Canvas graph demo featuring Barnes-Hut spring-damper physics, tactile drag-and-drop clustering, and live layout switching."
 image:
   src: "./vis-network.png"
   title: "Vis.js Interactive Particle Network"
@@ -63,8 +63,8 @@ Vis.js calculates dynamic physical equilibrium through complementary forces:
 Vis.js provides clear design advantages for targeted network sizes:
 - **Tactile Interaction**: Supports fluid drag-and-drop, node pinning, and elastic cluster movement.
 - **Crisp Typography**: Renders high-fidelity vector text and custom pill badges cleanly on HTML5 canvas.
-- **Ideal Scale**: Perfectly optimized for networks of 50 to 1,000 nodes where individual label readability is paramount.
+- **Ideal Scale**: Perfectly optimized for networks of 50 to 1,000 nodes where individual label readability is paramount, complementing [Cytoscape.js](/visualizations/cytoscape/), [Sigma.js](/visualizations/sigma/), [D3.js](/visualizations/d3/), and [3D Force-Graph](/visualizations/3d-force-graph/).
 
 ### Reference Documentation
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). Additional engineering analyses cover [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

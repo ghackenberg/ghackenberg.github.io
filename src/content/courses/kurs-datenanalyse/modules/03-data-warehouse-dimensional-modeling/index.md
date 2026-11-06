@@ -2,7 +2,7 @@
 title: "Data Warehouse & Dimensional Modeling"
 courseId: "kurs-datenanalyse"
 moduleNumber: "03"
-description: "OLTP vs. OLAP, Fakten- und Dimensionstabellen, Stern- und Schneeflockenschema."
+description: "Architektur analytischer Data Warehouses: Trennung von OLTP und OLAP, ETL-Datenpipelines, Fakten- und Dimensionstabellen im Stern- und Schneeflockenschema."
 order: 3
 topics:
   - "Dimensionale Modellierung nach Kimball"

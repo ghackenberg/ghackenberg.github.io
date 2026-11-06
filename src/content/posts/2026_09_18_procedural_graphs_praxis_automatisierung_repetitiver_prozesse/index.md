@@ -1,7 +1,7 @@
 ---
-title: "Procedural Graphs in der Praxis: Wie Unternehmen repetitive Prozesse zuverlässig automatisieren – ohne starre Workflows und unberechenbare Agenten"
+title: "Procedural Graphs: Zuverlässige KI-Prozessautomatisierung"
 pubDate: 2026-09-18
-description: "Über 80 % agentischer Pilotprojekte scheitern am Übergang in den Produktivbetrieb: Entweder driften ungebundene LLM-Agenten bei repetitiven Vorgängen ab, oder starre RPA-Workflows ersticken die Flexibilität. Eine ingenieurwissenschaftliche Analyse des Google-Frameworks Procedural Graphs (arXiv:2609.09153): Wie Unternehmen Standard Operating Procedures (SOPs) in selbstlernende Wissensgraphen überführen, Qualität sichern, Kosten senken und Mitarbeiter nachhaltig entlasten."
+description: "Warum über 80 % agentischer Pilotprojekte scheitern und wie Googles Procedural Graphs Standard Operating Procedures in selbstlernende Graphen überführen."
 tags:
   - agentic-ai
   - artificial-intelligence

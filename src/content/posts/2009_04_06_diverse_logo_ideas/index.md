@@ -1,7 +1,7 @@
 ---
-title: "Diverse Logo Ideas."
+title: "Vector Logo Design Explorations & Visual Branding Ideas"
 pubDate: "2009-04-05"
-description: "Since I haven't published any article for a while, I thought it would be a good idea to get some new work impressions out. Here are some logos I developed over ..."
+description: "Exploring geometric vector logo designs, typography concepts, and visual identity studies created for software engineering and web projects."
 tags: ["drawing"]
 image:
   src: "./eduride.png"

@@ -2,7 +2,7 @@
 title: "Blockdiagramme & Simulation in Simulink"
 courseId: "kurs-systems-engineering"
 moduleNumber: "03"
-description: "Modellerstellung in Simulink, kontinuierliche Integratoren, Signalquellen und Senken."
+description: "Grafische Systemmodellierung und Zeitbereichssimulation in MATLAB/Simulink: Signalflusspläne, Integratorketten, Subsysteme und Wahl geeigneter ODE-Solver."
 order: 3
 topics:
   - "Hierarchische Subsysteme und Bus-Signale"

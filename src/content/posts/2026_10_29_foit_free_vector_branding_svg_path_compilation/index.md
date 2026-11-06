@@ -1,7 +1,7 @@
 ---
-title: "FOIT-Free Vector Branding: Compiling SVG Paths & the DT-1 H-Bridge"
+title: "FOIT-Free Vector Branding & DT-1 SVG Path Compilation"
 pubDate: 2026-10-29
-description: "Why external webfonts inside SVG favicons trigger Flash of Invisible Text (FOIT), and how we compile self-contained vector paths and our DT-1 H-Bridge emblem across web, PWA, Open Graph, and React Email."
+description: "Why external webfonts inside SVG favicons cause Flash of Invisible Text (FOIT), and how we compile self-contained vector paths across web, OG, and email."
 inLanguage: "en"
 tags:
   - design-systems
@@ -102,7 +102,7 @@ const buffer = (await page.screenshot({ omitBackground: true })) as Buffer;
 
 To maintain visual parity beyond browser tabs, [`src/commons/server/email/EmailShell.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/EmailShell.tsx) replaces legacy CSS text badges with our pre-rendered `icon-192x192.png` H-Bridge asset across all transactional and campaign email headers. Simultaneously, [`src/pages/about.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/about.astro) and [`src/components/InstitutionLogo.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/InstitutionLogo.astro) harmonize academic and industry marks on a normalized `100x100` coordinate grid using adaptive Nordic pastel tokens [@w3c-2018-svg2; @bellamy-royds-2015-svg-text].
 
-Email clients frequently strip custom webfonts and CSS gradients, so [`src/commons/server/email/EmailShell.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/EmailShell.tsx) embeds the deterministic `40x40` rasterized DT-1 badge directly alongside the header lockup.
+Email clients frequently strip custom webfonts and CSS gradients, so [`src/commons/server/email/EmailShell.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/email/EmailShell.tsx) embeds the deterministic `40x40` rasterized DT-1 badge directly alongside the header lockup—integrating seamlessly with our [Newsletter-as-Code React Email and Listmonk Pipeline](/posts/2026_10_20_newsletter_as_code_react_email_listmonk_altcha_pow/), [Zero-Artifact Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/), [Ten-Domain Color Spectrum](/posts/2026_10_27_priority_plus_navigation_ten_domain_color_spectrum/), [Zero-innerHTML Preact Architecture](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/), and [Three-Band Adaptive SVG Governance](/posts/2026_11_07_three_band_figures_adaptive_svg_color_governance/).
 
 ![Semantic vector infographic illustrating the central DT-1 H-Bridge vector geometry radiating across Browser Favicon, PWA Icons, React Email Header, and 100x100 Institution Logos](./multi-target-brand-geometry.svg "Multi-Target Brand Geometry Synchronization Across Web, PWA, Email, and Institutions")
 

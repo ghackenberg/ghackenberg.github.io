@@ -2,7 +2,7 @@
 title: "Exception Handling, I/O & JUnit Testing"
 courseId: "kurs-java-programmierung"
 moduleNumber: "05"
-description: "Robuste Fehlerbehandlung mit Exceptions, Dateizugriff und Testautomatisierung."
+description: "Robuste Softwareentwicklung in Java: Checked vs. Unchecked Exceptions, Ressourcenverwaltung mit try-with-resources, NIO-Dateizugriff und JUnit-5-Tests."
 order: 5
 topics:
   - "Checked vs. Unchecked Exceptions (try-catch-finally)"

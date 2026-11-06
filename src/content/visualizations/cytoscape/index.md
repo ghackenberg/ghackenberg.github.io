@@ -1,6 +1,6 @@
 ---
-title: "Cytoscape.js: Semantic Network Graph"
-description: "Analyze semantic connections across publications, projects, and topics using Cytoscape.js and Compound Spring-Embedder (CoSE) layout physics directly in the browser."
+title: "Cytoscape.js Interactive Network Graph Visualization"
+description: "Interactive Cytoscape.js network graph demo in JavaScript with CoSE physics, compound node clustering, shortest-path algorithms, and WebGL benchmarks."
 image:
   src: "./cytoscape.png"
   title: "Cytoscape Force-Directed Network"
@@ -67,8 +67,8 @@ Unlike standard planar graph renderers, Cytoscape natively supports compound nod
 Cytoscape.js is the optimal tool when formal graph analysis and hierarchical structures take priority:
 - **Domain Modeling**: Ideal for software architecture dependencies, taxonomies, and entity ontologies.
 - **Hierarchical Trees**: Seamless rendering of directed acyclic graphs via Dagre integration.
-- **Complementary Tooling**: Use Sigma.js when node counts exceed 5,000 or D3 for custom SVG document styling.
+- **Complementary Tooling**: Use [Sigma.js](/visualizations/sigma/) when node counts exceed 5,000, [D3.js](/visualizations/d3/) for custom SVG document styling, [Vis-Network](/visualizations/vis-network/) for tactile 2D spring damping, or [3D Force-Graph](/visualizations/3d-force-graph/) for volumetric WebGL exploration.
 
 ### Reference Documentation
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For the mathematical foundations of our focus-aware topological attenuation and mobile touch picking across these canvases, see [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

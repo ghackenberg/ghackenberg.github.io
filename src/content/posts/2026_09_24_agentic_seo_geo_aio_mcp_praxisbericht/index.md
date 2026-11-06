@@ -1,7 +1,7 @@
 ---
-title: "Agentenbasierte SEO, GEO & AIO: Praxisbericht mit eigenem MCP"
+title: "Agentenbasierte SEO, GEO & AIO: MCP-Server Praxisbericht"
 pubDate: 2026-09-24
-description: Wie wir mit einem Custom MCP Server für Google Search Console und Plausible Analytics eine geschlossene Agenten-Optimierungs-Schleife für GEO und AIO bauten.
+description: "Wie wir mit einem Custom MCP Server für Search Console und Plausible Analytics eine geschlossene Agenten-Optimierungs-Schleife für SEO, GEO und AIO bauten."
 inLanguage: de
 tags:
   - agentic-ai

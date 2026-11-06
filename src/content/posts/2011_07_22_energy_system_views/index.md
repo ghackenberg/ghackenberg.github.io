@@ -1,7 +1,7 @@
 ---
-title: "View onto the Energy System"
+title: "Systems Engineering Perspectives on Smart Energy Grids"
 pubDate: "2011-07-21"
-description: "Lately I got interested in the domain of energy supply systems for human society. It is currently one of the hottest topics all in politics, science, research &..."
+description: "Analyzing the transition toward decentralized renewable energy supply systems from a software architecture and systems engineering perspective."
 tags: ["drawing", "energy-systems", "systems-engineering"]
 image:
   src: "./bus.jpg"

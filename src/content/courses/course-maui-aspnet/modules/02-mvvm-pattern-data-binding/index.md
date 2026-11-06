@@ -1,8 +1,8 @@
 ---
-title: "MVVM Pattern & Data Binding"
+title: "MVVM Architecture Pattern & Reactive Data Binding"
 courseId: "course-maui-aspnet"
 moduleNumber: "02"
-description: "Decoupling views from business logic with Model-View-ViewModel and reactive event bindings."
+description: "Decoupling UI views from business logic using the Model-View-ViewModel (MVVM) pattern, INotifyPropertyChanged, ICommand, and CommunityToolkit.Mvvm."
 order: 2
 topics:
   - "INotifyPropertyChanged & CommunityToolkit.Mvvm"

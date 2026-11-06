@@ -1,7 +1,7 @@
 ---
-title: "Architektur und Funktionsweise von LiteLLM: Universelle Modell-Abstraktion, dynamisches Routing, Multi-Provider Fallbacks und Enterprise-Governance"
+title: "LiteLLM Architektur: AI Gateway, Routing & Fallbacks"
 pubDate: 2026-09-09
-description: "Eine softwaretechnische Tiefenanalyse von LiteLLM: Wie die universelle Abstraktionsschicht 100+ LLMs vereinheitlicht, wie intelligentes Routing und kaskadierende Fallbacks Ausfallsicherheit garantieren, warum Multilevel-Caching Latenzen minimiert und wie Enterprise-Governance via Keycloak und Virtual Keys funktioniert."
+description: "Softwaretechnische Analyse von LiteLLM: Universelle Abstraktion für 100+ LLMs, dynamisches Routing, kaskadierende Fallbacks und Keycloak-Governance."
 tags:
   - litellm
   - agentic-ai

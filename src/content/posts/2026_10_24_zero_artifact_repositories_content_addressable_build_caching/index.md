@@ -1,7 +1,7 @@
 ---
-title: "Zero-Artifact Git Repositories: Content-Addressable Build Caching, Zero-Dependency Edge-TTS & Deterministic Asset Synthesis"
+title: "Zero-Artifact Git Repos & Content-Addressable Build Caches"
 pubDate: 2026-10-24
-description: Why committing derived MP3, PDF, and PNG build outputs breaks Git RFC 3284 VCDIFF delta compression—and how we eliminated 229.89 MiB (241.05 MB) across 601 files using constructive traces with early cutoff, a zero-dependency Sec-MS-GEC v2 Edge-TTS WebSocket client, and deterministic Park-Miller LCG asset synthesis.
+description: "How we eliminated 241 MB of binary Git bloat using SHA-256 content-addressable build caching with early cutoff, Edge-TTS synthesis, and LCG asset hashing."
 inLanguage: en
 tags:
   - software-architecture
@@ -158,7 +158,7 @@ All three content-addressable cache tiers, fingerprinting helpers, and CI synchr
 
 Committing derived binary media into Git violates the core assumption of sliding-window delta compression [@korn-2002-rfc3284-vcdiff]. Because MP3 Huffman bit reservoirs, PDF `FlateDecode` streams, and PNG `IDAT` chunks apply entropy coding [@boutell-1997-rfc2083-png], a single-word source edit mints a new immutable blob in Git's content-addressable DAG [@bird-2009-promises-perils-mining-git] whose global byte shifts force packfiles to append full multi-megabyte copies.
 
-In software systems engineering, it is tempting to treat a Git repository as both a source code version control system and a pre-compiled artifact CDN. When building interactive **Slide-as-Code** presentations with synchronized neural voiceover audio, dual-theme 16:9 lecture PDF handouts, and high-DPI OpenGraph branding cards, the path of least resistance is to run the synthesis scripts locally and commit the resulting `.mp3`, `.pdf`, `.webp`, and `.png` files directly alongside the `.mdx` sources.
+In software systems engineering, it is tempting to treat a Git repository as both a source code version control system and a pre-compiled artifact CDN. When building interactive **Slide-as-Code** presentations with synchronized neural voiceover audio, dual-theme 16:9 lecture PDF handouts, and high-DPI OpenGraph branding cards—alongside [Schema.org ImageObject Asset Governance](/posts/2026_10_16_schema_org_image_object_metadata_asset_governance/), [Newsletter-as-Code Campaign Compilation](/posts/2026_10_20_newsletter_as_code_react_email_listmonk_altcha_pow/), [FOIT-Free Vector Branding Compilation](/posts/2026_10_29_foit_free_vector_branding_svg_path_compilation/), and [Astro Content-Layer Merkle Asset Digesting](/posts/2026_11_08_astro_content_layer_merkle_asset_digesting/)—the path of least resistance is to run the synthesis scripts locally and commit the resulting `.mp3`, `.pdf`, `.webp`, and `.png` files directly alongside the `.mdx` sources.
 
 As our platform scaled to **5 full-length university and industry slide decks** (spanning **189 individual MDX slides**: $10 + 21 + 68 + 42 + 48 = 189$), this seemingly convenient practice accumulated **601 derived files totaling 229.89 MiB (241.05 MB / 241,054,454 B)** directly inside the working tree:
 - **184.70 MiB (`193,676,989 B`)** across 20 files in the PDF and visual audit tier (`10` dual-theme lecture handouts `slides-dark.pdf` and `slides-light.pdf` across 5 decks, `5` `.visual-cache.json` manifests, and `5` `.audit-cache-<platform>.json` reports).

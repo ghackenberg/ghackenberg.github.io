@@ -1,7 +1,7 @@
 ---
-title: "WebMCP Explained: W3C Standard Architecture, Agent Bridging, Use Cases, and the Realistic Future of Cooperative Browser Agents"
+title: "W3C WebMCP Explained: Browser Agent Architecture & APIs"
 pubDate: 2026-10-23
-description: An architectural analysis of W3C WebMCP (document.modelContext)—covering its history, normative WebIDL and declarative HTML form APIs, CDP and WebSocket agent bridges, empirical GUI vs. schema benchmarks, and security trade-offs.
+description: "An architectural analysis of W3C WebMCP (document.modelContext)—covering normative WebIDL and HTML APIs, CDP/WebSocket bridges, and security trade-offs."
 inLanguage: en
 tags:
   - mcp
@@ -160,7 +160,7 @@ The following architectural comparison contrasts vision and DOM-scraping browser
 
 Backend Model Context Protocol servers excel at headless service integration but operate outside the user's browser process, creating severe authentication duplication and user-interface disintermediation. WebMCP emerged to bridge this gap, allowing web applications to expose structured tools directly within the authenticated client-side `Document` realm where human users actively work.
 
-When Anthropic introduced the **Model Context Protocol (MCP)** in November 2024 [@mcp-specification-2024], it solved a critical fragmentation problem in AI systems engineering: instead of writing custom tool wrappers for every combination of foundation model and data source, engineering teams could expose `tools`, `resources`, and `prompts` over a standardized JSON-RPC 2.0 wire protocol using `stdio` or HTTP with Server-Sent Events (SSE). On this platform, for example, our own [`src/tools/unified-analytics.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/tools/unified-analytics.ts) server uses `@modelcontextprotocol/sdk` over `StdioServerTransport` to give coding agents deterministic access to Google Search Console and Plausible telemetry.
+When Anthropic introduced the **Model Context Protocol (MCP)** in November 2024 [@mcp-specification-2024], it solved a critical fragmentation problem in AI systems engineering: instead of writing custom tool wrappers for every combination of foundation model and data source, engineering teams could expose `tools`, `resources`, and `prompts` over a standardized JSON-RPC 2.0 wire protocol using `stdio` or HTTP with Server-Sent Events (SSE). On this platform, for example, our own [`src/tools/unified-analytics.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/tools/unified-analytics.ts) server uses `@modelcontextprotocol/sdk` over `StdioServerTransport` to give [Protocol-Driven Agent Harnesses](/posts/2026_10_21_agent_harnesses_architecture_taxonomy_evolution/) deterministic access to Google Search Console and [Consent-Free Plausible Markov Visitor Flows](/posts/2026_10_18_consent_free_markov_chain_visitor_flows_plausible/), while mitigating [Emergent AI Security Hazards](/posts/2026_10_22_emergent_properties_history_theory_ai_security_incidents/) alongside our client-side [Zero-innerHTML Preact and Nanostores Islands](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/).
 
 However, as soon as engineering teams attempted to apply backend MCP servers to interactive, stateful web applications—such as collaborative graphic design studios, corporate code-review portals, or complex e-commerce configurators—two fundamental architectural bottlenecks surfaced:
 

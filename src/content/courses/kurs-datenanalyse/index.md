@@ -1,6 +1,6 @@
 ---
-title: "Datenanalyse und SQL"
-description: "Unterlagen für meinen Kurs in Datenanalyse. Einführung in relationale Datenbanken, SQL-Abfragen, analytische Datenstrukturen und Werkzeuge zur Datenauswertung."
+title: "Datenanalyse, Relationale Datenbanken & SQL-Abfragen"
+description: "Hochschulkurs in Datenanalyse und SQL: Entity-Relationship-Modellierung, Normalformen, komplexe SQL-JOINs, Data Warehousing und BI-Dashboarding."
 repoName: "kurs-datenanalyse"
 learningGoals:
   - "Konzipieren und Abfragen relationaler Datenbanken mittels komplexer SQL-Anweisungen."

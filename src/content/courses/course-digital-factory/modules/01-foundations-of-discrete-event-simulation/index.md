@@ -2,7 +2,7 @@
 title: "Foundations of Discrete Event Simulation"
 courseId: "course-digital-factory"
 moduleNumber: "01"
-description: "Simulation paradigms, state transitions, event calendars, and time-advance mechanics."
+description: "Foundations of discrete-event simulation (DES) in digital factory planning: system state transitions, future event lists, and next-event time advance."
 order: 1
 topics:
   - "Discrete vs. Continuous Simulation"

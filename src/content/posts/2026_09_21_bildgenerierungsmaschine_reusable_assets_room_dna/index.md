@@ -1,7 +1,7 @@
 ---
 title: "Bildgenerierungsmaschine: Reusable Assets & Room DNA"
 pubDate: 2026-09-21
-description: Wie wir mit Relational Libraries, Character Slots und Room DNA hochgradig reproduzierbare und visuell konsistente Disney/Pixar-Illustrationen für Fachartikel methodisch lenken.
+description: "Wie wir mit Relational Libraries, Character Slots und Room DNA reproduzierbare, visuell konsistente 3D-Comic-Illustrationen für Fachartikel generieren."
 tags:
   - generative-ai
   - diffusion-models

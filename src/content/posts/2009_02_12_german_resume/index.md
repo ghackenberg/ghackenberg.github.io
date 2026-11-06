@@ -1,7 +1,7 @@
 ---
-title: "German Resume."
+title: "Curriculum Vitae & Academic Resume Published Online"
 pubDate: "2009-02-11"
-description: "For those, who are interested in my career, here is my current resume. Unfortunatelly, for now I only have a German version. The updated English version will fo..."
+description: "Overview of my academic curriculum vitae, computer science studies at RWTH Aachen University, and software engineering projects at Siemens and Fraunhofer."
 tags: ["data-visualization"]
 image:
   src: "./screenshot.png"

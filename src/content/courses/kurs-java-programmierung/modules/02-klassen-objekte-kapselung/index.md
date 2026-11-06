@@ -1,8 +1,8 @@
 ---
-title: "Klassen, Objekte & Kapselung"
+title: "Klassen, Objekte & Datenkapselung in Java"
 courseId: "kurs-java-programmierung"
 moduleNumber: "02"
-description: "Klassenbaupläne, Attribute, Methoden, Konstruktoren und Zugriffsmodifikatoren."
+description: "Grundlagen der Objektorientierung in Java: Entwurf von Klassen, Instanziierung auf dem Heap, Konstruktor-Überladung, Zugriffsmodifikatoren und Kapselung."
 order: 2
 topics:
   - "Instanziierung, Heap- und Stack-Speicher"

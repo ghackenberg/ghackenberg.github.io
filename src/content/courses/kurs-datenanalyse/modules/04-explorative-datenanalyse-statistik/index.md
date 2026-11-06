@@ -2,7 +2,7 @@
 title: "Explorative Datenanalyse & Statistik"
 courseId: "kurs-datenanalyse"
 moduleNumber: "04"
-description: "Statistische Lage- und Streuungsmaße, Korrelationsanalysen und Datenbereinigung."
+description: "Methoden der explorativen Datenanalyse (EDA): Robuste Lage- und Streuungsmaße, Ausreißererkennung per Interquartilsabstand, Korrelation und Regression."
 order: 4
 topics:
   - "Deskriptive Kennzahlen: Mittelwert, Median, Quantile"

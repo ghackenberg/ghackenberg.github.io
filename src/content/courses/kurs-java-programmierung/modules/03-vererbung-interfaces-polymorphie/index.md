@@ -2,7 +2,7 @@
 title: "Vererbung, Interfaces & Polymorphie"
 courseId: "kurs-java-programmierung"
 moduleNumber: "03"
-description: "Hierarchische Beziehungen, Subtyping, dynamische Bindung und Schnittstellendesign."
+description: "Fortgeschrittene Objektorientierung in Java: Klassenhierarchien mit extends, abstrakte Klassen, Schnittstellen (Interfaces) und dynamische Polymorphie."
 order: 3
 topics:
   - "Abstrakte Klassen vs. Interfaces"

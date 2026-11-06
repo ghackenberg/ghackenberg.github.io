@@ -2,7 +2,7 @@
 title: "Full-Stack Integration & Secure Authentication"
 courseId: "course-maui-aspnet"
 moduleNumber: "05"
-description: "Connecting MAUI clients to backend APIs with authentication, token refresh, and error handling."
+description: "Connecting .NET MAUI clients to ASP.NET Core backends via HttpClient: JWT bearer authentication, secure token storage, and resilient offline caching."
 order: 5
 topics:
   - "HttpClient & Resilient Networking"

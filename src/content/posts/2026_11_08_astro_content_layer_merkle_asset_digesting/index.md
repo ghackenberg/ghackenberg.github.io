@@ -1,7 +1,7 @@
 ---
-title: "Content-Addressable Asset Digesting and Dependency Tracking in Astro 5 Content Layer"
+title: "Merkle Asset Digesting in the Astro 5 Content Layer"
 pubDate: 2026-11-08
-description: "How we wrapped Astro 5's glob() loader with composite Merkle asset digests, bound Vite FSWatcher proxies, and localImagePaths SVG pruning for sub-200ms HMR."
+description: "How we wrapped Astro 5's glob() loader with composite Merkle asset digests, Vite FSWatcher proxies, and localImagePaths SVG pruning for sub-200ms HMR."
 inLanguage: "en"
 tags:
   - astro
@@ -121,4 +121,4 @@ Because our diagrams rely on CSS custom properties (`var(--svg-*)` from [`src/st
 
 ![Semantic vector schematic showing Remark image registration followed by rehype-inline-svg DOM replacement and localImagePaths pruning](./svg-inlining-local-image-pruning.svg "Two-Stage Remark Registration and Rehype SVG Pruning")
 
-However, Astro's internal Remark image plugin runs *before* Rehype and pushes every `![alt](./diagram.svg)` path into `vfile.data.astro.localImagePaths`. By filtering `inlinedSrcs` and `.svg` entries out of `astroData.localImagePaths` at the end of [`rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) and recording `inlineSvgDependencies`, Astro's image pipeline only optimizes genuine raster assets like `hero.jpg`, while [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) remains completely free of manual `.astro/data-store.json` deletion hacks.
+However, Astro's internal Remark image plugin runs *before* Rehype and pushes every `![alt](./diagram.svg)` path into `vfile.data.astro.localImagePaths`. By filtering `inlinedSrcs` and `.svg` entries out of `astroData.localImagePaths` at the end of [`rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) and recording `inlineSvgDependencies`, Astro's image pipeline only optimizes genuine raster assets like `hero.jpg`, while [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) remains completely free of manual `.astro/data-store.json` deletion hacks—unifying our [Schema.org ImageObject Metadata Pipeline](/posts/2026_10_16_schema_org_image_object_metadata_asset_governance/), [Zero-Artifact Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/), [Single-Root JSON-LD 1.1 Knowledge Graph Validator](/posts/2026_10_25_single_root_json_ld_knowledge_graph_validator/), and [Three-Band Adaptive SVG Color Governance](/posts/2026_11_07_three_band_figures_adaptive_svg_color_governance/).

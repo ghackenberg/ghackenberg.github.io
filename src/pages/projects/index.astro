@@ -32,8 +32,8 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.image)?.data.imag
 ---
 
 <Layout 
-  title="Software Projects | Dr. Georg Hackenberg" 
-  description="Explore software engineering projects, open-source systems, and interactive tools designed and built by Dr. Georg Hackenberg."
+  title="Open-Source Software & R&D Projects | Georg Hackenberg" 
+  description="Explore open-source software engineering projects, CAD platforms, WebGL simulations, and industrial AI workbenches built by Prof. Dr. Georg Hackenberg."
   image={firstProjectScreenshot}
   jsonLd={buildCollectionPageSchema("projects", projects.map((p) => ({ id: `https://hackenberg.tech/projects/${p.id}/#software` })))}
 >

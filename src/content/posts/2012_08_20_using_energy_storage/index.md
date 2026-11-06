@@ -1,7 +1,7 @@
 ---
-title: "Using Energy Storage"
+title: "Modeling Battery Energy Storage in Smart Grid Simulations"
 pubDate: "2012-08-19"
-description: "After adding the powerhouse in the previous example we now integrate a model of energy storage components into the picture. This first study explores the behavi..."
+description: "Integrating distributed battery energy storage models into our smart grid simulation workbench to buffer peak loads and stabilize grid frequency."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
 image:
   src: "./diagram.png"

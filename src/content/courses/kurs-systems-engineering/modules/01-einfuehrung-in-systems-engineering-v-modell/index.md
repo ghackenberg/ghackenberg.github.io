@@ -2,7 +2,7 @@
 title: "Einführung in Systems Engineering & V-Modell"
 courseId: "kurs-systems-engineering"
 moduleNumber: "01"
-description: "Systemdenken, Stakeholder-Anforderungen, Systemgrenzen, Black-Box- vs. White-Box-Modelle."
+description: "Methodische Grundlagen des interdisziplinären Systems Engineering: Systemgrenzen, Anforderungsmanagement, Funktionszerlegung und das VDI-2206-V-Modell."
 order: 1
 topics:
   - "Das V-Modell im Produktlebenszyklus"

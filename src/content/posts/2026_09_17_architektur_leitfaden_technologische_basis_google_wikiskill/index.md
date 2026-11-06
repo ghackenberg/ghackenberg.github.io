@@ -1,7 +1,7 @@
 ---
-title: "Architektur-Leitfaden: Die richtige technologische Basis für Google WikiSkill"
+title: "Google WikiSkill Architektur: Tech-Stack im Vergleich"
 pubDate: 2026-09-17
-description: Wie lässt sich das WikiSkill-Paradigma (Inference → Tracing → Wiki Maintenance → Skill Synthesis → Gating) in Software gießen? Ein fundierter Technologie- und Architektur-Vergleich zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph für Web-, CLI- und Enterprise-Ökosysteme.
+description: "Wie lässt sich das Google-WikiSkill-Paradigma technisch umsetzen? Ein Architekturvergleich zwischen Mastra, Pi Agent, PydanticAI, Hermes und LangGraph."
 tags:
   - agentic-ai
   - artificial-intelligence

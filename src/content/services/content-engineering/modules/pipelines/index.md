@@ -1,5 +1,5 @@
 ---
-title: "Publishing Pipelines"
+title: "Static-Site Publishing & CI/CD Build Pipelines"
 serviceId: "content-engineering"
 description: "Building static-site generation pipelines with Astro and MDX, programmatic image optimization (WebP/AVIF), and automated Git CI/CD deployment."
 ctaText: "Inquire about Publishing Pipelines"

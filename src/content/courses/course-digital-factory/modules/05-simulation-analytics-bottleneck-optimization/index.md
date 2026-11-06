@@ -2,7 +2,7 @@
 title: "Simulation Analytics & Bottleneck Optimization"
 courseId: "course-digital-factory"
 moduleNumber: "05"
-description: "Exporting event logs, analyzing utilization metrics, and proving statistical confidence."
+description: "Statistical output analysis for digital factory models: warm-up truncation, confidence intervals, bottleneck detection, and throughput optimization."
 order: 5
 topics:
   - "Warm-up Period Determination"

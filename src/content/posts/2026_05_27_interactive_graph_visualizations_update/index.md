@@ -1,5 +1,5 @@
 ---
-title: "Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared"
+title: "Interactive JavaScript Graph Visualizations: WebGL & 3D"
 pubDate: 2026-05-27
 inLanguage: en
 description: Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts.
@@ -256,12 +256,12 @@ On page load, the Astro script parses the URL parameters to fetch the state, ini
 
 With this modular refactoring, the graph visualization page is more robust, lighter on initial loading speeds, and visually synchronized with the rest of the website. Whether you prefer the organic physics of **Vis.js**, the raw data transparency of **D3**, or the futuristic fly-throughs of the **3D Force Graph**, the system delivers a premium, smooth interactive experience in light and dark mode alike.
 
-If you are interested in advanced browser graphics and spatial shaders beyond graph topology, explore our deep dive into [3D Comic Head in WebGL with Parallax Occlusion Mapping](/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/). You can also inspect the empirical models and formal graph foundations behind our domain modeling work in our [peer-reviewed publications](/publications/).
+If you are interested in advanced browser graphics and spatial shaders beyond graph topology, explore our deep dive into [3D Comic Head in WebGL with Parallax Occlusion Mapping](/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/), our autumn 2026 engineering series on [Focus-Aware Hop Attenuation in Dense Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/), [Unifying Five Graph Engines Under One Interaction Physics Contract](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/), and [Voronoi Proximity Picking for Touch-First Graph Exploration](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/), as well as our [2D Elliptical Bin-Packing Tag Cloud Layout Engine](/posts/2026_10_17_elliptical_bin_packing_tag_cloud_layout_engine/) and [Priority-Plus Navigation with a Ten-Domain Color Spectrum](/posts/2026_10_27_priority_plus_navigation_ten_domain_color_spectrum/). You can also inspect the empirical models and formal graph foundations behind our domain modeling work in our [peer-reviewed publications](/publications/).
 
 Explore each engine live in action on the website:
 - [Sigma.js: ForceAtlas2 Network Graph](/visualizations/sigma/) – High-performance WebGL graph layout with web workers.
 - [Vis.js: Physics-Based Network Graph](/visualizations/vis-network/) – Smooth physics-driven 2D particle network on HTML5 canvas.
-- [3D Force: Volumetric Network Graph](/visualizations/3d-force/) – Immersive spatial exploration built on Three.js & WebGL.
+- [3D Force-Graph: Volumetric Network Graph](/visualizations/3d-force-graph/) – Immersive spatial exploration built on Three.js & WebGL.
 - [Cytoscape.js: Semantic Network Graph](/visualizations/cytoscape/) – Versatile graph-theoretical layouts.
 - [D3.js: Force-Directed Network Graph](/visualizations/d3/) – Physics-based force layout with delicate vector typography.
 

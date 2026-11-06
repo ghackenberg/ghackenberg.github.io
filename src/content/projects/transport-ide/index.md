@@ -1,5 +1,5 @@
 ---
-title: "Transport IDE"
+title: "Transport IDE: Intelligent Traffic Simulation"
 trl: 4
 description: "A modern Java- and JavaFX-based Intelligent Transportation Systems (ITS) modeling, discrete-event simulation, and control strategy optimization workbench."
 tags:

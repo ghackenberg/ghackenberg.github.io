@@ -1,7 +1,7 @@
 ---
-title: "Optimizing Powerhouse Control"
+title: "Optimizing Powerhouse Dispatch Control in Smart Grids"
 pubDate: "2012-08-16"
-description: "To meet the hard power balance contraint the use of conventional power plants and powerhouses is probably inevitable even in a smart grid. For this reason we ex..."
+description: "Modeling and optimizing conventional powerhouse dispatch schedules to guarantee real-time power balance under volatile renewable feed-in."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
 image:
   src: "./balance.png"

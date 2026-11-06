@@ -1,7 +1,7 @@
 ---
-title: "Teaser: Smart Traffic Control"
+title: "Intelligent Traffic Control & Simulation Workbench Preview"
 pubDate: "2013-12-17"
-description: "Besides our original topics such as distributed and smart fride control we have worked on another interesting issue: Smart traffic control. By smart traffic con..."
+description: "Applying distributed smart-systems optimization and discrete-event simulation to adaptive urban traffic light control and corridor routing."
 tags: ["data-visualization", "dynamic-programming", "simulation", "traffic-control", "transportation-systems"]
 image:
   src: "./graph.png"

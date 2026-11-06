@@ -1,5 +1,5 @@
 ---
-title: "API Integration"
+title: "Contract-First API Integration & Event Streaming"
 serviceId: "software-engineering"
 description: "Contract-first API engineering, high-throughput event streaming, resilient distributed communication, and schema-validated service boundaries."
 ctaText: "Inquire about API Integration"

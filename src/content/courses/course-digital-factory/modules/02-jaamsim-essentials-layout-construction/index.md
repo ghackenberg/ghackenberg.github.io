@@ -2,7 +2,7 @@
 title: "JaamSim Essentials & Layout Construction"
 courseId: "course-digital-factory"
 moduleNumber: "02"
-description: "Navigating the 3D canvas, assembling basic processing stations, and configuring object properties."
+description: "Building interactive 3D factory layouts in JaamSim: entity generators, queues, servers, conveyors, stochastic arrival distributions, and CAD imports."
 order: 2
 topics:
   - "Generators, Servers, and Sinks"

@@ -1,6 +1,6 @@
 ---
-title: "Web-Programmierung mit TypeScript"
-description: "Unterlagen für meinen Kurs in Web-Programmierung mit TypeScript und Firebase. Einstieg in die moderne Webentwicklung."
+title: "Web-Programmierung mit TypeScript & Google Firebase"
+description: "Hochschulkurs zur Full-Stack-Webentwicklung mit TypeScript, modernen DOM-Standards, Firebase Authentication, Cloud Firestore und CI/CD-Hosting."
 repoName: "kurs-typescript-firebase"
 learningGoals:
   - "Sichere Anwendung von TypeScript-Features wie statischer Typisierung und Interfaces im Webkontext."

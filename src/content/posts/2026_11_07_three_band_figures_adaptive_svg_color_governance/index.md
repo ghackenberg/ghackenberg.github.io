@@ -1,7 +1,7 @@
 ---
-title: "Unified Three-Band Figures, Font-Weighted SVG Scaling, and Cross-Layer Color Token Governance"
+title: "Three-Band Figures, SVG Scaling & Color Token Governance"
 pubDate: 2026-11-07
-description: "How we unified heterogeneous technical artifacts into three-band figure cards with fullscreen pan/zoom inspection, font-weighted SVG max-width scaling, and static AST linters for prose rhythm and Soft Nordic Pastel color parity."
+description: "How we unified technical diagrams into three-band figure cards with pan/zoom inspection, font-weighted SVG scaling, and AST Soft Nordic Pastel governance."
 inLanguage: "en"
 tags:
   - design-systems
@@ -119,7 +119,7 @@ This dual constraint guarantees that compact `480x480` schematics with bold `15p
 
 ![Semantic vector diagram contrasting fixed 760px column SVG stretching (25.3px inflated labels) against font-weighted SVG scaling in rehype-inline-svg.ts targeting 14px-14.5px body prose parity](./font-weighted-svg-scaling-curve.svg "Font-Weighted SVG Max-Width Scaling Curve")
 
-In addition to computing `style="max-width: ...px"`, [`rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) strips redundant `@import url('/styles/graphics.css');` declarations during HTML inlining and prefixes every internal SVG `[id]`, `url(#...)`, and `href="#..."` reference with a deterministic 8-character SHA-256 hash (`svg-${hash}-`) to prevent DOM ID collisions when multiple diagrams appear in the same post.
+In addition to computing `style="max-width: ...px"`, [`rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) strips redundant `@import url('/styles/graphics.css');` declarations during HTML inlining and prefixes every internal SVG `[id]`, `url(#...)`, and `href="#..."` reference with a deterministic 8-character SHA-256 hash (`svg-${hash}-`) to prevent DOM ID collisions when multiple diagrams appear in the same post—complementing our [Schema.org ImageObject Asset Governance](/posts/2026_10_16_schema_org_image_object_metadata_asset_governance/), [Ten-Domain Color Spectrum](/posts/2026_10_27_priority_plus_navigation_ten_domain_color_spectrum/), [FOIT-Free Vector Branding Compilation](/posts/2026_10_29_foit_free_vector_branding_svg_path_compilation/), and [Astro Content-Layer Merkle Asset Digesting](/posts/2026_11_08_astro_content_layer_merkle_asset_digesting/).
 
 ## How Do Static AST Linters Enforce Prose Rhythm and Cross-Layer Color Parity?
 

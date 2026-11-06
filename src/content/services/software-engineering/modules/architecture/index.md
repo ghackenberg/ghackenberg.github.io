@@ -1,5 +1,5 @@
 ---
-title: "Software Architecture"
+title: "Domain-Driven Software & Distributed Architecture"
 serviceId: "software-engineering"
 description: "Domain-driven architectural design, structural decomposition, bounded contexts, and systematic evaluation of distributed versus monolithic topologies."
 ctaText: "Inquire about Software Architecture"

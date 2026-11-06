@@ -2,7 +2,7 @@
 title: "Stochastische Modellierung & Zufallsvariablen"
 courseId: "kurs-computer-simulation"
 moduleNumber: "02"
-description: "Erzeugung von Pseudozufallszahlen, statistische Verteilungen und Anpassungstests."
+description: "Stochastische Systemmodellierung: Linearer Kongruenzgenerator, Inversionsmethode, Verteilungsanpassung sowie Chi-Quadrat- und Kolmogorow-Smirnow-Tests."
 order: 2
 topics:
   - "Linear Congruential Generators (LCG)"

@@ -1,5 +1,5 @@
 ---
-title: "Tool Integration"
+title: "Model Context Protocol (MCP) & Enterprise Tooling"
 serviceId: "intelligence-engineering"
 description: "Integrating language models with internal databases, APIs, and services using the Model Context Protocol (MCP) and deterministic schema validation."
 ctaText: "Inquire about Tool Integration"

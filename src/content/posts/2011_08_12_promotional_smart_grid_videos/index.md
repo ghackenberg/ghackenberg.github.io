@@ -1,7 +1,7 @@
 ---
-title: "Promotional Smart Grid Videos"
+title: "Smart Grid Vision Videos & Decentralized Energy Control"
 pubDate: "2011-08-11"
-description: "Currently I am working hard to understand ongoing efforts for revolutionizing the energy supply systems across the globe. In a recent article - a View onto the ..."
+description: "Reviewing industry vision videos and architectural concepts for future smart grids, decentralized power generation, and automated demand response."
 tags: ["drawing", "energy-systems", "youtube-video"]
 image:
   src: "./youtube_research.jpg"

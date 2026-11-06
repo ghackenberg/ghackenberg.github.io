@@ -1,7 +1,7 @@
 ---
-title: "Architektur und Funktionsweise des Hermes Agent: Body-Brain-Entkopplung, Bounded Context, Progressive Skills und der Curator-Lifecycle"
+title: "Hermes Agent Architektur: Body-Brain-Trennung & Skills"
 pubDate: 2026-09-07
-description: "Eine softwaretechnische Tiefenanalyse des Hermes Agent von Nous Research: Wie die Trennung von Body und Brain echte Modellagnostik schafft, warum Bounded Memory KV-Caches schützt, wie Progressive Disclosure Token spart und wie der Curator Skill Sprawl verhindert."
+description: "Softwaretechnische Analyse des Hermes Agent von Nous Research: Modellagnostik durch Body-Brain-Entkopplung, Bounded Memory, Progressive Skills & Curator."
 tags:
   - agentic-ai
   - artificial-intelligence

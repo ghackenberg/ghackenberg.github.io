@@ -1,13 +1,16 @@
 ---
 title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 pubDate: "2015-12-20"
-description: "Recently, I added tags to my blog posts and scientific publications. The tags allow me to connect my articles based on keywords and topics. I use the tags to im..."
+description: "Compare Cytoscape.js, Sigma.js, and D3.js for interactive JavaScript graph visualizations, including layout physics, WebGL benchmarks, and live browser demos."
 tags: ["blog", "cytoscape", "d3", "data-visualization", "hyperkit-software", "javascript", "zumida"]
 image:
   src: "./cytoscape.png"
   title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3 - Cytoscape illustration"
   description: "Cytoscape illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 ---
+> [!IMPORTANT]
+> **2026 Architecture Update & Live WebGL Demos:** We have expanded this benchmark from three libraries to five interactive graph engines. Read our updated engineering comparisons in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/), or launch the live browser sandboxes directly: [Cytoscape.js](/visualizations/cytoscape/), [Sigma.js WebGL](/visualizations/sigma/), [D3.js Force](/visualizations/d3/), [Vis-Network Canvas](/visualizations/vis-network/), and [3D Force-Graph (Three.js)](/visualizations/3d-force-graph/).
+
 The implementation with all three JavaScript libraries was straight forward.
 In all three cases, I had to convert the tag information into a proprietary [JSON](http://www.json.org/) format.
 Converting the tag information into the proprietary format took me less than 30 minutes coding and less and 100 lines of code per JavaScript library.

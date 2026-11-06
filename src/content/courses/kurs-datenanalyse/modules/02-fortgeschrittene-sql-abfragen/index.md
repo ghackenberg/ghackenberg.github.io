@@ -1,8 +1,8 @@
 ---
-title: "Fortgeschrittene SQL-Abfragen"
+title: "Fortgeschrittene SQL-Abfragen, JOINs & Aggregationen"
 courseId: "kurs-datenanalyse"
 moduleNumber: "02"
-description: "Multi-Table JOINs, Subqueries, Aggregationen, HAVING-Filter und Window Functions."
+description: "Analytische SQL-Abfragen in relationalen Datenbanksystemen: Komplexe Multi-Table JOINs, Common Table Expressions (CTEs), GROUP BY/HAVING und Window Functions."
 order: 2
 topics:
   - "Inner, Left, Right & Full Outer JOINs"

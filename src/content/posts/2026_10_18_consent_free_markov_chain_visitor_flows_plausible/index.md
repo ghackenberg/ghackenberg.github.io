@@ -1,5 +1,5 @@
 ---
-title: "Consent-Free Visitor Flows: Reconstructing Multi-Step Navigation via Same-Origin Referrers and First-Order Markov Chains in Plausible"
+title: "Consent-Free Markov Visitor Flows in Plausible Analytics"
 pubDate: 2026-10-18
 description: How we replaced sessionStorage flow_id tokens and consent banners with stateless document.referrer telemetry and 1st-order Markov visitor flows.
 inLanguage: en
@@ -171,7 +171,7 @@ export function initAnalytics(): void {
 }
 ```
 
-Note why `localStorage.setItem('plausible_ignore', 'true')` on line 128 is fully compliant with Article 5(3): this flag is never written during normal visitor sessions and contains zero tracking identifiers. It is set exclusively when the visitor's browser actively broadcasts an explicit `Global Privacy Control (GPC)` or `Do-Not-Track (DNT)` opt-out signal, is never transmitted over the network, and is strictly necessary to execute the user's explicit browser-level instruction to suppress telemetry.
+Note why `localStorage.setItem('plausible_ignore', 'true')` on line 128 is fully compliant with Article 5(3): this flag is never written during normal visitor sessions and contains zero tracking identifiers. It is set exclusively when the visitor's browser actively broadcasts an explicit `Global Privacy Control (GPC)` or `Do-Not-Track (DNT)` opt-out signal, is never transmitted over the network, and is strictly necessary to execute the user's explicit browser-level instruction to suppress telemetry—a privacy-by-design boundary that complements our [ALTCHA Proof-of-Work Newsletter-as-Code Architecture](/posts/2026_10_20_newsletter_as_code_react_email_listmonk_altcha_pow/), [Agent Harness Telemetry and Verification](/posts/2026_10_21_agent_harnesses_architecture_taxonomy_evolution/), [W3C WebMCP Client-Side Tooling](/posts/2026_10_23_webmcp_w3c_standard_architecture_history_future/), [Single-Root JSON-LD 1.1 Knowledge Graph Validator](/posts/2026_10_25_single_root_json_ld_knowledge_graph_validator/), and [Zero-innerHTML Preact and Nanostores UI Islands](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/).
 
 ## 2. Stateless Single-Step Edge Capture via Same-Origin `document.referrer`
 

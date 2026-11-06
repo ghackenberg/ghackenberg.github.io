@@ -13,7 +13,7 @@ export function resolveLocalContentFile(target: string): { filePath?: string; co
   const root = config.projectRoot;
 
   // Case 1: Direct file path
-  let candidate = path.isAbsolute(target) ? target : path.resolve(root, target);
+  const candidate = path.isAbsolute(target) ? target : path.resolve(root, target);
   if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
     return { filePath: candidate, content: fs.readFileSync(candidate, 'utf-8') };
   }
@@ -68,6 +68,56 @@ export function resolveLocalContentFile(target: string): { filePath?: string; co
 }
 
 /**
+ * Infers build-time Schema.org JSON-LD types injected by Layout.astro and src/commons/server/json-ld.ts
+ * when evaluating uncompiled Markdown/MDX collection entries or Astro page templates.
+ */
+function inferBuildTimeSchemaTypes(target: string, filePath?: string, content?: string): string[] {
+  const combinedPath = `${filePath || ''} ${target || ''}`.replace(/\\/g, '/');
+  const hasFrontmatter = Boolean(content && content.startsWith('---') && content.indexOf('---', 3) !== -1);
+  const usesLayoutOrJsonLd = Boolean(content && (content.includes('<Layout') || content.includes('jsonLd=')));
+
+  if (!hasFrontmatter && !usesLayoutOrJsonLd) {
+    return [];
+  }
+
+  if (/(?:src\/content\/posts\/|^\/posts\/|\bposts\/)/.test(combinedPath)) {
+    return ['BlogPosting', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/visualizations\/|^\/visualizations\/|\bvisualizations\/)/.test(combinedPath)) {
+    return ['SoftwareApplication', 'WebApplication', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/course-modules\/|^\/courses\/[^/]+\/[^/]+)/.test(combinedPath)) {
+    return ['LearningResource', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/courses\/|^\/courses\/|\bcourses\/)/.test(combinedPath)) {
+    return ['Course', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/publications\/|^\/publications\/|\bpublications\/)/.test(combinedPath)) {
+    return ['ScholarlyArticle', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/presentations\/|^\/presentations\/|\bpresentations\/)/.test(combinedPath)) {
+    return ['PresentationDigitalDocument', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/projects\/|^\/projects\/|\bprojects\/)/.test(combinedPath)) {
+    return ['SoftwareApplication', 'SoftwareSourceCode', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/service-modules\/|src\/content\/services\/|^\/services\/|\bservices\/)/.test(combinedPath)) {
+    return ['Service', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/newsletters\/|^\/newsletters\/|\bnewsletters\/)/.test(combinedPath)) {
+    return ['Article', 'BreadcrumbList'];
+  }
+  if (/(?:src\/content\/tags\/|^\/tags\/|\btags\/)/.test(combinedPath)) {
+    return ['DefinedTerm', 'CollectionPage', 'BreadcrumbList'];
+  }
+  if (usesLayoutOrJsonLd || /src\/pages\//.test(combinedPath)) {
+    return ['WebPage', 'BreadcrumbList'];
+  }
+
+  return [];
+}
+
+/**
  * Evaluates raw markdown or HTML content string for Generative Engine Optimization (GEO)
  * and AI Overviews (AIO) extractability.
  */
@@ -89,8 +139,9 @@ export function evaluateContentString(
 
   const lines = rawBody.split('\n');
 
-  // 1. Question-oriented headings (H2 / H3)
-  const questionHeadingRegex = /^#{2,3}\s+(.*\?|(was|wie|warum|welche|wann|wo|how|what|why|which|when|where)\b.*)/i;
+  // 1. Question-oriented headings (H2 / H3), supporting German and English interrogatives and optional section numbers
+  const questionHeadingRegex =
+    /^#{2,3}\s+(?:(?:\d+(?:\.\d+)*\.?\s+)?(?:wie|warum|was|wann|wo|wer|welche[rsmn]?|wieso|weshalb|wodurch|wozu|inwiefern|how|what|why|which|when|where|who)\b.*|.*\?)$/i;
   const allHeadingsRegex = /^#{2,3}\s+(.+)$/;
   const questionHeadings: string[] = [];
   const headingsWithFirstParagraph: Array<{ heading: string; firstPara: string }> = [];
@@ -165,14 +216,35 @@ export function evaluateContentString(
   const listItems = lines.filter((l) => /^(\s*[-*+]|\s*\d+\.)\s+/.test(l));
   const listCount = listItems.length;
 
-  // 5. Schema / Structured Data detection
+  // 5. Schema / Structured Data detection (inline HTML or build-time Layout.astro / json-ld.ts injection)
   const schemaRegex = /"@context":\s*"https?:\/\/schema\.org"/i;
-  const hasSchema = schemaRegex.test(content) || /itemscope/i.test(content);
   const schemaTypes: string[] = [];
   const typeMatches = content.matchAll(/"@type":\s*"([^"]+)"/g);
   for (const m of typeMatches) {
-    if (m[1]) schemaTypes.push(m[1]);
+    if (m[1] && !schemaTypes.includes(m[1])) {
+      schemaTypes.push(m[1]);
+    }
   }
+  const arrayTypeMatches = content.matchAll(/"@type":\s*\[([^\]]+)\]/g);
+  for (const m of arrayTypeMatches) {
+    const inner = m[1].matchAll(/"([^"]+)"/g);
+    for (const item of inner) {
+      if (item[1] && !schemaTypes.includes(item[1])) {
+        schemaTypes.push(item[1]);
+      }
+    }
+  }
+
+  if (schemaTypes.length === 0) {
+    const inferredTypes = inferBuildTimeSchemaTypes(target, filePath, content);
+    for (const t of inferredTypes) {
+      if (!schemaTypes.includes(t)) {
+        schemaTypes.push(t);
+      }
+    }
+  }
+
+  const hasSchema = schemaRegex.test(content) || /itemscope/i.test(content) || schemaTypes.length > 0;
 
   // Calculate Score (0-100)
   let score = 20; // Base score for published content
@@ -454,4 +526,3 @@ export function diffAioAgainstGit(target: string, baseRef: string = 'HEAD'): Aio
     after,
   };
 }
-

@@ -2,7 +2,7 @@
 title: "Generics & das Java Collections Framework"
 courseId: "kurs-java-programmierung"
 moduleNumber: "04"
-description: "Typsichere Datenstrukturen: List, Set, Map und deren Implementierungen."
+description: "Typsichere Datenstrukturen mit Java Generics und dem Collections Framework: ArrayList, LinkedList, HashSet, TreeMap, Iteratoren und die Stream-API."
 order: 4
 topics:
   - "ArrayList vs. LinkedList"
