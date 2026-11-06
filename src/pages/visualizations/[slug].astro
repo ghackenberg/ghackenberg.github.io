@@ -106,7 +106,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
     <!-- Canvas Viewport in Wide Width -->
     <Container size="wide" padding="none">
-      <div class="flex-grow w-full relative min-h-[500px] h-[70vh] md:h-[calc(100vh-320px)] rounded-3xl border border-element-border glass-card hover:transform-none overflow-hidden shadow-2xl mb-12">
+      <div class="visualization-viewport flex-grow w-full relative min-h-[500px] rounded-3xl border border-element-border glass-card hover:transform-none overflow-hidden shadow-2xl mb-12">
         <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
         <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-element-border-medium light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
           <div class="flex items-center space-x-2">
@@ -393,6 +393,12 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 </Layout>
 
 <style>
+  /* Full-viewport height minus scrolled sticky navbar (4rem) and compact vertical section rhythm (top & bottom) */
+  .visualization-viewport {
+    height: calc(100vh - 4rem - 2 * clamp(1.5rem, 3vw, 2.5rem));
+    height: calc(100dvh - 4rem - 2 * clamp(1.5rem, 3vw, 2.5rem));
+  }
+
   /* Ensure canvas takes all available dimensions */
   #canvas {
     outline: none;

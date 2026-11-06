@@ -12,7 +12,7 @@ import {
   getAttenuatedEdgeStyle,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
-import { getThemeTokens } from '@commons/shared/domain-themes';
+
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 export interface Force3DNode extends GraphNodePayload {
@@ -235,14 +235,14 @@ const engine: Force3DEngine = {
     };
     this.applyHighlight = refreshHighlight;
 
-    const tokens = getThemeTokens(isLight);
+
     const initialWidth = container.clientWidth || 800;
     const initialHeight = container.clientHeight || 500;
     this.graph = ForceGraph3D()(container)
       .width(initialWidth)
       .height(initialHeight)
       .graphData({ nodes: this.nodes, links: this.links })
-      .backgroundColor(tokens.canvasBg)
+      .backgroundColor('rgba(0,0,0,0)')
       .showNavInfo(false)
       .nodeLabel(() => '')
       .nodeVal((n: Force3DNode) => n.displayVal ?? n.val)
@@ -510,8 +510,8 @@ const engine: Force3DEngine = {
     this.isLight = isLight;
 
     // Apply color update based on theme
-    const tokens = getThemeTokens(isLight);
-    this.graph.backgroundColor(tokens.canvasBg);
+
+    this.graph.backgroundColor('rgba(0,0,0,0)');
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodes.forEach(n => {
