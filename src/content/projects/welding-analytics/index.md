@@ -1,7 +1,7 @@
 ---
-title: "Welding Analytics"
+title: "Welding Analytics: High-Frequency Process Suite"
 trl: 6
-description: "High-performance industrial analytics and visualization suite for high-frequency welding process data, featuring custom timeseries rendering, arc cyclograms, and density distributions."
+description: "High-performance industrial analytics and visualization suite for high-frequency welding process data, featuring timeseries rendering and arc cyclograms."
 tags: ["data-visualization", "hyperkit-software", "industrial-informatics", "java", "manufacturing-engineering", "manufacturing-systems", "open-source", "systems-analysis"]
 accentColor: "blue"
 order: 5

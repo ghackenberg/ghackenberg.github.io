@@ -1,7 +1,7 @@
 ---
-title: "FOIT-Free Vector Branding: Compiling SVG Paths & the DT-1 H-Bridge"
+title: "FOIT-Free Vector Branding & DT-1 SVG Path Compilation"
 pubDate: 2026-10-29
-description: "Why external webfonts inside SVG favicons trigger Flash of Invisible Text (FOIT), and how we compile self-contained vector paths and our DT-1 H-Bridge emblem across web, PWA, Open Graph, and React Email."
+description: "Why external webfonts inside SVG favicons cause Flash of Invisible Text (FOIT), and how we compile self-contained vector paths across web, OG, and email."
 inLanguage: "en"
 tags:
   - design-systems

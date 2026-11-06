@@ -1,7 +1,7 @@
 ---
-title: "Verlässliche Agenten-Architekturen im Enterprise-Einsatz: ReAct-Loops, Statecharts und Procedural Graphs im Vergleich"
+title: "Verlässliche KI-Agenten: ReAct, Statecharts & Graphen"
 pubDate: 2026-10-06
-description: ReAct-Loops, Statecharts oder Procedural Graphs? Ein Architekturvergleich für verlässliche Enterprise-Agenten mit Simplex-Safety-Envelopes und Audit-Garantien.
+description: "ReAct-Loops, Statecharts oder Procedural Graphs? Architekturvergleich für verlässliche Enterprise-Agenten mit Simplex-Safety-Envelopes und Audit-Trails."
 inLanguage: de
 tags:
   - agentic-ai

@@ -1,5 +1,5 @@
 ---
-title: "Knowledge Retrieval"
+title: "Hybrid Knowledge Retrieval, GraphRAG & Agent Memory"
 serviceId: "intelligence-engineering"
 description: "Engineering retrieval architectures combining dense vector search (Qdrant), property knowledge graphs (Neo4j GraphRAG), and persistent agent memory (Mem0)."
 ctaText: "Inquire about Knowledge Retrieval"

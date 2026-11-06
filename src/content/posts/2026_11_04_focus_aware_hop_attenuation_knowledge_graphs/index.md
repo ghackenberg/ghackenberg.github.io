@@ -1,7 +1,7 @@
 ---
-title: "Focus-Aware Hop Attenuation in Knowledge Graphs: Hub Penalties & Parametric Decay"
+title: "Focus-Aware Hop Attenuation in Web Knowledge Graphs"
 pubDate: 2026-11-04
-description: "How we replace unweighted k-hop BFS with focus-budgeted effective hop distances, logarithmic hub-degree penalties, and parametric power curves in interactive knowledge graphs."
+description: "How we replaced unweighted k-hop BFS with focus-budgeted effective hop distances, logarithmic hub-degree penalties, and parametric decay in web graphs."
 inLanguage: "en"
 tags:
   - knowledge-graphs

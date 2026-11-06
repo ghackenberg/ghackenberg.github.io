@@ -1,7 +1,7 @@
 ---
-title: "Smart Systems IDE"
+title: "Smart Systems IDE: Dynamic Control & Optimization"
 trl: 4
-description: "An integrated development environment and dynamic optimization framework for modeling objective functions, behavior spaces, and automated optimal control in smart systems."
+description: "Integrated development environment and optimization framework for modeling objective functions, behavior spaces, and optimal control in smart systems."
 tags:
   - "dynamic-programming"
   - "energy-systems"

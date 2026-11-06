@@ -1,7 +1,7 @@
 ---
-title: "Single-Root JSON-LD Knowledge Graphs: Six-Gate Postbuild Validation & Dynamic llms.txt Synthesis"
+title: "Single-Root JSON-LD Knowledge Graphs & SHACL Validation"
 pubDate: 2026-10-25
-description: "How we replaced fragmented Schema.org script blocks with a single-root JSON-LD 1.1 @graph compiler, a SHACL-inspired six-gate postbuild validator, and synchronized llms.txt entity discovery."
+description: "How we replaced fragmented Schema.org blocks with a single-root JSON-LD 1.1 @graph compiler, a six-gate postbuild validator, and dynamic llms.txt sync."
 inLanguage: en
 tags:
   - knowledge-graphs

@@ -1,5 +1,5 @@
 ---
-title: "Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared"
+title: "Interactive JavaScript Graph Visualizations: WebGL & 3D"
 pubDate: 2026-05-27
 inLanguage: en
 description: Compare WebGL, Three.js, Cytoscape.js, and Vis.js for interactive network graph visualizations in JavaScript. Benchmark performance and layouts.

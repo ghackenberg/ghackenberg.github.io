@@ -1,5 +1,5 @@
 ---
-title: "Semantic Optimization"
+title: "Semantic SEO, Schema.org JSON-LD & AIO Optimization"
 serviceId: "content-engineering"
 description: "Implementing Schema.org JSON-LD microdata, automated LLM context manifests (content-manifest.json), XML sitemaps, and machine-readable metadata structures."
 ctaText: "Inquire about Semantic Optimization"

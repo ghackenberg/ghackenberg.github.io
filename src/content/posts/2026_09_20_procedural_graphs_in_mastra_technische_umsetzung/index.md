@@ -1,7 +1,7 @@
 ---
-title: "Procedural Graphs mit Mastra: Wie Software-Ingenieure selbstlernende Prozessgraphen in TypeScript technisch realisieren"
+title: "Procedural Graphs mit Mastra in TypeScript umsetzen"
 pubDate: 2026-09-20
-description: "Die ingenieurwissenschaftliche Brücke von Google Research zu moderner Enterprise-Software: Wie Entwickler das Paper 'Procedural Graphs' (arXiv:2609.09153) auf Basis des TypeScript-Frameworks Mastra technisch implementieren – inklusive Zod-Schemas für Kantenattribute, Runtime Soft Guidance, MCP-Integration und Offline-Evolution mit Rejection Memory."
+description: "Wie Software-Ingenieure selbstlernende Procedural Graphs mit Mastra und TypeScript implementieren: Zod-Schemas, Runtime Soft Guidance und MCP-Integration."
 tags:
   - mastra
   - typescript

@@ -1,7 +1,7 @@
 ---
-title: "Persistente Wissensevolution für autonome Agenten: Das Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
+title: "Google WikiSkill: Persistente Wissensevolution für Agenten"
 pubDate: 2026-09-06
-description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der 'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die Effektivität belegen."
+description: "Warum naive Trajektorien-Optimierung bei Agent-Skills scheitert und wie Googles WikiSkill-Architektur Wissen persistent von Prozeduren entkoppelt."
 tags:
   - artificial-intelligence
   - agentic-ai

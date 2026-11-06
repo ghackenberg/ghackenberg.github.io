@@ -1,5 +1,5 @@
 ---
-title: "Requirements Engineering"
+title: "Formal Requirements Engineering & Domain Analysis"
 serviceId: "software-engineering"
 description: "Systematic elicitation, domain analysis, formal specification, and validation of functional requirements and architectural quality attributes."
 ctaText: "Inquire about Requirements Engineering"

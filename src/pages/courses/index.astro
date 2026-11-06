@@ -36,8 +36,8 @@ const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
 ---
 
 <Layout 
-  title="University Courses | Dr. Georg Hackenberg" 
-  description="Explore university course materials, lecture slides, and GitHub repositories on software engineering and industrial informatics by Dr. Georg Hackenberg."
+  title="University Courses & Lecture Materials | Georg Hackenberg" 
+  description="Open-access university courses, lecture slides, syllabi, and GitHub lab repositories on software engineering, simulation, and AI by Dr. Georg Hackenberg."
   image={firstCourseScreenshot}
   preloadImage={optimizedFirstScreenshot?.src}
   jsonLd={buildCollectionPageSchema("courses", courses.map((c) => ({ id: `https://hackenberg.tech/courses/${c.id}/#course` })))}

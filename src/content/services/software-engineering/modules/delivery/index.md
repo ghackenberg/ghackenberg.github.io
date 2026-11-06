@@ -1,5 +1,5 @@
 ---
-title: "Release Engineering"
+title: "Automated Release Engineering & GitOps Delivery"
 serviceId: "software-engineering"
 description: "Automated continuous delivery pipelines, immutable container packaging, GitOps deployment automation, and zero-downtime release strategies."
 ctaText: "Inquire about Release Engineering"

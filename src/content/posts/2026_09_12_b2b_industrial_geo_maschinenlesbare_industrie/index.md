@@ -1,7 +1,7 @@
 ---
-title: "B2B & Industrial GEO: Warum klassisches Industrie-Marketing an KI-Agenten scheitert – und wie technische B2B-Unternehmen maschinenlesbar werden"
+title: "B2B & Industrial GEO: Maschinenlesbare Industrie-Systeme"
 pubDate: 2026-09-12
-description: Warum Gated Whitepapers, unstrukturierte PDFs und Werbefloskeln Industrieunternehmen im KI-Zeitalter unsichtbar machen – und wie technische B2B-Anbieter ihre Spezifikationen maschinenlesbar für KI-Einkaufsagenten strukturieren.
+description: "Warum Gated PDFs im KI-Zeitalter unsichtbar bleiben und wie technische B2B-Industrieunternehmen ihre Spezifikationen für KI-Einkaufsagenten strukturieren."
 tags:
   - aeo
   - agentic-ai

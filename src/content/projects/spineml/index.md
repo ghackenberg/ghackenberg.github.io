@@ -1,5 +1,5 @@
 ---
-title: "SpineML"
+title: "SpineML: Factory Layout & Job Shop Optimization"
 trl: 4
 description: "A Python toolkit designed to optimize factory layout planning (FLP) and job shop scheduling (JSS) through advanced layout modeling and simulation."
 tags: ["data-visualization", "factory-layout", "manufacturing-systems", "open-source", "optimization", "python", "scheduling", "simulation"]

@@ -2,7 +2,7 @@
 title: "Mindful IT & Calm Computing: Kognitive IT-Architektur"
 pubDate: 2026-09-02
 inLanguage: de
-description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken.
+description: "Wie wir mit Mindful IT und Calm Computing Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition schützen und entlasten."
 tags:
   - artificial-intelligence
   - calm-technology

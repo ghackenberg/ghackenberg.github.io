@@ -1,7 +1,7 @@
 ---
-title: "Das GEO-Reifegradmodell für Industrieunternehmen: Vom unsichtbaren Webauftritt zur agentenfähigen Plattform"
+title: "GEO-Reifegradmodell für B2B- & Industrieunternehmen"
 pubDate: 2026-09-13
-description: "Ein praxisorientiertes 4-Stufen-Reifegradmodell für Industrieunternehmen und technische Mittelständler: Von klassischer SEO-Crawlability über semantische Wissensgraphen bis zur autonomen Interaktion mit KI-Agenten."
+description: "Das 5-Stufen-Reifegradmodell für technische B2B-Unternehmen: Von klassischer SEO-Crawlability über Wissensgraphen bis zur Interaktion mit KI-Agenten."
 tags:
   - aeo
   - agentic-ai

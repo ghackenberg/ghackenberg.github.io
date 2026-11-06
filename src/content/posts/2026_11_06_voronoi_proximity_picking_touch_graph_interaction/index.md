@@ -1,7 +1,7 @@
 ---
-title: "Voronoi Proximity Picking, Unified Drag Deadzones, and 8-Sector Tooltip Repulsion Across Five Graph Engines"
+title: "Voronoi Proximity Picking & Tooltip Repulsion in Graphs"
 pubDate: 2026-11-06
-description: "How we replaced fragile 8px node hit tests with bounded Voronoi proximity picking, an 8px touch drag deadzone, and 8-sector compass tooltip repulsion across D3, Vis.js, Cytoscape, Sigma, and Three.js."
+description: "How we replaced fragile 8px hit tests with bounded Voronoi proximity picking, an 8px touch deadzone, and 8-sector tooltip repulsion across 5 graph engines."
 inLanguage: "en"
 tags:
   - data-visualization

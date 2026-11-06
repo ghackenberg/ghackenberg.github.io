@@ -1,5 +1,5 @@
 ---
-title: "Channel Architecture"
+title: "Multi-Channel Syndication & Publishing Architecture"
 serviceId: "content-engineering"
 description: "Architecting multi-channel syndication pipelines connecting canonical web repositories to documentation platforms, technical feeds, and social formats."
 ctaText: "Inquire about Channel Architecture"

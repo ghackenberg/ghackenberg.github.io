@@ -1,7 +1,7 @@
 ---
-title: "AgentBrick"
+title: "AgentBrick: Prompt-to-CAD & Voxel Assembly Agents"
 trl: 4
-description: "Open-source framework translating natural language prompts into structured LDraw CAD models and voxel assemblies using LangChain agents and LangGraph workflows."
+description: "Open-source framework translating natural language prompts into structured LDraw CAD models and voxel assemblies using LangChain agents and LangGraph."
 repoName: "agentbrick"
 accentColor: "blue"
 order: 5

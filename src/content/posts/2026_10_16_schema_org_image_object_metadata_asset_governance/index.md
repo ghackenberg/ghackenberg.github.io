@@ -1,5 +1,5 @@
 ---
-title: Schema.org ImageObject Knowledge Graphs & Build-Time Asset Governance in Astro
+title: "Schema.org ImageObject Graphs & Asset Governance in Astro"
 pubDate: 2026-10-16
 description: How we engineered a zero-fallback Schema.org ImageObject JSON-LD compiler, XML image sitemap enforcer, and 5-stage CI asset integrity validator in Astro.
 inLanguage: en

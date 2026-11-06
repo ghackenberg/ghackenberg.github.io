@@ -1,5 +1,5 @@
 ---
-title: "Consent-Free Visitor Flows: Reconstructing Multi-Step Navigation via Same-Origin Referrers and First-Order Markov Chains in Plausible"
+title: "Consent-Free Markov Visitor Flows in Plausible Analytics"
 pubDate: 2026-10-18
 description: How we replaced sessionStorage flow_id tokens and consent banners with stateless document.referrer telemetry and 1st-order Markov visitor flows.
 inLanguage: en

@@ -1,7 +1,7 @@
 ---
-title: "Das ROI-Paradoxon im B2B: Wie man Erfolg in einer Zero-Click- und Zitations-Ökonomie misst"
+title: "Das B2B ROI-Paradoxon: Erfolgsmessung für Zero-Click GEO"
 pubDate: 2026-09-14
-description: "Wenn 68% der Suchen ohne Website-Klick enden: Warum traditionelle KPIs wie PageViews im B2B versagen und wie Unternehmen Share of Model (SoM), Citation Share und Prompt-Audits für die Erfolgsmessung nutzen."
+description: "Warum klassische PageViews bei 68 % Zero-Click-Suchen im B2B versagen und wie Unternehmen Share of Model (SoM), Citation Share und Prompt-Audits messen."
 tags:
   - aeo
   - agentic-ai

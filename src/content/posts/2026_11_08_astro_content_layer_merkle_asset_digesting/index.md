@@ -1,7 +1,7 @@
 ---
-title: "Content-Addressable Asset Digesting and Dependency Tracking in Astro 5 Content Layer"
+title: "Merkle Asset Digesting in the Astro 5 Content Layer"
 pubDate: 2026-11-08
-description: "How we wrapped Astro 5's glob() loader with composite Merkle asset digests, bound Vite FSWatcher proxies, and localImagePaths SVG pruning for sub-200ms HMR."
+description: "How we wrapped Astro 5's glob() loader with composite Merkle asset digests, Vite FSWatcher proxies, and localImagePaths SVG pruning for sub-200ms HMR."
 inLanguage: "en"
 tags:
   - astro

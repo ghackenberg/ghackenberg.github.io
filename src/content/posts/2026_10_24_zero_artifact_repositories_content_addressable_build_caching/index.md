@@ -1,7 +1,7 @@
 ---
-title: "Zero-Artifact Git Repositories: Content-Addressable Build Caching, Zero-Dependency Edge-TTS & Deterministic Asset Synthesis"
+title: "Zero-Artifact Git Repos & Content-Addressable Build Caches"
 pubDate: 2026-10-24
-description: Why committing derived MP3, PDF, and PNG build outputs breaks Git RFC 3284 VCDIFF delta compression—and how we eliminated 229.89 MiB (241.05 MB) across 601 files using constructive traces with early cutoff, a zero-dependency Sec-MS-GEC v2 Edge-TTS WebSocket client, and deterministic Park-Miller LCG asset synthesis.
+description: "How we eliminated 241 MB of binary Git bloat using SHA-256 content-addressable build caching with early cutoff, Edge-TTS synthesis, and LCG asset hashing."
 inLanguage: en
 tags:
   - software-architecture

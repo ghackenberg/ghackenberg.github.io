@@ -1,7 +1,7 @@
 ---
-title: "Mentawise"
+title: "Mentawise: Visual Personal Knowledge Graph Studio"
 trl: 8
-description: "Mentawise is an innovative knowledge management solution letting visual thinkers quickly build personal knowledge graphs and share them instantly with others."
+description: "Mentawise is a visual knowledge management platform enabling researchers and teams to build interactive personal knowledge graphs and share them online."
 href: "https://mentawise.com"
 tags: ["collaborative-software", "data-visualization", "graph-database", "knowledge-graphs", "knowledge-management", "mind-mapping", "saas"]
 accentColor: "blue"

@@ -1,5 +1,5 @@
 ---
-title: "Quality Assurance"
+title: "Automated Quality Assurance & Test-Driven Engineering"
 serviceId: "software-engineering"
 description: "Comprehensive test engineering hierarchies, Test-Driven Development (TDD), property-based testing, and build-time quality gates."
 ctaText: "Inquire about Quality Assurance"

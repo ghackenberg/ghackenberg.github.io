@@ -1,7 +1,7 @@
 ---
-title: "Zero-innerHTML Client Architecture: Declarative Preact Islands, Nanostores, and AST Security Gates"
+title: "Zero-innerHTML Architecture: Preact Islands & AST Gates"
 pubDate: 2026-11-02
-description: "How a 49-script client audit led us to deduplicate 7 inline ES5 catalog pre-filters, migrate 6 raw .innerHTML DOM sinks to Preact .tsx islands and Nanostores alongside server-side React Email, and enforce a Zero-innerHTML policy via ESLint and AST gates."
+description: "How we eliminated raw .innerHTML DOM sinks using declarative Preact .tsx islands, Nanostores state atoms, and automated ESLint and AST security gates."
 inLanguage: "en"
 tags:
   - software-architecture

@@ -1,7 +1,7 @@
 ---
-title: "Model Serving"
+title: "Sovereign LLM Serving & LiteLLM Gateway Architecture"
 serviceId: "intelligence-engineering"
-description: "Designing and deploying local and private cloud model serving infrastructure with vLLM, unified LiteLLM API gateways, spending controls, and Keycloak authentication."
+description: "Designing and deploying local and private cloud LLM serving infrastructure with vLLM, unified LiteLLM API gateways, cost controls, and Keycloak SSO."
 ctaText: "Inquire about Model Serving"
 highlights:
   - "High-throughput local model serving using vLLM with PagedAttention and continuous batching"

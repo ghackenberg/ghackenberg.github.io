@@ -1,7 +1,7 @@
 ---
-title: "Unified Three-Band Figures, Font-Weighted SVG Scaling, and Cross-Layer Color Token Governance"
+title: "Three-Band Figures, SVG Scaling & Color Token Governance"
 pubDate: 2026-11-07
-description: "How we unified heterogeneous technical artifacts into three-band figure cards with fullscreen pan/zoom inspection, font-weighted SVG max-width scaling, and static AST linters for prose rhythm and Soft Nordic Pastel color parity."
+description: "How we unified technical diagrams into three-band figure cards with pan/zoom inspection, font-weighted SVG scaling, and AST Soft Nordic Pastel governance."
 inLanguage: "en"
 tags:
   - design-systems

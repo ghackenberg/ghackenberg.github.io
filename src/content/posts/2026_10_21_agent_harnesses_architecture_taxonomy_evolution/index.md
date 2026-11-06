@@ -1,7 +1,7 @@
 ---
-title: "Agent Harnesses: Architecture, Taxonomy, and Evolution from Test Drivers to Protocol Buses"
+title: "AI Agent Harnesses: Architecture, Taxonomy & Evolution"
 pubDate: 2026-10-21
-description: A technical survey and architectural taxonomy of AI agent harnesses—tracing their evolution from classical test drivers and RL environments to Agent-Computer Interfaces, isolated sandboxes, and Model Context Protocol buses.
+description: "A technical survey and architectural taxonomy of AI agent harnesses—from test drivers and RL environments to Agent-Computer Interfaces and MCP buses."
 inLanguage: en
 tags:
   - agentic-ai

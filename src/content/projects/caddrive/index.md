@@ -1,7 +1,7 @@
 ---
-title: "CADdrive"
+title: "CADdrive: Collaborative Web-Based 3D CAD Platform"
 trl: 7
-description: "CADdrive is a web-based, collaborative product design platform for schools and universities, lowering the learning curve for CAD and team engineering."
+description: "Open-source, browser-based collaborative 3D CAD and product engineering platform with WebGL assembly viewing, Git-style version history, and Python FEA."
 href: "https://caddrive.org"
 tags: ["cad", "collaborative-software", "education", "open-source", "product-design", "systems-engineering", "web-development"]
 accentColor: "blue"

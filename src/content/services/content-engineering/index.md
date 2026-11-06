@@ -1,6 +1,6 @@
 ---
-title: "Content Engineering"
-description: "Engineering structured, Git-based content architectures with typed Zod schemas, Astro static-site generation, automated CI/CD validation, and semantic Schema.org syndication."
+title: "Content Engineering & Semantic Publishing Pipelines"
+description: "Engineering Git-based content architectures with typed Zod schemas, Astro static-site generation, automated CI/CD gates, and Schema.org JSON-LD graphs."
 order: 3
 ctaText: "Inquire about Content Engineering"
 image:

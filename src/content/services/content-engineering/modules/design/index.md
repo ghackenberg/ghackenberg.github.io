@@ -1,5 +1,5 @@
 ---
-title: "Design Systems"
+title: "Tokenized Design Systems & Vector Asset Templates"
 serviceId: "content-engineering"
 description: "Designing tokenized design systems, component libraries, and multi-format vector templates (1:1, 16:9, 4:5) for technical documentation and publishing."
 ctaText: "Inquire about Design Systems"

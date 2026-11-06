@@ -1,5 +1,5 @@
 ---
-title: "Software Construction"
+title: "Clean Code Construction & Typed Domain Modeling"
 serviceId: "software-engineering"
 description: "High-discipline implementation practices adhering to Clean Code standards, SOLID design principles, defensive programming, and typed domain modeling."
 ctaText: "Inquire about Software Construction"

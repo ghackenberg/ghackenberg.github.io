@@ -1,7 +1,7 @@
 ---
-title: "Five Graph Engines, One Interaction Physics: Unifying D3, Vis.js, Cytoscape, Sigma, and Three.js"
+title: "Five Graph Engines, One Unified WebGL & SVG Physics Kernel"
 pubDate: 2026-11-05
-description: "How we unified hover tooltips, 60fps drag physics, dynamic hop z-ordering, and 750ms sine-eased highlight transitions across D3.js SVG, vis-network, Cytoscape.js, Sigma.js WebGL, and Three.js 3d-force-graph."
+description: "How we unified hover tooltips, 60fps drag physics, dynamic hop z-ordering, and 750ms sine-eased transitions across D3, Vis.js, Cytoscape, Sigma, and 3D."
 inLanguage: "en"
 tags:
   - data-visualization
