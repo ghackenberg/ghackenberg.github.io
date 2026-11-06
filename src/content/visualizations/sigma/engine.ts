@@ -171,8 +171,6 @@ const engine: SigmaEngine = {
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     let draggedNode: string | null = null;
-    let dragStartViewport = { x: 0, y: 0 };
-    let wasDragged = false;
 
     const startForcePhysicsLoop = () => {
       if (this.physicsFrameId) return;
@@ -347,122 +345,6 @@ const engine: SigmaEngine = {
     };
     this.applyHighlight = applyHighlight;
 
-    this.sigma.on('downNode', (e) => {
-      draggedNode = e.node;
-      this.hoveredNodeId = e.node;
-      dragStartViewport = { x: e.event.x, y: e.event.y };
-      wasDragged = false;
-      this.tooltipController?.hide();
-      applyHighlight(e.node);
-
-      if (this.sigma && !this.sigma.getCustomBBox()) {
-        this.sigma.setCustomBBox(this.sigma.getBBox());
-      }
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId);
-        this.animationFrameId = null;
-      }
-
-      if (this.currentLayout === 'force') {
-        startForcePhysicsLoop();
-      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-        const { signature } = this.computeLayoutTargets(this.currentLayout, true);
-        this.lastOrderSignature = signature;
-      }
-    });
-
-    this.sigma.getMouseCaptor().on('mousemovebody', (e) => {
-      if (!draggedNode || !this.sigma || !this.graph) return;
-      e.preventSigmaDefault();
-      e.original.preventDefault();
-      e.original.stopPropagation();
-
-      if (Math.hypot(e.x - dragStartViewport.x, e.y - dragStartViewport.y) > 4) {
-        wasDragged = true;
-        this.lastDraggedAt = performance.now();
-        this.tooltipController?.hide();
-      }
-
-      const pos = this.sigma.viewportToGraph(e);
-      this.graph.setNodeAttribute(draggedNode, 'x', pos.x);
-      this.graph.setNodeAttribute(draggedNode, 'y', pos.y);
-
-      if (this.currentLayout === 'force') {
-        startForcePhysicsLoop();
-      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-        const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
-        if (signature !== this.lastOrderSignature) {
-          this.lastOrderSignature = signature;
-          this.animateTo(targets, 250, draggedNode, false);
-        } else {
-          this.sigma.refresh();
-        }
-      }
-    });
-
-    this.sigma.getMouseCaptor().on('mouseup', () => {
-      if (!draggedNode) return;
-      draggedNode = null;
-      if (this.physicsFrameId) {
-        cancelAnimationFrame(this.physicsFrameId);
-        this.physicsFrameId = null;
-      }
-
-      if (wasDragged) {
-        this.hoveredNodeId = null;
-        container.style.cursor = 'default';
-        applyHighlight(null);
-        this.lastDraggedAt = performance.now();
-        if (this.currentLayout === 'force' && this.graph) {
-          const startingPos: Record<string, { x: number; y: number }> = {};
-          const targets: Record<string, { x: number; y: number }> = {};
-          this.graph.forEachNode(node => {
-            startingPos[node] = {
-              x: this.graph?.getNodeAttribute(node, 'x') as number,
-              y: this.graph?.getNodeAttribute(node, 'y') as number
-            };
-          });
-
-          forceAtlas2.assign(this.graph, {
-            iterations: 30,
-            settings: {
-              gravity: 0.8,
-              slowDown: 3
-            }
-          });
-
-          let sumX = 0;
-          let sumY = 0;
-          let count = 0;
-          this.graph.forEachNode(node => {
-            const tx = this.graph?.getNodeAttribute(node, 'x') as number;
-            const ty = this.graph?.getNodeAttribute(node, 'y') as number;
-            targets[node] = { x: tx, y: ty };
-            sumX += tx;
-            sumY += ty;
-            count++;
-            this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
-            this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
-          });
-          if (count > 0) {
-            const meanX = sumX / count;
-            const meanY = sumY / count;
-            for (const node of Object.keys(targets)) {
-              targets[node].x -= meanX;
-              targets[node].y -= meanY;
-            }
-          }
-
-          this.animateTo(targets, 400, undefined, false);
-        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false);
-        }
-      } else {
-        applyHighlight(this.hoveredNodeId ?? null);
-      }
-    });
-
     this.tooltipController.bindProximityInteraction({
       getScreenNodes: () => {
         if (!this.sigma || !this.graph || !this.nodeMap) return [];
@@ -518,6 +400,108 @@ const engine: SigmaEngine = {
           targetUrl.searchParams.set('utm_medium', utmMedium);
           targetUrl.searchParams.set('utm_campaign', utmCampaign);
           window.location.href = targetUrl.pathname + targetUrl.search;
+        }
+      },
+      onNodeDragStart: (rawNode, sx, sy) => {
+        if (!this.sigma || !this.graph) return;
+        draggedNode = rawNode.id;
+        this.hoveredNodeId = draggedNode;
+        this.lastDraggedAt = performance.now();
+        applyHighlight(draggedNode);
+
+        if (!this.sigma.getCustomBBox()) {
+          this.sigma.setCustomBBox(this.sigma.getBBox());
+        }
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
+
+        const pos = this.sigma.viewportToGraph({ x: sx, y: sy });
+        this.graph.setNodeAttribute(draggedNode, 'x', pos.x);
+        this.graph.setNodeAttribute(draggedNode, 'y', pos.y);
+
+        if (this.currentLayout === 'force') {
+          startForcePhysicsLoop();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { signature } = this.computeLayoutTargets(this.currentLayout, true);
+          this.lastOrderSignature = signature;
+          this.sigma.refresh();
+        }
+      },
+      onNodeDragMove: (rawNode, sx, sy) => {
+        if (!this.sigma || !this.graph) return;
+        this.lastDraggedAt = performance.now();
+        const pos = this.sigma.viewportToGraph({ x: sx, y: sy });
+        this.graph.setNodeAttribute(rawNode.id, 'x', pos.x);
+        this.graph.setNodeAttribute(rawNode.id, 'y', pos.y);
+
+        if (this.currentLayout === 'force') {
+          startForcePhysicsLoop();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+          if (signature !== this.lastOrderSignature) {
+            this.lastOrderSignature = signature;
+            this.animateTo(targets, 250, rawNode.id, false);
+          } else {
+            this.sigma.refresh();
+          }
+        }
+      },
+      onNodeDragEnd: () => {
+        draggedNode = null;
+        this.hoveredNodeId = null;
+        this.lastDraggedAt = performance.now();
+        if (this.physicsFrameId) {
+          cancelAnimationFrame(this.physicsFrameId);
+          this.physicsFrameId = null;
+        }
+        applyHighlight(null);
+
+        if (this.currentLayout === 'force' && this.graph) {
+          const startingPos: Record<string, { x: number; y: number }> = {};
+          const targets: Record<string, { x: number; y: number }> = {};
+          this.graph.forEachNode(node => {
+            startingPos[node] = {
+              x: this.graph?.getNodeAttribute(node, 'x') as number,
+              y: this.graph?.getNodeAttribute(node, 'y') as number
+            };
+          });
+
+          forceAtlas2.assign(this.graph, {
+            iterations: 30,
+            settings: {
+              gravity: 0.8,
+              slowDown: 3
+            }
+          });
+
+          let sumX = 0;
+          let sumY = 0;
+          let count = 0;
+          this.graph.forEachNode(node => {
+            const tx = this.graph?.getNodeAttribute(node, 'x') as number;
+            const ty = this.graph?.getNodeAttribute(node, 'y') as number;
+            targets[node] = { x: tx, y: ty };
+            sumX += tx;
+            sumY += ty;
+            count++;
+            this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
+            this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
+          });
+          if (count > 0) {
+            const meanX = sumX / count;
+            const meanY = sumY / count;
+            for (const node of Object.keys(targets)) {
+              targets[node].x -= meanX;
+              targets[node].y -= meanY;
+            }
+          }
+
+          this.animateTo(targets, 400, undefined, false);
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
+          this.animateTo(targets, 400, undefined, false);
         }
       }
     });

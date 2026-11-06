@@ -36,6 +36,7 @@ export interface Force3DLink {
 }
 
 export interface Force3DNavigationControls {
+  enabled?: boolean;
   noZoom?: boolean;
   enableZoom?: boolean;
 }
@@ -227,6 +228,7 @@ const engine: Force3DEngine = {
       .graphData({ nodes: this.nodes, links: this.links })
       .backgroundColor('rgba(0,0,0,0)')
       .showNavInfo(false)
+      .enableNodeDrag(false)
       .nodeLabel(() => '')
       .nodeVal((n: Force3DNode) => n.displayVal ?? n.val)
       .nodeColor((n: Force3DNode) => {
@@ -242,59 +244,6 @@ const engine: Force3DEngine = {
       .linkWidth((l: Force3DLink) => {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
         return l.displayWidth ?? currentTokens.edgeWidth;
-      })
-      .onNodeDrag((node: Force3DNode) => {
-        this.lastDraggedAt = performance.now();
-        this.tooltipController?.hide();
-        if (this.draggedNodeId !== node.id) {
-          this.draggedNodeId = node.id;
-          refreshHighlight();
-        }
-        if (this.recenterTimeout) {
-          clearTimeout(this.recenterTimeout);
-          this.recenterTimeout = null;
-        }
-
-        if (this.currentLayout === 'force' && this.nodes) {
-          this.nodes.forEach(n => {
-            if (n.id !== node.id) {
-              n.fx = null;
-              n.fy = null;
-              n.fz = null;
-            }
-          });
-          try {
-            this.graph?.d3ReheatSimulation();
-          } catch {
-            // Suppress
-          }
-        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
-          if (signature !== this.lastOrderSignature) {
-            this.lastOrderSignature = signature;
-            this.animateTo(targets, 250, node.id, false);
-          }
-        }
-      })
-      .onNodeDragEnd((node: Force3DNode) => {
-        this.lastDraggedAt = performance.now();
-        this.draggedNodeId = null;
-        this.hoveredNodeId = null;
-        container.style.cursor = 'default';
-        refreshHighlight();
-        if (this.currentLayout === 'force') {
-          node.fx = null;
-          node.fy = null;
-          node.fz = null;
-          try {
-            this.graph?.d3ReheatSimulation();
-          } catch {
-            // Suppress
-          }
-        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false);
-        }
       });
 
     // Hide any internal 3d-force-graph scene tooltip element and mount our Preact tooltip AFTER ForceGraph3D()(container)
@@ -304,6 +253,9 @@ const engine: Force3DEngine = {
       internalTooltip.style.display = 'none';
     }
     this.tooltipController = createGraphTooltipController(container);
+
+    let dragDepth = 0;
+
     this.tooltipController.bindProximityInteraction({
       getScreenNodes: () => {
         if (!this.graph || !this.nodes) return [];
@@ -347,6 +299,133 @@ const engine: Force3DEngine = {
           targetUrl.searchParams.set('utm_medium', utmMedium);
           targetUrl.searchParams.set('utm_campaign', utmCampaign);
           window.location.href = targetUrl.pathname + targetUrl.search;
+        }
+      },
+      onNodeDragStart: (rawNode, sx, sy) => {
+        if (!this.graph || !this.nodes) return;
+        const node = this.nodes.find(n => n.id === rawNode.id);
+        if (!node) return;
+        this.lastDraggedAt = performance.now();
+        this.draggedNodeId = node.id;
+        this.hoveredNodeId = node.id;
+        refreshHighlight();
+
+        const controls = this.graph.controls?.() as Force3DNavigationControls | undefined;
+        if (controls) {
+          controls.enabled = false;
+        }
+
+        if (this.recenterTimeout) {
+          clearTimeout(this.recenterTimeout);
+          this.recenterTimeout = null;
+        }
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
+
+        try {
+          const sc = this.graph.graph2ScreenCoords(node.x || 0, node.y || 0, node.z || 0);
+          dragDepth = sc && typeof sc.z === 'number' ? sc.z : 200;
+          const gc = this.graph.screen2GraphCoords(sx, sy, dragDepth);
+          if (gc) {
+            node.fx = gc.x;
+            node.fy = gc.y;
+            node.fz = gc.z;
+            node.x = gc.x;
+            node.y = gc.y;
+            node.z = gc.z;
+          }
+        } catch {
+          // Ignore projection error
+        }
+
+        if (this.currentLayout === 'force') {
+          this.nodes.forEach(n => {
+            if (n.id !== node.id) {
+              n.fx = null;
+              n.fy = null;
+              n.fz = null;
+            }
+          });
+          try {
+            this.graph.d3ReheatSimulation();
+          } catch {
+            // Suppress
+          }
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { signature } = this.computeLayoutTargets(this.currentLayout, true);
+          this.lastOrderSignature = signature;
+        }
+      },
+      onNodeDragMove: (rawNode, sx, sy) => {
+        if (!this.graph || !this.nodes) return;
+        const node = this.nodes.find(n => n.id === rawNode.id);
+        if (!node) return;
+        this.lastDraggedAt = performance.now();
+
+        try {
+          const gc = this.graph.screen2GraphCoords(sx, sy, dragDepth);
+          if (gc) {
+            node.fx = gc.x;
+            node.fy = gc.y;
+            node.fz = gc.z;
+            node.x = gc.x;
+            node.y = gc.y;
+            node.z = gc.z;
+          }
+        } catch {
+          // Ignore projection error
+        }
+
+        if (this.currentLayout === 'force') {
+          try {
+            this.graph.d3ReheatSimulation();
+          } catch {
+            // Suppress
+          }
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+          if (signature !== this.lastOrderSignature) {
+            this.lastOrderSignature = signature;
+            this.animateTo(targets, 250, node.id, false);
+          } else {
+            try {
+              this.graph.d3ReheatSimulation();
+            } catch {
+              // Suppress
+            }
+          }
+        }
+      },
+      onNodeDragEnd: (rawNode) => {
+        if (!this.graph || !this.nodes) return;
+        const node = this.nodes.find(n => n.id === rawNode.id);
+        this.lastDraggedAt = performance.now();
+        this.draggedNodeId = null;
+        this.hoveredNodeId = null;
+        container.style.cursor = 'default';
+        refreshHighlight();
+
+        const controls = this.graph.controls?.() as Force3DNavigationControls | undefined;
+        if (controls) {
+          controls.enabled = true;
+        }
+
+        if (this.currentLayout === 'force') {
+          if (node) {
+            node.fx = null;
+            node.fy = null;
+            node.fz = null;
+          }
+          try {
+            this.graph.d3ReheatSimulation();
+          } catch {
+            // Suppress
+          }
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
+          this.animateTo(targets, 400, undefined, false);
         }
       }
     });

@@ -137,9 +137,6 @@ const engine: D3Engine = {
       .style("stroke", styleTokens.edgeColor)
       .style("stroke-width", `${styleTokens.edgeWidth}px`);
 
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let wasDragged = false;
     let lastDraggedAt = 0;
     let lastHighlightedNodeId: string | null = null;
     this.hoveredNodeId = null;
@@ -251,64 +248,12 @@ const engine: D3Engine = {
     };
     this.applyHighlight = applyHighlight;
 
-    const dragBehavior = d3.drag<SVGGElement, D3Node>()
-      .on("start", (event, d) => {
-        dragStartX = event.x;
-        dragStartY = event.y;
-        wasDragged = false;
-        this.draggedNodeId = d.id;
-        applyHighlight(d.id);
-        if (!event.active) this.simulation?.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      })
-      .on("drag", (event, d) => {
-        if (Math.hypot(event.x - dragStartX, event.y - dragStartY) > 6) {
-          wasDragged = true;
-          lastDraggedAt = performance.now();
-          this.tooltipController?.hide();
-        }
-        d.fx = event.x;
-        d.fy = event.y;
-        d.x = event.x;
-        d.y = event.y;
-        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          this.recomputeSlotTargets(true);
-          this.simulation?.alphaTarget(0.3).restart();
-        }
-      })
-      .on("end", (event, d) => {
-        this.draggedNodeId = null;
-        if (wasDragged) {
-          lastDraggedAt = performance.now();
-          this.hoveredNodeId = null;
-          container.style.cursor = "default";
-        }
-        applyHighlight(this.hoveredNodeId ?? null);
-        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          this.recomputeSlotTargets(true);
-        }
-        d.fx = null;
-        d.fy = null;
-        if (!event.active) {
-          this.simulation?.alphaTarget(0).alpha(0.35).restart();
-        }
-      });
-
     this.nodeElements = nodeLayer.selectAll<SVGGElement, D3Node>(".node")
       .data(this.nodes)
       .enter().append("g")
-      .style("cursor", "pointer")
-      .call(dragBehavior);
+      .style("cursor", "pointer");
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-
-    // Invisible expanded hit halo for effortless drag grabbing
-    this.nodeElements.append("circle")
-      .attr("class", "node-hit-area")
-      .attr("r", 18)
-      .style("fill", "transparent")
-      .style("stroke", "none");
 
     this.nodeElements.append("circle")
       .attr("class", "node-dot")
@@ -341,6 +286,13 @@ const engine: D3Engine = {
       }
     };
 
+    const screenToGraph = (sx: number, sy: number) => {
+      const svgNode = this.svg?.node();
+      const zoomT = svgNode ? d3.zoomTransform(svgNode) : d3.zoomIdentity;
+      const [gx, gy] = zoomT.invert([sx, sy]);
+      return { x: gx, y: gy };
+    };
+
     this.tooltipController.bindProximityInteraction({
       getScreenNodes: () => {
         const svgNode = this.svg?.node();
@@ -362,6 +314,48 @@ const engine: D3Engine = {
       },
       onNavigate: (node) => {
         navigateToNode(node as D3Node);
+      },
+      onNodeDragStart: (rawNode, sx, sy) => {
+        const d = this.nodes?.find(n => n.id === rawNode.id);
+        if (!d) return;
+        this.draggedNodeId = d.id;
+        lastDraggedAt = performance.now();
+        applyHighlight(d.id);
+        const gp = screenToGraph(sx, sy);
+        d.fx = gp.x;
+        d.fy = gp.y;
+        d.x = gp.x;
+        d.y = gp.y;
+        this.simulation?.alphaTarget(0.3).restart();
+      },
+      onNodeDragMove: (rawNode, sx, sy) => {
+        const d = this.nodes?.find(n => n.id === rawNode.id);
+        if (!d) return;
+        lastDraggedAt = performance.now();
+        const gp = screenToGraph(sx, sy);
+        d.fx = gp.x;
+        d.fy = gp.y;
+        d.x = gp.x;
+        d.y = gp.y;
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.recomputeSlotTargets(true);
+          this.simulation?.alphaTarget(0.3).restart();
+        }
+      },
+      onNodeDragEnd: (rawNode) => {
+        const d = this.nodes?.find(n => n.id === rawNode.id);
+        this.draggedNodeId = null;
+        this.hoveredNodeId = null;
+        lastDraggedAt = performance.now();
+        if (d) {
+          d.fx = null;
+          d.fy = null;
+        }
+        applyHighlight(null);
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.recomputeSlotTargets(true);
+        }
+        this.simulation?.alphaTarget(0).alpha(0.35).restart();
       }
     });
 
