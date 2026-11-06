@@ -128,6 +128,10 @@ function enrichTableElement(tableNode: Element): string[] {
  */
 export default function rehypeResponsiveTables() {
   return function (tree: Root, file?: VFile) {
+    const filePath = (file?.path || file?.history?.[0] || '').replace(/\\/g, '/');
+    if (filePath.includes('/src/content/presentations/')) {
+      return;
+    }
     const fileData = file?.data as TableCaptionVFileData | undefined;
     const tableCaptions: string[] = Array.isArray(fileData?.tableCaptions)
       ? fileData.tableCaptions

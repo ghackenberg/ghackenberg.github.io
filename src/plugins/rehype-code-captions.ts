@@ -83,6 +83,10 @@ function parseCodeFenceMeta(meta: string, lang: string): CodeBlockCaptionMeta {
  */
 export function remarkCodeCaptions() {
   return function (tree: MdastRoot, file: VFile) {
+    const filePath = (file?.path || file?.history?.[0] || '').replace(/\\/g, '/');
+    if (filePath.includes('/src/content/presentations/')) {
+      return;
+    }
     const captions: CodeBlockCaptionMeta[] = [];
     const tableCaptions: string[] = [];
 
@@ -168,6 +172,10 @@ function getStandaloneImageChild(pNode: Element): Element | null {
  */
 export default function rehypeCodeCaptions() {
   return function (tree: HastRoot, file: VFile) {
+    const filePath = (file?.path || file?.history?.[0] || '').replace(/\\/g, '/');
+    if (filePath.includes('/src/content/presentations/')) {
+      return;
+    }
     const fileData = file?.data as CaptionVFileData | undefined;
     const captions: CodeBlockCaptionMeta[] = Array.isArray(fileData?.codeBlockCaptions)
       ? fileData.codeBlockCaptions
