@@ -22,6 +22,7 @@ Initiativen, die das Zusammenspiel aus Frontend-Features auf `hackenberg.tech` u
 | **SYSTEM-010** | Target Audience Profiles Collection, Adaptive Linting & Multi-Persona Review | Content Architecture / CI | Hoch | `proposed` | [010-target-audience-collection-and-adaptive-review.md](./system/010-target-audience-collection-and-adaptive-review.md) |
 | **SYSTEM-011** | Quadratisches SVG-Standardformat, Bestands-Migration & Aspect-Ratio-Linter | Visual Design / CI / QA | Mittel | `proposed` | [011-square-svg-aspect-ratio-migration-and-linter.md](./system/011-square-svg-aspect-ratio-migration-and-linter.md) |
 | **SYSTEM-012** | Natives Astro Asset-Hashing, Content-Layer Dependency-Tracking & Ablösung manueller Dev-Watcher-Workarounds | Build Engineering / Content Layer / DX | Mittel | `implemented` | [012-astro-content-layer-asset-hashing-and-dependency-tracking.md](./system/012-astro-content-layer-asset-hashing-and-dependency-tracking.md) |
+| **SYSTEM-013** | Ganzheitliche SEO-, GEO/AIO- & Reader-Retention-Remediation (Audit 11/2026) | SEO / GEO / Analytics / UX Retention | Hoch | `in-progress` | [013-seo-geo-retention-audit-remediation.md](./system/013-seo-geo-retention-audit-remediation.md) |
 
 ---
 
