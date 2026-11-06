@@ -14,7 +14,7 @@ import {
   getNodeHopZIndex,
   getEdgeHopZIndex
 } from '@commons/shared/graph-payload';
-import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
+import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 interface CySimNode extends d3.SimulationNodeDatum {
   id: string;
@@ -494,84 +494,62 @@ const engine: CytoscapeEngine = {
       }
     });
 
-    this.cy.on('tap', 'node', (evt) => {
-      if (wasDragged || (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250)) {
-        return;
+    this.tooltipController.bindProximityInteraction({
+      getScreenNodes: () => {
+        if (!this.cy) return [];
+        const result: { node: RawGraphNode; x: number; y: number }[] = [];
+        this.cy.nodes().forEach((n: NodeSingular) => {
+          const pos = n.renderedPosition();
+          if (!pos || typeof pos.x !== 'number' || typeof pos.y !== 'number') return;
+          const data = n.data();
+          result.push({
+            node: {
+              id: String(data.id),
+              name: String(data.name || ''),
+              size: Number(data.rawSize ?? data.size ?? 1),
+              group: Number(data.group ?? 0),
+              typeLabel: data.typeLabel,
+              description: data.description,
+              date: data.date,
+              image: data.image,
+              tags: data.tags
+            },
+            x: pos.x,
+            y: pos.y
+          });
+        });
+        return result;
+      },
+      adjacency,
+      isLight: () => Boolean(this.isLight),
+      isDragging: () => grabbedNodeId !== null,
+      getLastDraggedAt: () => this.lastDraggedAt || 0,
+      onActiveNodeChange: (nodeId) => {
+        this.hoveredNodeId = nodeId;
+        if (grabbedNodeId === null) {
+          applyHighlight(nodeId);
+        }
+      },
+      onNavigate: (node) => {
+        const id = node.id;
+        if (
+          id.startsWith('/posts/') ||
+          id.startsWith('/publications/') ||
+          id.startsWith('/presentations/') ||
+          id.startsWith('/projects/') ||
+          id.startsWith('/courses/') ||
+          id.startsWith('/services/') ||
+          id.startsWith('/newsletters/') ||
+          id.startsWith('/visualizations/') ||
+          id.startsWith('/tags/')
+        ) {
+          const targetUrl = new URL(id, window.location.origin);
+          targetUrl.searchParams.set('utm_source', utmSource);
+          targetUrl.searchParams.set('utm_medium', utmMedium);
+          targetUrl.searchParams.set('utm_campaign', utmCampaign);
+          window.location.href = targetUrl.pathname + targetUrl.search;
+        }
       }
-      const node = evt.target;
-      const id = node.id();
-      if (
-        id.startsWith('/posts/') ||
-        id.startsWith('/publications/') ||
-        id.startsWith('/presentations/') ||
-        id.startsWith('/projects/') ||
-        id.startsWith('/courses/') ||
-        id.startsWith('/services/') ||
-        id.startsWith('/newsletters/') ||
-        id.startsWith('/visualizations/') ||
-        id.startsWith('/tags/')
-      ) {
-        const targetUrl = new URL(id, window.location.origin);
-        targetUrl.searchParams.set('utm_source', utmSource);
-        targetUrl.searchParams.set('utm_medium', utmMedium);
-        targetUrl.searchParams.set('utm_campaign', utmCampaign);
-        window.location.href = targetUrl.pathname + targetUrl.search;
-      }
-    });
-
-    const getCoords = (evt: EventObjectNode) => {
-      if (evt.originalEvent) {
-        const rect = container.getBoundingClientRect();
-        return {
-          x: evt.originalEvent.clientX - rect.left,
-          y: evt.originalEvent.clientY - rect.top
-        };
-      }
-      return {
-        x: evt.renderedPosition?.x ?? 0,
-        y: evt.renderedPosition?.y ?? 0
-      };
-    };
-
-    this.cy.on('mouseover', 'node', (evt: EventObjectNode) => {
-      if (grabbedNodeId !== null) return;
-      container.style.cursor = 'pointer';
-      const node = evt.target;
-      this.hoveredNodeId = node.id();
-      applyHighlight(node.id());
-
-      const data = node.data();
-      const coords = getCoords(evt);
-      this.tooltipController?.show(
-        {
-          id: String(data.id),
-          name: String(data.name || ''),
-          size: Number(data.rawSize ?? data.size ?? 1),
-          group: Number(data.group ?? 0),
-          typeLabel: data.typeLabel,
-          description: data.description,
-          date: data.date,
-          image: data.image,
-          tags: data.tags
-        },
-        Boolean(this.isLight),
-        coords.x,
-        coords.y
-      );
-    });
-
-    this.cy.on('mousemove', 'node', (evt: EventObjectNode) => {
-      if (grabbedNodeId !== null) return;
-      const coords = getCoords(evt);
-      this.tooltipController?.move(coords.x, coords.y);
-    });
-
-    this.cy.on('mouseout', 'node', () => {
-      if (grabbedNodeId !== null) return;
-      this.hoveredNodeId = null;
-      container.style.cursor = 'default';
-      applyHighlight(null);
-      this.tooltipController?.hide();
     });
 
     this.currentLayout = layout;

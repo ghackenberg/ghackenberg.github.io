@@ -18,7 +18,7 @@ import {
   type SigmaEdge
 } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
-import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
+import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 const SIGMA_BASE_NODE_SIZE = 5;
 
@@ -463,77 +463,64 @@ const engine: SigmaEngine = {
       }
     });
 
-    this.sigma.on('clickNode', ({ node }: { node: string }) => {
-      if (wasDragged || (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250)) {
-        return;
-      }
-      if (
-        node.startsWith('/posts/') ||
-        node.startsWith('/publications/') ||
-        node.startsWith('/presentations/') ||
-        node.startsWith('/projects/') ||
-        node.startsWith('/courses/') ||
-        node.startsWith('/services/') ||
-        node.startsWith('/newsletters/') ||
-        node.startsWith('/visualizations/') ||
-        node.startsWith('/tags/')
-      ) {
-        const targetUrl = new URL(node, window.location.origin);
-        targetUrl.searchParams.set('utm_source', utmSource);
-        targetUrl.searchParams.set('utm_medium', utmMedium);
-        targetUrl.searchParams.set('utm_campaign', utmCampaign);
-        window.location.href = targetUrl.pathname + targetUrl.search;
+    this.tooltipController.bindProximityInteraction({
+      getScreenNodes: () => {
+        if (!this.sigma || !this.graph || !this.nodeMap) return [];
+        const result: { node: RawGraphNode; x: number; y: number }[] = [];
+        for (const [id, rawNode] of this.nodeMap.entries()) {
+          if (!this.graph.hasNode(id)) continue;
+          const nx = this.graph.getNodeAttribute(id, 'x') as number;
+          const ny = this.graph.getNodeAttribute(id, 'y') as number;
+          const viewportPos = this.sigma.graphToViewport({ x: nx, y: ny });
+          result.push({
+            node: {
+              id: rawNode.id,
+              name: rawNode.label,
+              size: rawNode.rawSize ?? rawNode.size,
+              group: rawNode.group,
+              typeLabel: rawNode.typeLabel,
+              description: rawNode.description,
+              date: rawNode.date,
+              image: rawNode.image,
+              tags: rawNode.tags
+            },
+            x: viewportPos.x,
+            y: viewportPos.y
+          });
+        }
+        return result;
+      },
+      adjacency,
+      isLight: () => Boolean(this.isLight),
+      isDragging: () => draggedNode !== null,
+      getLastDraggedAt: () => this.lastDraggedAt || 0,
+      onActiveNodeChange: (nodeId) => {
+        this.hoveredNodeId = nodeId;
+        if (draggedNode === null) {
+          applyHighlight(nodeId);
+        }
+      },
+      onNavigate: (rawNode) => {
+        const node = rawNode.id;
+        if (
+          node.startsWith('/posts/') ||
+          node.startsWith('/publications/') ||
+          node.startsWith('/presentations/') ||
+          node.startsWith('/projects/') ||
+          node.startsWith('/courses/') ||
+          node.startsWith('/services/') ||
+          node.startsWith('/newsletters/') ||
+          node.startsWith('/visualizations/') ||
+          node.startsWith('/tags/')
+        ) {
+          const targetUrl = new URL(node, window.location.origin);
+          targetUrl.searchParams.set('utm_source', utmSource);
+          targetUrl.searchParams.set('utm_medium', utmMedium);
+          targetUrl.searchParams.set('utm_campaign', utmCampaign);
+          window.location.href = targetUrl.pathname + targetUrl.search;
+        }
       }
     });
-
-    this.sigma.on('enterNode', ({ node }: { node: string }) => {
-      if (draggedNode !== null) return;
-      this.hoveredNodeId = node;
-      container.style.cursor = 'pointer';
-
-      const currentIsLight = Boolean(this.isLight);
-      const rawNode = this.nodeMap?.get(node);
-      if (rawNode && this.sigma && this.graph) {
-        const nx = this.graph.getNodeAttribute(node, 'x') as number;
-        const ny = this.graph.getNodeAttribute(node, 'y') as number;
-        const viewportPos = this.sigma.graphToViewport({ x: nx, y: ny });
-
-        this.tooltipController?.show(
-          {
-            id: rawNode.id,
-            name: rawNode.label,
-            size: rawNode.rawSize ?? rawNode.size,
-            group: rawNode.group,
-            typeLabel: rawNode.typeLabel,
-            description: rawNode.description,
-            date: rawNode.date,
-            image: rawNode.image,
-            tags: rawNode.tags
-          },
-          currentIsLight,
-          viewportPos.x,
-          viewportPos.y
-        );
-
-        applyHighlight(node);
-      }
-    });
-
-    this.sigma.on('leaveNode', () => {
-      this.hoveredNodeId = null;
-      this.tooltipController?.hide();
-      if (draggedNode !== null) return;
-      container.style.cursor = 'default';
-      applyHighlight(null);
-    });
-
-    this.mouseMoveHandler = (e: MouseEvent) => {
-      if (this.hoveredNodeId && draggedNode === null) {
-        const rect = container.getBoundingClientRect();
-        this.tooltipController?.move(e.clientX - rect.left, e.clientY - rect.top);
-      }
-    };
-    container.addEventListener('mousemove', this.mouseMoveHandler);
 
     this.isLight = isLight;
     if (layout === 'force') {

@@ -2,7 +2,6 @@ import { Network, type Options, type Node as VisNode, type Edge as VisEdge } fro
 import { DataSet } from 'vis-data';
 import {
   GRAPH_COLORS,
-  GRAPH_GROUP_NAMES,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
   getGraphStyleTokens,
@@ -15,8 +14,7 @@ import {
   getNodeHopZIndex,
   getEdgeHopZIndex
 } from '@commons/shared/graph-payload';
-import { getThemeTokens } from '@commons/shared/domain-themes';
-import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
+import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 interface VisNetworkWithBody extends Network {
   body?: {
@@ -85,6 +83,7 @@ export interface VisNetworkEngine {
   visEdges?: DataSet<VisCustomEdge> | null;
   options?: Options;
   network?: Network | null;
+  tooltipController?: GraphTooltipController | null;
   isDragging?: boolean;
   hoveredNodeId?: string | null;
   draggedNodeId?: string | null;
@@ -122,46 +121,24 @@ const engine: VisNetworkEngine = {
     this.connections = payload['vis-network'].connections;
 
     const colors = getVisNodeColors(isLight);
-    const themeTokens = getThemeTokens(isLight);
     const styleTokens = getGraphStyleTokens(isLight);
-    const groupNames = GRAPH_GROUP_NAMES;
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
     // property and explicitly defining color object on each node.
-    this.visNodes = new DataSet<VisCustomNode>((this.nodes || []).map((n) => {
-      const card = document.createElement('div');
-      card.style.fontFamily = 'Outfit, Inter, sans-serif';
-      card.style.width = '250px';
-      card.style.maxWidth = '270px';
-      card.style.boxSizing = 'border-box';
-      card.style.whiteSpace = 'normal';
-      card.style.overflowWrap = 'break-word';
-      card.style.wordBreak = 'break-word';
-      
-      renderVisNetworkTooltip(card, {
-        node: n,
-        typeLabel: n.typeLabel || groupNames[n.group] || 'Item',
-        accentColor: groupColors[n.group] || themeTokens.nodeDefault,
-        tagColor: groupColors[0],
-        themeTokens,
-      });
-
-      return {
-        id: n.id,
-        label: '',
-        title: card,
-        shape: 'dot',
-        size: styleTokens.nodeRadius,
-        displaySize: styleTokens.nodeRadius,
-        displayColor: groupColors[n.group] || groupColors[0],
-        x: (Math.random() - 0.5) * 500,
-        y: (Math.random() - 0.5) * 500,
-        rawGroup: n.group,
-        color: colors[n.group],
-        chosen: false
-      };
-    }));
+    this.visNodes = new DataSet<VisCustomNode>((this.nodes || []).map((n) => ({
+      id: n.id,
+      label: '',
+      shape: 'dot',
+      size: styleTokens.nodeRadius,
+      displaySize: styleTokens.nodeRadius,
+      displayColor: groupColors[n.group] || groupColors[0],
+      x: (Math.random() - 0.5) * 500,
+      y: (Math.random() - 0.5) * 500,
+      rawGroup: n.group,
+      color: colors[n.group],
+      chosen: false
+    })));
 
     this.visEdges = new DataSet<VisCustomEdge>((this.connections || []).map((c, idx) => ({
       id: `${c.sourceId}-${c.targetId}-${idx}`,
@@ -236,6 +213,7 @@ const engine: VisNetworkEngine = {
     };
 
     this.network = new Network(container, data, this.options);
+    this.tooltipController = createGraphTooltipController(container);
 
     if (interactionOptions.dragView === false) {
       container.style.touchAction = 'pan-y';
@@ -444,8 +422,7 @@ const engine: VisNetworkEngine = {
         const draggedId = String(params.nodes[0]);
         this.draggedNodeId = draggedId;
         this.applyHighlight?.(draggedId);
-        const tip = container.querySelector('.vis-tooltip') as HTMLElement | null;
-        if (tip) tip.style.visibility = 'hidden';
+        this.tooltipController?.hide();
 
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
@@ -526,12 +503,36 @@ const engine: VisNetworkEngine = {
       });
     }
 
-    this.network.on("click", (params: { nodes: string[] }) => {
+    this.network.on("click", () => {
       this.network?.unselectAll();
       this.applyHighlight?.(this.hoveredNodeId ?? null);
-      if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
-      if (params.nodes.length > 0) {
-        const targetPath = params.nodes[0];
+    });
+
+    this.tooltipController?.bindProximityInteraction({
+      getScreenNodes: () => {
+        if (!this.network || !this.nodes) return [];
+        const positions = this.network.getPositions();
+        const result: { node: RawGraphNode; x: number; y: number }[] = [];
+        for (const n of this.nodes) {
+          const canvasPos = positions[n.id];
+          if (!canvasPos) continue;
+          const domPos = this.network.canvasToDOM(canvasPos);
+          result.push({ node: n, x: domPos.x, y: domPos.y });
+        }
+        return result;
+      },
+      adjacency,
+      isLight: () => Boolean(this.isLight),
+      isDragging: () => Boolean(this.isDragging),
+      getLastDraggedAt: () => this.lastDraggedAt || 0,
+      onActiveNodeChange: (nodeId) => {
+        this.hoveredNodeId = nodeId;
+        if (!this.isDragging) {
+          this.applyHighlight?.(nodeId);
+        }
+      },
+      onNavigate: (node) => {
+        const targetPath = node.id;
         if (
           targetPath.startsWith('/posts') ||
           targetPath.startsWith('/publications') ||
@@ -549,22 +550,6 @@ const engine: VisNetworkEngine = {
           targetUrl.searchParams.set('utm_campaign', utmCampaign);
           window.location.href = targetUrl.pathname + targetUrl.search;
         }
-      }
-    });
-
-    this.network.on("hoverNode", (params: { node: string | number }) => {
-      this.hoveredNodeId = String(params.node);
-      if (!this.isDragging) {
-        container.style.cursor = "pointer";
-        this.applyHighlight?.(this.hoveredNodeId);
-      }
-    });
-
-    this.network.on("blurNode", () => {
-      this.hoveredNodeId = null;
-      if (!this.isDragging) {
-        container.style.cursor = "default";
-        this.applyHighlight?.(null);
       }
     });
 
@@ -889,6 +874,10 @@ const engine: VisNetworkEngine = {
       this.resizeObserver = null;
     }
     this.pause();
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
+    }
     if (this.network) {
       this.network.destroy();
       this.network = null;

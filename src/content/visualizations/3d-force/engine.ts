@@ -13,7 +13,7 @@ import {
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
 
-import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
+import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 export interface Force3DNode extends GraphNodePayload {
   val: number;
@@ -122,22 +122,6 @@ const engine: Force3DEngine = {
       displayWidth: initialStyleTokens.edgeWidth
     }));
 
-    let hasMousePosition = false;
-    let lastMouseX = container.clientWidth / 2;
-    let lastMouseY = container.clientHeight / 2;
-
-    this.mouseMoveHandler = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      hasMousePosition = true;
-      lastMouseX = e.clientX - rect.left;
-      lastMouseY = e.clientY - rect.top;
-      if (this.hoveredNodeId) {
-        this.tooltipController?.move(lastMouseX, lastMouseY);
-      }
-    };
-    container.addEventListener('pointermove', this.mouseMoveHandler, { capture: true, passive: true });
-    container.addEventListener('mousemove', this.mouseMoveHandler, { capture: true, passive: true });
-
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || '3d-force');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
@@ -235,7 +219,6 @@ const engine: Force3DEngine = {
     };
     this.applyHighlight = refreshHighlight;
 
-
     const initialWidth = container.clientWidth || 800;
     const initialHeight = container.clientHeight || 500;
     this.graph = ForceGraph3D()(container)
@@ -259,36 +242,6 @@ const engine: Force3DEngine = {
       .linkWidth((l: Force3DLink) => {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
         return l.displayWidth ?? currentTokens.edgeWidth;
-      })
-      .onNodeHover((node: Force3DNode | null) => {
-        const hovered = node;
-        this.hoveredNodeId = hovered ? hovered.id : null;
-        if (this.draggedNodeId) {
-          this.tooltipController?.hide();
-          return;
-        }
-        container.style.cursor = hovered ? 'pointer' : 'default';
-
-        if (hovered) {
-          let x = lastMouseX;
-          let y = lastMouseY;
-          if (!hasMousePosition && this.graph && typeof hovered.x === 'number' && typeof hovered.y === 'number' && typeof hovered.z === 'number') {
-            try {
-              const screenCoords = this.graph.graph2ScreenCoords(hovered.x, hovered.y, hovered.z);
-              if (screenCoords && typeof screenCoords.x === 'number' && typeof screenCoords.y === 'number') {
-                x = screenCoords.x;
-                y = screenCoords.y;
-              }
-            } catch {
-              // Fall back to pointer coordinates
-            }
-          }
-          this.tooltipController?.show(hovered, Boolean(this.isLight), x, y);
-        } else {
-          this.tooltipController?.hide();
-        }
-
-        refreshHighlight();
       })
       .onNodeDrag((node: Force3DNode) => {
         this.lastDraggedAt = performance.now();
@@ -342,10 +295,42 @@ const engine: Force3DEngine = {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
           this.animateTo(targets, 400, undefined, false);
         }
-      })
-      .onNodeClick((node: Force3DNode) => {
-        if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
-        const clicked = node;
+      });
+
+    // Hide any internal 3d-force-graph scene tooltip element and mount our Preact tooltip AFTER ForceGraph3D()(container)
+    // so kapsule's container DOM clearing does not detach tooltipEl.
+    const internalTooltip = container.querySelector<HTMLElement>('.scene-tooltip, .graph-tooltip');
+    if (internalTooltip) {
+      internalTooltip.style.display = 'none';
+    }
+    this.tooltipController = createGraphTooltipController(container);
+    this.tooltipController.bindProximityInteraction({
+      getScreenNodes: () => {
+        if (!this.graph || !this.nodes) return [];
+        const result: { node: RawGraphNode; x: number; y: number }[] = [];
+        for (const n of this.nodes) {
+          try {
+            const sc = this.graph.graph2ScreenCoords(n.x || 0, n.y || 0, n.z || 0);
+            if (sc && typeof sc.x === 'number' && typeof sc.y === 'number') {
+              result.push({ node: n, x: sc.x, y: sc.y });
+            }
+          } catch {
+            // Ignore projection errors while scene initializes
+          }
+        }
+        return result;
+      },
+      adjacency: this.adjacency!,
+      isLight: () => Boolean(this.isLight),
+      isDragging: () => Boolean(this.draggedNodeId),
+      getLastDraggedAt: () => this.lastDraggedAt || 0,
+      onActiveNodeChange: (nodeId) => {
+        this.hoveredNodeId = nodeId;
+        if (!this.draggedNodeId) {
+          refreshHighlight();
+        }
+      },
+      onNavigate: (clicked) => {
         if (
           clicked.id.startsWith('/posts/') ||
           clicked.id.startsWith('/publications/') ||
@@ -363,15 +348,8 @@ const engine: Force3DEngine = {
           targetUrl.searchParams.set('utm_campaign', utmCampaign);
           window.location.href = targetUrl.pathname + targetUrl.search;
         }
-      });
-
-    // Hide any internal 3d-force-graph scene tooltip element and mount our Preact tooltip AFTER ForceGraph3D()(container)
-    // so kapsule's container DOM clearing does not detach tooltipEl.
-    const internalTooltip = container.querySelector<HTMLElement>('.scene-tooltip, .graph-tooltip');
-    if (internalTooltip) {
-      internalTooltip.style.display = 'none';
-    }
-    this.tooltipController = createGraphTooltipController(container);
+      }
+    });
 
     this.graph.d3Force('charge').strength(-120);
 
