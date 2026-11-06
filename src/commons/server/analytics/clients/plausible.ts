@@ -439,10 +439,13 @@ export async function getPlausibleSiteOverview(
     };
   }
 
-  const plausiblePeriod = mapPeriodToPlausible(period);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
   const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
   url.searchParams.set('site_id', config.plausible.siteId);
   url.searchParams.set('period', plausiblePeriod);
+  if (plausibleDate) {
+    url.searchParams.set('date', plausibleDate);
+  }
   url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate,visit_duration');
 
   try {
@@ -496,10 +499,13 @@ export async function getPlausibleTrafficSources(
     return [];
   }
 
-  const plausiblePeriod = mapPeriodToPlausible(period);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
   const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
   url.searchParams.set('site_id', config.plausible.siteId);
   url.searchParams.set('period', plausiblePeriod);
+  if (plausibleDate) {
+    url.searchParams.set('date', plausibleDate);
+  }
   url.searchParams.set('property', 'visit:source');
   url.searchParams.set('metrics', 'visitors,bounce_rate,visit_duration');
   url.searchParams.set('limit', String(limit));
