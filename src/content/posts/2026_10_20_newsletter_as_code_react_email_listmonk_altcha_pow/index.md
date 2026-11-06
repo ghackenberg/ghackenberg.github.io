@@ -179,7 +179,7 @@ flowchart LR
   C --> E[".build/listmonk/{email-templates,public-*}"]
 ```
 
-All compiled email artifacts are emitted to `.build/listmonk/` rather than `dist/` via [`src/scripts/build-newsletters.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/build-newsletters.ts). Keeping `.build/listmonk/` outside the Astro static site output directory guarantees that `dist/` contains exclusively public website pages while providing a clean staging tree for API and SSH synchronization.
+All compiled email artifacts are emitted to `.build/listmonk/` rather than `dist/` via [`src/scripts/build-newsletters.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/build-newsletters.ts). Keeping `.build/listmonk/` outside the Astro static site output directory guarantees that `dist/` contains exclusively public website pages while providing a clean staging tree for API and SSH synchronization—aligning directly with our [Consent-Free Plausible Visitor Flow Analytics](/posts/2026_10_18_consent_free_markov_chain_visitor_flows_plausible/), [Zero-Artifact Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/), [FOIT-Free Vector Branding Compilation](/posts/2026_10_29_foit_free_vector_branding_svg_path_compilation/), and [Dual-JSX Preact and React Email Architecture](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/).
 
 ### Single Source of Design Tokens (`email-theme.ts` & `EmailShell.tsx`)
 

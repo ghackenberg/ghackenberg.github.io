@@ -143,4 +143,4 @@ const profileLines = sortedProfiles
   .join('\n');
 ```
 
-Coupling the JSON-LD `@graph` compiler and the `/llms.txt` endpoint to the same typed Astro collections guarantees that search crawlers and RAG agents always ingest identical academic credentials, ORCID identifiers, and publication graphs.
+Coupling the JSON-LD `@graph` compiler and the `/llms.txt` endpoint to the same typed Astro collections—and pairing them with [Schema.org ImageObject Asset Governance](/posts/2026_10_16_schema_org_image_object_metadata_asset_governance/), [Consent-Free Markov Visitor Flow Telemetry](/posts/2026_10_18_consent_free_markov_chain_visitor_flows_plausible/), [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/), and [Astro Content-Layer Merkle Asset Digesting](/posts/2026_11_08_astro_content_layer_merkle_asset_digesting/)—guarantees that search crawlers and RAG agents always ingest identical academic credentials, ORCID identifiers, and publication graphs.

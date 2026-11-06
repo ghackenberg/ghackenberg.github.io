@@ -300,7 +300,7 @@ The following cross-disciplinary synthesis contrasts the four foundational scien
 
 The concept of emergence evolved over nearly two centuries from nineteenth-century philosophy of science into quantitative physics and information theory. Thinkers progressed from qualitative distinctions between resultant and emergent chemical laws to mathematical formalizations of spontaneous symmetry breaking, computational mechanics, and macroscopic phase transitions across coupled many-body systems.
 
-When machine learning researchers debate whether large language models exhibit "emergent abilities" [@wei-2022-emergent-abilities; @schaeffer-2023-mirage], they are participating in an intellectual lineage that began in Victorian logic and condensed matter physics. Understanding why modern AI agent harnesses fail in production requires tracing how four consecutive scientific eras formalized the boundary between microscopic rules and macroscopic behavior.
+When machine learning researchers debate whether large language models exhibit "emergent abilities" [@wei-2022-emergent-abilities; @schaeffer-2023-mirage], they are participating in an intellectual lineage that began in Victorian logic and condensed matter physics. Understanding why modern [AI Agent Harnesses](/posts/2026_10_21_agent_harnesses_architecture_taxonomy_evolution/) and [In-Browser W3C WebMCP Tool Contexts](/posts/2026_10_23_webmcp_w3c_standard_architecture_history_future/) fail in production—and why deterministic defenses like our [Zero-innerHTML Preact and AST Security Gate](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/) are mandatory—requires tracing how four consecutive scientific eras formalized the boundary between microscopic rules and macroscopic behavior.
 
 ```mermaid
 ---
