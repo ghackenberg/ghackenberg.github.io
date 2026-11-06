@@ -1,4 +1,4 @@
-import cytoscape, { type Core, type NodeSingular, type EdgeSingular, type EventObjectNode } from 'cytoscape';
+import cytoscape, { type Core, type NodeSingular, type EdgeSingular } from 'cytoscape';
 import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
@@ -91,6 +91,7 @@ const engine: CytoscapeEngine = {
       userPanningEnabled: false,
       boxSelectionEnabled: false,
       autounselectify: true,
+      autoungrabify: true,
       elements: payload.cytoscape.elements,
       style: [
         {
@@ -345,8 +346,6 @@ const engine: CytoscapeEngine = {
       .stop();
 
     let grabbedNodeId: string | null = null;
-    let grabStartPos = { x: 0, y: 0 };
-    let wasDragged = false;
     let settleFramesRemaining = 0;
 
     const startForcePhysicsLoop = () => {
@@ -380,119 +379,15 @@ const engine: CytoscapeEngine = {
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
     };
 
-    this.cy.on('grabon', 'node', (evt: EventObjectNode) => {
-      const node = evt.target;
-      grabbedNodeId = node.id();
-      this.hoveredNodeId = grabbedNodeId;
-      const pos = node.position();
-      grabStartPos = { x: pos.x, y: pos.y };
-      wasDragged = false;
-      this.tooltipController?.hide();
-      applyHighlight(grabbedNodeId);
-      container.style.cursor = 'grabbing';
-
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId);
-        this.animationFrameId = null;
-      }
-
-      if (this.currentLayout === 'force' && this.dragSimulation) {
-        const allNodes = this.cy?.nodes() || [];
-        allNodes.forEach((n: NodeSingular) => {
-          const p = n.position();
-          const sn = simNodeMap.get(n.id());
-          if (sn) {
-            sn.x = p.x;
-            sn.y = p.y;
-            sn.vx = 0;
-            sn.vy = 0;
-            sn.fx = n.id() === grabbedNodeId ? p.x : null;
-            sn.fy = n.id() === grabbedNodeId ? p.y : null;
-          }
-        });
-        this.dragSimulation
-          .force('center', null)
-          .force('x', d3.forceX<CySimNode>(initCx).strength(0.06))
-          .force('y', d3.forceY<CySimNode>(initCy).strength(0.06))
-          .alphaTarget(0.3)
-          .alpha(0.35);
-        startForcePhysicsLoop();
-      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-        this.lastOrderSignature = this.getOrderSignature(this.currentLayout);
-      }
-    });
-
-    this.cy.on('drag', 'node', (evt: EventObjectNode) => {
-      const node = evt.target;
-      const pos = node.position();
-      if (Math.hypot(pos.x - grabStartPos.x, pos.y - grabStartPos.y) > 4) {
-        wasDragged = true;
-        this.lastDraggedAt = performance.now();
-        this.tooltipController?.hide();
-      }
-
-      if (this.currentLayout === 'force' && this.dragSimulation) {
-        const sn = simNodeMap.get(node.id());
-        if (sn) {
-          sn.fx = pos.x;
-          sn.fy = pos.y;
-          sn.x = pos.x;
-          sn.y = pos.y;
-        }
-        if (this.forcePositions) {
-          this.forcePositions[node.id()] = { x: pos.x, y: pos.y };
-        }
-        this.dragSimulation.alphaTarget(0.3).alpha(0.35);
-        startForcePhysicsLoop();
-      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-        const sig = this.getOrderSignature(this.currentLayout);
-        if (sig !== this.lastOrderSignature) {
-          this.lastOrderSignature = sig;
-          const targets = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 250, node.id(), false);
-        }
-      }
-    });
-
-    this.cy.on('freeon', 'node', (evt: EventObjectNode) => {
-      const node = evt.target;
-      const pos = node.position();
-      grabbedNodeId = null;
-
-      if (wasDragged) {
-        this.hoveredNodeId = null;
-        container.style.cursor = 'default';
-        applyHighlight(null);
-        this.lastDraggedAt = performance.now();
-        if (this.currentLayout === 'force' && this.dragSimulation) {
-          const sn = simNodeMap.get(node.id());
-          if (sn) {
-            sn.x = pos.x;
-            sn.y = pos.y;
-            sn.fx = null;
-            sn.fy = null;
-          }
-          if (this.forcePositions) {
-            this.forcePositions[node.id()] = { x: pos.x, y: pos.y };
-          }
-          this.dragSimulation
-            .force('center', d3.forceCenter<CySimNode>(initCx, initCy).strength(0.12))
-            .force('x', d3.forceX<CySimNode>(initCx).strength(0.08))
-            .force('y', d3.forceY<CySimNode>(initCy).strength(0.08))
-            .alphaTarget(0)
-            .alpha(0.35);
-          settleFramesRemaining = 45;
-          startForcePhysicsLoop();
-        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const targets = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false, false);
-        }
-      } else {
-        container.style.cursor = 'pointer';
-        applyHighlight(this.hoveredNodeId ?? null);
-        settleFramesRemaining = 0;
-      }
-    });
+    const renderedToModel = (sx: number, sy: number) => {
+      if (!this.cy) return { x: sx, y: sy };
+      const pan = this.cy.pan();
+      const zoom = this.cy.zoom() || 1;
+      return {
+        x: (sx - pan.x) / zoom,
+        y: (sy - pan.y) / zoom
+      };
+    };
 
     this.tooltipController.bindProximityInteraction({
       getScreenNodes: () => {
@@ -548,6 +443,108 @@ const engine: CytoscapeEngine = {
           targetUrl.searchParams.set('utm_medium', utmMedium);
           targetUrl.searchParams.set('utm_campaign', utmCampaign);
           window.location.href = targetUrl.pathname + targetUrl.search;
+        }
+      },
+      onNodeDragStart: (rawNode, sx, sy) => {
+        if (!this.cy) return;
+        grabbedNodeId = rawNode.id;
+        this.hoveredNodeId = grabbedNodeId;
+        this.lastDraggedAt = performance.now();
+        applyHighlight(grabbedNodeId);
+
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
+
+        const modelPos = renderedToModel(sx, sy);
+        this.cy.getElementById(grabbedNodeId).position(modelPos);
+
+        if (this.currentLayout === 'force' && this.dragSimulation) {
+          const allNodes = this.cy.nodes();
+          allNodes.forEach((n: NodeSingular) => {
+            const p = n.position();
+            const sn = simNodeMap.get(n.id());
+            if (sn) {
+              sn.x = p.x;
+              sn.y = p.y;
+              sn.vx = 0;
+              sn.vy = 0;
+              sn.fx = n.id() === grabbedNodeId ? p.x : null;
+              sn.fy = n.id() === grabbedNodeId ? p.y : null;
+            }
+          });
+          this.dragSimulation
+            .force('center', null)
+            .force('x', d3.forceX<CySimNode>(initCx).strength(0.06))
+            .force('y', d3.forceY<CySimNode>(initCy).strength(0.06))
+            .alphaTarget(0.3)
+            .alpha(0.35);
+          startForcePhysicsLoop();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.lastOrderSignature = this.getOrderSignature(this.currentLayout);
+        }
+      },
+      onNodeDragMove: (rawNode, sx, sy) => {
+        if (!this.cy) return;
+        this.lastDraggedAt = performance.now();
+        const pos = renderedToModel(sx, sy);
+        const node = this.cy.getElementById(rawNode.id);
+        node.position(pos);
+
+        if (this.currentLayout === 'force' && this.dragSimulation) {
+          const sn = simNodeMap.get(rawNode.id);
+          if (sn) {
+            sn.fx = pos.x;
+            sn.fy = pos.y;
+            sn.x = pos.x;
+            sn.y = pos.y;
+          }
+          if (this.forcePositions) {
+            this.forcePositions[rawNode.id] = { x: pos.x, y: pos.y };
+          }
+          this.dragSimulation.alphaTarget(0.3).alpha(0.35);
+          startForcePhysicsLoop();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const sig = this.getOrderSignature(this.currentLayout);
+          if (sig !== this.lastOrderSignature) {
+            this.lastOrderSignature = sig;
+            const targets = this.computeLayoutTargets(this.currentLayout, true);
+            this.animateTo(targets, 250, rawNode.id, false);
+          }
+        }
+      },
+      onNodeDragEnd: (rawNode) => {
+        if (!this.cy) return;
+        const node = this.cy.getElementById(rawNode.id);
+        const pos = node.position();
+        grabbedNodeId = null;
+        this.hoveredNodeId = null;
+        this.lastDraggedAt = performance.now();
+        applyHighlight(null);
+
+        if (this.currentLayout === 'force' && this.dragSimulation) {
+          const sn = simNodeMap.get(rawNode.id);
+          if (sn) {
+            sn.x = pos.x;
+            sn.y = pos.y;
+            sn.fx = null;
+            sn.fy = null;
+          }
+          if (this.forcePositions) {
+            this.forcePositions[rawNode.id] = { x: pos.x, y: pos.y };
+          }
+          this.dragSimulation
+            .force('center', d3.forceCenter<CySimNode>(initCx, initCy).strength(0.12))
+            .force('x', d3.forceX<CySimNode>(initCx).strength(0.08))
+            .force('y', d3.forceY<CySimNode>(initCy).strength(0.08))
+            .alphaTarget(0)
+            .alpha(0.35);
+          settleFramesRemaining = 45;
+          startForcePhysicsLoop();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const targets = this.computeLayoutTargets(this.currentLayout, true);
+          this.animateTo(targets, 400, undefined, false, false);
         }
       }
     });

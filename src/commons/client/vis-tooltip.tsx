@@ -54,10 +54,14 @@ export interface ProximityInteractionConfig {
   getLastDraggedAt?: () => number;
   onActiveNodeChange: (nodeId: string | null) => void;
   onNavigate: (node: VisTooltipNodeData) => void;
+  onNodeDragStart?: (node: VisTooltipNodeData, x: number, y: number) => void;
+  onNodeDragMove?: (node: VisTooltipNodeData, x: number, y: number) => void;
+  onNodeDragEnd?: (node: VisTooltipNodeData) => void;
 }
 
 export const MOUSE_PROXIMITY_RADIUS = 24;
 export const TOUCH_PROXIMITY_RADIUS = 36;
+export const DRAG_DEADZONE_PX = 8;
 
 export function VisNetworkTooltip({
   node,
@@ -459,10 +463,13 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       }
 
       let lastPointerType = 'mouse';
+      let lastTouchTime = 0;
       let pointerDown = false;
       let downX = 0;
       let downY = 0;
       let dragMoved = false;
+      let dragCandidate: VisTooltipNodeData | null = null;
+      let customDragActive = false;
 
       const isControlTarget = (target: EventTarget | null): boolean => {
         const el = target as HTMLElement | null;
@@ -516,31 +523,110 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         };
       };
 
+      const finishCustomDrag = () => {
+        if (customDragActive && dragCandidate) {
+          config.onNodeDragEnd?.(dragCandidate);
+          container.style.cursor = 'default';
+          config.onActiveNodeChange(null);
+        }
+        customDragActive = false;
+        dragCandidate = null;
+      };
+
+      const handleTouchTap = (px: number, py: number) => {
+        if (activeNodeData && isPointInsideTooltip(px, py)) {
+          config.onNavigate(activeNodeData);
+          return;
+        }
+
+        const hit = findNearest(px, py, TOUCH_PROXIMITY_RADIUS);
+        if (hit) {
+          if (activeNodeId === hit.node.id) {
+            config.onNavigate(hit.node);
+          } else {
+            config.onActiveNodeChange(hit.node.id);
+            showInternal(hit.node, config.isLight(), hit.x, hit.y, hit.neighborCoords);
+          }
+        } else if (activeNodeId !== null) {
+          config.onActiveNodeChange(null);
+          hideInternal();
+        }
+      };
+
       const onPointerDown = (e: PointerEvent) => {
         if (isControlTarget(e.target)) return;
+        const isSyntheticMouseAfterTouch =
+          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 800;
+        if (isSyntheticMouseAfterTouch) return;
+
         lastPointerType = e.pointerType || 'mouse';
+        if (lastPointerType === 'touch') {
+          lastTouchTime = performance.now();
+        }
         const rect = container.getBoundingClientRect();
         downX = e.clientX - rect.left;
         downY = e.clientY - rect.top;
         pointerDown = true;
         dragMoved = false;
+        customDragActive = false;
+
+        if (config.onNodeDragStart && (lastPointerType === 'touch' || e.button === 0)) {
+          const radius = lastPointerType === 'touch' ? TOUCH_PROXIMITY_RADIUS : MOUSE_PROXIMITY_RADIUS;
+          if (!(lastPointerType === 'touch' && activeNodeData && isPointInsideTooltip(downX, downY))) {
+            const hit = findNearest(downX, downY, radius);
+            dragCandidate = hit ? hit.node : null;
+          } else {
+            dragCandidate = null;
+          }
+        } else {
+          dragCandidate = null;
+        }
       };
 
       const onPointerMove = (e: PointerEvent) => {
         if (isControlTarget(e.target)) return;
+        const isSyntheticMouseAfterTouch =
+          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 800;
+        if (isSyntheticMouseAfterTouch) return;
+
         if (e.pointerType) {
           lastPointerType = e.pointerType;
+          if (lastPointerType === 'touch') {
+            lastTouchTime = performance.now();
+          }
         }
         const rect = container.getBoundingClientRect();
         const px = e.clientX - rect.left;
         const py = e.clientY - rect.top;
 
-        if (pointerDown && Math.hypot(px - downX, py - downY) > 6) {
-          dragMoved = true;
+        if (pointerDown) {
+          if (Math.hypot(px - downX, py - downY) > DRAG_DEADZONE_PX) {
+            dragMoved = true;
+            if (dragCandidate && config.onNodeDragStart) {
+              if (!customDragActive) {
+                customDragActive = true;
+                hideInternal();
+                container.style.cursor = 'grabbing';
+                config.onActiveNodeChange(dragCandidate.id);
+                config.onNodeDragStart(dragCandidate, px, py);
+              }
+              config.onNodeDragMove?.(dragCandidate, px, py);
+              return;
+            }
+            if (activeNodeId !== null && !config.isDragging?.()) {
+              container.style.cursor = 'default';
+              config.onActiveNodeChange(null);
+              hideInternal();
+            }
+          }
+          if (customDragActive && dragCandidate) {
+            config.onNodeDragMove?.(dragCandidate, px, py);
+            return;
+          }
         }
 
         if (lastPointerType === 'touch') return;
-        if (pointerDown || e.buttons !== 0 || config.isDragging?.()) return;
+        if (pointerDown || e.buttons !== 0 || config.isDragging?.() || customDragActive) return;
 
         const hit = findNearest(px, py, MOUSE_PROXIMITY_RADIUS);
         const nextId = hit ? hit.node.id : null;
@@ -557,7 +643,18 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       };
 
       const onPointerLeave = (e: PointerEvent) => {
-        if (e.pointerType === 'touch' || lastPointerType === 'touch') return;
+        if (
+          e.pointerType === 'touch' ||
+          lastPointerType === 'touch' ||
+          performance.now() - lastTouchTime < 800
+        ) {
+          return;
+        }
+        if (customDragActive) {
+          pointerDown = false;
+          finishCustomDrag();
+          return;
+        }
         if (config.isDragging?.()) return;
         if (activeNodeId !== null) {
           container.style.cursor = 'default';
@@ -568,11 +665,26 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
 
       const onPointerUp = (e: PointerEvent) => {
         if (isControlTarget(e.target)) return;
+        const isSyntheticMouseAfterTouch =
+          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 800;
+        if (isSyntheticMouseAfterTouch) return;
+
         if (e.pointerType) {
           lastPointerType = e.pointerType;
+          if (lastPointerType === 'touch') {
+            lastTouchTime = performance.now();
+          }
         }
+        const hadCustomDrag = customDragActive;
+        if (customDragActive) {
+          finishCustomDrag();
+        } else {
+          dragCandidate = null;
+        }
+
         const lastDraggedAt = config.getLastDraggedAt?.() || 0;
         const wasDrag =
+          hadCustomDrag ||
           dragMoved ||
           Boolean(config.isDragging?.()) ||
           (lastDraggedAt > 0 && performance.now() - lastDraggedAt < 250);
@@ -586,23 +698,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         const py = e.clientY - rect.top;
 
         if (lastPointerType === 'touch') {
-          if (activeNodeData && isPointInsideTooltip(px, py)) {
-            config.onNavigate(activeNodeData);
-            return;
-          }
-
-          const hit = findNearest(px, py, TOUCH_PROXIMITY_RADIUS);
-          if (hit) {
-            if (activeNodeId === hit.node.id) {
-              config.onNavigate(hit.node);
-            } else {
-              config.onActiveNodeChange(hit.node.id);
-              showInternal(hit.node, config.isLight(), hit.x, hit.y, hit.neighborCoords);
-            }
-          } else if (activeNodeId !== null) {
-            config.onActiveNodeChange(null);
-            hideInternal();
-          }
+          handleTouchTap(px, py);
           return;
         }
 
@@ -613,16 +709,131 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         }
       };
 
+      const onPointerCancel = () => {
+        pointerDown = false;
+        finishCustomDrag();
+      };
+
+      const onTouchStart = (e: TouchEvent) => {
+        if (isControlTarget(e.target) || e.touches.length === 0) return;
+        lastTouchTime = performance.now();
+        lastPointerType = 'touch';
+        const rect = container.getBoundingClientRect();
+        downX = e.touches[0].clientX - rect.left;
+        downY = e.touches[0].clientY - rect.top;
+        pointerDown = true;
+        dragMoved = e.touches.length > 1;
+
+        if (config.onNodeDragStart && e.touches.length === 1) {
+          if (!(activeNodeData && isPointInsideTooltip(downX, downY))) {
+            const hit = findNearest(downX, downY, TOUCH_PROXIMITY_RADIUS);
+            dragCandidate = hit ? hit.node : null;
+          } else {
+            dragCandidate = null;
+          }
+        } else {
+          dragCandidate = null;
+        }
+      };
+
+      const onTouchMove = (e: TouchEvent) => {
+        if (!pointerDown || e.touches.length === 0) return;
+        lastTouchTime = performance.now();
+        lastPointerType = 'touch';
+        const rect = container.getBoundingClientRect();
+        const tx = e.touches[0].clientX - rect.left;
+        const ty = e.touches[0].clientY - rect.top;
+
+        if (e.touches.length > 1) {
+          dragMoved = true;
+          if (customDragActive) {
+            finishCustomDrag();
+          }
+          if (activeNodeId !== null && !config.isDragging?.()) {
+            config.onActiveNodeChange(null);
+            hideInternal();
+          }
+          return;
+        }
+
+        if (Math.hypot(tx - downX, ty - downY) > DRAG_DEADZONE_PX) {
+          dragMoved = true;
+          if (dragCandidate && config.onNodeDragStart) {
+            if (e.cancelable) {
+              e.preventDefault();
+            }
+            if (!customDragActive) {
+              customDragActive = true;
+              hideInternal();
+              config.onActiveNodeChange(dragCandidate.id);
+              config.onNodeDragStart(dragCandidate, tx, ty);
+            }
+            config.onNodeDragMove?.(dragCandidate, tx, ty);
+            return;
+          }
+          if (activeNodeId !== null && !config.isDragging?.()) {
+            config.onActiveNodeChange(null);
+            hideInternal();
+          }
+        } else if (customDragActive && dragCandidate) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+          config.onNodeDragMove?.(dragCandidate, tx, ty);
+        }
+      };
+
+      const onTouchEnd = (e: TouchEvent) => {
+        if (isControlTarget(e.target)) return;
+        const prevTouchTime = lastTouchTime;
+        lastTouchTime = performance.now();
+        lastPointerType = 'touch';
+
+        const hadCustomDrag = customDragActive;
+        if (customDragActive) {
+          finishCustomDrag();
+        } else {
+          dragCandidate = null;
+        }
+
+        // If pointerup already processed this tap within the last 50ms, skip duplicate handling
+        if (!pointerDown && performance.now() - prevTouchTime < 50) return;
+
+        const lastDraggedAt = config.getLastDraggedAt?.() || 0;
+        const wasDrag =
+          hadCustomDrag ||
+          dragMoved ||
+          Boolean(config.isDragging?.()) ||
+          (lastDraggedAt > 0 && performance.now() - lastDraggedAt < 250);
+        pointerDown = false;
+
+        if (wasDrag || e.changedTouches.length === 0) return;
+        const rect = container.getBoundingClientRect();
+        const px = e.changedTouches[0].clientX - rect.left;
+        const py = e.changedTouches[0].clientY - rect.top;
+        handleTouchTap(px, py);
+      };
+
       container.addEventListener('pointerdown', onPointerDown, { capture: true, passive: true });
       container.addEventListener('pointermove', onPointerMove, { capture: true, passive: true });
       container.addEventListener('pointerleave', onPointerLeave, { passive: true });
       container.addEventListener('pointerup', onPointerUp, { capture: true, passive: true });
+      container.addEventListener('pointercancel', onPointerCancel, { capture: true, passive: true });
+      container.addEventListener('touchstart', onTouchStart, { capture: true, passive: true });
+      container.addEventListener('touchmove', onTouchMove, { capture: true, passive: false });
+      container.addEventListener('touchend', onTouchEnd, { capture: true, passive: true });
+      container.addEventListener('touchcancel', onPointerCancel, { capture: true, passive: true });
 
       cleanupProximityListeners = () => {
         container.removeEventListener('pointerdown', onPointerDown, { capture: true });
         container.removeEventListener('pointermove', onPointerMove, { capture: true });
         container.removeEventListener('pointerleave', onPointerLeave);
         container.removeEventListener('pointerup', onPointerUp, { capture: true });
+        container.removeEventListener('pointercancel', onPointerCancel, { capture: true });
+        container.removeEventListener('touchstart', onTouchStart, { capture: true });
+        container.removeEventListener('touchmove', onTouchMove, { capture: true });
+        container.removeEventListener('touchend', onTouchEnd, { capture: true });
+        container.removeEventListener('touchcancel', onPointerCancel, { capture: true });
       };
     },
 

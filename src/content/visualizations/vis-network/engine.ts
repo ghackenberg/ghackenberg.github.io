@@ -163,12 +163,12 @@ const engine: VisNetworkEngine = {
 
     const extraInteraction = extraOptions.interaction || {};
     const interactionOptions = Object.assign({
-      hover: true,
+      hover: false,
       hoverConnectedEdges: false,
       tooltipDelay: 100,
       zoomView: false,
       dragView: false,
-      dragNodes: true
+      dragNodes: false
     }, extraInteraction);
 
     const utmSource = String(extraOptions.utmSource || 'vis_network');
@@ -248,14 +248,12 @@ const engine: VisNetworkEngine = {
       setTimeout(finish, 1500);
     });
 
-    if (interactionOptions.dragNodes) {
-      this.isDragging = false;
-      this.hoveredNodeId = null;
-      this.draggedNodeId = null;
-      this.lastDraggedAt = 0;
-      this.lastOrderSignature = '';
-      this.dragStabilizeTimeout = null;
-    }
+    this.isDragging = false;
+    this.hoveredNodeId = null;
+    this.draggedNodeId = null;
+    this.lastDraggedAt = 0;
+    this.lastOrderSignature = '';
+    this.dragStabilizeTimeout = null;
 
     const adjacency = buildGraphAdjacency(this.connections || []);
     let lastHighlightedNodeId: string | null = null;
@@ -414,100 +412,6 @@ const engine: VisNetworkEngine = {
       this.highlightFrameId = requestAnimationFrame(step);
     };
 
-    if (interactionOptions.dragNodes) {
-      this.network.on("dragStart", (params: { nodes: string[] }) => {
-        if (!params.nodes || params.nodes.length === 0) return;
-        this.isDragging = true;
-        this.lastDraggedAt = performance.now();
-        const draggedId = String(params.nodes[0]);
-        this.draggedNodeId = draggedId;
-        this.applyHighlight?.(draggedId);
-        this.tooltipController?.hide();
-
-        if (this.dragStabilizeTimeout) {
-          clearTimeout(this.dragStabilizeTimeout);
-          this.dragStabilizeTimeout = null;
-        }
-        if (this.animationFrameId) {
-          cancelAnimationFrame(this.animationFrameId);
-          this.animationFrameId = null;
-        }
-
-        if (this.currentLayout === 'force') {
-          this.network?.setOptions({
-            physics: {
-              enabled: true,
-              stabilization: { enabled: false }
-            }
-          });
-          this.network?.startSimulation();
-        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const { signature } = this.computeLayoutTargets(this.currentLayout, true);
-          this.lastOrderSignature = signature;
-        }
-      });
-
-      this.network.on("dragging", (params: { nodes: string[] }) => {
-        if (!params.nodes || params.nodes.length === 0) return;
-        this.lastDraggedAt = performance.now();
-        const draggedId = String(params.nodes[0]);
-        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
-          if (signature !== this.lastOrderSignature) {
-            this.lastOrderSignature = signature;
-            this.animateTo(targets, 250, draggedId);
-          }
-        }
-      });
-
-      this.network.on("dragEnd", (params: { nodes: string[] }) => {
-        if (!this.isDragging && (!params.nodes || params.nodes.length === 0)) return;
-        this.isDragging = false;
-        this.draggedNodeId = null;
-        this.hoveredNodeId = null;
-        this.lastDraggedAt = performance.now();
-        this.network?.unselectAll();
-        container.style.cursor = "default";
-        this.applyHighlight?.(null);
-
-        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400);
-          return;
-        }
-
-        if (this.network) {
-          this.forcePositions = this.network.getPositions();
-        }
-
-        const stopAfterDrag = () => {
-          if (this.network && !this.isDragging) {
-            this.network.setOptions({ physics: { enabled: false } });
-            this.network.stopSimulation();
-            if (this.currentLayout === 'force') {
-              this.forcePositions = this.network.getPositions();
-            }
-          }
-          if (this.dragStabilizeTimeout) {
-            clearTimeout(this.dragStabilizeTimeout);
-            this.dragStabilizeTimeout = null;
-          }
-        };
-
-        this.network?.once("stabilized", stopAfterDrag);
-
-        if (this.dragStabilizeTimeout) {
-          clearTimeout(this.dragStabilizeTimeout);
-        }
-        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 800);
-      });
-    }
-
-    this.network.on("click", () => {
-      this.network?.unselectAll();
-      this.applyHighlight?.(this.hoveredNodeId ?? null);
-    });
-
     this.tooltipController?.bindProximityInteraction({
       getScreenNodes: () => {
         if (!this.network || !this.nodes) return [];
@@ -550,6 +454,96 @@ const engine: VisNetworkEngine = {
           targetUrl.searchParams.set('utm_campaign', utmCampaign);
           window.location.href = targetUrl.pathname + targetUrl.search;
         }
+      },
+      onNodeDragStart: (rawNode, sx, sy) => {
+        if (!this.network) return;
+        this.isDragging = true;
+        this.lastDraggedAt = performance.now();
+        const draggedId = rawNode.id;
+        this.draggedNodeId = draggedId;
+        this.applyHighlight?.(draggedId);
+
+        if (this.dragStabilizeTimeout) {
+          clearTimeout(this.dragStabilizeTimeout);
+          this.dragStabilizeTimeout = null;
+        }
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
+
+        const cPos = this.network.DOMtoCanvas({ x: sx, y: sy });
+        this.network.moveNode(draggedId, cPos.x, cPos.y);
+
+        if (this.currentLayout === 'force') {
+          this.visNodes?.update({ id: draggedId, fixed: { x: true, y: true } });
+          this.network.setOptions({
+            physics: {
+              enabled: true,
+              stabilization: { enabled: false }
+            }
+          });
+          this.network.startSimulation();
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { signature } = this.computeLayoutTargets(this.currentLayout, true);
+          this.lastOrderSignature = signature;
+        }
+      },
+      onNodeDragMove: (rawNode, sx, sy) => {
+        if (!this.network) return;
+        this.lastDraggedAt = performance.now();
+        const draggedId = rawNode.id;
+        const cPos = this.network.DOMtoCanvas({ x: sx, y: sy });
+        this.network.moveNode(draggedId, cPos.x, cPos.y);
+
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+          if (signature !== this.lastOrderSignature) {
+            this.lastOrderSignature = signature;
+            this.animateTo(targets, 250, draggedId);
+          }
+        }
+      },
+      onNodeDragEnd: (rawNode) => {
+        if (!this.network) return;
+        const draggedId = rawNode.id;
+        this.isDragging = false;
+        this.draggedNodeId = null;
+        this.hoveredNodeId = null;
+        this.lastDraggedAt = performance.now();
+        this.visNodes?.update({ id: draggedId, fixed: { x: false, y: false } });
+        this.network.unselectAll();
+        container.style.cursor = "default";
+        this.applyHighlight?.(null);
+
+        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          const { targets } = this.computeLayoutTargets(this.currentLayout, true);
+          this.animateTo(targets, 400);
+          return;
+        }
+
+        this.forcePositions = this.network.getPositions();
+
+        const stopAfterDrag = () => {
+          if (this.network && !this.isDragging) {
+            this.network.setOptions({ physics: { enabled: false } });
+            this.network.stopSimulation();
+            if (this.currentLayout === 'force') {
+              this.forcePositions = this.network.getPositions();
+            }
+          }
+          if (this.dragStabilizeTimeout) {
+            clearTimeout(this.dragStabilizeTimeout);
+            this.dragStabilizeTimeout = null;
+          }
+        };
+
+        this.network.once("stabilized", stopAfterDrag);
+
+        if (this.dragStabilizeTimeout) {
+          clearTimeout(this.dragStabilizeTimeout);
+        }
+        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 800);
       }
     });
 
