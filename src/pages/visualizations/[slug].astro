@@ -61,6 +61,14 @@ const payload = await buildGraphPayload({
 });
 
 
+const engineSwitcherItems = [
+  { id: "cytoscape", label: "Cytoscape.js", badge: "2D Canvas" },
+  { id: "sigma", label: "Sigma.js", badge: "WebGL 2.0" },
+  { id: "d3", label: "D3.js", badge: "SVG DOM" },
+  { id: "vis-network", label: "Vis-Network", badge: "Spring 2D" },
+  { id: "3d-force", label: "3D Force", badge: "Three.js" },
+];
+
 const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
@@ -106,6 +114,58 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
     <!-- Canvas Viewport in Wide Width -->
     <Container size="wide" padding="none">
+      <!-- Above-the-Fold Engine Switcher & Architecture Deep-Dive Navigation Bar -->
+      <nav
+        aria-label="Graph visualization engine switcher and architecture documentation"
+        class="mb-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 p-3 sm:px-4 sm:py-3 rounded-2xl border border-element-border glass-card hover:transform-none"
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 light:text-slate-500 mr-1 select-none">
+            Compare Engines:
+          </span>
+          {engineSwitcherItems.map((item) => {
+            const isActive = item.id === type;
+            return (
+              <a
+                href={`/visualizations/${item.id}/`}
+                aria-current={isActive ? "page" : undefined}
+                data-track-event="Visualization Engine Switched"
+                data-track-from={type}
+                data-track-to={item.id}
+                class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
+                  isActive
+                    ? "bg-domain-visualizations/15 text-domain-visualizations border-domain-visualizations/40 shadow-sm"
+                    : "bg-element-bg text-gray-300 light:text-slate-700 border-element-border hover:border-domain-visualizations/30 hover:text-domain-visualizations"
+                }`}
+              >
+                <span>{item.label}</span>
+                <span class="text-[10px] font-medium opacity-75">({item.badge})</span>
+              </a>
+            );
+          })}
+        </div>
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          <a
+            href="#visualization-docs"
+            data-track-event="Visualization Specs Anchor Clicked"
+            data-track-engine={type}
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-element-bg text-gray-300 light:text-slate-700 border border-element-border hover:border-domain-visualizations/30 hover:text-domain-visualizations transition-colors"
+          >
+            <span>Engine Specs &amp; FAQ</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a
+            href="/posts/2026_11_05_five_graph_engines_unified_interaction_physics/"
+            data-track-event="Visualization Deep-Dive Clicked"
+            data-track-engine={type}
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-domain-posts/10 text-domain-posts border border-domain-posts/30 hover:bg-domain-posts/20 transition-colors"
+          >
+            <span>5-Engine Architecture Benchmark</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </nav>
+
       <div class="visualization-viewport flex-grow w-full relative min-h-[500px] rounded-3xl border border-element-border glass-card hover:transform-none overflow-hidden shadow-2xl">
         <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
         <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-element-border-medium light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
@@ -189,7 +249,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
     <!-- Documentation & Contact in Reading Width -->
     <Container size="reading" padding="none" class="mt-12">
-      <article class="glass-card p-8 md:p-10 rounded-3xl border border-element-border visualization-details prose-custom">
+      <article id="visualization-docs" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border visualization-details prose-custom">
         <Content />
       </article>
 

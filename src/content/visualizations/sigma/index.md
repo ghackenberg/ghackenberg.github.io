@@ -1,6 +1,6 @@
 ---
-title: "Sigma.js: ForceAtlas2 Network Graph"
-description: "Navigate large-scale semantic networks with high-performance WebGL rendering and multi-threaded ForceAtlas2 physics offloaded to background web workers."
+title: "Sigma.js WebGL & ForceAtlas2 Graph Visualization"
+description: "Interactive Sigma.js WebGL 2.0 network graph demo featuring multi-threaded ForceAtlas2 worker physics, 60 FPS GPU shaders, and 50,000+ node benchmarks."
 image:
   src: "./sigma.png"
   title: "Sigma ForceAtlas2 Graph Layout"
@@ -63,8 +63,8 @@ Sigma.js eliminates rendering bottlenecks through three hardware-accelerated tec
 Sigma.js is the optimal architectural choice under specific network requirements:
 - **Large-Scale Graphs**: Ideal for medium-to-massive networks (1,000+ nodes) where frame rate and high throughput are paramount.
 - **Minimal CPU Overhead**: Offloads $n$-body calculations to secondary threads rather than bogging down browser interaction.
-- **Complementary Tooling**: Use D3 for fine-grained SVG typography or Vis.js for tactile 2D canvas springs under 1,000 nodes.
+- **Complementary Tooling**: Use [D3.js](/visualizations/d3/) for fine-grained SVG typography, [Cytoscape.js](/visualizations/cytoscape/) for compound hierarchies and shortest-path analytics, [Vis-Network](/visualizations/vis-network/) for tactile 2D canvas springs under 1,000 nodes, or [3D Force-Graph](/visualizations/3d-force/) for volumetric Three.js rendering.
 
 ### Reference Documentation
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). To explore how we pair WebGL shader pipelines with topological focus dimming and mobile touch disambiguation, read [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).
