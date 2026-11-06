@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Comparison between failing 8px exact node hit tests and bounded 24px mouse and 36px touch Voronoi proximity picking across five graph engines">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arrow-miss" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
+    </marker>
+    <marker id="arrow-hit" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Zone Glows -->
+  <ellipse cx="132" cy="238" rx="100" ry="132" fill="var(--svg-node-red-bg)" opacity="0.24" />
+  <ellipse cx="348" cy="238" rx="108" ry="138" fill="var(--svg-node-green-bg)" opacity="0.26" />
+
+  <!-- Header -->
+  <text x="240" y="34" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle" letter-spacing="0.05em">VORONOI PROXIMITY CAPTURE VS. EXACT HIT</text>
+  <text x="240" y="55" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Bounded Area Cursors Lower Fitts Index of Difficulty Across 5 Engines</text>
+
+  <!-- Vertical Divider -->
+  <line x1="240" y1="78" x2="240" y2="404" stroke="var(--svg-border)" stroke-width="1.5" stroke-dasharray="6,6" />
+
+  <!-- ==================== LEFT ZONE: EXACT 8PX HIT TEST ==================== -->
+  <text x="128" y="92" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">EXACT 8PX HIT</text>
+  <text x="128" y="112" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">W = 16px (High ID)</text>
+
+  <!-- Network Edges Left -->
+  <line x1="78" y1="286" x2="128" y2="210" stroke="var(--svg-border)" stroke-width="1.8" />
+  <line x1="178" y1="286" x2="128" y2="210" stroke="var(--svg-border)" stroke-width="1.8" />
+
+  <!-- Tiny 8px Target Node -->
+  <circle cx="128" cy="210" r="36" fill="none" stroke="var(--svg-border)" stroke-width="1.2" stroke-dasharray="3,4" />
+  <circle cx="128" cy="210" r="8" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2.2" />
+
+  <!-- Peer Nodes Left -->
+  <circle cx="78" cy="286" r="8" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.8" />
+  <circle cx="178" cy="286" r="8" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.8" />
+
+  <!-- Missed Pointer At d = 18px -->
+  <g transform="translate(150, 192)">
+    <circle cx="0" cy="0" r="10" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+    <line x1="-4" y1="-4" x2="4" y2="4" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <line x1="4" y1="-4" x2="-4" y2="4" stroke="var(--svg-node-red-border)" stroke-width="2" />
+  </g>
+  <text x="128" y="338" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">Missed Grab</text>
+  <text x="128" y="358" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Hover != Drag</text>
+
+  <!-- ==================== RIGHT ZONE: BOUNDED VORONOI CELLS ==================== -->
+  <text x="356" y="92" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">VORONOI PICKING</text>
+  <text x="356" y="112" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">24px Mouse / 36px Touch</text>
+
+  <!-- Voronoi Cell Partition Boundaries -->
+  <polygon points="292,150 420,150 432,244 356,262 280,244" fill="var(--svg-node-green-bg)" opacity="0.22" stroke="var(--svg-node-green-border)" stroke-width="1.6" stroke-dasharray="4,3" />
+  <line x1="356" y1="262" x2="356" y2="322" stroke="var(--svg-node-blue-border)" stroke-width="1.5" stroke-dasharray="4,3" />
+
+  <!-- 36px Touch Halo & 24px Mouse Halo -->
+  <circle cx="356" cy="206" r="44" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.8" stroke-dasharray="5,4" />
+  <circle cx="356" cy="206" r="28" fill="var(--svg-node-green-bg)" opacity="0.45" stroke="var(--svg-node-green-border)" stroke-width="2" />
+
+  <!-- Network Edges Right -->
+  <line x1="306" y1="292" x2="356" y2="206" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <line x1="406" y1="292" x2="356" y2="206" stroke="var(--svg-node-green-border)" stroke-width="2" />
+
+  <!-- Active Target Node Right -->
+  <circle cx="356" cy="206" r="9" fill="var(--svg-node-green-border)" stroke="var(--svg-card)" stroke-width="2" />
+  <circle cx="306" cy="292" r="8" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <circle cx="406" cy="292" r="8" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+
+  <!-- Captured Pointer Inside Halo Snapping to Node -->
+  <g transform="translate(382, 188)">
+    <circle cx="0" cy="0" r="8" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  </g>
+  <line x1="376" y1="192" x2="364" y2="200" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arrow-hit)" />
+
+  <text x="356" y="338" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">Unified Capture</text>
+  <text x="356" y="358" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">findNearest(px, py, r)</text>
+
+  <!-- Bottom Summary Pill -->
+  <rect x="34" y="424" width="412" height="36" rx="18" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+  <text x="240" y="447" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">Hover, Tap &amp; Drag Share One Voronoi Solver</text>
+</svg>

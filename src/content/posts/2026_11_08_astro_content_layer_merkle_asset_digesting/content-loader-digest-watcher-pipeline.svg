@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector architecture of assetAwareGlob intercepting generateDigest and proxying Vite FSWatcher for single-entry invalidation">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Halos -->
+  <ellipse cx="240" cy="118" rx="204" ry="56" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+  <ellipse cx="240" cy="252" rx="204" ry="56" fill="var(--svg-node-purple-bg)" opacity="0.22" />
+  <ellipse cx="240" cy="382" rx="204" ry="56" fill="var(--svg-node-green-bg)" opacity="0.22" />
+
+  <!-- Header -->
+  <text x="240" y="32" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">ASSETAWAREGLOB LOADER PIPELINE</text>
+
+  <!-- ===================================================================
+       STAGE 1: DIGEST INDEXING & INTERCEPTION
+       =================================================================== -->
+  <text x="36" y="62" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-blue-text)">1. Composite Digest Hook</text>
+  <text x="444" y="62" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-blue-subtext)">generateDigest()</text>
+
+  <!-- Node 1A: mdFileByBaseDigest Map -->
+  <rect x="32" y="74" width="194" height="72" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <circle cx="58" cy="110" r="14" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="58" y="115" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-blue-text)">MD</text>
+  <text x="148" y="103" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-blue-text)">Base Digest Map</text>
+  <text x="148" y="124" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-blue-subtext)">hash &#8594; mdFilePath</text>
+
+  <!-- Arrow 1A -> 1B -->
+  <path d="M 226 110 H 248" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+  <!-- Node 1B: computeEntryAssetFingerprint -->
+  <rect x="256" y="74" width="192" height="72" rx="10" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <text x="352" y="103" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-blue-text)">Asset Fingerprint</text>
+  <text x="352" y="124" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-blue-subtext)">Sorted relKey:md5</text>
+
+  <!-- Connector Stage 1 -> Stage 2 -->
+  <path d="M 240 150 V 180" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-purple)" />
+
+  <!-- ===================================================================
+       STAGE 2: BOUND VITE WATCHER PROXY
+       =================================================================== -->
+  <text x="36" y="202" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-purple-text)">2. Bound FSWatcher Proxy</text>
+  <text x="444" y="202" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-purple-subtext)">Reflect.get().bind()</text>
+
+  <!-- Node 2A: Proxy Intercept -->
+  <rect x="32" y="214" width="194" height="72" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-purple-border)" stroke-width="1.8" />
+  <circle cx="58" cy="250" r="14" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+  <text x="58" y="255" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-purple-text)">PX</text>
+  <text x="148" y="243" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-purple-text)">Watcher Proxy</text>
+  <text x="148" y="264" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-purple-subtext)">Captures Callback</text>
+
+  <!-- Arrow 2A -> 2B -->
+  <path d="M 226 250 H 248" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" marker-end="url(#arr-purple)" />
+
+  <!-- Node 2B: Debounced Asset Watcher -->
+  <rect x="256" y="214" width="192" height="72" rx="10" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+  <text x="352" y="243" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-purple-text)">100ms Debounce</text>
+  <text x="352" y="264" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-purple-subtext)">change / add / unlink</text>
+
+  <!-- Connector Stage 2 -> Stage 3 -->
+  <path d="M 240 290 V 320" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-green)" />
+
+  <!-- ===================================================================
+       STAGE 3: SURGICAL SINGLE-ENTRY RE-INDEXING
+       =================================================================== -->
+  <text x="36" y="342" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">3. Surgical Entry Update</text>
+  <text x="444" y="342" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-green-subtext)">Zero Store Wipe</text>
+
+  <!-- Node 3A: findAffectedMarkdownFiles -->
+  <rect x="32" y="354" width="194" height="68" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+  <text x="129" y="382" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">Affected Lookup</text>
+  <text x="129" y="402" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-green-subtext)">Matches Asset Name</text>
+
+  <!-- Arrow 3A -> 3B -->
+  <path d="M 226 388 H 248" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2" marker-end="url(#arr-green)" />
+
+  <!-- Node 3B: globChangeHandler(mdFile) -->
+  <rect x="256" y="354" width="192" height="68" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <text x="352" y="382" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">Single-Entry HMR</text>
+  <text x="352" y="402" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-green-subtext)">globChangeHandler()</text>
+
+  <!-- Bottom Pill -->
+  <rect x="44" y="434" width="392" height="32" rx="16" fill="var(--svg-card-alt)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <text x="240" y="455" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">Sub-200ms HMR Without Touching Markdown Mtimes</text>
+</svg>

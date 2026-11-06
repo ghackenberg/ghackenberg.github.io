@@ -82,6 +82,7 @@ function isForbiddenAstroReference(val: string): boolean {
     const sanitized = val
       .replace(/2026_05_23_website_relaunch_astro_typescript/g, '')
       .replace(/2026_09_22_build_time_static_mermaid_in_astro/g, '')
+      .replace(/2026_11_08_astro_content_layer_merkle_asset_digesting/g, '')
       .replace(/step3_astro_edge/g, '');
     if (sanitized.includes('_astro')) {
       return true;

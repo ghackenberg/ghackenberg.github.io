@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector schematic showing Remark image registration followed by rehype-inline-svg DOM replacement and localImagePaths pruning">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Halos -->
+  <ellipse cx="240" cy="112" rx="200" ry="52" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+  <ellipse cx="240" cy="248" rx="200" ry="58" fill="var(--svg-node-amber-bg)" opacity="0.22" />
+  <ellipse cx="240" cy="382" rx="200" ry="54" fill="var(--svg-node-green-bg)" opacity="0.22" />
+
+  <!-- Header -->
+  <text x="240" y="32" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">BUILD-TIME SVG INLINING &amp; PRUNING</text>
+
+  <!-- ===================================================================
+       STAGE 1: REMARK IMAGE DISCOVERY (PRE-REHYPE)
+       =================================================================== -->
+  <text x="36" y="62" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-blue-text)">1. Remark Image Scan</text>
+  <text x="444" y="62" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-blue-subtext)">vfile.data.astro</text>
+
+  <rect x="32" y="74" width="416" height="68" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <rect x="48" y="88" width="166" height="40" rx="8" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+  <text x="131" y="113" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">![alt](./diagram.svg)</text>
+
+  <path d="M 218 108 H 252" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+  <rect x="260" y="88" width="172" height="40" rx="8" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+  <text x="346" y="106" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-blue-text)">localImagePaths</text>
+  <text x="346" y="122" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-blue-subtext)">[hero.jpg, diagram.svg]</text>
+
+  <!-- Connector 1 -> 2 -->
+  <path d="M 240 146 V 178" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-amber)" />
+
+  <!-- ===================================================================
+       STAGE 2: REHYPE-INLINE-SVG DOM MUTATION & PRUNING
+       =================================================================== -->
+  <text x="36" y="200" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-amber-text)">2. rehype-inline-svg.ts</text>
+  <text x="444" y="200" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-amber-subtext)">DOM + VFile Filter</text>
+
+  <!-- Left Box: Inline <figure> + Scoped IDs -->
+  <rect x="32" y="212" width="196" height="74" rx="10" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+  <text x="130" y="241" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-amber-text)">Inline &lt;figure&gt;</text>
+  <text x="130" y="261" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-amber-subtext)">Scoped svg-hash IDs</text>
+
+  <!-- Right Box: Filter Out .svg from localImagePaths -->
+  <rect x="252" y="212" width="196" height="74" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+  <text x="350" y="241" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-red-text)">Prune Inlined .svg</text>
+  <text x="350" y="261" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-red-subtext)">Remove from Astro List</text>
+
+  <!-- Connector 2 -> 3 -->
+  <path d="M 130 290 V 322" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2" marker-end="url(#arr-green)" />
+  <path d="M 350 290 V 322" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2" marker-end="url(#arr-green)" />
+
+  <!-- ===================================================================
+       STAGE 3: CLEAN SEPARATION OF CONCERNS
+       =================================================================== -->
+  <text x="36" y="344" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">3. Decoupled Build Output</text>
+  <text x="444" y="344" text-anchor="end" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-green-subtext)">Zero Redundant Work</text>
+
+  <!-- Left Output: Direct CSS Token Resolution -->
+  <rect x="32" y="356" width="196" height="66" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <text x="130" y="383" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">Theme-Aware DOM</text>
+  <text x="130" y="403" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-green-subtext)">Live var(--svg-*) CSS</text>
+
+  <!-- Right Output: Raster Only in astro:assets -->
+  <rect x="252" y="356" width="196" height="66" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <text x="350" y="383" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">Raster Pipeline Only</text>
+  <text x="350" y="403" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-green-subtext)">[hero.jpg] Optimized</text>
+
+  <!-- Bottom Summary Banner -->
+  <rect x="44" y="434" width="392" height="32" rx="16" fill="var(--svg-card-alt)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <text x="240" y="455" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">Eliminates Duplicate SVG Optimization &amp; Dev Store Resets</text>
+</svg>

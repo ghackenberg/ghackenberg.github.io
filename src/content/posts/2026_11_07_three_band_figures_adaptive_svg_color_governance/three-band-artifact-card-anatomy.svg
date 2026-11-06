@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector schematic of the unified Three-Band Artifact Card anatomy across SVG, Mermaid, Code, Table, and Image nodes connected to the native dialog lightbox">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Halos -->
+  <ellipse cx="240" cy="92" rx="200" ry="36" fill="var(--svg-node-blue-bg)" opacity="0.24" />
+  <ellipse cx="240" cy="248" rx="196" ry="86" fill="var(--svg-node-purple-bg)" opacity="0.20" />
+  <ellipse cx="240" cy="422" rx="188" ry="38" fill="var(--svg-node-green-bg)" opacity="0.24" />
+
+  <!-- Header -->
+  <text x="240" y="32" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em" fill="var(--svg-text-primary)">THREE-BAND ARTIFACT CARD ANATOMY</text>
+  <text x="240" y="50" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="500" fill="var(--svg-text-secondary)">Build-Time AST Synthesis + Zero-CLS Lightbox</text>
+
+  <!-- ===================================================================
+       TOP ROW: 5 HETEROGENEOUS ARTIFACT INPUTS
+       =================================================================== -->
+  <rect x="24" y="68" width="76" height="34" rx="10" fill="var(--svg-accent-2-bg)" stroke="var(--svg-accent-2-border)" stroke-width="1.8" />
+  <text x="62" y="90" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-2-text)">SVG</text>
+
+  <rect x="112" y="68" width="82" height="34" rx="10" fill="var(--svg-accent-4-bg)" stroke="var(--svg-accent-4-border)" stroke-width="1.8" />
+  <text x="153" y="90" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-4-text)">Mermaid</text>
+
+  <rect x="206" y="68" width="74" height="34" rx="10" fill="var(--svg-accent-6-bg)" stroke="var(--svg-accent-6-border)" stroke-width="1.8" />
+  <text x="243" y="90" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-6-text)">Shiki</text>
+
+  <rect x="292" y="68" width="76" height="34" rx="10" fill="var(--svg-accent-8-bg)" stroke="var(--svg-accent-8-border)" stroke-width="1.8" />
+  <text x="330" y="90" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-8-text)">Table</text>
+
+  <rect x="380" y="68" width="76" height="34" rx="10" fill="var(--svg-accent-10-bg)" stroke="var(--svg-accent-10-border)" stroke-width="1.8" />
+  <text x="418" y="90" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="700" fill="var(--svg-accent-10-text)">Image</text>
+
+  <!-- Converging AST Ribbon into 3-Band Figure -->
+  <path d="M 62 104 Q 240 126 240 138" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.6" stroke-dasharray="4,3" />
+  <path d="M 418 104 Q 240 126 240 138" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.6" stroke-dasharray="4,3" />
+  <path d="M 240 104 V 138" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+  <!-- ===================================================================
+       MIDDLE ZONE: 3-BAND <figure class="artifact-card"> SCHEMATIC
+       =================================================================== -->
+  <!-- Band 1: Header Bar (.artifact-card-header) -->
+  <rect x="44" y="144" width="392" height="48" rx="10" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+  <rect x="60" y="156" width="84" height="24" rx="12" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+  <text x="102" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-blue-text)">BAND 1</text>
+  <text x="234" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-blue-text)">Header Badge &amp; Actions</text>
+  <rect x="348" y="156" width="72" height="24" rx="8" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+  <text x="384" y="173" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-blue-subtext)">Copy ⤢</text>
+
+  <!-- Band 2: Interactive Viewport Body (.artifact-card-body) -->
+  <rect x="44" y="200" width="392" height="92" rx="10" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+  <rect x="60" y="216" width="84" height="24" rx="12" fill="var(--svg-card)" stroke="var(--svg-node-purple-border)" stroke-width="1.5" />
+  <text x="102" y="233" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-purple-text)">BAND 2</text>
+  <text x="256" y="234" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-purple-text)">Interactive Artifact Body</text>
+  <text x="256" y="256" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="500" fill="var(--svg-node-purple-subtext)">Adaptive SVG • Dual-Theme Shiki • Sortable Table</text>
+  <text x="256" y="276" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="600" fill="var(--svg-text-secondary)">Excludes .slide-mdx-content Decks</text>
+
+  <!-- Band 3: Caption Footer (figcaption.artifact-card-footer) -->
+  <rect x="44" y="300" width="392" height="46" rx="10" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.2" />
+  <rect x="60" y="311" width="84" height="24" rx="12" fill="var(--svg-card)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+  <text x="102" y="328" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-amber-text)">BAND 3</text>
+  <text x="282" y="328" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-amber-text)">Italicized Semantic Figcaption</text>
+
+  <!-- Connector to Lightbox Controller -->
+  <path d="M 240 348 V 386" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+  <text x="252" y="372" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-text-secondary)">media-deck.ts</text>
+
+  <!-- ===================================================================
+       BOTTOM PILL: NATIVE <dialog> PAN/ZOOM GALLERY LIGHTBOX
+       =================================================================== -->
+  <rect x="44" y="394" width="392" height="54" rx="27" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+  <circle cx="80" cy="421" r="15" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <polyline points="73,421 78,426 87,416" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="256" y="417" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Native &lt;dialog&gt; Fullscreen Lightbox</text>
+  <text x="256" y="436" text-anchor="middle" font-family="Outfit, Inter, sans-serif" font-size="12.5" font-weight="500" fill="var(--svg-node-green-subtext)">0.5×–4× Pan/Zoom + DOM Reading-Order Carousel</text>
+</svg>

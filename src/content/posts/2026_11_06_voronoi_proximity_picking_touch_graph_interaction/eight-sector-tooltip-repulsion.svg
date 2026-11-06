@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="8-sector compass tooltip repulsion evaluating neighbor edge ray penalties and viewport clamping with 750ms sine-eased opacity transitions">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arrow-edge" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
+    </marker>
+    <marker id="arrow-win" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Background -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Ambient Compass Halo -->
+  <circle cx="240" cy="244" r="146" fill="var(--svg-node-blue-bg)" opacity="0.22" />
+  <circle cx="240" cy="244" r="112" fill="none" stroke="var(--svg-border)" stroke-width="1.5" stroke-dasharray="5,5" />
+
+  <!-- Header -->
+  <text x="240" y="34" font-family="Outfit, Inter, sans-serif" font-size="16" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle" letter-spacing="0.05em">8-SECTOR COMPASS TOOLTIP REPULSION</text>
+  <text x="240" y="55" font-family="Outfit, Inter, sans-serif" font-size="13" font-weight="500" fill="var(--svg-text-secondary)" text-anchor="middle">Penalizing Incident 1-Hop Rays, UI Chrome &amp; Viewport Bounds</text>
+
+  <!-- ==================== PENALIZED 1-HOP NEIGHBOR RAYS (E, SE, S) ==================== -->
+  <!-- Ray to East Neighbor (368, 244) -->
+  <line x1="240" y1="244" x2="364" y2="244" stroke="var(--svg-node-red-border)" stroke-width="2.4" />
+  <circle cx="372" cy="244" r="14" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+  <text x="424" y="248" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">E (Ray)</text>
+
+  <!-- Ray to South-East Neighbor (332, 336) -->
+  <line x1="240" y1="244" x2="328" y2="332" stroke="var(--svg-node-red-border)" stroke-width="2.4" />
+  <circle cx="334" cy="338" r="14" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+  <text x="392" y="344" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">SE (Ray)</text>
+
+  <!-- Ray to South Neighbor (240, 368) -->
+  <line x1="240" y1="244" x2="240" y2="360" stroke="var(--svg-node-red-border)" stroke-width="2.4" />
+  <circle cx="240" cy="368" r="14" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+  <text x="240" y="402" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="700" fill="var(--svg-node-red-subtext)" text-anchor="middle">S (Occupied)</text>
+
+  <!-- ==================== CANDIDATE COMPASS SLOTS (SW, W, NE) ==================== -->
+  <circle cx="148" cy="336" r="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.8" stroke-dasharray="3,3" />
+  <text x="108" y="342" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">SW</text>
+
+  <circle cx="128" cy="244" r="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.8" stroke-dasharray="3,3" />
+  <text x="92" y="248" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">W</text>
+
+  <circle cx="332" cy="152" r="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.8" stroke-dasharray="3,3" />
+  <text x="368" y="156" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">NE</text>
+
+  <!-- ==================== WINNING SECTOR (N / NW CLEARANCE) ==================== -->
+  <line x1="240" y1="222" x2="210" y2="156" stroke="var(--svg-node-green-border)" stroke-width="2.6" marker-end="url(#arrow-win)" />
+
+  <!-- Winning Preact Tooltip Card in Unoccluded Sector -->
+  <rect x="86" y="84" width="212" height="62" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2.5" />
+  <circle cx="114" cy="115" r="14" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+  <text x="198" y="108" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-subtext)" text-anchor="middle">Optimal Sector</text>
+  <text x="198" y="128" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="var(--svg-text-secondary)" text-anchor="middle">minPenalty + Clamped</text>
+
+  <!-- ==================== CENTRAL HOVERED NODE ==================== -->
+  <g transform="translate(240, 244)">
+    <circle cx="0" cy="0" r="22" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.8" />
+    <circle cx="0" cy="0" r="8" fill="var(--svg-node-blue-border)" />
+  </g>
+  <text x="240" y="284" font-family="Outfit, Inter, sans-serif" font-size="14" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">Focus Node</text>
+
+  <!-- Bottom Summary Pill -->
+  <rect x="34" y="424" width="412" height="36" rx="18" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+  <text x="240" y="447" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--svg-text-primary)" text-anchor="middle">750ms Sine Opacity Fade + 3D Orbit Dismiss</text>
+</svg>
