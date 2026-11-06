@@ -701,6 +701,7 @@ export function renderDevSankeyEmptyState(
       : 'Waiting for Flow Telemetry…';
 
   render(null, container);
+  container.replaceChildren();
   render(
     <div
       class="w-full h-full flex items-center justify-center p-8 font-mono text-xs text-zinc-100 select-none"
@@ -768,6 +769,7 @@ export function renderDevSankeyStage(
   const sideColWidth = 'w-[308px]';
 
   render(null, container);
+  container.replaceChildren();
   render(
     <>
       <style>

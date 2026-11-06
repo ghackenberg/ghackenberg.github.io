@@ -18,6 +18,8 @@ export function renderFunnelGradientStops(
   gradientEl: Element,
   stops: DevGradientStop[]
 ): void {
+  render(null, gradientEl);
+  gradientEl.replaceChildren();
   render(
     <>
       {stops.map((s, idx) => (
@@ -38,6 +40,9 @@ export function renderMinimapMilestones(
   milestones: DevScrollMilestone[]
 ): void {
   const filtered = milestones.filter((m) => m.depth % 25 === 0);
+  render(null, milestonesEl);
+  milestonesEl.replaceChildren();
+  if (filtered.length === 0) return;
   render(
     <>
       {filtered.map((m) => (
@@ -57,6 +62,8 @@ export function renderMinimapMilestones(
 }
 
 export function renderSankeyLoadingState(sankeyEl: HTMLElement): void {
+  render(null, sankeyEl);
+  sankeyEl.replaceChildren();
   render(
     <div class="w-full h-full flex items-center justify-center gap-2 text-zinc-100 italic font-mono text-xs animate-pulse">
       <svg

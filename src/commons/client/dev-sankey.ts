@@ -186,41 +186,56 @@ let isManifestPopulated = false;
 let inFlightManifestPromise: Promise<void> | null = null;
 
 const STATIC_PAGE_METADATA: Record<string, SankeyPageMetadata> = {
-  '/': { emoji: '🏠', typeLabel: 'Homepage', title: 'Homepage (Dr. Georg Hackenberg)' },
-  '/posts/': { emoji: '✍️', typeLabel: 'Blog Index', title: 'Technical Blog & Articles' },
+  '/': { emoji: '🏠', typeLabel: 'Homepage', title: 'Dr. Georg Hackenberg' },
+  '/about/': { emoji: '👤', typeLabel: 'About', title: 'About Me' },
+  '/contact/': { emoji: '📬', typeLabel: 'Contact', title: 'Business Contact' },
+  '/support/': { emoji: '💖', typeLabel: 'Support', title: 'Community Support' },
+  '/posts/': { emoji: '✍️', typeLabel: 'Blog Index', title: 'Blog Posts' },
   '/presentations/': {
     emoji: '🖥️',
     typeLabel: 'Keynotes Index',
-    title: 'Presentations & Keynotes',
+    title: 'Interactive Presentations',
   },
-  '/courses/': { emoji: '🎓', typeLabel: 'Courses Index', title: 'University Courses (FH OÖ)' },
-  '/projects/': { emoji: '🚀', typeLabel: 'Projects Index', title: 'Projects & Case Studies' },
+  '/courses/': { emoji: '🎓', typeLabel: 'Courses Index', title: 'University Courses' },
+  '/projects/': { emoji: '🚀', typeLabel: 'Projects Index', title: 'Software Projects' },
   '/publications/': {
     emoji: '📚',
     typeLabel: 'Publications Index',
-    title: 'Academic Publications',
+    title: 'Reviewed Publications',
   },
   '/visualizations/': {
     emoji: '🌐',
     typeLabel: 'Visualizations Index',
-    title: 'Interactive Visualizations',
+    title: 'Content Visualizations',
   },
-  '/services/': { emoji: '💼', typeLabel: 'Services Index', title: 'AI & Engineering Services' },
+  '/services/': { emoji: '💼', typeLabel: 'Services Index', title: 'Engineering Services' },
   '/newsletters/': {
     emoji: '✉️',
     typeLabel: 'Newsletters Index',
-    title: 'Technical Newsletters',
+    title: 'Email Newsletters',
   },
-  '/tags/': { emoji: '🏷️', typeLabel: 'Tags Index', title: 'Content Topic Tags' },
-  '/impressum/': { emoji: '⚖️', typeLabel: 'Legal', title: 'Impressum & Legal Disclosure' },
-  '/imprint/': { emoji: '⚖️', typeLabel: 'Legal', title: 'Impressum & Legal Disclosure' },
-  '/datenschutz/': { emoji: '🛡️', typeLabel: 'Privacy', title: 'Privacy Policy (DSGVO)' },
-  '/privacy/': { emoji: '🛡️', typeLabel: 'Privacy', title: 'Privacy Policy (DSGVO)' },
+  '/tags/': { emoji: '🏷️', typeLabel: 'Tags Index', title: 'Topic Tags' },
+  '/impressum/': { emoji: '⚖️', typeLabel: 'Legal', title: 'Impressum' },
+  '/imprint/': { emoji: '⚖️', typeLabel: 'Legal', title: 'Impressum' },
+  '/datenschutz/': { emoji: '🛡️', typeLabel: 'Privacy', title: 'Datenschutzerklärung' },
+  '/privacy/': { emoji: '🛡️', typeLabel: 'Privacy', title: 'Datenschutzerklärung' },
 };
 
 function normalizePath(rawPath: string): string {
   if (!rawPath) return '/';
-  const clean = rawPath.split('?')[0].split('#')[0].trim() || '/';
+  let decoded = rawPath;
+  try {
+    decoded = decodeURIComponent(rawPath);
+  } catch {
+    // keep rawPath if malformed URI component
+  }
+  const clean =
+    decoded
+      .split('?')[0]
+      .split('#')[0]
+      .trim()
+      .replace(/\/index\.html?$/i, '/')
+      .toLowerCase() || '/';
   const withLeading = clean.startsWith('/') ? clean : `/${clean}`;
   if (withLeading === '/') return '/';
   return withLeading.endsWith('/') ? withLeading : `${withLeading}/`;
@@ -248,6 +263,12 @@ function resolvePageDomainTheme(rawPath: string): SankeyDomainTheme {
     emoji = '✉️';
   } else if (norm.startsWith('/tags/')) {
     emoji = '🏷️';
+  } else if (norm === '/about/') {
+    emoji = '👤';
+  } else if (norm === '/contact/') {
+    emoji = '📬';
+  } else if (norm === '/support/') {
+    emoji = '💖';
   } else if (norm === '/datenschutz/' || norm === '/privacy/') {
     emoji = '🛡️';
   } else if (norm === '/impressum/' || norm === '/imprint/') {
@@ -262,10 +283,22 @@ function resolvePageDomainTheme(rawPath: string): SankeyDomainTheme {
 }
 
 function humanizeSlug(slug: string): string {
-  return slug
+  const withoutDatePrefix = slug
+    .replace(/^\d{4}[-_]\d{2}(?:[-_]\d{2})?[-_]+/, '')
+    .replace(/^\d{2}[-_]+/, '');
+  const target = withoutDatePrefix.length > 0 ? withoutDatePrefix : slug;
+  return target
     .replace(/[-_]+/g, ' ')
     .replace(/\b\w/g, (ch) => ch.toUpperCase())
     .trim();
+}
+
+function lookupPageMeta(normPath: string): SankeyPageMetadata | undefined {
+  return (
+    pageMetaCache.get(normPath) ??
+    pageMetaCache.get(normPath.replace(/-/g, '_')) ??
+    pageMetaCache.get(normPath.replace(/_/g, '-'))
+  );
 }
 
 function ingestManifestPayload(manifest: ContentManifestPayload | null | undefined): void {
@@ -274,16 +307,23 @@ function ingestManifestPayload(manifest: ContentManifestPayload | null | undefin
   const registerGroup = (
     items: ContentManifestItem[] | undefined,
     emoji: string,
-    typeLabel: string
+    typeLabel: string,
+    options?: { prefixHash?: boolean; moduleTypeLabel?: string }
   ): void => {
     if (!Array.isArray(items)) return;
     for (const item of items) {
       if (!item?.url || !item?.title) continue;
       const normUrl = normalizePath(item.url);
+      const segments = normUrl.split('/').filter(Boolean);
+      const resolvedTypeLabel =
+        options?.moduleTypeLabel && segments.length >= 3 ? options.moduleTypeLabel : typeLabel;
+      const rawTitle = item.title.trim();
+      const resolvedTitle =
+        options?.prefixHash && !rawTitle.startsWith('#') ? `#${rawTitle}` : rawTitle;
       pageMetaCache.set(normUrl, {
         emoji,
-        typeLabel,
-        title: item.title,
+        typeLabel: resolvedTypeLabel,
+        title: resolvedTitle,
         image: typeof item.image === 'string' && item.image.length > 0 ? item.image : undefined,
       });
     }
@@ -291,14 +331,14 @@ function ingestManifestPayload(manifest: ContentManifestPayload | null | undefin
 
   registerGroup(manifest.posts, '✍️', 'Blog Post');
   registerGroup(manifest.presentations, '🖥️', 'Presentation');
-  registerGroup(manifest.courses, '🎓', 'Course');
+  registerGroup(manifest.courses, '🎓', 'Course', { moduleTypeLabel: 'Course Module' });
   registerGroup(manifest.projects, '🚀', 'Project');
   registerGroup(manifest.publications, '📚', 'Publication');
   registerGroup(manifest.visualizations, '🌐', 'Visualization');
-  registerGroup(manifest.services, '💼', 'Service');
+  registerGroup(manifest.services, '💼', 'Service', { moduleTypeLabel: 'Service Module' });
   registerGroup(manifest.newsletters, '✉️', 'Newsletter');
-  registerGroup(manifest.tags, '🏷️', 'Tag');
-  isManifestPopulated = true;
+  registerGroup(manifest.tags, '🏷️', 'Tag', { prefixHash: true });
+  isManifestPopulated = pageMetaCache.size > 0;
 }
 
 async function ensureContentManifestLoaded(): Promise<void> {
@@ -321,6 +361,10 @@ async function ensureContentManifestLoaded(): Promise<void> {
   return inFlightManifestPromise;
 }
 
+if (typeof window !== 'undefined') {
+  void ensureContentManifestLoaded();
+}
+
 function resolvePageMetadata(rawPath: string): SankeyPageMetadata {
   const norm = normalizePath(rawPath);
 
@@ -328,7 +372,7 @@ function resolvePageMetadata(rawPath: string): SankeyPageMetadata {
     return STATIC_PAGE_METADATA[norm];
   }
 
-  const exact = pageMetaCache.get(norm);
+  const exact = lookupPageMeta(norm);
   if (exact) {
     return exact;
   }
@@ -342,10 +386,42 @@ function resolvePageMetadata(rawPath: string): SankeyPageMetadata {
   let parentTitle: string | undefined;
   if (segments.length >= 2) {
     const parentPath = normalizePath(`/${segments[0]}/${segments[1]}/`);
-    const parentMeta = pageMetaCache.get(parentPath);
+    const parentMeta = lookupPageMeta(parentPath);
     if (parentMeta) {
       parentImage = parentMeta.image;
       parentTitle = parentMeta.title;
+    }
+  }
+
+  if (segments[0] === 'presentations' && segments[2] === 'print' && parentTitle) {
+    return {
+      emoji,
+      typeLabel: 'Presentation Handout',
+      title: `${parentTitle} - Handout Druckansicht`,
+      image: parentImage,
+    };
+  }
+
+  if (typeof document !== 'undefined') {
+    const iframe = document.getElementById('dev-studio-iframe') as HTMLIFrameElement | null;
+    try {
+      const iframeWin = iframe?.contentWindow;
+      const iframeDoc = iframe?.contentDocument || iframeWin?.document;
+      if (iframeWin && iframeDoc && normalizePath(iframeWin.location.pathname) === norm) {
+        const h1Text = iframeDoc.querySelector('main h1, h1')?.textContent?.replace(/\s+/g, ' ').trim();
+        const docTitle = iframeDoc.title?.split('|')[0]?.split(' - ')[0]?.trim();
+        const liveTitle = h1Text || docTitle;
+        if (liveTitle) {
+          return {
+            emoji,
+            typeLabel,
+            title: liveTitle,
+            image: parentImage,
+          };
+        }
+      }
+    } catch {
+      // ignore cross-origin or detached iframe errors
     }
   }
 
@@ -2114,5 +2190,7 @@ export function renderVisitorFlowSankey(
   };
 
   renderStageDom();
-  void ensureMultiHopDataAndRender();
+  if (!isManifestPopulated) {
+    void ensureMultiHopDataAndRender();
+  }
 }

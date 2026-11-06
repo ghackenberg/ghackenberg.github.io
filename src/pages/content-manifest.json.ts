@@ -83,6 +83,7 @@ export async function GET() {
     resolvedPresentations,
     resolvedCourses,
     resolvedProjects,
+    resolvedPublications,
     resolvedVisualizations,
     resolvedServices,
     resolvedNewsletters
@@ -117,14 +118,18 @@ export async function GET() {
         tags: c.data.tags || [],
         date: parseItemDate(c.id, c.data.pubDate)
       })),
-      ...courseModules.map(async m => ({
-        id: m.id,
-        url: `/courses/${m.data.courseId}/${m.id.split('/').pop()}/`,
-        title: m.data.title,
-        description: m.data.description,
-        image: await resolveImage(m.data.image),
-        date: parseItemDate(m.id, m.data.pubDate)
-      }))
+      ...courseModules.map(async m => {
+        const [courseSlug, moduleSlug] = m.id.split('/');
+        const parentCourse = courses.find(c => c.id === courseSlug || c.id === m.data.courseId);
+        return {
+          id: m.id,
+          url: `/courses/${courseSlug || m.data.courseId}/${moduleSlug || m.id.split('/').pop()}/`,
+          title: m.data.title,
+          description: m.data.description,
+          image: await resolveImage(m.data.image || parentCourse?.data.image),
+          date: parseItemDate(m.id, m.data.pubDate)
+        };
+      })
     ]),
     Promise.all(projects.map(async p => ({
       id: p.id,
@@ -134,6 +139,18 @@ export async function GET() {
       description: p.data.description,
       image: await resolveImage(p.data.image),
       href: p.data.href,
+      tags: p.data.tags || [],
+      date: parseItemDate(p.id, p.data.pubDate)
+    }))),
+    Promise.all(publications.map(async p => ({
+      id: p.id,
+      url: `/publications/${p.id}/`,
+      title: p.data.title,
+      author: formatAuthorsPlain(p.data.authors),
+      book: p.data.book || '',
+      description: p.data.abstract || '',
+      abstract: p.data.abstract || '',
+      image: await resolveImage(p.data.image),
       tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     }))),
@@ -156,13 +173,18 @@ export async function GET() {
         tags: s.data.tags || [],
         date: parseItemDate(s.id, s.data.pubDate)
       })),
-      ...serviceModules.map(async m => ({
-        id: m.id,
-        url: `/services/${m.data.serviceId}/${m.id.split('/').pop()}/`,
-        title: m.data.title,
-        description: m.data.description,
-        date: parseItemDate(m.id, m.data.pubDate)
-      }))
+      ...serviceModules.map(async m => {
+        const [serviceSlug, moduleSlug] = m.id.split('/');
+        const parentService = services.find(s => s.id === serviceSlug || s.id === m.data.serviceId);
+        return {
+          id: m.id,
+          url: `/services/${serviceSlug || m.data.serviceId}/${moduleSlug || m.id.split('/').pop()}/`,
+          title: m.data.title,
+          description: m.data.description,
+          image: await resolveImage(m.data.image || parentService?.data.image),
+          date: parseItemDate(m.id, m.data.pubDate)
+        };
+      })
     ]),
     Promise.all(newsletters.map(async n => ({
       id: n.id,
@@ -196,17 +218,7 @@ export async function GET() {
     presentations: resolvedPresentations,
     courses: resolvedCourses,
     projects: resolvedProjects,
-    publications: publications.map(p => ({
-      id: p.id,
-      url: `/publications/${p.id}/`,
-      title: p.data.title,
-      author: formatAuthorsPlain(p.data.authors),
-      book: p.data.book || '',
-      description: p.data.abstract || '',
-      abstract: p.data.abstract || '',
-      tags: p.data.tags || [],
-      date: parseItemDate(p.id, p.data.pubDate)
-    })),
+    publications: resolvedPublications,
     visualizations: resolvedVisualizations,
     services: resolvedServices,
     newsletters: resolvedNewsletters

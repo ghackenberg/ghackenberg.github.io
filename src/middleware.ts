@@ -17,18 +17,22 @@ interface CacheEntry {
   data: DevOverlayPageData;
 }
 
+interface NeighborPayload {
+  path: string;
+  period: string;
+  visitorFlow?: PlausibleVisitorFlow | null;
+  markovFlow?: PlausibleVisitorFlow | null;
+}
+
 interface NeighborCacheEntry {
   timestamp: number;
-  data: {
-    path: string;
-    period: string;
-    visitorFlow?: PlausibleVisitorFlow | null;
-    markovFlow?: PlausibleVisitorFlow | null;
-  };
+  data: NeighborPayload;
 }
 
 const cache = new Map<string, CacheEntry>();
 const neighborCache = new Map<string, NeighborCacheEntry>();
+const inFlightRequests = new Map<string, Promise<{ payload: DevOverlayPageData; cacheable: boolean }>>();
+const inFlightNeighborRequests = new Map<string, Promise<NeighborPayload>>();
 const CACHE_TTL_MS = 2 * 60 * 1000;
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -129,42 +133,48 @@ export const onRequest = defineMiddleware(async (context, next) => {
           });
         }
 
-        if (scope === 'flow') {
-          const visitorFlow = await withTimeout(
-            getPlausibleFlowNeighbor(targetPath, period),
-            5000
-          ).catch(() => null);
+        let neighborPromise = !force ? inFlightNeighborRequests.get(neighborKey) : undefined;
+        if (!neighborPromise) {
+          neighborPromise = (async (): Promise<NeighborPayload> => {
+            try {
+              if (scope === 'flow') {
+                const visitorFlow = await withTimeout(
+                  getPlausibleFlowNeighbor(targetPath, period),
+                  10000
+                ).catch(() => null);
+                const flowPayload: NeighborPayload = {
+                  path: targetPath,
+                  period,
+                  visitorFlow,
+                };
+                if (visitorFlow !== null) {
+                  neighborCache.set(neighborKey, { timestamp: Date.now(), data: flowPayload });
+                }
+                return flowPayload;
+              }
 
-          const flowPayload = {
-            path: targetPath,
-            period,
-            visitorFlow,
-          };
-          neighborCache.set(neighborKey, { timestamp: Date.now(), data: flowPayload });
-
-          return new Response(JSON.stringify(flowPayload), {
-            status: 200,
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-store, no-cache, must-revalidate',
-              'X-Analytics-Cache': 'MISS',
-            },
-          });
+              const markovFlow = await withTimeout(
+                getPlausibleMarkovNeighbor(targetPath, period),
+                10000
+              ).catch(() => null);
+              const markovPayload: NeighborPayload = {
+                path: targetPath,
+                period,
+                markovFlow,
+              };
+              if (markovFlow !== null) {
+                neighborCache.set(neighborKey, { timestamp: Date.now(), data: markovPayload });
+              }
+              return markovPayload;
+            } finally {
+              inFlightNeighborRequests.delete(neighborKey);
+            }
+          })();
+          inFlightNeighborRequests.set(neighborKey, neighborPromise);
         }
 
-        const markovFlow = await withTimeout(
-          getPlausibleMarkovNeighbor(targetPath, period),
-          5000
-        ).catch(() => null);
-
-        const markovPayload = {
-          path: targetPath,
-          period,
-          markovFlow,
-        };
-        neighborCache.set(neighborKey, { timestamp: Date.now(), data: markovPayload });
-
-        return new Response(JSON.stringify(markovPayload), {
+        const resolvedNeighbor = await neighborPromise;
+        return new Response(JSON.stringify(resolvedNeighbor), {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
@@ -190,62 +200,79 @@ export const onRequest = defineMiddleware(async (context, next) => {
         });
       }
 
-      const [plausibleRes, gscRes, sectionsRes, cardsRes, pagesRes] = await Promise.allSettled([
-        withTimeout(getPlausiblePageMetrics(targetPath, period, true), 5000),
-        withTimeout(getGscPagePerformance(targetPath, period), 5000),
-        withTimeout(getSectionDwellBreakdown(targetPath, period), 5000),
-        withTimeout(getCardCtrBreakdown(targetPath, period), 5000),
-        withTimeout(getPlausibleTopPages(period, 500), 5000),
-      ]);
+      let requestPromise = !force ? inFlightRequests.get(cacheKey) : undefined;
+      if (!requestPromise) {
+        requestPromise = (async () => {
+          try {
+            const [plausibleRes, gscRes, sectionsRes, cardsRes, pagesRes] = await Promise.allSettled([
+              withTimeout(getPlausiblePageMetrics(targetPath, period, true), 12000),
+              withTimeout(getGscPagePerformance(targetPath, period), 8000),
+              withTimeout(getSectionDwellBreakdown(targetPath, period), 8000),
+              withTimeout(getCardCtrBreakdown(targetPath, period), 8000),
+              withTimeout(getPlausibleTopPages(period, 500), 8000),
+            ]);
 
-      const plausible = plausibleRes.status === 'fulfilled' ? plausibleRes.value : {
-        visitors: 0,
-        entries: 0,
-        pageviews: 0,
-        bounceRate: null,
-        visitDuration: null,
-      };
+            const plausible = plausibleRes.status === 'fulfilled' ? plausibleRes.value : {
+              visitors: 0,
+              entries: 0,
+              pageviews: 0,
+              bounceRate: null,
+              visitDuration: null,
+            };
 
-      const gsc = gscRes.status === 'fulfilled' ? gscRes.value : {
-        page: targetPath,
-        clicks: 0,
-        impressions: 0,
-        ctr: 0,
-        position: 0,
-        queries: [],
-      };
+            const gsc = gscRes.status === 'fulfilled' ? gscRes.value : {
+              page: targetPath,
+              clicks: 0,
+              impressions: 0,
+              ctr: 0,
+              position: 0,
+              queries: [],
+            };
 
-      const sections = sectionsRes.status === 'fulfilled' ? sectionsRes.value : {};
-      const cards = cardsRes.status === 'fulfilled' ? cardsRes.value : {};
+            const sections = sectionsRes.status === 'fulfilled' ? sectionsRes.value : {};
+            const cards = cardsRes.status === 'fulfilled' ? cardsRes.value : {};
 
-      const pagesMap = pagesRes.status === 'fulfilled' ? pagesRes.value : new Map();
-      const pages: Record<string, { visitors: number; pageviews: number; bounceRate: number | null; visitDuration: number | null }> = {};
-      for (const [k, v] of pagesMap.entries()) {
-        pages[k] = {
-          visitors: v.visitors,
-          pageviews: v.pageviews,
-          bounceRate: v.bounceRate,
-          visitDuration: v.visitDuration,
-        };
+            const pagesMap = pagesRes.status === 'fulfilled' ? pagesRes.value : new Map();
+            const pages: Record<string, { visitors: number; pageviews: number; bounceRate: number | null; visitDuration: number | null }> = {};
+            for (const [k, v] of pagesMap.entries()) {
+              pages[k] = {
+                visitors: v.visitors,
+                pageviews: v.pageviews,
+                bounceRate: v.bounceRate,
+                visitDuration: v.visitDuration,
+              };
+            }
+
+            const payload: DevOverlayPageData = {
+              path: targetPath,
+              period,
+              plausible,
+              gsc: {
+                clicks: gsc.clicks,
+                impressions: gsc.impressions,
+                ctr: gsc.ctr,
+                position: gsc.position,
+                queries: gsc.queries || [],
+              },
+              sections,
+              cards,
+              pages,
+            };
+
+            const cacheable = plausibleRes.status === 'fulfilled';
+            if (cacheable) {
+              cache.set(cacheKey, { timestamp: Date.now(), data: payload });
+            }
+
+            return { payload, cacheable };
+          } finally {
+            inFlightRequests.delete(cacheKey);
+          }
+        })();
+        inFlightRequests.set(cacheKey, requestPromise);
       }
 
-      const payload: DevOverlayPageData = {
-        path: targetPath,
-        period,
-        plausible,
-        gsc: {
-          clicks: gsc.clicks,
-          impressions: gsc.impressions,
-          ctr: gsc.ctr,
-          position: gsc.position,
-          queries: gsc.queries || [],
-        },
-        sections,
-        cards,
-        pages,
-      };
-
-      cache.set(cacheKey, { timestamp: Date.now(), data: payload });
+      const { payload } = await requestPromise;
 
       return new Response(JSON.stringify(payload), {
         status: 200,

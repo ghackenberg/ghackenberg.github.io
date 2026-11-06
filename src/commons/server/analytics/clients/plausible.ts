@@ -281,35 +281,61 @@ export async function getPlausiblePageMetrics(
       return baseMetrics;
     }
 
-    // Fetch deep metrics concurrently
+    const withSubTimeout = <T>(p: Promise<T>, ms: number, fallback: T): Promise<T> =>
+      Promise.race([
+        p.catch(() => fallback),
+        new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+      ]);
+
+    // Fetch deep metrics concurrently with individual sub-timeouts so secondary breakdowns never block flow rendering
     const [scrollAndGoals, tech, countries, visitorFlow, markovFlow, timeseries] = await Promise.all([
-      getPlausiblePageScrollAndGoals(canonicalPath, period, baseMetrics.visitors).catch(() => ({
-        scrollFunnel: { milestones: [], readThroughRate: null, medianScrollDepth: null },
-        goals: [],
-      })),
-      getPlausibleTechBreakdown(canonicalPath, period, baseMetrics.visitors).catch(() => ({
-        devices: [],
-        operatingSystems: [],
-        browsers: [],
-      })),
-      getPlausibleGeoBreakdown(canonicalPath, period, baseMetrics.visitors, 10).catch(() => []),
-      getPlausibleVisitorFlow(
-        canonicalPath,
-        period,
-        baseMetrics.visitors,
-        baseMetrics.entries,
-        baseMetrics.bounceRate,
-        baseMetrics.pageviews
-      ).catch(() => undefined),
-      getPlausibleMarkovFlow(
-        canonicalPath,
-        period,
-        baseMetrics.visitors,
-        baseMetrics.entries,
-        baseMetrics.bounceRate,
-        baseMetrics.pageviews
-      ).catch(() => undefined),
-      getPlausiblePageTimeseries(canonicalPath, period).catch(() => []),
+      withSubTimeout(
+        getPlausiblePageScrollAndGoals(canonicalPath, period, baseMetrics.visitors),
+        6000,
+        {
+          scrollFunnel: { milestones: [], readThroughRate: null, medianScrollDepth: null },
+          goals: [],
+        }
+      ),
+      withSubTimeout(
+        getPlausibleTechBreakdown(canonicalPath, period, baseMetrics.visitors),
+        5000,
+        {
+          devices: [],
+          operatingSystems: [],
+          browsers: [],
+        }
+      ),
+      withSubTimeout(
+        getPlausibleGeoBreakdown(canonicalPath, period, baseMetrics.visitors, 10),
+        5000,
+        []
+      ),
+      withSubTimeout(
+        getPlausibleVisitorFlow(
+          canonicalPath,
+          period,
+          baseMetrics.visitors,
+          baseMetrics.entries,
+          baseMetrics.bounceRate,
+          baseMetrics.pageviews
+        ),
+        9000,
+        undefined
+      ),
+      withSubTimeout(
+        getPlausibleMarkovFlow(
+          canonicalPath,
+          period,
+          baseMetrics.visitors,
+          baseMetrics.entries,
+          baseMetrics.bounceRate,
+          baseMetrics.pageviews
+        ),
+        9000,
+        undefined
+      ),
+      withSubTimeout(getPlausiblePageTimeseries(canonicalPath, period), 6000, []),
     ]);
 
     return {

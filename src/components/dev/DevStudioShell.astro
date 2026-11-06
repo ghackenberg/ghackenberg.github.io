@@ -532,20 +532,36 @@ const { currentPath } = Astro.props;
       }
     }
 
+    private normalizeStudioPath(rawPath: string): string {
+      if (!rawPath) return '/';
+      const clean = rawPath.split('?')[0].split('#')[0].trim() || '/';
+      const withLeading = clean.startsWith('/') ? clean : `/${clean}`;
+      if (withLeading === '/') return '/';
+      return withLeading.endsWith('/') ? withLeading : `${withLeading}/`;
+    }
+
     private getCacheKey(path: string, period: string): string {
-      return `${path}::${period}`;
+      return `${this.normalizeStudioPath(path)}::${period}`;
     }
 
     private getCachedData(path: string, period: string): DevOverlayData | null {
       const key = this.getCacheKey(path, period);
+      const isValidCachePayload = (d: DevOverlayData | null | undefined): d is DevOverlayData => {
+        if (!d || !d.plausible) return false;
+        if ((d.plausible.visitors ?? 0) > 0 && !d.plausible.visitorFlow) return false;
+        return true;
+      };
       const inMem = this.pageCache.get(key);
-      if (inMem) return inMem;
+      if (isValidCachePayload(inMem)) return inMem;
       try {
         const stored = sessionStorage.getItem(`gh_dev_studio_${key}`);
         if (stored) {
           const parsed: DevOverlayData = JSON.parse(stored);
-          this.pageCache.set(key, parsed);
-          return parsed;
+          if (isValidCachePayload(parsed)) {
+            this.pageCache.set(key, parsed);
+            return parsed;
+          }
+          sessionStorage.removeItem(`gh_dev_studio_${key}`);
         }
       } catch {}
       return null;
@@ -943,7 +959,8 @@ const { currentPath } = Astro.props;
       const parsed = new URL(newUrlOrPath, window.location.origin);
       const newPath = parsed.pathname;
       const fullTarget = parsed.pathname + parsed.search + parsed.hash;
-      const isPathChange = newPath !== this.currentPath;
+      const isPathChange =
+        this.normalizeStudioPath(newPath) !== this.normalizeStudioPath(this.currentPath);
 
       if (!isPathChange && !reloadIframe && this.currentData) {
         const currentTop = window.location.pathname + window.location.search + window.location.hash;
@@ -1160,7 +1177,10 @@ const { currentPath } = Astro.props;
         // 2. Navigation sync from iframe
         if (e.data.type === 'dev-studio-nav') {
           const path = e.data.pathname;
-          if (path && path !== this.currentPath) {
+          if (
+            path &&
+            this.normalizeStudioPath(path) !== this.normalizeStudioPath(this.currentPath)
+          ) {
             this.handleNavigation(path, false);
           }
         }
@@ -1179,7 +1199,10 @@ const { currentPath } = Astro.props;
                 window.history.replaceState(null, '', fullTarget);
               }
             }
-            if (parsed.pathname !== this.currentPath) {
+            if (
+              this.normalizeStudioPath(parsed.pathname) !==
+              this.normalizeStudioPath(this.currentPath)
+            ) {
               this.handleNavigation(parsed.pathname, false);
             }
           }
@@ -1202,7 +1225,10 @@ const { currentPath } = Astro.props;
               if (currentOuter !== fullUrl) {
                 window.history.replaceState(null, '', fullUrl);
               }
-              if (loc.pathname !== this.currentPath) {
+              if (
+                this.normalizeStudioPath(loc.pathname) !==
+                this.normalizeStudioPath(this.currentPath)
+              ) {
                 this.handleNavigation(loc.pathname, false);
               }
             }
@@ -1587,11 +1613,9 @@ const { currentPath } = Astro.props;
       const milestonesEl = document.getElementById('dev-minimap-milestones');
       if (!milestonesEl) return;
 
+      renderMinimapMilestones(milestonesEl, milestones);
       if (milestones.length > 0) {
-        renderMinimapMilestones(milestonesEl, milestones);
         milestonesEl.style.opacity = '1';
-      } else {
-        milestonesEl.replaceChildren();
       }
     }
 
@@ -1688,7 +1712,10 @@ const { currentPath } = Astro.props;
         const data: DevOverlayData = await res.json();
 
         // Stale response guard
-        if (fetchId !== this.fetchCounter || targetPath !== this.currentPath) {
+        if (
+          fetchId !== this.fetchCounter ||
+          this.normalizeStudioPath(targetPath) !== this.normalizeStudioPath(this.currentPath)
+        ) {
           return;
         }
 
@@ -1739,8 +1766,24 @@ const { currentPath } = Astro.props;
         if (fetchId !== this.fetchCounter) return;
         console.error('[dev-studio] Failed to fetch metrics:', err);
         spinner?.classList.add('hidden');
+        const loader = document.getElementById('dev-minimap-loader');
+        loader?.classList.add('hidden');
         const metricsContainer = document.getElementById('dev-analytics-metrics');
         metricsContainer?.classList.remove('opacity-40');
+        if (!this.currentData) {
+          const sankeyEl = document.getElementById('full-visitor-flow-sankey');
+          if (sankeyEl) {
+            renderVisitorFlowSankey(
+              sankeyEl,
+              this.currentPath,
+              null,
+              (nextPath) => {
+                this.handleNavigation(nextPath, true);
+              },
+              this.currentPeriod
+            );
+          }
+        }
       }
     }
 
