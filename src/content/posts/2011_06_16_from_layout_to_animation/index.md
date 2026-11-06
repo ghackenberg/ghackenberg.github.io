@@ -1,7 +1,7 @@
 ---
-title: "From Layout to Animation"
+title: "From Static CSS Layout to Smooth JavaScript Animation"
 pubDate: "2011-06-15"
-description: "In a previous article The Evolution of a Functional Prototype I demonstrated how to transform sketches into prototypes backed by database content and applicatio..."
+description: "Extending our functional web prototype with smooth, frame-synchronized JavaScript transitions and interactive visual state feedback."
 tags: ["blog", "drawing", "user-interface", "ux-design", "youtube-video"]
 image:
   src: "./screenshot.png"

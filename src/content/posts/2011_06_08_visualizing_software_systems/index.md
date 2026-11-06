@@ -1,7 +1,7 @@
 ---
-title: "Visualizing Software Systems"
+title: "Visualizing Complex Software Systems & Mental Models"
 pubDate: "2011-06-07"
-description: "One problem computer science has compared to many other technical disciplines such as physics or architecture is to create and communicate mental pictures of th..."
+description: "Why software engineering needs expressive visual representations to communicate abstract architectures, data flows, and runtime state transitions."
 tags: ["data-visualization", "drawing", "software-architecture", "software-systems"]
 image:
   src: "./crawler.png"

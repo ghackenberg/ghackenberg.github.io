@@ -2,7 +2,7 @@
 title: "Netzwerkprotokolle & MQTT-Kommunikation"
 courseId: "kurs-internet-der-dinge"
 moduleNumber: "03"
-description: "WLAN-Verbindungsaufbau, MQTT-Broker-Topologie, Topics, Quality of Service (QoS) und JSON-Payloads."
+description: "Drahtlose IoT-Netzwerkprotokolle: Zuverlässiger WLAN-Reconnect, Publish/Subscribe-Architektur mit MQTT, Topic-Hierarchien, Quality of Service (QoS) und TLS."
 order: 3
 topics:
   - "MQTT Broker/Client-Architektur (Mosquitto)"

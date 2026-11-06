@@ -2,7 +2,7 @@
 title: "Einstieg in Python & Basissyntax"
 courseId: "kurs-python-programmierung"
 moduleNumber: "01"
-description: "Installation, interaktive REPL, Skriptausführung, dynamische Typisierung und Rechenoperationen."
+description: "Einstieg in die Python-Laufzeitumgebung: Interaktive REPL, Skriptausführung, dynamisches Speichermodell, elementare Datentypen und String-Formatierung."
 order: 1
 topics:
   - "Python-Interpreter & Virtuelle Umgebungen (venv)"

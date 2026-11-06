@@ -1,7 +1,7 @@
 ---
-title: "Artistic Exercises"
+title: "Creative Sketching & Visual Composition Studies in Berlin"
 pubDate: "2011-07-20"
-description: "Last weekend I was visiting friends in Berlin. Many of them work in the creative domain being photographers, journalists, and artists. It has been an interestin..."
+description: "Exploring visual composition, perspective sketching, and creative storytelling techniques during an interdisciplinary exchange in Berlin."
 tags: ["drawing"]
 image:
   src: "./freedom.jpg"

@@ -1,7 +1,7 @@
 ---
-title: "The new website goes online!"
+title: "Fourth-Generation Personal Engineering Website Relaunch"
 pubDate: "2014-09-23"
-description: "I am happy to announce the launch of my new website. This is the fourth edition of the website, where I try to go back to the original idea of providing easy to..."
+description: "Launching the fourth edition of my personal website with a clean, responsive layout focused on research publications, software tools, and teaching."
 tags: ["blog", "web-development"]
 image:
   src: "./screenshot.png"

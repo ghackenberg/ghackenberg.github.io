@@ -2,7 +2,7 @@
 title: "Architektur einer Discrete-Event-Engine"
 courseId: "kurs-computer-simulation"
 moduleNumber: "03"
-description: "Objektorientierter Entwurf einer ereignisdiskreten Simulations-Engine in modernem C#."
+description: "Objektorientierter Entwurf einer ereignisdiskreten Simulations-Engine (DES) in C#: Future Event List (PriorityQueue), Simulationsuhr und Statistikzähler."
 order: 3
 topics:
   - "Event-Kalender & Prioritätswarteschlangen"

@@ -2,7 +2,7 @@
 
 - **ID:** `SYSTEM-013`
 - **Kategorie / Domäne:** `SEO / GEO / Analytics / Content Architecture / UX Retention`
-- **Status:** `in-progress`
+- **Status:** `implemented`
 - **Priorität / Hebel:** `Hoch` (Behebung von Telemetrie-Bugs, Erschließung von >500 GSC-Impressionen im Graph-Cluster, Eliminierung verwaister 2026-Artikel und Beseitigung von 100%-Bounce-Raten)
 - **Erstellt am:** `2026-11-06`
 - **Ursprung:** Session 2026-11-06 (Vollständiges Site-Audit über Google Search Console, Plausible Analytics, `scan_aio_readiness`, `audit_serp_snippets` und `analyze_internal_links`)
@@ -125,3 +125,15 @@ Die Remediation gliedert sich in fünf klar abgegrenzte, inkrementell verifizier
 - **Präzise GEO/AIO-Bewertung (`AP1`):** `scanAllContentAio()` erkennt die über [`src/layouts/Layout.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/layouts/Layout.astro) und [`src/commons/server/json-ld.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/json-ld.ts) injizierten Schema.org-Typen sowie deutsche Frage-Überschriften zuverlässig.
 - **Eliminierung moderner Orphan-Pages (`AP3`):** `analyzeInternalLinks()` meldet `0` verwaiste Artikel aus dem Jahrgang 2026 und `0` verwaiste `/visualizations/*`-Seiten.
 - **SERP- & Build-Integrität (`AP2`–`AP5`):** `auditSerpSnippets` zeigt signifikant reduzierte Snippet-Längenfehler; `npm run verify` läuft mit `0` Fehlern und `0` Warnungen durch.
+
+---
+
+## 6. Ergebnis-Telemetrie & Verifikations-Metriken (Stand `2026-11-06`)
+
+| Metrik / Prüf-Gate | Vorher (Baseline Audit) | Nachher (`AP1`–`AP5` umgesetzt) |
+| :--- | :--- | :--- |
+| **Plausible `last_14_days` / `last_90_days` API** | `HTTP 400 Bad Request` (`0` Besucher wegen fehlendem `date`-Parameter) | `HTTP 200 OK` (valide Zeitreihen- und Traffic-Sources-Aggregation via `resolvePlausibleParams`) |
+| **GEO/AIO Schema.org & Frage-Erkennung (`scanAllContentAio`)** | `0` Punkte für Build-Time JSON-LD in Markdown-Collections; Ø-Score `31` | Volle Anerkennung des `Layout.astro`/`json-ld.ts` `@graph` + erweiterte deutsche Interrogative; Ø-Score `50` (`85–100` auf modernen 2026er Posts) |
+| **Interne Verlinkung & Moderne Orphans (`auditInternalLinking`)** | `14` verwaiste 2026er Deep-Dive-Artikel (`2026_10_16`–`2026_11_08`) & `5` verwaiste `/visualizations/*`-Seiten | `0` verwaiste moderne Artikel (`2026_10_16`–`2026_11_08`), `0` verwaiste `/visualizations/*`-Seiten, `774` interne Body-Links |
+| **SERP-Snippet-Audit (`auditSerpSnippets` über 224 Dateien)** | `178` Snippet-Fehler auf `143` Seiten (`posts`, `visualizations`, `courses` inkl. Module) | **`0` Snippet-Fehler auf `0` Seiten** über alle `224` auditierten Dateien sowie `0` Verletzungen in `projects` und `services` |
+| **Master Release Gate (`npm run verify`)** | — | `0` Fehler, `0` Warnungen über ESLint, `astro check`, `lint:posts`, Citation-Parity, Astro-SSG-Build und 6-Gate JSON-LD Postbuild-Validator |

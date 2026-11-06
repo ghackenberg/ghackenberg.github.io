@@ -2,7 +2,7 @@
 title: "Maintenance, Failures & Downtime"
 courseId: "course-digital-factory"
 moduleNumber: "04"
-description: "Incorporating stochastic machine failures, MTBF, MTTR, and maintenance shifts."
+description: "Simulating stochastic machine breakdowns and maintenance schedules using Weibull/exponential MTBF and MTTR distributions, shift calendars, and buffers."
 order: 4
 topics:
   - "Mean Time Between Failures (MTBF)"

@@ -1,7 +1,7 @@
 ---
-title: "Stick Figure Drawing Exercise"
+title: "Visual Thinking & Stick Figure Sketching Exercises"
 pubDate: "2011-03-26"
-description: "To improve my drawing skills recently I bought a book about stick figure drawing. Here is the result of my first exercise, but don't have too high expections ju..."
+description: "Practicing visual communication and stick-figure sketching techniques to illustrate human-computer interaction scenarios and engineering workflows."
 tags: ["drawing"]
 image:
   src: "./draft.png"

@@ -1,7 +1,7 @@
 ---
-title: "3D Multi-Touch Master Thesis"
+title: "Full PDF Download: 3D Multi-Touch Master Thesis (RWTH/FIT)"
 pubDate: "2012-03-14"
-description: "Due to the overwhelming response from the research community over the past 2 years I decided to put online my Master Thesis written at Fraunhofer FIT. I hope my..."
+description: "Full-text release of my RWTH Aachen and Fraunhofer FIT Master thesis on optical 3D hand tracking and continuous multi-touch gesture interaction."
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 image:
   src: "./data_model.png"

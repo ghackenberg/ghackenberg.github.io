@@ -1,7 +1,7 @@
 ---
-title: "Improved Website Usability!"
+title: "Website Usability Redesign, Navigation & RSS Feeds"
 pubDate: "2011-01-18"
-description: "After being online with the original layout and navigation concept for almost two years it was time for some central improvements. Among others the RSS feeds ha..."
+description: "Redesigning my engineering website layout and information architecture after two years online, adding structured RSS feeds and streamlined navigation."
 tags: ["blog", "human-computer-interaction", "user-interface", "ux-design"]
 image:
   src: "./screenshot.png"

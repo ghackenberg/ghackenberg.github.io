@@ -1,6 +1,6 @@
 ---
-title: "Python for Engineers"
-description: "Practical course in Python programming, introducing scripting, numerical analysis, data visualization, and engineering simulations."
+title: "Python Programming & Scientific Computing for Engineers"
+description: "Practical engineering course in Python programming covering structured scripting, NumPy numerical arrays, Pandas data analysis, and Matplotlib."
 repoName: "course-python-programming"
 learningGoals:
   - "Master Python syntax, core data types, and file input/output workflows."

@@ -1,7 +1,7 @@
 ---
-title: "JavaScript Physics Simulation"
+title: "Interactive 2D JavaScript & SVG Physics Simulation"
 pubDate: "2011-04-13"
-description: "Some time ago I was testing the capabilities of JavaScript and vector graphics toolkits such as SVG (Mozilla Firefox, Opera, Safari) and VML (Microsoft Internet..."
+description: "Testing browser-based 2D particle physics and spring-damper simulations in JavaScript using cross-browser SVG and VML vector rendering."
 tags: ["data-visualization", "hyperkit-software", "javascript", "simulation", "youtube-video", "zumida"]
 image:
   src: "./bounce_four.png"

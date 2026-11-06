@@ -2,7 +2,7 @@
 title: "Funktionen & modulare Programmierung"
 courseId: "kurs-python-programmierung"
 moduleNumber: "04"
-description: "Definition von Funktionen, Parameterübergabe, Rückgabewerte und Namespace-Management."
+description: "Modulare Softwarestrukturierung in Python: Funktionsdefinitionen, Default- und Keyword-Argumente (*args/**kwargs), LEGB-Scoping, Type Hints und Pakete."
 order: 4
 topics:
   - "Def, Return, Standardargumente und Parameter"

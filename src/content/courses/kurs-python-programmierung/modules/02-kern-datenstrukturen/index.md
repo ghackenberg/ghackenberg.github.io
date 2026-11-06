@@ -1,8 +1,8 @@
 ---
-title: "Kern-Datenstrukturen"
+title: "Kern-Datenstrukturen: Listen, Tupel, Sets & Dicts"
 courseId: "kurs-python-programmierung"
 moduleNumber: "02"
-description: "Verwaltung von Datenkollektionen mit Listen, Slicing, Tupeln, Sets und Dictionaries."
+description: "Effiziente Datenverwaltung mit Pythons Datenstrukturen: Veränderbare Listen und Slicing, unveränderliche Tupel, Mengenoperationen und Hash-Dictionaries."
 order: 2
 topics:
   - "Listen-Operationen, Indexierung und Slicing"

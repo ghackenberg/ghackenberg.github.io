@@ -1,7 +1,7 @@
 ---
-title: "Animated Article Tiles"
+title: "Animated Article Tiles for Visual Blog Exploration"
 pubDate: "2011-06-28"
-description: "In my previous posts Blog Calender Interface and Blog Timeline Widget I demonstrated how to use the time information to build navigation controls for blogs. In ..."
+description: "Combining preview thumbnails with animated hover transitions to create a spatial tile grid for exploring technical blog articles."
 tags: ["blog", "data-visualization", "user-interface"]
 image:
   src: "./screenshot.png"

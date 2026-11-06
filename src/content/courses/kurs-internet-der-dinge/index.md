@@ -1,6 +1,6 @@
 ---
-title: "Internet der Dinge"
-description: "Unterlagen zu einem Kurs über das Internet der Dinge (IoT) inklusive Firmware in C# und Integration mit der IoT-Plattform Thingsboard."
+title: "Internet der Dinge (IoT): Embedded C# & ThingsBoard"
+description: "Praxisorientierter Hochschulkurs zum Internet der Dinge (IoT) mit ESP32-Firmware in C# (.NET nanoFramework), MQTT-Telemetrie und ThingsBoard Cloud."
 repoName: "kurs-internet-der-dinge"
 learningGoals:
   - "Entwicklung von Firmware für eingebettete Systeme und IoT-Edge-Devices."

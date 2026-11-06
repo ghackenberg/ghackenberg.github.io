@@ -1,6 +1,6 @@
 ---
-title: "Systems Engineering"
-description: "Unterlagen für meinen Kurs in Systems Engineering mit MATLAB und Simulink an der Fakultät für Technik und angewandte Naturwissenschaften der FH OÖ."
+title: "Systems Engineering: Modellierung & Regelung mit Simulink"
+description: "Hochschulkurs in Systems Engineering mit MATLAB und Simulink an der FH OÖ: V-Modell, physikalische Differentialgleichungen und PID-Reglerentwurf."
 repoName: "kurs-systems-engineering"
 learningGoals:
   - "Verstehen der Prinzipien des Model-Based Systems Engineering (MBSE)."

@@ -1,7 +1,7 @@
 ---
-title: "Fraunhofer Prize Award 2011"
+title: "Fraunhofer ICT Master Thesis Prize Award 2011 Announcement"
 pubDate: "2011-07-03"
-description: "After finishing graduate classes at RWTH Aachen University I decided to go to Fraunhofer FIT, a non-profit R&amp;D organization at the interface between science..."
+description: "Receiving the Fraunhofer ICT Prize 2011 for my Master thesis on real-time 3D multi-touch interaction researched at Fraunhofer FIT and RWTH Aachen."
 tags: ["award", "motion-capture", "gesture-recognition", "user-interface", "computer-vision"]
 image:
   src: "./hugo_geiger.png"

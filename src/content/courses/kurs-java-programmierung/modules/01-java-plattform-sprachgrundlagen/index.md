@@ -2,7 +2,7 @@
 title: "Java-Plattform & Sprachgrundlagen"
 courseId: "kurs-java-programmierung"
 moduleNumber: "01"
-description: "JVM, Bytecode, Compiler, primitive Datentypen, Operatoren und Kontrollstrukturen."
+description: "Architektur der Java-Plattform (JDK, JRE, JVM) und Bytecode-Kompilierung: Primitive Datentypen, Typumwandlung, Operatoren und strukturierter Kontrollfluss."
 order: 1
 topics:
   - "JDK, JRE und die Rolle der Java Virtual Machine"

@@ -2,7 +2,7 @@
 title: "Firebase Setup & Authentication"
 courseId: "kurs-typescript-firebase"
 moduleNumber: "03"
-description: "Initialisierung des Firebase SDKs, E-Mail/Passwort- und OAuth-Provider sowie Session-State-Listener."
+description: "Projektinitialisierung und Identitätsmanagement mit Google Firebase: Modulares Web-SDK v10, E-Mail/Passwort- und OAuth-Login sowie reaktive Auth-Guards."
 order: 3
 topics:
   - "Firebase Projektkonfiguration & API-Keys"

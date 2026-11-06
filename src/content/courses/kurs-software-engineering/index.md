@@ -1,6 +1,6 @@
 ---
-title: "Software Engineering"
-description: "Praxisorientierter Einsteigerkurs in das Software Engineering. Lernen Sie agile Methoden, UML-Design und automatisierte Tests in C# kennen."
+title: "Software Engineering: UML, Clean Architecture & CI/CD"
+description: "Praxisorientierter Hochschulkurs im Software Engineering: Agile Anforderungsanalyse mit Scrum, UML-Systemmodellierung, Design Patterns und TDD in C#."
 repoName: "kurs-software-engineering"
 learningGoals:
   - "Beherrschen agiler Methoden (Scrum, Kanban) und Phasen des Software-Lebenszyklus."

@@ -1,6 +1,6 @@
 ---
-title: "Python-Programmierung"
-description: "Grundlagen der Programmierung mit der populären Skriptsprache Python. Dieses Repository bietet Unterlagen zum schnellen Erlernen von Python."
+title: "Python-Programmierung: Grundlagen, Datenstrukturen & Module"
+description: "Hochschulkurs zur Python-Programmierung: Sprachsyntax, Listen und Dictionaries, Kontrollfluss, modulare Funktionen sowie sichere Dateiverarbeitung."
 repoName: "kurs-python-programmierung"
 learningGoals:
   - "Verstehen der Python-Syntax, Datenstrukturen (Listen, Dictionaries) und Dateizugriffe."

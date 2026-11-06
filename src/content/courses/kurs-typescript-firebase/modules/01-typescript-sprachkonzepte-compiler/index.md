@@ -2,7 +2,7 @@
 title: "TypeScript-Sprachkonzepte & Compiler"
 courseId: "kurs-typescript-firebase"
 moduleNumber: "01"
-description: "TypeScript-Compiler (tsc), Konfiguration (tsconfig), statische Typisierung und Typinferenz."
+description: "Statische Typisierung für moderne Webanwendungen mit TypeScript: Compiler-Konfiguration (tsconfig.json), Interfaces, Union/Intersection Types und Generics."
 order: 1
 topics:
   - "Primitive Typen, Union Types & Type Aliases"

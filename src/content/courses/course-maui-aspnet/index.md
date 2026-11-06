@@ -1,6 +1,6 @@
 ---
-title: "Mobile & Cloud Development"
-description: "Course materials for cross-platform app development using .NET Multi-platform App UI (.NET MAUI) and ASP.NET Core cloud backend REST APIs."
+title: "Mobile & Cloud App Development (.NET MAUI & ASP.NET)"
+description: "University course on cross-platform mobile and cloud app development using .NET MAUI, MVVM data binding, ASP.NET Core REST APIs, and EF Core."
 repoName: "course-maui-aspnet"
 learningGoals:
   - "Build cross-platform mobile & desktop graphical user interfaces with .NET MAUI."

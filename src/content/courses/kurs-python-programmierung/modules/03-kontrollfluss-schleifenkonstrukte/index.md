@@ -2,7 +2,7 @@
 title: "Kontrollfluss & Schleifenkonstrukte"
 courseId: "kurs-python-programmierung"
 moduleNumber: "03"
-description: "Verzweigungen mit if-elif-else, Iteration mit for- und while-Schleifen sowie Comprehensions."
+description: "Strukturierte Programmsteuerung in Python: Bedingte Verzweigungen (if/elif/else), Iteration über Sequenzen mit for/enumerate/zip sowie List Comprehensions."
 order: 3
 topics:
   - "Logische Operatoren und Bedingungsbäume"

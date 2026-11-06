@@ -1,8 +1,8 @@
 ---
-title: "File I/O & Data Parsing"
+title: "File I/O, Data Parsing & JSON/CSV Serialization"
 courseId: "course-python-programming"
 moduleNumber: "02"
-description: "Reading and writing files, serializing JSON/CSV formats, and working with directory trees."
+description: "Processing engineering measurement files in Python: context managers, CSV and JSON serialization, regular expressions, and pathlib directory traversal."
 order: 2
 topics:
   - "Context Managers & File Handles"

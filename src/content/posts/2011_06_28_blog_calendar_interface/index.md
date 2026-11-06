@@ -1,7 +1,7 @@
 ---
-title: "Blog Calendar Interface"
+title: "Interactive Blog Calendar Interface for Archive Navigation"
 pubDate: "2011-06-27"
-description: "In my last post Blog Timeline Widget I demonstrated how to provide a timeline for navigating your blog posts. In this article I show a modified version of the i..."
+description: "Building a two-dimensional calendar matrix interface for navigating chronological blog archives and inspecting daily publication activity."
 tags: ["blog", "data-visualization", "user-interface"]
 image:
   src: "./bubble.png"

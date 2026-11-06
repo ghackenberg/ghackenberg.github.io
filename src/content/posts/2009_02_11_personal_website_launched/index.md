@@ -1,7 +1,7 @@
 ---
-title: "Personal Website launched!"
+title: "Personal Engineering Website & Research Blog Launched"
 pubDate: "2009-02-10"
-description: "Hey everyone! I am happy, you made it to this site :). It is my first try to get something up and running. So I hope, you'll like it. I'll try my best to get so..."
+description: "Launching my personal engineering website and research blog covering software architecture, computer graphics, and systems engineering projects."
 tags: ["blog", "web-development"]
 image:
   src: "./icon.png"

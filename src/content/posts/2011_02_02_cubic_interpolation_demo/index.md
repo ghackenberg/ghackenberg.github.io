@@ -1,7 +1,7 @@
 ---
-title: "3D Cubic Interpolation Video"
+title: "3D Cubic Spline Interpolation: Real-Time Video Demo"
 pubDate: "2011-02-01"
-description: "Cubic interpolation is a popular technique in many branches of computer science. For example, it is used when having a time series of numbers and estimating the..."
+description: "Demonstrating smooth 3D trajectory estimation and surface smoothing using continuous cubic spline interpolation on time-series sensor data."
 tags: ["youtube-video", "data-visualization"]
 image:
   src: "./screenshot.png"
