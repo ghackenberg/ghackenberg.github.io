@@ -140,7 +140,7 @@ const engine: D3Engine = {
     let dragStartX = 0;
     let dragStartY = 0;
     let wasDragged = false;
-    let isReorderingDom = false;
+    let lastDraggedAt = 0;
     let lastHighlightedNodeId: string | null = null;
     this.hoveredNodeId = null;
     this.draggedNodeId = null;
@@ -167,7 +167,6 @@ const engine: D3Engine = {
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
 
       if (dists) {
-        isReorderingDom = true;
         this.linkElements?.sort((a: D3Link, b: D3Link) => {
           const srcA = typeof a.source === 'object' ? a.source.id : String(a.source);
           const tgtA = typeof a.target === 'object' ? a.target.id : String(a.target);
@@ -178,7 +177,6 @@ const engine: D3Engine = {
         this.nodeElements?.sort((a: D3Node, b: D3Node) => {
           return getNodeHopZIndex(dists.get(a.id)) - getNodeHopZIndex(dists.get(b.id));
         });
-        isReorderingDom = false;
       }
 
       const nodeTrans = (this.nodes || []).map((n) => {
@@ -222,7 +220,7 @@ const engine: D3Engine = {
           lt.link.displayWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
         }
 
-        this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle")
+        this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle.node-dot")
           .attr("r", (n: D3Node) => n.displayRadius ?? currentTokens.nodeRadius)
           .style("fill", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
           .style("stroke", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
@@ -267,6 +265,7 @@ const engine: D3Engine = {
       .on("drag", (event, d) => {
         if (Math.hypot(event.x - dragStartX, event.y - dragStartY) > 6) {
           wasDragged = true;
+          lastDraggedAt = performance.now();
           this.tooltipController?.hide();
         }
         d.fx = event.x;
@@ -281,6 +280,7 @@ const engine: D3Engine = {
       .on("end", (event, d) => {
         this.draggedNodeId = null;
         if (wasDragged) {
+          lastDraggedAt = performance.now();
           this.hoveredNodeId = null;
           container.style.cursor = "default";
         }
@@ -302,8 +302,16 @@ const engine: D3Engine = {
       .call(dragBehavior);
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    
+
+    // Invisible expanded hit halo for effortless drag grabbing
     this.nodeElements.append("circle")
+      .attr("class", "node-hit-area")
+      .attr("r", 18)
+      .style("fill", "transparent")
+      .style("stroke", "none");
+
+    this.nodeElements.append("circle")
+      .attr("class", "node-dot")
       .attr("r", styleTokens.nodeRadius)
       .style("fill", d => colors[d.group] || colors[0])
       .style("stroke", d => colors[d.group] || colors[0])
@@ -333,43 +341,29 @@ const engine: D3Engine = {
       }
     };
 
-    this.nodeElements
-      .on("mouseenter", (event: MouseEvent, d: D3Node) => {
-        if (isReorderingDom) return;
-        if (!this.draggedNodeId && this.hoveredNodeId === d.id) return;
-        this.hoveredNodeId = d.id;
+    this.tooltipController.bindProximityInteraction({
+      getScreenNodes: () => {
+        const svgNode = this.svg?.node();
+        const zoomT = svgNode ? d3.zoomTransform(svgNode) : d3.zoomIdentity;
+        return (this.nodes || []).map((n) => {
+          const [x, y] = zoomT.apply([n.x ?? 0, n.y ?? 0]);
+          return { node: n, x, y };
+        });
+      },
+      adjacency,
+      isLight: () => Boolean(this.isLight),
+      isDragging: () => Boolean(this.draggedNodeId),
+      getLastDraggedAt: () => lastDraggedAt,
+      onActiveNodeChange: (nodeId) => {
+        this.hoveredNodeId = nodeId;
         if (!this.draggedNodeId) {
-          container.style.cursor = "pointer";
-          applyHighlight(d.id);
-          const [x, y] = d3.pointer(event, container);
-          this.tooltipController?.show(d, Boolean(this.isLight), x, y);
+          applyHighlight(nodeId);
         }
-      })
-      .on("mousemove", (event: MouseEvent) => {
-        if (!this.draggedNodeId) {
-          const [x, y] = d3.pointer(event, container);
-          this.tooltipController?.move(x, y);
-        }
-      })
-      .on("mouseleave", (_event: MouseEvent, d: D3Node) => {
-        if (isReorderingDom) return;
-        if (this.hoveredNodeId === d.id) {
-          this.hoveredNodeId = null;
-        }
-        this.tooltipController?.hide();
-        if (!this.draggedNodeId) {
-          container.style.cursor = "default";
-          applyHighlight(null);
-        }
-      })
-      .on("click", (_event: MouseEvent, d: D3Node) => {
-        if (!wasDragged) {
-          navigateToNode(d);
-        }
-      })
-      .on("dblclick", (_event: MouseEvent, d: D3Node) => {
-        navigateToNode(d);
-      });
+      },
+      onNavigate: (node) => {
+        navigateToNode(node as D3Node);
+      }
+    });
 
     this.simulation.on("tick", () => {
       this.linkElements

@@ -271,13 +271,13 @@ div.vis-tooltip {
   -webkit-backdrop-filter: blur(12px) !important;
   pointer-events: none !important;
   white-space: normal !important;
-  width: max-content !important;
-  max-width: 280px !important;
+
+
   box-sizing: border-box !important;
   overflow-wrap: break-word !important;
   word-break: break-word !important;
   z-index: 1000 !important;
-  transition: opacity 0.15s ease-out !important;
+  transition: none !important;
 }
 
 :root.light div.vis-tooltip, .light div.vis-tooltip {

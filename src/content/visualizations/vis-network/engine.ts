@@ -2,7 +2,6 @@ import { Network, type Options, type Node as VisNode, type Edge as VisEdge } fro
 import { DataSet } from 'vis-data';
 import {
   GRAPH_COLORS,
-  GRAPH_GROUP_NAMES,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
   getGraphStyleTokens,
@@ -15,8 +14,7 @@ import {
   getNodeHopZIndex,
   getEdgeHopZIndex
 } from '@commons/shared/graph-payload';
-import { getThemeTokens } from '@commons/shared/domain-themes';
-import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
+import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 interface VisNetworkWithBody extends Network {
   body?: {
@@ -78,18 +76,21 @@ export interface VisNetworkExtraOptions extends Options {
 
 export interface VisNetworkEngine {
   layouts: { id: string; label: string }[];
+  container?: HTMLElement | null;
   nodes?: VisPayloadNode[];
   connections?: VisPayloadConnection[];
   visNodes?: DataSet<VisCustomNode> | null;
   visEdges?: DataSet<VisCustomEdge> | null;
   options?: Options;
   network?: Network | null;
+  tooltipController?: GraphTooltipController | null;
   isDragging?: boolean;
   hoveredNodeId?: string | null;
   draggedNodeId?: string | null;
   highlightFrameId?: number | null;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
+  forcePositions?: Record<string, { x: number; y: number }> | null;
   dragStabilizeTimeout?: ReturnType<typeof setTimeout> | null;
   currentLayout?: string;
   isLight?: boolean;
@@ -98,6 +99,7 @@ export interface VisNetworkEngine {
   animationFrameId?: number | null;
   applyHighlight?(activeId: string | null, immediate?: boolean): void;
   init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions?: VisNetworkExtraOptions): Promise<VisNetworkEngine>;
+  fitToView(duration?: number): void;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   pause(): void;
@@ -114,50 +116,29 @@ const engine: VisNetworkEngine = {
   ],
 
   async init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions: VisNetworkExtraOptions = {}) {
+    this.container = container;
     this.nodes = payload['vis-network'].nodes;
     this.connections = payload['vis-network'].connections;
 
     const colors = getVisNodeColors(isLight);
-    const themeTokens = getThemeTokens(isLight);
     const styleTokens = getGraphStyleTokens(isLight);
-    const groupNames = GRAPH_GROUP_NAMES;
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
     // property and explicitly defining color object on each node.
-    this.visNodes = new DataSet<VisCustomNode>((this.nodes || []).map((n) => {
-      const card = document.createElement('div');
-      card.style.fontFamily = 'Outfit, Inter, sans-serif';
-      card.style.width = '250px';
-      card.style.maxWidth = '270px';
-      card.style.boxSizing = 'border-box';
-      card.style.whiteSpace = 'normal';
-      card.style.overflowWrap = 'break-word';
-      card.style.wordBreak = 'break-word';
-      
-      renderVisNetworkTooltip(card, {
-        node: n,
-        typeLabel: n.typeLabel || groupNames[n.group] || 'Item',
-        accentColor: groupColors[n.group] || themeTokens.nodeDefault,
-        tagColor: groupColors[0],
-        themeTokens,
-      });
-
-      return {
-        id: n.id,
-        label: '',
-        title: card,
-        shape: 'dot',
-        size: styleTokens.nodeRadius,
-        displaySize: styleTokens.nodeRadius,
-        displayColor: groupColors[n.group] || groupColors[0],
-        x: (Math.random() - 0.5) * 500,
-        y: (Math.random() - 0.5) * 500,
-        rawGroup: n.group,
-        color: colors[n.group],
-        chosen: false
-      };
-    }));
+    this.visNodes = new DataSet<VisCustomNode>((this.nodes || []).map((n) => ({
+      id: n.id,
+      label: '',
+      shape: 'dot',
+      size: styleTokens.nodeRadius,
+      displaySize: styleTokens.nodeRadius,
+      displayColor: groupColors[n.group] || groupColors[0],
+      x: (Math.random() - 0.5) * 500,
+      y: (Math.random() - 0.5) * 500,
+      rawGroup: n.group,
+      color: colors[n.group],
+      chosen: false
+    })));
 
     this.visEdges = new DataSet<VisCustomEdge>((this.connections || []).map((c, idx) => ({
       id: `${c.sourceId}-${c.targetId}-${idx}`,
@@ -232,6 +213,7 @@ const engine: VisNetworkEngine = {
     };
 
     this.network = new Network(container, data, this.options);
+    this.tooltipController = createGraphTooltipController(container);
 
     if (interactionOptions.dragView === false) {
       container.style.touchAction = 'pan-y';
@@ -253,6 +235,8 @@ const engine: VisNetworkEngine = {
           if (this.network) {
             this.network.setOptions({ physics: { enabled: false } });
             this.network.stopSimulation();
+            this.forcePositions = this.network.getPositions();
+            this.fitToView(0);
           }
           resolve();
         }
@@ -438,8 +422,7 @@ const engine: VisNetworkEngine = {
         const draggedId = String(params.nodes[0]);
         this.draggedNodeId = draggedId;
         this.applyHighlight?.(draggedId);
-        const tip = container.querySelector('.vis-tooltip') as HTMLElement | null;
-        if (tip) tip.style.visibility = 'hidden';
+        this.tooltipController?.hide();
 
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
@@ -493,10 +476,17 @@ const engine: VisNetworkEngine = {
           return;
         }
 
+        if (this.network) {
+          this.forcePositions = this.network.getPositions();
+        }
+
         const stopAfterDrag = () => {
           if (this.network && !this.isDragging) {
             this.network.setOptions({ physics: { enabled: false } });
             this.network.stopSimulation();
+            if (this.currentLayout === 'force') {
+              this.forcePositions = this.network.getPositions();
+            }
           }
           if (this.dragStabilizeTimeout) {
             clearTimeout(this.dragStabilizeTimeout);
@@ -513,12 +503,36 @@ const engine: VisNetworkEngine = {
       });
     }
 
-    this.network.on("click", (params: { nodes: string[] }) => {
+    this.network.on("click", () => {
       this.network?.unselectAll();
       this.applyHighlight?.(this.hoveredNodeId ?? null);
-      if (this.lastDraggedAt && performance.now() - this.lastDraggedAt < 250) return;
-      if (params.nodes.length > 0) {
-        const targetPath = params.nodes[0];
+    });
+
+    this.tooltipController?.bindProximityInteraction({
+      getScreenNodes: () => {
+        if (!this.network || !this.nodes) return [];
+        const positions = this.network.getPositions();
+        const result: { node: RawGraphNode; x: number; y: number }[] = [];
+        for (const n of this.nodes) {
+          const canvasPos = positions[n.id];
+          if (!canvasPos) continue;
+          const domPos = this.network.canvasToDOM(canvasPos);
+          result.push({ node: n, x: domPos.x, y: domPos.y });
+        }
+        return result;
+      },
+      adjacency,
+      isLight: () => Boolean(this.isLight),
+      isDragging: () => Boolean(this.isDragging),
+      getLastDraggedAt: () => this.lastDraggedAt || 0,
+      onActiveNodeChange: (nodeId) => {
+        this.hoveredNodeId = nodeId;
+        if (!this.isDragging) {
+          this.applyHighlight?.(nodeId);
+        }
+      },
+      onNavigate: (node) => {
+        const targetPath = node.id;
         if (
           targetPath.startsWith('/posts') ||
           targetPath.startsWith('/publications') ||
@@ -539,26 +553,19 @@ const engine: VisNetworkEngine = {
       }
     });
 
-    this.network.on("hoverNode", (params: { node: string | number }) => {
-      this.hoveredNodeId = String(params.node);
-      if (!this.isDragging) {
-        container.style.cursor = "pointer";
-        this.applyHighlight?.(this.hoveredNodeId);
-      }
-    });
-
-    this.network.on("blurNode", () => {
-      this.hoveredNodeId = null;
-      if (!this.isDragging) {
-        container.style.cursor = "default";
-        this.applyHighlight?.(null);
-      }
-    });
-
-    this.currentLayout = layout;
+    this.currentLayout = 'force';
     this.isLight = isLight;
     if (layout !== 'force') {
-      this.updateLayout(layout, isLight);
+      const { targets, signature } = this.computeLayoutTargets(layout, false);
+      this.currentLayout = layout;
+      this.lastOrderSignature = signature;
+      const initialUpdates: VisNode[] = Object.entries(targets).map(([id, pos]) => ({
+        id,
+        x: pos.x,
+        y: pos.y
+      }));
+      this.visNodes.update(initialUpdates);
+      this.fitToView(0);
     }
 
     // Bind ResizeObserver to handle network container changes dynamically with dimension threshold
@@ -571,8 +578,18 @@ const engine: VisNetworkEngine = {
           lastWidth = width;
           lastHeight = height;
           if (this.network) {
+            if ((this.currentLayout === 'radial' || this.currentLayout === 'columns') && this.visNodes) {
+              const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+              this.lastOrderSignature = signature;
+              const updates: VisNode[] = Object.entries(targets).map(([id, pos]) => ({
+                id,
+                x: pos.x,
+                y: pos.y
+              }));
+              this.visNodes.update(updates);
+            }
             this.network.redraw();
-            this.network.fit();
+            this.fitToView(0);
           }
         }
       }
@@ -594,12 +611,68 @@ const engine: VisNetworkEngine = {
     return this;
   },
 
+  fitToView(duration = 0) {
+    if (!this.network || !this.nodes || this.nodes.length === 0) return;
+    const width = this.container?.clientWidth || 0;
+    const height = this.container?.clientHeight || 0;
+    if (width <= 0 || height <= 0) return;
+
+    const positions = this.network.getPositions();
+    const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const n of this.nodes) {
+      const p = positions[n.id];
+      if (!p || typeof p.x !== 'number' || typeof p.y !== 'number') continue;
+      const left = p.x - r - 10;
+      const right = p.x + r + 10;
+      const top = p.y - r - 10;
+      const bottom = p.y + r + 10;
+
+      if (left < minX) minX = left;
+      if (right > maxX) maxX = right;
+      if (top < minY) minY = top;
+      if (bottom > maxY) maxY = bottom;
+    }
+
+    const boxWidth = maxX - minX;
+    const boxHeight = maxY - minY;
+    if (boxWidth <= 0 || boxHeight <= 0 || !Number.isFinite(boxWidth) || !Number.isFinite(boxHeight)) return;
+
+    // Margins to ensure nodes don't collide with the top legend or bottom layout selector
+    const padTop = 60;
+    const padBottom = 55;
+    const padX = 40;
+
+    const availableWidth = Math.max(100, width - padX * 2);
+    const availableHeight = Math.max(100, height - padTop - padBottom);
+
+    const scaleX = availableWidth / boxWidth;
+    const scaleY = availableHeight / boxHeight;
+    const scale = Math.max(0.12, Math.min(2.0, Math.min(scaleX, scaleY)));
+
+    const midX = (minX + maxX) / 2;
+    const midY = (minY + maxY) / 2;
+
+    this.network.moveTo({
+      position: { x: midX, y: midY },
+      scale,
+      offset: { x: 0, y: (padTop - padBottom) / 2 },
+      animation: duration > 0 ? { duration, easingFunction: 'easeInOutQuad' } : false
+    });
+  },
+
   computeLayoutTargets(layout: string, useCurrentOrder = false) {
     const targets: Record<string, { x: number; y: number }> = {};
     let signature = '';
     const pos = useCurrentOrder && this.network ? this.network.getPositions() : {};
+    const width = this.container?.clientWidth || 800;
+    const height = this.container?.clientHeight || 500;
 
     if (layout === 'radial') {
+      const minDim = Math.min(width, height);
+      const innerRadius = Math.max(90, minDim * 0.22);
+      const outerRadius = Math.max(200, minDim * 0.44);
+
       const tags = [...(this.nodes || []).filter(n => n.group === 0)];
       const others = [...(this.nodes || []).filter(n => n.group !== 0)];
 
@@ -615,16 +688,16 @@ const engine: VisNetworkEngine = {
       tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
         targets[n.id] = {
-          x: 120 * Math.cos(theta),
-          y: 120 * Math.sin(theta)
+          x: innerRadius * Math.cos(theta),
+          y: innerRadius * Math.sin(theta)
         };
       });
 
       others.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / others.length;
         targets[n.id] = {
-          x: 280 * Math.cos(theta),
-          y: 280 * Math.sin(theta)
+          x: outerRadius * Math.cos(theta),
+          y: outerRadius * Math.sin(theta)
         };
       });
 
@@ -641,9 +714,7 @@ const engine: VisNetworkEngine = {
       const visualizations = [...(this.nodes || []).filter(n => n.group === 8)];
 
       const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-      const isMobile = window.innerWidth < 768;
-      const heightFactor = 45;
-      const widthFactor = 45;
+      const isMobile = width < 768 || window.innerWidth < 768;
 
       if (useCurrentOrder && this.network) {
         categories.forEach(catNodes => {
@@ -657,21 +728,21 @@ const engine: VisNetworkEngine = {
 
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - (categories.length - 1) / 2) * 120;
+          const rowY = ((catIdx + 1) / (categories.length + 1) - 0.5) * height;
           catNodes.forEach((n, idx) => {
             targets[n.id] = {
-              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
+              x: ((idx + 1) / (catNodes.length + 1) - 0.5) * width,
               y: rowY
             };
           });
         });
       } else {
         categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - (categories.length - 1) / 2) * 200;
+          const colX = ((catIdx + 1) / (categories.length + 1) - 0.5) * width;
           catNodes.forEach((n, idx) => {
             targets[n.id] = {
               x: colX,
-              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * heightFactor : 0
+              y: ((idx + 1) / (catNodes.length + 1) - 0.5) * height
             };
           });
         });
@@ -703,27 +774,19 @@ const engine: VisNetworkEngine = {
       this.animationFrameId = null;
     }
 
+    if (this.dragStabilizeTimeout) {
+      clearTimeout(this.dragStabilizeTimeout);
+      this.dragStabilizeTimeout = null;
+    }
+    this.network.setOptions({ physics: { enabled: false } });
+    this.network.stopSimulation();
+
     if (layout === 'radial' || layout === 'columns') {
       const { targets, signature } = this.computeLayoutTargets(layout, false);
       this.lastOrderSignature = signature;
-      this.animateTo(targets);
-    } else {
-      // default: force directed
-      this.network.setOptions({
-        physics: {
-          enabled: true,
-          stabilization: { iterations: 100, updateInterval: 25 }
-        }
-      });
-      const stopForce = () => {
-        if (this.network) {
-          this.network.setOptions({ physics: { enabled: false } });
-          this.network.stopSimulation();
-        }
-      };
-      this.network.once("stabilizationIterationsDone", stopForce);
-      this.network.once("stabilized", stopForce);
-      setTimeout(stopForce, 1500);
+      this.animateTo(targets, 600, undefined, true);
+    } else if (this.forcePositions) {
+      this.animateTo(this.forcePositions, 600, undefined, true);
     }
   },
 
@@ -787,13 +850,14 @@ const engine: VisNetworkEngine = {
 
       this.visNodes?.update(updates);
 
+      if (fitAfter) {
+        this.fitToView(0);
+      }
+
       if (progress < 1) {
         this.animationFrameId = requestAnimationFrame(step);
       } else {
         this.animationFrameId = null;
-        if (fitAfter && this.network) {
-          this.network.fit({ animation: { duration: 350, easingFunction: 'easeInOutQuad' } });
-        }
       }
     };
 
@@ -810,10 +874,16 @@ const engine: VisNetworkEngine = {
       this.resizeObserver = null;
     }
     this.pause();
+    if (this.tooltipController) {
+      this.tooltipController.destroy();
+      this.tooltipController = null;
+    }
     if (this.network) {
       this.network.destroy();
       this.network = null;
     }
+    this.container = null;
+    this.forcePositions = null;
     this.visNodes = null;
     this.visEdges = null;
   }
