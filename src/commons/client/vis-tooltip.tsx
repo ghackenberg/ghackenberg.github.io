@@ -218,6 +218,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
   let lastNeighbors: TooltipPoint[] = [];
   let activeNodeId: string | null = null;
   let activeNodeData: VisTooltipNodeData | null = null;
+  let activeNodeOpenedAt = 0;
   let currentOpacity = 0;
   let fadeFrameId: number | null = null;
   let cleanupProximityListeners: (() => void) | null = null;
@@ -411,6 +412,9 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
     neighborCoords?: TooltipPoint[]
   ) {
     const isNewNode = activeNodeId !== node.id;
+    if (isNewNode) {
+      activeNodeOpenedAt = performance.now();
+    }
     activeNodeId = node.id;
     activeNodeData = node;
 
@@ -444,6 +448,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
   function hideInternal() {
     activeNodeId = null;
     activeNodeData = null;
+    activeNodeOpenedAt = 0;
     animateOpacityTo(0);
   }
 
@@ -465,6 +470,8 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       let lastPointerType = 'mouse';
       let lastTouchTime = 0;
       let pointerDown = false;
+      let activeNodeIdAtDown: string | null = null;
+      let lastTapHandledAt = 0;
       let downX = 0;
       let downY = 0;
       let dragMoved = false;
@@ -534,14 +541,27 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       };
 
       const handleTouchTap = (px: number, py: number) => {
-        if (activeNodeData && isPointInsideTooltip(px, py)) {
+        const now = performance.now();
+        if (now - lastTapHandledAt < 180) return;
+        lastTapHandledAt = now;
+
+        const wasAlreadyActiveBeforeTap =
+          activeNodeIdAtDown !== null &&
+          activeNodeIdAtDown === activeNodeId &&
+          now - activeNodeOpenedAt >= 180;
+
+        if (activeNodeData && wasAlreadyActiveBeforeTap && isPointInsideTooltip(px, py)) {
           config.onNavigate(activeNodeData);
           return;
         }
 
         const hit = findNearest(px, py, TOUCH_PROXIMITY_RADIUS);
         if (hit) {
-          if (activeNodeId === hit.node.id) {
+          if (
+            activeNodeId === hit.node.id &&
+            activeNodeIdAtDown === hit.node.id &&
+            now - activeNodeOpenedAt >= 180
+          ) {
             config.onNavigate(hit.node);
           } else {
             config.onActiveNodeChange(hit.node.id);
@@ -556,12 +576,15 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       const onPointerDown = (e: PointerEvent) => {
         if (isControlTarget(e.target)) return;
         const isSyntheticMouseAfterTouch =
-          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 800;
+          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 1200;
         if (isSyntheticMouseAfterTouch) return;
 
         lastPointerType = e.pointerType || 'mouse';
         if (lastPointerType === 'touch') {
           lastTouchTime = performance.now();
+        }
+        if (!pointerDown) {
+          activeNodeIdAtDown = activeNodeId;
         }
         const rect = container.getBoundingClientRect();
         downX = e.clientX - rect.left;
@@ -586,7 +609,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       const onPointerMove = (e: PointerEvent) => {
         if (isControlTarget(e.target)) return;
         const isSyntheticMouseAfterTouch =
-          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 800;
+          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 1200;
         if (isSyntheticMouseAfterTouch) return;
 
         if (e.pointerType) {
@@ -646,7 +669,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         if (
           e.pointerType === 'touch' ||
           lastPointerType === 'touch' ||
-          performance.now() - lastTouchTime < 800
+          performance.now() - lastTouchTime < 1200
         ) {
           return;
         }
@@ -666,14 +689,12 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       const onPointerUp = (e: PointerEvent) => {
         if (isControlTarget(e.target)) return;
         const isSyntheticMouseAfterTouch =
-          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 800;
+          e.pointerType !== 'touch' && performance.now() - lastTouchTime < 1200;
         if (isSyntheticMouseAfterTouch) return;
+        if (!pointerDown) return;
 
         if (e.pointerType) {
           lastPointerType = e.pointerType;
-          if (lastPointerType === 'touch') {
-            lastTouchTime = performance.now();
-          }
         }
         const hadCustomDrag = customDragActive;
         if (customDragActive) {
@@ -690,22 +711,33 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           (lastDraggedAt > 0 && performance.now() - lastDraggedAt < 250);
         pointerDown = false;
 
-        if (wasDrag) return;
-        if (lastPointerType !== 'touch' && e.button !== 0) return;
+        if (wasDrag) {
+          if (lastPointerType === 'touch') {
+            lastTouchTime = performance.now();
+          }
+          return;
+        }
+        if (lastPointerType !== 'touch' && lastPointerType !== 'pen' && e.button !== 0) return;
 
         const rect = container.getBoundingClientRect();
         const px = e.clientX - rect.left;
         const py = e.clientY - rect.top;
 
-        if (lastPointerType === 'touch') {
+        if (lastPointerType === 'touch' || lastPointerType === 'pen') {
           handleTouchTap(px, py);
+          lastTouchTime = performance.now();
           return;
         }
 
-        // Mouse / Pen click within proximity radius
+        // Mouse click within proximity radius: navigate if already hovered/active, else preview
         const hit = findNearest(px, py, MOUSE_PROXIMITY_RADIUS);
         if (hit) {
-          config.onNavigate(hit.node);
+          if (activeNodeId === hit.node.id) {
+            config.onNavigate(hit.node);
+          } else {
+            config.onActiveNodeChange(hit.node.id);
+            showInternal(hit.node, config.isLight(), hit.x, hit.y, hit.neighborCoords);
+          }
         }
       };
 
@@ -718,13 +750,22 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         if (isControlTarget(e.target) || e.touches.length === 0) return;
         lastTouchTime = performance.now();
         lastPointerType = 'touch';
+        if (e.touches.length > 1) {
+          dragMoved = true;
+          dragCandidate = null;
+          return;
+        }
+        if (pointerDown) {
+          return;
+        }
+        activeNodeIdAtDown = activeNodeId;
         const rect = container.getBoundingClientRect();
         downX = e.touches[0].clientX - rect.left;
         downY = e.touches[0].clientY - rect.top;
         pointerDown = true;
-        dragMoved = e.touches.length > 1;
+        dragMoved = false;
 
-        if (config.onNodeDragStart && e.touches.length === 1) {
+        if (config.onNodeDragStart) {
           if (!(activeNodeData && isPointInsideTooltip(downX, downY))) {
             const hit = findNearest(downX, downY, TOUCH_PROXIMITY_RADIUS);
             dragCandidate = hit ? hit.node : null;
@@ -785,9 +826,10 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
 
       const onTouchEnd = (e: TouchEvent) => {
         if (isControlTarget(e.target)) return;
-        const prevTouchTime = lastTouchTime;
         lastTouchTime = performance.now();
         lastPointerType = 'touch';
+
+        if (!pointerDown) return;
 
         const hadCustomDrag = customDragActive;
         if (customDragActive) {
@@ -795,9 +837,6 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         } else {
           dragCandidate = null;
         }
-
-        // If pointerup already processed this tap within the last 50ms, skip duplicate handling
-        if (!pointerDown && performance.now() - prevTouchTime < 50) return;
 
         const lastDraggedAt = config.getLastDraggedAt?.() || 0;
         const wasDrag =
@@ -807,11 +846,15 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           (lastDraggedAt > 0 && performance.now() - lastDraggedAt < 250);
         pointerDown = false;
 
-        if (wasDrag || e.changedTouches.length === 0) return;
+        if (wasDrag || e.changedTouches.length === 0) {
+          lastTouchTime = performance.now();
+          return;
+        }
         const rect = container.getBoundingClientRect();
         const px = e.changedTouches[0].clientX - rect.left;
         const py = e.changedTouches[0].clientY - rect.top;
         handleTouchTap(px, py);
+        lastTouchTime = performance.now();
       };
 
       container.addEventListener('pointerdown', onPointerDown, { capture: true, passive: true });
