@@ -348,51 +348,10 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
     const inMemoryUrlCache = new Map<string, string>();
 
-    function readStorageCache(storageKey: string): string | null {
-      for (const store of [window.localStorage, window.sessionStorage]) {
-        try {
-          const val = store.getItem(storageKey);
-          if (val) return val;
-        } catch {
-          // Ignore storage access errors in privacy mode
-        }
-      }
-      return null;
-    }
-
-    function writeStorageCache(keyPrefix: string, storageKey: string, rawJson: string): void {
-      for (const store of [window.localStorage, window.sessionStorage]) {
-        try {
-          for (let i = store.length - 1; i >= 0; i--) {
-            const k = store.key(i);
-            if (k && k.startsWith(keyPrefix) && k !== storageKey) {
-              store.removeItem(k);
-            }
-          }
-          store.setItem(storageKey, rawJson);
-          return;
-        } catch {
-          // Fallback to next storage backend if quota exceeded or blocked
-        }
-      }
-    }
-
-    async function fetchWithStorageCache<T>(url: string, keyPrefix: string): Promise<T> {
-      const storageKey = `${keyPrefix}${url}`;
-      const memRaw = inMemoryUrlCache.get(storageKey);
+    async function fetchWithMemoryCache<T>(url: string): Promise<T> {
+      const memRaw = inMemoryUrlCache.get(url);
       if (memRaw) {
         return JSON.parse(memRaw) as T;
-      }
-
-      const cachedRaw = readStorageCache(storageKey);
-      if (cachedRaw) {
-        try {
-          const parsed = JSON.parse(cachedRaw) as T;
-          inMemoryUrlCache.set(storageKey, cachedRaw);
-          return parsed;
-        } catch {
-          // Ignore corrupted cache entry and refetch
-        }
       }
 
       const response = await fetch(url);
@@ -401,22 +360,19 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       }
       const rawJson = await response.text();
       const parsed = JSON.parse(rawJson) as T;
-      inMemoryUrlCache.set(storageKey, rawJson);
-      writeStorageCache(keyPrefix, storageKey, rawJson);
+      inMemoryUrlCache.set(url, rawJson);
       return parsed;
     }
 
     async function loadHydratedGraphPayload(
-      type: string,
+      _type: string,
       payloadUrl: string,
       layoutUrl: string
     ): Promise<EnginePayloads> {
       const [canonicalPayload, layoutData] = await Promise.all([
-        fetchWithStorageCache<CanonicalGraphPayload>(payloadUrl, 'vis-graph-payload:'),
+        fetchWithMemoryCache<CanonicalGraphPayload>(payloadUrl),
         layoutUrl
-          ? fetchWithStorageCache<GraphLayoutPayload>(layoutUrl, `vis-graph-layout:${type}:`).catch(
-              () => null
-            )
+          ? fetchWithMemoryCache<GraphLayoutPayload>(layoutUrl).catch(() => null)
           : Promise.resolve(null),
       ]);
       return hydrateEnginePayloads(canonicalPayload, layoutData?.positions);
