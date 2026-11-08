@@ -385,7 +385,7 @@ const engine: D3Engine = {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (width <= 0 || height <= 0) continue;
-        if (Math.abs(width - this.width) < 2 && Math.abs(height - this.height) < 2) continue;
+        if (Math.abs(width - this.width) < 1 && Math.abs(height - this.height) < 1) continue;
         this.width = width;
         this.height = height;
         if (this.svg) {

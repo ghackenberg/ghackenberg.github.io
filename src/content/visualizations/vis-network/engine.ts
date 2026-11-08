@@ -568,7 +568,7 @@ const engine: VisNetworkEngine = {
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
-        if (Math.abs(width - lastWidth) >= 2 || Math.abs(height - lastHeight) >= 2) {
+        if (Math.abs(width - lastWidth) >= 1 || Math.abs(height - lastHeight) >= 1) {
           lastWidth = width;
           lastHeight = height;
           if (this.network) {

@@ -1,19 +1,19 @@
 /**
- * Unified 3-Band Artifact Cards & Clean Gallery-Style Fullscreen Lightbox Controller
- * Binds event listeners to build-time `.artifact-card` header controls (visible on first paint with zero CLS)
- * across Tables, SVG Diagrams, Mermaid Diagrams, Code Snippets, and Raster Images,
- * and connects them in exact DOM reading order to a native `<dialog>` gallery lightbox.
+ * Unified 3-Band Artifact Cards & In-Place Browser Fullscreen Controller
+ * Binds event listeners to build-time `.artifact-card` and `.visualization-viewport` header controls
+ * (visible on first paint with zero CLS) across Tables, SVG Diagrams, Mermaid Diagrams,
+ * Code Snippets, Raster Images, and Interactive Graph Visualizations,
+ * providing true native Browser Fullscreen (`requestFullscreen()`) with a `100vw×100dvh`
+ * `.is-pseudo-fullscreen` fallback (identical to the Presentation SlideDeck architecture).
  */
 
-type MediaArtifactType = 'table' | 'svg' | 'mermaid' | 'code' | 'image';
+interface WebkitDocument extends Document {
+  webkitFullscreenElement?: Element | null;
+  webkitExitFullscreen?: () => Promise<void> | void;
+}
 
-interface MediaDeckItem {
-  index: number;
-  type: MediaArtifactType;
-  typeBadge: string;
-  title: string;
-  element: HTMLElement;
-  codeText?: string;
+interface WebkitElement extends HTMLElement {
+  webkitRequestFullscreen?: () => Promise<void> | void;
 }
 
 const CONTENT_CONTAINER_SELECTOR =
@@ -105,43 +105,207 @@ function enhanceTableSorting(table: HTMLTableElement): void {
   });
 }
 
-function createActionBtn(label: string, ariaLabel: string, className = 'table-deck-btn'): HTMLButtonElement {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = className;
-  btn.textContent = label;
-  btn.setAttribute('aria-label', ariaLabel);
-  btn.title = ariaLabel;
-  return btn;
+let activeFullscreenEl: HTMLElement | null = null;
+let savedScrollY = 0;
+let globalFullscreenListenersBound = false;
+
+function getNativeFullscreenElement(): Element | null {
+  const webkitDoc = document as WebkitDocument;
+  return document.fullscreenElement || webkitDoc.webkitFullscreenElement || null;
+}
+
+function isElementFullscreen(el: HTMLElement): boolean {
+  return getNativeFullscreenElement() === el || el.classList.contains('is-pseudo-fullscreen');
+}
+
+function dispatchLayoutResize(): void {
+  requestAnimationFrame(() => {
+    window.dispatchEvent(new Event('resize'));
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 80);
+  });
+}
+
+function syncFullscreenUI(el: HTMLElement | null, isActive: boolean): void {
+  if (!el) return;
+  el.classList.toggle('is-fullscreen-active', isActive);
+
+  const btn = el.querySelector<HTMLButtonElement>('[data-media-fullscreen]');
+  if (btn) {
+    if (!btn.dataset.defaultAriaLabel) {
+      btn.dataset.defaultAriaLabel = btn.getAttribute('aria-label') || 'Fullscreen';
+    }
+    if (isActive) {
+      btn.textContent = '✕';
+      btn.title = 'Exit fullscreen (Esc)';
+      btn.setAttribute('aria-label', 'Exit fullscreen (Esc)');
+      btn.setAttribute('aria-pressed', 'true');
+    } else {
+      btn.textContent = '⤢';
+      btn.title = 'Fullscreen';
+      btn.setAttribute('aria-label', btn.dataset.defaultAriaLabel);
+      btn.setAttribute('aria-pressed', 'false');
+    }
+  }
+}
+
+function enterPseudoFullscreen(targetEl: HTMLElement): void {
+  const html = document.documentElement;
+  savedScrollY = window.scrollY || window.pageYOffset || html.scrollTop || 0;
+  targetEl.classList.add('is-pseudo-fullscreen');
+  html.classList.add('overflow-hidden', 'artifact-pseudo-fullscreen');
+  document.body.classList.add('overflow-hidden');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.width = '100%';
+  activeFullscreenEl = targetEl;
+  syncFullscreenUI(targetEl, true);
+  dispatchLayoutResize();
+}
+
+function exitPseudoFullscreen(targetEl: HTMLElement): void {
+  const html = document.documentElement;
+  targetEl.classList.remove('is-pseudo-fullscreen');
+  html.classList.remove('overflow-hidden', 'artifact-pseudo-fullscreen');
+  document.body.classList.remove('overflow-hidden');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  const hadScrollSmooth = html.classList.contains('scroll-smooth');
+  if (hadScrollSmooth) html.classList.remove('scroll-smooth');
+  window.scrollTo(0, savedScrollY);
+  if (hadScrollSmooth) {
+    requestAnimationFrame(() => {
+      html.classList.add('scroll-smooth');
+    });
+  }
+  if (activeFullscreenEl === targetEl) {
+    activeFullscreenEl = null;
+  }
+  syncFullscreenUI(targetEl, false);
+  dispatchLayoutResize();
+}
+
+export function toggleArtifactFullscreen(targetEl: HTMLElement): void {
+  const webkitDoc = document as WebkitDocument;
+  const nativeFsEl = getNativeFullscreenElement();
+
+  if (nativeFsEl === targetEl || targetEl.classList.contains('is-pseudo-fullscreen')) {
+    if (nativeFsEl) {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (webkitDoc.webkitFullscreenElement && webkitDoc.webkitExitFullscreen) {
+        webkitDoc.webkitExitFullscreen();
+      }
+    }
+    if (targetEl.classList.contains('is-pseudo-fullscreen')) {
+      exitPseudoFullscreen(targetEl);
+    }
+    return;
+  }
+
+  if (
+    activeFullscreenEl &&
+    activeFullscreenEl !== targetEl &&
+    activeFullscreenEl.classList.contains('is-pseudo-fullscreen')
+  ) {
+    exitPseudoFullscreen(activeFullscreenEl);
+  }
+
+  const webkitEl = targetEl as WebkitElement;
+  const reqFs = targetEl.requestFullscreen || webkitEl.webkitRequestFullscreen;
+  if (typeof reqFs === 'function') {
+    try {
+      const result = reqFs.call(targetEl);
+      if (result && typeof (result as Promise<void>).then === 'function') {
+        (result as Promise<void>)
+          .then(() => {
+            activeFullscreenEl = targetEl;
+            syncFullscreenUI(targetEl, true);
+            dispatchLayoutResize();
+          })
+          .catch(() => {
+            enterPseudoFullscreen(targetEl);
+          });
+      } else {
+        activeFullscreenEl = targetEl;
+        syncFullscreenUI(targetEl, true);
+        dispatchLayoutResize();
+      }
+    } catch {
+      enterPseudoFullscreen(targetEl);
+    }
+  } else {
+    enterPseudoFullscreen(targetEl);
+  }
+}
+
+function bindGlobalFullscreenListeners(): void {
+  if (globalFullscreenListenersBound) return;
+  globalFullscreenListenersBound = true;
+
+  const handleFullscreenChange = () => {
+    const nativeFsEl = getNativeFullscreenElement() as HTMLElement | null;
+    if (nativeFsEl) {
+      if (activeFullscreenEl && activeFullscreenEl !== nativeFsEl) {
+        syncFullscreenUI(activeFullscreenEl, false);
+      }
+      activeFullscreenEl = nativeFsEl;
+      syncFullscreenUI(nativeFsEl, true);
+    } else if (activeFullscreenEl && !activeFullscreenEl.classList.contains('is-pseudo-fullscreen')) {
+      const prevEl = activeFullscreenEl;
+      activeFullscreenEl = null;
+      syncFullscreenUI(prevEl, false);
+    }
+    dispatchLayoutResize();
+  };
+
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+  window.addEventListener('keydown', (e) => {
+    if (
+      e.key === 'Escape' &&
+      activeFullscreenEl &&
+      activeFullscreenEl.classList.contains('is-pseudo-fullscreen')
+    ) {
+      exitPseudoFullscreen(activeFullscreenEl);
+    }
+  });
 }
 
 export function initMediaDeck(): void {
   if (typeof document === 'undefined') return;
 
-  const containers = Array.from(document.querySelectorAll<HTMLElement>(CONTENT_CONTAINER_SELECTOR));
-  if (containers.length === 0) return;
+  bindGlobalFullscreenListeners();
 
+  const containers = Array.from(document.querySelectorAll<HTMLElement>(CONTENT_CONTAINER_SELECTOR));
   const discoveredNodes: HTMLElement[] = [];
   const seen = new Set<HTMLElement>();
 
+  // 1. Discover Visualization Viewports (.visualization-viewport)
+  const visViewports = Array.from(document.querySelectorAll<HTMLElement>('.visualization-viewport'));
+  for (const vp of visViewports) {
+    if (seen.has(vp)) continue;
+    seen.add(vp);
+    const expandBtn = vp.querySelector<HTMLButtonElement>('[data-media-fullscreen]');
+    expandBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleArtifactFullscreen(vp);
+    });
+  }
+
+  // 2. Discover Content Artifacts across Prose & Detail Pages
   for (const container of containers) {
     const matches = Array.from(container.querySelectorAll<HTMLElement>(ARTIFACT_SELECTOR));
     for (const el of matches) {
       if (seen.has(el)) continue;
-      if (el.closest('dialog.media-lightbox-dialog')) continue;
       seen.add(el);
       discoveredNodes.push(el);
     }
   }
 
-  if (discoveredNodes.length === 0) return;
-
-  const deckItems: MediaDeckItem[] = [];
-  let openLightboxAt: (idx: number) => void = () => {};
-
   discoveredNodes.forEach((el) => {
-    const itemIndex = deckItems.length;
-
     // 1. Table Artifact (figure.table-figure or .responsive-table-wrapper)
     if (el.matches('figure.table-figure, .responsive-table-wrapper')) {
       const wrapper = el.matches('.responsive-table-wrapper')
@@ -149,13 +313,6 @@ export function initMediaDeck(): void {
         : el.querySelector<HTMLElement>('.responsive-table-wrapper') || el;
       const table = wrapper.querySelector<HTMLTableElement>('table');
       if (!table) return;
-
-      const captionText =
-        el.getAttribute('data-table-caption') ||
-        wrapper.getAttribute('data-table-caption') ||
-        el.querySelector('figcaption')?.textContent?.trim() ||
-        wrapper.getAttribute('aria-label') ||
-        'Data Table';
 
       enhanceTableSorting(table);
 
@@ -207,7 +364,10 @@ export function initMediaDeck(): void {
       scrollRightBtn?.addEventListener('click', () => {
         scrollBox.scrollBy({ left: Math.max(180, scrollBox.clientWidth * 0.65), behavior: 'smooth' });
       });
-      expandBtn?.addEventListener('click', () => openLightboxAt(itemIndex));
+      expandBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleArtifactFullscreen(el);
+      });
 
       scrollBox.addEventListener('scroll', updateScrollButtons, { passive: true });
       if (typeof ResizeObserver !== 'undefined') {
@@ -220,70 +380,40 @@ export function initMediaDeck(): void {
 
       syncViewButtons();
       updateScrollButtons();
-
-      deckItems.push({
-        index: itemIndex,
-        type: 'table',
-        typeBadge: 'Table',
-        title: captionText,
-        element: el,
-      });
       return;
     }
 
     // 2. SVG Diagram (figure.svg-diagram)
     if (el.matches('figure.svg-diagram')) {
-      const title =
-        el.querySelector('figcaption')?.textContent?.trim() ||
-        el.getAttribute('data-diagram-caption') ||
-        el.getAttribute('data-diagram-title') ||
-        el.getAttribute('aria-label') ||
-        'SVG Diagram';
-
       const expandBtn = el.querySelector<HTMLButtonElement>('[data-media-fullscreen]');
       expandBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        openLightboxAt(itemIndex);
+        toggleArtifactFullscreen(el);
       });
 
       const svgEl = el.querySelector('svg');
-      svgEl?.addEventListener('click', () => openLightboxAt(itemIndex));
-
-      deckItems.push({
-        index: itemIndex,
-        type: 'svg',
-        typeBadge: 'SVG',
-        title,
-        element: el,
+      svgEl?.addEventListener('click', () => {
+        if (!isElementFullscreen(el)) {
+          toggleArtifactFullscreen(el);
+        }
       });
       return;
     }
 
     // 3. Mermaid Diagram (figure.mermaid-diagram)
     if (el.matches('figure.mermaid-diagram')) {
-      const title =
-        el.getAttribute('data-diagram-caption') ||
-        el.querySelector('figcaption')?.textContent?.trim() ||
-        el.getAttribute('data-diagram-title') ||
-        el.getAttribute('aria-label') ||
-        'Mermaid Diagram';
-
       const expandBtn = el.querySelector<HTMLButtonElement>('[data-media-fullscreen]');
       expandBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        openLightboxAt(itemIndex);
+        toggleArtifactFullscreen(el);
       });
 
       el.querySelectorAll<HTMLElement>('.mermaid-svg').forEach((mSvg) => {
-        mSvg.addEventListener('click', () => openLightboxAt(itemIndex));
-      });
-
-      deckItems.push({
-        index: itemIndex,
-        type: 'mermaid',
-        typeBadge: 'Mermaid',
-        title,
-        element: el,
+        mSvg.addEventListener('click', () => {
+          if (!isElementFullscreen(el)) {
+            toggleArtifactFullscreen(el);
+          }
+        });
       });
       return;
     }
@@ -294,12 +424,6 @@ export function initMediaDeck(): void {
       if (!preEl) return;
 
       const codeText = (preEl.querySelector('code') || preEl).textContent || '';
-      const badgeLabel = el.querySelector('.artifact-card-badge')?.textContent?.trim() || 'Code';
-      const title =
-        el.getAttribute('data-code-caption') ||
-        el.querySelector('figcaption')?.textContent?.trim() ||
-        el.getAttribute('data-code-title') ||
-        `Code Snippet (${badgeLabel})`;
 
       const copyBtn = el.querySelector<HTMLButtonElement>('[data-copy-code]');
       copyBtn?.addEventListener('click', (e) => {
@@ -317,16 +441,7 @@ export function initMediaDeck(): void {
       const expandBtn = el.querySelector<HTMLButtonElement>('[data-media-fullscreen]');
       expandBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        openLightboxAt(itemIndex);
-      });
-
-      deckItems.push({
-        index: itemIndex,
-        type: 'code',
-        typeBadge: badgeLabel,
-        title,
-        element: el,
-        codeText,
+        toggleArtifactFullscreen(el);
       });
       return;
     }
@@ -336,221 +451,17 @@ export function initMediaDeck(): void {
       const imgEl = el.matches('img') ? (el as HTMLImageElement) : el.querySelector<HTMLImageElement>('img');
       if (!imgEl) return;
 
-      const title =
-        el.getAttribute('data-image-caption') ||
-        el.querySelector('figcaption')?.textContent?.trim() ||
-        imgEl.getAttribute('alt') ||
-        imgEl.getAttribute('title') ||
-        'Image';
-
       const expandBtn = el.querySelector<HTMLButtonElement>('[data-media-fullscreen]');
       expandBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        openLightboxAt(itemIndex);
+        toggleArtifactFullscreen(el);
       });
 
-      imgEl.addEventListener('click', () => openLightboxAt(itemIndex));
-
-      deckItems.push({
-        index: itemIndex,
-        type: 'image',
-        typeBadge: 'Image',
-        title,
-        element: el,
-      });
-    }
-  });
-
-  if (deckItems.length === 0) return;
-
-  // Build Singleton Native <dialog id="media-lightbox-dialog" closedby="any" aria-labelledby="media-lightbox-title">
-  let dialog = document.getElementById('media-lightbox-dialog') as HTMLDialogElement | null;
-  if (dialog) {
-    dialog.remove();
-  }
-
-  dialog = document.createElement('dialog');
-  dialog.id = 'media-lightbox-dialog';
-  dialog.className = 'media-lightbox-dialog glass-panel';
-  dialog.setAttribute('closedby', 'any');
-  dialog.setAttribute('aria-labelledby', 'media-lightbox-title');
-
-  // 1. Top Head-Bar: Left Type Badge + Right Controls (Copy for Code + Close ✕)
-  const header = document.createElement('header');
-  header.className = 'media-lightbox-header artifact-card-header';
-
-  const badgeEl = document.createElement('span');
-  badgeEl.className = 'artifact-card-badge';
-
-  const controlsEl = document.createElement('div');
-  controlsEl.className = 'artifact-card-controls';
-
-  const modalCopyBtn = createActionBtn('Copy', 'Copy code to clipboard', 'table-deck-btn');
-  modalCopyBtn.style.display = 'none';
-
-  const closeForm = document.createElement('form');
-  closeForm.method = 'dialog';
-  const closeBtn = document.createElement('button');
-  closeBtn.type = 'submit';
-  closeBtn.autofocus = true;
-  closeBtn.className = 'table-deck-btn';
-  closeBtn.setAttribute('aria-label', 'Close fullscreen view');
-  closeBtn.title = 'Close fullscreen view (Esc)';
-  closeBtn.textContent = '✕';
-  closeForm.appendChild(closeBtn);
-
-  controlsEl.appendChild(modalCopyBtn);
-  controlsEl.appendChild(closeForm);
-  header.appendChild(badgeEl);
-  header.appendChild(controlsEl);
-
-  // 2. Center Content Stage (fills 100% between Head-Bar and Foot-Bar)
-  const stage = document.createElement('div');
-  stage.className = 'media-lightbox-stage';
-
-  // 3. Bottom Foot-Bar: Centered Single-Line Caption Only
-  const footer = document.createElement('footer');
-  footer.className = 'media-lightbox-footer artifact-card-footer';
-
-  const titleEl = document.createElement('h2');
-  titleEl.id = 'media-lightbox-title';
-  titleEl.className = 'media-lightbox-title';
-
-  footer.appendChild(titleEl);
-
-  dialog.appendChild(header);
-  dialog.appendChild(stage);
-  dialog.appendChild(footer);
-  document.body.appendChild(dialog);
-
-  // Mandatory closedBy fallback for browsers without native HTMLDialogElement.prototype.closedBy
-  if (!('closedBy' in HTMLDialogElement.prototype)) {
-    const isOutside = (e: PointerEvent, dlg: HTMLDialogElement) => {
-      const r = dlg.getBoundingClientRect();
-      return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
-    };
-    let pressedOutside = false;
-    dialog.addEventListener('pointerdown', (e) => {
-      pressedOutside = isOutside(e, dialog!);
-    });
-    dialog.addEventListener('pointerup', (e) => {
-      if (pressedOutside && isOutside(e, dialog!)) {
-        dialog!.close();
-      }
-    });
-  }
-
-  // Mandatory returnValue reset on close
-  dialog.addEventListener('close', () => {
-    dialog!.returnValue = '';
-  });
-
-  let activeIndex = 0;
-
-  function renderActiveItem(idx: number): void {
-    activeIndex = (idx + deckItems.length) % deckItems.length;
-    const item = deckItems[activeIndex];
-
-    badgeEl.textContent = item.typeBadge;
-    titleEl.textContent = item.title;
-    titleEl.title = item.title;
-    stage.dataset.stageType = item.type;
-
-    if (item.type === 'code' && item.codeText) {
-      modalCopyBtn.style.display = 'inline-flex';
-      modalCopyBtn.textContent = 'Copy';
-      modalCopyBtn.onclick = () => {
-        if (navigator.clipboard && item.codeText) {
-          void navigator.clipboard.writeText(item.codeText).then(() => {
-            modalCopyBtn.textContent = 'Copied!';
-            setTimeout(() => {
-              modalCopyBtn.textContent = 'Copy';
-            }, 1600);
-          });
+      imgEl.addEventListener('click', () => {
+        if (!isElementFullscreen(el)) {
+          toggleArtifactFullscreen(el);
         }
-      };
-    } else {
-      modalCopyBtn.style.display = 'none';
-      modalCopyBtn.onclick = null;
-    }
-
-    const bodyEl = item.element.querySelector<HTMLElement>('.artifact-card-body') || item.element;
-    const cloned = bodyEl.cloneNode(true) as HTMLElement;
-    cloned
-      .querySelectorAll(
-        '.artifact-card-header, .artifact-card-footer, figcaption, .media-floating-actions, .table-deck-toolbar, .code-deck-toolbar, [data-media-fullscreen]'
-      )
-      .forEach((node) => node.remove());
-
-    if (item.type === 'svg') {
-      cloned.style.removeProperty('max-width');
-      const svg = cloned.querySelector<SVGElement>('svg');
-      if (svg) {
-        svg.style.removeProperty('max-width');
-        svg.style.cursor = 'default';
-      }
-    } else if (item.type === 'mermaid') {
-      cloned.querySelectorAll<HTMLElement>('.mermaid-svg').forEach((mSvg) => {
-        mSvg.style.cursor = 'default';
       });
-    } else if (item.type === 'table') {
-      cloned.classList.add('responsive-table-wrapper');
-      cloned.dataset.tableView = 'grid';
-      const clonedTable = cloned.querySelector<HTMLTableElement>('table');
-      if (clonedTable) {
-        enhanceTableSorting(clonedTable);
-      }
-    } else if (item.type === 'image') {
-      const img = cloned.matches('img') ? (cloned as HTMLImageElement) : cloned.querySelector<HTMLImageElement>('img');
-      if (img) {
-        img.style.cursor = 'default';
-      }
-    }
-
-    stage.replaceChildren(cloned);
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (!dialog || !dialog.open) return;
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      renderActiveItem(activeIndex - 1);
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      renderActiveItem(activeIndex + 1);
     }
   });
-
-  let touchStartX = 0;
-  let touchStartY = 0;
-  const handleTouchStart = (e: TouchEvent) => {
-    if (e.touches.length === 1) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }
-  };
-  const handleTouchEnd = (e: TouchEvent) => {
-    if (e.changedTouches.length === 1) {
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      const dy = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-        if (dx < 0) {
-          renderActiveItem(activeIndex + 1);
-        } else {
-          renderActiveItem(activeIndex - 1);
-        }
-      }
-    }
-  };
-  header.addEventListener('touchstart', handleTouchStart, { passive: true });
-  header.addEventListener('touchend', handleTouchEnd, { passive: true });
-  footer.addEventListener('touchstart', handleTouchStart, { passive: true });
-  footer.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-  openLightboxAt = (idx: number) => {
-    renderActiveItem(idx);
-    if (dialog && !dialog.open) {
-      dialog.showModal();
-    }
-  };
 }

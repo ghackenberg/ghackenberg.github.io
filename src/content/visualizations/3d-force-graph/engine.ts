@@ -221,8 +221,8 @@ const engine: Force3DEngine = {
     };
     this.applyHighlight = refreshHighlight;
 
-    const initialWidth = container.clientWidth || 800;
-    const initialHeight = container.clientHeight || 500;
+    const initialWidth = Math.floor(container.clientWidth) || 800;
+    const initialHeight = Math.floor(container.clientHeight) || 500;
     this.graph = ForceGraph3D()(container)
       .width(initialWidth)
       .height(initialHeight)
@@ -443,8 +443,9 @@ const engine: Force3DEngine = {
     let lastHeight = initialHeight;
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        if (width > 0 && height > 0 && (Math.abs(width - lastWidth) >= 2 || Math.abs(height - lastHeight) >= 2)) {
+        const width = Math.floor(entry.contentRect.width);
+        const height = Math.floor(entry.contentRect.height);
+        if (width > 0 && height > 0 && (width !== lastWidth || height !== lastHeight)) {
           lastWidth = width;
           lastHeight = height;
           if (this.graph) {

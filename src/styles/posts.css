@@ -634,9 +634,9 @@
 }
 
 /* ==========================================================================
-   Unified 3-Band Artifact Card (figure.artifact-card)
+   Unified 3-Band Artifact Card (figure.artifact-card & .visualization-viewport)
    Shared across SVG Diagrams, Mermaid Diagrams, Raster Images, Code Snippets,
-   and Markdown Tables — Build-Time HTML, Zero Flicker on First Paint
+   Markdown Tables, and Interactive Graph Visualizations — Build-Time HTML, Zero Flicker
    ========================================================================== */
 figure.artifact-card {
   position: relative;
@@ -707,6 +707,14 @@ figure.artifact-card {
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.visualization-stage.artifact-card-body,
+.visualization-viewport .artifact-card-body,
+.visualization-stage #canvas {
+  overflow: hidden !important;
+  min-width: 0;
+  min-height: 0;
 }
 
 figure.svg-diagram .artifact-card-body {
@@ -801,7 +809,8 @@ figure.table-figure .artifact-card-body {
   padding: 0;
 }
 
-figcaption.artifact-card-footer {
+figcaption.artifact-card-footer,
+.artifact-card-footer {
   margin: 0 !important;
   padding: 0.6rem 1rem;
   border-top: 1px solid var(--color-border-subtle);
@@ -811,10 +820,13 @@ figcaption.artifact-card-footer {
   font-weight: 500;
   line-height: 1.45;
   color: var(--color-text-subtle);
+  flex-shrink: 0;
 }
 
 :root.light figcaption.artifact-card-footer,
-.light figcaption.artifact-card-footer {
+.light figcaption.artifact-card-footer,
+:root.light .artifact-card-footer,
+.light .artifact-card-footer {
   background: rgba(241, 245, 249, 0.88);
   border-top-color: rgba(203, 213, 225, 0.85);
   color: var(--color-text-subtle);
@@ -890,249 +902,257 @@ figure.image-figure .artifact-card-body > img {
 }
 
 /* ==========================================================================
-   Clean Gallery-Style Fullscreen Modal (<dialog>)
-   Follows modern-web-guidance: dialog, light-dismiss-a-dialog,
-   prevent-page-scroll-under-modal-dialog
+   True In-Place Browser Fullscreen & Pseudo-Fullscreen Architecture
+   Applies to figure.artifact-card, .responsive-table-wrapper, and .visualization-viewport
    ========================================================================== */
-dialog.media-lightbox-dialog:modal {
-  overscroll-behavior: contain;
+
+/* Neutralize ancestor stacking contexts when .is-pseudo-fullscreen fallback is active */
+html.artifact-pseudo-fullscreen #site-root,
+html.artifact-pseudo-fullscreen [data-page-section='true']:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .container-fluid-gutter:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .glass-card:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .glass-panel:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen article:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .post-body:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .prose-custom:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .project-content:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .service-content:has(.is-pseudo-fullscreen),
+html.artifact-pseudo-fullscreen .syllabus-content:has(.is-pseudo-fullscreen) {
+  position: static !important;
+  transform: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  perspective: none !important;
+  contain: none !important;
+  z-index: auto !important;
+  overflow: visible !important;
 }
 
-dialog.media-lightbox-dialog::backdrop {
-  overflow: hidden;
-  overscroll-behavior: contain;
-  background-color: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+html.artifact-pseudo-fullscreen .sticky,
+html.artifact-pseudo-fullscreen #site-root > .sticky,
+html.artifact-pseudo-fullscreen footer:not(.artifact-card-footer),
+html.artifact-pseudo-fullscreen .background-container,
+html.artifact-pseudo-fullscreen #bg-layer-stars,
+html.artifact-pseudo-fullscreen #bg-layer-shooting-stars {
+  display: none !important;
+  visibility: hidden !important;
 }
 
-:root.light dialog.media-lightbox-dialog::backdrop,
-html.light dialog.media-lightbox-dialog::backdrop,
-.light dialog.media-lightbox-dialog::backdrop {
-  background-color: rgba(15, 23, 42, 0.25) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-dialog.media-lightbox-dialog[open] {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: min(96vw, 1360px);
-  height: min(92vh, 920px);
-  max-width: 96vw;
-  max-height: 92vh;
-  margin: auto;
-  padding: 0;
-  border-radius: 1.5rem;
-  border: 1px solid var(--color-element-border-medium);
-  background: var(--color-bg-pane);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  color: var(--color-gray-100);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
-
-@media (max-width: 640px) {
-  dialog.media-lightbox-dialog[open] {
-    border-radius: 1rem;
-  }
-}
-
-:root.light dialog.media-lightbox-dialog[open],
-html.light dialog.media-lightbox-dialog[open],
-.light dialog.media-lightbox-dialog[open] {
-  background-color: rgb(255, 255, 255) !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
-  color: rgb(30, 41, 59) !important;
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
-}
-
-.media-lightbox-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid var(--color-element-border);
-  background: transparent;
-  flex-shrink: 0;
-}
-
-:root.light .media-lightbox-header,
-html.light .media-lightbox-header,
-.light .media-lightbox-header {
-  background-color: rgb(255, 255, 255) !important;
-  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-.media-lightbox-header form {
-  margin: 0;
-  display: inline-flex;
-}
-
-.media-lightbox-stage {
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
-  max-height: none;
+figure.artifact-card:fullscreen,
+figure.artifact-card:-webkit-full-screen,
+figure.artifact-card.is-pseudo-fullscreen,
+figure.artifact-card.is-fullscreen-active,
+.responsive-table-wrapper:fullscreen,
+.responsive-table-wrapper:-webkit-full-screen,
+.responsive-table-wrapper.is-pseudo-fullscreen,
+.responsive-table-wrapper.is-fullscreen-active,
+.visualization-viewport:fullscreen,
+.visualization-viewport:-webkit-full-screen,
+.visualization-viewport.is-pseudo-fullscreen,
+.visualization-viewport.is-fullscreen-active {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
   margin: 0 !important;
-  padding: 0 !important;
-  overflow: auto;
-  overscroll-behavior: contain;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.media-lightbox-stage[data-stage-type="table"],
-.media-lightbox-stage[data-stage-type="code"] {
-  padding: 0 !important;
-  margin: 0 !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-}
-
-.media-lightbox-stage .responsive-table-wrapper,
-.media-lightbox-stage .artifact-card-body {
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
   border-radius: 0 !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  background: var(--color-bg-main) !important;
   box-shadow: none !important;
-  background: transparent !important;
+  overflow: hidden !important;
+}
+
+:root.light figure.artifact-card:fullscreen,
+:root.light figure.artifact-card:-webkit-full-screen,
+:root.light figure.artifact-card.is-pseudo-fullscreen,
+:root.light figure.artifact-card.is-fullscreen-active,
+.light figure.artifact-card:fullscreen,
+.light figure.artifact-card:-webkit-full-screen,
+.light figure.artifact-card.is-pseudo-fullscreen,
+.light figure.artifact-card.is-fullscreen-active,
+:root.light .responsive-table-wrapper:fullscreen,
+:root.light .responsive-table-wrapper:-webkit-full-screen,
+:root.light .responsive-table-wrapper.is-pseudo-fullscreen,
+:root.light .responsive-table-wrapper.is-fullscreen-active,
+.light .responsive-table-wrapper:fullscreen,
+.light .responsive-table-wrapper:-webkit-full-screen,
+.light .responsive-table-wrapper.is-pseudo-fullscreen,
+.light .responsive-table-wrapper.is-fullscreen-active,
+:root.light .visualization-viewport:fullscreen,
+:root.light .visualization-viewport:-webkit-full-screen,
+:root.light .visualization-viewport.is-pseudo-fullscreen,
+:root.light .visualization-viewport.is-fullscreen-active,
+.light .visualization-viewport:fullscreen,
+.light .visualization-viewport:-webkit-full-screen,
+.light .visualization-viewport.is-pseudo-fullscreen,
+.light .visualization-viewport.is-fullscreen-active {
+  background: var(--color-bg-main) !important;
+  color: var(--color-text-main) !important;
+}
+
+figure.artifact-card.is-pseudo-fullscreen,
+.responsive-table-wrapper.is-pseudo-fullscreen,
+.visualization-viewport.is-pseudo-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 999999 !important;
+  box-sizing: border-box !important;
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  padding-left: env(safe-area-inset-left, 0px) !important;
+  padding-right: env(safe-area-inset-right, 0px) !important;
+}
+
+figure.artifact-card:fullscreen .artifact-card-header,
+figure.artifact-card:-webkit-full-screen .artifact-card-header,
+figure.artifact-card.is-pseudo-fullscreen .artifact-card-header,
+figure.artifact-card.is-fullscreen-active .artifact-card-header,
+figure.artifact-card:fullscreen .artifact-card-footer,
+figure.artifact-card:-webkit-full-screen .artifact-card-footer,
+figure.artifact-card.is-pseudo-fullscreen .artifact-card-footer,
+figure.artifact-card.is-fullscreen-active .artifact-card-footer,
+.visualization-viewport:fullscreen .artifact-card-header,
+.visualization-viewport:-webkit-full-screen .artifact-card-header,
+.visualization-viewport.is-pseudo-fullscreen .artifact-card-header,
+.visualization-viewport.is-fullscreen-active .artifact-card-header,
+.visualization-viewport:fullscreen .artifact-card-footer,
+.visualization-viewport:-webkit-full-screen .artifact-card-footer,
+.visualization-viewport.is-pseudo-fullscreen .artifact-card-footer,
+.visualization-viewport.is-fullscreen-active .artifact-card-footer {
+  flex-shrink: 0 !important;
+}
+
+figure.artifact-card:fullscreen .artifact-card-body,
+figure.artifact-card:-webkit-full-screen .artifact-card-body,
+figure.artifact-card.is-pseudo-fullscreen .artifact-card-body,
+figure.artifact-card.is-fullscreen-active .artifact-card-body {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   height: 100% !important;
-  min-height: 100% !important;
+  overflow: auto !important;
 }
 
-.media-lightbox-stage[data-stage-type="table"] table {
-  width: 100% !important;
-  min-width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
+/* SVG, Mermaid, and Raster Images in Fullscreen: Center & Scale to Fit Stage */
+figure.svg-diagram:fullscreen .artifact-card-body,
+figure.svg-diagram:-webkit-full-screen .artifact-card-body,
+figure.svg-diagram.is-pseudo-fullscreen .artifact-card-body,
+figure.svg-diagram.is-fullscreen-active .artifact-card-body,
+figure.mermaid-diagram:fullscreen .artifact-card-body,
+figure.mermaid-diagram:-webkit-full-screen .artifact-card-body,
+figure.mermaid-diagram.is-pseudo-fullscreen .artifact-card-body,
+figure.mermaid-diagram.is-fullscreen-active .artifact-card-body,
+figure.image-figure:fullscreen .artifact-card-body,
+figure.image-figure:-webkit-full-screen .artifact-card-body,
+figure.image-figure.is-pseudo-fullscreen .artifact-card-body,
+figure.image-figure.is-fullscreen-active .artifact-card-body {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
 }
 
-.media-lightbox-stage[data-stage-type="svg"] .artifact-card-body,
-.media-lightbox-stage[data-stage-type="image"] .artifact-card-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  overflow: hidden;
-}
-
-.media-lightbox-stage[data-stage-type="mermaid"] .artifact-card-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 1.5rem 2rem !important;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.media-lightbox-stage[data-stage-type="code"] .artifact-card-body {
-  display: flex;
-  flex-direction: column;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 100% !important;
-}
-
-.media-lightbox-stage pre {
-  flex: 1;
-  margin: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  height: 100% !important;
-  min-height: 100% !important;
-  overflow: auto;
-  padding: 1rem 1.25rem;
-  border-radius: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.media-lightbox-stage img {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  margin: 0 !important;
-}
-
-.media-lightbox-stage svg {
+figure.svg-diagram:fullscreen .artifact-card-body > svg,
+figure.svg-diagram:-webkit-full-screen .artifact-card-body > svg,
+figure.svg-diagram.is-pseudo-fullscreen .artifact-card-body > svg,
+figure.svg-diagram.is-fullscreen-active .artifact-card-body > svg,
+figure.image-figure:fullscreen .artifact-card-body > img,
+figure.image-figure:-webkit-full-screen .artifact-card-body > img,
+figure.image-figure.is-pseudo-fullscreen .artifact-card-body > img,
+figure.image-figure.is-fullscreen-active .artifact-card-body > img {
   width: 100% !important;
   height: 100% !important;
   max-width: 100% !important;
   max-height: 100% !important;
+  object-fit: contain !important;
+  cursor: default !important;
   margin: 0 !important;
 }
 
-.media-lightbox-stage .mermaid-svg {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+figure.mermaid-diagram:fullscreen .mermaid-svg,
+figure.mermaid-diagram:-webkit-full-screen .mermaid-svg,
+figure.mermaid-diagram.is-pseudo-fullscreen .mermaid-svg,
+figure.mermaid-diagram.is-fullscreen-active .mermaid-svg {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   width: 100% !important;
   height: 100% !important;
   max-width: 100% !important;
   max-height: 100% !important;
+  cursor: default !important;
   margin: 0 !important;
-  padding: 0 !important;
 }
 
-.media-lightbox-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  padding: 0.7rem 1.25rem;
-  border-top: 1px solid var(--color-element-border);
-  background: rgba(255, 255, 255, 0.02);
-  text-align: center;
-  flex-shrink: 0;
-}
-
-:root.light .media-lightbox-footer,
-html.light .media-lightbox-footer,
-.light .media-lightbox-footer {
-  background-color: rgb(248, 250, 252) !important;
-  border-top-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-.media-lightbox-title {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  text-align: center;
-  font-size: 0.82rem !important;
-  font-weight: 500;
-  line-height: 1.45;
-  color: var(--color-text-subtle);
+figure.mermaid-diagram:fullscreen .mermaid-svg > svg,
+figure.mermaid-diagram:-webkit-full-screen .mermaid-svg > svg,
+figure.mermaid-diagram.is-pseudo-fullscreen .mermaid-svg > svg,
+figure.mermaid-diagram.is-fullscreen-active .mermaid-svg > svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  cursor: default !important;
   margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
 }
 
-:root.light .media-lightbox-title,
-.light .media-lightbox-title {
-  color: var(--color-text-subtle);
+/* Code Snippets in Fullscreen: Scrollable Full-Height Pre Stage */
+figure.code-snippet:fullscreen .artifact-card-body,
+figure.code-snippet:-webkit-full-screen .artifact-card-body,
+figure.code-snippet.is-pseudo-fullscreen .artifact-card-body,
+figure.code-snippet.is-fullscreen-active .artifact-card-body {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+figure.code-snippet:fullscreen .artifact-card-body pre,
+figure.code-snippet:-webkit-full-screen .artifact-card-body pre,
+figure.code-snippet.is-pseudo-fullscreen .artifact-card-body pre,
+figure.code-snippet.is-fullscreen-active .artifact-card-body pre {
+  flex: 1 1 0% !important;
+  height: 100% !important;
+  max-height: none !important;
+  overflow: auto !important;
+}
+
+/* Tables in Fullscreen: Scrollable Full-Height Table Stage */
+figure.table-figure:fullscreen .artifact-card-body.responsive-table-scroll,
+figure.table-figure:-webkit-full-screen .artifact-card-body.responsive-table-scroll,
+figure.table-figure.is-pseudo-fullscreen .artifact-card-body.responsive-table-scroll,
+figure.table-figure.is-fullscreen-active .artifact-card-body.responsive-table-scroll,
+.responsive-table-wrapper:fullscreen .responsive-table-scroll,
+.responsive-table-wrapper:-webkit-full-screen .responsive-table-scroll,
+.responsive-table-wrapper.is-pseudo-fullscreen .responsive-table-scroll,
+.responsive-table-wrapper.is-fullscreen-active .responsive-table-scroll {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: auto !important;
+}
+
+/* Interactive Visualizations in Fullscreen: Full-Height Canvas Stage */
+.visualization-viewport:fullscreen .visualization-stage,
+.visualization-viewport:-webkit-full-screen .visualization-stage,
+.visualization-viewport.is-pseudo-fullscreen .visualization-stage,
+.visualization-viewport.is-fullscreen-active .visualization-stage {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
 }
 
 /* ==========================================================================
