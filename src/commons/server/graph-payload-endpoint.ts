@@ -71,3 +71,8 @@ export async function getCanonicalGraphPayloadArtifact(): Promise<GraphPayloadAr
   }
   return computeCanonicalGraphPayloadArtifact();
 }
+
+export async function getGraphPayloadEndpointUrl(): Promise<string> {
+  const artifact = await getCanonicalGraphPayloadArtifact();
+  return artifact.url;
+}

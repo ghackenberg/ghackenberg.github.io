@@ -54,6 +54,7 @@ export interface ProximityInteractionConfig {
   getLastDraggedAt?: () => number;
   onActiveNodeChange: (nodeId: string | null) => void;
   onNavigate: (node: VisTooltipNodeData) => void;
+  onNodePointerDown?: (node: VisTooltipNodeData | null, x: number, y: number) => void;
   onNodeDragStart?: (node: VisTooltipNodeData, x: number, y: number) => void;
   onNodeDragMove?: (node: VisTooltipNodeData, x: number, y: number) => void;
   onNodeDragEnd?: (node: VisTooltipNodeData) => void;
@@ -100,11 +101,14 @@ export function VisNetworkTooltip({
           <img
             src={node.image}
             alt={node.name}
+            draggable={false}
             style={{
               width: '100%',
               height: '100%',
               objectFit: 'cover',
               borderRadius: '7px',
+              userSelect: 'none',
+              pointerEvents: 'none',
             }}
           />
         </div>
@@ -191,10 +195,15 @@ export interface GraphTooltipController {
 }
 
 export function createGraphTooltipController(container: HTMLElement): GraphTooltipController {
+  container.style.userSelect = 'none';
+  container.style.setProperty('-webkit-user-select', 'none');
+
   const tooltipEl = document.createElement('div');
   tooltipEl.className = 'vis-tooltip';
   tooltipEl.style.position = 'absolute';
   tooltipEl.style.pointerEvents = 'none';
+  tooltipEl.style.userSelect = 'none';
+  tooltipEl.style.setProperty('-webkit-user-select', 'none');
   tooltipEl.style.zIndex = '1000';
   tooltipEl.style.opacity = '0';
   tooltipEl.style.visibility = 'hidden';
@@ -477,6 +486,52 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       let dragMoved = false;
       let dragCandidate: VisTooltipNodeData | null = null;
       let customDragActive = false;
+      let lastMouseX = -9999;
+      let lastMouseY = -9999;
+      let isMouseInside = false;
+      let postDragWatchUntil = 0;
+      let proximityWatchFrameId: number | null = null;
+      let lastProximityCheckAt = 0;
+      let userSelectLocked = false;
+
+      const setGlobalDragUserSelectLock = (locked: boolean) => {
+        if (locked === userSelectLocked) return;
+        userSelectLocked = locked;
+        if (locked) {
+          try {
+            window.getSelection?.()?.removeAllRanges?.();
+          } catch {
+            // Ignore selection clear errors
+          }
+          document.body.style.userSelect = 'none';
+          document.body.style.setProperty('-webkit-user-select', 'none');
+          document.documentElement.style.userSelect = 'none';
+          document.documentElement.style.setProperty('-webkit-user-select', 'none');
+        } else {
+          document.body.style.userSelect = '';
+          document.body.style.removeProperty('-webkit-user-select');
+          document.documentElement.style.userSelect = '';
+          document.documentElement.style.removeProperty('-webkit-user-select');
+        }
+      };
+
+      const onSelectOrDragStart = (e: Event) => {
+        if (pointerDown || customDragActive || Boolean(config.isDragging?.())) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+        }
+      };
+
+      const clampDragCoords = (px: number, py: number, rect: DOMRect) => {
+        const margin = 80;
+        const w = rect.width || container.clientWidth || 800;
+        const h = rect.height || container.clientHeight || 500;
+        return {
+          x: Math.max(-margin, Math.min(w + margin, px)),
+          y: Math.max(-margin, Math.min(h + margin, py)),
+        };
+      };
 
       const isControlTarget = (target: EventTarget | null): boolean => {
         const el = target as HTMLElement | null;
@@ -530,11 +585,70 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         };
       };
 
+      const runProximityWatchTick = (now: number) => {
+        proximityWatchFrameId = null;
+        const shouldWatch =
+          (activeNodeId !== null && lastPointerType === 'mouse') || now < postDragWatchUntil;
+        if (!shouldWatch) return;
+
+        if (
+          !pointerDown &&
+          !customDragActive &&
+          !config.isDragging?.() &&
+          lastPointerType === 'mouse' &&
+          now - lastProximityCheckAt >= 50
+        ) {
+          lastProximityCheckAt = now;
+          if (!isMouseInside) {
+            if (activeNodeId !== null) {
+              container.style.cursor = 'default';
+              config.onActiveNodeChange(null);
+              hideInternal();
+            }
+          } else {
+            const hit = findNearest(lastMouseX, lastMouseY, MOUSE_PROXIMITY_RADIUS);
+            const nextId = hit ? hit.node.id : null;
+            if (nextId !== activeNodeId) {
+              container.style.cursor = nextId ? 'pointer' : 'default';
+              config.onActiveNodeChange(nextId);
+              if (hit) {
+                showInternal(hit.node, config.isLight(), hit.x, hit.y, hit.neighborCoords);
+              } else {
+                hideInternal();
+              }
+            } else if (hit && activeNodeId === nextId) {
+              if (Math.hypot(hit.x - lastX, hit.y - lastY) > 0.5) {
+                lastX = hit.x;
+                lastY = hit.y;
+                lastNeighbors = hit.neighborCoords;
+                computeBestPosition(lastX, lastY, lastNeighbors);
+              }
+            }
+          }
+        }
+
+        if (
+          (activeNodeId !== null && lastPointerType === 'mouse') ||
+          performance.now() < postDragWatchUntil
+        ) {
+          proximityWatchFrameId = requestAnimationFrame(runProximityWatchTick);
+        }
+      };
+
+      const ensureProximityWatcher = () => {
+        if (proximityWatchFrameId === null) {
+          proximityWatchFrameId = requestAnimationFrame(runProximityWatchTick);
+        }
+      };
+
       const finishCustomDrag = () => {
         if (customDragActive && dragCandidate) {
           config.onNodeDragEnd?.(dragCandidate);
           container.style.cursor = 'default';
           config.onActiveNodeChange(null);
+          hideInternal();
+          postDragWatchUntil = performance.now() + 1000;
+          ensureProximityWatcher();
         }
         customDragActive = false;
         dragCandidate = null;
@@ -592,22 +706,33 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         pointerDown = true;
         dragMoved = false;
         customDragActive = false;
+        setGlobalDragUserSelectLock(true);
+
+        if (lastPointerType !== 'touch' && e.button === 0 && e.cancelable) {
+          e.preventDefault();
+        }
 
         if (config.onNodeDragStart && (lastPointerType === 'touch' || e.button === 0)) {
           const radius = lastPointerType === 'touch' ? TOUCH_PROXIMITY_RADIUS : MOUSE_PROXIMITY_RADIUS;
-          if (!(lastPointerType === 'touch' && activeNodeData && isPointInsideTooltip(downX, downY))) {
-            const hit = findNearest(downX, downY, radius);
-            dragCandidate = hit ? hit.node : null;
-          } else {
+          const hit = findNearest(downX, downY, radius);
+          if (
+            lastPointerType === 'touch' &&
+            activeNodeData &&
+            isPointInsideTooltip(downX, downY) &&
+            (!hit || hit.node.id === activeNodeData.id)
+          ) {
             dragCandidate = null;
+          } else {
+            dragCandidate = hit ? hit.node : null;
           }
         } else {
           dragCandidate = null;
         }
+        config.onNodePointerDown?.(dragCandidate, downX, downY);
       };
 
       const onPointerMove = (e: PointerEvent) => {
-        if (isControlTarget(e.target)) return;
+        if (!pointerDown && !customDragActive && isControlTarget(e.target)) return;
         const isSyntheticMouseAfterTouch =
           e.pointerType !== 'touch' && performance.now() - lastTouchTime < 1200;
         if (isSyntheticMouseAfterTouch) return;
@@ -621,8 +746,30 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         const rect = container.getBoundingClientRect();
         const px = e.clientX - rect.left;
         const py = e.clientY - rect.top;
+        const insideBounds =
+          px >= 0 && px <= rect.width && py >= 0 && py <= rect.height && !isControlTarget(e.target);
 
-        if (pointerDown) {
+        if (lastPointerType === 'mouse') {
+          lastMouseX = px;
+          lastMouseY = py;
+          isMouseInside = insideBounds;
+        }
+
+        if (pointerDown || customDragActive) {
+          if (lastPointerType === 'mouse' && e.buttons === 0) {
+            pointerDown = false;
+            setGlobalDragUserSelectLock(false);
+            if (customDragActive) {
+              finishCustomDrag();
+            } else {
+              dragCandidate = null;
+              config.onNodePointerDown?.(null, px, py);
+            }
+            return;
+          }
+
+          const clamped = clampDragCoords(px, py, rect);
+
           if (Math.hypot(px - downX, py - downY) > DRAG_DEADZONE_PX) {
             dragMoved = true;
             if (dragCandidate && config.onNodeDragStart) {
@@ -631,9 +778,9 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
                 hideInternal();
                 container.style.cursor = 'grabbing';
                 config.onActiveNodeChange(dragCandidate.id);
-                config.onNodeDragStart(dragCandidate, px, py);
+                config.onNodeDragStart(dragCandidate, clamped.x, clamped.y);
               }
-              config.onNodeDragMove?.(dragCandidate, px, py);
+              config.onNodeDragMove?.(dragCandidate, clamped.x, clamped.y);
               return;
             }
             if (activeNodeId !== null && !config.isDragging?.()) {
@@ -643,13 +790,22 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
             }
           }
           if (customDragActive && dragCandidate) {
-            config.onNodeDragMove?.(dragCandidate, px, py);
+            config.onNodeDragMove?.(dragCandidate, clamped.x, clamped.y);
             return;
           }
         }
 
         if (lastPointerType === 'touch') return;
         if (pointerDown || e.buttons !== 0 || config.isDragging?.() || customDragActive) return;
+
+        if (!insideBounds) {
+          if (activeNodeId !== null) {
+            container.style.cursor = 'default';
+            config.onActiveNodeChange(null);
+            hideInternal();
+          }
+          return;
+        }
 
         const hit = findNearest(px, py, MOUSE_PROXIMITY_RADIUS);
         const nextId = hit ? hit.node.id : null;
@@ -659,9 +815,12 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           config.onActiveNodeChange(nextId);
           if (hit) {
             showInternal(hit.node, config.isLight(), hit.x, hit.y, hit.neighborCoords);
+            ensureProximityWatcher();
           } else {
             hideInternal();
           }
+        } else if (hit && activeNodeId !== null) {
+          ensureProximityWatcher();
         }
       };
 
@@ -673,12 +832,10 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         ) {
           return;
         }
-        if (customDragActive) {
-          pointerDown = false;
-          finishCustomDrag();
+        isMouseInside = false;
+        if (pointerDown || customDragActive || config.isDragging?.()) {
           return;
         }
-        if (config.isDragging?.()) return;
         if (activeNodeId !== null) {
           container.style.cursor = 'default';
           config.onActiveNodeChange(null);
@@ -687,20 +844,34 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       };
 
       const onPointerUp = (e: PointerEvent) => {
-        if (isControlTarget(e.target)) return;
+        if (!pointerDown && !customDragActive) return;
         const isSyntheticMouseAfterTouch =
           e.pointerType !== 'touch' && performance.now() - lastTouchTime < 1200;
         if (isSyntheticMouseAfterTouch) return;
-        if (!pointerDown) return;
+
+        setGlobalDragUserSelectLock(false);
 
         if (e.pointerType) {
           lastPointerType = e.pointerType;
         }
+        const rect = container.getBoundingClientRect();
+        const px = e.clientX - rect.left;
+        const py = e.clientY - rect.top;
+        const insideBounds =
+          px >= 0 && px <= rect.width && py >= 0 && py <= rect.height && !isControlTarget(e.target);
+
+        if (lastPointerType === 'mouse') {
+          lastMouseX = px;
+          lastMouseY = py;
+          isMouseInside = insideBounds;
+        }
+
         const hadCustomDrag = customDragActive;
         if (customDragActive) {
           finishCustomDrag();
         } else {
           dragCandidate = null;
+          config.onNodePointerDown?.(null, px, py);
         }
 
         const lastDraggedAt = config.getLastDraggedAt?.() || 0;
@@ -714,14 +885,14 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         if (wasDrag) {
           if (lastPointerType === 'touch') {
             lastTouchTime = performance.now();
+          } else if (lastPointerType === 'mouse') {
+            postDragWatchUntil = performance.now() + 1000;
+            ensureProximityWatcher();
           }
           return;
         }
+        if (!insideBounds) return;
         if (lastPointerType !== 'touch' && lastPointerType !== 'pen' && e.button !== 0) return;
-
-        const rect = container.getBoundingClientRect();
-        const px = e.clientX - rect.left;
-        const py = e.clientY - rect.top;
 
         if (lastPointerType === 'touch' || lastPointerType === 'pen') {
           handleTouchTap(px, py);
@@ -737,13 +908,20 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           } else {
             config.onActiveNodeChange(hit.node.id);
             showInternal(hit.node, config.isLight(), hit.x, hit.y, hit.neighborCoords);
+            ensureProximityWatcher();
           }
         }
       };
 
       const onPointerCancel = () => {
         pointerDown = false;
-        finishCustomDrag();
+        setGlobalDragUserSelectLock(false);
+        if (customDragActive) {
+          finishCustomDrag();
+        } else {
+          dragCandidate = null;
+          config.onNodePointerDown?.(null, 0, 0);
+        }
       };
 
       const onTouchStart = (e: TouchEvent) => {
@@ -753,6 +931,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         if (e.touches.length > 1) {
           dragMoved = true;
           dragCandidate = null;
+          config.onNodePointerDown?.(null, 0, 0);
           return;
         }
         if (pointerDown) {
@@ -764,21 +943,27 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         downY = e.touches[0].clientY - rect.top;
         pointerDown = true;
         dragMoved = false;
+        setGlobalDragUserSelectLock(true);
 
         if (config.onNodeDragStart) {
-          if (!(activeNodeData && isPointInsideTooltip(downX, downY))) {
-            const hit = findNearest(downX, downY, TOUCH_PROXIMITY_RADIUS);
-            dragCandidate = hit ? hit.node : null;
-          } else {
+          const hit = findNearest(downX, downY, TOUCH_PROXIMITY_RADIUS);
+          if (
+            activeNodeData &&
+            isPointInsideTooltip(downX, downY) &&
+            (!hit || hit.node.id === activeNodeData.id)
+          ) {
             dragCandidate = null;
+          } else {
+            dragCandidate = hit ? hit.node : null;
           }
         } else {
           dragCandidate = null;
         }
+        config.onNodePointerDown?.(dragCandidate, downX, downY);
       };
 
       const onTouchMove = (e: TouchEvent) => {
-        if (!pointerDown || e.touches.length === 0) return;
+        if ((!pointerDown && !customDragActive) || e.touches.length === 0) return;
         lastTouchTime = performance.now();
         lastPointerType = 'touch';
         const rect = container.getBoundingClientRect();
@@ -789,6 +974,9 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           dragMoved = true;
           if (customDragActive) {
             finishCustomDrag();
+          } else {
+            dragCandidate = null;
+            config.onNodePointerDown?.(null, tx, ty);
           }
           if (activeNodeId !== null && !config.isDragging?.()) {
             config.onActiveNodeChange(null);
@@ -796,6 +984,8 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           }
           return;
         }
+
+        const clamped = clampDragCoords(tx, ty, rect);
 
         if (Math.hypot(tx - downX, ty - downY) > DRAG_DEADZONE_PX) {
           dragMoved = true;
@@ -807,9 +997,9 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
               customDragActive = true;
               hideInternal();
               config.onActiveNodeChange(dragCandidate.id);
-              config.onNodeDragStart(dragCandidate, tx, ty);
+              config.onNodeDragStart(dragCandidate, clamped.x, clamped.y);
             }
-            config.onNodeDragMove?.(dragCandidate, tx, ty);
+            config.onNodeDragMove?.(dragCandidate, clamped.x, clamped.y);
             return;
           }
           if (activeNodeId !== null && !config.isDragging?.()) {
@@ -820,22 +1010,22 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           if (e.cancelable) {
             e.preventDefault();
           }
-          config.onNodeDragMove?.(dragCandidate, tx, ty);
+          config.onNodeDragMove?.(dragCandidate, clamped.x, clamped.y);
         }
       };
 
       const onTouchEnd = (e: TouchEvent) => {
-        if (isControlTarget(e.target)) return;
+        if (!pointerDown && !customDragActive) return;
         lastTouchTime = performance.now();
         lastPointerType = 'touch';
-
-        if (!pointerDown) return;
+        setGlobalDragUserSelectLock(false);
 
         const hadCustomDrag = customDragActive;
         if (customDragActive) {
           finishCustomDrag();
         } else {
           dragCandidate = null;
+          config.onNodePointerDown?.(null, 0, 0);
         }
 
         const lastDraggedAt = config.getLastDraggedAt?.() || 0;
@@ -850,33 +1040,46 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           lastTouchTime = performance.now();
           return;
         }
+        if (isControlTarget(e.target)) return;
         const rect = container.getBoundingClientRect();
         const px = e.changedTouches[0].clientX - rect.left;
         const py = e.changedTouches[0].clientY - rect.top;
+        if (px < 0 || px > rect.width || py < 0 || py > rect.height) return;
         handleTouchTap(px, py);
         lastTouchTime = performance.now();
       };
 
-      container.addEventListener('pointerdown', onPointerDown, { capture: true, passive: true });
-      container.addEventListener('pointermove', onPointerMove, { capture: true, passive: true });
+      container.addEventListener('pointerdown', onPointerDown, { capture: true, passive: false });
+      window.addEventListener('pointermove', onPointerMove, { capture: true, passive: true });
       container.addEventListener('pointerleave', onPointerLeave, { passive: true });
-      container.addEventListener('pointerup', onPointerUp, { capture: true, passive: true });
-      container.addEventListener('pointercancel', onPointerCancel, { capture: true, passive: true });
+      window.addEventListener('pointerup', onPointerUp, { capture: true, passive: true });
+      window.addEventListener('pointercancel', onPointerCancel, { capture: true, passive: true });
       container.addEventListener('touchstart', onTouchStart, { capture: true, passive: true });
-      container.addEventListener('touchmove', onTouchMove, { capture: true, passive: false });
-      container.addEventListener('touchend', onTouchEnd, { capture: true, passive: true });
-      container.addEventListener('touchcancel', onPointerCancel, { capture: true, passive: true });
+      window.addEventListener('touchmove', onTouchMove, { capture: true, passive: false });
+      window.addEventListener('touchend', onTouchEnd, { capture: true, passive: true });
+      window.addEventListener('touchcancel', onPointerCancel, { capture: true, passive: true });
+      window.addEventListener('selectstart', onSelectOrDragStart, { capture: true, passive: false });
+      window.addEventListener('dragstart', onSelectOrDragStart, { capture: true, passive: false });
+      window.addEventListener('blur', onPointerCancel);
 
       cleanupProximityListeners = () => {
+        setGlobalDragUserSelectLock(false);
+        if (proximityWatchFrameId !== null) {
+          cancelAnimationFrame(proximityWatchFrameId);
+          proximityWatchFrameId = null;
+        }
         container.removeEventListener('pointerdown', onPointerDown, { capture: true });
-        container.removeEventListener('pointermove', onPointerMove, { capture: true });
+        window.removeEventListener('pointermove', onPointerMove, { capture: true });
         container.removeEventListener('pointerleave', onPointerLeave);
-        container.removeEventListener('pointerup', onPointerUp, { capture: true });
-        container.removeEventListener('pointercancel', onPointerCancel, { capture: true });
+        window.removeEventListener('pointerup', onPointerUp, { capture: true });
+        window.removeEventListener('pointercancel', onPointerCancel, { capture: true });
         container.removeEventListener('touchstart', onTouchStart, { capture: true });
-        container.removeEventListener('touchmove', onTouchMove, { capture: true });
-        container.removeEventListener('touchend', onTouchEnd, { capture: true });
-        container.removeEventListener('touchcancel', onPointerCancel, { capture: true });
+        window.removeEventListener('touchmove', onTouchMove, { capture: true });
+        window.removeEventListener('touchend', onTouchEnd, { capture: true });
+        window.removeEventListener('touchcancel', onPointerCancel, { capture: true });
+        window.removeEventListener('selectstart', onSelectOrDragStart, { capture: true });
+        window.removeEventListener('dragstart', onSelectOrDragStart, { capture: true });
+        window.removeEventListener('blur', onPointerCancel);
       };
     },
 

@@ -2,9 +2,11 @@ import cytoscape, { type Core, type NodeSingular, type EdgeSingular } from 'cyto
 import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
+  GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
   getGraphStyleTokens,
+  compute2DViewportFit,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -19,11 +21,16 @@ import { createGraphTooltipController, type GraphTooltipController, type RawGrap
 interface CySimNode extends d3.SimulationNodeDatum {
   id: string;
   group: number;
+  homeX: number;
+  homeY: number;
+  eqFx: number;
+  eqFy: number;
 }
 
 interface CySimLink extends d3.SimulationLinkDatum<CySimNode> {
   source: string | CySimNode;
   target: string | CySimNode;
+  restDistance: number;
 }
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
@@ -44,12 +51,16 @@ export interface CytoscapeEngine {
   initialized?: boolean;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
-  forcePositions?: Record<string, { x: number; y: number }> | null;
+  forcePositions: Map<string, { x: number; y: number }>;
   dragSimulation?: d3.Simulation<CySimNode, CySimLink> | null;
   physicsFrameId?: number | null;
   animationFrameId?: number | null;
+  viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
+  stepViewportTowardCloud(alpha: number): void;
+  startViewportAdaptLoop(durationMs?: number): void;
+  runLayout(mode: string, animate: boolean): void;
   getOrderSignature(layout: string): string;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): Record<string, { x: number; y: number }>;
   animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, fitOnStep?: boolean, animateFitAfter?: boolean): void;
@@ -68,10 +79,11 @@ const engine: CytoscapeEngine = {
   initialized: false,
   lastDraggedAt: 0,
   lastOrderSignature: '',
-  forcePositions: null,
+  forcePositions: new Map(),
   dragSimulation: null,
   physicsFrameId: null,
   animationFrameId: null,
+  viewportAdaptFrameId: null,
   resizeObserver: null,
 
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
@@ -83,7 +95,7 @@ const engine: CytoscapeEngine = {
     this.hoveredNodeId = null;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
-    this.forcePositions = null;
+    this.forcePositions = new Map();
 
     this.cy = cytoscape({
       container: container,
@@ -115,7 +127,7 @@ const engine: CytoscapeEngine = {
           }
         }
       ],
-      layout: { name: 'null' }
+      layout: { name: 'preset', fit: false }
     });
 
     const rawEdges: { source: string; target: string }[] = [];
@@ -287,66 +299,102 @@ const engine: CytoscapeEngine = {
     const utmMedium = String(extraOptions.utmMedium || 'cytoscape');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
-    // Solve initial force layout synchronously and cache positions
-    this.cy.layout({
-      name: 'cose',
-      animate: false,
-      fit: true,
-      padding: 30,
-      randomize: true,
-      idealEdgeLength: () => 100,
-      nodeOverlap: 20,
-      componentSpacing: 100,
-      nodeRepulsion: () => 400000,
-      edgeElasticity: () => 100,
-      nestingFactor: 5,
-      gravity: 80,
-      numIter: 1000
-    } as cytoscape.CoseLayoutOptions).run();
-
-    const solvedForce: Record<string, { x: number; y: number }> = {};
     const simNodes: CySimNode[] = [];
     const simNodeMap = new Map<string, CySimNode>();
-    let initSumX = 0;
-    let initSumY = 0;
-    let initCount = 0;
 
     this.cy.nodes().forEach((n: NodeSingular) => {
       const pos = n.position();
-      solvedForce[n.id()] = { x: pos.x, y: pos.y };
-      initSumX += pos.x;
-      initSumY += pos.y;
-      initCount++;
+      this.forcePositions.set(n.id(), { x: pos.x, y: pos.y });
       const sn: CySimNode = {
         id: n.id(),
         group: Number(n.data('group') ?? 0),
         x: pos.x,
-        y: pos.y
+        y: pos.y,
+        homeX: pos.x,
+        homeY: pos.y,
+        eqFx: 0,
+        eqFy: 0
       };
       simNodes.push(sn);
       simNodeMap.set(sn.id, sn);
     });
-    this.forcePositions = solvedForce;
-    const initCx = initSumX / Math.max(1, initCount);
-    const initCy = initSumY / Math.max(1, initCount);
 
     const simLinks: CySimLink[] = [];
     this.cy.edges().forEach((e: EdgeSingular) => {
       const src = e.source().id();
       const tgt = e.target().id();
-      if (simNodeMap.has(src) && simNodeMap.has(tgt)) {
-        simLinks.push({ source: src, target: tgt });
+      const srcNode = simNodeMap.get(src);
+      const tgtNode = simNodeMap.get(tgt);
+      if (srcNode && tgtNode) {
+        const dist = Math.max(25, Math.hypot((tgtNode.x ?? 0) - (srcNode.x ?? 0), (tgtNode.y ?? 0) - (srcNode.y ?? 0)));
+        simLinks.push({ source: src, target: tgt, restDistance: dist });
       }
     });
 
-    this.dragSimulation = d3.forceSimulation<CySimNode, CySimLink>(simNodes)
-      .force('link', d3.forceLink<CySimNode, CySimLink>(simLinks).id(d => d.id).distance(95).strength(0.28))
-      .force('charge', d3.forceManyBody<CySimNode>().strength(-220))
-      .force('collide', d3.forceCollide<CySimNode>(22).strength(0.8))
-      .stop();
-
     let grabbedNodeId: string | null = null;
     let settleFramesRemaining = 0;
+
+    const linkForce = d3
+      .forceLink<CySimNode, CySimLink>(simLinks)
+      .id(d => d.id)
+      .distance(l => l.restDistance)
+      .strength(0.28);
+    const chargeForce = d3.forceManyBody<CySimNode>().strength(-220);
+
+    this.dragSimulation = d3.forceSimulation<CySimNode, CySimLink>(simNodes)
+      .force('link', linkForce)
+      .force('charge', chargeForce)
+      .force('equilibrium', (alpha: number) => {
+        for (const sn of simNodes) {
+          if (sn.id === grabbedNodeId) continue;
+          const dx = sn.homeX - (sn.x ?? 0);
+          const dy = sn.homeY - (sn.y ?? 0);
+          sn.vx = (sn.vx ?? 0) + (sn.eqFx + dx * 0.08) * alpha;
+          sn.vy = (sn.vy ?? 0) + (sn.eqFy + dy * 0.08) * alpha;
+        }
+      })
+      .stop();
+
+    const getLinkNode = (endpoint: string | CySimNode): CySimNode | undefined =>
+      typeof endpoint === 'object' ? endpoint : simNodeMap.get(String(endpoint));
+
+    const calibrateDragEquilibrium = (syncFromCy = false) => {
+      if (syncFromCy && this.cy) {
+        this.cy.nodes().forEach((n: NodeSingular) => {
+          const p = n.position();
+          const sn = simNodeMap.get(n.id());
+          if (sn) {
+            sn.x = p.x;
+            sn.y = p.y;
+          }
+        });
+      }
+      for (const sn of simNodes) {
+        sn.homeX = sn.x ?? 0;
+        sn.homeY = sn.y ?? 0;
+        sn.vx = 0;
+        sn.vy = 0;
+        sn.eqFx = 0;
+        sn.eqFy = 0;
+      }
+      for (const l of simLinks) {
+        const s = getLinkNode(l.source);
+        const t = getLinkNode(l.target);
+        if (s && t) {
+          l.restDistance = Math.max(25, Math.hypot(t.homeX - s.homeX, t.homeY - s.homeY));
+        }
+      }
+      linkForce.distance(l => l.restDistance);
+      chargeForce(1);
+      for (const sn of simNodes) {
+        sn.eqFx = -(sn.vx ?? 0);
+        sn.eqFy = -(sn.vy ?? 0);
+        sn.vx = 0;
+        sn.vy = 0;
+      }
+    };
+
+    calibrateDragEquilibrium(false);
 
     const startForcePhysicsLoop = () => {
       if (this.physicsFrameId) return;
@@ -363,9 +411,7 @@ const engine: CytoscapeEngine = {
             const nx = sn.x ?? 0;
             const ny = sn.y ?? 0;
             this.cy?.getElementById(sn.id).position({ x: nx, y: ny });
-            if (this.forcePositions) {
-              this.forcePositions[sn.id] = { x: nx, y: ny };
-            }
+            this.forcePositions.set(sn.id, { x: nx, y: ny });
           }
         });
 
@@ -374,6 +420,7 @@ const engine: CytoscapeEngine = {
           this.physicsFrameId = requestAnimationFrame(stepPhysics);
         } else {
           this.physicsFrameId = null;
+          calibrateDragEquilibrium(false);
         }
       };
       this.physicsFrameId = requestAnimationFrame(stepPhysics);
@@ -456,32 +503,40 @@ const engine: CytoscapeEngine = {
           cancelAnimationFrame(this.animationFrameId);
           this.animationFrameId = null;
         }
+        if (this.viewportAdaptFrameId) {
+          cancelAnimationFrame(this.viewportAdaptFrameId);
+          this.viewportAdaptFrameId = null;
+        }
 
         const modelPos = renderedToModel(sx, sy);
-        this.cy.getElementById(grabbedNodeId).position(modelPos);
 
         if (this.currentLayout === 'force' && this.dragSimulation) {
-          const allNodes = this.cy.nodes();
-          allNodes.forEach((n: NodeSingular) => {
-            const p = n.position();
-            const sn = simNodeMap.get(n.id());
-            if (sn) {
-              sn.x = p.x;
-              sn.y = p.y;
+          if (settleFramesRemaining === 0) {
+            calibrateDragEquilibrium(true);
+          }
+          settleFramesRemaining = 0;
+          this.cy.getElementById(grabbedNodeId).position(modelPos);
+          for (const sn of simNodes) {
+            if (sn.id === grabbedNodeId) {
+              sn.x = modelPos.x;
+              sn.y = modelPos.y;
+              sn.homeX = modelPos.x;
+              sn.homeY = modelPos.y;
+              sn.fx = modelPos.x;
+              sn.fy = modelPos.y;
               sn.vx = 0;
               sn.vy = 0;
-              sn.fx = n.id() === grabbedNodeId ? p.x : null;
-              sn.fy = n.id() === grabbedNodeId ? p.y : null;
+            } else {
+              sn.fx = null;
+              sn.fy = null;
             }
-          });
+          }
           this.dragSimulation
-            .force('center', null)
-            .force('x', d3.forceX<CySimNode>(initCx).strength(0.06))
-            .force('y', d3.forceY<CySimNode>(initCy).strength(0.06))
             .alphaTarget(0.3)
             .alpha(0.35);
           startForcePhysicsLoop();
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+          this.cy.getElementById(grabbedNodeId).position(modelPos);
           this.lastOrderSignature = this.getOrderSignature(this.currentLayout);
         }
       },
@@ -499,10 +554,10 @@ const engine: CytoscapeEngine = {
             sn.fy = pos.y;
             sn.x = pos.x;
             sn.y = pos.y;
+            sn.homeX = pos.x;
+            sn.homeY = pos.y;
           }
-          if (this.forcePositions) {
-            this.forcePositions[rawNode.id] = { x: pos.x, y: pos.y };
-          }
+          this.forcePositions.set(rawNode.id, { x: pos.x, y: pos.y });
           this.dragSimulation.alphaTarget(0.3).alpha(0.35);
           startForcePhysicsLoop();
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
@@ -518,51 +573,49 @@ const engine: CytoscapeEngine = {
         if (!this.cy) return;
         const node = this.cy.getElementById(rawNode.id);
         const pos = node.position();
+        const releasedId = rawNode.id;
         grabbedNodeId = null;
         this.hoveredNodeId = null;
         this.lastDraggedAt = performance.now();
         applyHighlight(null);
 
         if (this.currentLayout === 'force' && this.dragSimulation) {
-          const sn = simNodeMap.get(rawNode.id);
+          const sn = simNodeMap.get(releasedId);
           if (sn) {
             sn.x = pos.x;
             sn.y = pos.y;
+            sn.homeX = pos.x;
+            sn.homeY = pos.y;
             sn.fx = null;
             sn.fy = null;
           }
-          if (this.forcePositions) {
-            this.forcePositions[rawNode.id] = { x: pos.x, y: pos.y };
+          for (const l of simLinks) {
+            const s = getLinkNode(l.source);
+            const t = getLinkNode(l.target);
+            if (s && t && (s.id === releasedId || t.id === releasedId)) {
+              const curDist = Math.hypot((t.x ?? 0) - (s.x ?? 0), (t.y ?? 0) - (s.y ?? 0));
+              l.restDistance = Math.max(45, Math.min(140, curDist * 0.65 + 100 * 0.35));
+            }
           }
+          linkForce.distance(l => l.restDistance);
+          this.forcePositions.set(releasedId, { x: pos.x, y: pos.y });
           this.dragSimulation
-            .force('center', d3.forceCenter<CySimNode>(initCx, initCy).strength(0.12))
-            .force('x', d3.forceX<CySimNode>(initCx).strength(0.08))
-            .force('y', d3.forceY<CySimNode>(initCy).strength(0.08))
             .alphaTarget(0)
             .alpha(0.35);
-          settleFramesRemaining = 45;
+          settleFramesRemaining = 90;
           startForcePhysicsLoop();
+          this.startViewportAdaptLoop(2400);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const targets = this.computeLayoutTargets(this.currentLayout, true);
           this.animateTo(targets, 400, undefined, false, false);
+          this.startViewportAdaptLoop(2400);
         }
       }
     });
 
     this.currentLayout = layout;
     this.isLight = isLight;
-
-    if (layout !== 'force') {
-      const initialTargets = this.computeLayoutTargets(layout, false);
-      this.cy.batch(() => {
-        this.cy?.nodes().forEach((n: NodeSingular) => {
-          const t = initialTargets[n.id()];
-          if (t) n.position(t);
-        });
-      });
-      this.cy.fit(undefined, 30);
-    }
-
+    this.runLayout(layout, false);
     this.initialized = true;
 
     // Bind ResizeObserver to handle container size changes dynamically with dimension threshold
@@ -579,7 +632,7 @@ const engine: CytoscapeEngine = {
             if (this.currentLayout === 'columns' && this.isLight !== undefined) {
               this.updateLayout(this.currentLayout, this.isLight, true);
             } else {
-              this.cy.fit(undefined, 30);
+              this.stepViewportTowardCloud(1);
             }
           }
         }
@@ -588,6 +641,63 @@ const engine: CytoscapeEngine = {
     this.resizeObserver.observe(container);
 
     return this;
+  },
+
+  stepViewportTowardCloud(alpha: number) {
+    if (!this.cy) return;
+    const width = this.cy.width() || 800;
+    const height = this.cy.height() || 500;
+    if (width <= 0 || height <= 0) return;
+
+    const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
+    const points: { x: number; y: number }[] = [];
+    this.cy.nodes().forEach((n: NodeSingular) => {
+      const p = n.position();
+      if (Number.isFinite(p.x) && Number.isFinite(p.y)) {
+        points.push({ x: p.x, y: p.y });
+      }
+    });
+
+    const fit = compute2DViewportFit(points, width, height, r);
+    if (!fit) return;
+
+    const curZoom = this.cy.zoom() || 1;
+    const curPan = this.cy.pan();
+    const t = Math.max(0, Math.min(1, alpha));
+
+    const nextZoom = curZoom + (fit.scale - curZoom) * t;
+    const nextPanX = curPan.x + (fit.panX - curPan.x) * t;
+    const nextPanY = curPan.y + (fit.panY - curPan.y) * t;
+
+    this.cy.viewport({
+      zoom: nextZoom,
+      pan: { x: nextPanX, y: nextPanY }
+    });
+  },
+
+  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
+    }
+    const startTime = performance.now();
+    let lastTime = startTime;
+    const tick = (now: number) => {
+      if (!this.cy) {
+        this.viewportAdaptFrameId = null;
+        return;
+      }
+      const dt = Math.max(1, now - lastTime);
+      lastTime = now;
+      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      this.stepViewportTowardCloud(stepAlpha);
+      if (now - startTime < durationMs) {
+        this.viewportAdaptFrameId = requestAnimationFrame(tick);
+      } else {
+        this.viewportAdaptFrameId = null;
+      }
+    };
+    this.viewportAdaptFrameId = requestAnimationFrame(tick);
   },
 
   getOrderSignature(layout: string): string {
@@ -712,8 +822,11 @@ const engine: CytoscapeEngine = {
     }
 
     // default: force directed
-    if (this.forcePositions) {
-      return this.forcePositions;
+    if (this.forcePositions.size > 0) {
+      for (const [id, pos] of this.forcePositions.entries()) {
+        targets[id] = { x: pos.x, y: pos.y };
+      }
+      return targets;
     }
 
     const startingPos: Record<string, { x: number; y: number }> = {};
@@ -728,6 +841,7 @@ const engine: CytoscapeEngine = {
         animate: false,
         fit: false,
         randomize: false,
+        boundingBox: { x1: 0, y1: 0, w: 1000, h: 700 },
         idealEdgeLength: () => 100,
         nodeOverlap: 20,
         componentSpacing: 100,
@@ -741,13 +855,48 @@ const engine: CytoscapeEngine = {
       this.cy?.nodes().forEach((n: NodeSingular) => {
         const p = n.position();
         targets[n.id()] = { x: p.x, y: p.y };
+        this.forcePositions.set(n.id(), { x: p.x, y: p.y });
         const s = startingPos[n.id()];
         if (s) n.position(s);
       });
     });
 
-    this.forcePositions = targets;
     return targets;
+  },
+
+  runLayout(mode: string, animate: boolean) {
+    if (!this.cy) return;
+    if (mode === 'force' && this.forcePositions.size > 0) {
+      const targets: Record<string, { x: number; y: number }> = {};
+      for (const [id, pos] of this.forcePositions.entries()) {
+        targets[id] = { x: pos.x, y: pos.y };
+      }
+      if (!animate) {
+        this.cy.layout({
+          name: 'preset',
+          positions: targets,
+          animate: false,
+          fit: false
+        }).run();
+        this.stepViewportTowardCloud(1);
+        return;
+      }
+      this.animateTo(targets, 550, undefined, true);
+      return;
+    }
+
+    const targets = this.computeLayoutTargets(mode, false);
+    if (!animate) {
+      this.cy.batch(() => {
+        this.cy?.nodes().forEach((n: NodeSingular) => {
+          const t = targets[n.id()];
+          if (t) n.position(t);
+        });
+      });
+      this.stepViewportTowardCloud(1);
+    } else {
+      this.animateTo(targets, 550, undefined, true);
+    }
   },
 
   animateTo(targets: Record<string, { x: number; y: number }>, duration = 600, excludeNodeId?: string, fitOnStep = true, animateFitAfter = false) {
@@ -755,6 +904,10 @@ const engine: CytoscapeEngine = {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
+    }
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
     }
 
     const startTime = performance.now();
@@ -789,7 +942,7 @@ const engine: CytoscapeEngine = {
       });
 
       if (fitOnStep) {
-        this.cy.fit(undefined, 30);
+        this.stepViewportTowardCloud(1);
       }
 
       if (progress < 1) {
@@ -824,8 +977,7 @@ const engine: CytoscapeEngine = {
     this.applyHighlight?.(this.hoveredNodeId ?? null, true);
 
     if (!this.initialized || layoutChanged || forceRecompute) {
-      const targets = this.computeLayoutTargets(layout, false);
-      this.animateTo(targets, 600, undefined, true);
+      this.runLayout(layout, Boolean(this.initialized));
     }
   },
 
@@ -841,6 +993,10 @@ const engine: CytoscapeEngine = {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
+    }
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
     }
     if (this.dragSimulation) {
       this.dragSimulation.stop();
@@ -858,7 +1014,7 @@ const engine: CytoscapeEngine = {
       this.cy.destroy();
       this.cy = null;
     }
-    this.forcePositions = null;
+    this.forcePositions.clear();
   }
 };
 

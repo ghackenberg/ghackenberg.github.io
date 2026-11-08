@@ -1,9 +1,11 @@
 import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
+  GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
   getGraphStyleTokens,
+  compute2DViewportFit,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -56,12 +58,17 @@ export interface D3Engine {
   applyHighlight?(activeId: string | null, immediate?: boolean): void;
   currentLayout?: string;
   isLight?: boolean;
+  forcePositions: Map<string, { x: number; y: number }>;
   fitTimeout?: ReturnType<typeof setTimeout>;
+  viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<D3Engine>;
+  renderPositions(): void;
   recomputeSlotTargets(useCurrentOrder?: boolean): void;
   fitToView(duration?: number): void;
-  updateLayout(layout: string, isLight: boolean): void;
+  stepViewportTowardCloud(alpha: number): void;
+  startViewportAdaptLoop(durationMs?: number): void;
+  updateLayout(layout: string, isLight: boolean, animate?: boolean): void;
   destroy(): void;
 }
 
@@ -82,17 +89,24 @@ const engine: D3Engine = {
   linkElements: null,
   nodeElements: null,
   tooltipController: null,
+  forcePositions: new Map(),
+  viewportAdaptFrameId: null,
   resizeObserver: null,
 
   async init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.width = container.offsetWidth || 800;
     this.height = container.offsetHeight || 500;
+    this.forcePositions = new Map();
 
-    this.nodes = payload.d3.nodes.map((n) => ({ ...n }));
-    // Randomize initial node positions around center
-    this.nodes.forEach(n => {
-      n.x = this.width / 2 + (Math.random() - 0.5) * (this.width * 0.4);
-      n.y = this.height / 2 + (Math.random() - 0.5) * (this.height * 0.4);
+    this.nodes = payload.d3.nodes.map((n) => {
+      const nx = typeof n.x === 'number' ? n.x : 0;
+      const ny = typeof n.y === 'number' ? n.y : 0;
+      this.forcePositions.set(n.id, { x: nx, y: ny });
+      return {
+        ...n,
+        x: nx,
+        y: ny
+      };
     });
 
     this.links = payload.d3.connections.map((c) => ({
@@ -318,6 +332,11 @@ const engine: D3Engine = {
       onNodeDragStart: (rawNode, sx, sy) => {
         const d = this.nodes?.find(n => n.id === rawNode.id);
         if (!d) return;
+        if (this.viewportAdaptFrameId) {
+          cancelAnimationFrame(this.viewportAdaptFrameId);
+          this.viewportAdaptFrameId = null;
+        }
+        this.svg?.interrupt();
         this.draggedNodeId = d.id;
         lastDraggedAt = performance.now();
         applyHighlight(d.id);
@@ -350,35 +369,33 @@ const engine: D3Engine = {
         if (d) {
           d.fx = null;
           d.fy = null;
+          if (this.currentLayout === 'force' && typeof d.x === 'number' && typeof d.y === 'number') {
+            this.forcePositions.set(d.id, { x: d.x, y: d.y });
+          }
         }
         applyHighlight(null);
         if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           this.recomputeSlotTargets(true);
         }
         this.simulation?.alphaTarget(0).alpha(0.35).restart();
+        this.startViewportAdaptLoop(2400);
       }
     });
 
     this.simulation.on("tick", () => {
-      this.linkElements
-        ?.attr("x1", d => (d.source as D3Node).x ?? 0)
-        ?.attr("y1", d => (d.source as D3Node).y ?? 0)
-        ?.attr("x2", d => (d.target as D3Node).x ?? 0)
-        ?.attr("y2", d => (d.target as D3Node).y ?? 0);
-
-      this.nodeElements?.attr("transform", d => `translate(${d.x ?? 0},${d.y ?? 0})`);
+      this.renderPositions();
+      if (this.currentLayout === 'force' && this.draggedNodeId && this.nodes) {
+        for (const n of this.nodes) {
+          if (typeof n.x === 'number' && typeof n.y === 'number') {
+            this.forcePositions.set(n.id, { x: n.x, y: n.y });
+          }
+        }
+      }
     });
 
     this.currentLayout = layout;
     this.isLight = isLight;
-    this.updateLayout(layout, isLight);
-
-    // Warm up the simulation to compute initial equilibrium positions
-    for (let i = 0; i < 70; ++i) {
-      this.simulation.tick();
-    }
-    // Auto-fit to viewport immediately
-    this.fitToView(0);
+    this.updateLayout(layout, isLight, false);
 
     // Bind ResizeObserver to handle SVG resizing dynamically
     this.resizeObserver = new ResizeObserver(entries => {
@@ -390,8 +407,13 @@ const engine: D3Engine = {
         this.height = height;
         if (this.svg) {
           this.svg.attr("viewBox", `0 0 ${this.width} ${this.height}`);
-          if (this.currentLayout !== undefined && this.isLight !== undefined) {
-            this.updateLayout(this.currentLayout, this.isLight);
+          if (
+            (this.currentLayout === 'radial' || this.currentLayout === 'columns') &&
+            this.isLight !== undefined
+          ) {
+            this.updateLayout(this.currentLayout, this.isLight, true);
+          } else {
+            this.fitToView(0);
           }
           if (this.fitTimeout) clearTimeout(this.fitTimeout);
           this.fitTimeout = setTimeout(() => {
@@ -405,58 +427,94 @@ const engine: D3Engine = {
     return this;
   },
 
+  renderPositions() {
+    this.linkElements
+      ?.attr("x1", d => (d.source as D3Node).x ?? 0)
+      ?.attr("y1", d => (d.source as D3Node).y ?? 0)
+      ?.attr("x2", d => (d.target as D3Node).x ?? 0)
+      ?.attr("y2", d => (d.target as D3Node).y ?? 0);
+
+    this.nodeElements?.attr("transform", d => `translate(${d.x ?? 0},${d.y ?? 0})`);
+  },
+
   fitToView(duration = 600) {
     if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
     if (this.width <= 0 || this.height <= 0) return;
 
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (const n of this.nodes) {
-      const left = (n.x || 0) - r - 10;
-      const right = (n.x || 0) + r + 10;
-      const top = (n.y || 0) - r - 10;
-      const bottom = (n.y || 0) + r + 10;
-
-      if (left < minX) minX = left;
-      if (right > maxX) maxX = right;
-      if (top < minY) minY = top;
-      if (bottom > maxY) maxY = bottom;
-    }
-
-    const boxWidth = maxX - minX;
-    const boxHeight = maxY - minY;
-    if (boxWidth <= 0 || boxHeight <= 0) return;
-
-    // Margins to ensure nodes don't collide with the top legend or bottom layout selector
-    const padTop = 60;
-    const padBottom = 55;
-    const padX = 40;
-
-    const availableWidth = Math.max(100, this.width - padX * 2);
-    const availableHeight = Math.max(100, this.height - padTop - padBottom);
-
-    const scaleX = availableWidth / boxWidth;
-    const scaleY = availableHeight / boxHeight;
-    const scale = Math.max(0.12, Math.min(1.1, Math.min(scaleX, scaleY)));
-
-    const midX = (minX + maxX) / 2;
-    const midY = (minY + maxY) / 2;
-
-    const targetCenterX = this.width / 2;
-    const targetCenterY = padTop + availableHeight / 2;
-
-    const translateX = targetCenterX - scale * midX;
-    const translateY = targetCenterY - scale * midY;
+    const fit = compute2DViewportFit(
+      this.nodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
+      this.width,
+      this.height,
+      r
+    );
+    if (!fit) return;
 
     const transform = d3.zoomIdentity
-      .translate(translateX, translateY)
-      .scale(scale);
+      .translate(fit.panX, fit.panY)
+      .scale(fit.scale);
 
     if (duration > 0) {
       this.svg.transition().duration(duration).call(this.zoom.transform, transform);
     } else {
       this.svg.call(this.zoom.transform, transform);
     }
+  },
+
+  stepViewportTowardCloud(alpha: number) {
+    if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
+    if (this.width <= 0 || this.height <= 0) return;
+    const svgNode = this.svg.node();
+    if (!svgNode) return;
+
+    const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
+    const fit = compute2DViewportFit(
+      this.nodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
+      this.width,
+      this.height,
+      r
+    );
+    if (!fit) return;
+
+    const curT = d3.zoomTransform(svgNode);
+    const t = Math.max(0, Math.min(1, alpha));
+    const nextK = curT.k + (fit.scale - curT.k) * t;
+    const nextX = curT.x + (fit.panX - curT.x) * t;
+    const nextY = curT.y + (fit.panY - curT.y) * t;
+
+    this.svg.call(this.zoom.transform, d3.zoomIdentity.translate(nextX, nextY).scale(nextK));
+  },
+
+  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
+    }
+    const startTime = performance.now();
+    let lastTime = startTime;
+    const tick = (now: number) => {
+      if (!this.svg || !this.nodes || this.draggedNodeId) {
+        this.viewportAdaptFrameId = null;
+        return;
+      }
+      if (this.currentLayout === 'force') {
+        for (const n of this.nodes) {
+          if (typeof n.x === 'number' && typeof n.y === 'number') {
+            this.forcePositions.set(n.id, { x: n.x, y: n.y });
+          }
+        }
+      }
+      const dt = Math.max(1, now - lastTime);
+      lastTime = now;
+      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      this.stepViewportTowardCloud(stepAlpha);
+      if (now - startTime < durationMs) {
+        this.viewportAdaptFrameId = requestAnimationFrame(tick);
+      } else {
+        this.viewportAdaptFrameId = null;
+      }
+    };
+    this.viewportAdaptFrameId = requestAnimationFrame(tick);
   },
 
   recomputeSlotTargets(useCurrentOrder = false) {
@@ -547,13 +605,18 @@ const engine: D3Engine = {
     }
   },
 
-  updateLayout(layout: string, isLight: boolean) {
+  updateLayout(layout: string, isLight: boolean, animate = true) {
     if (!this.simulation || !this.nodes || !this.linkElements || !this.nodeElements) return;
+    const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
 
     // Apply color update to D3 circles and links based on theme (and preserve any active highlight)
     this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
+
+    if (animate && !layoutChanged) {
+      return;
+    }
 
     if (layout === 'radial') {
       const cx = this.width / 2;
@@ -584,17 +647,45 @@ const engine: D3Engine = {
 
     } else {
       // Force-directed (default)
-      const minDim = Math.min(this.width, this.height);
-      const linkDist = Math.max(35, Math.min(65, minDim * 0.08));
-      const charge = -Math.max(100, Math.min(220, minDim * 0.25));
+      if (!animate && this.forcePositions.size > 0) {
+        for (const n of this.nodes) {
+          const fp = this.forcePositions.get(n.id);
+          if (fp) {
+            n.x = fp.x;
+            n.y = fp.y;
+            n.vx = 0;
+            n.vy = 0;
+          }
+        }
+        this.simulation
+          .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(80).strength(0.2))
+          .force("charge", d3.forceManyBody<D3Node>().strength(d => -40 - Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) * 8).distanceMax(350))
+          .force("center", d3.forceCenter(0, 0).strength(0.08))
+          .force("collide", d3.forceCollide<D3Node>(d => Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) + 6).iterations(2))
+          .force("x", d3.forceX<D3Node>(0).strength(0.06))
+          .force("y", d3.forceY<D3Node>(0).strength(0.06))
+          .alpha(0)
+          .stop();
+        this.renderPositions();
+        this.fitToView(0);
+        return;
+      }
 
       this.simulation
-        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(linkDist).strength(0.3))
-        .force("charge", d3.forceManyBody().strength(charge))
-        .force("center", d3.forceCenter(this.width / 2, this.height / 2).strength(0.15))
-        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 12).strength(0.8))
-        .force("x", d3.forceX(this.width / 2).strength(0.06))
-        .force("y", d3.forceY(this.height / 2).strength(0.06));
+        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(80).strength(0.2))
+        .force("charge", d3.forceManyBody<D3Node>().strength(d => -40 - Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) * 8).distanceMax(350))
+        .force("center", d3.forceCenter(0, 0).strength(0.08))
+        .force("collide", d3.forceCollide<D3Node>(d => Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) + 6).iterations(2))
+        .force("x", d3.forceX<D3Node>(0).strength(0.06))
+        .force("y", d3.forceY<D3Node>(0).strength(0.06));
+    }
+
+    if (!animate) {
+      this.simulation.alpha(1).stop();
+      this.simulation.tick(70);
+      this.renderPositions();
+      this.fitToView(0);
+      return;
     }
 
     // Trigger transition
@@ -611,6 +702,10 @@ const engine: D3Engine = {
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
+    }
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
     }
     if (this.fitTimeout) clearTimeout(this.fitTimeout);
     if (this.resizeObserver) {

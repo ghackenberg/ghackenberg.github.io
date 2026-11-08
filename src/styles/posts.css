@@ -1010,6 +1010,25 @@ figure.artifact-card.is-fullscreen-active,
   color: var(--color-text-main) !important;
 }
 
+.visualization-viewport:fullscreen,
+.visualization-viewport:-webkit-full-screen,
+.visualization-viewport.is-pseudo-fullscreen,
+.visualization-viewport.is-fullscreen-active,
+:root.light .visualization-viewport:fullscreen,
+:root.light .visualization-viewport:-webkit-full-screen,
+:root.light .visualization-viewport.is-pseudo-fullscreen,
+:root.light .visualization-viewport.is-fullscreen-active,
+.light .visualization-viewport:fullscreen,
+.light .visualization-viewport:-webkit-full-screen,
+.light .visualization-viewport.is-pseudo-fullscreen,
+.light .visualization-viewport.is-fullscreen-active {
+  background: linear-gradient(var(--color-bg-card), var(--color-bg-card)), var(--color-bg-main) !important;
+}
+
+.visualization-viewport::backdrop {
+  background: var(--color-bg-main);
+}
+
 figure.artifact-card.is-pseudo-fullscreen,
 .responsive-table-wrapper.is-pseudo-fullscreen,
 .visualization-viewport.is-pseudo-fullscreen {

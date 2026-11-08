@@ -35,9 +35,12 @@ const optimizedScreenshot = screenshotImg ? await getImage({
   quality: 85
 }) : null;
 
-import { getCanonicalGraphPayloadArtifact } from "@commons/server/graph-payload-endpoint";
+import { getCanonicalGraphPayloadArtifact, getGraphPayloadEndpointUrl } from "@commons/server/graph-payload-endpoint";
+import { getGraphLayoutEndpointUrl } from "@commons/server/graph-layout-endpoint";
 
 const payloadArtifact = await getCanonicalGraphPayloadArtifact();
+const payloadUrl = await getGraphPayloadEndpointUrl();
+const layoutUrl = await getGraphLayoutEndpointUrl(type);
 
 
 const engineSwitcherItems = [
@@ -210,7 +213,11 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         </div>
 
         <!-- Middle Band: Unobstructed Graph Rendering Canvas Stage -->
-        <div class="visualization-stage artifact-card-body relative flex-1 w-full min-w-0 min-h-0 overflow-hidden">
+        <div
+          class="visualization-stage artifact-card-body relative flex-1 w-full min-w-0 min-h-0 overflow-hidden"
+          data-payload-url={payloadUrl}
+          data-layout-url={layoutUrl}
+        >
           <!-- Render Loading Placeholder -->
           <div id="canvas-loading" class="absolute inset-0 flex items-center justify-center bg-gray-950/80 z-30 transition-opacity duration-300">
             <div class="flex flex-col items-center space-y-4">
@@ -219,11 +226,31 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             </div>
           </div>
 
+          <!-- Read-only FPS Telemetry Sparkline -->
+          <div
+            id="fps-badge"
+            class="pointer-events-none select-none absolute top-3 right-3.5 z-20 flex flex-col items-end gap-1"
+            aria-label="Frames per second"
+          >
+            <div class="flex items-baseline gap-1 leading-none">
+              <span id="fps-value" class="text-xs font-mono font-bold tabular-nums text-gray-200 light:text-slate-800">--</span>
+              <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-gray-400 light:text-slate-500">FPS</span>
+            </div>
+            <svg width="88" height="22" viewBox="0 0 88 22" class="overflow-visible block" aria-hidden="true">
+              <line x1="0" y1="2" x2="88" y2="2" stroke="var(--color-border-subtle)" stroke-width="1" stroke-dasharray="2 2" />
+              <line x1="0" y1="21" x2="88" y2="21" stroke="var(--color-border-subtle)" stroke-width="1" />
+              <polygon id="fps-chart-area" points="0,21 88,21" fill="var(--color-domain-visualizations)" fill-opacity="0.15" />
+              <polyline id="fps-chart-line" points="0,21 88,21" fill="none" stroke="var(--color-domain-visualizations)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+
           <!-- Graph Rendering Canvas -->
           <div
             id="canvas"
             class="absolute inset-0 w-full h-full overflow-hidden"
             data-graph-type={type}
+            data-payload-url={payloadUrl}
+            data-layout-url={layoutUrl}
             data-graph-payload-url={payloadArtifact.url}
             data-graph-payload-hash={payloadArtifact.hash}
           ></div>
@@ -297,6 +324,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       hydrateEnginePayloads,
       type CanonicalGraphPayload,
       type EnginePayloads,
+      type GraphLayoutPayload,
     } from '@commons/shared/graph-payload';
 
     interface GraphInstance {
@@ -318,49 +346,80 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       }
     }
 
-    const STORAGE_KEY_PREFIX = 'graph-payload-';
-    let inMemoryPayloadCache: { hash: string; payload: EnginePayloads } | null = null;
+    const inMemoryUrlCache = new Map<string, string>();
 
-    async function loadGraphPayload(url: string, hash: string): Promise<EnginePayloads> {
-      if (inMemoryPayloadCache && inMemoryPayloadCache.hash === hash) {
-        return inMemoryPayloadCache.payload;
+    function readStorageCache(storageKey: string): string | null {
+      for (const store of [window.localStorage, window.sessionStorage]) {
+        try {
+          const val = store.getItem(storageKey);
+          if (val) return val;
+        } catch {
+          // Ignore storage access errors in privacy mode
+        }
+      }
+      return null;
+    }
+
+    function writeStorageCache(keyPrefix: string, storageKey: string, rawJson: string): void {
+      for (const store of [window.localStorage, window.sessionStorage]) {
+        try {
+          for (let i = store.length - 1; i >= 0; i--) {
+            const k = store.key(i);
+            if (k && k.startsWith(keyPrefix) && k !== storageKey) {
+              store.removeItem(k);
+            }
+          }
+          store.setItem(storageKey, rawJson);
+          return;
+        } catch {
+          // Fallback to next storage backend if quota exceeded or blocked
+        }
+      }
+    }
+
+    async function fetchWithStorageCache<T>(url: string, keyPrefix: string): Promise<T> {
+      const storageKey = `${keyPrefix}${url}`;
+      const memRaw = inMemoryUrlCache.get(storageKey);
+      if (memRaw) {
+        return JSON.parse(memRaw) as T;
       }
 
-      const storageKey = `${STORAGE_KEY_PREFIX}${hash}`;
-      try {
-        const cachedRaw = sessionStorage.getItem(storageKey);
-        if (cachedRaw) {
-          const canonical = JSON.parse(cachedRaw) as CanonicalGraphPayload;
-          const hydrated = hydrateEnginePayloads(canonical);
-          inMemoryPayloadCache = { hash, payload: hydrated };
-          return hydrated;
+      const cachedRaw = readStorageCache(storageKey);
+      if (cachedRaw) {
+        try {
+          const parsed = JSON.parse(cachedRaw) as T;
+          inMemoryUrlCache.set(storageKey, cachedRaw);
+          return parsed;
+        } catch {
+          // Ignore corrupted cache entry and refetch
         }
-      } catch {
-        // Ignore sessionStorage read/parse failures in privacy mode
       }
 
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`Failed to fetch graph payload (${response.status}): ${url}`);
+        throw new Error(`Failed to fetch ${url} (${response.status})`);
       }
       const rawJson = await response.text();
-      const canonical = JSON.parse(rawJson) as CanonicalGraphPayload;
+      const parsed = JSON.parse(rawJson) as T;
+      inMemoryUrlCache.set(storageKey, rawJson);
+      writeStorageCache(keyPrefix, storageKey, rawJson);
+      return parsed;
+    }
 
-      try {
-        for (let i = sessionStorage.length - 1; i >= 0; i--) {
-          const key = sessionStorage.key(i);
-          if (key && key.startsWith(STORAGE_KEY_PREFIX) && key !== storageKey) {
-            sessionStorage.removeItem(key);
-          }
-        }
-        sessionStorage.setItem(storageKey, rawJson);
-      } catch {
-        // Ignore sessionStorage quota or privacy mode errors
-      }
-
-      const hydrated = hydrateEnginePayloads(canonical);
-      inMemoryPayloadCache = { hash, payload: hydrated };
-      return hydrated;
+    async function loadHydratedGraphPayload(
+      type: string,
+      payloadUrl: string,
+      layoutUrl: string
+    ): Promise<EnginePayloads> {
+      const [canonicalPayload, layoutData] = await Promise.all([
+        fetchWithStorageCache<CanonicalGraphPayload>(payloadUrl, 'vis-graph-payload:'),
+        layoutUrl
+          ? fetchWithStorageCache<GraphLayoutPayload>(layoutUrl, `vis-graph-layout:${type}:`).catch(
+              () => null
+            )
+          : Promise.resolve(null),
+      ]);
+      return hydrateEnginePayloads(canonicalPayload, layoutData?.positions);
     }
 
     function onReady(fn: () => void) {
@@ -376,11 +435,72 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       const loading = document.getElementById('canvas-loading');
       const selector = document.getElementById('layout-selector') as HTMLSelectElement | null;
       const engineSelector = document.getElementById('engine-selector') as HTMLSelectElement | null;
+      const fpsValueEl = document.getElementById('fps-value');
+      const fpsChartLine = document.getElementById('fps-chart-line');
+      const fpsChartArea = document.getElementById('fps-chart-area');
       if (!container) return;
 
+      if (fpsValueEl) {
+        let frames = 0;
+        let lastFpsSample = performance.now();
+        const maxSamples = 30;
+        const chartW = 88;
+        const topY = 2;
+        const bottomY = 21;
+        const fpsHistory: number[] = [];
+
+        const updateFps = (now: number) => {
+          if (!document.hidden) {
+            frames++;
+            const elapsed = now - lastFpsSample;
+            if (elapsed >= 200) {
+              const fps = Math.min(120, Math.max(1, Math.round((frames * 1000) / elapsed)));
+              fpsValueEl.textContent = String(fps);
+              fpsHistory.push(fps);
+              if (fpsHistory.length > maxSamples) {
+                fpsHistory.shift();
+              }
+
+              if (fpsChartLine && fpsChartArea && fpsHistory.length > 0) {
+                const maxScale = Math.max(60, ...fpsHistory);
+                const stepX = chartW / (maxSamples - 1);
+                const startIdx = maxSamples - fpsHistory.length;
+                const coords = fpsHistory.map((val, i) => {
+                  const x = ((startIdx + i) * stepX).toFixed(1);
+                  const ratio = Math.max(0, Math.min(1, val / maxScale));
+                  const y = (bottomY - ratio * (bottomY - topY)).toFixed(1);
+                  return `${x},${y}`;
+                });
+                const firstX = (startIdx * stepX).toFixed(1);
+                const linePts = coords.length === 1 ? `0,${coords[0].split(',')[1]} ${chartW},${coords[0].split(',')[1]}` : coords.join(' ');
+                const areaPts =
+                  coords.length === 1
+                    ? `0,${bottomY} 0,${coords[0].split(',')[1]} ${chartW},${coords[0].split(',')[1]} ${chartW},${bottomY}`
+                    : `${firstX},${bottomY} ${coords.join(' ')} ${chartW},${bottomY}`;
+                fpsChartLine.setAttribute('points', linePts);
+                fpsChartArea.setAttribute('points', areaPts);
+              }
+
+              frames = 0;
+              lastFpsSample = now;
+            }
+          } else {
+            frames = 0;
+            lastFpsSample = now;
+          }
+          requestAnimationFrame(updateFps);
+        };
+        requestAnimationFrame(updateFps);
+      }
+
+      const stageEl = container.closest('.visualization-stage') as HTMLElement | null;
       const type = container.dataset.graphType || '';
-      const payloadUrl = container.dataset.graphPayloadUrl || '';
-      const payloadHash = container.dataset.graphPayloadHash || '';
+      const payloadUrl =
+        stageEl?.dataset.payloadUrl ||
+        container.dataset.payloadUrl ||
+        container.dataset.graphPayloadUrl ||
+        '';
+      const layoutUrl = stageEl?.dataset.layoutUrl || container.dataset.layoutUrl || '';
       window.GRAPH_TYPE = type;
 
       const isInitialLightMode = document.documentElement.classList.contains('light');
@@ -434,7 +554,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         }
 
         try {
-          const payloadPromise = loadGraphPayload(payloadUrl, payloadHash);
+          const payloadPromise = loadHydratedGraphPayload(type, payloadUrl, layoutUrl);
           let engineModule;
           switch (type) {
             case 'cytoscape':

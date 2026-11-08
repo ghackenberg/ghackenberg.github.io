@@ -2,11 +2,30 @@ import type { getImage } from "astro:assets";
 import { DOMAIN_METADATA, getThemeTokens } from "./domain-themes";
 import { formatDate } from "./format";
 
+export type VisualizationEngineType =
+  | 'cytoscape'
+  | 'sigma'
+  | 'd3'
+  | 'vis-network'
+  | '3d-force-graph';
+
+export type GraphLayoutPositions = Record<string, [number, number] | [number, number, number]>;
+
+export interface GraphLayoutPayload {
+  engine: VisualizationEngineType;
+  topologyHash: string;
+  positions: GraphLayoutPositions;
+}
+
 export interface GraphNodePayload {
   id: string;
   name: string;
   size: number;
   group: number;
+  connectionCount?: number;
+  x?: number;
+  y?: number;
+  z?: number;
   typeLabel?: string;
   description?: string;
   date?: string;
@@ -17,6 +36,9 @@ export interface GraphNodePayload {
 export interface GraphConnectionPayload {
   sourceId: string;
   targetId: string;
+  source?: string;
+  target?: string;
+  weight?: number;
 }
 
 export interface CanonicalGraphPayload {
@@ -39,6 +61,10 @@ export interface CytoscapeElement {
     tags?: string[];
     source?: string;
     target?: string;
+  };
+  position?: {
+    x: number;
+    y: number;
   };
 }
 
@@ -322,6 +348,69 @@ function parseHexRgb(hex: string): [number, number, number] {
 }
 
 export const HIGHLIGHT_TRANSITION_MS = 750;
+
+export const GRAPH_VIEWPORT_CONFIG = {
+  padX: 30,
+  padY: 30,
+  adaptAlpha: 0.035,
+  adaptDurationMs: 2400,
+  minScale: 0.1,
+  maxScale: 2.5
+} as const;
+
+export interface Viewport2DFitResult {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  midX: number;
+  midY: number;
+  scale: number;
+  panX: number;
+  panY: number;
+}
+
+export function compute2DViewportFit(
+  points: Iterable<{ x: number; y: number }>,
+  width: number,
+  height: number,
+  worldNodeRadius = 8
+): Viewport2DFitResult | null {
+  if (width <= 0 || height <= 0) return null;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  for (const p of points) {
+    if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) continue;
+    const left = p.x - worldNodeRadius;
+    const right = p.x + worldNodeRadius;
+    const top = p.y - worldNodeRadius;
+    const bottom = p.y + worldNodeRadius;
+    if (left < minX) minX = left;
+    if (right > maxX) maxX = right;
+    if (top < minY) minY = top;
+    if (bottom > maxY) maxY = bottom;
+  }
+
+  const boxW = maxX - minX;
+  const boxH = maxY - minY;
+  if (boxW <= 0 || boxH <= 0 || !Number.isFinite(boxW) || !Number.isFinite(boxH)) return null;
+
+  const availW = Math.max(100, width - GRAPH_VIEWPORT_CONFIG.padX * 2);
+  const availH = Math.max(100, height - GRAPH_VIEWPORT_CONFIG.padY * 2);
+  const scale = Math.max(
+    GRAPH_VIEWPORT_CONFIG.minScale,
+    Math.min(GRAPH_VIEWPORT_CONFIG.maxScale, Math.min(availW / boxW, availH / boxH))
+  );
+  const midX = (minX + maxX) / 2;
+  const midY = (minY + maxY) / 2;
+  const panX = width / 2 - midX * scale;
+  const panY = height / 2 - midY * scale;
+
+  return { minX, maxX, minY, maxY, midX, midY, scale, panX, panY };
+}
 
 export function easeHighlightTransition(progress: number): number {
   const clamped = Math.max(0, Math.min(1, progress));
@@ -863,25 +952,67 @@ export async function buildCanonicalGraphPayload(
     }
   }
 
+  const degreeCounts = new Map<string, number>();
+  for (const conn of visConnections) {
+    degreeCounts.set(conn.sourceId, (degreeCounts.get(conn.sourceId) || 0) + 1);
+    degreeCounts.set(conn.targetId, (degreeCounts.get(conn.targetId) || 0) + 1);
+  }
+  for (const node of visNodes) {
+    node.connectionCount = degreeCounts.get(node.id) || 0;
+  }
+
   return {
     nodes: visNodes,
     connections: visConnections
   };
 }
 
-export function hydrateEnginePayloads(canonical: CanonicalGraphPayload): EnginePayloads {
+export function initialCoords(index: number, _total?: number): { x: number; y: number } {
+  const angle = index * 2.3999632297286533;
+  const radius = 8 * Math.sqrt(index + 1);
+  return {
+    x: Number((Math.cos(angle) * radius).toFixed(4)),
+    y: Number((Math.sin(angle) * radius).toFixed(4))
+  };
+}
+
+export function hydrateEnginePayloads(
+  canonical: CanonicalGraphPayload,
+  layoutPositions?: GraphLayoutPositions
+): EnginePayloads {
   const visNodes = canonical.nodes;
   const visConnections = canonical.connections;
+  const totalNodes = visNodes.length;
+
+  const resolveCoords = (id: string, idx: number): { x: number; y: number; z?: number } => {
+    const pos = layoutPositions?.[id];
+    if (pos) {
+      return {
+        x: pos[0],
+        y: pos[1],
+        ...(pos.length >= 3 ? { z: pos[2] } : {})
+      };
+    }
+    return initialCoords(idx, totalNodes);
+  };
 
   // 1. Vis.js Network payload
   const visNetworkPayload = {
-    nodes: visNodes.map(n => ({ ...n })),
+    nodes: visNodes.map((n, idx) => {
+      const coords = resolveCoords(n.id, idx);
+      return {
+        ...n,
+        x: coords.x,
+        y: coords.y
+      };
+    }),
     connections: visConnections.map(c => ({ ...c }))
   };
 
   // 2. Cytoscape elements
   const cytoscapeElements: CytoscapeElement[] = [];
-  visNodes.forEach(node => {
+  visNodes.forEach((node, idx) => {
+    const coords = resolveCoords(node.id, idx);
     cytoscapeElements.push({
       data: {
         id: node.id,
@@ -895,6 +1026,10 @@ export function hydrateEnginePayloads(canonical: CanonicalGraphPayload): EngineP
         date: node.date,
         image: node.image,
         tags: node.tags ? [...node.tags] : undefined
+      },
+      position: {
+        x: coords.x,
+        y: coords.y
       }
     });
   });
@@ -909,32 +1044,57 @@ export function hydrateEnginePayloads(canonical: CanonicalGraphPayload): EngineP
   });
 
   // 3. D3 / 3D-force nodes & connections
-  const d3Nodes: GraphNodePayload[] = visNodes.map(n => ({
-    id: n.id,
-    name: n.name,
-    size: n.size,
-    group: n.group,
-    typeLabel: n.typeLabel,
-    description: n.description,
-    date: n.date,
-    image: n.image,
-    tags: n.tags ? [...n.tags] : undefined
-  }));
+  const d3Nodes: GraphNodePayload[] = visNodes.map((n, idx) => {
+    const coords = resolveCoords(n.id, idx);
+    return {
+      id: n.id,
+      name: n.name,
+      size: n.size,
+      group: n.group,
+      connectionCount: n.connectionCount,
+      x: coords.x,
+      y: coords.y,
+      typeLabel: n.typeLabel,
+      description: n.description,
+      date: n.date,
+      image: n.image,
+      tags: n.tags ? [...n.tags] : undefined
+    };
+  });
   const d3Connections: GraphConnectionPayload[] = visConnections.map(c => ({
     sourceId: c.sourceId,
     targetId: c.targetId
   }));
 
-  // 4. Sigma nodes & edges (deterministic Golden-Angle spiral)
+  // 3b. 3D Force Graph nodes (includes z if provided in layoutPositions)
+  const force3dNodes: GraphNodePayload[] = visNodes.map((n, idx) => {
+    const coords = resolveCoords(n.id, idx);
+    return {
+      id: n.id,
+      name: n.name,
+      size: n.size,
+      group: n.group,
+      connectionCount: n.connectionCount,
+      x: coords.x,
+      y: coords.y,
+      ...(coords.z !== undefined ? { z: coords.z } : {}),
+      typeLabel: n.typeLabel,
+      description: n.description,
+      date: n.date,
+      image: n.image,
+      tags: n.tags ? [...n.tags] : undefined
+    };
+  });
+
+  // 4. Sigma nodes & edges (pre-computed or deterministic Golden-Angle spiral)
   const defaultStyleTokens = getGraphStyleTokens(false);
   const sigmaNodes: SigmaNode[] = visNodes.map((n, idx) => {
-    const angle = idx * 2.3999632297286533;
-    const radius = 8 * Math.sqrt(idx + 1);
+    const coords = resolveCoords(n.id, idx);
     return {
       id: n.id,
       label: n.name,
-      x: Number((Math.cos(angle) * radius).toFixed(4)),
-      y: Number((Math.sin(angle) * radius).toFixed(4)),
+      x: coords.x,
+      y: coords.y,
       size: 5,
       rawSize: n.size,
       group: n.group,
@@ -961,8 +1121,8 @@ export function hydrateEnginePayloads(canonical: CanonicalGraphPayload): EngineP
     cytoscape: { elements: cytoscapeElements },
     d3: { nodes: d3Nodes, connections: d3Connections },
     sigma: { nodes: sigmaNodes, edges: sigmaEdges },
-    '3d-force': { nodes: d3Nodes.map(n => ({ ...n })), connections: d3Connections.map(c => ({ ...c })) },
-    '3d-force-graph': { nodes: d3Nodes.map(n => ({ ...n })), connections: d3Connections.map(c => ({ ...c })) }
+    '3d-force': { nodes: force3dNodes.map(n => ({ ...n })), connections: d3Connections.map(c => ({ ...c })) },
+    '3d-force-graph': { nodes: force3dNodes.map(n => ({ ...n })), connections: d3Connections.map(c => ({ ...c })) }
   };
 }
 

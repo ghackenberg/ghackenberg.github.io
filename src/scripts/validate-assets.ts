@@ -317,32 +317,54 @@ if (fs.existsSync(legacyManifestPath)) {
   unhashedApiJsonCount++;
 }
 
+const EXPECTED_LAYOUT_ENGINES = [
+  'cytoscape',
+  'sigma',
+  'd3',
+  'vis-network',
+  '3d-force-graph',
+] as const;
+
 if (!fs.existsSync(apiDir)) {
   console.error('[validate-assets] ❌ Assertion 4 Failed: dist/api directory does not exist.');
   errorsCount++;
   unhashedApiJsonCount++;
 } else {
   const apiJsonFiles = getJsonFiles(apiDir);
-  const hasGraphPayloadJson = apiJsonFiles.some((f) =>
-    GRAPH_PAYLOAD_JSON_REGEX.test(path.basename(f))
+  const hasGraphPayloadJson = apiJsonFiles.some(
+    (f) => GRAPH_PAYLOAD_JSON_REGEX.test(path.basename(f)) && fs.statSync(f).size > 0
   );
   if (!hasGraphPayloadJson) {
     console.error(
-      '[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a hashed graph-payload-[a-f0-9]{8}.json file.'
+      '[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a non-empty hashed graph-payload-[a-f0-9]{8}.json file.'
     );
     errorsCount++;
     unhashedApiJsonCount++;
   }
 
-  const hasContentManifestJson = apiJsonFiles.some((f) =>
-    CONTENT_MANIFEST_JSON_REGEX.test(path.basename(f))
+  const hasContentManifestJson = apiJsonFiles.some(
+    (f) => CONTENT_MANIFEST_JSON_REGEX.test(path.basename(f)) && fs.statSync(f).size > 0
   );
   if (!hasContentManifestJson) {
     console.error(
-      '[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a hashed content-manifest-[a-f0-9]{8}.json file.'
+      '[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a non-empty hashed content-manifest-[a-f0-9]{8}.json file.'
     );
     errorsCount++;
     unhashedApiJsonCount++;
+  }
+
+  for (const engine of EXPECTED_LAYOUT_ENGINES) {
+    const engineRegex = new RegExp(`^graph-layout-${engine}-[a-f0-9]{8}\\.json$`, 'i');
+    const hasEngineLayoutJson = apiJsonFiles.some(
+      (f) => engineRegex.test(path.basename(f)) && fs.statSync(f).size > 0
+    );
+    if (!hasEngineLayoutJson) {
+      console.error(
+        `[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a non-empty hashed graph-layout-${engine}-[a-f0-9]{8}.json file.`
+      );
+      errorsCount++;
+      unhashedApiJsonCount++;
+    }
   }
 
   for (const jsonFile of apiJsonFiles) {

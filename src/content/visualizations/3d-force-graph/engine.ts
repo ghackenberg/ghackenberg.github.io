@@ -1,6 +1,7 @@
 import ForceGraph3D from '3d-force-graph';
 import {
   GRAPH_COLORS,
+  GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
   getGraphStyleTokens,
@@ -35,10 +36,31 @@ export interface Force3DLink {
   displayWidth?: number;
 }
 
+export interface Force3DVec3 {
+  x: number;
+  y: number;
+  z: number;
+  set?: (x: number, y: number, z: number) => void;
+}
+
+export interface Force3DCamera {
+  position: Force3DVec3;
+  up?: Force3DVec3;
+  fov?: number;
+  aspect?: number;
+  projectionMatrix?: { elements?: ArrayLike<number> };
+  lookAt?: (x: number, y: number, z: number) => void;
+  updateProjectionMatrix?: () => void;
+}
+
 export interface Force3DNavigationControls {
   enabled?: boolean;
   noZoom?: boolean;
   enableZoom?: boolean;
+  target?: Force3DVec3;
+  update?: () => void;
+  addEventListener?: (type: string, listener: () => void) => void;
+  removeEventListener?: (type: string, listener: () => void) => void;
 }
 
 export interface Force3DEngine {
@@ -57,12 +79,19 @@ export interface Force3DEngine {
   isLight?: boolean;
   lastOrderSignature?: string;
   lastDraggedAt?: number;
+  forcePositions: Map<string, { x: number; y: number; z: number }>;
   recenterTimeout?: ReturnType<typeof setTimeout> | null;
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
   animationFrameId: number | null;
+  cameraAdaptFrameId: number | null;
+  cameraAdaptEndTime?: number;
+  cleanupControlsListeners?: (() => void) | null;
   highlightFrameId: number | null;
   applyHighlight?(immediate?: boolean): void;
+  applyForces(initialLoad?: boolean): void;
+  stepCameraTowardCloud(alpha: number): void;
+  startCameraAdaptLoop(durationMs?: number): void;
   init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
@@ -88,10 +117,14 @@ const engine: Force3DEngine = {
   container: null,
   lastOrderSignature: '',
   lastDraggedAt: 0,
+  forcePositions: new Map(),
   recenterTimeout: null,
   resizeObserver: null,
   initialized: false,
   animationFrameId: null,
+  cameraAdaptFrameId: null,
+  cameraAdaptEndTime: 0,
+  cleanupControlsListeners: null,
   highlightFrameId: null,
 
   async init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
@@ -105,17 +138,31 @@ const engine: Force3DEngine = {
     this.activeDistances = null;
     this.lastOrderSignature = '';
     this.lastDraggedAt = 0;
+    this.forcePositions = new Map();
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     const initialStyleTokens = getGraphStyleTokens(isLight);
     
-    // Cache nodes and connections with full rich metadata
-    this.nodes = engineData.nodes.map((n) => ({
-      ...n,
-      val: 6,
-      displayVal: 6,
-      color: colors[n.group] || colors[0],
-      displayColor: colors[n.group] || colors[0]
-    }));
+    // Cache nodes and connections with full rich metadata and pre-computed 3D coordinates.
+    // Pin fx/fy/fz initially so tick 1 of three-forcegraph copies (x, y, z) onto __threeObj.position without perturbing equilibrium.
+    this.nodes = engineData.nodes.map((n) => {
+      const nx = typeof n.x === 'number' ? n.x : 0;
+      const ny = typeof n.y === 'number' ? n.y : 0;
+      const nz = typeof n.z === 'number' ? n.z : 0;
+      this.forcePositions.set(n.id, { x: nx, y: ny, z: nz });
+      return {
+        ...n,
+        x: nx,
+        y: ny,
+        z: nz,
+        fx: nx,
+        fy: ny,
+        fz: nz,
+        val: 6,
+        displayVal: 6,
+        color: colors[n.group] || colors[0],
+        displayColor: colors[n.group] || colors[0]
+      };
+    });
 
     this.links = engineData.connections.map((c) => ({
       source: c.sourceId,
@@ -226,6 +273,7 @@ const engine: Force3DEngine = {
     this.graph = ForceGraph3D()(container)
       .width(initialWidth)
       .height(initialHeight)
+      .cooldownTicks(1)
       .graphData({ nodes: this.nodes, links: this.links })
       .backgroundColor('rgba(0,0,0,0)')
       .showNavInfo(false)
@@ -302,6 +350,15 @@ const engine: Force3DEngine = {
           window.location.href = targetUrl.pathname + targetUrl.search;
         }
       },
+      onNodePointerDown: (candidate) => {
+        const controls = this.graph?.controls?.() as Force3DNavigationControls | undefined;
+        if (controls) {
+          controls.enabled = !candidate;
+        }
+        if (!candidate && !this.draggedNodeId) {
+          this.startCameraAdaptLoop(2400);
+        }
+      },
       onNodeDragStart: (rawNode, sx, sy) => {
         if (!this.graph || !this.nodes) return;
         const node = this.nodes.find(n => n.id === rawNode.id);
@@ -319,6 +376,10 @@ const engine: Force3DEngine = {
         if (this.recenterTimeout) {
           clearTimeout(this.recenterTimeout);
           this.recenterTimeout = null;
+        }
+        if (this.cameraAdaptFrameId) {
+          cancelAnimationFrame(this.cameraAdaptFrameId);
+          this.cameraAdaptFrameId = null;
         }
         if (this.animationFrameId) {
           cancelAnimationFrame(this.animationFrameId);
@@ -350,6 +411,7 @@ const engine: Force3DEngine = {
             }
           });
           try {
+            this.graph.cooldownTicks(Infinity);
             this.graph.d3ReheatSimulation();
           } catch {
             // Suppress
@@ -418,25 +480,42 @@ const engine: Force3DEngine = {
             node.fx = null;
             node.fy = null;
             node.fz = null;
+            this.forcePositions.set(node.id, {
+              x: node.x ?? 0,
+              y: node.y ?? 0,
+              z: node.z ?? 0
+            });
           }
           try {
             this.graph.d3ReheatSimulation();
           } catch {
             // Suppress
           }
+          this.startCameraAdaptLoop(2400);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false);
+          this.animateTo(targets, 400, undefined, true);
         }
       }
     });
 
-    this.graph.d3Force('charge').strength(-120);
+    this.applyForces(true);
 
     const controls = (this.graph.controls?.() as Force3DNavigationControls | undefined);
     if (controls) {
       controls.noZoom = true;
       controls.enableZoom = false;
+      const onControlsRotate = () => {
+        if (!this.draggedNodeId && this.initialized) {
+          this.startCameraAdaptLoop(2400);
+        }
+      };
+      controls.addEventListener?.('change', onControlsRotate);
+      controls.addEventListener?.('end', onControlsRotate);
+      this.cleanupControlsListeners = () => {
+        controls.removeEventListener?.('change', onControlsRotate);
+        controls.removeEventListener?.('end', onControlsRotate);
+      };
     }
 
     let lastWidth = initialWidth;
@@ -450,6 +529,7 @@ const engine: Force3DEngine = {
           lastHeight = height;
           if (this.graph) {
             this.graph.width(width).height(height);
+            this.stepCameraTowardCloud(1);
           }
         }
       }
@@ -460,17 +540,276 @@ const engine: Force3DEngine = {
     this.updateLayout(layout, isLight);
     this.initialized = true;
 
-    setTimeout(() => {
-      if (this.graph) {
+    this.stepCameraTowardCloud(1);
+    this.startCameraAdaptLoop(500);
+    requestAnimationFrame(() => {
+      if (this.currentLayout === 'force' && this.nodes && !this.draggedNodeId) {
+        this.nodes.forEach((n) => {
+          n.fx = null;
+          n.fy = null;
+          n.fz = null;
+        });
         try {
-          this.graph.zoomToFit(400, 40);
+          this.graph?.cooldownTicks(0);
         } catch {
-          // Suppress if graph is already destroyed
+          // Suppress
         }
       }
-    }, 350);
+      this.stepCameraTowardCloud(1);
+    });
 
     return this;
+  },
+
+  applyForces(initialLoad = false) {
+    if (!this.graph) return;
+    try {
+      this.graph.d3Force('charge').strength(-120);
+      this.graph.cooldownTicks(initialLoad ? 1 : Infinity);
+    } catch {
+      // Suppress if force is not yet initialized
+    }
+  },
+
+  stepCameraTowardCloud(alpha: number) {
+    if (!this.graph || !this.nodes || this.nodes.length === 0) return;
+    try {
+      const camera = this.graph.camera?.() as Force3DCamera | undefined;
+      const controls = this.graph.controls?.() as Force3DNavigationControls | undefined;
+      if (!camera || !camera.position) return;
+
+      const curTargetX = controls?.target ? controls.target.x : 0;
+      const curTargetY = controls?.target ? controls.target.y : 0;
+      const curTargetZ = controls?.target ? controls.target.z : 0;
+
+      let dirX = camera.position.x - curTargetX;
+      let dirY = camera.position.y - curTargetY;
+      let dirZ = camera.position.z - curTargetZ;
+      let curDist = Math.hypot(dirX, dirY, dirZ);
+      if (curDist < 1e-3 || !Number.isFinite(curDist)) {
+        dirX = 0;
+        dirY = 0;
+        dirZ = 1;
+        curDist = 350;
+      } else {
+        dirX /= curDist;
+        dirY /= curDist;
+        dirZ /= curDist;
+      }
+
+      // Orthonormal camera basis (right, up, dir)
+      let upRefX = camera.up?.x ?? 0;
+      let upRefY = camera.up?.y ?? 1;
+      let upRefZ = camera.up?.z ?? 0;
+      if (Math.abs(dirX * upRefX + dirY * upRefY + dirZ * upRefZ) > 0.98) {
+        upRefX = 0;
+        upRefY = 0;
+        upRefZ = 1;
+      }
+      // right = normalize(cross(upRef, dir))
+      let rightX = upRefY * dirZ - upRefZ * dirY;
+      let rightY = upRefZ * dirX - upRefX * dirZ;
+      let rightZ = upRefX * dirY - upRefY * dirX;
+      const rightLen = Math.hypot(rightX, rightY, rightZ) || 1;
+      rightX /= rightLen;
+      rightY /= rightLen;
+      rightZ /= rightLen;
+
+      // up = cross(dir, right)
+      const upX = dirY * rightZ - dirZ * rightY;
+      const upY = dirZ * rightX - dirX * rightZ;
+      const upZ = dirX * rightY - dirY * rightX;
+
+      let minR = Infinity;
+      let maxR = -Infinity;
+      let minU = Infinity;
+      let maxU = -Infinity;
+      let minW = Infinity;
+      let maxW = -Infinity;
+
+      const projectedNodes: { r: number; u: number; w: number; rho: number }[] = [];
+
+      for (const n of this.nodes) {
+        const nx = n.x ?? 0;
+        const ny = n.y ?? 0;
+        const nz = n.z ?? 0;
+        if (!Number.isFinite(nx) || !Number.isFinite(ny) || !Number.isFinite(nz)) continue;
+        const rCoord = nx * rightX + ny * rightY + nz * rightZ;
+        const uCoord = nx * upX + ny * upY + nz * upZ;
+        const wCoord = nx * dirX + ny * dirY + nz * dirZ;
+        const val = Math.max(1, n.displayVal ?? n.val ?? 6);
+        const rho = 4 * Math.cbrt(val);
+        projectedNodes.push({ r: rCoord, u: uCoord, w: wCoord, rho });
+        if (rCoord < minR) minR = rCoord;
+        if (rCoord > maxR) maxR = rCoord;
+        if (uCoord < minU) minU = uCoord;
+        if (uCoord > maxU) maxU = uCoord;
+        if (wCoord < minW) minW = wCoord;
+        if (wCoord > maxW) maxW = wCoord;
+      }
+
+      if (projectedNodes.length === 0 || !Number.isFinite(minR) || !Number.isFinite(maxR)) return;
+
+      const cw = (minW + maxW) / 2;
+
+      const width = this.container?.clientWidth || 800;
+      const height = this.container?.clientHeight || 500;
+      const aspect = width > 0 && height > 0 ? width / height : 1.5;
+      const fovDeg = camera.fov || 75;
+      const fallbackP5 = 1 / Math.tan(((fovDeg * Math.PI) / 180) * 0.5);
+      const fallbackP0 = fallbackP5 / aspect;
+      const elems = camera.projectionMatrix?.elements;
+      const rawP0 = elems && elems.length > 5 ? Number(elems[0]) : NaN;
+      const rawP5 = elems && elems.length > 5 ? Number(elems[5]) : NaN;
+      const p0 = Number.isFinite(rawP0) && rawP0 > 0 ? rawP0 : fallbackP0;
+      const p5 = Number.isFinite(rawP5) && rawP5 > 0 ? rawP5 : fallbackP5;
+
+      const fx = (width * 0.5) * p0;
+      const fy = (height * 0.5) * p5;
+      const padX = GRAPH_VIEWPORT_CONFIG.padX;
+      const padY = GRAPH_VIEWPORT_CONFIG.padY;
+      const halfW = Math.max(60, width * 0.5 - padX);
+      const halfH = Math.max(60, height * 0.5 - padY);
+
+      let cr = (minR + maxR) / 2;
+      let cu = (minU + maxU) / 2;
+      let dist = Math.max(curDist, (maxW - cw) + 60);
+
+      for (let iter = 0; iter < 5; iter++) {
+        let minScreenX = Infinity;
+        let maxScreenX = -Infinity;
+        let minScreenY = Infinity;
+        let maxScreenY = -Infinity;
+        let idxL = 0;
+        let idxR = 0;
+        let idxB = 0;
+        let idxT = 0;
+
+        for (let i = 0; i < projectedNodes.length; i++) {
+          const pn = projectedNodes[i];
+          const dw = pn.w - cw;
+          const zi = Math.max(20, dist - dw);
+          const xLeft = fx * ((pn.r - cr - pn.rho) / zi);
+          const xRight = fx * ((pn.r - cr + pn.rho) / zi);
+          const yBottom = fy * ((pn.u - cu - pn.rho) / zi);
+          const yTop = fy * ((pn.u - cu + pn.rho) / zi);
+
+          if (xLeft < minScreenX) {
+            minScreenX = xLeft;
+            idxL = i;
+          }
+          if (xRight > maxScreenX) {
+            maxScreenX = xRight;
+            idxR = i;
+          }
+          if (yBottom < minScreenY) {
+            minScreenY = yBottom;
+            idxB = i;
+          }
+          if (yTop > maxScreenY) {
+            maxScreenY = yTop;
+            idxT = i;
+          }
+        }
+
+        const nL = projectedNodes[idxL];
+        const nR = projectedNodes[idxR];
+        const nB = projectedNodes[idxB];
+        const nT = projectedNodes[idxT];
+        const zL = Math.max(20, dist - (nL.w - cw));
+        const zR = Math.max(20, dist - (nR.w - cw));
+        const zB = Math.max(20, dist - (nB.w - cw));
+        const zT = Math.max(20, dist - (nT.w - cw));
+
+        cr = ((nL.r - nL.rho) / zL + (nR.r + nR.rho) / zR) / (1 / zL + 1 / zR);
+        cu = ((nB.u - nB.rho) / zB + (nT.u + nT.rho) / zT) / (1 / zB + 1 / zT);
+
+        let dReq = 80;
+        for (let i = 0; i < projectedNodes.length; i++) {
+          const pn = projectedNodes[i];
+          const dw = pn.w - cw;
+          const needX = fx * ((Math.abs(pn.r - cr) + pn.rho) / halfW);
+          const needY = fy * ((Math.abs(pn.u - cu) + pn.rho) / halfH);
+          const needed = dw + Math.max(needX, needY);
+          if (needed > dReq) {
+            dReq = needed;
+          }
+        }
+        dist = Math.max(80, Math.min(2500, dReq));
+      }
+
+      const cx = cr * rightX + cu * upX + cw * dirX;
+      const cy = cr * rightY + cu * upY + cw * dirY;
+      const cz = cr * rightZ + cu * upZ + cw * dirZ;
+      const targetDist = dist;
+      const t = Math.max(0, Math.min(1, alpha));
+
+      const nextTargetX = curTargetX + (cx - curTargetX) * t;
+      const nextTargetY = curTargetY + (cy - curTargetY) * t;
+      const nextTargetZ = curTargetZ + (cz - curTargetZ) * t;
+      const nextDist = curDist + (targetDist - curDist) * t;
+
+      if (controls?.target) {
+        if (typeof controls.target.set === 'function') {
+          controls.target.set(nextTargetX, nextTargetY, nextTargetZ);
+        } else {
+          controls.target.x = nextTargetX;
+          controls.target.y = nextTargetY;
+          controls.target.z = nextTargetZ;
+        }
+      }
+
+      const nextCamX = nextTargetX + dirX * nextDist;
+      const nextCamY = nextTargetY + dirY * nextDist;
+      const nextCamZ = nextTargetZ + dirZ * nextDist;
+
+      if (typeof camera.position.set === 'function') {
+        camera.position.set(nextCamX, nextCamY, nextCamZ);
+      } else {
+        camera.position.x = nextCamX;
+        camera.position.y = nextCamY;
+        camera.position.z = nextCamZ;
+      }
+
+      if (t >= 0.999) {
+        controls?.update?.();
+      }
+      camera.lookAt?.(nextTargetX, nextTargetY, nextTargetZ);
+    } catch {
+      // Suppress if scene/camera is not yet ready
+    }
+  },
+
+  startCameraAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+    const nowInit = performance.now();
+    this.cameraAdaptEndTime = Math.max(this.cameraAdaptEndTime || 0, nowInit + durationMs);
+    if (this.cameraAdaptFrameId) {
+      return;
+    }
+    let lastTime = nowInit;
+    const tick = (now: number) => {
+      if (!this.graph || !this.nodes || this.draggedNodeId) {
+        this.cameraAdaptFrameId = null;
+        return;
+      }
+      const dt = Math.max(1, now - lastTime);
+      lastTime = now;
+      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      if (this.currentLayout === 'force') {
+        for (const n of this.nodes) {
+          if (typeof n.x === 'number' && typeof n.y === 'number' && typeof n.z === 'number') {
+            this.forcePositions.set(n.id, { x: n.x, y: n.y, z: n.z });
+          }
+        }
+      }
+      this.stepCameraTowardCloud(stepAlpha);
+      if (now < (this.cameraAdaptEndTime || 0)) {
+        this.cameraAdaptFrameId = requestAnimationFrame(tick);
+      } else {
+        this.cameraAdaptFrameId = null;
+      }
+    };
+    this.cameraAdaptFrameId = requestAnimationFrame(tick);
   },
 
   computeLayoutTargets(layout: string, useCurrentOrder = false) {
@@ -588,33 +927,60 @@ const engine: Force3DEngine = {
     }
 
     if (layout === 'radial' || layout === 'columns') {
+      this.applyForces(false);
       const { targets, signature } = this.computeLayoutTargets(layout, false);
       this.lastOrderSignature = signature;
-      this.animateTo(targets, 800, undefined, this.initialized);
+      this.animateTo(targets, 800, undefined, true);
     } else {
       // default: force directed
-      // Release node positions so the force simulation can solve them dynamically
-      this.nodes.forEach(n => {
-        n.fx = null;
-        n.fy = null;
-        n.fz = null;
-      });
-      
-      // Only reheat the simulation if we are already initialized and switching layouts.
-      if (this.initialized) {
+      if (!this.initialized) {
+        this.nodes.forEach(n => {
+          const fp = this.forcePositions.get(n.id);
+          if (fp) {
+            n.x = fp.x;
+            n.y = fp.y;
+            n.z = fp.z;
+            n.fx = fp.x;
+            n.fy = fp.y;
+            n.fz = fp.z;
+          }
+        });
+        return;
+      }
+
+      this.applyForces(false);
+      if (this.forcePositions.size > 0) {
+        const targets: Record<string, { x: number; y: number; z: number }> = {};
+        for (const [id, pos] of this.forcePositions.entries()) {
+          targets[id] = { x: pos.x, y: pos.y, z: pos.z };
+        }
+        this.animateTo(targets, 800, undefined, true);
+        if (this.recenterTimeout) clearTimeout(this.recenterTimeout);
+        this.recenterTimeout = setTimeout(() => {
+          this.nodes?.forEach(n => {
+            n.fx = null;
+            n.fy = null;
+            n.fz = null;
+          });
+          try {
+            this.graph?.cooldownTicks(0);
+          } catch {
+            // Suppress
+          }
+          this.startCameraAdaptLoop(2400);
+        }, 820);
+      } else {
+        this.nodes.forEach(n => {
+          n.fx = null;
+          n.fy = null;
+          n.fz = null;
+        });
         try {
           this.graph.d3ReheatSimulation();
         } catch {
           // Suppress if the internal engine has not loaded yet
         }
-        if (this.recenterTimeout) clearTimeout(this.recenterTimeout);
-        this.recenterTimeout = setTimeout(() => {
-          try {
-            this.graph?.zoomToFit(400, 40);
-          } catch {
-            // Suppress
-          }
-        }, 450);
+        this.startCameraAdaptLoop(2400);
       }
     }
   },
@@ -663,6 +1029,9 @@ const engine: Force3DEngine = {
       if (this.graph && this.initialized) {
         try {
           this.graph.d3ReheatSimulation();
+          if (zoomToFitAfter && !this.draggedNodeId) {
+            this.stepCameraTowardCloud(0.035);
+          }
         } catch {
           // Suppress
         }
@@ -675,8 +1044,8 @@ const engine: Force3DEngine = {
         try {
           if (this.graph && this.initialized) {
             this.graph.d3ReheatSimulation();
-            if (zoomToFitAfter) {
-              this.graph.zoomToFit(400, 40);
+            if (zoomToFitAfter && !this.draggedNodeId) {
+              this.startCameraAdaptLoop(2400);
             }
           }
         } catch {
@@ -693,12 +1062,22 @@ const engine: Force3DEngine = {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
     }
+    if (this.cameraAdaptFrameId) {
+      cancelAnimationFrame(this.cameraAdaptFrameId);
+      this.cameraAdaptFrameId = null;
+    }
+    this.cameraAdaptEndTime = 0;
+    if (this.cleanupControlsListeners) {
+      this.cleanupControlsListeners();
+      this.cleanupControlsListeners = null;
+    }
     if (this.recenterTimeout) {
       clearTimeout(this.recenterTimeout);
       this.recenterTimeout = null;
     }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
     }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();

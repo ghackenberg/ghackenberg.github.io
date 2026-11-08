@@ -3,6 +3,7 @@ import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import {
   GRAPH_COLORS,
+  GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
   getGraphStyleTokens,
@@ -53,10 +54,15 @@ export interface SigmaEngine {
   isLight?: boolean;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
+  forcePositions: Map<string, { x: number; y: number }>;
   physicsFrameId?: number | null;
+  viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   animationFrameId: number | null;
   init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<SigmaEngine>;
+  stepViewportTowardCloud(alpha: number): void;
+  startViewportAdaptLoop(durationMs?: number): void;
+  getForcePositions(): Record<string, { x: number; y: number }>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, resetCamera?: boolean): void;
@@ -77,7 +83,9 @@ const engine: SigmaEngine = {
   container: null,
   lastDraggedAt: 0,
   lastOrderSignature: '',
+  forcePositions: new Map(),
   physicsFrameId: null,
+  viewportAdaptFrameId: null,
   resizeObserver: null,
   animationFrameId: null,
 
@@ -88,6 +96,7 @@ const engine: SigmaEngine = {
     this.currentLayout = undefined;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
+    this.forcePositions = new Map();
     const nodes = payload.sigma.nodes;
     const edges = payload.sigma.edges;
     this.nodeMap = new Map(nodes.map(n => [n.id, n]));
@@ -95,8 +104,9 @@ const engine: SigmaEngine = {
     const styleTokens = getGraphStyleTokens(isLight);
 
     nodes.forEach(n => {
-      const nx = n.x || Math.random();
-      const ny = n.y || Math.random();
+      const nx = typeof n.x === 'number' ? n.x : 0;
+      const ny = typeof n.y === 'number' ? n.y : 0;
+      this.forcePositions.set(n.id, { x: nx, y: ny });
       this.graph?.addNode(n.id, {
         label: '',
         x: nx,
@@ -116,36 +126,13 @@ const engine: SigmaEngine = {
       });
     });
 
-    // Pre-solve initial ForceAtlas2 layout and center around (0, 0) so initial render is immediately organic
-    forceAtlas2.assign(this.graph, {
-      iterations: 100,
-      settings: {
-        gravity: 0.8
-      }
-    });
-    let initSumX = 0;
-    let initSumY = 0;
-    let initCount = 0;
-    this.graph.forEachNode(node => {
-      initSumX += (this.graph?.getNodeAttribute(node, 'x') as number) || 0;
-      initSumY += (this.graph?.getNodeAttribute(node, 'y') as number) || 0;
-      initCount++;
-    });
-    if (initCount > 0) {
-      const meanX = initSumX / initCount;
-      const meanY = initSumY / initCount;
-      this.graph.forEachNode(node => {
-        this.graph?.setNodeAttribute(node, 'x', ((this.graph?.getNodeAttribute(node, 'x') as number) || 0) - meanX);
-        this.graph?.setNodeAttribute(node, 'y', ((this.graph?.getNodeAttribute(node, 'y') as number) || 0) - meanY);
-      });
-    }
-
     const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
       defaultNodeColor: tokens.nodeDefault,
       defaultEdgeColor: styleTokens.edgeColor,
       renderLabels: false,
       zIndex: true,
+      stagePadding: GRAPH_VIEWPORT_CONFIG.padX + SIGMA_BASE_NODE_SIZE,
       labelColor: { color: tokens.textHeading },
       labelFont: 'Outfit, Inter, sans-serif',
       labelSize: 10,
@@ -187,6 +174,7 @@ const engine: SigmaEngine = {
           iterations: 2,
           settings: {
             gravity: 0.8,
+            scalingRatio: 1,
             slowDown: 6
           }
         });
@@ -409,6 +397,10 @@ const engine: SigmaEngine = {
         this.lastDraggedAt = performance.now();
         applyHighlight(draggedNode);
 
+        if (this.viewportAdaptFrameId) {
+          cancelAnimationFrame(this.viewportAdaptFrameId);
+          this.viewportAdaptFrameId = null;
+        }
         if (!this.sigma.getCustomBBox()) {
           this.sigma.setCustomBBox(this.sigma.getBBox());
         }
@@ -472,6 +464,7 @@ const engine: SigmaEngine = {
             iterations: 30,
             settings: {
               gravity: 0.8,
+              scalingRatio: 1,
               slowDown: 3
             }
           });
@@ -495,13 +488,16 @@ const engine: SigmaEngine = {
             for (const node of Object.keys(targets)) {
               targets[node].x -= meanX;
               targets[node].y -= meanY;
+              this.forcePositions.set(node, { x: targets[node].x, y: targets[node].y });
             }
           }
 
-          this.animateTo(targets, 400, undefined, false);
+          this.animateTo(targets, 650, undefined, false);
+          this.startViewportAdaptLoop(2400);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
-          this.animateTo(targets, 400, undefined, false);
+          this.animateTo(targets, 650, undefined, false);
+          this.startViewportAdaptLoop(2400);
         }
       }
     });
@@ -509,20 +505,10 @@ const engine: SigmaEngine = {
     this.isLight = isLight;
     if (layout === 'force') {
       this.currentLayout = 'force';
-      this.sigma.refresh();
+      this.stepViewportTowardCloud(1);
     } else {
       this.updateLayout(layout, isLight);
     }
-    
-    // Zoom to fit the graph and lock initial bounding box so node drags never cause camera jumps
-    setTimeout(() => {
-      if (this.sigma) {
-        this.sigma.setCustomBBox(null);
-        this.sigma.refresh();
-        this.sigma.setCustomBBox(this.sigma.getBBox());
-        this.sigma.getCamera().animatedReset();
-      }
-    }, 100);
 
     // Bind ResizeObserver to handle container size changes dynamically
     let lastWidth = container.clientWidth;
@@ -533,11 +519,8 @@ const engine: SigmaEngine = {
         if (Math.abs(width - lastWidth) >= 1 || Math.abs(height - lastHeight) >= 1) {
           lastWidth = width;
           lastHeight = height;
-          if (this.sigma) {
-            this.sigma.setCustomBBox(null);
-            this.sigma.refresh();
-            this.sigma.setCustomBBox(this.sigma.getBBox());
-            this.sigma.getCamera().animatedReset();
+          if (this.sigma && draggedNode === null) {
+            this.stepViewportTowardCloud(1);
           }
         }
       }
@@ -545,6 +528,84 @@ const engine: SigmaEngine = {
     this.resizeObserver.observe(container);
 
     return this;
+  },
+
+  stepViewportTowardCloud(alpha: number) {
+    if (!this.sigma || !this.graph) return;
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+
+    this.graph.forEachNode((nodeId) => {
+      const nx = Number(this.graph?.getNodeAttribute(nodeId, 'x') ?? 0);
+      const ny = Number(this.graph?.getNodeAttribute(nodeId, 'y') ?? 0);
+      if (!Number.isFinite(nx) || !Number.isFinite(ny)) return;
+      if (nx < minX) minX = nx;
+      if (nx > maxX) maxX = nx;
+      if (ny < minY) minY = ny;
+      if (ny > maxY) maxY = ny;
+    });
+
+    if (!Number.isFinite(minX) || !Number.isFinite(maxX)) return;
+    if (maxX - minX < 1e-3) {
+      minX -= 1;
+      maxX += 1;
+    }
+    if (maxY - minY < 1e-3) {
+      minY -= 1;
+      maxY += 1;
+    }
+
+    const curBBox = this.sigma.getCustomBBox() || {
+      x: [minX, maxX] as [number, number],
+      y: [minY, maxY] as [number, number]
+    };
+    const t = Math.max(0, Math.min(1, alpha));
+
+    const nextMinX = curBBox.x[0] + (minX - curBBox.x[0]) * t;
+    const nextMaxX = curBBox.x[1] + (maxX - curBBox.x[1]) * t;
+    const nextMinY = curBBox.y[0] + (minY - curBBox.y[0]) * t;
+    const nextMaxY = curBBox.y[1] + (maxY - curBBox.y[1]) * t;
+
+    this.sigma.setCustomBBox({
+      x: [nextMinX, nextMaxX],
+      y: [nextMinY, nextMaxY]
+    });
+
+    const cam = this.sigma.getCamera();
+    const state = cam.getState();
+    cam.setState({
+      x: state.x + (0.5 - state.x) * t,
+      y: state.y + (0.5 - state.y) * t,
+      ratio: state.ratio + (1 - state.ratio) * t
+    });
+    this.sigma.refresh();
+  },
+
+  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
+    }
+    const startTime = performance.now();
+    let lastTime = startTime;
+    const tick = (now: number) => {
+      if (!this.sigma || !this.graph) {
+        this.viewportAdaptFrameId = null;
+        return;
+      }
+      const dt = Math.max(1, now - lastTime);
+      lastTime = now;
+      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      this.stepViewportTowardCloud(stepAlpha);
+      if (now - startTime < durationMs) {
+        this.viewportAdaptFrameId = requestAnimationFrame(tick);
+      } else {
+        this.viewportAdaptFrameId = null;
+      }
+    };
+    this.viewportAdaptFrameId = requestAnimationFrame(tick);
   },
 
   computeLayoutTargets(layout: string, useCurrentOrder = false) {
@@ -639,6 +700,59 @@ const engine: SigmaEngine = {
     return { targets, signature };
   },
 
+  getForcePositions(): Record<string, { x: number; y: number }> {
+    const targets: Record<string, { x: number; y: number }> = {};
+    if (this.forcePositions.size > 0) {
+      for (const [id, pos] of this.forcePositions.entries()) {
+        targets[id] = { x: pos.x, y: pos.y };
+      }
+      return targets;
+    }
+    if (!this.graph) return targets;
+
+    const startingPos: Record<string, { x: number; y: number }> = {};
+    this.graph.forEachNode(node => {
+      startingPos[node] = {
+        x: this.graph?.getNodeAttribute(node, 'x') as number,
+        y: this.graph?.getNodeAttribute(node, 'y') as number
+      };
+    });
+
+    forceAtlas2.assign(this.graph, {
+      iterations: 100,
+      settings: {
+        gravity: 0.8,
+        scalingRatio: 12,
+        strongGravityMode: false,
+        slowDown: 2
+      }
+    });
+
+    let sumX = 0;
+    let sumY = 0;
+    let count = 0;
+    this.graph.forEachNode(node => {
+      const tx = this.graph?.getNodeAttribute(node, 'x') as number;
+      const ty = this.graph?.getNodeAttribute(node, 'y') as number;
+      targets[node] = { x: tx, y: ty };
+      sumX += tx;
+      sumY += ty;
+      count++;
+      this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
+      this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
+    });
+    if (count > 0) {
+      const meanX = sumX / count;
+      const meanY = sumY / count;
+      for (const node of Object.keys(targets)) {
+        targets[node].x -= meanX;
+        targets[node].y -= meanY;
+        this.forcePositions.set(node, { x: targets[node].x, y: targets[node].y });
+      }
+    }
+    return targets;
+  },
+
   updateLayout(layout: string, isLight: boolean) {
     if (!this.graph || !this.sigma) return;
     const layoutChanged = this.currentLayout !== layout;
@@ -670,47 +784,7 @@ const engine: SigmaEngine = {
       this.lastOrderSignature = signature;
       this.animateTo(targets, 600, undefined, true);
     } else {
-      // default: force directed
-      const targets: Record<string, { x: number; y: number }> = {};
-      const startingPos: Record<string, { x: number; y: number }> = {};
-      this.graph.forEachNode(node => {
-        startingPos[node] = {
-          x: this.graph?.getNodeAttribute(node, 'x') as number,
-          y: this.graph?.getNodeAttribute(node, 'y') as number
-        };
-      });
-
-      // Run ForceAtlas2 (which will change coordinates in graph)
-      forceAtlas2.assign(this.graph, {
-        iterations: 100,
-        settings: {
-          gravity: 0.8
-        }
-      });
-
-      // Read resulting targets centered around (0, 0) and reset graph to starting positions
-      let sumX = 0;
-      let sumY = 0;
-      let count = 0;
-      this.graph.forEachNode(node => {
-        const tx = this.graph?.getNodeAttribute(node, 'x') as number;
-        const ty = this.graph?.getNodeAttribute(node, 'y') as number;
-        targets[node] = { x: tx, y: ty };
-        sumX += tx;
-        sumY += ty;
-        count++;
-        this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
-        this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
-      });
-      if (count > 0) {
-        const meanX = sumX / count;
-        const meanY = sumY / count;
-        for (const node of Object.keys(targets)) {
-          targets[node].x -= meanX;
-          targets[node].y -= meanY;
-        }
-      }
-
+      const targets = this.getForcePositions();
       this.animateTo(targets, 600, undefined, true);
     }
   },
@@ -759,10 +833,7 @@ const engine: SigmaEngine = {
       } else {
         this.animationFrameId = null;
         if (resetCamera && this.sigma) {
-          this.sigma.setCustomBBox(null);
-          this.sigma.refresh();
-          this.sigma.setCustomBBox(this.sigma.getBBox());
-          this.sigma.getCamera().animatedReset({ duration: 400 });
+          this.stepViewportTowardCloud(1);
         }
       }
     };
@@ -778,6 +849,10 @@ const engine: SigmaEngine = {
     if (this.physicsFrameId) {
       cancelAnimationFrame(this.physicsFrameId);
       this.physicsFrameId = null;
+    }
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
     }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
