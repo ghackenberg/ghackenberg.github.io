@@ -35,30 +35,9 @@ const optimizedScreenshot = screenshotImg ? await getImage({
   quality: 85
 }) : null;
 
-import { buildGraphPayload } from "@commons/shared/graph-payload.js";
+import { getCanonicalGraphPayloadArtifact } from "@commons/server/graph-payload-endpoint";
 
-const posts = await getCollection("posts");
-const publications = await getCollection("publications");
-const presentations = await getCollection("presentations");
-const projects = await getCollection("projects");
-const courses = await getCollection("courses");
-const services = await getCollection("services");
-const visualizations = await getCollection("visualizations");
-const newsletters = await getCollection("newsletters");
-const tags = await getCollection("tags");
-
-const payload = await buildGraphPayload({
-  posts,
-  publications,
-  presentations,
-  projects,
-  courses,
-  services,
-  visualizations,
-  newsletters,
-  tags,
-  getImage
-});
+const payloadArtifact = await getCanonicalGraphPayloadArtifact();
 
 
 const engineSwitcherItems = [
@@ -241,7 +220,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           </div>
 
           <!-- Graph Rendering Canvas -->
-          <div id="canvas" class="absolute inset-0 w-full h-full overflow-hidden"></div>
+          <div
+            id="canvas"
+            class="absolute inset-0 w-full h-full overflow-hidden"
+            data-graph-type={type}
+            data-graph-payload-url={payloadArtifact.url}
+            data-graph-payload-hash={payloadArtifact.hash}
+          ></div>
         </div>
 
         <!-- Floating Glassmorphic Legend -->
@@ -305,36 +290,14 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
     tags={vis.data.tags || []} 
   />
 
-  <!-- Expose Astro variables to global scope for client script -->
-  <script is:inline define:vars={{ type, payload }}>
-    window.GRAPH_TYPE = type;
-    window.GRAPH_PAYLOAD = payload;
-  </script>
-
   <!-- Inject Graph Boot Scripts -->
   <script>
     import { getThemeTokens } from '@commons/shared/domain-themes';
-
-    interface VisNetworkNode {
-      id: string;
-      name: string;
-      size: number;
-      group: number;
-      typeLabel?: string;
-      description?: string;
-      date?: string;
-      image?: string;
-      tags?: string[];
-    }
-
-    interface GraphPayload {
-      cytoscape?: { elements: { data: Record<string, string | number | string[] | undefined> }[] };
-      d3?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
-      sigma?: { nodes: (VisNetworkNode & { label: string; x: number; y: number; color: string; rawSize?: number })[]; edges: { id: string; source: string; target: string; color?: string }[] };
-      '3d-force'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
-      '3d-force-graph'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
-      'vis-network'?: { nodes: VisNetworkNode[]; connections: { sourceId: string; targetId: string }[] };
-    }
+    import {
+      hydrateEnginePayloads,
+      type CanonicalGraphPayload,
+      type EnginePayloads,
+    } from '@commons/shared/graph-payload';
 
     interface GraphInstance {
       destroy(): void;
@@ -344,19 +307,61 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
     interface GraphEngine {
       layouts: { id: string; label: string }[];
-      init(container: HTMLElement, payload: GraphPayload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<GraphInstance>;
+      init(container: HTMLElement, payload: EnginePayloads, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<GraphInstance>;
     }
 
     declare global {
       interface Window {
         GRAPH_TYPE: string;
-        GRAPH_PAYLOAD: GraphPayload;
+        GRAPH_PAYLOAD: EnginePayloads;
         activeInstance: GraphInstance | null;
       }
     }
 
-    const type = window.GRAPH_TYPE;
-    const payload = window.GRAPH_PAYLOAD;
+    const STORAGE_KEY_PREFIX = 'graph-payload-';
+    let inMemoryPayloadCache: { hash: string; payload: EnginePayloads } | null = null;
+
+    async function loadGraphPayload(url: string, hash: string): Promise<EnginePayloads> {
+      if (inMemoryPayloadCache && inMemoryPayloadCache.hash === hash) {
+        return inMemoryPayloadCache.payload;
+      }
+
+      const storageKey = `${STORAGE_KEY_PREFIX}${hash}`;
+      try {
+        const cachedRaw = sessionStorage.getItem(storageKey);
+        if (cachedRaw) {
+          const canonical = JSON.parse(cachedRaw) as CanonicalGraphPayload;
+          const hydrated = hydrateEnginePayloads(canonical);
+          inMemoryPayloadCache = { hash, payload: hydrated };
+          return hydrated;
+        }
+      } catch {
+        // Ignore sessionStorage read/parse failures in privacy mode
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch graph payload (${response.status}): ${url}`);
+      }
+      const rawJson = await response.text();
+      const canonical = JSON.parse(rawJson) as CanonicalGraphPayload;
+
+      try {
+        for (let i = sessionStorage.length - 1; i >= 0; i--) {
+          const key = sessionStorage.key(i);
+          if (key && key.startsWith(STORAGE_KEY_PREFIX) && key !== storageKey) {
+            sessionStorage.removeItem(key);
+          }
+        }
+        sessionStorage.setItem(storageKey, rawJson);
+      } catch {
+        // Ignore sessionStorage quota or privacy mode errors
+      }
+
+      const hydrated = hydrateEnginePayloads(canonical);
+      inMemoryPayloadCache = { hash, payload: hydrated };
+      return hydrated;
+    }
 
     function onReady(fn: () => void) {
       if (document.readyState === 'loading') {
@@ -372,6 +377,11 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       const selector = document.getElementById('layout-selector') as HTMLSelectElement | null;
       const engineSelector = document.getElementById('engine-selector') as HTMLSelectElement | null;
       if (!container) return;
+
+      const type = container.dataset.graphType || '';
+      const payloadUrl = container.dataset.graphPayloadUrl || '';
+      const payloadHash = container.dataset.graphPayloadHash || '';
+      window.GRAPH_TYPE = type;
 
       const isInitialLightMode = document.documentElement.classList.contains('light');
       const initialTokens = getThemeTokens(isInitialLightMode);
@@ -424,28 +434,32 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         }
 
         try {
+          const payloadPromise = loadGraphPayload(payloadUrl, payloadHash);
           let engineModule;
           switch (type) {
             case 'cytoscape':
-              engineModule = await import('../../content/visualizations/cytoscape/engine.ts');
+              engineModule = await import('@content/visualizations/cytoscape/engine.ts');
               break;
             case 'd3':
-              engineModule = await import('../../content/visualizations/d3/engine.ts');
+              engineModule = await import('@content/visualizations/d3/engine.ts');
               break;
             case 'sigma':
-              engineModule = await import('../../content/visualizations/sigma/engine.ts');
+              engineModule = await import('@content/visualizations/sigma/engine.ts');
               break;
             case '3d-force-graph':
             case '3d-force':
-              engineModule = await import('../../content/visualizations/3d-force-graph/engine.ts');
+              engineModule = await import('@content/visualizations/3d-force-graph/engine.ts');
               // canonical 3d-force-graph engine
               break;
             case 'vis-network':
-              engineModule = await import('../../content/visualizations/vis-network/engine.ts');
+              engineModule = await import('@content/visualizations/vis-network/engine.ts');
               break;
             default:
               throw new Error(`Unknown visualization type: ${type}`);
           }
+
+          const payload = await payloadPromise;
+          window.GRAPH_PAYLOAD = payload;
 
           const engine = engineModule.default as GraphEngine;
           

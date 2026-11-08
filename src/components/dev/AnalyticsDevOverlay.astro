@@ -1,15 +1,18 @@
 ---
 // Dev-only Analytics Overlay Component
 // Zero footprint in production builds
+import { getContentManifestArtifact } from '@commons/server/content-manifest-endpoint';
+
 interface Props {
   isInsideFrame?: boolean;
 }
 
 const { isInsideFrame = false } = Astro.props;
+const manifestArtifact = !isInsideFrame ? await getContentManifestArtifact() : null;
 ---
 
 {!isInsideFrame && (
-<div id="dev-analytics-container" class="dev-analytics-root select-none font-sans text-xs">
+<div id="dev-analytics-container" data-manifest-url={manifestArtifact?.url} class="dev-analytics-root select-none font-sans text-xs">
   <!-- Strict Single-Row HUD Bar (Full Window Width, 50% Medium Gray) -->
   <aside
     id="dev-analytics-hud"

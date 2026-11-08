@@ -2,14 +2,17 @@
 // DevStudioShell.astro
 // Dev-only Studio Shell with Breakpoint Switcher, Dimensions Control,
 // Auto-Fit Stage, and Interactive Scroll-Minimap. Zero production footprint.
+import { getContentManifestArtifact } from '@commons/server/content-manifest-endpoint';
+
 interface Props {
   currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const manifestArtifact = await getContentManifestArtifact();
 ---
 
-<div id="dev-studio-root" class="fixed inset-0 z-[99999] flex flex-col bg-zinc-500 text-white font-sans select-none overflow-hidden">
+<div id="dev-studio-root" data-manifest-url={manifestArtifact.url} class="fixed inset-0 z-[99999] flex flex-col bg-zinc-500 text-white font-sans select-none overflow-hidden">
   <!-- Top Analytics Bar & Studio Toolbar (100vw, h-11) -->
   <header
     id="dev-analytics-hud"

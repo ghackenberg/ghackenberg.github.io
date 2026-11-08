@@ -61,7 +61,7 @@ let totalCheckedAttributes = 0;
 let totalAssetRefsChecked = 0;
 
 // Asset extensions to verify for physical existence on disk
-const ASSET_EXTENSION_REGEX = /\.(css|js|mjs|woff2?|ttf|eot|otf|png|jpe?g|webp|svg|gif|pdf|mp3|mp4|webm|avif|ico)$/i;
+const ASSET_EXTENSION_REGEX = /\.(css|js|mjs|json|woff2?|ttf|eot|otf|png|jpe?g|webp|svg|gif|pdf|mp3|mp4|webm|avif|ico)$/i;
 
 /**
  * Checks whether an attribute value refers to Astro's default build asset directory (_astro)
@@ -240,6 +240,23 @@ function isWhitelistedRasterImage(relPath: string): boolean {
 
 const HASHED_IMAGE_REGEX = /-[a-zA-Z0-9_-]{6,}\.(png|jpe?g|webp|avif|gif)$/i;
 const HASHED_AUDIO_REGEX = /-[a-zA-Z0-9_-]{6,}\.mp3$/i;
+const HASHED_API_JSON_REGEX = /-[a-zA-Z0-9_-]{6,}\.json$/i;
+const GRAPH_PAYLOAD_JSON_REGEX = /^graph-payload-[a-f0-9]{8}\.json$/i;
+const CONTENT_MANIFEST_JSON_REGEX = /^content-manifest-[a-f0-9]{8}\.json$/i;
+
+function getJsonFiles(dir: string): string[] {
+  let files: string[] = [];
+  if (!fs.existsSync(dir)) return files;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(getJsonFiles(fullPath));
+    } else if (entry.isFile() && /\.json$/i.test(entry.name)) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
 
 const rasterImages = getRasterImageFiles(distDir);
 let hashedRasterImagesCount = 0;
@@ -284,6 +301,61 @@ for (const audioFile of audioFiles) {
     unhashedAudioCount++;
   } else {
     hashedAudioCount++;
+  }
+}
+
+const apiDir = path.join(distDir, 'api');
+let hashedApiJsonCount = 0;
+let unhashedApiJsonCount = 0;
+
+const legacyManifestPath = path.join(distDir, 'content-manifest.json');
+if (fs.existsSync(legacyManifestPath)) {
+  console.error(
+    '[validate-assets] ❌ Assertion 4 Failed: Unhashed dist/content-manifest.json found at root of dist/.'
+  );
+  errorsCount++;
+  unhashedApiJsonCount++;
+}
+
+if (!fs.existsSync(apiDir)) {
+  console.error('[validate-assets] ❌ Assertion 4 Failed: dist/api directory does not exist.');
+  errorsCount++;
+  unhashedApiJsonCount++;
+} else {
+  const apiJsonFiles = getJsonFiles(apiDir);
+  const hasGraphPayloadJson = apiJsonFiles.some((f) =>
+    GRAPH_PAYLOAD_JSON_REGEX.test(path.basename(f))
+  );
+  if (!hasGraphPayloadJson) {
+    console.error(
+      '[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a hashed graph-payload-[a-f0-9]{8}.json file.'
+    );
+    errorsCount++;
+    unhashedApiJsonCount++;
+  }
+
+  const hasContentManifestJson = apiJsonFiles.some((f) =>
+    CONTENT_MANIFEST_JSON_REGEX.test(path.basename(f))
+  );
+  if (!hasContentManifestJson) {
+    console.error(
+      '[validate-assets] ❌ Assertion 4 Failed: dist/api does not contain a hashed content-manifest-[a-f0-9]{8}.json file.'
+    );
+    errorsCount++;
+    unhashedApiJsonCount++;
+  }
+
+  for (const jsonFile of apiJsonFiles) {
+    const relPath = path.relative(distDir, jsonFile).replace(/\\/g, '/');
+    if (!HASHED_API_JSON_REGEX.test(relPath)) {
+      console.error(
+        `[validate-assets] ❌ Assertion 4 Failed: Unhashed JSON file found in dist/api/: ${relPath}`
+      );
+      errorsCount++;
+      unhashedApiJsonCount++;
+    } else {
+      hashedApiJsonCount++;
+    }
   }
 }
 
@@ -624,10 +696,12 @@ if (verbose || errorsCount > 0) {
   console.log(`  - Checked asset references:      ${totalAssetRefsChecked}`);
   console.log(`  - Scanned raster images:         ${rasterImages.length} (${hashedRasterImagesCount} hashed, ${whitelistedRasterImagesCount} whitelisted)`);
   console.log(`  - Scanned audio files:           ${audioFiles.length} (${hashedAudioCount} hashed)`);
+  console.log(`  - Scanned API JSON files:        ${hashedApiJsonCount} hashed`);
   console.log(`  - Zero _astro references:        CONFIRMED (0 forbidden references)`);
-  console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount - assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'}`);
+  console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount - unhashedApiJsonCount - assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'}`);
   console.log(`  - Strict image hashing:          ${unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
   console.log(`  - Strict audio hashing:          ${unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+  console.log(`  - Strict API JSON hashing:       ${unhashedApiJsonCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
   console.log(`  - ImageObject JSON-LD parity:    ${assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'} (${totalImageObjectsVerified} ImageObjects across ${pagesWithImagesChecked} pages)`);
 }
 

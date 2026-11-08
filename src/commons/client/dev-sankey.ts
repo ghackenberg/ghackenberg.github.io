@@ -344,10 +344,16 @@ function ingestManifestPayload(manifest: ContentManifestPayload | null | undefin
 async function ensureContentManifestLoaded(): Promise<void> {
   if (isManifestPopulated) return;
   if (inFlightManifestPromise) return inFlightManifestPromise;
+  if (typeof document === 'undefined') return;
+
+  const manifestUrl =
+    document.getElementById('dev-analytics-container')?.dataset.manifestUrl ||
+    document.getElementById('dev-studio-root')?.dataset.manifestUrl;
+  if (!manifestUrl) return;
 
   inFlightManifestPromise = (async (): Promise<void> => {
     try {
-      const res = await fetch('/content-manifest.json');
+      const res = await fetch(manifestUrl);
       if (!res.ok) return;
       const json = (await res.json()) as ContentManifestPayload;
       ingestManifestPayload(json);

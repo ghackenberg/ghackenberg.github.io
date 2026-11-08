@@ -19,6 +19,11 @@ export interface GraphConnectionPayload {
   targetId: string;
 }
 
+export interface CanonicalGraphPayload {
+  nodes: GraphNodePayload[];
+  connections: GraphConnectionPayload[];
+}
+
 export interface CytoscapeElement {
   data: {
     id: string;
@@ -577,7 +582,7 @@ export function calculateTagCounts(options: {
   };
 }
 
-export async function buildGraphPayload(options: {
+export interface BuildGraphPayloadOptions {
   posts: RawEntity[];
   publications: RawEntity[];
   presentations?: RawEntity[];
@@ -588,7 +593,11 @@ export async function buildGraphPayload(options: {
   visualizations?: RawEntity[];
   tags: RawTag[];
   getImage?: typeof getImage;
-}): Promise<EnginePayloads> {
+}
+
+export async function buildCanonicalGraphPayload(
+  options: BuildGraphPayloadOptions
+): Promise<CanonicalGraphPayload> {
   const tagCounts = calculateTagCounts(options);
   const tagMap = new Map(options.tags.map(t => [t.id, t]));
 
@@ -854,10 +863,20 @@ export async function buildGraphPayload(options: {
     }
   }
 
-  // 1. Vis.js Network payload
-  const visNetworkPayload = {
+  return {
     nodes: visNodes,
     connections: visConnections
+  };
+}
+
+export function hydrateEnginePayloads(canonical: CanonicalGraphPayload): EnginePayloads {
+  const visNodes = canonical.nodes;
+  const visConnections = canonical.connections;
+
+  // 1. Vis.js Network payload
+  const visNetworkPayload = {
+    nodes: visNodes.map(n => ({ ...n })),
+    connections: visConnections.map(c => ({ ...c }))
   };
 
   // 2. Cytoscape elements
@@ -875,7 +894,7 @@ export async function buildGraphPayload(options: {
         description: node.description,
         date: node.date,
         image: node.image,
-        tags: node.tags
+        tags: node.tags ? [...node.tags] : undefined
       }
     });
   });
@@ -899,26 +918,34 @@ export async function buildGraphPayload(options: {
     description: n.description,
     date: n.date,
     image: n.image,
-    tags: n.tags
+    tags: n.tags ? [...n.tags] : undefined
+  }));
+  const d3Connections: GraphConnectionPayload[] = visConnections.map(c => ({
+    sourceId: c.sourceId,
+    targetId: c.targetId
   }));
 
-  // 4. Sigma nodes & edges
+  // 4. Sigma nodes & edges (deterministic Golden-Angle spiral)
   const defaultStyleTokens = getGraphStyleTokens(false);
-  const sigmaNodes: SigmaNode[] = visNodes.map(n => ({
-    id: n.id,
-    label: n.name,
-    x: (Math.random() - 0.5) * 100,
-    y: (Math.random() - 0.5) * 100,
-    size: 5,
-    rawSize: n.size,
-    group: n.group,
-    color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],
-    typeLabel: n.typeLabel,
-    description: n.description,
-    date: n.date,
-    image: n.image,
-    tags: n.tags
-  }));
+  const sigmaNodes: SigmaNode[] = visNodes.map((n, idx) => {
+    const angle = idx * 2.3999632297286533;
+    const radius = 8 * Math.sqrt(idx + 1);
+    return {
+      id: n.id,
+      label: n.name,
+      x: Number((Math.cos(angle) * radius).toFixed(4)),
+      y: Number((Math.sin(angle) * radius).toFixed(4)),
+      size: 5,
+      rawSize: n.size,
+      group: n.group,
+      color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],
+      typeLabel: n.typeLabel,
+      description: n.description,
+      date: n.date,
+      image: n.image,
+      tags: n.tags ? [...n.tags] : undefined
+    };
+  });
   const sigmaEdges: SigmaEdge[] = visConnections.map(conn => ({
     id: `${conn.sourceId}--${conn.targetId}`,
     source: conn.sourceId,
@@ -932,9 +959,16 @@ export async function buildGraphPayload(options: {
     connections: visConnections,
     'vis-network': visNetworkPayload,
     cytoscape: { elements: cytoscapeElements },
-    d3: { nodes: d3Nodes, connections: visConnections },
+    d3: { nodes: d3Nodes, connections: d3Connections },
     sigma: { nodes: sigmaNodes, edges: sigmaEdges },
-  '3d-force': { nodes: d3Nodes, connections: visConnections },
-    '3d-force-graph': { nodes: d3Nodes, connections: visConnections }
+    '3d-force': { nodes: d3Nodes.map(n => ({ ...n })), connections: d3Connections.map(c => ({ ...c })) },
+    '3d-force-graph': { nodes: d3Nodes.map(n => ({ ...n })), connections: d3Connections.map(c => ({ ...c })) }
   };
+}
+
+export async function buildGraphPayload(
+  options: BuildGraphPayloadOptions
+): Promise<EnginePayloads> {
+  const canonical = await buildCanonicalGraphPayload(options);
+  return hydrateEnginePayloads(canonical);
 }

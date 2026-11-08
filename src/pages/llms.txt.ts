@@ -1,10 +1,12 @@
 import { getCollection } from "astro:content";
 import { formatAuthorsPlain } from "@commons/shared/authors";
+import { getContentManifestArtifact } from "@commons/server/content-manifest-endpoint";
 
 const oneLine = (text?: string) => (text ? text.replace(/\s+/g, " ").trim() : "");
 
 export async function GET() {
   const [
+    manifestArtifact,
     posts,
     publications,
     presentations,
@@ -20,6 +22,7 @@ export async function GET() {
     experiences,
     profiles,
   ] = await Promise.all([
+    getContentManifestArtifact(),
     getCollection("posts"),
     getCollection("publications"),
     getCollection("presentations"),
@@ -88,7 +91,7 @@ ${profileLines}
 
 ## Full Content Export for LLMs & RAG
 - [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured text of all blog posts, publication abstracts, course outlines, software projects, business services, email newsletters, and interactive visualizations.
-- [JSON Content Manifest](https://hackenberg.tech/content-manifest.json): Machine-readable index of all published entries and metadata.
+- [JSON Content Manifest](https://hackenberg.tech${manifestArtifact.url}): Machine-readable index of all published entries and metadata.
 - [RSS XML Feed](https://hackenberg.tech/rss.xml): RSS feed of all published updates across all content domains.
 
 ## Key Sections & Topics
