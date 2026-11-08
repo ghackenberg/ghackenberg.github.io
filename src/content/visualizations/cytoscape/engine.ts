@@ -23,8 +23,6 @@ interface CySimNode extends d3.SimulationNodeDatum {
   group: number;
   homeX: number;
   homeY: number;
-  eqFx: number;
-  eqFy: number;
 }
 
 interface CySimLink extends d3.SimulationLinkDatum<CySimNode> {
@@ -311,9 +309,7 @@ const engine: CytoscapeEngine = {
         x: pos.x,
         y: pos.y,
         homeX: pos.x,
-        homeY: pos.y,
-        eqFx: 0,
-        eqFy: 0
+        homeY: pos.y
       };
       simNodes.push(sn);
       simNodeMap.set(sn.id, sn);
@@ -326,7 +322,7 @@ const engine: CytoscapeEngine = {
       const srcNode = simNodeMap.get(src);
       const tgtNode = simNodeMap.get(tgt);
       if (srcNode && tgtNode) {
-        const dist = Math.max(25, Math.hypot((tgtNode.x ?? 0) - (srcNode.x ?? 0), (tgtNode.y ?? 0) - (srcNode.y ?? 0)));
+        const dist = Math.max(1, Math.hypot((tgtNode.x ?? 0) - (srcNode.x ?? 0), (tgtNode.y ?? 0) - (srcNode.y ?? 0)));
         simLinks.push({ source: src, target: tgt, restDistance: dist });
       }
     });
@@ -339,18 +335,18 @@ const engine: CytoscapeEngine = {
       .id(d => d.id)
       .distance(l => l.restDistance)
       .strength(0.28);
-    const chargeForce = d3.forceManyBody<CySimNode>().strength(-220);
+    const collideForce = d3.forceCollide<CySimNode>(14).strength(0.85);
 
     this.dragSimulation = d3.forceSimulation<CySimNode, CySimLink>(simNodes)
       .force('link', linkForce)
-      .force('charge', chargeForce)
-      .force('equilibrium', (alpha: number) => {
+      .force('collide', collideForce)
+      .force('home', (alpha: number) => {
         for (const sn of simNodes) {
           if (sn.id === grabbedNodeId) continue;
           const dx = sn.homeX - (sn.x ?? 0);
           const dy = sn.homeY - (sn.y ?? 0);
-          sn.vx = (sn.vx ?? 0) + (sn.eqFx + dx * 0.08) * alpha;
-          sn.vy = (sn.vy ?? 0) + (sn.eqFy + dy * 0.08) * alpha;
+          sn.vx = (sn.vx ?? 0) + dx * 0.12 * alpha;
+          sn.vy = (sn.vy ?? 0) + dy * 0.12 * alpha;
         }
       })
       .stop();
@@ -374,24 +370,15 @@ const engine: CytoscapeEngine = {
         sn.homeY = sn.y ?? 0;
         sn.vx = 0;
         sn.vy = 0;
-        sn.eqFx = 0;
-        sn.eqFy = 0;
       }
       for (const l of simLinks) {
         const s = getLinkNode(l.source);
         const t = getLinkNode(l.target);
         if (s && t) {
-          l.restDistance = Math.max(25, Math.hypot(t.homeX - s.homeX, t.homeY - s.homeY));
+          l.restDistance = Math.max(1, Math.hypot(t.homeX - s.homeX, t.homeY - s.homeY));
         }
       }
       linkForce.distance(l => l.restDistance);
-      chargeForce(1);
-      for (const sn of simNodes) {
-        sn.eqFx = -(sn.vx ?? 0);
-        sn.eqFy = -(sn.vy ?? 0);
-        sn.vx = 0;
-        sn.vy = 0;
-      }
     };
 
     calibrateDragEquilibrium(false);
@@ -841,7 +828,6 @@ const engine: CytoscapeEngine = {
         animate: false,
         fit: false,
         randomize: false,
-        boundingBox: { x1: 0, y1: 0, w: 1000, h: 700 },
         idealEdgeLength: () => 100,
         nodeOverlap: 20,
         componentSpacing: 100,

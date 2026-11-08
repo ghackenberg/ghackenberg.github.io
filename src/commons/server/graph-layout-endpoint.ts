@@ -22,7 +22,7 @@ import {
 } from '@commons/shared/graph-payload';
 import { getCanonicalGraphPayloadArtifact } from './graph-payload-endpoint';
 
-const SOLVER_VERSION = 'v4';
+const SOLVER_VERSION = 'v5';
 
 export const VISUALIZATION_ENGINES: readonly VisualizationEngineType[] = [
   'cytoscape',
@@ -129,31 +129,22 @@ function solveSigmaLayout(canonical: CanonicalGraphPayload): GraphLayoutPosition
   return positions;
 }
 
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 function solveCytoscapeLayout(canonical: CanonicalGraphPayload): GraphLayoutPositions {
   const nodes = canonical.nodes;
+  const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
-  const rand = mulberry32(0x9e3779b9);
 
   const elements: cytoscape.ElementDefinition[] = [];
-  nodes.forEach((n) => {
+  nodes.forEach((n, i) => {
+    const init = initialCoords(i, total);
     elements.push({
       data: {
         id: n.id,
         weight: n.size || 1,
       },
       position: {
-        x: rand() * 1000,
-        y: rand() * 700,
+        x: init.x,
+        y: init.y,
       },
     });
   });
@@ -176,6 +167,15 @@ function solveCytoscapeLayout(canonical: CanonicalGraphPayload): GraphLayoutPosi
   const cy = cytoscape({
     headless: true,
     elements,
+    style: [
+      {
+        selector: 'node',
+        style: {
+          width: 16,
+          height: 16,
+        },
+      },
+    ],
   });
 
   cy.layout({
@@ -183,7 +183,6 @@ function solveCytoscapeLayout(canonical: CanonicalGraphPayload): GraphLayoutPosi
     animate: false,
     fit: false,
     randomize: false,
-    boundingBox: { x1: 0, y1: 0, w: 1000, h: 700 },
     idealEdgeLength: () => 100,
     nodeOverlap: 20,
     componentSpacing: 100,
