@@ -19,8 +19,37 @@ function extractPlainText(node: HastNode): string {
   return '';
 }
 
+function createFullscreenIconNode(): Element {
+  return {
+    type: 'element',
+    tagName: 'svg',
+    properties: {
+      className: ['artifact-fullscreen-icon'],
+      width: '14',
+      height: '14',
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '2.25',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+      'aria-hidden': 'true',
+    },
+    children: [
+      {
+        type: 'element',
+        tagName: 'path',
+        properties: {
+          d: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
+        },
+        children: [],
+      },
+    ],
+  };
+}
+
 function createButtonElement(
-  label: string,
+  label: string | Element,
   ariaLabel: string,
   className: string,
   extraProps: Record<string, string> = {}
@@ -35,7 +64,7 @@ function createButtonElement(
       title: ariaLabel,
       ...extraProps,
     },
-    children: [{ type: 'text', value: label }],
+    children: [typeof label === 'string' ? { type: 'text', value: label } : label],
   };
 }
 
@@ -196,7 +225,7 @@ export default function rehypeResponsiveTables() {
                   'data-table-scroll': 'right',
                 }),
                 createButtonElement(
-                  '⤢',
+                  createFullscreenIconNode(),
                   captionText ? `Open fullscreen view: ${captionText}` : 'Open table in fullscreen',
                   'table-deck-btn',
                   {

@@ -69,6 +69,12 @@ const engineSwitcherItems = [
   { id: "3d-force-graph", label: "3D Force", badge: "Three.js" },
 ];
 
+const defaultLayouts = [
+  { id: "force", label: "Force Directed (Organic)" },
+  { id: "radial", label: "Concentric Rings (Tags → Items)" },
+  { id: "columns", label: "Structured Columns (Category)" },
+];
+
 const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
@@ -197,7 +203,11 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                   aria-label="Select layout"
                   class="w-full bg-transparent text-gray-200 light:text-slate-800 font-semibold text-[11px] sm:text-xs cursor-pointer focus:outline-none appearance-none pr-4 py-0.5 truncate"
                 >
-                  <!-- Options will be populated dynamically by the engine -->
+                  {defaultLayouts.map((layoutItem, idx) => (
+                    <option value={layoutItem.id} selected={idx === 0}>
+                      {layoutItem.label}
+                    </option>
+                  ))}
                 </select>
                 <div class="absolute right-0 flex items-center pointer-events-none text-gray-400 light:text-slate-500">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +225,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               aria-label={`Open fullscreen visualization: ${title}`}
               title="Fullscreen"
             >
-              ⤢
+              <svg class="artifact-fullscreen-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
             </button>
           </div>
         </div>
@@ -363,12 +373,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       const engineSelector = document.getElementById('engine-selector') as HTMLSelectElement | null;
       if (!container) return;
 
+      const isInitialLightMode = document.documentElement.classList.contains('light');
+      const initialTokens = getThemeTokens(isInitialLightMode);
+
       if (engineSelector) {
-        const isLightMode = document.documentElement.classList.contains('light');
-        const tokens = getThemeTokens(isLightMode);
         Array.from(engineSelector.options).forEach((option) => {
-          option.style.backgroundColor = tokens.background;
-          option.style.color = tokens.textHeading;
+          option.style.backgroundColor = initialTokens.background;
+          option.style.color = initialTokens.textHeading;
         });
 
         engineSelector.addEventListener('change', (e) => {
@@ -382,6 +393,20 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             window.location.href = targetUrl;
           }
         });
+      }
+
+      if (selector) {
+        Array.from(selector.options).forEach((option) => {
+          option.style.backgroundColor = initialTokens.background;
+          option.style.color = initialTokens.textHeading;
+        });
+        const initialLayoutParam = new URLSearchParams(window.location.search).get('layout');
+        if (
+          initialLayoutParam &&
+          Array.from(selector.options).some((opt) => opt.value === initialLayoutParam)
+        ) {
+          selector.value = initialLayoutParam;
+        }
       }
 
       let activeInstance: GraphInstance | null = null;
@@ -434,19 +459,30 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             currentLayout = engine.layouts[0].id;
           }
 
-          // Populate the layout dropdown
+          // Sync the layout dropdown without triggering unnecessary DOM replacement
           if (selector) {
             const isLightMode = document.documentElement.classList.contains('light');
             const tokens = getThemeTokens(isLightMode);
-            selector.replaceChildren();
-            engine.layouts.forEach((l: { id: string; label: string }) => {
-              const option = document.createElement('option');
-              option.value = l.id;
-              option.textContent = l.label;
-              option.style.backgroundColor = tokens.background;
-              option.style.color = tokens.textHeading;
-              selector.appendChild(option);
-            });
+            const existingIds = Array.from(selector.options)
+              .map((o) => o.value)
+              .join(',');
+            const engineIds = engine.layouts.map((l: { id: string }) => l.id).join(',');
+            if (existingIds !== engineIds) {
+              selector.replaceChildren();
+              engine.layouts.forEach((l: { id: string; label: string }) => {
+                const option = document.createElement('option');
+                option.value = l.id;
+                option.textContent = l.label;
+                option.style.backgroundColor = tokens.background;
+                option.style.color = tokens.textHeading;
+                selector.appendChild(option);
+              });
+            } else {
+              Array.from(selector.options).forEach((option) => {
+                option.style.backgroundColor = tokens.background;
+                option.style.color = tokens.textHeading;
+              });
+            }
             selector.value = currentLayout;
           }
 

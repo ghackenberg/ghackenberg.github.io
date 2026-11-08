@@ -250,7 +250,7 @@ function createFigureElement(
   <div class="artifact-card-header">
     <span class="artifact-card-badge">SVG</span>
     <div class="artifact-card-controls">
-      <button type="button" class="table-deck-btn" data-media-fullscreen="true" aria-label="Open diagram in fullscreen: ${escapeAttr(title || alt)}" title="Fullscreen">⤢</button>
+      <button type="button" class="table-deck-btn" data-media-fullscreen="true" aria-label="Open diagram in fullscreen: ${escapeAttr(title || alt)}" title="Fullscreen"><svg class="artifact-fullscreen-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
     </div>
   </div>
   <div class="artifact-card-body">${svgContent}</div>

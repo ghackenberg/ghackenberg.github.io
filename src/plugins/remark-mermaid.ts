@@ -412,7 +412,7 @@ export default function remarkMermaid() {
   <meta itemprop="contentUrl" content="${escapeHtml(contentUrl)}" />
   <meta itemprop="name" content="${escapeHtml(title!)}" />
   <meta itemprop="description" content="${escapeHtml(caption!)}" />
-  <div class="artifact-card-header"><span class="artifact-card-badge">Mermaid</span><div class="artifact-card-controls"><button type="button" class="table-deck-btn" data-media-fullscreen="true" aria-label="Open diagram in fullscreen: ${escapeHtml(title!)}" title="Fullscreen">⤢</button></div></div>
+  <div class="artifact-card-header"><span class="artifact-card-badge">Mermaid</span><div class="artifact-card-controls"><button type="button" class="table-deck-btn" data-media-fullscreen="true" aria-label="Open diagram in fullscreen: ${escapeHtml(title!)}" title="Fullscreen"><svg class="artifact-fullscreen-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></div></div>
   <div class="artifact-card-body flex flex-col items-center w-full">
   <div class="mermaid-svg mermaid-dark justify-center w-full max-w-full">
     ${darkSvg}

@@ -850,6 +850,20 @@ figcaption.artifact-card-footer,
   transition: all 0.15s ease;
 }
 
+[data-media-fullscreen].table-deck-btn {
+  padding: 0.32rem 0.45rem;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+}
+
+.table-deck-btn .artifact-fullscreen-icon {
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+  display: block !important;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
 .table-deck-btn:hover:not(:disabled),
 .media-expand-btn:hover:not(:disabled) {
   border-color: var(--color-current-domain, var(--color-domain-posts));

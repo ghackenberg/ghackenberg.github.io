@@ -57,6 +57,35 @@ const LANG_DISPLAY_NAMES: Record<string, string> = {
   plaintext: 'Text',
 };
 
+function createFullscreenIconNode(): Element {
+  return {
+    type: 'element',
+    tagName: 'svg',
+    properties: {
+      className: ['artifact-fullscreen-icon'],
+      width: '14',
+      height: '14',
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '2.25',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+      'aria-hidden': 'true',
+    },
+    children: [
+      {
+        type: 'element',
+        tagName: 'path',
+        properties: {
+          d: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
+        },
+        children: [],
+      },
+    ],
+  };
+}
+
 function formatLangBadge(lang: string): string {
   const key = (lang || 'text').trim().toLowerCase();
   return LANG_DISPLAY_NAMES[key] || key.toUpperCase();
@@ -223,7 +252,7 @@ export default function rehypeCodeCaptions() {
                         'aria-label': `Open fullscreen image: ${titleText || captionText || 'Image'}`,
                         title: 'Fullscreen',
                       },
-                      children: [{ type: 'text', value: '⤢' }],
+                      children: [createFullscreenIconNode()],
                     },
                   ],
                 },
@@ -336,7 +365,7 @@ export default function rehypeCodeCaptions() {
                     'aria-label': `Open fullscreen code: ${displayTitle}`,
                     title: 'Fullscreen',
                   },
-                  children: [{ type: 'text', value: '⤢' }],
+                  children: [createFullscreenIconNode()],
                 },
               ],
             },

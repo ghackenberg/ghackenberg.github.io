@@ -127,6 +127,28 @@ function dispatchLayoutResize(): void {
   });
 }
 
+const ENTER_FULLSCREEN_PATH = 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7';
+const EXIT_FULLSCREEN_PATH = 'M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7';
+
+function createFullscreenIconSvg(isExit: boolean): SVGSVGElement {
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'artifact-fullscreen-icon');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2.25');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('d', isExit ? EXIT_FULLSCREEN_PATH : ENTER_FULLSCREEN_PATH);
+  svg.appendChild(path);
+  return svg;
+}
+
 function syncFullscreenUI(el: HTMLElement | null, isActive: boolean): void {
   if (!el) return;
   el.classList.toggle('is-fullscreen-active', isActive);
@@ -137,12 +159,12 @@ function syncFullscreenUI(el: HTMLElement | null, isActive: boolean): void {
       btn.dataset.defaultAriaLabel = btn.getAttribute('aria-label') || 'Fullscreen';
     }
     if (isActive) {
-      btn.textContent = '✕';
+      btn.replaceChildren(createFullscreenIconSvg(true));
       btn.title = 'Exit fullscreen (Esc)';
       btn.setAttribute('aria-label', 'Exit fullscreen (Esc)');
       btn.setAttribute('aria-pressed', 'true');
     } else {
-      btn.textContent = '⤢';
+      btn.replaceChildren(createFullscreenIconSvg(false));
       btn.title = 'Fullscreen';
       btn.setAttribute('aria-label', btn.dataset.defaultAriaLabel);
       btn.setAttribute('aria-pressed', 'false');
@@ -391,7 +413,7 @@ export function initMediaDeck(): void {
         toggleArtifactFullscreen(el);
       });
 
-      const svgEl = el.querySelector('svg');
+      const svgEl = el.querySelector<SVGSVGElement>('.artifact-card-body > svg, .artifact-card-body svg');
       svgEl?.addEventListener('click', () => {
         if (!isElementFullscreen(el)) {
           toggleArtifactFullscreen(el);
