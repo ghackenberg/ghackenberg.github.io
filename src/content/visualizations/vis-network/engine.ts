@@ -90,7 +90,10 @@ export interface VisNetworkEngine {
   tooltipController?: GraphTooltipController | null;
   isDragging?: boolean;
   hoveredNodeId?: string | null;
+  secondaryHoveredNodeId?: string | null;
+  activeHighlightDists?: Map<string, number> | null;
   draggedNodeId?: string | null;
+  focusedNodeIds?: Set<string> | null;
   highlightFrameId?: number | null;
   lastDraggedAt?: number;
   lastOrderSignature?: string;
@@ -106,7 +109,7 @@ export interface VisNetworkEngine {
   init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions?: VisNetworkExtraOptions): Promise<VisNetworkEngine>;
   fitToView(duration?: number): void;
   stepViewportTowardCloud(alpha: number): void;
-  startViewportAdaptLoop(durationMs?: number): void;
+  startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   pause(): void;
@@ -201,7 +204,7 @@ const engine: VisNetworkEngine = {
         hoverWidth: styleTokens.edgeWidth,
         chosen: false,
         smooth: {
-          enabled: true,
+          enabled: false,
           type: 'continuous',
           forceDirection: 'none',
           roundness: 0.5
@@ -242,18 +245,103 @@ const engine: VisNetworkEngine = {
 
     this.isDragging = false;
     this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
+    this.activeHighlightDists = null;
     this.draggedNodeId = null;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
     this.dragStabilizeTimeout = null;
 
     const adjacency = buildGraphAdjacency(this.connections || []);
-    let lastHighlightedNodeId: string | null = null;
+    let lastHighlightedKey = '';
+
+    this.network.on('afterDrawing', (ctx: CanvasRenderingContext2D) => {
+      const dists = this.activeHighlightDists;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      if ((!dists && !secId) || !this.network || !this.visNodes || !this.visEdges) return;
+
+      const positions = this.network.getPositions();
+      const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
+      const palette = GRAPH_COLORS[this.isLight ? 'light' : 'dark'];
+
+      type DrawItem =
+        | { isNode: false; z: number; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
+        | { isNode: true; z: number; x: number; y: number; radius: number; color: string };
+
+      const items: DrawItem[] = [];
+
+      if (dists) {
+        this.visEdges.forEach((edge: VisCustomEdge) => {
+          const fromId = String(edge.from);
+          const toId = String(edge.to);
+          const edgeZ = getEdgeHopZIndex(dists.get(fromId), dists.get(toId));
+          if (edgeZ < 8) return;
+          const p1 = positions[fromId];
+          const p2 = positions[toId];
+          if (!p1 || !p2) return;
+          items.push({
+            isNode: false,
+            z: edgeZ,
+            x1: p1.x,
+            y1: p1.y,
+            x2: p2.x,
+            y2: p2.y,
+            color: edge.displayColor || currentTokens.edgeColor,
+            width: edge.displayWidth ?? currentTokens.edgeWidth
+          });
+        });
+      }
+
+      this.visNodes.forEach((node: VisCustomNode) => {
+        const id = String(node.id);
+        const hopDist = dists ? dists.get(id) : undefined;
+        const nodeZ = secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+        if (nodeZ < 10) return;
+        const p = positions[id];
+        if (!p) return;
+        const grp = node.rawGroup ?? 0;
+        items.push({
+          isNode: true,
+          z: nodeZ,
+          x: p.x,
+          y: p.y,
+          radius: node.displaySize ?? currentTokens.nodeRadius,
+          color: node.displayColor || palette[grp] || palette[0]
+        });
+      });
+
+      if (items.length === 0) return;
+      items.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (const item of items) {
+        if (!item.isNode) {
+          ctx.beginPath();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = item.width;
+          ctx.moveTo(item.x1, item.y1);
+          ctx.lineTo(item.x2, item.y2);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+          ctx.fillStyle = item.color;
+          ctx.fill();
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = item.color;
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    });
 
     this.applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.visNodes || !this.visEdges) return;
-      if (!immediate && activeId === lastHighlightedNodeId) return;
-      lastHighlightedNodeId = activeId;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      const highlightKey = `${activeId ?? ''}|${secId ?? ''}`;
+      if (!immediate && highlightKey === lastHighlightedKey) return;
+      lastHighlightedKey = highlightKey;
 
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
@@ -264,6 +352,7 @@ const engine: VisNetworkEngine = {
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const palette = GRAPH_COLORS[currentIsLight ? 'light' : 'dark'];
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
+      this.activeHighlightDists = dists;
 
       const nodeTrans: {
         id: string | number;
@@ -280,12 +369,15 @@ const engine: VisNetworkEngine = {
         const startColor = node.displayColor || baseColor;
         const startSize = node.displaySize ?? currentTokens.nodeRadius;
         const hopDist = dists ? dists.get(id) : undefined;
-        const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
-          : baseColor;
-        const targetSize = dists
-          ? currentTokens.nodeRadius * getAttenuatedNodeScale(hopDist)
-          : currentTokens.nodeRadius;
+        const isSecHover = secId !== null && id === secId;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
+        const targetColor = isSecHover
+          ? baseColor
+          : dists
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            : baseColor;
+        const targetSize = currentTokens.nodeRadius * targetScale;
         nodeTrans.push({
           id: node.id!,
           startColor,
@@ -426,6 +518,16 @@ const engine: VisNetworkEngine = {
         if (!this.isDragging) {
           this.applyHighlight?.(nodeId);
         }
+      },
+      onSecondaryHoverNodeChange: (nodeId) => {
+        this.secondaryHoveredNodeId = nodeId;
+        if (!this.isDragging) {
+          this.applyHighlight?.(this.hoveredNodeId ?? null);
+        }
+      },
+      onFocusNodeChange: (_nodeId, focusNodeIds) => {
+        this.focusedNodeIds = focusNodeIds;
+        this.startViewportAdaptLoop(1600, GRAPH_VIEWPORT_CONFIG.focusAlpha);
       },
       onNavigate: (node) => {
         const targetPath = node.id;
@@ -615,17 +717,19 @@ const engine: VisNetworkEngine = {
     const height = this.container?.clientHeight || 0;
     if (width <= 0 || height <= 0) return;
 
+    const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
     const positions = this.network.getPositions();
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     const points: { x: number; y: number }[] = [];
     for (const n of this.nodes) {
+      if (isSubgraph && !this.focusedNodeIds!.has(n.id)) continue;
       const p = positions[n.id];
       if (p && typeof p.x === 'number' && typeof p.y === 'number') {
         points.push({ x: p.x, y: p.y });
       }
     }
 
-    const fit = compute2DViewportFit(points, width, height, r);
+    const fit = compute2DViewportFit(points, width, height, r, isSubgraph);
     if (!fit) return;
 
     this.network.moveTo({
@@ -641,17 +745,19 @@ const engine: VisNetworkEngine = {
     const height = this.container?.clientHeight || 0;
     if (width <= 0 || height <= 0) return;
 
+    const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
     const positions = this.network.getPositions();
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     const points: { x: number; y: number }[] = [];
     for (const n of this.nodes) {
+      if (isSubgraph && !this.focusedNodeIds!.has(n.id)) continue;
       const p = positions[n.id];
       if (p && typeof p.x === 'number' && typeof p.y === 'number') {
         points.push({ x: p.x, y: p.y });
       }
     }
 
-    const fit = compute2DViewportFit(points, width, height, r);
+    const fit = compute2DViewportFit(points, width, height, r, isSubgraph);
     if (!fit) return;
 
     const curPos = this.network.getViewPosition();
@@ -669,7 +775,10 @@ const engine: VisNetworkEngine = {
     });
   },
 
-  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+  startViewportAdaptLoop(
+    durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs,
+    baseAlpha: number = GRAPH_VIEWPORT_CONFIG.adaptAlpha
+  ) {
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
@@ -683,7 +792,7 @@ const engine: VisNetworkEngine = {
       }
       const dt = Math.max(1, now - lastTime);
       lastTime = now;
-      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      const stepAlpha = 1 - Math.pow(1 - baseAlpha, Math.min(50, dt) / 16.67);
       if (this.currentLayout === 'force') {
         const pos = this.network.getPositions();
         for (const [id, p] of Object.entries(pos)) {
@@ -798,6 +907,11 @@ const engine: VisNetworkEngine = {
     const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
+
+    if (layoutChanged) {
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+    }
 
     // Apply color update to nodes and edges based on theme (and preserve any active highlight)
     this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);

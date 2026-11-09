@@ -44,7 +44,11 @@ export interface SigmaEngine {
   sigma: Sigma | null;
   nodeMap: Map<string, SigmaNodeData> | null;
   tooltipController: GraphTooltipController | null;
+  fgCanvas?: HTMLCanvasElement | null;
+  activeHighlightDists?: Map<string, number> | null;
   hoveredNodeId?: string | null;
+  secondaryHoveredNodeId?: string | null;
+  focusedNodeIds?: Set<string> | null;
   highlightFrameId?: number | null;
   applyHighlight?(activeNodeId: string | null, immediate?: boolean): void;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
@@ -61,7 +65,7 @@ export interface SigmaEngine {
   animationFrameId: number | null;
   init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<SigmaEngine>;
   stepViewportTowardCloud(alpha: number): void;
-  startViewportAdaptLoop(durationMs?: number): void;
+  startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   getForcePositions(): Record<string, { x: number; y: number }>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
@@ -208,14 +212,132 @@ const engine: SigmaEngine = {
     };
 
     this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
+    this.activeHighlightDists = null;
     this.isLight = isLight;
     const adjacency = buildGraphAdjacency(edges);
-    let lastHighlightedNodeId: string | null = null;
+    let lastHighlightedKey = '';
+
+    const fgCanvas = document.createElement('canvas');
+    fgCanvas.style.position = 'absolute';
+    fgCanvas.style.inset = '0';
+    fgCanvas.style.width = '100%';
+    fgCanvas.style.height = '100%';
+    fgCanvas.style.pointerEvents = 'none';
+    fgCanvas.style.zIndex = '5';
+    fgCanvas.style.touchAction = 'pan-y';
+    container.appendChild(fgCanvas);
+    this.fgCanvas = fgCanvas;
+
+    const drawForegroundOverlay = () => {
+      if (!this.fgCanvas || !this.sigma || !this.graph) return;
+      const w = container.clientWidth || 0;
+      const h = container.clientHeight || 0;
+      if (w <= 0 || h <= 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      const targetW = Math.round(w * dpr);
+      const targetH = Math.round(h * dpr);
+      if (this.fgCanvas.width !== targetW || this.fgCanvas.height !== targetH) {
+        this.fgCanvas.width = targetW;
+        this.fgCanvas.height = targetH;
+      }
+      const ctx = this.fgCanvas.getContext('2d');
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const dists = this.activeHighlightDists;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      if (!dists && !secId) return;
+
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+
+      type DrawItem =
+        | { isNode: false; z: number; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
+        | { isNode: true; z: number; x: number; y: number; radius: number; color: string };
+
+      const items: DrawItem[] = [];
+
+      if (dists) {
+        this.graph.forEachEdge(edge => {
+          if (!this.graph || !this.sigma) return;
+          const [src, tgt] = this.graph.extremities(edge);
+          const edgeZ = getEdgeHopZIndex(dists.get(src), dists.get(tgt));
+          if (edgeZ < 8) return;
+          const x1 = Number(this.graph.getNodeAttribute(src, 'x') || 0);
+          const y1 = Number(this.graph.getNodeAttribute(src, 'y') || 0);
+          const x2 = Number(this.graph.getNodeAttribute(tgt, 'x') || 0);
+          const y2 = Number(this.graph.getNodeAttribute(tgt, 'y') || 0);
+          const p1 = this.sigma.graphToViewport({ x: x1, y: y1 });
+          const p2 = this.sigma.graphToViewport({ x: x2, y: y2 });
+          const rawWidth = Number(this.graph.getEdgeAttribute(edge, 'size') || currentTokens.edgeWidth);
+          const color = String(this.graph.getEdgeAttribute(edge, 'color') || currentTokens.edgeColor);
+          items.push({
+            isNode: false,
+            z: edgeZ,
+            x1: p1.x,
+            y1: p1.y,
+            x2: p2.x,
+            y2: p2.y,
+            color,
+            width: this.sigma.scaleSize(rawWidth)
+          });
+        });
+      }
+
+      this.graph.forEachNode(nId => {
+        if (!this.graph || !this.sigma) return;
+        const hopDist = dists ? dists.get(nId) : undefined;
+        const nodeZ = secId !== null && nId === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+        if (nodeZ < 10) return;
+        const nx = Number(this.graph.getNodeAttribute(nId, 'x') || 0);
+        const ny = Number(this.graph.getNodeAttribute(nId, 'y') || 0);
+        const p = this.sigma.graphToViewport({ x: nx, y: ny });
+        const rawSize = Number(this.graph.getNodeAttribute(nId, 'size') || SIGMA_BASE_NODE_SIZE);
+        const grp = (this.graph.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
+        const color = String(this.graph.getNodeAttribute(nId, 'color') || getNodeColor(grp, currentIsLight));
+        items.push({
+          isNode: true,
+          z: nodeZ,
+          x: p.x,
+          y: p.y,
+          radius: this.sigma.scaleSize(rawSize),
+          color
+        });
+      });
+
+      if (items.length === 0) return;
+      items.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (const item of items) {
+        if (!item.isNode) {
+          ctx.beginPath();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = item.width;
+          ctx.moveTo(item.x1, item.y1);
+          ctx.lineTo(item.x2, item.y2);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+          ctx.fillStyle = item.color;
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    };
+
+    this.sigma.on('afterRender', drawForegroundOverlay);
 
     const applyHighlight = (activeNodeId: string | null, immediate = false) => {
       if (!this.graph || !this.sigma) return;
-      if (!immediate && activeNodeId === lastHighlightedNodeId) return;
-      lastHighlightedNodeId = activeNodeId;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      const highlightKey = `${activeNodeId ?? ''}|${secId ?? ''}`;
+      if (!immediate && highlightKey === lastHighlightedKey) return;
+      lastHighlightedKey = highlightKey;
 
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
@@ -225,6 +347,7 @@ const engine: SigmaEngine = {
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const dists = activeNodeId ? computeHopDistances(activeNodeId, adjacency) : null;
+      this.activeHighlightDists = dists;
 
       const nodeTrans: {
         id: string;
@@ -241,13 +364,18 @@ const engine: SigmaEngine = {
         const startColor = String(this.graph?.getNodeAttribute(nId, 'color') || baseColor);
         const startSize = Number(this.graph?.getNodeAttribute(nId, 'size') || SIGMA_BASE_NODE_SIZE);
         const hopDist = dists ? dists.get(nId) : undefined;
-        const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
-          : baseColor;
-        const targetSize = dists
-          ? SIGMA_BASE_NODE_SIZE * getAttenuatedNodeScale(hopDist)
-          : SIGMA_BASE_NODE_SIZE;
-        const targetZIndex = dists ? getNodeHopZIndex(hopDist) : 1;
+        const isSecHover = secId !== null && nId === secId;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
+        const targetColor = isSecHover
+          ? baseColor
+          : dists
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            : baseColor;
+        const targetSize = SIGMA_BASE_NODE_SIZE * targetScale;
+        const targetZIndex = dists
+          ? (isSecHover ? 45 : getNodeHopZIndex(hopDist))
+          : 1;
         nodeTrans.push({ id: nId, startColor, targetColor, startSize, targetSize, targetZIndex });
       });
 
@@ -280,7 +408,7 @@ const engine: SigmaEngine = {
         });
       });
 
-      if (dists) {
+      if (dists || secId) {
         for (const nt of nodeTrans) {
           this.graph.setNodeAttribute(nt.id, 'zIndex', nt.targetZIndex);
         }
@@ -322,7 +450,7 @@ const engine: SigmaEngine = {
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
         const ease = easeHighlightTransition(progress);
         const isFinal = progress >= 1;
-        renderStep(ease, isFinal && !dists);
+        renderStep(ease, isFinal && !dists && !secId);
         if (!isFinal) {
           this.highlightFrameId = requestAnimationFrame(step);
         } else {
@@ -369,6 +497,16 @@ const engine: SigmaEngine = {
         if (draggedNode === null) {
           applyHighlight(nodeId);
         }
+      },
+      onSecondaryHoverNodeChange: (nodeId) => {
+        this.secondaryHoveredNodeId = nodeId;
+        if (draggedNode === null) {
+          applyHighlight(this.hoveredNodeId ?? null);
+        }
+      },
+      onFocusNodeChange: (_nodeId, focusNodeIds) => {
+        this.focusedNodeIds = focusNodeIds;
+        this.startViewportAdaptLoop(1600, GRAPH_VIEWPORT_CONFIG.focusAlpha);
       },
       onNavigate: (rawNode) => {
         const node = rawNode.id;
@@ -532,29 +670,62 @@ const engine: SigmaEngine = {
 
   stepViewportTowardCloud(alpha: number) {
     if (!this.sigma || !this.graph) return;
-    let minX = Infinity;
-    let maxX = -Infinity;
-    let minY = Infinity;
-    let maxY = -Infinity;
+    let fullMinX = Infinity;
+    let fullMaxX = -Infinity;
+    let fullMinY = Infinity;
+    let fullMaxY = -Infinity;
+
+    let subMinX = Infinity;
+    let subMaxX = -Infinity;
+    let subMinY = Infinity;
+    let subMaxY = -Infinity;
+    const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
 
     this.graph.forEachNode((nodeId) => {
       const nx = Number(this.graph?.getNodeAttribute(nodeId, 'x') ?? 0);
       const ny = Number(this.graph?.getNodeAttribute(nodeId, 'y') ?? 0);
       if (!Number.isFinite(nx) || !Number.isFinite(ny)) return;
-      if (nx < minX) minX = nx;
-      if (nx > maxX) maxX = nx;
-      if (ny < minY) minY = ny;
-      if (ny > maxY) maxY = ny;
+      if (nx < fullMinX) fullMinX = nx;
+      if (nx > fullMaxX) fullMaxX = nx;
+      if (ny < fullMinY) fullMinY = ny;
+      if (ny > fullMaxY) fullMaxY = ny;
+
+      if (isSubgraph && this.focusedNodeIds!.has(nodeId)) {
+        if (nx < subMinX) subMinX = nx;
+        if (nx > subMaxX) subMaxX = nx;
+        if (ny < subMinY) subMinY = ny;
+        if (ny > subMaxY) subMaxY = ny;
+      }
     });
 
-    if (!Number.isFinite(minX) || !Number.isFinite(maxX)) return;
-    if (maxX - minX < 1e-3) {
-      minX -= 1;
-      maxX += 1;
+    if (!Number.isFinite(fullMinX) || !Number.isFinite(fullMaxX)) return;
+    if (fullMaxX - fullMinX < 1e-3) {
+      fullMinX -= 1;
+      fullMaxX += 1;
     }
-    if (maxY - minY < 1e-3) {
-      minY -= 1;
-      maxY += 1;
+    if (fullMaxY - fullMinY < 1e-3) {
+      fullMinY -= 1;
+      fullMaxY += 1;
+    }
+
+    let minX = fullMinX;
+    let maxX = fullMaxX;
+    let minY = fullMinY;
+    let maxY = fullMaxY;
+
+    if (isSubgraph && Number.isFinite(subMinX) && Number.isFinite(subMaxX)) {
+      const fullSpanX = Math.max(1e-3, fullMaxX - fullMinX);
+      const fullSpanY = Math.max(1e-3, fullMaxY - fullMinY);
+      const subMidX = (subMinX + subMaxX) / 2;
+      const subMidY = (subMinY + subMaxY) / 2;
+      const zoomFactor = Math.max(
+        0.42,
+        Math.min(1, Math.max((subMaxX - subMinX) / fullSpanX, (subMaxY - subMinY) / fullSpanY) * 1.35)
+      );
+      minX = subMidX - (fullSpanX * zoomFactor) / 2;
+      maxX = subMidX + (fullSpanX * zoomFactor) / 2;
+      minY = subMidY - (fullSpanY * zoomFactor) / 2;
+      maxY = subMidY + (fullSpanY * zoomFactor) / 2;
     }
 
     const curBBox = this.sigma.getCustomBBox() || {
@@ -583,7 +754,10 @@ const engine: SigmaEngine = {
     this.sigma.refresh();
   },
 
-  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+  startViewportAdaptLoop(
+    durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs,
+    baseAlpha: number = GRAPH_VIEWPORT_CONFIG.adaptAlpha
+  ) {
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
@@ -597,7 +771,7 @@ const engine: SigmaEngine = {
       }
       const dt = Math.max(1, now - lastTime);
       lastTime = now;
-      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      const stepAlpha = 1 - Math.pow(1 - baseAlpha, Math.min(50, dt) / 16.67);
       this.stepViewportTowardCloud(stepAlpha);
       if (now - startTime < durationMs) {
         this.viewportAdaptFrameId = requestAnimationFrame(tick);
@@ -760,6 +934,8 @@ const engine: SigmaEngine = {
     this.isLight = isLight;
 
     if (layoutChanged) {
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
       if (this.physicsFrameId) {
         cancelAnimationFrame(this.physicsFrameId);
         this.physicsFrameId = null;
@@ -871,6 +1047,11 @@ const engine: SigmaEngine = {
       this.tooltipController.destroy();
       this.tooltipController = null;
     }
+    if (this.fgCanvas) {
+      this.fgCanvas.remove();
+      this.fgCanvas = null;
+    }
+    this.activeHighlightDists = null;
     if (this.sigma) {
       this.sigma.kill();
       this.sigma = null;

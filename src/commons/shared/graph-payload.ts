@@ -213,10 +213,10 @@ export const HOP_ATTENUATION_CONFIG = {
   directHubSoftThreshold: 8,
   hubDegreeBaseline: 4,
   hubPenaltyWeight: 0.65,
-  nodeColor: { max: 1.0, min: 0.20, exponent: 1.35 },
-  nodeScale: { max: 2.10, min: 0.40, exponent: 1.25 },
-  edgeColor: { max: 1.0, min: 0.18, exponent: 1.20 },
-  edgeWidth: { max: 3.0, min: 0.80, exponent: 1.10 }
+  nodeColor: { max: 1.0, min: 0.34, exponent: 1.35 },
+  nodeScale: { max: 2.0, min: 0.68, exponent: 1.25 },
+  edgeColor: { max: 1.0, min: 0.32, exponent: 1.20 },
+  edgeWidth: { max: 3.0, min: 0.85, exponent: 1.10 }
 } as const;
 
 export function computeHopCurve(
@@ -355,7 +355,11 @@ export const GRAPH_VIEWPORT_CONFIG = {
   adaptAlpha: 0.035,
   adaptDurationMs: 2400,
   minScale: 0.1,
-  maxScale: 2.5
+  maxScale: 2.5,
+  focusAlpha: 0.11,
+  focusPadX: 64,
+  focusPadY: 64,
+  focusMaxScale: 2.2
 } as const;
 
 export interface Viewport2DFitResult {
@@ -374,7 +378,8 @@ export function compute2DViewportFit(
   points: Iterable<{ x: number; y: number }>,
   width: number,
   height: number,
-  worldNodeRadius = 8
+  worldNodeRadius = 8,
+  isSubgraphFocus = false
 ): Viewport2DFitResult | null {
   if (width <= 0 || height <= 0) return null;
   let minX = Infinity;
@@ -394,18 +399,43 @@ export function compute2DViewportFit(
     if (bottom > maxY) maxY = bottom;
   }
 
-  const boxW = maxX - minX;
-  const boxH = maxY - minY;
+  let boxW = maxX - minX;
+  let boxH = maxY - minY;
   if (boxW <= 0 || boxH <= 0 || !Number.isFinite(boxW) || !Number.isFinite(boxH)) return null;
 
-  const availW = Math.max(100, width - GRAPH_VIEWPORT_CONFIG.padX * 2);
-  const availH = Math.max(100, height - GRAPH_VIEWPORT_CONFIG.padY * 2);
-  const scale = Math.max(
-    GRAPH_VIEWPORT_CONFIG.minScale,
-    Math.min(GRAPH_VIEWPORT_CONFIG.maxScale, Math.min(availW / boxW, availH / boxH))
-  );
   const midX = (minX + maxX) / 2;
   const midY = (minY + maxY) / 2;
+
+  if (isSubgraphFocus) {
+    const minSpan = worldNodeRadius * 6;
+    if (boxW < minSpan) {
+      minX = midX - minSpan / 2;
+      maxX = midX + minSpan / 2;
+      boxW = minSpan;
+    }
+    if (boxH < minSpan) {
+      minY = midY - minSpan / 2;
+      maxY = midY + minSpan / 2;
+      boxH = minSpan;
+    }
+  }
+
+  const padX = isSubgraphFocus
+    ? Math.max(GRAPH_VIEWPORT_CONFIG.focusPadX, Math.round(width * 0.12))
+    : GRAPH_VIEWPORT_CONFIG.padX;
+  const padY = isSubgraphFocus
+    ? Math.max(GRAPH_VIEWPORT_CONFIG.focusPadY, Math.round(height * 0.14))
+    : GRAPH_VIEWPORT_CONFIG.padY;
+  const maxScale = isSubgraphFocus
+    ? GRAPH_VIEWPORT_CONFIG.focusMaxScale
+    : GRAPH_VIEWPORT_CONFIG.maxScale;
+
+  const availW = Math.max(100, width - padX * 2);
+  const availH = Math.max(100, height - padY * 2);
+  const scale = Math.max(
+    GRAPH_VIEWPORT_CONFIG.minScale,
+    Math.min(maxScale, Math.min(availW / boxW, availH / boxH))
+  );
   const panX = width / 2 - midX * scale;
   const panY = height / 2 - midY * scale;
 
@@ -485,12 +515,15 @@ export function getAttenuatedEdgeStyle(
 }
 
 export function getNodeHopZIndex(hopDistance: number | undefined): number {
-  const d = hopDistance ?? Infinity;
-  if (d <= 0) return 40;
-  if (d < 1.8) return 30;
-  if (d < 2.8) return 20;
-  if (d < 3.8) return 10;
-  return 1;
+  if (
+    hopDistance === undefined ||
+    !Number.isFinite(hopDistance) ||
+    hopDistance >= HOP_ATTENUATION_CONFIG.maxHops
+  ) {
+    return 2;
+  }
+  if (hopDistance <= 0) return 50;
+  return Math.max(10, Math.round(50 - hopDistance * 10));
 }
 
 export function getEdgeHopZIndex(
@@ -499,11 +532,16 @@ export function getEdgeHopZIndex(
 ): number {
   const dSrc = sourceDistance ?? Infinity;
   const dTgt = targetDistance ?? Infinity;
-  if (dSrc === 0 || dTgt === 0) return 30;
+  if (
+    !Number.isFinite(dSrc) ||
+    !Number.isFinite(dTgt) ||
+    dSrc >= HOP_ATTENUATION_CONFIG.maxHops ||
+    dTgt >= HOP_ATTENUATION_CONFIG.maxHops
+  ) {
+    return 1;
+  }
   const maxDist = Math.max(dSrc, dTgt);
-  if (maxDist < 2.8) return 20;
-  if (maxDist < 3.8) return 10;
-  return 1;
+  return Math.max(8, Math.round(50 - maxDist * 10) - 2);
 }
 
 export interface TagCounts {

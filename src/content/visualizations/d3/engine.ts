@@ -53,7 +53,9 @@ export interface D3Engine {
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
   tooltipController: GraphTooltipController | null;
   hoveredNodeId?: string | null;
+  secondaryHoveredNodeId?: string | null;
   draggedNodeId?: string | null;
+  focusedNodeIds?: Set<string> | null;
   highlightFrameId?: number | null;
   applyHighlight?(activeId: string | null, immediate?: boolean): void;
   currentLayout?: string;
@@ -67,7 +69,7 @@ export interface D3Engine {
   recomputeSlotTargets(useCurrentOrder?: boolean): void;
   fitToView(duration?: number): void;
   stepViewportTowardCloud(alpha: number): void;
-  startViewportAdaptLoop(durationMs?: number): void;
+  startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   updateLayout(layout: string, isLight: boolean, animate?: boolean): void;
   destroy(): void;
 }
@@ -142,18 +144,20 @@ const engine: D3Engine = {
 
     const styleTokens = getGraphStyleTokens(isLight);
 
-    const linkLayer = this.svgGroup.append<SVGGElement>("g");
-    const nodeLayer = this.svgGroup.append<SVGGElement>("g");
+    const bgLinkLayer = this.svgGroup.append<SVGGElement>("g");
+    const bgNodeLayer = this.svgGroup.append<SVGGElement>("g");
+    const fgLayer = this.svgGroup.append<SVGGElement>("g");
 
-    this.linkElements = linkLayer.selectAll<SVGLineElement, D3Link>(".link")
+    this.linkElements = bgLinkLayer.selectAll<SVGLineElement, D3Link>(".link")
       .data(this.links)
       .enter().append("line")
       .style("stroke", styleTokens.edgeColor)
       .style("stroke-width", `${styleTokens.edgeWidth}px`);
 
     let lastDraggedAt = 0;
-    let lastHighlightedNodeId: string | null = null;
+    let lastHighlightedKey = '';
     this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
     this.draggedNodeId = null;
 
     const adjacency = buildGraphAdjacency(
@@ -164,8 +168,10 @@ const engine: D3Engine = {
     );
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
-      if (!immediate && activeId === lastHighlightedNodeId) return;
-      lastHighlightedNodeId = activeId;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      const highlightKey = `${activeId ?? ''}|${secId ?? ''}`;
+      if (!immediate && highlightKey === lastHighlightedKey) return;
+      lastHighlightedKey = highlightKey;
 
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
@@ -177,17 +183,51 @@ const engine: D3Engine = {
       const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
 
-      if (dists) {
-        this.linkElements?.sort((a: D3Link, b: D3Link) => {
-          const srcA = typeof a.source === 'object' ? a.source.id : String(a.source);
-          const tgtA = typeof a.target === 'object' ? a.target.id : String(a.target);
-          const srcB = typeof b.source === 'object' ? b.source.id : String(b.source);
-          const tgtB = typeof b.target === 'object' ? b.target.id : String(b.target);
-          return getEdgeHopZIndex(dists.get(srcA), dists.get(tgtA)) - getEdgeHopZIndex(dists.get(srcB), dists.get(tgtB));
-        });
-        this.nodeElements?.sort((a: D3Node, b: D3Node) => {
-          return getNodeHopZIndex(dists.get(a.id)) - getNodeHopZIndex(dists.get(b.id));
-        });
+      const bgLinkNode = bgLinkLayer.node();
+      const bgNodeGroup = bgNodeLayer.node();
+      const fgLayerNode = fgLayer.node();
+
+      if (this.linkElements && this.nodeElements && bgLinkNode && bgNodeGroup && fgLayerNode) {
+        if (dists || secId) {
+          const fgItems: { el: Element; z: number; isNode: boolean }[] = [];
+
+          this.linkElements.each(function (l: D3Link) {
+            const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+            const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+            const edgeZ = dists ? getEdgeHopZIndex(dists.get(srcId), dists.get(tgtId)) : 1;
+            if (edgeZ >= 8) {
+              fgItems.push({ el: this, z: edgeZ, isNode: false });
+            } else if (this.parentNode !== bgLinkNode) {
+              bgLinkNode.appendChild(this);
+            }
+          });
+
+          this.nodeElements.each(function (n: D3Node) {
+            const hopDist = dists ? dists.get(n.id) : undefined;
+            const nodeZ = secId !== null && n.id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+            if (nodeZ >= 10) {
+              fgItems.push({ el: this, z: nodeZ, isNode: true });
+            } else if (this.parentNode !== bgNodeGroup) {
+              bgNodeGroup.appendChild(this);
+            }
+          });
+
+          fgItems.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+          for (const item of fgItems) {
+            fgLayerNode.appendChild(item.el);
+          }
+        } else {
+          this.linkElements.each(function () {
+            if (this.parentNode !== bgLinkNode) {
+              bgLinkNode.appendChild(this);
+            }
+          });
+          this.nodeElements.each(function () {
+            if (this.parentNode !== bgNodeGroup) {
+              bgNodeGroup.appendChild(this);
+            }
+          });
+        }
       }
 
       const nodeTrans = (this.nodes || []).map((n) => {
@@ -195,13 +235,22 @@ const engine: D3Engine = {
         const startColor = n.displayColor || baseColor;
         const startRadius = n.displayRadius ?? currentTokens.nodeRadius;
         const hopDist = dists ? dists.get(n.id) : undefined;
-        const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
-          : baseColor;
-        const targetRadius = dists
-          ? currentTokens.nodeRadius * getAttenuatedNodeScale(hopDist)
-          : currentTokens.nodeRadius;
-        return { node: n, startColor, targetColor, startRadius, targetRadius };
+        const isSecHover = secId !== null && n.id === secId;
+        const targetColor = isSecHover
+          ? baseColor
+          : dists
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            : baseColor;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
+        const targetRadius = currentTokens.nodeRadius * targetScale;
+        return {
+          node: n,
+          startColor,
+          targetColor,
+          startRadius,
+          targetRadius
+        };
       });
 
       const linkTrans = (this.links || []).map((l) => {
@@ -262,7 +311,7 @@ const engine: D3Engine = {
     };
     this.applyHighlight = applyHighlight;
 
-    this.nodeElements = nodeLayer.selectAll<SVGGElement, D3Node>(".node")
+    this.nodeElements = bgNodeLayer.selectAll<SVGGElement, D3Node>(".node")
       .data(this.nodes)
       .enter().append("g")
       .style("cursor", "pointer");
@@ -324,6 +373,16 @@ const engine: D3Engine = {
         this.hoveredNodeId = nodeId;
         if (!this.draggedNodeId) {
           applyHighlight(nodeId);
+        }
+      },
+      onFocusNodeChange: (_nodeId, focusNodeIds) => {
+        this.focusedNodeIds = focusNodeIds;
+        this.startViewportAdaptLoop(1600, GRAPH_VIEWPORT_CONFIG.focusAlpha);
+      },
+      onSecondaryHoverNodeChange: (nodeId) => {
+        this.secondaryHoveredNodeId = nodeId;
+        if (!this.draggedNodeId) {
+          applyHighlight(this.hoveredNodeId ?? null);
         }
       },
       onNavigate: (node) => {
@@ -441,12 +500,17 @@ const engine: D3Engine = {
     if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
     if (this.width <= 0 || this.height <= 0) return;
 
+    const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
+    const activeNodes = isSubgraph
+      ? this.nodes.filter(n => this.focusedNodeIds!.has(n.id))
+      : this.nodes;
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     const fit = compute2DViewportFit(
-      this.nodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
+      activeNodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
       this.width,
       this.height,
-      r
+      r,
+      isSubgraph
     );
     if (!fit) return;
 
@@ -467,12 +531,17 @@ const engine: D3Engine = {
     const svgNode = this.svg.node();
     if (!svgNode) return;
 
+    const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
+    const activeNodes = isSubgraph
+      ? this.nodes.filter(n => this.focusedNodeIds!.has(n.id))
+      : this.nodes;
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     const fit = compute2DViewportFit(
-      this.nodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
+      activeNodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
       this.width,
       this.height,
-      r
+      r,
+      isSubgraph
     );
     if (!fit) return;
 
@@ -485,7 +554,10 @@ const engine: D3Engine = {
     this.svg.call(this.zoom.transform, d3.zoomIdentity.translate(nextX, nextY).scale(nextK));
   },
 
-  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+  startViewportAdaptLoop(
+    durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs,
+    baseAlpha: number = GRAPH_VIEWPORT_CONFIG.adaptAlpha
+  ) {
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
@@ -506,7 +578,7 @@ const engine: D3Engine = {
       }
       const dt = Math.max(1, now - lastTime);
       lastTime = now;
-      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      const stepAlpha = 1 - Math.pow(1 - baseAlpha, Math.min(50, dt) / 16.67);
       this.stepViewportTowardCloud(stepAlpha);
       if (now - startTime < durationMs) {
         this.viewportAdaptFrameId = requestAnimationFrame(tick);
@@ -610,6 +682,11 @@ const engine: D3Engine = {
     const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
+
+    if (layoutChanged) {
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+    }
 
     // Apply color update to D3 circles and links based on theme (and preserve any active highlight)
     this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);

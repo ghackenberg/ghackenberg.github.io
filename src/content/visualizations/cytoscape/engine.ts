@@ -41,7 +41,11 @@ export interface CytoscapeEngine {
   layouts: { id: string; label: string }[];
   cy: Core | null;
   tooltipController: GraphTooltipController | null;
+  fgCanvas?: HTMLCanvasElement | null;
+  activeHighlightDists?: Map<string, number> | null;
   hoveredNodeId?: string | null;
+  secondaryHoveredNodeId?: string | null;
+  focusedNodeIds?: Set<string> | null;
   highlightFrameId?: number | null;
   applyHighlight?(activeId: string | null, immediate?: boolean): void;
   currentLayout?: string;
@@ -57,7 +61,7 @@ export interface CytoscapeEngine {
   resizeObserver: ResizeObserver | null;
   init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
   stepViewportTowardCloud(alpha: number): void;
-  startViewportAdaptLoop(durationMs?: number): void;
+  startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   runLayout(mode: string, animate: boolean): void;
   getOrderSignature(layout: string): string;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): Record<string, { x: number; y: number }>;
@@ -91,6 +95,8 @@ const engine: CytoscapeEngine = {
     this.initialized = false;
     this.isLight = isLight;
     this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
+    this.activeHighlightDists = null;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
     this.forcePositions = new Map();
@@ -133,12 +139,129 @@ const engine: CytoscapeEngine = {
       rawEdges.push({ source: e.source().id(), target: e.target().id() });
     });
     const adjacency = buildGraphAdjacency(rawEdges);
-    let lastHighlightedNodeId: string | null = null;
+    let lastHighlightedKey = '';
+
+    const fgCanvas = document.createElement('canvas');
+    fgCanvas.style.position = 'absolute';
+    fgCanvas.style.inset = '0';
+    fgCanvas.style.width = '100%';
+    fgCanvas.style.height = '100%';
+    fgCanvas.style.pointerEvents = 'none';
+    fgCanvas.style.zIndex = '5';
+    fgCanvas.style.touchAction = 'pan-y';
+    container.appendChild(fgCanvas);
+    this.fgCanvas = fgCanvas;
+
+    const drawForegroundOverlay = () => {
+      if (!this.fgCanvas || !this.cy) return;
+      const w = container.clientWidth || 0;
+      const h = container.clientHeight || 0;
+      if (w <= 0 || h <= 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      const targetW = Math.round(w * dpr);
+      const targetH = Math.round(h * dpr);
+      if (this.fgCanvas.width !== targetW || this.fgCanvas.height !== targetH) {
+        this.fgCanvas.width = targetW;
+        this.fgCanvas.height = targetH;
+      }
+      const ctx = this.fgCanvas.getContext('2d');
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const dists = this.activeHighlightDists;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      if (!dists && !secId) return;
+
+      const zoom = this.cy.zoom() || 1;
+      const currentIsLight = Boolean(this.isLight);
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const currentBaseDiameter = currentTokens.nodeRadius * 2;
+
+      type DrawItem =
+        | { isNode: false; z: number; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
+        | { isNode: true; z: number; x: number; y: number; radius: number; borderWidth: number; color: string };
+
+      const items: DrawItem[] = [];
+
+      if (dists) {
+        this.cy.edges().forEach((e: EdgeSingular) => {
+          const srcNode = e.source();
+          const tgtNode = e.target();
+          const edgeZ = getEdgeHopZIndex(dists.get(srcNode.id()), dists.get(tgtNode.id()));
+          if (edgeZ < 8) return;
+          const p1 = srcNode.renderedPosition();
+          const p2 = tgtNode.renderedPosition();
+          if (!p1 || !p2) return;
+          const modelWidth = Number(e.data('displayWidth') || currentTokens.edgeWidth);
+          const color = String(e.data('displayColor') || currentTokens.edgeColor);
+          items.push({
+            isNode: false,
+            z: edgeZ,
+            x1: p1.x,
+            y1: p1.y,
+            x2: p2.x,
+            y2: p2.y,
+            color,
+            width: modelWidth * zoom
+          });
+        });
+      }
+
+      this.cy.nodes().forEach((n: NodeSingular) => {
+        const id = n.id();
+        const hopDist = dists ? dists.get(id) : undefined;
+        const nodeZ = secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+        if (nodeZ < 10) return;
+        const p = n.renderedPosition();
+        if (!p) return;
+        const modelDiameter = Number(n.data('displaySize') || currentBaseDiameter);
+        const color = String(n.data('displayColor') || getNodeColor(n, currentIsLight));
+        items.push({
+          isNode: true,
+          z: nodeZ,
+          x: p.x,
+          y: p.y,
+          radius: (modelDiameter * zoom) / 2,
+          borderWidth: 1.5 * zoom,
+          color
+        });
+      });
+
+      if (items.length === 0) return;
+      items.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (const item of items) {
+        if (!item.isNode) {
+          ctx.beginPath();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = item.width;
+          ctx.moveTo(item.x1, item.y1);
+          ctx.lineTo(item.x2, item.y2);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+          ctx.fillStyle = item.color;
+          ctx.fill();
+          ctx.lineWidth = item.borderWidth;
+          ctx.strokeStyle = item.color;
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    };
+
+    this.cy.on('render viewport', drawForegroundOverlay);
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.cy) return;
-      if (!immediate && activeId === lastHighlightedNodeId) return;
-      lastHighlightedNodeId = activeId;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      const highlightKey = `${activeId ?? ''}|${secId ?? ''}`;
+      if (!immediate && highlightKey === lastHighlightedKey) return;
+      lastHighlightedKey = highlightKey;
 
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
@@ -149,6 +272,7 @@ const engine: CytoscapeEngine = {
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const currentBaseDiameter = currentTokens.nodeRadius * 2;
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
+      this.activeHighlightDists = dists;
 
       const nodeTrans: {
         node: NodeSingular;
@@ -165,14 +289,26 @@ const engine: CytoscapeEngine = {
         const startColor = String(n.data('displayColor') || baseColor);
         const startSize = Number(n.data('displaySize') || currentBaseDiameter);
         const hopDist = dists ? dists.get(id) : undefined;
-        const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
-          : baseColor;
-        const targetSize = dists
-          ? currentBaseDiameter * getAttenuatedNodeScale(hopDist)
-          : currentBaseDiameter;
-        const targetZIndex = dists ? getNodeHopZIndex(hopDist) : 10;
-        nodeTrans.push({ node: n, startColor, targetColor, startSize, targetSize, targetZIndex });
+        const isSecHover = secId !== null && id === secId;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
+        const targetColor = isSecHover
+          ? baseColor
+          : dists
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            : baseColor;
+        const targetSize = currentBaseDiameter * targetScale;
+        const targetZIndex = dists
+          ? (isSecHover ? 45 : getNodeHopZIndex(hopDist))
+          : 10;
+        nodeTrans.push({
+          node: n,
+          startColor,
+          targetColor,
+          startSize,
+          targetSize,
+          targetZIndex
+        });
       });
 
       const edgeTrans: {
@@ -205,7 +341,7 @@ const engine: CytoscapeEngine = {
         });
       });
 
-      if (dists) {
+      if (dists || secId) {
         this.cy.batch(() => {
           for (const nt of nodeTrans) {
             nt.node.data('displayZIndex', nt.targetZIndex);
@@ -239,6 +375,7 @@ const engine: CytoscapeEngine = {
             et.edge.data(nextData);
           }
         });
+        drawForegroundOverlay();
       };
 
       if (immediate) {
@@ -255,7 +392,7 @@ const engine: CytoscapeEngine = {
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
         const ease = easeHighlightTransition(progress);
         const isFinal = progress >= 1;
-        renderStep(ease, isFinal && !dists);
+        renderStep(ease, isFinal && !dists && !secId);
         if (!isFinal) {
           this.highlightFrameId = requestAnimationFrame(step);
         } else {
@@ -459,6 +596,16 @@ const engine: CytoscapeEngine = {
           applyHighlight(nodeId);
         }
       },
+      onSecondaryHoverNodeChange: (nodeId) => {
+        this.secondaryHoveredNodeId = nodeId;
+        if (grabbedNodeId === null) {
+          applyHighlight(this.hoveredNodeId ?? null);
+        }
+      },
+      onFocusNodeChange: (_nodeId, focusNodeIds) => {
+        this.focusedNodeIds = focusNodeIds;
+        this.startViewportAdaptLoop(1600, GRAPH_VIEWPORT_CONFIG.focusAlpha);
+      },
       onNavigate: (node) => {
         const id = node.id;
         if (
@@ -636,16 +783,18 @@ const engine: CytoscapeEngine = {
     const height = this.cy.height() || 500;
     if (width <= 0 || height <= 0) return;
 
+    const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     const points: { x: number; y: number }[] = [];
     this.cy.nodes().forEach((n: NodeSingular) => {
+      if (isSubgraph && !this.focusedNodeIds!.has(n.id())) return;
       const p = n.position();
       if (Number.isFinite(p.x) && Number.isFinite(p.y)) {
         points.push({ x: p.x, y: p.y });
       }
     });
 
-    const fit = compute2DViewportFit(points, width, height, r);
+    const fit = compute2DViewportFit(points, width, height, r, isSubgraph);
     if (!fit) return;
 
     const curZoom = this.cy.zoom() || 1;
@@ -662,7 +811,10 @@ const engine: CytoscapeEngine = {
     });
   },
 
-  startViewportAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+  startViewportAdaptLoop(
+    durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs,
+    baseAlpha: number = GRAPH_VIEWPORT_CONFIG.adaptAlpha
+  ) {
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
@@ -676,7 +828,7 @@ const engine: CytoscapeEngine = {
       }
       const dt = Math.max(1, now - lastTime);
       lastTime = now;
-      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      const stepAlpha = 1 - Math.pow(1 - baseAlpha, Math.min(50, dt) / 16.67);
       this.stepViewportTowardCloud(stepAlpha);
       if (now - startTime < durationMs) {
         this.viewportAdaptFrameId = requestAnimationFrame(tick);
@@ -954,9 +1106,13 @@ const engine: CytoscapeEngine = {
     this.currentLayout = layout;
     this.isLight = isLight;
 
-    if (layoutChanged && this.physicsFrameId) {
-      cancelAnimationFrame(this.physicsFrameId);
-      this.physicsFrameId = null;
+    if (layoutChanged) {
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+      if (this.physicsFrameId) {
+        cancelAnimationFrame(this.physicsFrameId);
+        this.physicsFrameId = null;
+      }
     }
 
     // Apply color update to nodes and edges based on theme (and preserve any active highlight)
@@ -996,6 +1152,11 @@ const engine: CytoscapeEngine = {
       this.tooltipController.destroy();
       this.tooltipController = null;
     }
+    if (this.fgCanvas) {
+      this.fgCanvas.remove();
+      this.fgCanvas = null;
+    }
+    this.activeHighlightDists = null;
     if (this.cy) {
       this.cy.destroy();
       this.cy = null;

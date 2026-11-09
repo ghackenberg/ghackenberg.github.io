@@ -16,6 +16,28 @@ import {
 
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
+export interface ThreeColorLike {
+  set?: (color: string | number) => void;
+}
+
+export interface ThreeMaterialLike {
+  color?: ThreeColorLike;
+  depthTest?: boolean;
+  depthWrite?: boolean;
+  transparent?: boolean;
+  opacity?: number;
+  needsUpdate?: boolean;
+  clone?: () => ThreeMaterialLike;
+}
+
+export interface ThreeObjectLike {
+  renderOrder?: number;
+  scale?: Force3DVec3;
+  material?: ThreeMaterialLike;
+  children?: ThreeObjectLike[];
+  __hasOwnMat?: boolean;
+}
+
 export interface Force3DNode extends GraphNodePayload {
   val: number;
   color: string;
@@ -27,6 +49,7 @@ export interface Force3DNode extends GraphNodePayload {
   fx?: number | null;
   fy?: number | null;
   fz?: number | null;
+  __threeObj?: ThreeObjectLike;
 }
 
 export interface Force3DLink {
@@ -34,6 +57,8 @@ export interface Force3DLink {
   target: string | Force3DNode;
   displayColor?: string;
   displayWidth?: number;
+  __lineObj?: ThreeObjectLike;
+  __threeObj?: ThreeObjectLike;
 }
 
 export interface Force3DVec3 {
@@ -70,7 +95,9 @@ export interface Force3DEngine {
   graph: ReturnType<typeof ForceGraph3D> | null;
   tooltipController: GraphTooltipController | null;
   hoveredNodeId: string | null;
+  secondaryHoveredNodeId?: string | null;
   draggedNodeId: string | null;
+  focusedNodeIds?: Set<string> | null;
   adjacency: Map<string, Set<string>> | null;
   activeDistances: Map<string, number> | null;
   mouseMoveHandler: ((e: MouseEvent) => void) | null;
@@ -86,12 +113,13 @@ export interface Force3DEngine {
   animationFrameId: number | null;
   cameraAdaptFrameId: number | null;
   cameraAdaptEndTime?: number;
+  cameraAdaptAlpha?: number;
   cleanupControlsListeners?: (() => void) | null;
   highlightFrameId: number | null;
   applyHighlight?(immediate?: boolean): void;
   applyForces(initialLoad?: boolean): void;
   stepCameraTowardCloud(alpha: number): void;
-  startCameraAdaptLoop(durationMs?: number): void;
+  startCameraAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
@@ -132,6 +160,7 @@ const engine: Force3DEngine = {
     this.currentLayout = undefined;
     this.isLight = isLight;
     this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
     this.draggedNodeId = null;
     const engineData = payload['3d-force-graph'] || payload['3d-force'] || { nodes: [], connections: [] };
     this.adjacency = buildGraphAdjacency(engineData.connections);
@@ -175,12 +204,44 @@ const engine: Force3DEngine = {
     const utmMedium = String(extraOptions.utmMedium || '3d-force-graph');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
-    let lastHighlightedNodeId: string | null = null;
+    let lastHighlightedKey = '';
+    const baseCylinderWidth = Math.ceil(initialStyleTokens.edgeWidth * 10) / 10;
+
+    const applyMeshVisualState = (
+      obj: ThreeObjectLike | undefined,
+      colorHex: string,
+      order: number,
+      depthTest: boolean,
+      depthWrite: boolean,
+      opacity: number
+    ) => {
+      if (!obj) return;
+      const targetMesh = obj.children && obj.children.length > 0 ? obj.children[0] : obj;
+      obj.renderOrder = order;
+      targetMesh.renderOrder = order;
+      if (targetMesh.material) {
+        if (!targetMesh.__hasOwnMat && typeof targetMesh.material.clone === 'function') {
+          targetMesh.material = targetMesh.material.clone();
+          targetMesh.__hasOwnMat = true;
+        }
+        const mat = targetMesh.material;
+        mat.color?.set?.(colorHex);
+        if (mat.transparent !== true || mat.depthTest !== depthTest || mat.depthWrite !== depthWrite) {
+          mat.transparent = true;
+          mat.depthTest = depthTest;
+          mat.depthWrite = depthWrite;
+          mat.needsUpdate = true;
+        }
+        mat.opacity = opacity;
+      }
+    };
 
     const refreshHighlight = (immediate = false) => {
       const activeNodeId = this.draggedNodeId ?? this.hoveredNodeId;
-      if (!immediate && activeNodeId === lastHighlightedNodeId) return;
-      lastHighlightedNodeId = activeNodeId;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      const highlightKey = `${activeNodeId ?? ''}|${secId ?? ''}`;
+      if (!immediate && highlightKey === lastHighlightedKey) return;
+      lastHighlightedKey = highlightKey;
 
       if (this.highlightFrameId) {
         cancelAnimationFrame(this.highlightFrameId);
@@ -200,47 +261,87 @@ const engine: Force3DEngine = {
         const startColor = n.displayColor || baseColor;
         const startVal = n.displayVal ?? n.val;
         const hopDist = dists ? dists.get(n.id) : undefined;
-        const targetColor = dists
-          ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
-          : baseColor;
-        const targetVal = dists
-          ? n.val * Math.pow(getAttenuatedNodeScale(hopDist), 3)
-          : n.val;
-        return { node: n, startColor, targetColor, startVal, targetVal };
+        const isSecHover = secId !== null && n.id === secId;
+        const targetColor = isSecHover
+          ? baseColor
+          : dists
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            : baseColor;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
+        const targetVal = n.val * Math.pow(targetScale, 3);
+        const isForeground = Boolean((hopDist !== undefined && hopDist < 1.8) || isSecHover);
+        return { node: n, startColor, targetColor, startVal, targetVal, isForeground };
       });
 
       const linkTrans = (this.links || []).map((l) => {
         const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
         const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+        const dSrc = dists ? dists.get(srcId) : undefined;
+        const dTgt = dists ? dists.get(tgtId) : undefined;
         const startColor = l.displayColor || currentTokens.edgeColor;
         const startWidth = l.displayWidth ?? currentTokens.edgeWidth;
         const targetStyle = dists
-          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight)
+          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
           : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+        const isForeground = Boolean(dists && (dSrc === 0 || dTgt === 0));
         return {
           link: l,
           startColor,
           targetColor: targetStyle.color,
           startWidth,
-          targetWidth: targetStyle.width
+          targetWidth: targetStyle.width,
+          isForeground
         };
       });
 
       const renderStep = (ease: number) => {
         for (const nt of nodeTrans) {
-          nt.node.displayColor = interpolateHexColor(nt.startColor, nt.targetColor, ease);
-          nt.node.displayVal = nt.startVal + (nt.targetVal - nt.startVal) * ease;
+          const nextColor = interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          const nextVal = nt.startVal + (nt.targetVal - nt.startVal) * ease;
+          nt.node.displayColor = nextColor;
+          nt.node.displayVal = nextVal;
+
+          const nodeObj = nt.node.__threeObj;
+          if (nodeObj) {
+            const scaleRatio = Math.cbrt(Math.max(0.01, nextVal / nt.node.val));
+            nodeObj.scale?.set?.(scaleRatio, scaleRatio, scaleRatio);
+            if (dists) {
+              if (nt.isForeground) {
+                applyMeshVisualState(nodeObj, nextColor, 15, true, true, 1);
+              } else {
+                applyMeshVisualState(nodeObj, nextColor, 2, true, false, 1);
+              }
+            } else {
+              applyMeshVisualState(nodeObj, nextColor, 10, true, true, 1);
+            }
+          }
         }
+
         for (const lt of linkTrans) {
-          lt.link.displayColor = interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          lt.link.displayWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
-        }
-        if (this.graph) {
-          this.graph
-            .nodeColor(this.graph.nodeColor())
-            .nodeVal(this.graph.nodeVal())
-            .linkColor(this.graph.linkColor())
-            .linkWidth(this.graph.linkWidth());
+          const nextColor = interpolateHexColor(lt.startColor, lt.targetColor, ease);
+          const nextWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+          lt.link.displayColor = nextColor;
+          lt.link.displayWidth = nextWidth;
+
+          const lineObj = lt.link.__lineObj || lt.link.__threeObj;
+          if (lineObj) {
+            const lineMesh = lineObj.children && lineObj.children.length > 0 ? lineObj.children[0] : lineObj;
+            const widthRatio = Math.max(0.1, nextWidth / baseCylinderWidth);
+            if (lineMesh.scale) {
+              lineMesh.scale.x = widthRatio;
+              lineMesh.scale.y = widthRatio;
+            }
+            if (dists) {
+              if (lt.isForeground) {
+                applyMeshVisualState(lineObj, nextColor, 20, true, true, 1);
+              } else {
+                applyMeshVisualState(lineObj, nextColor, 1, true, false, 1);
+              }
+            } else {
+              applyMeshVisualState(lineObj, nextColor, 5, true, true, 1);
+            }
+          }
         }
       };
 
@@ -268,6 +369,7 @@ const engine: Force3DEngine = {
     };
     this.applyHighlight = refreshHighlight;
 
+    let materialsInitialized = false;
     const initialWidth = Math.floor(container.clientWidth) || 800;
     const initialHeight = Math.floor(container.clientHeight) || 500;
     this.graph = ForceGraph3D()(container)
@@ -279,7 +381,7 @@ const engine: Force3DEngine = {
       .showNavInfo(false)
       .enableNodeDrag(false)
       .nodeLabel(() => '')
-      .nodeVal((n: Force3DNode) => n.displayVal ?? n.val)
+      .nodeVal((n: Force3DNode) => n.val)
       .nodeColor((n: Force3DNode) => {
         const currentIsLight = Boolean(this.isLight);
         const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -290,9 +392,12 @@ const engine: Force3DEngine = {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
         return l.displayColor || currentTokens.edgeColor;
       })
-      .linkWidth((l: Force3DLink) => {
-        const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-        return l.displayWidth ?? currentTokens.edgeWidth;
+      .linkWidth(initialStyleTokens.edgeWidth)
+      .onEngineTick(() => {
+        if (!materialsInitialized) {
+          materialsInitialized = true;
+          refreshHighlight(true);
+        }
       });
 
     // Hide any internal 3d-force-graph scene tooltip element and mount our Preact tooltip AFTER ForceGraph3D()(container)
@@ -327,6 +432,16 @@ const engine: Force3DEngine = {
       getLastDraggedAt: () => this.lastDraggedAt || 0,
       onActiveNodeChange: (nodeId) => {
         this.hoveredNodeId = nodeId;
+        if (!this.draggedNodeId) {
+          refreshHighlight();
+        }
+      },
+      onFocusNodeChange: (_nodeId, focusNodeIds) => {
+        this.focusedNodeIds = focusNodeIds;
+        this.startCameraAdaptLoop(1600, GRAPH_VIEWPORT_CONFIG.focusAlpha);
+      },
+      onSecondaryHoverNodeChange: (nodeId) => {
+        this.secondaryHoveredNodeId = nodeId;
         if (!this.draggedNodeId) {
           refreshHighlight();
         }
@@ -627,9 +742,11 @@ const engine: Force3DEngine = {
       let minW = Infinity;
       let maxW = -Infinity;
 
+      const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
       const projectedNodes: { r: number; u: number; w: number; rho: number }[] = [];
 
       for (const n of this.nodes) {
+        if (isSubgraph && !this.focusedNodeIds!.has(n.id)) continue;
         const nx = n.x ?? 0;
         const ny = n.y ?? 0;
         const nz = n.z ?? 0;
@@ -666,10 +783,15 @@ const engine: Force3DEngine = {
 
       const fx = (width * 0.5) * p0;
       const fy = (height * 0.5) * p5;
-      const padX = GRAPH_VIEWPORT_CONFIG.padX;
-      const padY = GRAPH_VIEWPORT_CONFIG.padY;
+      const padX = isSubgraph
+        ? Math.max(GRAPH_VIEWPORT_CONFIG.focusPadX, Math.round(width * 0.12))
+        : GRAPH_VIEWPORT_CONFIG.padX;
+      const padY = isSubgraph
+        ? Math.max(GRAPH_VIEWPORT_CONFIG.focusPadY, Math.round(height * 0.14))
+        : GRAPH_VIEWPORT_CONFIG.padY;
       const halfW = Math.max(60, width * 0.5 - padX);
       const halfH = Math.max(60, height * 0.5 - padY);
+      const minAllowedDist = isSubgraph ? 140 : 80;
 
       let cr = (minR + maxR) / 2;
       let cu = (minU + maxU) / 2;
@@ -724,7 +846,7 @@ const engine: Force3DEngine = {
         cr = ((nL.r - nL.rho) / zL + (nR.r + nR.rho) / zR) / (1 / zL + 1 / zR);
         cu = ((nB.u - nB.rho) / zB + (nT.u + nT.rho) / zT) / (1 / zB + 1 / zT);
 
-        let dReq = 80;
+        let dReq = minAllowedDist;
         for (let i = 0; i < projectedNodes.length; i++) {
           const pn = projectedNodes[i];
           const dw = pn.w - cw;
@@ -735,7 +857,7 @@ const engine: Force3DEngine = {
             dReq = needed;
           }
         }
-        dist = Math.max(80, Math.min(2500, dReq));
+        dist = Math.max(minAllowedDist, Math.min(2500, dReq));
       }
 
       const cx = cr * rightX + cu * upX + cw * dirX;
@@ -780,9 +902,15 @@ const engine: Force3DEngine = {
     }
   },
 
-  startCameraAdaptLoop(durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs) {
+  startCameraAdaptLoop(
+    durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs,
+    baseAlpha: number = GRAPH_VIEWPORT_CONFIG.adaptAlpha
+  ) {
     const nowInit = performance.now();
     this.cameraAdaptEndTime = Math.max(this.cameraAdaptEndTime || 0, nowInit + durationMs);
+    this.cameraAdaptAlpha = this.cameraAdaptFrameId
+      ? Math.max(this.cameraAdaptAlpha || GRAPH_VIEWPORT_CONFIG.adaptAlpha, baseAlpha)
+      : baseAlpha;
     if (this.cameraAdaptFrameId) {
       return;
     }
@@ -790,11 +918,13 @@ const engine: Force3DEngine = {
     const tick = (now: number) => {
       if (!this.graph || !this.nodes || this.draggedNodeId) {
         this.cameraAdaptFrameId = null;
+        this.cameraAdaptAlpha = GRAPH_VIEWPORT_CONFIG.adaptAlpha;
         return;
       }
       const dt = Math.max(1, now - lastTime);
       lastTime = now;
-      const stepAlpha = 1 - Math.pow(1 - GRAPH_VIEWPORT_CONFIG.adaptAlpha, Math.min(50, dt) / 16.67);
+      const activeAlpha = this.cameraAdaptAlpha || GRAPH_VIEWPORT_CONFIG.adaptAlpha;
+      const stepAlpha = 1 - Math.pow(1 - activeAlpha, Math.min(50, dt) / 16.67);
       if (this.currentLayout === 'force') {
         for (const n of this.nodes) {
           if (typeof n.x === 'number' && typeof n.y === 'number' && typeof n.z === 'number') {
@@ -807,6 +937,7 @@ const engine: Force3DEngine = {
         this.cameraAdaptFrameId = requestAnimationFrame(tick);
       } else {
         this.cameraAdaptFrameId = null;
+        this.cameraAdaptAlpha = GRAPH_VIEWPORT_CONFIG.adaptAlpha;
       }
     };
     this.cameraAdaptFrameId = requestAnimationFrame(tick);
@@ -906,6 +1037,11 @@ const engine: Force3DEngine = {
     const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
+
+    if (layoutChanged) {
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+    }
 
     // Apply color update based on theme
 
@@ -1094,6 +1230,7 @@ const engine: Force3DEngine = {
       this.tooltipController = null;
     }
     this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
     this.draggedNodeId = null;
     this.adjacency = null;
     this.activeDistances = null;
