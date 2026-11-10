@@ -81,6 +81,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Verify Interactive Visualizations (Browser E2E)
+        run: npm run test:vis:e2e
+
       - name: Save Branding & OG Assets Cache
         if: steps.cache-branding.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4

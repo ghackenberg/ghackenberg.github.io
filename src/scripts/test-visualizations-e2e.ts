@@ -116,8 +116,10 @@ function startStaticServer(distDir: string, preferredPort: number): Promise<{ se
   });
 }
 
+let waitScale = 1;
+
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, Math.round(ms * waitScale)));
 }
 
 async function measureRadialScreenRadii(
@@ -294,7 +296,7 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
             (!loader || loader.style.display === 'none' || loader.style.opacity === '0')
         );
       },
-      { timeout: 25000, polling: 50 }
+      { timeout: 35000, polling: 50 }
     );
     await sleep(600);
 
@@ -425,7 +427,7 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
     await sleep(120);
     await page.waitForFunction(
       () => !(window.activeInstance as ActiveVisInstance | null | undefined)?.tuningInFlight,
-      { timeout: 15000, polling: 50 }
+      { timeout: 25000, polling: 50 }
     );
     await sleep(600);
 
@@ -577,7 +579,7 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
           dragNodeScreen.x + Math.round(90 * ratio),
           dragNodeScreen.y + Math.round(60 * ratio)
         );
-        await sleep(18);
+        await new Promise((resolve) => setTimeout(resolve, 18));
       }
       await page.mouse.up();
       await sleep(750);
@@ -659,6 +661,8 @@ async function main() {
   }
 
   const args = process.argv.slice(2);
+  const isCi = process.env.CI === 'true' || args.includes('--ci');
+  waitScale = isCi ? 1.5 : 1;
   const engineArg = args.find((a) => a.startsWith('--engine='))?.split('=')[1] as EngineId | undefined;
   const targetEngines: readonly EngineId[] =
     engineArg && ENGINES.includes(engineArg) ? [engineArg] : ENGINES;
@@ -666,15 +670,29 @@ async function main() {
   const { server, port } = await startStaticServer(distDir, 4399);
   const baseUrl = `http://127.0.0.1:${port}`;
 
+  const launchArgs = isCi
+    ? [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--use-gl=angle',
+        '--use-angle=swiftshader',
+        '--enable-webgl',
+        '--enable-unsafe-swiftshader',
+        '--ignore-gpu-blocklist',
+      ]
+    : [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--enable-gpu-rasterization',
+        '--enable-zero-copy',
+        '--ignore-gpu-blocklist',
+        '--enable-unsafe-swiftshader',
+      ];
+
   const browser = await puppeteer.launch({
     headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--enable-gpu-rasterization',
-      '--enable-zero-copy',
-      '--ignore-gpu-blocklist',
-    ],
+    args: launchArgs,
   });
 
   try {

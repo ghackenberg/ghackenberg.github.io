@@ -834,26 +834,6 @@ const engine: Force3DEngine = {
       const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
       const projectedNodes: { r: number; u: number; w: number; rho: number }[] = [];
 
-      for (const n of this.nodes) {
-        if (isSubgraph && !this.focusedNodeIds!.has(n.id)) continue;
-        const nx = n.x ?? 0;
-        const ny = n.y ?? 0;
-        const nz = n.z ?? 0;
-        if (!Number.isFinite(nx) || !Number.isFinite(ny) || !Number.isFinite(nz)) continue;
-        const rCoord = nx * rightX + ny * rightY + nz * rightZ;
-        const uCoord = nx * upX + ny * upY + nz * upZ;
-        const wCoord = nx * dirX + ny * dirY + nz * dirZ;
-        const val = Math.max(1, n.displayVal ?? n.val ?? 6);
-        const rho = 4 * Math.cbrt(val);
-        projectedNodes.push({ r: rCoord, u: uCoord, w: wCoord, rho });
-        if (rCoord < minR) minR = rCoord;
-        if (rCoord > maxR) maxR = rCoord;
-        if (uCoord < minU) minU = uCoord;
-        if (uCoord > maxU) maxU = uCoord;
-        if (wCoord < minW) minW = wCoord;
-        if (wCoord > maxW) maxW = wCoord;
-      }
-
       if (!isSubgraph && this.currentLayout === 'radial') {
         const maxOuterR =
           GRAPH_GEOMETRY_LAYOUT_CONFIG.radialOuter3D *
@@ -870,6 +850,26 @@ const engine: Force3DEngine = {
           const uCoord = rp.x * upX + rp.y * upY + rp.z * upZ;
           const wCoord = rp.x * dirX + rp.y * dirY + rp.z * dirZ;
           projectedNodes.push({ r: rCoord, u: uCoord, w: wCoord, rho: 10 });
+          if (rCoord < minR) minR = rCoord;
+          if (rCoord > maxR) maxR = rCoord;
+          if (uCoord < minU) minU = uCoord;
+          if (uCoord > maxU) maxU = uCoord;
+          if (wCoord < minW) minW = wCoord;
+          if (wCoord > maxW) maxW = wCoord;
+        }
+      } else {
+        for (const n of this.nodes) {
+          if (isSubgraph && !this.focusedNodeIds!.has(n.id)) continue;
+          const nx = n.x ?? 0;
+          const ny = n.y ?? 0;
+          const nz = n.z ?? 0;
+          if (!Number.isFinite(nx) || !Number.isFinite(ny) || !Number.isFinite(nz)) continue;
+          const rCoord = nx * rightX + ny * rightY + nz * rightZ;
+          const uCoord = nx * upX + ny * upY + nz * upZ;
+          const wCoord = nx * dirX + ny * dirY + nz * dirZ;
+          const val = Math.max(1, n.displayVal ?? n.val ?? 6);
+          const rho = 4 * Math.cbrt(val);
+          projectedNodes.push({ r: rCoord, u: uCoord, w: wCoord, rho });
           if (rCoord < minR) minR = rCoord;
           if (rCoord > maxR) maxR = rCoord;
           if (uCoord < minU) minU = uCoord;
@@ -1043,6 +1043,7 @@ const engine: Force3DEngine = {
       if (now < (this.cameraAdaptEndTime || 0)) {
         this.cameraAdaptFrameId = requestAnimationFrame(tick);
       } else {
+        this.stepCameraTowardCloud(1);
         this.cameraAdaptFrameId = null;
         this.cameraAdaptAlpha = GRAPH_VIEWPORT_CONFIG.adaptAlpha;
       }
@@ -1088,6 +1089,10 @@ const engine: Force3DEngine = {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
+    }
+    if (this.cameraAdaptFrameId) {
+      cancelAnimationFrame(this.cameraAdaptFrameId);
+      this.cameraAdaptFrameId = null;
     }
 
     if (layout === 'radial' || layout === 'columns') {
@@ -1220,6 +1225,10 @@ const engine: Force3DEngine = {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
+    if (zoomToFitAfter && this.cameraAdaptFrameId) {
+      cancelAnimationFrame(this.cameraAdaptFrameId);
+      this.cameraAdaptFrameId = null;
+    }
     const startTime = performance.now();
     const startPositions: Record<string, { x: number; y: number; z: number }> = {};
     
@@ -1282,7 +1291,11 @@ const engine: Force3DEngine = {
             this.graph.cooldownTicks(1);
             this.graph.d3ReheatSimulation();
             if (zoomToFitAfter && !this.draggedNodeId) {
-              this.startCameraAdaptLoop(2400);
+              if (this.currentLayout === 'radial' && !this.focusedNodeIds?.size) {
+                this.stepCameraTowardCloud(1);
+              } else {
+                this.startCameraAdaptLoop(2400);
+              }
             }
           }
         } catch {
