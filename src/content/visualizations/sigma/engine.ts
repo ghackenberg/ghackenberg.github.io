@@ -15,12 +15,14 @@ import {
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
+  isDefaultGraphTuningState,
   type SigmaNode,
   type SigmaEdge
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
   solveSigmaForceAtlas2Layout,
+  solveSigmaForceAtlas2LayoutAsync,
   type SolverGraphNode,
 } from '@commons/shared/graph-solvers';
 import {
@@ -68,6 +70,8 @@ export interface SigmaEngine {
   lastOrderSignature?: string;
   forcePositions: Map<string, { x: number; y: number }>;
   initialForcePositions: Map<string, { x: number; y: number }>;
+  tuningGeneration?: number;
+  tuningInFlight?: boolean;
   viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   animationFrameId: number | null;
@@ -802,6 +806,8 @@ const engine: SigmaEngine = {
     this.isLight = isLight;
 
     if (layoutChanged) {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
@@ -847,19 +853,47 @@ const engine: SigmaEngine = {
       return;
     }
     if (category === 'physics') {
+      const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       this.dragController?.stop();
       this.graph.forEachEdge(edge => {
         const rawW = Number(this.graph?.getEdgeAttribute(edge, 'rawWeight') ?? 0.5);
         this.graph?.setEdgeAttribute(edge, 'weight', getEdgePhysicsMetrics(rawW).stiffnessFactor);
       });
-      if (this.currentLayout === 'force') {
-        this.forcePositions.clear();
-        const targets = this.getForcePositions();
-        this.animateTo(targets, 450, undefined, true);
+      if (this.currentLayout === 'force' && this.payload) {
+        if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
+          this.tuningInFlight = false;
+          this.forcePositions.clear();
+          const targets: Record<string, { x: number; y: number }> = {};
+          for (const [id, pos] of this.initialForcePositions.entries()) {
+            this.forcePositions.set(id, { x: pos.x, y: pos.y });
+            targets[id] = { x: pos.x, y: pos.y };
+          }
+          this.animateTo(targets, 450, undefined, true);
+        } else {
+          this.tuningInFlight = true;
+          void solveSigmaForceAtlas2LayoutAsync(
+            {
+              nodes: this.payload.sigma.nodes,
+              connections: this.payload.sigma.edges,
+            },
+            { shouldCancel: () => this.tuningGeneration !== gen }
+          ).then((solved) => {
+            if (!solved || this.tuningGeneration !== gen || !this.graph || !this.sigma) return;
+            this.tuningInFlight = false;
+            if (this.currentLayout !== 'force') return;
+            this.forcePositions.clear();
+            for (const [nodeId, pt] of Object.entries(solved)) {
+              this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
+            }
+            this.animateTo(solved, 450, undefined, true);
+          });
+        }
       }
       return;
     }
     if (category === 'reset') {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.dragController?.stop();
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -945,6 +979,8 @@ const engine: SigmaEngine = {
   },
 
   destroy() {
+    this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+    this.tuningInFlight = false;
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;

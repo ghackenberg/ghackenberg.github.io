@@ -15,9 +15,14 @@ import {
   getAttenuatedNodeColor,
   getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
+  isDefaultGraphTuningState,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
-import { compute3DGeometryTargets, solve3DForceLayout } from '@commons/shared/graph-solvers';
+import {
+  compute3DGeometryTargets,
+  solve3DForceLayout,
+  solve3DForceLayoutAsync,
+} from '@commons/shared/graph-solvers';
 import {
   createGraphDragPhysicsController3D,
   type GraphDragPhysicsController3D,
@@ -121,6 +126,8 @@ export interface Force3DEngine {
   lastDraggedAt?: number;
   forcePositions: Map<string, { x: number; y: number; z: number }>;
   initialForcePositions: Map<string, { x: number; y: number; z: number }>;
+  tuningGeneration?: number;
+  tuningInFlight?: boolean;
   recenterTimeout?: ReturnType<typeof setTimeout> | null;
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
@@ -1031,6 +1038,8 @@ const engine: Force3DEngine = {
     this.isLight = isLight;
 
     if (layoutChanged) {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
@@ -1116,26 +1125,48 @@ const engine: Force3DEngine = {
       return;
     }
     if (category === 'physics') {
+      const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       this.dragController?.stop();
       this.applyForces(false);
       if (this.currentLayout === 'force') {
-        const solved = solve3DForceLayout({
-          nodes: this.nodes,
-          connections: (this.links || []).map(l => ({
-            sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
-            targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
-            weight: l.weight ?? 0.5
-          }))
-        });
-        this.forcePositions.clear();
-        for (const [id, pt] of Object.entries(solved)) {
-          this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
+        if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
+          this.tuningInFlight = false;
+          this.forcePositions.clear();
+          const targets: Record<string, { x: number; y: number; z: number }> = {};
+          for (const [id, pos] of this.initialForcePositions.entries()) {
+            this.forcePositions.set(id, { x: pos.x, y: pos.y, z: pos.z });
+            targets[id] = { x: pos.x, y: pos.y, z: pos.z };
+          }
+          this.animateTo(targets, 450, undefined, true);
+        } else {
+          this.tuningInFlight = true;
+          void solve3DForceLayoutAsync(
+            {
+              nodes: this.nodes,
+              connections: (this.links || []).map(l => ({
+                sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
+                targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
+                weight: l.weight ?? 0.5
+              }))
+            },
+            { shouldCancel: () => this.tuningGeneration !== gen }
+          ).then((solved) => {
+            if (!solved || this.tuningGeneration !== gen || !this.graph || !this.nodes) return;
+            this.tuningInFlight = false;
+            if (this.currentLayout !== 'force') return;
+            this.forcePositions.clear();
+            for (const [id, pt] of Object.entries(solved)) {
+              this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
+            }
+            this.animateTo(solved, 450, undefined, true);
+          });
         }
-        this.animateTo(solved, 450, undefined, true);
       }
       return;
     }
     if (category === 'reset') {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.dragController?.stop();
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1238,6 +1269,8 @@ const engine: Force3DEngine = {
   },
 
   destroy() {
+    this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+    this.tuningInFlight = false;
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;

@@ -14,11 +14,12 @@ import {
   getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
-  getEdgeHopZIndex
+  getEdgeHopZIndex,
+  isDefaultGraphTuningState
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
-  solveVisNetworkForceLayout,
+  solveVisNetworkForceLayoutAsync,
   type SolverGraphNode,
 } from '@commons/shared/graph-solvers';
 import {
@@ -138,6 +139,8 @@ export interface VisNetworkEngine {
   lastOrderSignature?: string;
   forcePositions: Map<string, { x: number; y: number }>;
   initialForcePositions: Map<string, { x: number; y: number }>;
+  tuningGeneration?: number;
+  tuningInFlight?: boolean;
   dragStabilizeTimeout?: ReturnType<typeof setTimeout> | null;
   currentLayout?: string;
   isLight?: boolean;
@@ -983,6 +986,8 @@ const engine: VisNetworkEngine = {
     this.isLight = isLight;
 
     if (layoutChanged) {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
@@ -1041,20 +1046,42 @@ const engine: VisNetworkEngine = {
       return;
     }
     if (category === 'physics') {
+      const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       if (this.currentLayout === 'force' && this.nodes && this.connections) {
         this.dragController?.stop();
-        const targets = solveVisNetworkForceLayout({
-          nodes: this.nodes,
-          connections: this.connections,
-        });
-        for (const [id, pt] of Object.entries(targets)) {
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
+        if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
+          this.tuningInFlight = false;
+          const targets: Record<string, { x: number; y: number }> = {};
+          this.forcePositions.clear();
+          for (const [id, pos] of this.initialForcePositions.entries()) {
+            this.forcePositions.set(id, { x: pos.x, y: pos.y });
+            targets[id] = { x: pos.x, y: pos.y };
+          }
+          this.animateTo(targets, 450, undefined, true);
+        } else {
+          this.tuningInFlight = true;
+          void solveVisNetworkForceLayoutAsync(
+            {
+              nodes: this.nodes,
+              connections: this.connections,
+            },
+            { shouldCancel: () => this.tuningGeneration !== gen }
+          ).then((targets) => {
+            if (!targets || this.tuningGeneration !== gen || !this.network) return;
+            this.tuningInFlight = false;
+            if (this.currentLayout !== 'force') return;
+            for (const [id, pt] of Object.entries(targets)) {
+              this.forcePositions.set(id, { x: pt.x, y: pt.y });
+            }
+            this.animateTo(targets, 450, undefined, true);
+          });
         }
-        this.animateTo(targets, 450, undefined, true);
       }
       return;
     }
     if (category === 'reset') {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.dragController?.stop();
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1076,6 +1103,8 @@ const engine: VisNetworkEngine = {
   },
 
   pause() {
+    this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+    this.tuningInFlight = false;
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;

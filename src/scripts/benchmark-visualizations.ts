@@ -15,7 +15,7 @@ const ALL_ENGINES = [
 ] as const;
 
 type EngineSlug = (typeof ALL_ENGINES)[number];
-type ScenarioName = 'idle' | 'hover' | 'drag' | 'layout';
+type ScenarioName = 'idle' | 'hover' | 'drag' | 'layout' | 'tuning';
 
 interface ScenarioMetrics {
   frames: number;
@@ -310,6 +310,63 @@ async function runBenchmark(): Promise<void> {
         () => (window as BenchWindow).__stopBenchPhase?.() || []
       );
 
+      // 5. LIVE PARAMETER TUNING SCENARIO (~2100ms)
+      await page.click('#tune-toggle-btn');
+      await sleep(80);
+      await page.evaluate(() => {
+        (window as BenchWindow).__startBenchPhase?.();
+      });
+
+      // 5a. Visual parameter scrubbing (nodeRadius: 8 -> 10 -> 11 -> 8)
+      for (const rad of ['10', '11', '9.5', '8']) {
+        await page.evaluate((val: string) => {
+          const slider = document.querySelector(
+            'input[data-tune-key="nodeRadius"]'
+          ) as HTMLInputElement | null;
+          if (slider) {
+            slider.value = val;
+            slider.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }, rad);
+        await sleep(45);
+      }
+
+      // 5b. Live Physics parameter scrubbing (repulsionScale: 1.25 -> 1.5 -> 1.75)
+      for (const rep of ['1.25', '1.5', '1.75']) {
+        await page.evaluate((val: string) => {
+          const slider = document.querySelector(
+            'input[data-tune-key="repulsionScale"]'
+          ) as HTMLInputElement | null;
+          if (slider) {
+            slider.value = val;
+            slider.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }, rep);
+        await sleep(90);
+      }
+      await sleep(580);
+
+      // 5c. Live Edge Specificity tuning (stiffnessExponent: 2.1)
+      await page.evaluate(() => {
+        const slider = document.querySelector(
+          'input[data-tune-key="stiffnessExponent"]'
+        ) as HTMLInputElement | null;
+        if (slider) {
+          slider.value = '2.1';
+          slider.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+      await sleep(550);
+
+      // 5d. Reset button (#tune-reset-btn)
+      await page.click('#tune-reset-btn');
+      await sleep(550);
+
+      const tuningDts = await page.evaluate(
+        () => (window as BenchWindow).__stopBenchPhase?.() || []
+      );
+      await page.click('#tune-toggle-btn');
+
       reports.push({
         engine,
         loadMs,
@@ -318,6 +375,7 @@ async function runBenchmark(): Promise<void> {
           hover: computeStats(hoverDts),
           drag: computeStats(dragDts),
           layout: computeStats(layoutDts),
+          tuning: computeStats(tuningDts),
         },
       });
 
@@ -344,7 +402,7 @@ async function runBenchmark(): Promise<void> {
     '|----------------|-----------|----------|---------|---------|----------|----------|------------------|'
   );
   for (const r of reports) {
-    for (const sc of ['idle', 'hover', 'drag', 'layout'] as const) {
+    for (const sc of ['idle', 'hover', 'drag', 'layout', 'tuning'] as const) {
       const m = r.scenarios[sc];
       console.log(
         `| ${r.engine.padEnd(14)} | ${String(r.loadMs).padStart(9)} | ${sc.padEnd(8)} | ${m.avgFps.toFixed(1).padStart(7)} | ${m.p50Fps.toFixed(1).padStart(7)} | ${m.p95Ms.toFixed(1).padStart(8)} | ${m.maxMs.toFixed(1).padStart(8)} | ${(m.droppedPct.toFixed(1) + '%').padStart(16)} |`

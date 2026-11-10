@@ -69,6 +69,22 @@ export interface Geometry2DOptions {
   isMobile?: boolean;
 }
 
+export interface AsyncSolverOptions {
+  shouldCancel?: () => boolean;
+  frameBudgetMs?: number;
+}
+
+function yieldToNextFrame(): Promise<void> {
+  if (typeof requestAnimationFrame === 'function') {
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => resolve());
+    });
+  }
+  return new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
+}
+
 function round2(val: number): number {
   if (!Number.isFinite(val)) return 0;
   return Math.round(val * 100) / 100;
@@ -81,7 +97,7 @@ function resolveEdgeEndpoints(edge: SolverGraphEdge): { src: string; tgt: string
   return { src, tgt, weight };
 }
 
-export function solveSigmaForceAtlas2Layout(input: SolverGraphInput): Record<string, Point2D> {
+function buildSigmaForceAtlas2Graph(input: SolverGraphInput): Graph {
   const graph = new Graph();
   const nodes = input.nodes;
   const total = nodes.length;
@@ -104,12 +120,10 @@ export function solveSigmaForceAtlas2Layout(input: SolverGraphInput): Record<str
       });
     }
   });
+  return graph;
+}
 
-  forceAtlas2.assign(graph, {
-    iterations: GRAPH_PHYSICS_CONFIG.sigmaIterations,
-    settings: getSigmaForceAtlas2Settings(),
-  });
-
+function extractSigmaCenteredTargets(graph: Graph): Record<string, Point2D> {
   let sumX = 0;
   let sumY = 0;
   let count = 0;
@@ -130,6 +144,43 @@ export function solveSigmaForceAtlas2Layout(input: SolverGraphInput): Record<str
   });
 
   return targets;
+}
+
+export function solveSigmaForceAtlas2Layout(input: SolverGraphInput): Record<string, Point2D> {
+  const graph = buildSigmaForceAtlas2Graph(input);
+  forceAtlas2.assign(graph, {
+    iterations: GRAPH_PHYSICS_CONFIG.sigmaIterations,
+    settings: getSigmaForceAtlas2Settings(),
+  });
+  return extractSigmaCenteredTargets(graph);
+}
+
+export async function solveSigmaForceAtlas2LayoutAsync(
+  input: SolverGraphInput,
+  options?: AsyncSolverOptions
+): Promise<Record<string, Point2D> | null> {
+  const graph = buildSigmaForceAtlas2Graph(input);
+  const settings = getSigmaForceAtlas2Settings();
+  const totalIter = GRAPH_PHYSICS_CONFIG.sigmaIterations;
+  const budgetMs = options?.frameBudgetMs ?? 8.5;
+  let sliceStart = performance.now();
+
+  for (let done = 0; done < totalIter; ) {
+    if (options?.shouldCancel?.()) return null;
+    const step = Math.min(20, totalIter - done);
+    forceAtlas2.assign(graph, {
+      iterations: step,
+      settings,
+    });
+    done += step;
+    if (done < totalIter && performance.now() - sliceStart >= budgetMs) {
+      await yieldToNextFrame();
+      if (options?.shouldCancel?.()) return null;
+      sliceStart = performance.now();
+    }
+  }
+
+  return extractSigmaCenteredTargets(graph);
 }
 
 export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string, Point2D> {
@@ -237,7 +288,10 @@ interface D3HeadlessLink extends d3.SimulationLinkDatum<D3HeadlessNode> {
   weight: number;
 }
 
-export function solveD3ForceLayout(input: SolverGraphInput): Record<string, Point2D> {
+function createD3HeadlessSimulation(input: SolverGraphInput): {
+  simNodes: D3HeadlessNode[];
+  simulation: d3.Simulation<D3HeadlessNode, D3HeadlessLink>;
+} {
   const nodes = input.nodes;
   const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
@@ -298,6 +352,11 @@ export function solveD3ForceLayout(input: SolverGraphInput): Record<string, Poin
     )
     .stop();
 
+  return { simNodes, simulation };
+}
+
+export function solveD3ForceLayout(input: SolverGraphInput): Record<string, Point2D> {
+  const { simNodes, simulation } = createD3HeadlessSimulation(input);
   simulation.tick(500);
 
   const targets: Record<string, Point2D> = {};
@@ -307,7 +366,130 @@ export function solveD3ForceLayout(input: SolverGraphInput): Record<string, Poin
   return targets;
 }
 
-export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<string, Point2D> {
+export async function solveD3ForceLayoutAsync(
+  input: SolverGraphInput,
+  options?: AsyncSolverOptions
+): Promise<Record<string, Point2D> | null> {
+  const { simNodes, simulation } = createD3HeadlessSimulation(input);
+  const totalTicks = 500;
+  const budgetMs = options?.frameBudgetMs ?? 8.5;
+  let sliceStart = performance.now();
+
+  for (let i = 0; i < totalTicks; i++) {
+    simulation.tick(1);
+    if ((i & 7) === 7) {
+      if (options?.shouldCancel?.()) return null;
+      if (i + 1 < totalTicks && performance.now() - sliceStart >= budgetMs) {
+        await yieldToNextFrame();
+        if (options?.shouldCancel?.()) return null;
+        sliceStart = performance.now();
+      }
+    }
+  }
+
+  const targets: Record<string, Point2D> = {};
+  for (const n of simNodes) {
+    targets[n.id] = { x: round2(n.x), y: round2(n.y) };
+  }
+  return targets;
+}
+
+interface VisSolverNode {
+  id: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  fx: number;
+  fy: number;
+  degree: number;
+  mass: number;
+}
+
+function stepVisNetworkIteration(
+  simNodes: VisSolverNode[],
+  edges: [number, number, number][],
+  iter: number,
+  iterations: number,
+  gravitationalConstant: number,
+  centralGravity: number,
+  springConstant: number,
+  damping: number,
+  minSeparation: number,
+  maxVelocity: number,
+  timestep: number
+): void {
+  const cooling = Math.pow(0.015, iter / iterations);
+
+  for (let i = 0; i < simNodes.length; i++) {
+    const n = simNodes[i];
+    const gravityForce = centralGravity * n.mass;
+    n.fx = -n.x * gravityForce;
+    n.fy = -n.y * gravityForce;
+  }
+
+  for (let i = 0; i < simNodes.length; i++) {
+    const ni = simNodes[i];
+    for (let j = i + 1; j < simNodes.length; j++) {
+      const nj = simNodes[j];
+      const dx = ni.x - nj.x;
+      const dy = ni.y - nj.y;
+      const distSq = dx * dx + dy * dy;
+      if (distSq > 380 * 380) continue;
+      const distance = Math.sqrt(distSq) || 0.5;
+
+      let repForce =
+        (gravitationalConstant * ni.mass * nj.mass) / (distance * Math.max(14, distance));
+      if (distance < minSeparation) {
+        repForce -= ((minSeparation - distance) * 1.2) / distance;
+      }
+      ni.fx -= dx * repForce;
+      ni.fy -= dy * repForce;
+      nj.fx += dx * repForce;
+      nj.fy += dy * repForce;
+    }
+  }
+
+  for (const [uIdx, vIdx, weight] of edges) {
+    if (uIdx === vIdx) continue;
+    const u = simNodes[uIdx];
+    const v = simNodes[vIdx];
+    const dx = u.x - v.x;
+    const dy = u.y - v.y;
+    const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.1);
+    const localEdgeLen = getEdgeLinkDistance2D(weight);
+    const localSpringK = springConstant * getEdgePhysicsMetrics(weight).stiffnessFactor;
+    const springForce = (localSpringK * (localEdgeLen - distance)) / distance;
+    const fx = dx * springForce;
+    const fy = dy * springForce;
+    u.fx += fx;
+    u.fy += fy;
+    v.fx -= fx;
+    v.fy -= fy;
+  }
+
+  const effStep = timestep * (0.25 + 0.75 * cooling);
+  for (let i = 0; i < simNodes.length; i++) {
+    const n = simNodes[i];
+    const dx = n.fx - damping * n.vx;
+    const ax = dx / n.mass;
+    n.vx = (n.vx + ax * effStep) * 0.88;
+    if (Math.abs(n.vx) > maxVelocity) {
+      n.vx = n.vx > 0 ? maxVelocity : -maxVelocity;
+    }
+    n.x += n.vx * effStep;
+
+    const dy = n.fy - damping * n.vy;
+    const ay = dy / n.mass;
+    n.vy = (n.vy + ay * effStep) * 0.88;
+    if (Math.abs(n.vy) > maxVelocity) {
+      n.vy = n.vy > 0 ? maxVelocity : -maxVelocity;
+    }
+    n.y += n.vy * effStep;
+  }
+}
+
+function createVisNetworkSolverState(input: SolverGraphInput) {
   const nodes = input.nodes;
   const total = nodes.length;
   const tuning = getGraphTuningState();
@@ -330,18 +512,6 @@ export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<stri
     }
   }
 
-  interface VisSolverNode {
-    id: string;
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-    fx: number;
-    fy: number;
-    degree: number;
-    mass: number;
-  }
-
   const simNodes: VisSolverNode[] = nodes.map((n, i) => {
     const init = initialCoords(i, total);
     const deg = connectedEdgeCounts[i];
@@ -358,86 +528,21 @@ export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<stri
     };
   });
 
-  const gravitationalConstant = GRAPH_PHYSICS_CONFIG.visRepulsionStrength * tuning.repulsionScale;
-  const centralGravity = GRAPH_PHYSICS_CONFIG.visCentralGravity * tuning.gravityScale;
-  const springConstant = GRAPH_PHYSICS_CONFIG.visSpringConstantBase;
-  const damping = GRAPH_PHYSICS_CONFIG.visDamping;
-  const minSeparation = (getGraphStyleTokens(false).nodeRadius + GRAPH_PHYSICS_CONFIG.collisionPadding2D) * 2;
-  const maxVelocity = 50;
-  const timestep = 0.5;
-  const iterations = GRAPH_PHYSICS_CONFIG.visIterations;
+  return {
+    simNodes,
+    edges,
+    gravitationalConstant: GRAPH_PHYSICS_CONFIG.visRepulsionStrength * tuning.repulsionScale,
+    centralGravity: GRAPH_PHYSICS_CONFIG.visCentralGravity * tuning.gravityScale,
+    springConstant: GRAPH_PHYSICS_CONFIG.visSpringConstantBase,
+    damping: GRAPH_PHYSICS_CONFIG.visDamping,
+    minSeparation: (getGraphStyleTokens(false).nodeRadius + GRAPH_PHYSICS_CONFIG.collisionPadding2D) * 2,
+    maxVelocity: 50,
+    timestep: 0.5,
+    iterations: GRAPH_PHYSICS_CONFIG.visIterations,
+  };
+}
 
-  for (let iter = 0; iter < iterations; iter++) {
-    const cooling = Math.pow(0.015, iter / iterations);
-
-    for (let i = 0; i < simNodes.length; i++) {
-      const n = simNodes[i];
-      const gravityForce = centralGravity * n.mass;
-      n.fx = -n.x * gravityForce;
-      n.fy = -n.y * gravityForce;
-    }
-
-    for (let i = 0; i < simNodes.length; i++) {
-      const ni = simNodes[i];
-      for (let j = i + 1; j < simNodes.length; j++) {
-        const nj = simNodes[j];
-        const dx = ni.x - nj.x;
-        const dy = ni.y - nj.y;
-        const distSq = dx * dx + dy * dy;
-        if (distSq > 380 * 380) continue;
-        const distance = Math.sqrt(distSq) || 0.5;
-
-        let repForce =
-          (gravitationalConstant * ni.mass * nj.mass) / (distance * Math.max(14, distance));
-        if (distance < minSeparation) {
-          repForce -= ((minSeparation - distance) * 1.2) / distance;
-        }
-        ni.fx -= dx * repForce;
-        ni.fy -= dy * repForce;
-        nj.fx += dx * repForce;
-        nj.fy += dy * repForce;
-      }
-    }
-
-    for (const [uIdx, vIdx, weight] of edges) {
-      if (uIdx === vIdx) continue;
-      const u = simNodes[uIdx];
-      const v = simNodes[vIdx];
-      const dx = u.x - v.x;
-      const dy = u.y - v.y;
-      const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.1);
-      const localEdgeLen = getEdgeLinkDistance2D(weight);
-      const localSpringK = springConstant * getEdgePhysicsMetrics(weight).stiffnessFactor;
-      const springForce = (localSpringK * (localEdgeLen - distance)) / distance;
-      const fx = dx * springForce;
-      const fy = dy * springForce;
-      u.fx += fx;
-      u.fy += fy;
-      v.fx -= fx;
-      v.fy -= fy;
-    }
-
-    const effStep = timestep * (0.25 + 0.75 * cooling);
-    for (let i = 0; i < simNodes.length; i++) {
-      const n = simNodes[i];
-      const dx = n.fx - damping * n.vx;
-      const ax = dx / n.mass;
-      n.vx = (n.vx + ax * effStep) * 0.88;
-      if (Math.abs(n.vx) > maxVelocity) {
-        n.vx = n.vx > 0 ? maxVelocity : -maxVelocity;
-      }
-      n.x += n.vx * effStep;
-
-      const dy = n.fy - damping * n.vy;
-      const ay = dy / n.mass;
-      n.vy = (n.vy + ay * effStep) * 0.88;
-      if (Math.abs(n.vy) > maxVelocity) {
-        n.vy = n.vy > 0 ? maxVelocity : -maxVelocity;
-      }
-      n.y += n.vy * effStep;
-    }
-  }
-
+function finalizeVisNetworkTargets(simNodes: VisSolverNode[]): Record<string, Point2D> {
   let sumX = 0;
   let sumY = 0;
   for (const n of simNodes) {
@@ -454,7 +559,64 @@ export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<stri
   return targets;
 }
 
-export function solve3DForceLayout(input: SolverGraphInput): Record<string, Point3D> {
+export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<string, Point2D> {
+  const s = createVisNetworkSolverState(input);
+  for (let iter = 0; iter < s.iterations; iter++) {
+    stepVisNetworkIteration(
+      s.simNodes,
+      s.edges,
+      iter,
+      s.iterations,
+      s.gravitationalConstant,
+      s.centralGravity,
+      s.springConstant,
+      s.damping,
+      s.minSeparation,
+      s.maxVelocity,
+      s.timestep
+    );
+  }
+  return finalizeVisNetworkTargets(s.simNodes);
+}
+
+export async function solveVisNetworkForceLayoutAsync(
+  input: SolverGraphInput,
+  options?: AsyncSolverOptions
+): Promise<Record<string, Point2D> | null> {
+  const s = createVisNetworkSolverState(input);
+  const budgetMs = options?.frameBudgetMs ?? 8.5;
+  let sliceStart = performance.now();
+
+  for (let iter = 0; iter < s.iterations; iter++) {
+    stepVisNetworkIteration(
+      s.simNodes,
+      s.edges,
+      iter,
+      s.iterations,
+      s.gravitationalConstant,
+      s.centralGravity,
+      s.springConstant,
+      s.damping,
+      s.minSeparation,
+      s.maxVelocity,
+      s.timestep
+    );
+    if ((iter & 7) === 7) {
+      if (options?.shouldCancel?.()) return null;
+      if (iter + 1 < s.iterations && performance.now() - sliceStart >= budgetMs) {
+        await yieldToNextFrame();
+        if (options?.shouldCancel?.()) return null;
+        sliceStart = performance.now();
+      }
+    }
+  }
+  return finalizeVisNetworkTargets(s.simNodes);
+}
+
+function create3DForceSimulation(input: SolverGraphInput): {
+  simNodes: SimNode3D[];
+  simulation: ReturnType<typeof forceSimulation3D>;
+} {
   const nodes = input.nodes;
   const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
@@ -509,7 +671,40 @@ export function solve3DForceLayout(input: SolverGraphInput): Record<string, Poin
       }
     });
 
+  return { simNodes, simulation };
+}
+
+export function solve3DForceLayout(input: SolverGraphInput): Record<string, Point3D> {
+  const { simNodes, simulation } = create3DForceSimulation(input);
   simulation.tick(GRAPH_PHYSICS_CONFIG.force3DIterations);
+
+  const targets: Record<string, Point3D> = {};
+  for (const n of simNodes) {
+    targets[n.id] = { x: round2(n.x), y: round2(n.y), z: round2(n.z) };
+  }
+  return targets;
+}
+
+export async function solve3DForceLayoutAsync(
+  input: SolverGraphInput,
+  options?: AsyncSolverOptions
+): Promise<Record<string, Point3D> | null> {
+  const { simNodes, simulation } = create3DForceSimulation(input);
+  const totalTicks = GRAPH_PHYSICS_CONFIG.force3DIterations;
+  const budgetMs = options?.frameBudgetMs ?? 8.5;
+  let sliceStart = performance.now();
+
+  for (let i = 0; i < totalTicks; i++) {
+    simulation.tick(1);
+    if ((i & 7) === 7) {
+      if (options?.shouldCancel?.()) return null;
+      if (i + 1 < totalTicks && performance.now() - sliceStart >= budgetMs) {
+        await yieldToNextFrame();
+        if (options?.shouldCancel?.()) return null;
+        sliceStart = performance.now();
+      }
+    }
+  }
 
   const targets: Record<string, Point3D> = {};
   for (const n of simNodes) {

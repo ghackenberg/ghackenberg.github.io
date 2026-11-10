@@ -13,7 +13,8 @@ import {
   getAttenuatedNodeScale,
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
-  getEdgeHopZIndex
+  getEdgeHopZIndex,
+  isDefaultGraphTuningState
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
@@ -1008,8 +1009,18 @@ const engine: CytoscapeEngine = {
     if (category === 'physics') {
       if (this.currentLayout === 'force') {
         this.dragController?.stop();
-        const targets = this.solveHeadlessCoseTargets();
-        this.animateTo(targets, 450, undefined, true, false);
+        if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
+          const targets: Record<string, { x: number; y: number }> = {};
+          this.forcePositions.clear();
+          for (const [id, pos] of this.initialForcePositions.entries()) {
+            this.forcePositions.set(id, { x: pos.x, y: pos.y });
+            targets[id] = { x: pos.x, y: pos.y };
+          }
+          this.animateTo(targets, 450, undefined, true, false);
+        } else {
+          const targets = this.solveHeadlessCoseTargets();
+          this.animateTo(targets, 450, undefined, true, false);
+        }
       }
       return;
     }

@@ -18,11 +18,12 @@ import {
   getAttenuatedEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
+  isDefaultGraphTuningState,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
-  solveD3ForceLayout,
+  solveD3ForceLayoutAsync,
 } from '@commons/shared/graph-solvers';
 import {
   createGraphDragPhysicsController2D,
@@ -35,6 +36,8 @@ export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
   targetY?: number;
   displayColor?: string;
   displayRadius?: number;
+  el?: SVGGElement;
+  circleEl?: SVGCircleElement;
 }
 
 export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
@@ -43,6 +46,7 @@ export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
   weight?: number;
   displayColor?: string;
   displayWidth?: number;
+  el?: SVGLineElement;
 }
 
 export interface D3Payload {
@@ -76,6 +80,8 @@ export interface D3Engine {
   isLight?: boolean;
   forcePositions: Map<string, { x: number; y: number }>;
   initialForcePositions: Map<string, { x: number; y: number }>;
+  tuningGeneration?: number;
+  tuningInFlight?: boolean;
   fitTimeout?: ReturnType<typeof setTimeout>;
   tuningSettleTimeout?: ReturnType<typeof setTimeout>;
   viewportAdaptFrameId?: number | null;
@@ -207,6 +213,9 @@ const engine: D3Engine = {
     this.linkElements = bgLinkLayer.selectAll<SVGLineElement, D3Link>(".link")
       .data(this.links)
       .enter().append("line")
+      .each(function (l) {
+        l.el = this;
+      })
       .style("stroke", styleTokens.edgeColor)
       .style("stroke-width", `${styleTokens.edgeWidth}px`);
 
@@ -328,29 +337,32 @@ const engine: D3Engine = {
         };
       });
 
-      const circleElements = this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle.node-dot");
-
       const renderStep = (ease: number) => {
         for (const nt of nodeTrans) {
           if (!nt.changed && ease < 1) continue;
-          nt.node.displayColor = ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease);
-          nt.node.displayRadius = ease >= 1 ? nt.targetRadius : nt.startRadius + (nt.targetRadius - nt.startRadius) * ease;
+          const nextColor = ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          const nextRadius = ease >= 1 ? nt.targetRadius : nt.startRadius + (nt.targetRadius - nt.startRadius) * ease;
+          nt.node.displayColor = nextColor;
+          nt.node.displayRadius = nextRadius;
+          const circleEl = nt.node.circleEl;
+          if (circleEl) {
+            circleEl.setAttribute("r", String(nextRadius));
+            circleEl.style.fill = nextColor;
+            circleEl.style.stroke = nextColor;
+          }
         }
         for (const lt of linkTrans) {
           if (!lt.changed && ease < 1) continue;
-          lt.link.displayColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          lt.link.displayWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+          const nextColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
+          const nextWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+          lt.link.displayColor = nextColor;
+          lt.link.displayWidth = nextWidth;
+          const lineEl = lt.link.el;
+          if (lineEl) {
+            lineEl.style.stroke = nextColor;
+            lineEl.style.strokeWidth = `${nextWidth}px`;
+          }
         }
-
-        circleElements
-          ?.attr("r", (n: D3Node) => n.displayRadius ?? currentTokens.nodeRadius)
-          ?.style("fill", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
-          ?.style("stroke", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
-          ?.style("stroke-width", "1.5px");
-
-        this.linkElements
-          ?.style("stroke", (l: D3Link) => l.displayColor || currentTokens.edgeColor)
-          ?.style("stroke-width", (l: D3Link) => `${l.displayWidth ?? currentTokens.edgeWidth}px`);
       };
 
       if (immediate) {
@@ -376,12 +388,18 @@ const engine: D3Engine = {
     this.nodeElements = bgNodeLayer.selectAll<SVGGElement, D3Node>(".node")
       .data(this.nodes)
       .enter().append("g")
+      .each(function (n) {
+        n.el = this;
+      })
       .style("cursor", "pointer");
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
 
     this.nodeElements.append("circle")
       .attr("class", "node-dot")
+      .each(function (n) {
+        n.circleEl = this;
+      })
       .attr("r", styleTokens.nodeRadius)
       .style("fill", d => colors[d.group] || colors[0])
       .style("stroke", d => colors[d.group] || colors[0])
@@ -569,13 +587,23 @@ const engine: D3Engine = {
   },
 
   renderPositions() {
-    this.linkElements
-      ?.attr("x1", d => (d.source as D3Node).x ?? 0)
-      ?.attr("y1", d => (d.source as D3Node).y ?? 0)
-      ?.attr("x2", d => (d.target as D3Node).x ?? 0)
-      ?.attr("y2", d => (d.target as D3Node).y ?? 0);
-
-    this.nodeElements?.attr("transform", d => `translate(${d.x ?? 0},${d.y ?? 0})`);
+    if (this.links) {
+      for (const d of this.links) {
+        const el = d.el;
+        if (!el) continue;
+        const s = d.source as D3Node;
+        const t = d.target as D3Node;
+        el.setAttribute("x1", String(s.x ?? 0));
+        el.setAttribute("y1", String(s.y ?? 0));
+        el.setAttribute("x2", String(t.x ?? 0));
+        el.setAttribute("y2", String(t.y ?? 0));
+      }
+    }
+    if (this.nodes) {
+      for (const d of this.nodes) {
+        d.el?.setAttribute("transform", `translate(${d.x ?? 0},${d.y ?? 0})`);
+      }
+    }
   },
 
   fitToView(duration = 600) {
@@ -735,6 +763,8 @@ const engine: D3Engine = {
     this.isLight = isLight;
 
     if (layoutChanged) {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
@@ -862,6 +892,8 @@ const engine: D3Engine = {
       this.tuningSettleTimeout = undefined;
     }
     if (category === 'reset') {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.dragController?.stop();
       this.forcePositions = new Map();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -928,60 +960,84 @@ const engine: D3Engine = {
     }
 
     if (category === 'physics' && this.currentLayout === 'force') {
+      const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       this.dragController?.stop();
-      const solved = solveD3ForceLayout({
-        nodes: this.nodes,
-        connections: (this.links || []).map(l => ({
-          sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
-          targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
-          weight: l.weight ?? 0.5
-        }))
-      });
 
-      for (const [nodeId, pt] of Object.entries(solved)) {
-        this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
-      }
-      for (const n of this.nodes) {
-        const fp = this.forcePositions.get(n.id);
-        if (fp) {
-          n.targetX = fp.x;
-          n.targetY = fp.y;
+      const applySolvedD3Positions = (solved: Record<string, { x: number; y: number }>) => {
+        if (!this.simulation || !this.nodes || this.currentLayout !== 'force') return;
+        for (const [nodeId, pt] of Object.entries(solved)) {
+          this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
         }
-      }
-
-      this.simulation
-        .force("link", null)
-        .force("charge", null)
-        .force("center", null)
-        .force("collide", null)
-        .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.1))
-        .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.1))
-        .alpha(0.45)
-        .restart();
-      this.tuningSettleTimeout = setTimeout(() => {
-        this.tuningSettleTimeout = undefined;
-        if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
-          this.simulation.stop();
-          if (this.nodes) {
-            for (const n of this.nodes) {
-              const fp = this.forcePositions.get(n.id);
-              if (fp) {
-                n.x = fp.x;
-                n.y = fp.y;
-                n.vx = 0;
-                n.vy = 0;
-              }
-            }
-            this.renderPositions();
+        for (const n of this.nodes) {
+          const fp = this.forcePositions.get(n.id);
+          if (fp) {
+            n.targetX = fp.x;
+            n.targetY = fp.y;
           }
-          this.dragController?.calibrateFromPositions(this.forcePositions);
         }
-      }, 480);
-      this.startViewportAdaptLoop(1400);
+
+        this.simulation
+          .force("link", null)
+          .force("charge", null)
+          .force("center", null)
+          .force("collide", null)
+          .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.1))
+          .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.1))
+          .alpha(0.45)
+          .restart();
+        this.tuningSettleTimeout = setTimeout(() => {
+          this.tuningSettleTimeout = undefined;
+          if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
+            this.simulation.stop();
+            if (this.nodes) {
+              for (const n of this.nodes) {
+                const fp = this.forcePositions.get(n.id);
+                if (fp) {
+                  n.x = fp.x;
+                  n.y = fp.y;
+                  n.vx = 0;
+                  n.vy = 0;
+                }
+              }
+              this.renderPositions();
+            }
+            this.dragController?.calibrateFromPositions(this.forcePositions);
+          }
+        }, 480);
+        this.startViewportAdaptLoop(1400);
+      };
+
+      if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
+        this.tuningInFlight = false;
+        const solved: Record<string, { x: number; y: number }> = {};
+        for (const [id, pos] of this.initialForcePositions.entries()) {
+          solved[id] = { x: pos.x, y: pos.y };
+        }
+        applySolvedD3Positions(solved);
+      } else {
+        this.tuningInFlight = true;
+        void solveD3ForceLayoutAsync(
+          {
+            nodes: this.nodes,
+            connections: (this.links || []).map(l => ({
+              sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
+              targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
+              weight: l.weight ?? 0.5
+            }))
+          },
+          { shouldCancel: () => this.tuningGeneration !== gen }
+        ).then((solved) => {
+          if (!solved || this.tuningGeneration !== gen) return;
+          this.tuningInFlight = false;
+          applySolvedD3Positions(solved);
+        });
+      }
     }
   },
 
   destroy() {
+    this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+    this.tuningInFlight = false;
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;

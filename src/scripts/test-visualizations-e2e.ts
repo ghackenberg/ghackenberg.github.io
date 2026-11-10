@@ -9,6 +9,7 @@ type EngineId = (typeof ENGINES)[number];
 interface ActiveVisInstance {
   currentLayout?: string;
   focusedNodeIds?: Set<string> | null;
+  tuningInFlight?: boolean;
   forcePositions?: Map<string, { x: number; y: number; z?: number }>;
   initialForcePositions?: Map<string, { x: number; y: number; z?: number }>;
 }
@@ -241,26 +242,56 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
     }
 
     // =========================================================================
-    // CHECK 3: Live Parameter Tuning (#tune-hud) & Reset
+    // CHECK 3: Live Parameter Tuning (#tune-hud: visual + geometry + physics) & Reset
     // =========================================================================
     await page.click('#tune-toggle-btn');
     await sleep(100);
 
     const tuneShift = await page.evaluate(async () => {
       const panel = document.getElementById('tune-panel');
-      const slider = document.querySelector(
+      const dirtyDot = document.getElementById('tune-dirty-dot');
+      const visualSlider = document.querySelector(
+        'input[data-tune-key="nodeRadius"]'
+      ) as HTMLInputElement | null;
+      const geomSlider = document.querySelector(
+        'input[data-tune-key="radialInnerRatio"]'
+      ) as HTMLInputElement | null;
+      const physicsSlider = document.querySelector(
         'input[data-tune-key="repulsionScale"]'
       ) as HTMLInputElement | null;
-      if (!panel || panel.classList.contains('hidden') || !slider) {
-        return { panelOpen: false, meanTuneDelta: 0 };
+      if (
+        !panel ||
+        panel.classList.contains('hidden') ||
+        !visualSlider ||
+        !geomSlider ||
+        !physicsSlider
+      ) {
+        return { panelOpen: false, visualAndGeomOk: false };
       }
-      slider.value = '1.65';
-      slider.dispatchEvent(new Event('input', { bubbles: true }));
-      slider.dispatchEvent(new Event('change', { bubbles: true }));
-      return { panelOpen: true, meanTuneDelta: 0 };
+
+      visualSlider.value = '10.5';
+      visualSlider.dispatchEvent(new Event('input', { bubbles: true }));
+      geomSlider.value = '0.26';
+      geomSlider.dispatchEvent(new Event('input', { bubbles: true }));
+      physicsSlider.value = '1.65';
+      physicsSlider.dispatchEvent(new Event('input', { bubbles: true }));
+      physicsSlider.dispatchEvent(new Event('change', { bubbles: true }));
+
+      const visualVal = document.querySelector('[data-tune-val="nodeRadius"]')?.textContent?.trim();
+      const geomVal = document.querySelector('[data-tune-val="radialInnerRatio"]')?.textContent?.trim();
+      const dotVisible = Boolean(dirtyDot && !dirtyDot.classList.contains('hidden'));
+      return {
+        panelOpen: true,
+        visualAndGeomOk: visualVal === '10.5' && geomVal === '0.26' && dotVisible,
+      };
     });
 
-    await sleep(750);
+    await sleep(120);
+    await page.waitForFunction(
+      () => !(window.activeInstance as ActiveVisInstance | null | undefined)?.tuningInFlight,
+      { timeout: 10000 }
+    );
+    await sleep(600);
 
     const tuneDeltaAfterChange = await page.evaluate(() => {
       const inst = window.activeInstance as ActiveVisInstance | null | undefined;
@@ -277,11 +308,14 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
     });
 
     await page.click('#tune-reset-btn');
-    await sleep(750);
+    await sleep(650);
 
-    const resetDelta = await page.evaluate(() => {
+    const resetState = await page.evaluate(() => {
       const inst = window.activeInstance as ActiveVisInstance | null | undefined;
-      if (!inst?.forcePositions || !inst?.initialForcePositions) return Infinity;
+      const dirtyDot = document.getElementById('tune-dirty-dot');
+      if (!inst?.forcePositions || !inst?.initialForcePositions) {
+        return { maxD: Infinity, dotHidden: false };
+      }
       let maxD = 0;
       for (const [id, cur] of inst.forcePositions.entries()) {
         const init = inst.initialForcePositions.get(id);
@@ -289,18 +323,25 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
         const d = Math.hypot(cur.x - init.x, cur.y - init.y, (cur.z ?? 0) - (init.z ?? 0));
         if (d > maxD) maxD = d;
       }
-      return maxD;
+      const dotHidden = Boolean(!dirtyDot || dirtyDot.classList.contains('hidden'));
+      return { maxD, dotHidden };
     });
 
     // Close tuning panel
     await page.click('#tune-toggle-btn');
     await sleep(250);
 
-    if (tuneShift.panelOpen && tuneDeltaAfterChange > 1.0 && resetDelta < 0.05) {
+    if (
+      tuneShift.panelOpen &&
+      tuneShift.visualAndGeomOk &&
+      tuneDeltaAfterChange > 1.0 &&
+      resetState.maxD < 0.05 &&
+      resetState.dotHidden
+    ) {
       liveTuningOk = true;
     } else {
       errors.push(
-        `Check 3 failed: panelOpen=${String(tuneShift.panelOpen)}, tuneDelta=${tuneDeltaAfterChange.toFixed(2)}, resetDelta=${resetDelta.toFixed(4)}`
+        `Check 3 failed: panelOpen=${String(tuneShift.panelOpen)}, visualAndGeomOk=${String(tuneShift.visualAndGeomOk)}, tuneDelta=${tuneDeltaAfterChange.toFixed(2)}, resetDelta=${resetState.maxD.toFixed(4)}, dotHidden=${String(resetState.dotHidden)}`
       );
     }
 
