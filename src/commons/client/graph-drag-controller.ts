@@ -47,6 +47,7 @@ export interface GraphDragPhysicsController2D {
   startDrag(nodeId: string, pos: Point2D): void;
   moveDrag(nodeId: string, pos: Point2D): void;
   endDrag(nodeId: string, pos?: Point2D): void;
+  stepTicks(count?: number): void;
   isDragging(): boolean;
   getGrabbedNodeId(): string | null;
   stop(): void;
@@ -67,6 +68,7 @@ export interface GraphDragPhysicsController3D {
   startDrag(nodeId: string, pos: Point3D): void;
   moveDrag(nodeId: string, pos: Point3D): void;
   endDrag(nodeId: string, pos?: Point3D): void;
+  stepTicks(count?: number): void;
   isDragging(): boolean;
   getGrabbedNodeId(): string | null;
   stop(): void;
@@ -187,45 +189,53 @@ export function createGraphDragPhysicsController2D(
     })
     .stop();
 
-  const startPhysicsLoop = () => {
-    if (frameId !== null) return;
-    const step = () => {
-      simulation.tick();
+  const stepOneTick = (): boolean => {
+    simulation.tick();
 
-      if (grabbedNodeId === null && settleFramesRemaining > 0) {
-        for (const sn of simNodes) {
-          const relaxRate = settleHop1.has(sn.id)
-            ? 0.16
-            : settleHop2.has(sn.id)
-              ? 0.08
-              : 0.02;
-          sn.homeX += ((sn.x ?? sn.homeX) - sn.homeX) * relaxRate;
-          sn.homeY += ((sn.y ?? sn.homeY) - sn.homeY) * relaxRate;
-        }
-      }
-
+    if (grabbedNodeId === null && settleFramesRemaining > 0) {
       for (const sn of simNodes) {
-        positionsMap.set(sn.id, { x: sn.x ?? 0, y: sn.y ?? 0 });
+        const relaxRate = settleHop1.has(sn.id)
+          ? 0.16
+          : settleHop2.has(sn.id)
+            ? 0.08
+            : 0.02;
+        sn.homeX += ((sn.x ?? sn.homeX) - sn.homeX) * relaxRate;
+        sn.homeY += ((sn.y ?? sn.homeY) - sn.homeY) * relaxRate;
       }
+    }
 
-      options.onTick(positionsMap, grabbedNodeId);
+    for (const sn of simNodes) {
+      positionsMap.set(sn.id, { x: sn.x ?? 0, y: sn.y ?? 0 });
+    }
 
-      if (grabbedNodeId !== null || settleFramesRemaining > 0) {
-        if (grabbedNodeId === null) {
-          settleFramesRemaining--;
-        }
+    options.onTick(positionsMap, grabbedNodeId);
+
+    if (grabbedNodeId !== null || settleFramesRemaining > 0) {
+      if (grabbedNodeId === null) {
+        settleFramesRemaining--;
+      }
+      return true;
+    }
+
+    settleHop1.clear();
+    settleHop2.clear();
+    for (const sn of simNodes) {
+      sn.homeX = sn.x ?? sn.homeX;
+      sn.homeY = sn.y ?? sn.homeY;
+      sn.vx = 0;
+      sn.vy = 0;
+    }
+    options.onSettleComplete?.(positionsMap);
+    return false;
+  };
+
+  const startPhysicsLoop = () => {
+    if (frameId !== null || typeof requestAnimationFrame !== 'function') return;
+    const step = () => {
+      if (stepOneTick()) {
         frameId = requestAnimationFrame(step);
       } else {
         frameId = null;
-        settleHop1.clear();
-        settleHop2.clear();
-        for (const sn of simNodes) {
-          sn.homeX = sn.x ?? sn.homeX;
-          sn.homeY = sn.y ?? sn.homeY;
-          sn.vx = 0;
-          sn.vy = 0;
-        }
-        options.onSettleComplete?.(positionsMap);
       }
     };
     frameId = requestAnimationFrame(step);
@@ -351,6 +361,13 @@ export function createGraphDragPhysicsController2D(
       startPhysicsLoop();
     },
 
+    stepTicks(count = 1) {
+      const steps = Math.max(0, Math.floor(count));
+      for (let i = 0; i < steps; i++) {
+        stepOneTick();
+      }
+    },
+
     isDragging() {
       return grabbedNodeId !== null;
     },
@@ -362,10 +379,10 @@ export function createGraphDragPhysicsController2D(
     stop() {
       grabbedNodeId = null;
       settleFramesRemaining = 0;
-      if (frameId !== null) {
+      if (frameId !== null && typeof cancelAnimationFrame === 'function') {
         cancelAnimationFrame(frameId);
-        frameId = null;
       }
+      frameId = null;
       simulation.stop();
     },
 
@@ -467,51 +484,59 @@ export function createGraphDragPhysicsController3D(
     })
     .stop();
 
-  const startPhysicsLoop = () => {
-    if (frameId !== null) return;
-    const step = () => {
-      simulation.tick(1);
+  const stepOneTick3D = (): boolean => {
+    simulation.tick(1);
 
-      if (grabbedNodeId === null && settleFramesRemaining > 0) {
-        for (const sn of simNodes) {
-          const relaxRate = settleHop1.has(sn.id)
-            ? 0.16
-            : settleHop2.has(sn.id)
-              ? 0.08
-              : 0.02;
-          const hx = sn.homeX ?? sn.x;
-          const hy = sn.homeY ?? sn.y;
-          const hz = sn.homeZ ?? sn.z;
-          sn.homeX = hx + ((sn.x ?? hx) - hx) * relaxRate;
-          sn.homeY = hy + ((sn.y ?? hy) - hy) * relaxRate;
-          sn.homeZ = hz + ((sn.z ?? hz) - hz) * relaxRate;
-        }
-      }
-
+    if (grabbedNodeId === null && settleFramesRemaining > 0) {
       for (const sn of simNodes) {
-        positionsMap.set(sn.id, { x: sn.x ?? 0, y: sn.y ?? 0, z: sn.z ?? 0 });
+        const relaxRate = settleHop1.has(sn.id)
+          ? 0.16
+          : settleHop2.has(sn.id)
+            ? 0.08
+            : 0.02;
+        const hx = sn.homeX ?? sn.x;
+        const hy = sn.homeY ?? sn.y;
+        const hz = sn.homeZ ?? sn.z;
+        sn.homeX = hx + ((sn.x ?? hx) - hx) * relaxRate;
+        sn.homeY = hy + ((sn.y ?? hy) - hy) * relaxRate;
+        sn.homeZ = hz + ((sn.z ?? hz) - hz) * relaxRate;
       }
+    }
 
-      options.onTick(positionsMap, grabbedNodeId);
+    for (const sn of simNodes) {
+      positionsMap.set(sn.id, { x: sn.x ?? 0, y: sn.y ?? 0, z: sn.z ?? 0 });
+    }
 
-      if (grabbedNodeId !== null || settleFramesRemaining > 0) {
-        if (grabbedNodeId === null) {
-          settleFramesRemaining--;
-        }
+    options.onTick(positionsMap, grabbedNodeId);
+
+    if (grabbedNodeId !== null || settleFramesRemaining > 0) {
+      if (grabbedNodeId === null) {
+        settleFramesRemaining--;
+      }
+      return true;
+    }
+
+    settleHop1.clear();
+    settleHop2.clear();
+    for (const sn of simNodes) {
+      sn.homeX = sn.x ?? sn.homeX ?? 0;
+      sn.homeY = sn.y ?? sn.homeY ?? 0;
+      sn.homeZ = sn.z ?? sn.homeZ ?? 0;
+      sn.vx = 0;
+      sn.vy = 0;
+      sn.vz = 0;
+    }
+    options.onSettleComplete?.(positionsMap);
+    return false;
+  };
+
+  const startPhysicsLoop = () => {
+    if (frameId !== null || typeof requestAnimationFrame !== 'function') return;
+    const step = () => {
+      if (stepOneTick3D()) {
         frameId = requestAnimationFrame(step);
       } else {
         frameId = null;
-        settleHop1.clear();
-        settleHop2.clear();
-        for (const sn of simNodes) {
-          sn.homeX = sn.x ?? sn.homeX ?? 0;
-          sn.homeY = sn.y ?? sn.homeY ?? 0;
-          sn.homeZ = sn.z ?? sn.homeZ ?? 0;
-          sn.vx = 0;
-          sn.vy = 0;
-          sn.vz = 0;
-        }
-        options.onSettleComplete?.(positionsMap);
       }
     };
     frameId = requestAnimationFrame(step);
@@ -665,6 +690,13 @@ export function createGraphDragPhysicsController3D(
       startPhysicsLoop();
     },
 
+    stepTicks(count = 1) {
+      const steps = Math.max(0, Math.floor(count));
+      for (let i = 0; i < steps; i++) {
+        stepOneTick3D();
+      }
+    },
+
     isDragging() {
       return grabbedNodeId !== null;
     },
@@ -676,10 +708,10 @@ export function createGraphDragPhysicsController3D(
     stop() {
       grabbedNodeId = null;
       settleFramesRemaining = 0;
-      if (frameId !== null) {
+      if (frameId !== null && typeof cancelAnimationFrame === 'function') {
         cancelAnimationFrame(frameId);
-        frameId = null;
       }
+      frameId = null;
       simulation.stop();
     },
 

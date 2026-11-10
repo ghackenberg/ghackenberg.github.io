@@ -1006,13 +1006,6 @@ const engine: Force3DEngine = {
       lastTime = now;
       const activeAlpha = this.cameraAdaptAlpha || GRAPH_VIEWPORT_CONFIG.adaptAlpha;
       const stepAlpha = 1 - Math.pow(1 - activeAlpha, Math.min(50, dt) / 16.67);
-      if (this.currentLayout === 'force') {
-        for (const n of this.nodes) {
-          if (typeof n.x === 'number' && typeof n.y === 'number' && typeof n.z === 'number') {
-            this.forcePositions.set(n.id, { x: n.x, y: n.y, z: n.z });
-          }
-        }
-      }
       this.stepCameraTowardCloud(stepAlpha);
       if (now < (this.cameraAdaptEndTime || 0)) {
         this.cameraAdaptFrameId = requestAnimationFrame(tick);
@@ -1183,7 +1176,7 @@ const engine: Force3DEngine = {
 
     const step = (time: number) => {
       if (!this.nodes) return;
-      const elapsed = time - startTime;
+      const elapsed = Math.max(0, time - startTime);
       const progress = Math.min(elapsed / duration, 1);
       
       // Easing: easeInOutCubic

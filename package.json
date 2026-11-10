@@ -20,7 +20,7 @@
     "dev": "astro dev",
     "build": "astro build && npm run export:slides -- --if-ci && npm run newsletter:build",
     "postbuild": "npm run validate:semantic-ids && npm run validate:assets && npm run validate:jsonld && npm run lint:slide-typography -- --fail-on-warning && npm run lint:slide-density -- --fail-on-warning",
-    "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:skills && npm run validate:slides:syntax && npm run validate:citations:syntax && npm run lint:posts && npm run lint:styles && npm run lint:domains && npm run lint:colors && npm run lint:svgs && npm run validate:architecture",
+    "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:skills && npm run validate:slides:syntax && npm run validate:citations:syntax && npm run lint:posts && npm run lint:styles && npm run lint:domains && npm run lint:colors && npm run lint:svgs && npm run validate:architecture && npm run validate:vis",
     "verify": "npm run validate && npm run build",
     "test": "npm run verify",
     "preview": "astro preview",
@@ -55,6 +55,8 @@
     "newsletter:sync": "tsx src/scripts/sync-newsletters.ts",
     "astro": "astro",
     "benchmark:vis": "tsx src/scripts/benchmark-visualizations.ts",
+    "validate:vis": "tsx src/scripts/validate-visualizations.ts",
+    "test:vis:e2e": "tsx src/scripts/test-visualizations-e2e.ts",
     "resolve:citations": "tsx src/scripts/resolve-citations.ts",
     "validate:jsonld": "tsx src/scripts/validate-jsonld.ts"
   },

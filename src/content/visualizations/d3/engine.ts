@@ -651,13 +651,6 @@ const engine: D3Engine = {
         this.viewportAdaptFrameId = null;
         return;
       }
-      if (this.currentLayout === 'force') {
-        for (const n of this.nodes) {
-          if (typeof n.x === 'number' && typeof n.y === 'number') {
-            this.forcePositions.set(n.id, { x: n.x, y: n.y });
-          }
-        }
-      }
       const dt = Math.max(1, now - lastTime);
       lastTime = now;
       const stepAlpha = 1 - Math.pow(1 - baseAlpha, Math.min(50, dt) / 16.67);
@@ -824,6 +817,18 @@ const engine: D3Engine = {
           this.tuningSettleTimeout = undefined;
           if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
             this.simulation.stop();
+            if (this.nodes) {
+              for (const n of this.nodes) {
+                const fp = this.forcePositions.get(n.id);
+                if (fp) {
+                  n.x = fp.x;
+                  n.y = fp.y;
+                  n.vx = 0;
+                  n.vy = 0;
+                }
+              }
+              this.renderPositions();
+            }
             this.dragController?.calibrateFromPositions(this.forcePositions);
           }
         }, 520);
@@ -884,6 +889,18 @@ const engine: D3Engine = {
           this.tuningSettleTimeout = undefined;
           if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
             this.simulation.stop();
+            if (this.nodes) {
+              for (const n of this.nodes) {
+                const fp = this.forcePositions.get(n.id);
+                if (fp) {
+                  n.x = fp.x;
+                  n.y = fp.y;
+                  n.vx = 0;
+                  n.vy = 0;
+                }
+              }
+              this.renderPositions();
+            }
             this.dragController?.calibrateFromPositions(this.forcePositions);
           }
         }, 480);
@@ -945,6 +962,18 @@ const engine: D3Engine = {
         this.tuningSettleTimeout = undefined;
         if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
           this.simulation.stop();
+          if (this.nodes) {
+            for (const n of this.nodes) {
+              const fp = this.forcePositions.get(n.id);
+              if (fp) {
+                n.x = fp.x;
+                n.y = fp.y;
+                n.vx = 0;
+                n.vy = 0;
+              }
+            }
+            this.renderPositions();
+          }
           this.dragController?.calibrateFromPositions(this.forcePositions);
         }
       }, 480);
