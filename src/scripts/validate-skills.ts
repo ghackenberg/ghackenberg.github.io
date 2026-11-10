@@ -45,7 +45,7 @@ const DOMAIN_COMMAND_OWNERS: Record<string, string[]> = {
   'newsletter:sync': ['newsletter-authoring', 'build-engineering'],
 
   'validate:vis': ['visualization-authoring', 'build-engineering'],
-  'test:vis:e2e': ['visualization-authoring', 'build-engineering'],
+  'test:vis:e2e': ['visualization-authoring'],
   'benchmark:vis': ['visualization-authoring'],
 };
 

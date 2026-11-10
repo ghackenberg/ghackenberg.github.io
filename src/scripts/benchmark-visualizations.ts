@@ -78,7 +78,7 @@ function createStaticServer(): http.Server {
 }
 
 function computeStats(dts: number[]): ScenarioMetrics {
-  const valid = dts.filter((d) => Number.isFinite(d) && d > 0.5 && d < 2000);
+  const valid = dts.filter((d) => Number.isFinite(d) && d > 0.5 && d < 30000);
   if (valid.length === 0) {
     return { frames: 0, avgFps: 0, p50Fps: 0, p95Ms: 0, maxMs: 0, droppedPct: 0 };
   }

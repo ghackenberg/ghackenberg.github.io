@@ -44,13 +44,12 @@ All interactive graph engines must maintain 100% mathematical parity between sta
 - **Strict Client Privacy**: Enforce zero `localStorage` or `sessionStorage` usage across all visualization client and shared modules.
 
 ## 5. Verification & Performance Benchmarking
-Run the three domain-specific CLI gates in PowerShell before relying on the master release verification gate (see `build-engineering`):
+Run the three local verification and benchmark gates in PowerShell before relying on the master release verification gate (see `build-engineering`):
 ```powershell
 npm run validate:vis
 npm run test:vis:e2e
-npm run test:vis:e2e -- --ci
 npm run benchmark:vis
 ```
-- **`npm run validate:vis`** ([`src/scripts/validate-visualizations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-visualizations.ts)): Deterministic Node.js gate verifying storage privacy, solver cluster separation (`>= 1.9x`), geometry layouts, tuning reset determinism, and 2D/3D drag reconfiguration.
-- **`npm run test:vis:e2e`** ([`src/scripts/test-visualizations-e2e.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/test-visualizations-e2e.ts), or `-- --ci` for ANGLE SwiftShader WebGL): Executes 25 Puppeteer browser UI checks across all 5 graph engines.
-- **`npm run benchmark:vis`** ([`src/scripts/benchmark-visualizations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/benchmark-visualizations.ts)): Local hardware 60 FPS and P95 frame-time benchmark across `idle`, `hover`, `drag`, `layout`, and `tuning`.
+- **`npm run validate:vis`** ([`src/scripts/validate-visualizations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-visualizations.ts)): Deterministic Node.js gate (also executed in GitHub Actions CI via `validate`) verifying storage privacy, solver cluster separation (`>= 1.9x`), geometry layouts, tuning reset determinism, and 2D/3D drag reconfiguration.
+- **`npm run test:vis:e2e`** ([`src/scripts/test-visualizations-e2e.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/test-visualizations-e2e.ts)): Local pre-release browser E2E gate executing 25 Puppeteer UI and WebGL checks across all 5 graph engines on real hardware (`-- --ci` remains available for headless ANGLE SwiftShader environments).
+- **`npm run benchmark:vis`** ([`src/scripts/benchmark-visualizations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/benchmark-visualizations.ts)): Local hardware 60 FPS and P95/Max frame-time benchmark across `idle`, `hover`, `drag`, `layout`, and `tuning`.

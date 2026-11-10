@@ -183,11 +183,10 @@ export async function solveSigmaForceAtlas2LayoutAsync(
   return extractSigmaCenteredTargets(graph);
 }
 
-export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string, Point2D> {
+function createCytoscapeHeadlessInstance(input: SolverGraphInput): cytoscape.Core {
   const nodes = input.nodes;
   const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
-  const tuning = getGraphTuningState();
 
   const elements: cytoscape.ElementDefinition[] = [];
   nodes.forEach((n, i) => {
@@ -218,7 +217,7 @@ export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string
     }
   });
 
-  const cy = cytoscape({
+  return cytoscape({
     headless: true,
     elements,
     style: [
@@ -231,10 +230,16 @@ export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string
       },
     ],
   });
+}
 
-  cy.layout({
+function buildCytoscapeCoseLayoutOptions(
+  animate: boolean
+): cytoscape.CoseLayoutOptions & { animationThreshold?: number } {
+  const tuning = getGraphTuningState();
+  return {
     name: 'cose',
-    animate: false,
+    animate,
+    ...(animate ? { refresh: 2, animationThreshold: 1e9 } : {}),
     fit: false,
     randomize: false,
     idealEdgeLength: (edge: cytoscape.EdgeSingular) =>
@@ -247,8 +252,10 @@ export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string
     nestingFactor: 5,
     gravity: GRAPH_PHYSICS_CONFIG.coseGravity * tuning.gravityScale,
     numIter: GRAPH_PHYSICS_CONFIG.coseIterations,
-  } as cytoscape.CoseLayoutOptions).run();
+  };
+}
 
+function extractCytoscapeCenteredTargets(cy: cytoscape.Core): Record<string, Point2D> {
   let sumX = 0;
   let sumY = 0;
   let count = 0;
@@ -269,9 +276,86 @@ export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string
       y: round2(pos.y - meanY),
     };
   });
-  cy.destroy();
-
   return targets;
+}
+
+export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string, Point2D> {
+  const cy = createCytoscapeHeadlessInstance(input);
+  cy.layout(buildCytoscapeCoseLayoutOptions(false)).run();
+  const targets = extractCytoscapeCenteredTargets(cy);
+  cy.destroy();
+  return targets;
+}
+
+export async function solveCytoscapeCoseLayoutAsync(
+  input: SolverGraphInput,
+  options?: AsyncSolverOptions
+): Promise<Record<string, Point2D> | null> {
+  if (options?.shouldCancel?.()) {
+    return null;
+  }
+
+  await yieldToNextFrame();
+  if (options?.shouldCancel?.()) {
+    return null;
+  }
+
+  const cy = createCytoscapeHeadlessInstance(input);
+  await yieldToNextFrame();
+  if (options?.shouldCancel?.()) {
+    cy.destroy();
+    return null;
+  }
+
+  const layout = cy.layout(buildCytoscapeCoseLayoutOptions(true));
+  await yieldToNextFrame();
+  if (options?.shouldCancel?.()) {
+    cy.destroy();
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+    let stoppingSync = false;
+
+    layout.on('layoutstop', () => {
+      if (stoppingSync) return;
+      if (!settled) {
+        settled = true;
+        const targets = extractCytoscapeCenteredTargets(cy);
+        cy.destroy();
+        resolve(targets);
+        return;
+      }
+      cy.destroy();
+    });
+
+    const scheduleCheck = (cb: () => void) => {
+      if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => cb());
+      } else {
+        setTimeout(cb, 16);
+      }
+    };
+
+    const pollCancel = () => {
+      if (settled) return;
+      if (options?.shouldCancel?.()) {
+        settled = true;
+        stoppingSync = true;
+        layout.stop();
+        stoppingSync = false;
+        resolve(null);
+        return;
+      }
+      scheduleCheck(pollCancel);
+    };
+
+    layout.run();
+    if (!settled && options?.shouldCancel) {
+      scheduleCheck(pollCancel);
+    }
+  });
 }
 
 interface D3HeadlessNode extends d3.SimulationNodeDatum {

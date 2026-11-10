@@ -20,6 +20,7 @@ import {
 import {
   compute2DGeometryTargets,
   solveCytoscapeCoseLayout,
+  solveCytoscapeCoseLayoutAsync,
   type SolverGraphEdge,
   type SolverGraphNode,
 } from '@commons/shared/graph-solvers';
@@ -77,6 +78,8 @@ export interface CytoscapeEngine {
   lastOrderSignature?: string;
   forcePositions: Map<string, { x: number; y: number }>;
   initialForcePositions: Map<string, { x: number; y: number }>;
+  tuningGeneration?: number;
+  tuningInFlight?: boolean;
   dragController?: GraphDragPhysicsController2D | null;
   calibrateDragEquilibrium?(syncFromCy?: boolean): void;
   solveHeadlessCoseTargets(): Record<string, { x: number; y: number }>;
@@ -113,6 +116,8 @@ const engine: CytoscapeEngine = {
   lastOrderSignature: '',
   forcePositions: new Map(),
   initialForcePositions: new Map(),
+  tuningGeneration: 0,
+  tuningInFlight: false,
   dragController: null,
   animationFrameId: null,
   viewportAdaptFrameId: null,
@@ -134,6 +139,8 @@ const engine: CytoscapeEngine = {
     this.modelPositions = new Map();
     this.forcePositions = new Map();
     this.initialForcePositions = new Map();
+    this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+    this.tuningInFlight = false;
 
     this.cy = cytoscape({
       container: container,
@@ -984,6 +991,8 @@ const engine: CytoscapeEngine = {
     this.isLight = isLight;
 
     if (layoutChanged) {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
@@ -1012,8 +1021,10 @@ const engine: CytoscapeEngine = {
     }
     if (category === 'physics') {
       if (this.currentLayout === 'force') {
+        const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
         this.dragController?.stop();
         if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
+          this.tuningInFlight = false;
           const targets: Record<string, { x: number; y: number }> = {};
           this.forcePositions.clear();
           for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1022,13 +1033,37 @@ const engine: CytoscapeEngine = {
           }
           this.animateTo(targets, 450, undefined, true, false);
         } else {
-          const targets = this.solveHeadlessCoseTargets();
-          this.animateTo(targets, 450, undefined, true, false);
+          this.tuningInFlight = true;
+          const nodes: SolverGraphNode[] = this.nodeMetaList.map((n) => ({
+            id: n.id,
+            group: n.group,
+            size: n.size,
+          }));
+          const connections: SolverGraphEdge[] = this.edgeMetaList.map((e) => ({
+            source: e.source,
+            target: e.target,
+            weight: e.weight,
+          }));
+          void solveCytoscapeCoseLayoutAsync(
+            { nodes, connections },
+            { shouldCancel: () => this.tuningGeneration !== gen }
+          ).then((targets) => {
+            if (!targets || this.tuningGeneration !== gen || !this.cy) return;
+            this.tuningInFlight = false;
+            if (this.currentLayout !== 'force') return;
+            this.forcePositions.clear();
+            for (const [id, pt] of Object.entries(targets)) {
+              this.forcePositions.set(id, { x: pt.x, y: pt.y });
+            }
+            this.animateTo(targets, 450, undefined, true, false);
+          });
         }
       }
       return;
     }
     if (category === 'reset') {
+      this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+      this.tuningInFlight = false;
       this.dragController?.stop();
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1049,6 +1084,8 @@ const engine: CytoscapeEngine = {
   },
 
   destroy() {
+    this.tuningGeneration = (this.tuningGeneration || 0) + 1;
+    this.tuningInFlight = false;
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
