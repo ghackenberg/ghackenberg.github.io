@@ -1,11 +1,11 @@
 import { Sigma } from 'sigma';
 import Graph from 'graphology';
-import forceAtlas2 from 'graphology-layout-forceatlas2';
 import {
   GRAPH_COLORS,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
+  getEdgePhysicsMetrics,
   getGraphStyleTokens,
   buildGraphAdjacency,
   computeHopDistances,
@@ -18,10 +18,17 @@ import {
   type SigmaNode,
   type SigmaEdge
 } from '@commons/shared/graph-payload';
+import {
+  compute2DGeometryTargets,
+  solveSigmaForceAtlas2Layout,
+  type SolverGraphNode,
+} from '@commons/shared/graph-solvers';
+import {
+  createGraphDragPhysicsController2D,
+  type GraphDragPhysicsController2D,
+} from '@commons/client/graph-drag-controller';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
-
-const SIGMA_BASE_NODE_SIZE = 5;
 
 function getNodeColor(group: number, isLight: boolean): string {
   const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
@@ -44,6 +51,7 @@ export interface SigmaEngine {
   sigma: Sigma | null;
   nodeMap: Map<string, SigmaNodeData> | null;
   tooltipController: GraphTooltipController | null;
+  dragController?: GraphDragPhysicsController2D | null;
   fgCanvas?: HTMLCanvasElement | null;
   activeHighlightDists?: Map<string, number> | null;
   hoveredNodeId?: string | null;
@@ -59,7 +67,7 @@ export interface SigmaEngine {
   lastDraggedAt?: number;
   lastOrderSignature?: string;
   forcePositions: Map<string, { x: number; y: number }>;
-  physicsFrameId?: number | null;
+  initialForcePositions: Map<string, { x: number; y: number }>;
   viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   animationFrameId: number | null;
@@ -69,6 +77,7 @@ export interface SigmaEngine {
   getForcePositions(): Record<string, { x: number; y: number }>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
   animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, resetCamera?: boolean): void;
   destroy(): void;
 }
@@ -83,12 +92,13 @@ const engine: SigmaEngine = {
   sigma: null,
   nodeMap: null,
   tooltipController: null,
+  dragController: null,
   mouseMoveHandler: null,
   container: null,
   lastDraggedAt: 0,
   lastOrderSignature: '',
   forcePositions: new Map(),
-  physicsFrameId: null,
+  initialForcePositions: new Map(),
   viewportAdaptFrameId: null,
   resizeObserver: null,
   animationFrameId: null,
@@ -101,6 +111,7 @@ const engine: SigmaEngine = {
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
     this.forcePositions = new Map();
+    this.initialForcePositions = new Map();
     const nodes = payload.sigma.nodes;
     const edges = payload.sigma.edges;
     this.nodeMap = new Map(nodes.map(n => [n.id, n]));
@@ -111,11 +122,12 @@ const engine: SigmaEngine = {
       const nx = typeof n.x === 'number' ? n.x : 0;
       const ny = typeof n.y === 'number' ? n.y : 0;
       this.forcePositions.set(n.id, { x: nx, y: ny });
+      this.initialForcePositions.set(n.id, { x: nx, y: ny });
       this.graph?.addNode(n.id, {
         label: '',
         x: nx,
         y: ny,
-        size: SIGMA_BASE_NODE_SIZE,
+        size: styleTokens.nodeRadius,
         zIndex: 1,
         group: n.group ?? 0,
         color: getNodeColor(n.group ?? 0, isLight)
@@ -123,11 +135,16 @@ const engine: SigmaEngine = {
     });
 
     edges.forEach(e => {
-      this.graph?.addEdge(e.source, e.target, {
-        size: styleTokens.edgeWidth,
-        color: styleTokens.edgeColor,
-        zIndex: 1
-      });
+      const rawWeight = e.weight ?? 0.5;
+      if (e.source !== e.target && this.graph?.hasNode(e.source) && this.graph?.hasNode(e.target) && !this.graph.hasEdge(e.source, e.target)) {
+        this.graph.addUndirectedEdge(e.source, e.target, {
+          size: styleTokens.edgeWidth,
+          color: styleTokens.edgeColor,
+          rawWeight,
+          weight: getEdgePhysicsMetrics(rawWeight).stiffnessFactor,
+          zIndex: 1
+        });
+      }
     });
 
     const tokens = getThemeTokens(isLight);
@@ -136,7 +153,7 @@ const engine: SigmaEngine = {
       defaultEdgeColor: styleTokens.edgeColor,
       renderLabels: false,
       zIndex: true,
-      stagePadding: GRAPH_VIEWPORT_CONFIG.padX + SIGMA_BASE_NODE_SIZE,
+      stagePadding: GRAPH_VIEWPORT_CONFIG.padX + styleTokens.nodeRadius,
       labelColor: { color: tokens.textHeading },
       labelFont: 'Outfit, Inter, sans-serif',
       labelSize: 10,
@@ -163,53 +180,30 @@ const engine: SigmaEngine = {
 
     let draggedNode: string | null = null;
 
-    const startForcePhysicsLoop = () => {
-      if (this.physicsFrameId) return;
-      const stepPhysics = () => {
-        if (!this.sigma || !this.graph || draggedNode === null || this.currentLayout !== 'force') {
-          this.physicsFrameId = null;
-          return;
+    this.dragController = createGraphDragPhysicsController2D({
+      nodes: nodes.map((n) => ({
+        id: n.id,
+        group: n.group ?? 0,
+        x: typeof n.x === 'number' ? n.x : 0,
+        y: typeof n.y === 'number' ? n.y : 0,
+      })),
+      edges: edges.map((e) => ({
+        source: e.source,
+        target: e.target,
+        weight: e.weight ?? 0.5,
+      })),
+      isLight: () => Boolean(this.isLight),
+      onTick: (positions, draggedId) => {
+        if (!this.sigma || !this.graph) return;
+        for (const [id, pt] of positions.entries()) {
+          if (id === draggedId) continue;
+          this.graph.setNodeAttribute(id, 'x', pt.x);
+          this.graph.setNodeAttribute(id, 'y', pt.y);
+          this.forcePositions.set(id, { x: pt.x, y: pt.y });
         }
-
-        const pinnedX = this.graph.getNodeAttribute(draggedNode, 'x') as number;
-        const pinnedY = this.graph.getNodeAttribute(draggedNode, 'y') as number;
-
-        forceAtlas2.assign(this.graph, {
-          iterations: 2,
-          settings: {
-            gravity: 0.8,
-            scalingRatio: 1,
-            slowDown: 6
-          }
-        });
-
-        this.graph.setNodeAttribute(draggedNode, 'x', pinnedX);
-        this.graph.setNodeAttribute(draggedNode, 'y', pinnedY);
-
-        let sumX = 0;
-        let sumY = 0;
-        let count = 0;
-        this.graph.forEachNode(nId => {
-          sumX += (this.graph?.getNodeAttribute(nId, 'x') as number) || 0;
-          sumY += (this.graph?.getNodeAttribute(nId, 'y') as number) || 0;
-          count++;
-        });
-        if (count > 0) {
-          const shiftX = (sumX / count) * 0.08;
-          const shiftY = (sumY / count) * 0.08;
-          this.graph.forEachNode(nId => {
-            if (nId === draggedNode) return;
-            this.graph?.setNodeAttribute(nId, 'x', ((this.graph?.getNodeAttribute(nId, 'x') as number) || 0) - shiftX);
-            this.graph?.setNodeAttribute(nId, 'y', ((this.graph?.getNodeAttribute(nId, 'y') as number) || 0) - shiftY);
-          });
-        }
-
         this.sigma.refresh();
-
-        this.physicsFrameId = requestAnimationFrame(stepPhysics);
-      };
-      this.physicsFrameId = requestAnimationFrame(stepPhysics);
-    };
+      },
+    });
 
     this.hoveredNodeId = null;
     this.secondaryHoveredNodeId = null;
@@ -294,7 +288,7 @@ const engine: SigmaEngine = {
         const nx = Number(this.graph.getNodeAttribute(nId, 'x') || 0);
         const ny = Number(this.graph.getNodeAttribute(nId, 'y') || 0);
         const p = this.sigma.graphToViewport({ x: nx, y: ny });
-        const rawSize = Number(this.graph.getNodeAttribute(nId, 'size') || SIGMA_BASE_NODE_SIZE);
+        const rawSize = Number(this.graph.getNodeAttribute(nId, 'size') || currentTokens.nodeRadius);
         const grp = (this.graph.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
         const color = String(this.graph.getNodeAttribute(nId, 'color') || getNodeColor(grp, currentIsLight));
         items.push({
@@ -356,13 +350,14 @@ const engine: SigmaEngine = {
         startSize: number;
         targetSize: number;
         targetZIndex: number;
+        changed: boolean;
       }[] = [];
 
       this.graph.forEachNode(nId => {
         const grp = (this.graph?.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
         const baseColor = getNodeColor(grp, currentIsLight);
         const startColor = String(this.graph?.getNodeAttribute(nId, 'color') || baseColor);
-        const startSize = Number(this.graph?.getNodeAttribute(nId, 'size') || SIGMA_BASE_NODE_SIZE);
+        const startSize = Number(this.graph?.getNodeAttribute(nId, 'size') || currentTokens.nodeRadius);
         const hopDist = dists ? dists.get(nId) : undefined;
         const isSecHover = secId !== null && nId === secId;
         const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
@@ -372,11 +367,19 @@ const engine: SigmaEngine = {
           : dists
             ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
             : baseColor;
-        const targetSize = SIGMA_BASE_NODE_SIZE * targetScale;
+        const targetSize = currentTokens.nodeRadius * targetScale;
         const targetZIndex = dists
           ? (isSecHover ? 45 : getNodeHopZIndex(hopDist))
           : 1;
-        nodeTrans.push({ id: nId, startColor, targetColor, startSize, targetSize, targetZIndex });
+        nodeTrans.push({
+          id: nId,
+          startColor,
+          targetColor,
+          startSize,
+          targetSize,
+          targetZIndex,
+          changed: startColor !== targetColor || Math.abs(startSize - targetSize) > 1e-3
+        });
       });
 
       const edgeTrans: {
@@ -386,6 +389,7 @@ const engine: SigmaEngine = {
         startSize: number;
         targetSize: number;
         targetZIndex: number;
+        changed: boolean;
       }[] = [];
 
       this.graph.forEachEdge(edge => {
@@ -404,7 +408,8 @@ const engine: SigmaEngine = {
           targetColor: targetStyle.color,
           startSize,
           targetSize: targetStyle.width,
-          targetZIndex
+          targetZIndex,
+          changed: startColor !== targetStyle.color || Math.abs(startSize - targetStyle.width) > 1e-3
         });
       });
 
@@ -420,15 +425,19 @@ const engine: SigmaEngine = {
       const renderStep = (ease: number, applyZIndex: boolean) => {
         if (!this.graph || !this.sigma) return;
         for (const nt of nodeTrans) {
-          this.graph.setNodeAttribute(nt.id, 'color', interpolateHexColor(nt.startColor, nt.targetColor, ease));
-          this.graph.setNodeAttribute(nt.id, 'size', nt.startSize + (nt.targetSize - nt.startSize) * ease);
+          if (nt.changed || ease >= 1) {
+            this.graph.setNodeAttribute(nt.id, 'color', ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease));
+            this.graph.setNodeAttribute(nt.id, 'size', ease >= 1 ? nt.targetSize : nt.startSize + (nt.targetSize - nt.startSize) * ease);
+          }
           if (applyZIndex) {
             this.graph.setNodeAttribute(nt.id, 'zIndex', nt.targetZIndex);
           }
         }
         for (const et of edgeTrans) {
-          this.graph.setEdgeAttribute(et.id, 'color', interpolateHexColor(et.startColor, et.targetColor, ease));
-          this.graph.setEdgeAttribute(et.id, 'size', et.startSize + (et.targetSize - et.startSize) * ease);
+          if (et.changed || ease >= 1) {
+            this.graph.setEdgeAttribute(et.id, 'color', ease >= 1 ? et.targetColor : interpolateHexColor(et.startColor, et.targetColor, ease));
+            this.graph.setEdgeAttribute(et.id, 'size', ease >= 1 ? et.targetSize : et.startSize + (et.targetSize - et.startSize) * ease);
+          }
           if (applyZIndex) {
             this.graph.setEdgeAttribute(et.id, 'zIndex', et.targetZIndex);
           }
@@ -552,7 +561,9 @@ const engine: SigmaEngine = {
         this.graph.setNodeAttribute(draggedNode, 'y', pos.y);
 
         if (this.currentLayout === 'force') {
-          startForcePhysicsLoop();
+          this.forcePositions.set(draggedNode, { x: pos.x, y: pos.y });
+          this.dragController?.startDrag(draggedNode, pos);
+          this.sigma.refresh();
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { signature } = this.computeLayoutTargets(this.currentLayout, true);
           this.lastOrderSignature = signature;
@@ -567,7 +578,9 @@ const engine: SigmaEngine = {
         this.graph.setNodeAttribute(rawNode.id, 'y', pos.y);
 
         if (this.currentLayout === 'force') {
-          startForcePhysicsLoop();
+          this.forcePositions.set(rawNode.id, { x: pos.x, y: pos.y });
+          this.dragController?.moveDrag(rawNode.id, pos);
+          this.sigma.refresh();
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
           if (signature !== this.lastOrderSignature) {
@@ -578,59 +591,19 @@ const engine: SigmaEngine = {
           }
         }
       },
-      onNodeDragEnd: () => {
+      onNodeDragEnd: (rawNode) => {
         draggedNode = null;
         this.hoveredNodeId = null;
         this.lastDraggedAt = performance.now();
-        if (this.physicsFrameId) {
-          cancelAnimationFrame(this.physicsFrameId);
-          this.physicsFrameId = null;
-        }
         applyHighlight(null);
 
         if (this.currentLayout === 'force' && this.graph) {
-          const startingPos: Record<string, { x: number; y: number }> = {};
-          const targets: Record<string, { x: number; y: number }> = {};
-          this.graph.forEachNode(node => {
-            startingPos[node] = {
-              x: this.graph?.getNodeAttribute(node, 'x') as number,
-              y: this.graph?.getNodeAttribute(node, 'y') as number
-            };
-          });
-
-          forceAtlas2.assign(this.graph, {
-            iterations: 30,
-            settings: {
-              gravity: 0.8,
-              scalingRatio: 1,
-              slowDown: 3
-            }
-          });
-
-          let sumX = 0;
-          let sumY = 0;
-          let count = 0;
-          this.graph.forEachNode(node => {
-            const tx = this.graph?.getNodeAttribute(node, 'x') as number;
-            const ty = this.graph?.getNodeAttribute(node, 'y') as number;
-            targets[node] = { x: tx, y: ty };
-            sumX += tx;
-            sumY += ty;
-            count++;
-            this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
-            this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
-          });
-          if (count > 0) {
-            const meanX = sumX / count;
-            const meanY = sumY / count;
-            for (const node of Object.keys(targets)) {
-              targets[node].x -= meanX;
-              targets[node].y -= meanY;
-              this.forcePositions.set(node, { x: targets[node].x, y: targets[node].y });
-            }
-          }
-
-          this.animateTo(targets, 650, undefined, false);
+          const pos = {
+            x: Number(this.graph.getNodeAttribute(rawNode.id, 'x') || 0),
+            y: Number(this.graph.getNodeAttribute(rawNode.id, 'y') || 0)
+          };
+          this.forcePositions.set(rawNode.id, pos);
+          this.dragController?.endDrag(rawNode.id, pos);
           this.startViewportAdaptLoop(2400);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
@@ -783,95 +756,20 @@ const engine: SigmaEngine = {
   },
 
   computeLayoutTargets(layout: string, useCurrentOrder = false) {
-    const targets: Record<string, { x: number; y: number }> = {};
-    let signature = '';
-    if (!this.graph) return { targets, signature };
-
-    if (layout === 'radial') {
-      const nodes = this.graph.nodes();
-      const tags = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 0)];
-      const others = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') !== 0)];
-
-      if (useCurrentOrder) {
-        const normAngle = (nId: string, count: number) => {
-          const nx = (this.graph?.getNodeAttribute(nId, 'x') as number) || 0;
-          const ny = (this.graph?.getNodeAttribute(nId, 'y') as number) || 0;
-          return ((Math.atan2(ny, nx) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-        };
-        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
-        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
-      }
-
-      tags.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / tags.length;
-        targets[n] = {
-          x: 5 * Math.cos(theta),
-          y: 5 * Math.sin(theta)
-        };
-      });
-
-      others.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / others.length;
-        targets[n] = {
-          x: 12 * Math.cos(theta),
-          y: 12 * Math.sin(theta)
-        };
-      });
-
-      signature = `${tags.join(',')}|${others.join(',')}`;
-    } else if (layout === 'columns') {
-      const nodes = this.graph.nodes();
-      const posts = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 1)];
-      const publications = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 2)];
-      const presentations = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 3)];
-      const tags = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 0)];
-      const courses = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 4)];
-      const projects = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 5)];
-      const services = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 6)];
-      const newsletters = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 7)];
-      const visualizations = [...nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 8)];
-
-      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-      const isMobile = window.innerWidth < 768;
-
-      if (useCurrentOrder) {
-        categories.forEach(catNodes => {
-          catNodes.sort((a, b) => {
-            const ax = (this.graph?.getNodeAttribute(a, 'x') as number) || 0;
-            const ay = (this.graph?.getNodeAttribute(a, 'y') as number) || 0;
-            const bx = (this.graph?.getNodeAttribute(b, 'x') as number) || 0;
-            const by = (this.graph?.getNodeAttribute(b, 'y') as number) || 0;
-            return isMobile ? ax - bx : ay - by;
-          });
-        });
-      }
-
-      if (isMobile) {
-        categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - (categories.length - 1) / 2) * 4;
-          catNodes.forEach((n, idx) => {
-            targets[n] = {
-              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0,
-              y: rowY
-            };
-          });
-        });
-      } else {
-        categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - (categories.length - 1) / 2) * 5;
-          catNodes.forEach((n, idx) => {
-            targets[n] = {
-              x: colX,
-              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0
-            };
-          });
-        });
-      }
-
-      signature = categories.map(cat => cat.join(',')).join('|');
+    if (!this.graph || (layout !== 'radial' && layout !== 'columns')) {
+      return { targets: {}, signature: '' };
     }
-
-    return { targets, signature };
+    const solverNodes: SolverGraphNode[] = this.graph.nodes().map(nId => ({
+      id: nId,
+      group: Number(this.graph?.getNodeAttribute(nId, 'group') ?? 0),
+      x: Number(this.graph?.getNodeAttribute(nId, 'x') ?? 0),
+      y: Number(this.graph?.getNodeAttribute(nId, 'y') ?? 0)
+    }));
+    return compute2DGeometryTargets(solverNodes, layout, {
+      useCurrentOrder,
+      scaleMode: 'sigma-world',
+      isMobile: window.innerWidth < 768
+    });
   },
 
   getForcePositions(): Record<string, { x: number; y: number }> {
@@ -882,48 +780,18 @@ const engine: SigmaEngine = {
       }
       return targets;
     }
-    if (!this.graph) return targets;
+    if (!this.payload) return targets;
 
-    const startingPos: Record<string, { x: number; y: number }> = {};
-    this.graph.forEachNode(node => {
-      startingPos[node] = {
-        x: this.graph?.getNodeAttribute(node, 'x') as number,
-        y: this.graph?.getNodeAttribute(node, 'y') as number
-      };
+    const solved = solveSigmaForceAtlas2Layout({
+      nodes: this.payload.sigma.nodes,
+      connections: this.payload.sigma.edges
     });
 
-    forceAtlas2.assign(this.graph, {
-      iterations: 100,
-      settings: {
-        gravity: 0.8,
-        scalingRatio: 12,
-        strongGravityMode: false,
-        slowDown: 2
-      }
-    });
-
-    let sumX = 0;
-    let sumY = 0;
-    let count = 0;
-    this.graph.forEachNode(node => {
-      const tx = this.graph?.getNodeAttribute(node, 'x') as number;
-      const ty = this.graph?.getNodeAttribute(node, 'y') as number;
-      targets[node] = { x: tx, y: ty };
-      sumX += tx;
-      sumY += ty;
-      count++;
-      this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
-      this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
-    });
-    if (count > 0) {
-      const meanX = sumX / count;
-      const meanY = sumY / count;
-      for (const node of Object.keys(targets)) {
-        targets[node].x -= meanX;
-        targets[node].y -= meanY;
-        this.forcePositions.set(node, { x: targets[node].x, y: targets[node].y });
-      }
+    for (const [nodeId, pt] of Object.entries(solved)) {
+      targets[nodeId] = { x: pt.x, y: pt.y };
+      this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
     }
+
     return targets;
   },
 
@@ -936,10 +804,7 @@ const engine: SigmaEngine = {
     if (layoutChanged) {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
-      if (this.physicsFrameId) {
-        cancelAnimationFrame(this.physicsFrameId);
-        this.physicsFrameId = null;
-      }
+      this.dragController?.stop();
       this.sigma.setCustomBBox(null);
     }
 
@@ -962,6 +827,62 @@ const engine: SigmaEngine = {
     } else {
       const targets = this.getForcePositions();
       this.animateTo(targets, 600, undefined, true);
+    }
+  },
+
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset') {
+    if (!this.graph || !this.sigma) return;
+    if (category === 'visual') {
+      const styleTokens = getGraphStyleTokens(Boolean(this.isLight));
+      this.sigma.setSetting('defaultEdgeColor', styleTokens.edgeColor);
+      this.applyHighlight?.(this.hoveredNodeId ?? null, true);
+      return;
+    }
+    if (category === 'geometry') {
+      if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+        this.lastOrderSignature = signature;
+        this.animateTo(targets, 350, undefined, true);
+      }
+      return;
+    }
+    if (category === 'physics') {
+      this.dragController?.stop();
+      this.graph.forEachEdge(edge => {
+        const rawW = Number(this.graph?.getEdgeAttribute(edge, 'rawWeight') ?? 0.5);
+        this.graph?.setEdgeAttribute(edge, 'weight', getEdgePhysicsMetrics(rawW).stiffnessFactor);
+      });
+      if (this.currentLayout === 'force') {
+        this.forcePositions.clear();
+        const targets = this.getForcePositions();
+        this.animateTo(targets, 450, undefined, true);
+      }
+      return;
+    }
+    if (category === 'reset') {
+      this.dragController?.stop();
+      this.forcePositions.clear();
+      for (const [id, pos] of this.initialForcePositions.entries()) {
+        this.forcePositions.set(id, { x: pos.x, y: pos.y });
+      }
+      this.graph.forEachEdge(edge => {
+        const rawW = Number(this.graph?.getEdgeAttribute(edge, 'rawWeight') ?? 0.5);
+        this.graph?.setEdgeAttribute(edge, 'weight', getEdgePhysicsMetrics(rawW).stiffnessFactor);
+      });
+      const styleTokens = getGraphStyleTokens(Boolean(this.isLight));
+      this.sigma.setSetting('defaultEdgeColor', styleTokens.edgeColor);
+      this.applyHighlight?.(this.hoveredNodeId ?? null, true);
+      if (this.currentLayout === 'force') {
+        const targets: Record<string, { x: number; y: number }> = {};
+        for (const [id, pos] of this.initialForcePositions.entries()) {
+          targets[id] = { x: pos.x, y: pos.y };
+        }
+        this.animateTo(targets, 450, undefined, true);
+      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const { targets, signature } = this.computeLayoutTargets(this.currentLayout, false);
+        this.lastOrderSignature = signature;
+        this.animateTo(targets, 450, undefined, true);
+      }
     }
   },
 
@@ -1008,6 +929,12 @@ const engine: SigmaEngine = {
         this.animationFrameId = requestAnimationFrame(step);
       } else {
         this.animationFrameId = null;
+        if (this.currentLayout === 'force' && !excludeNodeId) {
+          for (const [id, pt] of Object.entries(targets)) {
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
+          }
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+        }
         if (resetCamera && this.sigma) {
           this.stepViewportTowardCloud(1);
         }
@@ -1022,9 +949,9 @@ const engine: SigmaEngine = {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
     }
-    if (this.physicsFrameId) {
-      cancelAnimationFrame(this.physicsFrameId);
-      this.physicsFrameId = null;
+    if (this.dragController) {
+      this.dragController.destroy();
+      this.dragController = null;
     }
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);

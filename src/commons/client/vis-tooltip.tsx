@@ -839,10 +839,21 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         return new Set<string>([centerId, ...(neighbors || [])]);
       };
 
+      let cachedScreenNodes: ProximityNodeCandidate[] | null = null;
+      let cachedScreenNodesAt = -Infinity;
+      const getCachedScreenNodes = (): ProximityNodeCandidate[] => {
+        const now = performance.now();
+        if (!cachedScreenNodes || now - cachedScreenNodesAt > 8) {
+          cachedScreenNodes = config.getScreenNodes();
+          cachedScreenNodesAt = now;
+        }
+        return cachedScreenNodes;
+      };
+
       const getNodeScreenInfo = (
         nodeId: string
       ): { node: VisTooltipNodeData; x: number; y: number; neighborCoords: TooltipPoint[] } | null => {
-        const candidates = config.getScreenNodes();
+        const candidates = getCachedScreenNodes();
         let target: ProximityNodeCandidate | null = null;
         for (const c of candidates) {
           if (c.node.id === nodeId && Number.isFinite(c.x) && Number.isFinite(c.y)) {
@@ -875,7 +886,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         py: number,
         maxRadius: number
       ): { node: VisTooltipNodeData; x: number; y: number; neighborCoords: TooltipPoint[] } | null => {
-        const candidates = config.getScreenNodes();
+        const candidates = getCachedScreenNodes();
         let best: ProximityNodeCandidate | null = null;
         let minDist = maxRadius;
 
@@ -1089,6 +1100,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
 
       const finishCustomDrag = () => {
         if (customDragActive && dragCandidate) {
+          cachedScreenNodes = null;
           config.onNodeDragEnd?.(dragCandidate);
           container.style.cursor = 'default';
           if (pinnedNodeId !== null && pinnedNodeData !== null) {

@@ -61,6 +61,7 @@ export interface CytoscapeElement {
     tags?: string[];
     source?: string;
     target?: string;
+    weight?: number;
   };
   position?: {
     x: number;
@@ -90,6 +91,7 @@ export interface SigmaEdge {
   target: string;
   size?: number;
   color?: string;
+  weight?: number;
 }
 
 export interface EnginePayloads {
@@ -163,14 +165,72 @@ export interface GraphStyleTokens {
   nodeHoverScale: number;
 }
 
+export interface GraphTuningState {
+  // 1. Edge Specificity Weighting
+  stiffnessExponent: number;   // default: 1.65 (range 0.0 .. 2.6, step 0.05)
+  distanceExponent: number;    // default: 1.15 (range 0.0 .. 2.0, step 0.05)
+  // 2. Layout Physics & Geometry
+  baseLinkDistance2D: number;  // default: 26   (range 10 .. 64, step 2)
+  repulsionScale: number;      // default: 1.0  (range 0.25 .. 2.5, step 0.05)
+  gravityScale: number;        // default: 1.0  (range 0.10 .. 2.5, step 0.05)
+  radialInnerRatio: number;    // default: 0.22 (range 0.10 .. 0.34, step 0.01)
+  radialOuterRatio: number;    // default: 0.44 (range 0.28 .. 0.56, step 0.01)
+  // 3. Visuals & Ego-Focus
+  nodeRadius: number;          // default: 8    (range 4 .. 14, step 0.5)
+  edgeWidth: number;           // default: 1.5  (range 0.5 .. 3.0, step 0.1)
+  highlightMaxHops: number;    // default: 1    (range 1 .. 3, step 1)
+  backgroundRetention: number; // default: 0.34 (range 0.12 .. 0.65, step 0.02)
+}
+
+export const DEFAULT_GRAPH_TUNING_STATE: Readonly<GraphTuningState> = {
+  stiffnessExponent: 1.65,
+  distanceExponent: 1.15,
+  baseLinkDistance2D: 26,
+  repulsionScale: 1.0,
+  gravityScale: 1.0,
+  radialInnerRatio: 0.22,
+  radialOuterRatio: 0.44,
+  nodeRadius: 8,
+  edgeWidth: 1.5,
+  highlightMaxHops: 1,
+  backgroundRetention: 0.34,
+};
+
+let currentGraphTuningState: GraphTuningState = { ...DEFAULT_GRAPH_TUNING_STATE };
+
+export function getGraphTuningState(): Readonly<GraphTuningState> {
+  return currentGraphTuningState;
+}
+
+export function setGraphTuningState(patch: Partial<GraphTuningState>): Readonly<GraphTuningState> {
+  currentGraphTuningState = {
+    ...currentGraphTuningState,
+    ...patch,
+  };
+  return currentGraphTuningState;
+}
+
+export function resetGraphTuningState(): Readonly<GraphTuningState> {
+  currentGraphTuningState = { ...DEFAULT_GRAPH_TUNING_STATE };
+  return currentGraphTuningState;
+}
+
+export function isDefaultGraphTuningState(): boolean {
+  const keys = Object.keys(DEFAULT_GRAPH_TUNING_STATE) as (keyof GraphTuningState)[];
+  return keys.every(
+    (k) => Math.abs(currentGraphTuningState[k] - DEFAULT_GRAPH_TUNING_STATE[k]) < 1e-4
+  );
+}
+
 export function getGraphStyleTokens(isLight: boolean): GraphStyleTokens {
   const themeTokens = getThemeTokens(isLight);
+  const tuning = currentGraphTuningState;
   return {
     edgeColor: themeTokens.edgeBase,
     edgeHoverColor: themeTokens.edgeHover,
-    edgeWidth: 1.5,
-    edgeHoverWidth: 2.5,
-    nodeRadius: 8,
+    edgeWidth: tuning.edgeWidth,
+    edgeHoverWidth: Number((tuning.edgeWidth * 1.733).toFixed(2)),
+    nodeRadius: tuning.nodeRadius,
     nodeHoverScale: 1.25
   };
 }
@@ -233,103 +293,41 @@ export function computeHopCurve(
 
 export function computeHopDistances(
   startNodeId: string,
-  adjacency: Map<string, Set<string>>,
-  maxHops: number = HOP_ATTENUATION_CONFIG.maxHops
+  adjacency: Map<string, Set<string>>
 ): Map<string, number> {
-  const rawHops = new Map<string, number>();
-  const shells: string[][] = Array.from({ length: maxHops + 1 }, () => []);
-  rawHops.set(startNodeId, 0);
-  shells[0].push(startNodeId);
+  const maxHops = Math.max(1, Math.min(3, Math.round(currentGraphTuningState.highlightMaxHops)));
+  const distances = new Map<string, number>();
+  distances.set(startNodeId, 0);
+
+  if (maxHops === 1) {
+    const neighbors = adjacency.get(startNodeId);
+    if (neighbors) {
+      for (const u of neighbors) {
+        if (u !== startNodeId) {
+          distances.set(u, 1);
+        }
+      }
+    }
+    return distances;
+  }
 
   const queue: [string, number][] = [[startNodeId, 0]];
   let head = 0;
-
   while (head < queue.length) {
-    const [current, dist] = queue[head++];
-    if (dist >= maxHops) continue;
-    const neighbors = adjacency.get(current);
+    const [curr, d] = queue[head++];
+    if (d >= maxHops) continue;
+    const neighbors = adjacency.get(curr);
     if (!neighbors) continue;
-    for (const neighbor of neighbors) {
-      if (!rawHops.has(neighbor)) {
-        const nextDist = dist + 1;
-        rawHops.set(neighbor, nextDist);
-        shells[nextDist].push(neighbor);
-        if (nextDist < maxHops) {
-          queue.push([neighbor, nextDist]);
+    for (const u of neighbors) {
+      if (!distances.has(u)) {
+        const nextD = d + 1;
+        distances.set(u, nextD);
+        if (nextD < maxHops) {
+          queue.push([u, nextD]);
         }
       }
     }
   }
-
-  const distances = new Map<string, number>();
-  const minPathCost = new Map<string, number>();
-  distances.set(startNodeId, 0);
-  minPathCost.set(startNodeId, 0);
-
-  const shell1 = shells[1] ?? [];
-  const shell1Count = shell1.length;
-  const crowdFactor = Math.max(
-    0,
-    Math.min(
-      1,
-      (shell1Count - HOP_ATTENUATION_CONFIG.directHubSoftThreshold) /
-        HOP_ATTENUATION_CONFIG.focusBudgetNodes
-    )
-  );
-  const dEff1 = 1 + 0.60 * crowdFactor;
-
-  for (const u of shell1) {
-    distances.set(u, dEff1);
-    minPathCost.set(u, dEff1);
-  }
-
-  let cumulativeBeforeShell = 1 + shell1Count;
-
-  for (let d = 2; d <= maxHops; d++) {
-    const shell = shells[d] ?? [];
-    if (shell.length === 0) continue;
-
-    const budgetDist =
-      maxHops * (cumulativeBeforeShell / HOP_ATTENUATION_CONFIG.focusBudgetNodes);
-
-    for (const v of shell) {
-      const neighbors = adjacency.get(v);
-      let bestParentCost = Infinity;
-      let sharedParents = 0;
-
-      if (neighbors) {
-        for (const u of neighbors) {
-          if (rawHops.get(u) !== d - 1) continue;
-          sharedParents++;
-          const degU = adjacency.get(u)?.size ?? 1;
-          const stepCost =
-            1 +
-            HOP_ATTENUATION_CONFIG.hubPenaltyWeight *
-              Math.log2(
-                Math.max(HOP_ATTENUATION_CONFIG.hubDegreeBaseline, degU) /
-                  HOP_ATTENUATION_CONFIG.hubDegreeBaseline
-              );
-          const candidateCost = (minPathCost.get(u) ?? (d - 1)) + stepCost;
-          if (candidateCost < bestParentCost) {
-            bestParentCost = candidateCost;
-          }
-        }
-      }
-
-      const parentCount = Math.max(1, sharedParents);
-      const resolvedBestCost = Number.isFinite(bestParentCost) ? bestParentCost : d;
-      const hubAdjustedDist = d + Math.max(0, resolvedBestCost - d) / parentCount;
-      const dEff = Math.max(hubAdjustedDist, budgetDist);
-
-      minPathCost.set(v, dEff);
-      if (dEff < maxHops) {
-        distances.set(v, dEff);
-      }
-    }
-
-    cumulativeBeforeShell += shell.length;
-  }
-
   return distances;
 }
 
@@ -360,6 +358,127 @@ export const GRAPH_VIEWPORT_CONFIG = {
   focusPadX: 64,
   focusPadY: 64,
   focusMaxScale: 2.2
+} as const;
+
+export const GRAPH_PHYSICS_CONFIG = {
+  minWeightFloor: 0.10,
+  stiffnessExponent: 1.65,
+  distanceExponent: 1.15,
+  baseLinkDistance2D: 26,
+  baseLinkDistance3D: 12,
+  collisionPadding2D: 4,
+  d3LinkStrengthBase: 0.68,
+  d3ChargeStrength: -165,
+  d3ChargeDistanceMax: 420,
+  d3CenterGravityStrength: 0.018,
+  coseIdealEdgeBase: 24,
+  coseEdgeElasticityBase: 24,
+  coseNodeRepulsion: 400000,
+  coseGravity: 80,
+  coseIterations: 1000,
+  sigmaIterations: 500,
+  sigmaGravity: 0.22,
+  sigmaScalingRatio: 1.5,
+  sigmaSlowDown: 2,
+  visIterations: 550,
+  visRepulsionStrength: -95,
+  visCentralGravity: 0.02,
+  visSpringConstantBase: 0.24,
+  visDamping: 0.42,
+  force3DIterations: 600,
+  force3DLinkStrengthBase: 0.75,
+  force3DChargeStrength: -180,
+  force3DCenterGravityStrength: 0.02,
+} as const;
+
+export function getEdgePhysicsMetrics(weight = 0.5): {
+  clampedWeight: number;
+  stiffnessFactor: number;
+  distanceFactor: number;
+} {
+  const tuning = currentGraphTuningState;
+  const clampedWeight = Math.max(
+    GRAPH_PHYSICS_CONFIG.minWeightFloor,
+    Math.min(1, Number.isFinite(weight) ? weight : 0.5)
+  );
+  // Specific tags (df=1..4 => w=0.5..1.0) get strong stiffness (0.32..1.0) and short distance (1.0..2.2x)
+  // Hub tags (df=36..96 => w=0.10..0.16) get very weak stiffness (0.02..0.05) and long distance (7..14x)
+  const stiffnessFactor = Math.pow(clampedWeight, tuning.stiffnessExponent);
+  const distanceFactor = 1 / Math.pow(Math.max(0.14, clampedWeight), tuning.distanceExponent);
+  return { clampedWeight, stiffnessFactor, distanceFactor };
+}
+
+export function getCoseEdgeIdealLength(weight = 0.5): number {
+  const tuning = currentGraphTuningState;
+  const m = getEdgePhysicsMetrics(weight);
+  const baseScale = tuning.baseLinkDistance2D / GRAPH_PHYSICS_CONFIG.baseLinkDistance2D;
+  const effectiveWeight = Math.max(
+    0.35,
+    Math.pow(m.clampedWeight, tuning.distanceExponent / GRAPH_PHYSICS_CONFIG.distanceExponent)
+  );
+  return Math.max(12, Math.round((GRAPH_PHYSICS_CONFIG.coseIdealEdgeBase * baseScale) / effectiveWeight));
+}
+
+export function getCoseEdgeElasticity(weight = 0.5): number {
+  const m = getEdgePhysicsMetrics(weight);
+  return Math.max(
+    4,
+    Math.round(GRAPH_PHYSICS_CONFIG.coseEdgeElasticityBase / Math.max(0.015, m.stiffnessFactor))
+  );
+}
+
+export function getEdgeLinkDistance2D(weight?: number): number {
+  return Math.round(
+    currentGraphTuningState.baseLinkDistance2D * getEdgePhysicsMetrics(weight).distanceFactor
+  );
+}
+
+export function getEdgeLinkStrength2D(weight?: number): number {
+  return Number(
+    (GRAPH_PHYSICS_CONFIG.d3LinkStrengthBase * getEdgePhysicsMetrics(weight).stiffnessFactor).toFixed(4)
+  );
+}
+
+export function getEdgeLinkDistance3D(weight?: number): number {
+  const scaledBase3D =
+    GRAPH_PHYSICS_CONFIG.baseLinkDistance3D *
+    (currentGraphTuningState.baseLinkDistance2D / GRAPH_PHYSICS_CONFIG.baseLinkDistance2D);
+  return Math.round(scaledBase3D * getEdgePhysicsMetrics(weight).distanceFactor);
+}
+
+export function getEdgeLinkStrength3D(weight?: number): number {
+  return Number(
+    (GRAPH_PHYSICS_CONFIG.force3DLinkStrengthBase * getEdgePhysicsMetrics(weight).stiffnessFactor).toFixed(4)
+  );
+}
+
+export function getSigmaForceAtlas2Settings(slowDownOverride?: number) {
+  const tuning = currentGraphTuningState;
+  return {
+    linLogMode: true,
+    outboundAttractionDistribution: false,
+    adjustSizes: false,
+    edgeWeightInfluence: 1,
+    scalingRatio: Number((GRAPH_PHYSICS_CONFIG.sigmaScalingRatio * tuning.repulsionScale).toFixed(3)),
+    strongGravityMode: false,
+    gravity: Number((GRAPH_PHYSICS_CONFIG.sigmaGravity * tuning.gravityScale).toFixed(4)),
+    slowDown: slowDownOverride ?? GRAPH_PHYSICS_CONFIG.sigmaSlowDown,
+  };
+}
+
+export const GRAPH_GEOMETRY_LAYOUT_CONFIG = {
+  radialInnerRatio: 0.22,
+  radialOuterRatio: 0.44,
+  radialMinInner2D: 90,
+  radialMinOuter2D: 200,
+  radialInner3D: 120,
+  radialOuter3D: 260,
+  columnsCategoryOrder: [1, 2, 3, 0, 4, 5, 6, 7, 8] as const,
+  columnsPadXRatio: 0.08,
+  columnsPadYRatio: 0.12,
+  columnsMinPadX: 40,
+  columnsMinPadY: 50,
+  mobileBreakpoint: 768,
 } as const;
 
 export interface Viewport2DFitResult {
@@ -465,6 +584,21 @@ export function interpolateHexColor(fromHex: string, toHex: string, t: number): 
 }
 
 export function getAttenuatedNodeScale(hopDistance: number | undefined): number {
+  if (hopDistance === undefined || !Number.isFinite(hopDistance)) {
+    return HOP_ATTENUATION_CONFIG.nodeScale.min;
+  }
+  if (hopDistance <= 0) {
+    return HOP_ATTENUATION_CONFIG.nodeScale.max;
+  }
+  if (hopDistance === 1) {
+    return 1.42;
+  }
+  if (hopDistance === 2) {
+    return 1.15;
+  }
+  if (hopDistance === 3) {
+    return 0.96;
+  }
   return computeHopCurve(hopDistance, HOP_ATTENUATION_CONFIG.nodeScale);
 }
 
@@ -473,7 +607,21 @@ export function getAttenuatedNodeColor(
   hopDistance: number | undefined,
   isLight: boolean
 ): string {
-  const retention = computeHopCurve(hopDistance, HOP_ATTENUATION_CONFIG.nodeColor);
+  const bgRet = currentGraphTuningState.backgroundRetention;
+  let retention: number;
+  if (hopDistance === undefined || !Number.isFinite(hopDistance)) {
+    retention = bgRet;
+  } else if (hopDistance <= 0) {
+    return baseColor;
+  } else if (hopDistance === 1) {
+    retention = 0.92;
+  } else if (hopDistance === 2) {
+    retention = Math.max(bgRet + 0.12, 0.68);
+  } else if (hopDistance === 3) {
+    retention = Math.max(bgRet + 0.05, 0.52);
+  } else {
+    retention = bgRet;
+  }
   if (retention >= 1) return baseColor;
   const canvasBg = getThemeTokens(isLight).canvasBg;
   return blendHexColor(baseColor, canvasBg, retention);
@@ -487,30 +635,32 @@ export function getAttenuatedEdgeStyle(
   const styleTokens = getGraphStyleTokens(isLight);
   const dSrc = sourceDistance ?? Infinity;
   const dTgt = targetDistance ?? Infinity;
+  const canvasBg = getThemeTokens(isLight).canvasBg;
+  const bgEdgeRet = Math.max(0.10, currentGraphTuningState.backgroundRetention * 0.76);
 
   if (dSrc === 0 || dTgt === 0) {
     return {
       color: styleTokens.edgeHoverColor,
-      width: HOP_ATTENUATION_CONFIG.edgeWidth.max
+      width: Number((styleTokens.edgeWidth * 1.733).toFixed(2))
     };
   }
 
-  const canvasBg = getThemeTokens(isLight).canvasBg;
-  const maxDist = Math.max(dSrc, dTgt);
-  const edgeHop = Number.isFinite(maxDist) ? Math.max(0, maxDist - 1) : Infinity;
-  const edgeMaxHops = Math.max(1, HOP_ATTENUATION_CONFIG.maxHops - 1);
-  const retention = computeHopCurve(edgeHop, {
-    ...HOP_ATTENUATION_CONFIG.edgeColor,
-    maxHops: edgeMaxHops
-  });
-  const width = computeHopCurve(edgeHop, {
-    ...HOP_ATTENUATION_CONFIG.edgeWidth,
-    maxHops: edgeMaxHops
-  });
+  const maxHops = Math.max(1, Math.min(3, Math.round(currentGraphTuningState.highlightMaxHops)));
+  if (maxHops > 1 && Number.isFinite(dSrc) && Number.isFinite(dTgt) && Math.abs(dSrc - dTgt) === 1) {
+    const outerHop = Math.max(dSrc, dTgt);
+    if (outerHop <= maxHops) {
+      const hopRet = outerHop === 2 ? Math.max(bgEdgeRet + 0.18, 0.58) : Math.max(bgEdgeRet + 0.08, 0.42);
+      const hopWidth = outerHop === 2 ? styleTokens.edgeWidth * 1.25 : styleTokens.edgeWidth * 0.95;
+      return {
+        color: blendHexColor(styleTokens.edgeHoverColor, canvasBg, hopRet),
+        width: Number(hopWidth.toFixed(2))
+      };
+    }
+  }
 
   return {
-    color: blendHexColor(styleTokens.edgeColor, canvasBg, retention),
-    width
+    color: blendHexColor(styleTokens.edgeColor, canvasBg, bgEdgeRet),
+    width: Number((styleTokens.edgeWidth * 0.567).toFixed(2))
   };
 }
 
@@ -532,16 +682,17 @@ export function getEdgeHopZIndex(
 ): number {
   const dSrc = sourceDistance ?? Infinity;
   const dTgt = targetDistance ?? Infinity;
-  if (
-    !Number.isFinite(dSrc) ||
-    !Number.isFinite(dTgt) ||
-    dSrc >= HOP_ATTENUATION_CONFIG.maxHops ||
-    dTgt >= HOP_ATTENUATION_CONFIG.maxHops
-  ) {
-    return 1;
+  if (dSrc === 0 || dTgt === 0) {
+    return 38;
   }
-  const maxDist = Math.max(dSrc, dTgt);
-  return Math.max(8, Math.round(50 - maxDist * 10) - 2);
+  const maxHops = Math.max(1, Math.min(3, Math.round(currentGraphTuningState.highlightMaxHops)));
+  if (maxHops > 1 && Number.isFinite(dSrc) && Number.isFinite(dTgt) && Math.abs(dSrc - dTgt) === 1) {
+    const outerHop = Math.max(dSrc, dTgt);
+    if (outerHop <= maxHops) {
+      return Math.max(10, Math.round(50 - outerHop * 10) - 2);
+    }
+  }
+  return 1;
 }
 
 export interface TagCounts {
@@ -581,6 +732,7 @@ function extractImageSrc(img: ImageSource | undefined): Parameters<typeof getIma
 
 interface RawEntity {
   id: string;
+  body?: string;
   data: {
     title: string;
     subtitle?: string;
@@ -995,6 +1147,10 @@ export async function buildCanonicalGraphPayload(
     degreeCounts.set(conn.sourceId, (degreeCounts.get(conn.sourceId) || 0) + 1);
     degreeCounts.set(conn.targetId, (degreeCounts.get(conn.targetId) || 0) + 1);
   }
+  for (const conn of visConnections) {
+    const df = degreeCounts.get(conn.targetId) || 1;
+    conn.weight = Number((1 / Math.sqrt(Math.max(1, df))).toFixed(4));
+  }
   for (const node of visNodes) {
     node.connectionCount = degreeCounts.get(node.id) || 0;
   }
@@ -1076,7 +1232,8 @@ export function hydrateEnginePayloads(
       data: {
         id: `${conn.sourceId}--${conn.targetId}`,
         source: conn.sourceId,
-        target: conn.targetId
+        target: conn.targetId,
+        weight: conn.weight
       }
     });
   });
@@ -1101,7 +1258,8 @@ export function hydrateEnginePayloads(
   });
   const d3Connections: GraphConnectionPayload[] = visConnections.map(c => ({
     sourceId: c.sourceId,
-    targetId: c.targetId
+    targetId: c.targetId,
+    weight: c.weight
   }));
 
   // 3b. 3D Force Graph nodes (includes z if provided in layoutPositions)
@@ -1133,7 +1291,7 @@ export function hydrateEnginePayloads(
       label: n.name,
       x: coords.x,
       y: coords.y,
-      size: 5,
+      size: defaultStyleTokens.nodeRadius,
       rawSize: n.size,
       group: n.group,
       color: GRAPH_COLORS.dark[n.group] || GRAPH_COLORS.dark[0],
@@ -1149,7 +1307,8 @@ export function hydrateEnginePayloads(
     source: conn.sourceId,
     target: conn.targetId,
     size: defaultStyleTokens.edgeWidth,
-    color: defaultStyleTokens.edgeColor
+    color: defaultStyleTokens.edgeColor,
+    weight: conn.weight
   }));
 
   return {

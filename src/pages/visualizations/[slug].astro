@@ -226,6 +226,149 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             </div>
           </div>
 
+          <!-- Floating HUD Parameter Inspector Pill (Symmetric to #fps-badge) -->
+          <div
+            id="tune-hud"
+            class="select-none absolute top-3 left-3.5 z-20 flex flex-col items-start gap-1.5"
+          >
+            <button
+              id="tune-toggle-btn"
+              type="button"
+              aria-expanded="false"
+              aria-controls="tune-panel"
+              title="Live-tune layout physics, geometry & visuals"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-element-bg/90 backdrop-blur-md border border-element-border text-gray-200 light:text-slate-700 hover:border-domain-visualizations/40 hover:text-domain-visualizations transition-colors shadow-md cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5 text-domain-visualizations shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+              <span>Tune</span>
+              <span id="tune-dirty-dot" class="hidden w-1.5 h-1.5 rounded-full bg-domain-visualizations"></span>
+            </button>
+
+            <div
+              id="tune-panel"
+              class="hidden w-64 sm:w-72 max-h-[340px] overflow-y-auto rounded-2xl border border-element-border bg-gray-950/90 light:bg-white/95 backdrop-blur-xl shadow-2xl p-3 text-xs space-y-3"
+              role="region"
+              aria-label="Graph Parameter Inspector"
+            >
+              <div class="flex items-center justify-between border-b border-element-border pb-2">
+                <span class="font-bold text-gray-100 light:text-slate-800 tracking-tight">Physics &amp; Visuals</span>
+                <div class="flex items-center gap-1.5">
+                  <button
+                    id="tune-reset-btn"
+                    type="button"
+                    class="px-2 py-0.5 rounded text-[10px] font-semibold bg-element-bg border border-element-border text-gray-300 light:text-slate-600 hover:text-domain-visualizations hover:border-domain-visualizations/40 transition-colors cursor-pointer"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    id="tune-close-btn"
+                    type="button"
+                    aria-label="Close parameter inspector"
+                    class="p-0.5 rounded text-gray-400 light:text-slate-500 hover:text-gray-100 light:hover:text-slate-800 cursor-pointer"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 1. Edge Specificity Weighting -->
+              <div class="space-y-1.5">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Edge Specificity</div>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Stiffness Exp (γ)</span>
+                    <span data-tune-val="stiffnessExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.65</span>
+                  </div>
+                  <input type="range" data-tune-key="stiffnessExponent" data-tune-cat="physics" min="0" max="2.6" step="0.05" value="1.65" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Distance Exp (β)</span>
+                    <span data-tune-val="distanceExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.15</span>
+                  </div>
+                  <input type="range" data-tune-key="distanceExponent" data-tune-cat="physics" min="0" max="2.0" step="0.05" value="1.15" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+              </div>
+
+              <!-- 2. Layout Physics & Geometry -->
+              <div class="space-y-1.5 pt-1 border-t border-element-border/60">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Layout &amp; Rings</div>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Link Distance</span>
+                    <span data-tune-val="baseLinkDistance2D" class="font-mono text-[10px] text-gray-400 light:text-slate-500">26</span>
+                  </div>
+                  <input type="range" data-tune-key="baseLinkDistance2D" data-tune-cat="physics" min="14" max="60" step="2" value="26" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Repulsion Scale</span>
+                    <span data-tune-val="repulsionScale" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.00</span>
+                  </div>
+                  <input type="range" data-tune-key="repulsionScale" data-tune-cat="physics" min="0.3" max="2.5" step="0.05" value="1.0" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Gravity Scale</span>
+                    <span data-tune-val="gravityScale" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.00</span>
+                  </div>
+                  <input type="range" data-tune-key="gravityScale" data-tune-cat="physics" min="0.2" max="2.5" step="0.05" value="1.0" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Inner Ring (Tags)</span>
+                    <span data-tune-val="radialInnerRatio" class="font-mono text-[10px] text-gray-400 light:text-slate-500">0.22</span>
+                  </div>
+                  <input type="range" data-tune-key="radialInnerRatio" data-tune-cat="geometry" min="0.1" max="0.34" step="0.01" value="0.22" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Outer Ring (Items)</span>
+                    <span data-tune-val="radialOuterRatio" class="font-mono text-[10px] text-gray-400 light:text-slate-500">0.44</span>
+                  </div>
+                  <input type="range" data-tune-key="radialOuterRatio" data-tune-cat="geometry" min="0.32" max="0.52" step="0.01" value="0.44" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+              </div>
+
+              <!-- 3. Visuals & Focus -->
+              <div class="space-y-1.5 pt-1 border-t border-element-border/60">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Visuals &amp; Focus</div>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Node Radius</span>
+                    <span data-tune-val="nodeRadius" class="font-mono text-[10px] text-gray-400 light:text-slate-500">8.0</span>
+                  </div>
+                  <input type="range" data-tune-key="nodeRadius" data-tune-cat="visual" min="4" max="14" step="0.5" value="8" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Edge Width</span>
+                    <span data-tune-val="edgeWidth" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.5</span>
+                  </div>
+                  <input type="range" data-tune-key="edgeWidth" data-tune-cat="visual" min="0.5" max="3.0" step="0.1" value="1.5" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Focus Hops</span>
+                    <span data-tune-val="highlightMaxHops" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1</span>
+                  </div>
+                  <input type="range" data-tune-key="highlightMaxHops" data-tune-cat="visual" min="1" max="3" step="1" value="1" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Bg Retention</span>
+                    <span data-tune-val="backgroundRetention" class="font-mono text-[10px] text-gray-400 light:text-slate-500">0.34</span>
+                  </div>
+                  <input type="range" data-tune-key="backgroundRetention" data-tune-cat="visual" min="0.12" max="0.65" step="0.02" value="0.34" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+              </div>
+            </div>
+          </div>
+
           <!-- Read-only FPS Telemetry Sparkline -->
           <div
             id="fps-badge"
@@ -322,14 +465,20 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
     import { getThemeTokens } from '@commons/shared/domain-themes';
     import {
       hydrateEnginePayloads,
+      getGraphTuningState,
+      setGraphTuningState,
+      resetGraphTuningState,
+      isDefaultGraphTuningState,
       type CanonicalGraphPayload,
       type EnginePayloads,
       type GraphLayoutPayload,
+      type GraphTuningState,
     } from '@commons/shared/graph-payload';
 
     interface GraphInstance {
       destroy(): void;
       updateLayout(layout: string, isLight: boolean): void;
+      applyTuning?(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
       layouts: { id: string; label: string }[];
     }
 
@@ -636,11 +785,110 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           activeInstance.updateLayout(currentLayout, isLight);
         }
       });
+
+      // Floating HUD Parameter Inspector Pill wiring
+      const tuneHud = document.getElementById('tune-hud');
+      const tuneToggleBtn = document.getElementById('tune-toggle-btn');
+      const tuneCloseBtn = document.getElementById('tune-close-btn');
+      const tuneResetBtn = document.getElementById('tune-reset-btn');
+      const tunePanel = document.getElementById('tune-panel');
+      const tuneDirtyDot = document.getElementById('tune-dirty-dot');
+
+      if (tuneHud) {
+        const stopCanvasEvent = (ev: Event) => {
+          ev.stopPropagation();
+        };
+        ['pointerdown', 'mousedown', 'wheel', 'touchstart', 'click'].forEach((evtName) => {
+          tuneHud.addEventListener(evtName, stopCanvasEvent);
+        });
+
+        const formatTuneValue = (key: keyof GraphTuningState, val: number): string => {
+          if (key === 'highlightMaxHops') return String(Math.round(val));
+          if (key === 'baseLinkDistance2D') return String(Math.round(val));
+          if (key === 'nodeRadius' || key === 'edgeWidth') return val.toFixed(1);
+          return val.toFixed(2);
+        };
+
+        const syncTuneUI = () => {
+          const state = getGraphTuningState();
+          const isDefault = isDefaultGraphTuningState();
+          if (tuneDirtyDot) {
+            tuneDirtyDot.classList.toggle('hidden', isDefault);
+          }
+          const sliders = tuneHud.querySelectorAll<HTMLInputElement>('input[data-tune-key]');
+          sliders.forEach((slider) => {
+            const key = slider.dataset.tuneKey as keyof GraphTuningState | undefined;
+            if (!key || !(key in state)) return;
+            const numVal = state[key];
+            slider.value = String(numVal);
+            const valLabel = tuneHud.querySelector<HTMLElement>(`[data-tune-val="${key}"]`);
+            if (valLabel) {
+              valLabel.textContent = formatTuneValue(key, numVal);
+            }
+          });
+        };
+
+        const setPanelOpen = (open: boolean) => {
+          if (!tunePanel || !tuneToggleBtn) return;
+          tunePanel.classList.toggle('hidden', !open);
+          tuneToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+
+        tuneToggleBtn?.addEventListener('click', () => {
+          const isHidden = tunePanel?.classList.contains('hidden');
+          setPanelOpen(Boolean(isHidden));
+        });
+
+        tuneCloseBtn?.addEventListener('click', () => {
+          setPanelOpen(false);
+        });
+
+        let physicsDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+        const sliders = tuneHud.querySelectorAll<HTMLInputElement>('input[data-tune-key]');
+        sliders.forEach((slider) => {
+          slider.addEventListener('input', () => {
+            const key = slider.dataset.tuneKey as keyof GraphTuningState | undefined;
+            const cat = (slider.dataset.tuneCat || 'visual') as 'physics' | 'geometry' | 'visual';
+            if (!key) return;
+            const numVal = Number(slider.value);
+            if (!Number.isFinite(numVal)) return;
+
+            const patch: Partial<GraphTuningState> = { [key]: numVal };
+            setGraphTuningState(patch);
+            syncTuneUI();
+
+            if (cat === 'visual') {
+              activeInstance?.applyTuning?.('visual');
+            } else {
+              if (physicsDebounceTimer) clearTimeout(physicsDebounceTimer);
+              physicsDebounceTimer = setTimeout(() => {
+                activeInstance?.applyTuning?.(cat);
+              }, 60);
+            }
+          });
+        });
+
+        tuneResetBtn?.addEventListener('click', () => {
+          if (physicsDebounceTimer) {
+            clearTimeout(physicsDebounceTimer);
+            physicsDebounceTimer = null;
+          }
+          resetGraphTuningState();
+          syncTuneUI();
+          activeInstance?.applyTuning?.('reset');
+        });
+
+        syncTuneUI();
+      }
     });
   </script>
 </Layout>
 
 <style>
+  .tune-slider {
+    accent-color: var(--color-domain-visualizations);
+  }
   /* Full-viewport height minus scrolled sticky navbar (4rem) and top/bottom 3rem (mb-12 / mt-12) spacing */
   .visualization-viewport {
     height: calc(100vh - 4rem - 2 * 3rem);

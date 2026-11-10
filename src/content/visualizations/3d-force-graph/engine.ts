@@ -1,10 +1,14 @@
 import ForceGraph3D from '3d-force-graph';
 import {
   GRAPH_COLORS,
+  GRAPH_PHYSICS_CONFIG,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
+  getEdgeLinkDistance3D,
+  getEdgeLinkStrength3D,
   getGraphStyleTokens,
+  getGraphTuningState,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -13,7 +17,11 @@ import {
   getAttenuatedEdgeStyle,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
-
+import { compute3DGeometryTargets, solve3DForceLayout } from '@commons/shared/graph-solvers';
+import {
+  createGraphDragPhysicsController3D,
+  type GraphDragPhysicsController3D,
+} from '@commons/client/graph-drag-controller';
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 export interface ThreeColorLike {
@@ -46,6 +54,9 @@ export interface Force3DNode extends GraphNodePayload {
   x?: number;
   y?: number;
   z?: number;
+  vx?: number;
+  vy?: number;
+  vz?: number;
   fx?: number | null;
   fy?: number | null;
   fz?: number | null;
@@ -55,6 +66,7 @@ export interface Force3DNode extends GraphNodePayload {
 export interface Force3DLink {
   source: string | Force3DNode;
   target: string | Force3DNode;
+  weight?: number;
   displayColor?: string;
   displayWidth?: number;
   __lineObj?: ThreeObjectLike;
@@ -94,6 +106,7 @@ export interface Force3DEngine {
   links: Force3DLink[] | null;
   graph: ReturnType<typeof ForceGraph3D> | null;
   tooltipController: GraphTooltipController | null;
+  dragController?: GraphDragPhysicsController3D | null;
   hoveredNodeId: string | null;
   secondaryHoveredNodeId?: string | null;
   draggedNodeId: string | null;
@@ -107,6 +120,7 @@ export interface Force3DEngine {
   lastOrderSignature?: string;
   lastDraggedAt?: number;
   forcePositions: Map<string, { x: number; y: number; z: number }>;
+  initialForcePositions: Map<string, { x: number; y: number; z: number }>;
   recenterTimeout?: ReturnType<typeof setTimeout> | null;
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
@@ -120,9 +134,10 @@ export interface Force3DEngine {
   applyForces(initialLoad?: boolean): void;
   stepCameraTowardCloud(alpha: number): void;
   startCameraAdaptLoop(durationMs?: number, baseAlpha?: number): void;
-  init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
+  init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
   animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number, excludeNodeId?: string, zoomToFitAfter?: boolean): void;
   destroy(): void;
 }
@@ -137,6 +152,7 @@ const engine: Force3DEngine = {
   links: null,
   graph: null,
   tooltipController: null,
+  dragController: null,
   hoveredNodeId: null,
   draggedNodeId: null,
   adjacency: null,
@@ -146,6 +162,7 @@ const engine: Force3DEngine = {
   lastOrderSignature: '',
   lastDraggedAt: 0,
   forcePositions: new Map(),
+  initialForcePositions: new Map(),
   recenterTimeout: null,
   resizeObserver: null,
   initialized: false,
@@ -155,7 +172,7 @@ const engine: Force3DEngine = {
   cleanupControlsListeners: null,
   highlightFrameId: null,
 
-  async init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
+  async init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.container = container;
     this.currentLayout = undefined;
     this.isLight = isLight;
@@ -168,6 +185,7 @@ const engine: Force3DEngine = {
     this.lastOrderSignature = '';
     this.lastDraggedAt = 0;
     this.forcePositions = new Map();
+    this.initialForcePositions = new Map();
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     const initialStyleTokens = getGraphStyleTokens(isLight);
     
@@ -178,6 +196,7 @@ const engine: Force3DEngine = {
       const ny = typeof n.y === 'number' ? n.y : 0;
       const nz = typeof n.z === 'number' ? n.z : 0;
       this.forcePositions.set(n.id, { x: nx, y: ny, z: nz });
+      this.initialForcePositions.set(n.id, { x: nx, y: ny, z: nz });
       return {
         ...n,
         x: nx,
@@ -196,9 +215,53 @@ const engine: Force3DEngine = {
     this.links = engineData.connections.map((c) => ({
       source: c.sourceId,
       target: c.targetId,
+      weight: c.weight,
       displayColor: initialStyleTokens.edgeColor,
       displayWidth: initialStyleTokens.edgeWidth
     }));
+
+    const nodeLookup = new Map<string, Force3DNode>();
+    for (const n of this.nodes) {
+      nodeLookup.set(n.id, n);
+    }
+
+    this.dragController = createGraphDragPhysicsController3D({
+      nodes: this.nodes.map((n) => ({
+        id: n.id,
+        group: n.group,
+        x: n.x ?? 0,
+        y: n.y ?? 0,
+        z: n.z ?? 0,
+      })),
+      edges: engineData.connections.map((c) => ({
+        source: c.sourceId,
+        target: c.targetId,
+        weight: c.weight ?? 0.5,
+      })),
+      isLight: () => Boolean(this.isLight),
+      onTick: (positions, draggedId) => {
+        if (!this.graph || !this.nodes) return;
+        for (const [id, pt] of positions.entries()) {
+          if (id === draggedId) continue;
+          const n = nodeLookup.get(id);
+          if (n) {
+            n.x = pt.x;
+            n.y = pt.y;
+            n.z = pt.z;
+            n.fx = pt.x;
+            n.fy = pt.y;
+            n.fz = pt.z;
+          }
+          this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
+        }
+        try {
+          this.graph.cooldownTicks(1);
+          this.graph.d3ReheatSimulation();
+        } catch {
+          // Suppress
+        }
+      },
+    });
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || '3d-force-graph');
@@ -254,6 +317,7 @@ const engine: Force3DEngine = {
 
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
+      const radiusRatio = currentTokens.nodeRadius / 8;
       const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
 
       const nodeTrans = (this.nodes || []).map((n) => {
@@ -268,10 +332,11 @@ const engine: Force3DEngine = {
             ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
             : baseColor;
         const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
-        const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
+        const targetScale = (isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale) * radiusRatio;
         const targetVal = n.val * Math.pow(targetScale, 3);
         const isForeground = Boolean((hopDist !== undefined && hopDist < 1.8) || isSecHover);
-        return { node: n, startColor, targetColor, startVal, targetVal, isForeground };
+        const changed = startColor !== targetColor || Math.abs(startVal - targetVal) > 1e-3;
+        return { node: n, startColor, targetColor, startVal, targetVal, isForeground, changed };
       });
 
       const linkTrans = (this.links || []).map((l) => {
@@ -285,20 +350,23 @@ const engine: Force3DEngine = {
           ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
           : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
         const isForeground = Boolean(dists && (dSrc === 0 || dTgt === 0));
+        const changed = startColor !== targetStyle.color || Math.abs(startWidth - targetStyle.width) > 1e-3;
         return {
           link: l,
           startColor,
           targetColor: targetStyle.color,
           startWidth,
           targetWidth: targetStyle.width,
-          isForeground
+          isForeground,
+          changed
         };
       });
 
       const renderStep = (ease: number) => {
         for (const nt of nodeTrans) {
-          const nextColor = interpolateHexColor(nt.startColor, nt.targetColor, ease);
-          const nextVal = nt.startVal + (nt.targetVal - nt.startVal) * ease;
+          if (!nt.changed && ease < 1) continue;
+          const nextColor = ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          const nextVal = ease >= 1 ? nt.targetVal : nt.startVal + (nt.targetVal - nt.startVal) * ease;
           nt.node.displayColor = nextColor;
           nt.node.displayVal = nextVal;
 
@@ -319,8 +387,9 @@ const engine: Force3DEngine = {
         }
 
         for (const lt of linkTrans) {
-          const nextColor = interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          const nextWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+          if (!lt.changed && ease < 1) continue;
+          const nextColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
+          const nextWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
           lt.link.displayColor = nextColor;
           lt.link.displayWidth = nextWidth;
 
@@ -518,15 +587,11 @@ const engine: Force3DEngine = {
         }
 
         if (this.currentLayout === 'force') {
-          this.nodes.forEach(n => {
-            if (n.id !== node.id) {
-              n.fx = null;
-              n.fy = null;
-              n.fz = null;
-            }
-          });
+          const pos = { x: node.x ?? 0, y: node.y ?? 0, z: node.z ?? 0 };
+          this.forcePositions.set(node.id, pos);
+          this.dragController?.startDrag(node.id, pos);
           try {
-            this.graph.cooldownTicks(Infinity);
+            this.graph.cooldownTicks(1);
             this.graph.d3ReheatSimulation();
           } catch {
             // Suppress
@@ -557,7 +622,11 @@ const engine: Force3DEngine = {
         }
 
         if (this.currentLayout === 'force') {
+          const pos = { x: node.x ?? 0, y: node.y ?? 0, z: node.z ?? 0 };
+          this.forcePositions.set(node.id, pos);
+          this.dragController?.moveDrag(node.id, pos);
           try {
+            this.graph.cooldownTicks(1);
             this.graph.d3ReheatSimulation();
           } catch {
             // Suppress
@@ -569,6 +638,7 @@ const engine: Force3DEngine = {
             this.animateTo(targets, 250, node.id, false);
           } else {
             try {
+              this.graph.cooldownTicks(1);
               this.graph.d3ReheatSimulation();
             } catch {
               // Suppress
@@ -591,21 +661,18 @@ const engine: Force3DEngine = {
         }
 
         if (this.currentLayout === 'force') {
+          const pos = {
+            x: node?.x ?? 0,
+            y: node?.y ?? 0,
+            z: node?.z ?? 0
+          };
           if (node) {
-            node.fx = null;
-            node.fy = null;
-            node.fz = null;
-            this.forcePositions.set(node.id, {
-              x: node.x ?? 0,
-              y: node.y ?? 0,
-              z: node.z ?? 0
-            });
+            node.fx = pos.x;
+            node.fy = pos.y;
+            node.fz = pos.z;
+            this.forcePositions.set(node.id, pos);
           }
-          try {
-            this.graph.d3ReheatSimulation();
-          } catch {
-            // Suppress
-          }
+          this.dragController?.endDrag(rawNode.id, pos);
           this.startCameraAdaptLoop(2400);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const { targets } = this.computeLayoutTargets(this.currentLayout, true);
@@ -659,11 +726,6 @@ const engine: Force3DEngine = {
     this.startCameraAdaptLoop(500);
     requestAnimationFrame(() => {
       if (this.currentLayout === 'force' && this.nodes && !this.draggedNodeId) {
-        this.nodes.forEach((n) => {
-          n.fx = null;
-          n.fy = null;
-          n.fz = null;
-        });
         try {
           this.graph?.cooldownTicks(0);
         } catch {
@@ -679,7 +741,26 @@ const engine: Force3DEngine = {
   applyForces(initialLoad = false) {
     if (!this.graph) return;
     try {
-      this.graph.d3Force('charge').strength(-120);
+      const tuning = getGraphTuningState();
+      this.graph.d3Force('charge').strength(GRAPH_PHYSICS_CONFIG.force3DChargeStrength * tuning.repulsionScale);
+      const linkForce = this.graph.d3Force('link') as
+        | {
+            distance?: (fn: (l: Force3DLink) => number) => void;
+            strength?: (fn: (l: Force3DLink) => number) => void;
+          }
+        | undefined;
+      linkForce?.distance?.((l: Force3DLink) => getEdgeLinkDistance3D(l.weight));
+      linkForce?.strength?.((l: Force3DLink) => getEdgeLinkStrength3D(l.weight));
+      const radialGravity = GRAPH_PHYSICS_CONFIG.force3DCenterGravityStrength * tuning.gravityScale;
+      (this.graph.d3Force as (name: string, fn?: () => void) => void)('radialGravity', () => {
+        if (!this.nodes) return;
+        for (const n of this.nodes) {
+          if (n.fx !== null && n.fx !== undefined) continue;
+          n.vx = (n.vx || 0) - (n.x || 0) * radialGravity;
+          n.vy = (n.vy || 0) - (n.y || 0) * radialGravity;
+          n.vz = (n.vz || 0) - (n.z || 0) * radialGravity;
+        }
+      });
       this.graph.cooldownTicks(initialLoad ? 1 : Infinity);
     } catch {
       // Suppress if force is not yet initialized
@@ -944,92 +1025,10 @@ const engine: Force3DEngine = {
   },
 
   computeLayoutTargets(layout: string, useCurrentOrder = false) {
-    const targets: Record<string, { x: number; y: number; z: number }> = {};
-    let signature = '';
-    if (!this.nodes) return { targets, signature };
-
-    if (layout === 'radial') {
-      const tags = [...this.nodes.filter(n => n.group === 0)];
-      const others = [...this.nodes.filter(n => n.group !== 0)];
-
-      if (useCurrentOrder) {
-        const normAngle = (n: Force3DNode, count: number) =>
-          ((Math.atan2(n.y || 0, n.x || 0) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
-        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
-      }
-
-      // Inner ring: tags (Z = 0)
-      tags.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / tags.length;
-        targets[n.id] = {
-          x: 70 * Math.cos(theta),
-          y: 70 * Math.sin(theta),
-          z: 0
-        };
-      });
-
-      // Outer ring: other items (Z = 0)
-      others.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / others.length;
-        targets[n.id] = {
-          x: 160 * Math.cos(theta),
-          y: 160 * Math.sin(theta),
-          z: 0
-        };
-      });
-
-      signature = `${tags.map(n => n.id).join(',')}|${others.map(n => n.id).join(',')}`;
-    } else if (layout === 'columns') {
-      const posts = [...this.nodes.filter(n => n.group === 1)];
-      const publications = [...this.nodes.filter(n => n.group === 2)];
-      const presentations = [...this.nodes.filter(n => n.group === 3)];
-      const tags = [...this.nodes.filter(n => n.group === 0)];
-      const courses = [...this.nodes.filter(n => n.group === 4)];
-      const projects = [...this.nodes.filter(n => n.group === 5)];
-      const services = [...this.nodes.filter(n => n.group === 6)];
-      const newsletters = [...this.nodes.filter(n => n.group === 7)];
-      const visualizations = [...this.nodes.filter(n => n.group === 8)];
-
-      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-      const isMobile = window.innerWidth < 768;
-      const heightFactor = 25;
-      const widthFactor = 25;
-
-      if (useCurrentOrder) {
-        categories.forEach(catNodes => {
-          catNodes.sort((a, b) => isMobile ? (a.x || 0) - (b.x || 0) : (a.y || 0) - (b.y || 0));
-        });
-      }
-
-      if (isMobile) {
-        categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - (categories.length - 1) / 2) * 55;
-          catNodes.forEach((n, idx) => {
-            targets[n.id] = {
-              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
-              y: rowY,
-              z: 0
-            };
-          });
-        });
-      } else {
-        categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - (categories.length - 1) / 2) * 55;
-          catNodes.forEach((n, idx) => {
-            targets[n.id] = {
-              x: colX,
-              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * heightFactor : 0,
-              z: 0
-            };
-          });
-        });
-      }
-
-      signature = categories.map(cat => cat.map(n => n.id).join(',')).join('|');
+    if (!this.nodes || (layout !== 'radial' && layout !== 'columns')) {
+      return { targets: {}, signature: '' };
     }
-
-    return { targets, signature };
+    return compute3DGeometryTargets(this.nodes, layout, useCurrentOrder, window.innerWidth < 768);
   },
 
   updateLayout(layout: string, isLight: boolean) {
@@ -1041,6 +1040,7 @@ const engine: Force3DEngine = {
     if (layoutChanged) {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
+      this.dragController?.stop();
     }
 
     // Apply color update based on theme
@@ -1091,32 +1091,75 @@ const engine: Force3DEngine = {
           targets[id] = { x: pos.x, y: pos.y, z: pos.z };
         }
         this.animateTo(targets, 800, undefined, true);
-        if (this.recenterTimeout) clearTimeout(this.recenterTimeout);
-        this.recenterTimeout = setTimeout(() => {
-          this.nodes?.forEach(n => {
-            n.fx = null;
-            n.fy = null;
-            n.fz = null;
-          });
-          try {
-            this.graph?.cooldownTicks(0);
-          } catch {
-            // Suppress
-          }
-          this.startCameraAdaptLoop(2400);
-        }, 820);
       } else {
-        this.nodes.forEach(n => {
-          n.fx = null;
-          n.fy = null;
-          n.fz = null;
+        const solved = solve3DForceLayout({
+          nodes: this.nodes,
+          connections: (this.links || []).map(l => ({
+            sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
+            targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
+            weight: l.weight ?? 0.5
+          }))
         });
-        try {
-          this.graph.d3ReheatSimulation();
-        } catch {
-          // Suppress if the internal engine has not loaded yet
+        for (const [id, pt] of Object.entries(solved)) {
+          this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
         }
-        this.startCameraAdaptLoop(2400);
+        this.animateTo(solved, 800, undefined, true);
+      }
+    }
+  },
+
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset') {
+    if (!this.graph || !this.nodes) return;
+    if (category === 'visual') {
+      this.applyHighlight?.(true);
+      return;
+    }
+    if (category === 'geometry') {
+      if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+        this.lastOrderSignature = signature;
+        this.animateTo(targets, 400, undefined, true);
+      }
+      return;
+    }
+    if (category === 'physics') {
+      this.dragController?.stop();
+      this.applyForces(false);
+      if (this.currentLayout === 'force') {
+        const solved = solve3DForceLayout({
+          nodes: this.nodes,
+          connections: (this.links || []).map(l => ({
+            sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
+            targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
+            weight: l.weight ?? 0.5
+          }))
+        });
+        this.forcePositions.clear();
+        for (const [id, pt] of Object.entries(solved)) {
+          this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
+        }
+        this.animateTo(solved, 450, undefined, true);
+      }
+      return;
+    }
+    if (category === 'reset') {
+      this.dragController?.stop();
+      this.forcePositions.clear();
+      for (const [id, pos] of this.initialForcePositions.entries()) {
+        this.forcePositions.set(id, { x: pos.x, y: pos.y, z: pos.z });
+      }
+      this.applyForces(false);
+      this.applyHighlight?.(true);
+      if (this.currentLayout === 'force') {
+        const targets: Record<string, { x: number; y: number; z: number }> = {};
+        for (const [id, pos] of this.initialForcePositions.entries()) {
+          targets[id] = { x: pos.x, y: pos.y, z: pos.z };
+        }
+        this.animateTo(targets, 450, undefined, true);
+      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const { targets, signature } = this.computeLayoutTargets(this.currentLayout, false);
+        this.lastOrderSignature = signature;
+        this.animateTo(targets, 450, undefined, true);
       }
     }
   },
@@ -1164,6 +1207,7 @@ const engine: Force3DEngine = {
 
       if (this.graph && this.initialized) {
         try {
+          this.graph.cooldownTicks(1);
           this.graph.d3ReheatSimulation();
           if (zoomToFitAfter && !this.draggedNodeId) {
             this.stepCameraTowardCloud(0.035);
@@ -1177,8 +1221,15 @@ const engine: Force3DEngine = {
         this.animationFrameId = requestAnimationFrame(step);
       } else {
         this.animationFrameId = null;
+        if (this.currentLayout === 'force' && !excludeNodeId) {
+          for (const [id, pt] of Object.entries(targets)) {
+            this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
+          }
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+        }
         try {
           if (this.graph && this.initialized) {
+            this.graph.cooldownTicks(1);
             this.graph.d3ReheatSimulation();
             if (zoomToFitAfter && !this.draggedNodeId) {
               this.startCameraAdaptLoop(2400);
@@ -1197,6 +1248,10 @@ const engine: Force3DEngine = {
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
+    }
+    if (this.dragController) {
+      this.dragController.destroy();
+      this.dragController = null;
     }
     if (this.cameraAdaptFrameId) {
       cancelAnimationFrame(this.cameraAdaptFrameId);

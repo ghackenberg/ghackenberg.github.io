@@ -16,6 +16,10 @@ declare module 'd3-force-3d' {
     fx?: number | null;
     fy?: number | null;
     fz?: number | null;
+    homeX?: number;
+    homeY?: number;
+    homeZ?: number;
+    group?: number;
     val?: number;
     index?: number;
   }
@@ -23,6 +27,10 @@ declare module 'd3-force-3d' {
   export interface SimLink3D {
     source: string | SimNode3D;
     target: string | SimNode3D;
+    weight?: number;
+    restDistance?: number;
+    initialRestDistance?: number;
+    strength?: number;
     index?: number;
   }
 
@@ -45,11 +53,24 @@ declare module 'd3-force-3d' {
     radius(rad: number | ((node: SimNode3D) => number)): ForceCollide3D;
     strength(str: number): ForceCollide3D;
     iterations(iter: number): ForceCollide3D;
+    initialize?(nodes: SimNode3D[], random: () => number, numDimensions?: number): void;
   }
 
   export interface Simulation3D {
-    force(name: string, forceInstance: ForceLink3D | ForceManyBody3D | ForceCenter3D | ForceCollide3D | null): Simulation3D;
+    force(
+      name: string,
+      forceInstance:
+        | ForceLink3D
+        | ForceManyBody3D
+        | ForceCenter3D
+        | ForceCollide3D
+        | ((alpha: number) => void)
+        | null
+    ): Simulation3D;
+    alpha(a: number): Simulation3D;
+    alphaTarget(t: number): Simulation3D;
     alphaDecay(decay: number): Simulation3D;
+    restart(): Simulation3D;
     stop(): Simulation3D;
     tick(iterations?: number): Simulation3D;
     nodes(): SimNode3D[];

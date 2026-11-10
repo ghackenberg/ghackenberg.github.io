@@ -1,5 +1,4 @@
-import cytoscape, { type Core, type NodeSingular, type EdgeSingular } from 'cytoscape';
-import * as d3 from 'd3';
+import cytoscape, { type Core, type NodeSingular } from 'cytoscape';
 import {
   GRAPH_COLORS,
   GRAPH_VIEWPORT_CONFIG,
@@ -16,20 +15,17 @@ import {
   getNodeHopZIndex,
   getEdgeHopZIndex
 } from '@commons/shared/graph-payload';
+import {
+  compute2DGeometryTargets,
+  solveCytoscapeCoseLayout,
+  type SolverGraphEdge,
+  type SolverGraphNode,
+} from '@commons/shared/graph-solvers';
+import {
+  createGraphDragPhysicsController2D,
+  type GraphDragPhysicsController2D,
+} from '@commons/client/graph-drag-controller';
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
-
-interface CySimNode extends d3.SimulationNodeDatum {
-  id: string;
-  group: number;
-  homeX: number;
-  homeY: number;
-}
-
-interface CySimLink extends d3.SimulationLinkDatum<CySimNode> {
-  source: string | CySimNode;
-  target: string | CySimNode;
-  restDistance: number;
-}
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
   const grp = node.data('group') ?? 0;
@@ -37,11 +33,35 @@ function getNodeColor(node: NodeSingular, isLight: boolean): string {
   return colors[grp] || colors[0];
 }
 
+export interface CytoscapeNodeMeta {
+  id: string;
+  name: string;
+  size: number;
+  group: number;
+  typeLabel?: string;
+  description?: string;
+  date?: string;
+  image?: string;
+  tags?: string[];
+}
+
+export interface CytoscapeEdgeMeta {
+  id: string;
+  source: string;
+  target: string;
+  weight: number;
+}
+
 export interface CytoscapeEngine {
   layouts: { id: string; label: string }[];
   cy: Core | null;
   tooltipController: GraphTooltipController | null;
   fgCanvas?: HTMLCanvasElement | null;
+  drawScene?: (() => void) | null;
+  syncPositionsToCy?: (() => void) | null;
+  nodeMetaList: CytoscapeNodeMeta[];
+  edgeMetaList: CytoscapeEdgeMeta[];
+  modelPositions: Map<string, { x: number; y: number }>;
   activeHighlightDists?: Map<string, number> | null;
   hoveredNodeId?: string | null;
   secondaryHoveredNodeId?: string | null;
@@ -54,8 +74,10 @@ export interface CytoscapeEngine {
   lastDraggedAt?: number;
   lastOrderSignature?: string;
   forcePositions: Map<string, { x: number; y: number }>;
-  dragSimulation?: d3.Simulation<CySimNode, CySimLink> | null;
-  physicsFrameId?: number | null;
+  initialForcePositions: Map<string, { x: number; y: number }>;
+  dragController?: GraphDragPhysicsController2D | null;
+  calibrateDragEquilibrium?(syncFromCy?: boolean): void;
+  solveHeadlessCoseTargets(): Record<string, { x: number; y: number }>;
   animationFrameId?: number | null;
   viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
@@ -67,6 +89,7 @@ export interface CytoscapeEngine {
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): Record<string, { x: number; y: number }>;
   animateTo(targets: Record<string, { x: number; y: number }>, duration?: number, excludeNodeId?: string, fitOnStep?: boolean, animateFitAfter?: boolean): void;
   updateLayout(layout: string, isLight: boolean, forceRecompute?: boolean): void;
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
   destroy(): void;
 }
 
@@ -78,12 +101,17 @@ const engine: CytoscapeEngine = {
   ],
   cy: null,
   tooltipController: null,
+  drawScene: null,
+  syncPositionsToCy: null,
+  nodeMetaList: [],
+  edgeMetaList: [],
+  modelPositions: new Map(),
   initialized: false,
   lastDraggedAt: 0,
   lastOrderSignature: '',
   forcePositions: new Map(),
-  dragSimulation: null,
-  physicsFrameId: null,
+  initialForcePositions: new Map(),
+  dragController: null,
   animationFrameId: null,
   viewportAdaptFrameId: null,
   resizeObserver: null,
@@ -99,7 +127,11 @@ const engine: CytoscapeEngine = {
     this.activeHighlightDists = null;
     this.lastDraggedAt = 0;
     this.lastOrderSignature = '';
+    this.nodeMetaList = [];
+    this.edgeMetaList = [];
+    this.modelPositions = new Map();
     this.forcePositions = new Map();
+    this.initialForcePositions = new Map();
 
     this.cy = cytoscape({
       container: container,
@@ -119,7 +151,8 @@ const engine: CytoscapeEngine = {
             'height': baseDiameter,
             'border-width': '1.5px',
             'border-color': (node: NodeSingular) => getNodeColor(node, isLight),
-            'overlay-opacity': 0
+            'overlay-opacity': 0,
+            'events': 'no'
           }
         },
         {
@@ -127,19 +160,93 @@ const engine: CytoscapeEngine = {
           style: {
             'width': styleTokens.edgeWidth,
             'line-color': styleTokens.edgeColor,
-            'curve-style': 'straight'
+            'curve-style': 'straight',
+            'overlay-opacity': 0,
+            'events': 'no'
           }
         }
       ],
       layout: { name: 'preset', fit: false }
     });
 
+    // Hide Cytoscape's internal base canvas wrapper so we don't double-rasterize
+    // 1,376 elements underneath our hardware-accelerated 2D scene canvas.
+    const cyInternalWrapper = container.firstElementChild as HTMLElement | null;
+    if (cyInternalWrapper) {
+      cyInternalWrapper.style.visibility = 'hidden';
+      cyInternalWrapper.style.pointerEvents = 'none';
+    }
+
+    const cyNodes = this.cy.nodes().toArray();
+    const cyEdges = this.cy.edges().toArray();
+    const nodeDisplayColorMap = new Map<string, string>();
+    const nodeDisplaySizeMap = new Map<string, number>();
+    const edgeDisplayColorMap = new Map<string, string>();
+    const edgeDisplayWidthMap = new Map<string, number>();
+
+    const palette = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+    const controllerNodes: { id: string; group: number; x: number; y: number }[] = [];
+
+    for (const n of cyNodes) {
+      const id = n.id();
+      const data = n.data();
+      const group = Number(data.group ?? 0);
+      const pos = n.position();
+      const px = Number.isFinite(pos.x) ? pos.x : 0;
+      const py = Number.isFinite(pos.y) ? pos.y : 0;
+      const col = palette[group] || palette[0];
+
+      this.modelPositions.set(id, { x: px, y: py });
+      this.forcePositions.set(id, { x: px, y: py });
+      this.initialForcePositions.set(id, { x: px, y: py });
+      nodeDisplayColorMap.set(id, col);
+      nodeDisplaySizeMap.set(id, baseDiameter);
+
+      this.nodeMetaList.push({
+        id,
+        name: String(data.name || ''),
+        size: Number(data.rawSize ?? data.size ?? 1),
+        group,
+        typeLabel: data.typeLabel,
+        description: data.description,
+        date: data.date,
+        image: data.image,
+        tags: data.tags
+      });
+
+      controllerNodes.push({ id, group, x: px, y: py });
+    }
+
     const rawEdges: { source: string; target: string }[] = [];
-    this.cy.edges().forEach((e: EdgeSingular) => {
-      rawEdges.push({ source: e.source().id(), target: e.target().id() });
-    });
+    const controllerEdges: { source: string; target: string; weight: number }[] = [];
+
+    for (const e of cyEdges) {
+      const id = e.id();
+      const source = e.source().id();
+      const target = e.target().id();
+      const weight = Number(e.data('weight') ?? 0.5);
+      rawEdges.push({ source, target });
+      controllerEdges.push({ source, target, weight });
+      this.edgeMetaList.push({ id, source, target, weight });
+      edgeDisplayColorMap.set(id, styleTokens.edgeColor);
+      edgeDisplayWidthMap.set(id, styleTokens.edgeWidth);
+    }
+
     const adjacency = buildGraphAdjacency(rawEdges);
     let lastHighlightedKey = '';
+
+    const syncPositionsToCy = () => {
+      if (!this.cy) return;
+      this.cy.batch(() => {
+        for (const n of cyNodes) {
+          const pos = this.modelPositions.get(n.id());
+          if (pos) {
+            n.position({ x: pos.x, y: pos.y });
+          }
+        }
+      });
+    };
+    this.syncPositionsToCy = syncPositionsToCy;
 
     const fgCanvas = document.createElement('canvas');
     fgCanvas.style.position = 'absolute';
@@ -169,92 +276,134 @@ const engine: CytoscapeEngine = {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
+      const zoom = this.cy.zoom() || 1;
+      const pan = this.cy.pan();
+      const panX = pan.x;
+      const panY = pan.y;
       const dists = this.activeHighlightDists;
       const secId = this.secondaryHoveredNodeId ?? null;
-      if (!dists && !secId) return;
-
-      const zoom = this.cy.zoom() || 1;
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const currentBaseDiameter = currentTokens.nodeRadius * 2;
+      const currentPalette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
 
       type DrawItem =
         | { isNode: false; z: number; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
         | { isNode: true; z: number; x: number; y: number; radius: number; borderWidth: number; color: string };
 
-      const items: DrawItem[] = [];
-
-      if (dists) {
-        this.cy.edges().forEach((e: EdgeSingular) => {
-          const srcNode = e.source();
-          const tgtNode = e.target();
-          const edgeZ = getEdgeHopZIndex(dists.get(srcNode.id()), dists.get(tgtNode.id()));
-          if (edgeZ < 8) return;
-          const p1 = srcNode.renderedPosition();
-          const p2 = tgtNode.renderedPosition();
-          if (!p1 || !p2) return;
-          const modelWidth = Number(e.data('displayWidth') || currentTokens.edgeWidth);
-          const color = String(e.data('displayColor') || currentTokens.edgeColor);
-          items.push({
-            isNode: false,
-            z: edgeZ,
-            x1: p1.x,
-            y1: p1.y,
-            x2: p2.x,
-            y2: p2.y,
-            color,
-            width: modelWidth * zoom
-          });
-        });
-      }
-
-      this.cy.nodes().forEach((n: NodeSingular) => {
-        const id = n.id();
-        const hopDist = dists ? dists.get(id) : undefined;
-        const nodeZ = secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
-        if (nodeZ < 10) return;
-        const p = n.renderedPosition();
-        if (!p) return;
-        const modelDiameter = Number(n.data('displaySize') || currentBaseDiameter);
-        const color = String(n.data('displayColor') || getNodeColor(n, currentIsLight));
-        items.push({
-          isNode: true,
-          z: nodeZ,
-          x: p.x,
-          y: p.y,
-          radius: (modelDiameter * zoom) / 2,
-          borderWidth: 1.5 * zoom,
-          color
-        });
-      });
-
-      if (items.length === 0) return;
-      items.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+      const fgItems: DrawItem[] = [];
 
       ctx.save();
       ctx.lineCap = 'round';
-      for (const item of items) {
-        if (!item.isNode) {
-          ctx.beginPath();
-          ctx.strokeStyle = item.color;
-          ctx.lineWidth = item.width;
-          ctx.moveTo(item.x1, item.y1);
-          ctx.lineTo(item.x2, item.y2);
-          ctx.stroke();
+
+      // 1. Draw background edges batched into a single path
+      let bgEdgeColor = currentTokens.edgeColor;
+      let bgEdgeWidth = currentTokens.edgeWidth * zoom;
+      let hasBgEdges = false;
+      ctx.beginPath();
+
+      for (const e of this.edgeMetaList) {
+        const p1 = this.modelPositions.get(e.source);
+        const p2 = this.modelPositions.get(e.target);
+        if (!p1 || !p2) continue;
+        const x1 = p1.x * zoom + panX;
+        const y1 = p1.y * zoom + panY;
+        const x2 = p2.x * zoom + panX;
+        const y2 = p2.y * zoom + panY;
+
+        const edgeZ = dists ? getEdgeHopZIndex(dists.get(e.source), dists.get(e.target)) : 1;
+        const modelWidth = edgeDisplayWidthMap.get(e.id) ?? currentTokens.edgeWidth;
+        const color = edgeDisplayColorMap.get(e.id) || currentTokens.edgeColor;
+
+        if (edgeZ >= 8) {
+          fgItems.push({
+            isNode: false,
+            z: edgeZ,
+            x1,
+            y1,
+            x2,
+            y2,
+            color,
+            width: modelWidth * zoom
+          });
+        } else {
+          bgEdgeColor = color;
+          bgEdgeWidth = modelWidth * zoom;
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          hasBgEdges = true;
+        }
+      }
+
+      if (hasBgEdges) {
+        ctx.strokeStyle = bgEdgeColor;
+        ctx.lineWidth = bgEdgeWidth;
+        ctx.stroke();
+      }
+
+      // 2. Draw background nodes (nodeZ < 10) and collect foreground nodes (nodeZ >= 10)
+      const borderW = 1.5 * zoom;
+      for (const n of this.nodeMetaList) {
+        const id = n.id;
+        const p = this.modelPositions.get(id);
+        if (!p) continue;
+        const rx = p.x * zoom + panX;
+        const ry = p.y * zoom + panY;
+        const hopDist = dists ? dists.get(id) : undefined;
+        const nodeZ = secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+        const modelDiameter = nodeDisplaySizeMap.get(id) ?? currentBaseDiameter;
+        const color = nodeDisplayColorMap.get(id) || currentPalette[n.group] || currentPalette[0];
+        const radius = (modelDiameter * zoom) / 2;
+
+        if (nodeZ >= 10) {
+          fgItems.push({
+            isNode: true,
+            z: nodeZ,
+            x: rx,
+            y: ry,
+            radius,
+            borderWidth: borderW,
+            color
+          });
         } else {
           ctx.beginPath();
-          ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
-          ctx.fillStyle = item.color;
+          ctx.arc(rx, ry, radius, 0, Math.PI * 2);
+          ctx.fillStyle = color;
           ctx.fill();
-          ctx.lineWidth = item.borderWidth;
-          ctx.strokeStyle = item.color;
+          ctx.lineWidth = borderW;
+          ctx.strokeStyle = color;
           ctx.stroke();
         }
       }
+
+      // 3. Draw foreground edges and nodes sorted by exact Z-order
+      if (fgItems.length > 0) {
+        fgItems.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+        for (const item of fgItems) {
+          if (!item.isNode) {
+            ctx.beginPath();
+            ctx.strokeStyle = item.color;
+            ctx.lineWidth = item.width;
+            ctx.moveTo(item.x1, item.y1);
+            ctx.lineTo(item.x2, item.y2);
+            ctx.stroke();
+          } else {
+            ctx.beginPath();
+            ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+            ctx.fillStyle = item.color;
+            ctx.fill();
+            ctx.lineWidth = item.borderWidth;
+            ctx.strokeStyle = item.color;
+            ctx.stroke();
+          }
+        }
+      }
+
       ctx.restore();
     };
 
-    this.cy.on('render viewport', drawForegroundOverlay);
+    this.drawScene = drawForegroundOverlay;
+    this.cy.on('viewport', drawForegroundOverlay);
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
       if (!this.cy) return;
@@ -271,23 +420,24 @@ const engine: CytoscapeEngine = {
       const currentIsLight = Boolean(this.isLight);
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const currentBaseDiameter = currentTokens.nodeRadius * 2;
+      const currentPalette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
       this.activeHighlightDists = dists;
 
       const nodeTrans: {
-        node: NodeSingular;
+        id: string;
         startColor: string;
         targetColor: string;
         startSize: number;
         targetSize: number;
-        targetZIndex: number;
+        changed: boolean;
       }[] = [];
 
-      this.cy.nodes().forEach((n: NodeSingular) => {
-        const id = n.id();
-        const baseColor = getNodeColor(n, currentIsLight);
-        const startColor = String(n.data('displayColor') || baseColor);
-        const startSize = Number(n.data('displaySize') || currentBaseDiameter);
+      for (const n of this.nodeMetaList) {
+        const id = n.id;
+        const baseColor = currentPalette[n.group] || currentPalette[0];
+        const startColor = nodeDisplayColorMap.get(id) || baseColor;
+        const startSize = nodeDisplaySizeMap.get(id) ?? currentBaseDiameter;
         const hopDist = dists ? dists.get(id) : undefined;
         const isSecHover = secId !== null && id === secId;
         const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
@@ -298,83 +448,58 @@ const engine: CytoscapeEngine = {
             ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
             : baseColor;
         const targetSize = currentBaseDiameter * targetScale;
-        const targetZIndex = dists
-          ? (isSecHover ? 45 : getNodeHopZIndex(hopDist))
-          : 10;
         nodeTrans.push({
-          node: n,
+          id,
           startColor,
           targetColor,
           startSize,
           targetSize,
-          targetZIndex
+          changed: startColor !== targetColor || Math.abs(startSize - targetSize) > 1e-3
         });
-      });
+      }
 
       const edgeTrans: {
-        edge: EdgeSingular;
+        id: string;
         startColor: string;
         targetColor: string;
         startWidth: number;
         targetWidth: number;
-        targetZIndex: number;
+        changed: boolean;
       }[] = [];
 
-      this.cy.edges().forEach((e: EdgeSingular) => {
-        const srcId = e.source().id();
-        const tgtId = e.target().id();
-        const startColor = String(e.data('displayColor') || currentTokens.edgeColor);
-        const startWidth = Number(e.data('displayWidth') || currentTokens.edgeWidth);
-        const dSrc = dists ? dists.get(srcId) : undefined;
-        const dTgt = dists ? dists.get(tgtId) : undefined;
+      for (const e of this.edgeMetaList) {
+        const startColor = edgeDisplayColorMap.get(e.id) || currentTokens.edgeColor;
+        const startWidth = edgeDisplayWidthMap.get(e.id) ?? currentTokens.edgeWidth;
+        const dSrc = dists ? dists.get(e.source) : undefined;
+        const dTgt = dists ? dists.get(e.target) : undefined;
         const targetStyle = dists
           ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
           : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
-        const targetZIndex = dists ? getEdgeHopZIndex(dSrc, dTgt) : 1;
         edgeTrans.push({
-          edge: e,
+          id: e.id,
           startColor,
           targetColor: targetStyle.color,
           startWidth,
           targetWidth: targetStyle.width,
-          targetZIndex
-        });
-      });
-
-      if (dists || secId) {
-        this.cy.batch(() => {
-          for (const nt of nodeTrans) {
-            nt.node.data('displayZIndex', nt.targetZIndex);
-          }
-          for (const et of edgeTrans) {
-            et.edge.data('displayZIndex', et.targetZIndex);
-          }
+          changed: startColor !== targetStyle.color || Math.abs(startWidth - targetStyle.width) > 1e-3
         });
       }
 
-      const renderStep = (ease: number, applyZIndex: boolean) => {
-        this.cy?.batch(() => {
-          for (const nt of nodeTrans) {
-            const nextData: Record<string, string | number> = {
-              displayColor: interpolateHexColor(nt.startColor, nt.targetColor, ease),
-              displaySize: nt.startSize + (nt.targetSize - nt.startSize) * ease
-            };
-            if (applyZIndex) {
-              nextData.displayZIndex = nt.targetZIndex;
-            }
-            nt.node.data(nextData);
-          }
-          for (const et of edgeTrans) {
-            const nextData: Record<string, string | number> = {
-              displayColor: interpolateHexColor(et.startColor, et.targetColor, ease),
-              displayWidth: et.startWidth + (et.targetWidth - et.startWidth) * ease
-            };
-            if (applyZIndex) {
-              nextData.displayZIndex = et.targetZIndex;
-            }
-            et.edge.data(nextData);
-          }
-        });
+      const renderStep = (ease: number, forceAll: boolean) => {
+        for (const nt of nodeTrans) {
+          if (!nt.changed && !forceAll) continue;
+          const c = ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          const s = ease >= 1 ? nt.targetSize : nt.startSize + (nt.targetSize - nt.startSize) * ease;
+          nodeDisplayColorMap.set(nt.id, c);
+          nodeDisplaySizeMap.set(nt.id, s);
+        }
+        for (const et of edgeTrans) {
+          if (!et.changed && !forceAll) continue;
+          const c = ease >= 1 ? et.targetColor : interpolateHexColor(et.startColor, et.targetColor, ease);
+          const w = ease >= 1 ? et.targetWidth : et.startWidth + (et.targetWidth - et.startWidth) * ease;
+          edgeDisplayColorMap.set(et.id, c);
+          edgeDisplayWidthMap.set(et.id, w);
+        }
         drawForegroundOverlay();
       };
 
@@ -392,7 +517,7 @@ const engine: CytoscapeEngine = {
         const progress = Math.min(1, (now - startTime) / HIGHLIGHT_TRANSITION_MS);
         const ease = easeHighlightTransition(progress);
         const isFinal = progress >= 1;
-        renderStep(ease, isFinal && !dists && !secId);
+        renderStep(ease, isFinal);
         if (!isFinal) {
           this.highlightFrameId = requestAnimationFrame(step);
         } else {
@@ -403,25 +528,6 @@ const engine: CytoscapeEngine = {
     };
     this.applyHighlight = applyHighlight;
     applyHighlight(null, true);
-
-    this.cy.style()
-      .selector('node').style({
-        'background-color': 'data(displayColor)',
-        'border-color': 'data(displayColor)',
-        'width': 'data(displaySize)',
-        'height': 'data(displaySize)',
-        'z-index': (node: NodeSingular) => Number(node.data('displayZIndex') ?? 10),
-        'border-width': '1.5px',
-        'label': '',
-        'overlay-opacity': 0
-      })
-      .selector('edge').style({
-        'line-color': 'data(displayColor)',
-        'width': 'data(displayWidth)',
-        'z-index': (edge: EdgeSingular) => Number(edge.data('displayZIndex') ?? 1),
-        'curve-style': 'straight'
-      })
-      .update();
 
     container.style.touchAction = 'pan-y';
     container.querySelectorAll('canvas, div').forEach((el) => {
@@ -434,121 +540,40 @@ const engine: CytoscapeEngine = {
     const utmMedium = String(extraOptions.utmMedium || 'cytoscape');
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
-    const simNodes: CySimNode[] = [];
-    const simNodeMap = new Map<string, CySimNode>();
-
-    this.cy.nodes().forEach((n: NodeSingular) => {
-      const pos = n.position();
-      this.forcePositions.set(n.id(), { x: pos.x, y: pos.y });
-      const sn: CySimNode = {
-        id: n.id(),
-        group: Number(n.data('group') ?? 0),
-        x: pos.x,
-        y: pos.y,
-        homeX: pos.x,
-        homeY: pos.y
-      };
-      simNodes.push(sn);
-      simNodeMap.set(sn.id, sn);
-    });
-
-    const simLinks: CySimLink[] = [];
-    this.cy.edges().forEach((e: EdgeSingular) => {
-      const src = e.source().id();
-      const tgt = e.target().id();
-      const srcNode = simNodeMap.get(src);
-      const tgtNode = simNodeMap.get(tgt);
-      if (srcNode && tgtNode) {
-        const dist = Math.max(1, Math.hypot((tgtNode.x ?? 0) - (srcNode.x ?? 0), (tgtNode.y ?? 0) - (srcNode.y ?? 0)));
-        simLinks.push({ source: src, target: tgt, restDistance: dist });
-      }
-    });
-
     let grabbedNodeId: string | null = null;
-    let settleFramesRemaining = 0;
 
-    const linkForce = d3
-      .forceLink<CySimNode, CySimLink>(simLinks)
-      .id(d => d.id)
-      .distance(l => l.restDistance)
-      .strength(0.28);
-    const collideForce = d3.forceCollide<CySimNode>(14).strength(0.85);
-
-    this.dragSimulation = d3.forceSimulation<CySimNode, CySimLink>(simNodes)
-      .force('link', linkForce)
-      .force('collide', collideForce)
-      .force('home', (alpha: number) => {
-        for (const sn of simNodes) {
-          if (sn.id === grabbedNodeId) continue;
-          const dx = sn.homeX - (sn.x ?? 0);
-          const dy = sn.homeY - (sn.y ?? 0);
-          sn.vx = (sn.vx ?? 0) + dx * 0.12 * alpha;
-          sn.vy = (sn.vy ?? 0) + dy * 0.12 * alpha;
+    this.dragController = createGraphDragPhysicsController2D({
+      nodes: controllerNodes,
+      edges: controllerEdges,
+      isLight: () => Boolean(this.isLight),
+      onTick: (positions, draggedId) => {
+        if (!this.cy) return;
+        for (const [id, pt] of positions.entries()) {
+          if (id === draggedId) continue;
+          this.modelPositions.set(id, { x: pt.x, y: pt.y });
+          this.forcePositions.set(id, { x: pt.x, y: pt.y });
         }
-      })
-      .stop();
-
-    const getLinkNode = (endpoint: string | CySimNode): CySimNode | undefined =>
-      typeof endpoint === 'object' ? endpoint : simNodeMap.get(String(endpoint));
+        drawForegroundOverlay();
+      },
+      onSettleComplete: (positions) => {
+        for (const [id, pt] of positions.entries()) {
+          this.modelPositions.set(id, { x: pt.x, y: pt.y });
+          this.forcePositions.set(id, { x: pt.x, y: pt.y });
+        }
+        syncPositionsToCy();
+        drawForegroundOverlay();
+      },
+    });
 
     const calibrateDragEquilibrium = (syncFromCy = false) => {
-      if (syncFromCy && this.cy) {
-        this.cy.nodes().forEach((n: NodeSingular) => {
-          const p = n.position();
-          const sn = simNodeMap.get(n.id());
-          if (sn) {
-            sn.x = p.x;
-            sn.y = p.y;
-          }
-        });
-      }
-      for (const sn of simNodes) {
-        sn.homeX = sn.x ?? 0;
-        sn.homeY = sn.y ?? 0;
-        sn.vx = 0;
-        sn.vy = 0;
-      }
-      for (const l of simLinks) {
-        const s = getLinkNode(l.source);
-        const t = getLinkNode(l.target);
-        if (s && t) {
-          l.restDistance = Math.max(1, Math.hypot(t.homeX - s.homeX, t.homeY - s.homeY));
+      if (syncFromCy) {
+        for (const [id, p] of this.modelPositions.entries()) {
+          this.forcePositions.set(id, { x: p.x, y: p.y });
         }
       }
-      linkForce.distance(l => l.restDistance);
+      this.dragController?.calibrateFromPositions(this.forcePositions);
     };
-
-    calibrateDragEquilibrium(false);
-
-    const startForcePhysicsLoop = () => {
-      if (this.physicsFrameId) return;
-      const stepPhysics = () => {
-        if (!this.cy || !this.dragSimulation) {
-          this.physicsFrameId = null;
-          return;
-        }
-        this.dragSimulation.tick();
-
-        this.cy.batch(() => {
-          for (const sn of simNodes) {
-            if (sn.id === grabbedNodeId) continue;
-            const nx = sn.x ?? 0;
-            const ny = sn.y ?? 0;
-            this.cy?.getElementById(sn.id).position({ x: nx, y: ny });
-            this.forcePositions.set(sn.id, { x: nx, y: ny });
-          }
-        });
-
-        if (grabbedNodeId !== null || settleFramesRemaining > 0) {
-          if (grabbedNodeId === null) settleFramesRemaining--;
-          this.physicsFrameId = requestAnimationFrame(stepPhysics);
-        } else {
-          this.physicsFrameId = null;
-          calibrateDragEquilibrium(false);
-        }
-      };
-      this.physicsFrameId = requestAnimationFrame(stepPhysics);
-    };
+    this.calibrateDragEquilibrium = calibrateDragEquilibrium;
 
     const renderedToModel = (sx: number, sy: number) => {
       if (!this.cy) return { x: sx, y: sy };
@@ -563,27 +588,20 @@ const engine: CytoscapeEngine = {
     this.tooltipController.bindProximityInteraction({
       getScreenNodes: () => {
         if (!this.cy) return [];
+        const zoom = this.cy.zoom() || 1;
+        const pan = this.cy.pan();
+        const panX = pan.x;
+        const panY = pan.y;
         const result: { node: RawGraphNode; x: number; y: number }[] = [];
-        this.cy.nodes().forEach((n: NodeSingular) => {
-          const pos = n.renderedPosition();
-          if (!pos || typeof pos.x !== 'number' || typeof pos.y !== 'number') return;
-          const data = n.data();
+        for (const meta of this.nodeMetaList) {
+          const pos = this.modelPositions.get(meta.id);
+          if (!pos) continue;
           result.push({
-            node: {
-              id: String(data.id),
-              name: String(data.name || ''),
-              size: Number(data.rawSize ?? data.size ?? 1),
-              group: Number(data.group ?? 0),
-              typeLabel: data.typeLabel,
-              description: data.description,
-              date: data.date,
-              image: data.image,
-              tags: data.tags
-            },
-            x: pos.x,
-            y: pos.y
+            node: meta,
+            x: pos.x * zoom + panX,
+            y: pos.y * zoom + panY
           });
-        });
+        }
         return result;
       },
       adjacency,
@@ -643,101 +661,48 @@ const engine: CytoscapeEngine = {
         }
 
         const modelPos = renderedToModel(sx, sy);
+        this.modelPositions.set(grabbedNodeId, { x: modelPos.x, y: modelPos.y });
 
-        if (this.currentLayout === 'force' && this.dragSimulation) {
-          if (settleFramesRemaining === 0) {
-            calibrateDragEquilibrium(true);
-          }
-          settleFramesRemaining = 0;
-          this.cy.getElementById(grabbedNodeId).position(modelPos);
-          for (const sn of simNodes) {
-            if (sn.id === grabbedNodeId) {
-              sn.x = modelPos.x;
-              sn.y = modelPos.y;
-              sn.homeX = modelPos.x;
-              sn.homeY = modelPos.y;
-              sn.fx = modelPos.x;
-              sn.fy = modelPos.y;
-              sn.vx = 0;
-              sn.vy = 0;
-            } else {
-              sn.fx = null;
-              sn.fy = null;
-            }
-          }
-          this.dragSimulation
-            .alphaTarget(0.3)
-            .alpha(0.35);
-          startForcePhysicsLoop();
+        if (this.currentLayout === 'force') {
+          this.forcePositions.set(grabbedNodeId, { x: modelPos.x, y: modelPos.y });
+          this.dragController?.startDrag(grabbedNodeId, modelPos);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          this.cy.getElementById(grabbedNodeId).position(modelPos);
           this.lastOrderSignature = this.getOrderSignature(this.currentLayout);
         }
+        drawForegroundOverlay();
       },
       onNodeDragMove: (rawNode, sx, sy) => {
         if (!this.cy) return;
         this.lastDraggedAt = performance.now();
         const pos = renderedToModel(sx, sy);
-        const node = this.cy.getElementById(rawNode.id);
-        node.position(pos);
+        this.modelPositions.set(rawNode.id, { x: pos.x, y: pos.y });
 
-        if (this.currentLayout === 'force' && this.dragSimulation) {
-          const sn = simNodeMap.get(rawNode.id);
-          if (sn) {
-            sn.fx = pos.x;
-            sn.fy = pos.y;
-            sn.x = pos.x;
-            sn.y = pos.y;
-            sn.homeX = pos.x;
-            sn.homeY = pos.y;
-          }
+        if (this.currentLayout === 'force') {
           this.forcePositions.set(rawNode.id, { x: pos.x, y: pos.y });
-          this.dragSimulation.alphaTarget(0.3).alpha(0.35);
-          startForcePhysicsLoop();
+          this.dragController?.moveDrag(rawNode.id, pos);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const sig = this.getOrderSignature(this.currentLayout);
           if (sig !== this.lastOrderSignature) {
             this.lastOrderSignature = sig;
             const targets = this.computeLayoutTargets(this.currentLayout, true);
             this.animateTo(targets, 250, rawNode.id, false);
+          } else {
+            drawForegroundOverlay();
           }
         }
       },
       onNodeDragEnd: (rawNode) => {
         if (!this.cy) return;
-        const node = this.cy.getElementById(rawNode.id);
-        const pos = node.position();
         const releasedId = rawNode.id;
+        const pos = this.modelPositions.get(releasedId) || { x: 0, y: 0 };
         grabbedNodeId = null;
         this.hoveredNodeId = null;
         this.lastDraggedAt = performance.now();
         applyHighlight(null);
 
-        if (this.currentLayout === 'force' && this.dragSimulation) {
-          const sn = simNodeMap.get(releasedId);
-          if (sn) {
-            sn.x = pos.x;
-            sn.y = pos.y;
-            sn.homeX = pos.x;
-            sn.homeY = pos.y;
-            sn.fx = null;
-            sn.fy = null;
-          }
-          for (const l of simLinks) {
-            const s = getLinkNode(l.source);
-            const t = getLinkNode(l.target);
-            if (s && t && (s.id === releasedId || t.id === releasedId)) {
-              const curDist = Math.hypot((t.x ?? 0) - (s.x ?? 0), (t.y ?? 0) - (s.y ?? 0));
-              l.restDistance = Math.max(45, Math.min(140, curDist * 0.65 + 100 * 0.35));
-            }
-          }
-          linkForce.distance(l => l.restDistance);
+        if (this.currentLayout === 'force') {
           this.forcePositions.set(releasedId, { x: pos.x, y: pos.y });
-          this.dragSimulation
-            .alphaTarget(0)
-            .alpha(0.35);
-          settleFramesRemaining = 90;
-          startForcePhysicsLoop();
+          this.dragController?.endDrag(releasedId, { x: pos.x, y: pos.y });
           this.startViewportAdaptLoop(2400);
         } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           const targets = this.computeLayoutTargets(this.currentLayout, true);
@@ -786,13 +751,12 @@ const engine: CytoscapeEngine = {
     const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
     const points: { x: number; y: number }[] = [];
-    this.cy.nodes().forEach((n: NodeSingular) => {
-      if (isSubgraph && !this.focusedNodeIds!.has(n.id())) return;
-      const p = n.position();
+    for (const [id, p] of this.modelPositions.entries()) {
+      if (isSubgraph && !this.focusedNodeIds!.has(id)) continue;
       if (Number.isFinite(p.x) && Number.isFinite(p.y)) {
         points.push({ x: p.x, y: p.y });
       }
-    });
+    }
 
     const fit = compute2DViewportFit(points, width, height, r, isSubgraph);
     if (!fit) return;
@@ -809,6 +773,7 @@ const engine: CytoscapeEngine = {
       zoom: nextZoom,
       pan: { x: nextPanX, y: nextPanY }
     });
+    this.drawScene?.();
   },
 
   startViewportAdaptLoop(
@@ -843,121 +808,45 @@ const engine: CytoscapeEngine = {
     if (!this.cy) return '';
     const width = this.cy.width() || 800;
     const height = this.cy.height() || 500;
-    const nodes: NodeSingular[] = this.cy.nodes().toArray();
-
-    if (layout === 'radial') {
-      const cx = width / 2;
-      const cy = height / 2;
-      const tags = nodes.filter((n: NodeSingular) => n.data('group') === 0);
-      const others = nodes.filter((n: NodeSingular) => n.data('group') !== 0);
-      const normAngle = (n: NodeSingular, count: number) =>
-        ((Math.atan2(n.position('y') - cy, n.position('x') - cx) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-      tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
-      others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
-      return `${tags.map(n => n.id()).join(',')}|${others.map(n => n.id()).join(',')}`;
-    }
-
-    if (layout === 'columns') {
-      const isMobile = width < 768 || window.innerWidth < 768;
-      const groups = [1, 2, 3, 0, 4, 5, 6, 7, 8];
-      return groups.map(g => {
-        const catNodes = nodes.filter((n: NodeSingular) => n.data('group') === g);
-        catNodes.sort((a, b) => isMobile ? (a.position('x') - b.position('x')) : (a.position('y') - b.position('y')));
-        return catNodes.map(n => n.id()).join(',');
-      }).join('|');
-    }
-
-    return '';
+    const solverNodes: SolverGraphNode[] = this.nodeMetaList.map((n) => {
+      const p = this.modelPositions.get(n.id) || { x: 0, y: 0 };
+      return {
+        id: n.id,
+        group: n.group,
+        x: p.x,
+        y: p.y,
+      };
+    });
+    return compute2DGeometryTargets(solverNodes, layout, {
+      useCurrentOrder: true,
+      width,
+      height,
+      centerOrigin: false,
+    }).signature;
   },
 
   computeLayoutTargets(layout: string, useCurrentOrder = false): Record<string, { x: number; y: number }> {
     const targets: Record<string, { x: number; y: number }> = {};
     if (!this.cy) return targets;
 
-    const width = this.cy.width() || 800;
-    const height = this.cy.height() || 500;
-
-    if (layout === 'radial') {
-      const cx = width / 2;
-      const cy = height / 2;
-      const minDim = Math.min(width, height);
-      const innerRadius = Math.max(90, minDim * 0.22);
-      const outerRadius = Math.max(200, minDim * 0.44);
-
-      const nodes: NodeSingular[] = this.cy.nodes().toArray();
-      const tags = nodes.filter((n: NodeSingular) => n.data('group') === 0);
-      const others = nodes.filter((n: NodeSingular) => n.data('group') !== 0);
-
-      if (useCurrentOrder) {
-        const normAngle = (n: NodeSingular, count: number) =>
-          ((Math.atan2(n.position('y') - cy, n.position('x') - cx) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
-        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
-      }
-
-      tags.forEach((n: NodeSingular, idx: number) => {
-        const theta = (2 * Math.PI * idx) / tags.length;
-        targets[n.id()] = {
-          x: cx + innerRadius * Math.cos(theta),
-          y: cy + innerRadius * Math.sin(theta)
+    if (layout === 'radial' || layout === 'columns') {
+      const width = this.cy.width() || 800;
+      const height = this.cy.height() || 500;
+      const solverNodes: SolverGraphNode[] = this.nodeMetaList.map((n) => {
+        const p = this.modelPositions.get(n.id) || { x: 0, y: 0 };
+        return {
+          id: n.id,
+          group: n.group,
+          x: p.x,
+          y: p.y,
         };
       });
-
-      others.forEach((n: NodeSingular, idx: number) => {
-        const theta = (2 * Math.PI * idx) / others.length;
-        targets[n.id()] = {
-          x: cx + outerRadius * Math.cos(theta),
-          y: cy + outerRadius * Math.sin(theta)
-        };
-      });
-
-      return targets;
-    }
-
-    if (layout === 'columns') {
-      const nodes: NodeSingular[] = this.cy.nodes().toArray();
-
-      const posts = nodes.filter((n: NodeSingular) => n.data('group') === 1);
-      const publications = nodes.filter((n: NodeSingular) => n.data('group') === 2);
-      const presentations = nodes.filter((n: NodeSingular) => n.data('group') === 3);
-      const tags = nodes.filter((n: NodeSingular) => n.data('group') === 0);
-      const courses = nodes.filter((n: NodeSingular) => n.data('group') === 4);
-      const projects = nodes.filter((n: NodeSingular) => n.data('group') === 5);
-      const services = nodes.filter((n: NodeSingular) => n.data('group') === 6);
-      const newsletters = nodes.filter((n: NodeSingular) => n.data('group') === 7);
-      const visualizations = nodes.filter((n: NodeSingular) => n.data('group') === 8);
-
-      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-      const isMobile = width < 768 || window.innerWidth < 768;
-
-      if (useCurrentOrder) {
-        categories.forEach(catNodes => {
-          catNodes.sort((a, b) => isMobile ? (a.position('x') - b.position('x')) : (a.position('y') - b.position('y')));
-        });
-      }
-
-      if (isMobile) {
-        categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx + 1) * (height / (categories.length + 1));
-          catNodes.forEach((n: NodeSingular, idx: number) => {
-            targets[n.id()] = {
-              x: (idx + 1) * (width / (catNodes.length + 1)),
-              y: rowY
-            };
-          });
-        });
-      } else {
-        categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx + 1) * (width / (categories.length + 1));
-          catNodes.forEach((n: NodeSingular, idx: number) => {
-            targets[n.id()] = {
-              x: colX,
-              y: (idx + 1) * (height / (catNodes.length + 1))
-            };
-          });
-        });
-      }
-      return targets;
+      return compute2DGeometryTargets(solverNodes, layout, {
+        useCurrentOrder,
+        width,
+        height,
+        centerOrigin: false,
+      }).targets;
     }
 
     // default: force directed
@@ -968,37 +857,25 @@ const engine: CytoscapeEngine = {
       return targets;
     }
 
-    const startingPos: Record<string, { x: number; y: number }> = {};
-    this.cy.nodes().forEach((n: NodeSingular) => {
-      const p = n.position();
-      startingPos[n.id()] = { x: p.x, y: p.y };
-    });
+    return this.solveHeadlessCoseTargets();
+  },
 
-    this.cy.batch(() => {
-      this.cy?.layout({
-        name: 'cose',
-        animate: false,
-        fit: false,
-        randomize: false,
-        idealEdgeLength: () => 100,
-        nodeOverlap: 20,
-        componentSpacing: 100,
-        nodeRepulsion: () => 400000,
-        edgeElasticity: () => 100,
-        nestingFactor: 5,
-        gravity: 80,
-        numIter: 1000
-      } as cytoscape.CoseLayoutOptions).run();
-
-      this.cy?.nodes().forEach((n: NodeSingular) => {
-        const p = n.position();
-        targets[n.id()] = { x: p.x, y: p.y };
-        this.forcePositions.set(n.id(), { x: p.x, y: p.y });
-        const s = startingPos[n.id()];
-        if (s) n.position(s);
-      });
-    });
-
+  solveHeadlessCoseTargets(): Record<string, { x: number; y: number }> {
+    if (!this.cy) return {};
+    const nodes: SolverGraphNode[] = this.nodeMetaList.map((n) => ({
+      id: n.id,
+      group: n.group,
+      size: n.size,
+    }));
+    const connections: SolverGraphEdge[] = this.edgeMetaList.map((e) => ({
+      source: e.source,
+      target: e.target,
+      weight: e.weight,
+    }));
+    const targets = solveCytoscapeCoseLayout({ nodes, connections });
+    for (const [id, pt] of Object.entries(targets)) {
+      this.forcePositions.set(id, { x: pt.x, y: pt.y });
+    }
     return targets;
   },
 
@@ -1010,12 +887,10 @@ const engine: CytoscapeEngine = {
         targets[id] = { x: pos.x, y: pos.y };
       }
       if (!animate) {
-        this.cy.layout({
-          name: 'preset',
-          positions: targets,
-          animate: false,
-          fit: false
-        }).run();
+        for (const [id, pt] of Object.entries(targets)) {
+          this.modelPositions.set(id, { x: pt.x, y: pt.y });
+        }
+        this.syncPositionsToCy?.();
         this.stepViewportTowardCloud(1);
         return;
       }
@@ -1025,12 +900,10 @@ const engine: CytoscapeEngine = {
 
     const targets = this.computeLayoutTargets(mode, false);
     if (!animate) {
-      this.cy.batch(() => {
-        this.cy?.nodes().forEach((n: NodeSingular) => {
-          const t = targets[n.id()];
-          if (t) n.position(t);
-        });
-      });
+      for (const [id, pt] of Object.entries(targets)) {
+        this.modelPositions.set(id, { x: pt.x, y: pt.y });
+      }
+      this.syncPositionsToCy?.();
       this.stepViewportTowardCloud(1);
     } else {
       this.animateTo(targets, 550, undefined, true);
@@ -1050,10 +923,9 @@ const engine: CytoscapeEngine = {
 
     const startTime = performance.now();
     const startPositions: Record<string, { x: number; y: number }> = {};
-    this.cy.nodes().forEach((n: NodeSingular) => {
-      const p = n.position();
-      startPositions[n.id()] = { x: p.x, y: p.y };
-    });
+    for (const [id, p] of this.modelPositions.entries()) {
+      startPositions[id] = { x: p.x, y: p.y };
+    }
 
     const step = (time: number) => {
       if (!this.cy) return;
@@ -1064,35 +936,35 @@ const engine: CytoscapeEngine = {
         ? 4 * progress * progress * progress
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
-      this.cy.batch(() => {
-        this.cy?.nodes().forEach((n: NodeSingular) => {
-          const id = n.id();
-          if (excludeNodeId && id === excludeNodeId) return;
-          const start = startPositions[id];
-          const target = targets[id];
-          if (start && target) {
-            n.position({
-              x: start.x + (target.x - start.x) * ease,
-              y: start.y + (target.y - start.y) * ease
-            });
-          }
-        });
-      });
+      for (const n of this.nodeMetaList) {
+        const id = n.id;
+        if (excludeNodeId && id === excludeNodeId) continue;
+        const start = startPositions[id];
+        const target = targets[id];
+        if (start && target) {
+          this.modelPositions.set(id, {
+            x: start.x + (target.x - start.x) * ease,
+            y: start.y + (target.y - start.y) * ease
+          });
+        }
+      }
 
       if (fitOnStep) {
         this.stepViewportTowardCloud(1);
+      } else {
+        this.drawScene?.();
       }
 
       if (progress < 1) {
         this.animationFrameId = requestAnimationFrame(step);
       } else {
         this.animationFrameId = null;
-        if (animateFitAfter && this.cy) {
-          this.cy.animate({
-            fit: { eles: this.cy.elements(), padding: 30 },
-            duration: 350,
-            easing: 'ease-in-out-cubic'
-          });
+        this.syncPositionsToCy?.();
+        if (this.currentLayout === 'force' && !excludeNodeId) {
+          this.calibrateDragEquilibrium?.(true);
+        }
+        if (animateFitAfter) {
+          this.startViewportAdaptLoop(350, 0.25);
         }
       }
     };
@@ -1109,10 +981,7 @@ const engine: CytoscapeEngine = {
     if (layoutChanged) {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
-      if (this.physicsFrameId) {
-        cancelAnimationFrame(this.physicsFrameId);
-        this.physicsFrameId = null;
-      }
+      this.dragController?.stop();
     }
 
     // Apply color update to nodes and edges based on theme (and preserve any active highlight)
@@ -1123,14 +992,51 @@ const engine: CytoscapeEngine = {
     }
   },
 
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset') {
+    if (!this.cy) return;
+    if (category === 'visual') {
+      this.applyHighlight?.(this.hoveredNodeId ?? null, true);
+      return;
+    }
+    if (category === 'geometry') {
+      if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const targets = this.computeLayoutTargets(this.currentLayout, true);
+        this.animateTo(targets, 350, undefined, true, false);
+      }
+      return;
+    }
+    if (category === 'physics') {
+      if (this.currentLayout === 'force') {
+        this.dragController?.stop();
+        const targets = this.solveHeadlessCoseTargets();
+        this.animateTo(targets, 450, undefined, true, false);
+      }
+      return;
+    }
+    if (category === 'reset') {
+      this.dragController?.stop();
+      this.forcePositions.clear();
+      for (const [id, pos] of this.initialForcePositions.entries()) {
+        this.forcePositions.set(id, { x: pos.x, y: pos.y });
+      }
+      this.applyHighlight?.(this.hoveredNodeId ?? null, true);
+      if (this.currentLayout === 'force') {
+        const targets: Record<string, { x: number; y: number }> = {};
+        for (const [id, pos] of this.initialForcePositions.entries()) {
+          targets[id] = { x: pos.x, y: pos.y };
+        }
+        this.animateTo(targets, 450, undefined, true, false);
+      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const targets = this.computeLayoutTargets(this.currentLayout, false);
+        this.animateTo(targets, 450, undefined, true, false);
+      }
+    }
+  },
+
   destroy() {
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
-    }
-    if (this.physicsFrameId) {
-      cancelAnimationFrame(this.physicsFrameId);
-      this.physicsFrameId = null;
     }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
@@ -1140,9 +1046,9 @@ const engine: CytoscapeEngine = {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
     }
-    if (this.dragSimulation) {
-      this.dragSimulation.stop();
-      this.dragSimulation = null;
+    if (this.dragController) {
+      this.dragController.destroy();
+      this.dragController = null;
     }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
@@ -1156,6 +1062,11 @@ const engine: CytoscapeEngine = {
       this.fgCanvas.remove();
       this.fgCanvas = null;
     }
+    this.drawScene = null;
+    this.syncPositionsToCy = null;
+    this.nodeMetaList = [];
+    this.edgeMetaList = [];
+    this.modelPositions.clear();
     this.activeHighlightDists = null;
     if (this.cy) {
       this.cy.destroy();

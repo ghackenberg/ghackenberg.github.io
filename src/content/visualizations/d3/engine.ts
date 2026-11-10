@@ -1,10 +1,14 @@
 import * as d3 from 'd3';
 import {
   GRAPH_COLORS,
+  GRAPH_PHYSICS_CONFIG,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
+  getEdgeLinkDistance2D,
+  getEdgeLinkStrength2D,
   getGraphStyleTokens,
+  getGraphTuningState,
   compute2DViewportFit,
   buildGraphAdjacency,
   computeHopDistances,
@@ -16,6 +20,14 @@ import {
   getEdgeHopZIndex,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
+import {
+  compute2DGeometryTargets,
+  solveD3ForceLayout,
+} from '@commons/shared/graph-solvers';
+import {
+  createGraphDragPhysicsController2D,
+  type GraphDragPhysicsController2D,
+} from '@commons/client/graph-drag-controller';
 import { createGraphTooltipController, type GraphTooltipController } from '@commons/client/vis-tooltip';
 
 export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
@@ -28,6 +40,7 @@ export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
 export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
   source: string | D3Node;
   target: string | D3Node;
+  weight?: number;
   displayColor?: string;
   displayWidth?: number;
 }
@@ -35,7 +48,7 @@ export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
 export interface D3Payload {
   d3: {
     nodes: GraphNodePayload[];
-    connections: { sourceId: string; targetId: string }[];
+    connections: { sourceId: string; targetId: string; weight?: number }[];
   };
 }
 
@@ -52,6 +65,7 @@ export interface D3Engine {
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
   tooltipController: GraphTooltipController | null;
+  dragController?: GraphDragPhysicsController2D | null;
   hoveredNodeId?: string | null;
   secondaryHoveredNodeId?: string | null;
   draggedNodeId?: string | null;
@@ -61,16 +75,20 @@ export interface D3Engine {
   currentLayout?: string;
   isLight?: boolean;
   forcePositions: Map<string, { x: number; y: number }>;
+  initialForcePositions: Map<string, { x: number; y: number }>;
   fitTimeout?: ReturnType<typeof setTimeout>;
+  tuningSettleTimeout?: ReturnType<typeof setTimeout>;
   viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
   init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<D3Engine>;
   renderPositions(): void;
+  applyForceSimulationConfig(): void;
   recomputeSlotTargets(useCurrentOrder?: boolean): void;
   fitToView(duration?: number): void;
   stepViewportTowardCloud(alpha: number): void;
   startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   updateLayout(layout: string, isLight: boolean, animate?: boolean): void;
+  applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
   destroy(): void;
 }
 
@@ -91,7 +109,9 @@ const engine: D3Engine = {
   linkElements: null,
   nodeElements: null,
   tooltipController: null,
+  dragController: null,
   forcePositions: new Map(),
+  initialForcePositions: new Map(),
   viewportAdaptFrameId: null,
   resizeObserver: null,
 
@@ -99,11 +119,13 @@ const engine: D3Engine = {
     this.width = container.offsetWidth || 800;
     this.height = container.offsetHeight || 500;
     this.forcePositions = new Map();
+    this.initialForcePositions = new Map();
 
     this.nodes = payload.d3.nodes.map((n) => {
       const nx = typeof n.x === 'number' ? n.x : 0;
       const ny = typeof n.y === 'number' ? n.y : 0;
       this.forcePositions.set(n.id, { x: nx, y: ny });
+      this.initialForcePositions.set(n.id, { x: nx, y: ny });
       return {
         ...n,
         x: nx,
@@ -113,8 +135,42 @@ const engine: D3Engine = {
 
     this.links = payload.d3.connections.map((c) => ({
       source: c.sourceId,
-      target: c.targetId
+      target: c.targetId,
+      weight: c.weight
     })).filter((l) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
+
+    const nodeLookup = new Map<string, D3Node>();
+    for (const n of this.nodes) {
+      nodeLookup.set(n.id, n);
+    }
+
+    this.dragController = createGraphDragPhysicsController2D({
+      nodes: this.nodes.map((n) => ({
+        id: n.id,
+        group: n.group,
+        x: n.x ?? 0,
+        y: n.y ?? 0,
+      })),
+      edges: this.links.map((l) => ({
+        source: typeof l.source === 'object' ? l.source.id : String(l.source),
+        target: typeof l.target === 'object' ? l.target.id : String(l.target),
+        weight: l.weight ?? 0.5,
+      })),
+      isLight: () => Boolean(this.isLight),
+      onTick: (positions, draggedId) => {
+        if (!this.nodes) return;
+        for (const [id, pt] of positions.entries()) {
+          if (id === draggedId) continue;
+          const n = nodeLookup.get(id);
+          if (n) {
+            n.x = pt.x;
+            n.y = pt.y;
+          }
+          this.forcePositions.set(id, { x: pt.x, y: pt.y });
+        }
+        this.renderPositions();
+      },
+    });
 
     container.style.touchAction = 'pan-y';
 
@@ -249,7 +305,8 @@ const engine: D3Engine = {
           startColor,
           targetColor,
           startRadius,
-          targetRadius
+          targetRadius,
+          changed: startColor !== targetColor || Math.abs(startRadius - targetRadius) > 1e-3
         };
       });
 
@@ -266,25 +323,30 @@ const engine: D3Engine = {
           startColor,
           targetColor: targetStyle.color,
           startWidth,
-          targetWidth: targetStyle.width
+          targetWidth: targetStyle.width,
+          changed: startColor !== targetStyle.color || Math.abs(startWidth - targetStyle.width) > 1e-3
         };
       });
 
+      const circleElements = this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle.node-dot");
+
       const renderStep = (ease: number) => {
         for (const nt of nodeTrans) {
-          nt.node.displayColor = interpolateHexColor(nt.startColor, nt.targetColor, ease);
-          nt.node.displayRadius = nt.startRadius + (nt.targetRadius - nt.startRadius) * ease;
+          if (!nt.changed && ease < 1) continue;
+          nt.node.displayColor = ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease);
+          nt.node.displayRadius = ease >= 1 ? nt.targetRadius : nt.startRadius + (nt.targetRadius - nt.startRadius) * ease;
         }
         for (const lt of linkTrans) {
-          lt.link.displayColor = interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          lt.link.displayWidth = lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
+          if (!lt.changed && ease < 1) continue;
+          lt.link.displayColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
+          lt.link.displayWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
         }
 
-        this.nodeElements?.selectAll<SVGCircleElement, D3Node>("circle.node-dot")
-          .attr("r", (n: D3Node) => n.displayRadius ?? currentTokens.nodeRadius)
-          .style("fill", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
-          .style("stroke", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
-          .style("stroke-width", "1.5px");
+        circleElements
+          ?.attr("r", (n: D3Node) => n.displayRadius ?? currentTokens.nodeRadius)
+          ?.style("fill", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
+          ?.style("stroke", (n: D3Node) => n.displayColor || (groupColors[n.group] || groupColors[0]))
+          ?.style("stroke-width", "1.5px");
 
         this.linkElements
           ?.style("stroke", (l: D3Link) => l.displayColor || currentTokens.edgeColor)
@@ -395,6 +457,10 @@ const engine: D3Engine = {
           cancelAnimationFrame(this.viewportAdaptFrameId);
           this.viewportAdaptFrameId = null;
         }
+        if (this.tuningSettleTimeout) {
+          clearTimeout(this.tuningSettleTimeout);
+          this.tuningSettleTimeout = undefined;
+        }
         this.svg?.interrupt();
         this.draggedNodeId = d.id;
         lastDraggedAt = performance.now();
@@ -404,7 +470,14 @@ const engine: D3Engine = {
         d.fy = gp.y;
         d.x = gp.x;
         d.y = gp.y;
-        this.simulation?.alphaTarget(0.3).restart();
+        if (this.currentLayout === 'force') {
+          this.simulation?.stop();
+          this.forcePositions.set(d.id, { x: gp.x, y: gp.y });
+          this.dragController?.startDrag(d.id, gp);
+          this.renderPositions();
+        } else {
+          this.simulation?.alphaTarget(0.3).restart();
+        }
       },
       onNodeDragMove: (rawNode, sx, sy) => {
         const d = this.nodes?.find(n => n.id === rawNode.id);
@@ -415,7 +488,10 @@ const engine: D3Engine = {
         d.fy = gp.y;
         d.x = gp.x;
         d.y = gp.y;
-        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        if (this.currentLayout === 'force') {
+          this.forcePositions.set(d.id, { x: gp.x, y: gp.y });
+          this.dragController?.moveDrag(d.id, gp);
+        } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
           this.recomputeSlotTargets(true);
           this.simulation?.alphaTarget(0.3).restart();
         }
@@ -428,16 +504,22 @@ const engine: D3Engine = {
         if (d) {
           d.fx = null;
           d.fy = null;
-          if (this.currentLayout === 'force' && typeof d.x === 'number' && typeof d.y === 'number') {
-            this.forcePositions.set(d.id, { x: d.x, y: d.y });
-          }
         }
         applyHighlight(null);
-        if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
-          this.recomputeSlotTargets(true);
+        if (this.currentLayout === 'force') {
+          const pos = { x: d?.x ?? 0, y: d?.y ?? 0 };
+          if (d) {
+            this.forcePositions.set(d.id, pos);
+          }
+          this.dragController?.endDrag(rawNode.id, pos);
+          this.startViewportAdaptLoop(2400);
+        } else {
+          if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+            this.recomputeSlotTargets(true);
+          }
+          this.simulation?.alphaTarget(0).alpha(0.35).restart();
+          this.startViewportAdaptLoop(2400);
         }
-        this.simulation?.alphaTarget(0).alpha(0.35).restart();
-        this.startViewportAdaptLoop(2400);
       }
     });
 
@@ -589,92 +671,68 @@ const engine: D3Engine = {
     this.viewportAdaptFrameId = requestAnimationFrame(tick);
   },
 
+  applyForceSimulationConfig() {
+    if (!this.simulation) return;
+    const isLight = Boolean(this.isLight);
+    const tuning = getGraphTuningState();
+    const collisionRadius =
+      getGraphStyleTokens(isLight).nodeRadius + GRAPH_PHYSICS_CONFIG.collisionPadding2D;
+    this.simulation
+      .force(
+        "link",
+        d3
+          .forceLink<D3Node, D3Link>(this.links || [])
+          .id(d => d.id)
+          .distance(l => getEdgeLinkDistance2D(l.weight))
+          .strength(l => getEdgeLinkStrength2D(l.weight))
+      )
+      .force(
+        "charge",
+        d3
+          .forceManyBody<D3Node>()
+          .strength(GRAPH_PHYSICS_CONFIG.d3ChargeStrength * tuning.repulsionScale)
+          .distanceMax(GRAPH_PHYSICS_CONFIG.d3ChargeDistanceMax)
+      )
+      .force("center", d3.forceCenter(0, 0).strength(0.05))
+      .force("collide", d3.forceCollide<D3Node>().radius(collisionRadius).iterations(2))
+      .force(
+        "x",
+        d3.forceX<D3Node>(0).strength(GRAPH_PHYSICS_CONFIG.d3CenterGravityStrength * tuning.gravityScale)
+      )
+      .force(
+        "y",
+        d3.forceY<D3Node>(0).strength(GRAPH_PHYSICS_CONFIG.d3CenterGravityStrength * tuning.gravityScale)
+      );
+  },
+
   recomputeSlotTargets(useCurrentOrder = false) {
     if (!this.nodes || !this.simulation) return;
     const layout = this.currentLayout;
+    if (layout !== 'radial' && layout !== 'columns') return;
 
-    if (layout === 'radial') {
-      const cx = this.width / 2;
-      const cy = this.height / 2;
+    const { targets } = compute2DGeometryTargets(this.nodes, layout, {
+      useCurrentOrder,
+      width: this.width,
+      height: this.height,
+      centerOrigin: false,
+      paddedColumns: true,
+      isMobile: this.width < 768 || window.innerWidth < 768
+    });
 
-      const minDim = Math.min(this.width, this.height);
-      const innerRadius = Math.max(60, minDim * 0.20);
-      const outerRadius = Math.max(140, minDim * 0.42);
-
-      const tags = [...this.nodes.filter(n => n.group === 0)];
-      const others = [...this.nodes.filter(n => n.group !== 0)];
-
-      if (useCurrentOrder) {
-        const normAngle = (n: D3Node, count: number) =>
-          ((Math.atan2((n.y ?? cy) - cy, (n.x ?? cx) - cx) + Math.PI / Math.max(1, count)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-        tags.sort((a, b) => normAngle(a, tags.length) - normAngle(b, tags.length));
-        others.sort((a, b) => normAngle(a, others.length) - normAngle(b, others.length));
+    for (const n of this.nodes) {
+      const target = targets[n.id];
+      if (target) {
+        n.targetX = target.x;
+        n.targetY = target.y;
       }
-
-      tags.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / tags.length;
-        n.targetX = cx + innerRadius * Math.cos(theta);
-        n.targetY = cy + innerRadius * Math.sin(theta);
-      });
-
-      others.forEach((n, idx) => {
-        const theta = (2 * Math.PI * idx) / others.length;
-        n.targetX = cx + outerRadius * Math.cos(theta);
-        n.targetY = cy + outerRadius * Math.sin(theta);
-      });
-
-      const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
-      const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
-      fx?.x(d => d.targetX ?? cx);
-      fy?.y(d => d.targetY ?? cy);
-    } else if (layout === 'columns') {
-      const posts = [...this.nodes.filter(n => n.group === 1)];
-      const publications = [...this.nodes.filter(n => n.group === 2)];
-      const presentations = [...this.nodes.filter(n => n.group === 3)];
-      const tags = [...this.nodes.filter(n => n.group === 0)];
-      const courses = [...this.nodes.filter(n => n.group === 4)];
-      const projects = [...this.nodes.filter(n => n.group === 5)];
-      const services = [...this.nodes.filter(n => n.group === 6)];
-      const newsletters = [...this.nodes.filter(n => n.group === 7)];
-      const visualizations = [...this.nodes.filter(n => n.group === 8)];
-
-      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
-      const isMobile = this.width < 768 || window.innerWidth < 768;
-
-      if (useCurrentOrder) {
-        categories.forEach(catNodes => {
-          catNodes.sort((a, b) => isMobile ? ((a.x ?? 0) - (b.x ?? 0)) : ((a.y ?? 0) - (b.y ?? 0)));
-        });
-      }
-
-      const padX = Math.max(40, this.width * 0.08);
-      const padY = Math.max(50, this.height * 0.12);
-      const usableW = this.width - padX * 2;
-      const usableH = this.height - padY * 2;
-
-      if (isMobile) {
-        categories.forEach((catNodes, catIdx) => {
-          const rowY = padY + (catIdx + 0.5) * (usableH / categories.length);
-          catNodes.forEach((n, idx) => {
-            n.targetX = padX + (idx + 0.5) * (usableW / Math.max(1, catNodes.length));
-            n.targetY = rowY;
-          });
-        });
-      } else {
-        categories.forEach((catNodes, catIdx) => {
-          const colX = padX + (catIdx + 0.5) * (usableW / categories.length);
-          catNodes.forEach((n, idx) => {
-            n.targetX = colX;
-            n.targetY = padY + (idx + 0.5) * (usableH / Math.max(1, catNodes.length));
-          });
-        });
-      }
-
-      const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
-      const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
-      fx?.x(d => d.targetX ?? 0);
-      fy?.y(d => d.targetY ?? 0);
     }
+
+    const cx = layout === 'radial' ? this.width / 2 : 0;
+    const cy = layout === 'radial' ? this.height / 2 : 0;
+    const fx = this.simulation.force("x") as d3.ForceX<D3Node> | undefined;
+    const fy = this.simulation.force("y") as d3.ForceY<D3Node> | undefined;
+    fx?.x(d => d.targetX ?? cx);
+    fy?.y(d => d.targetY ?? cy);
   },
 
   updateLayout(layout: string, isLight: boolean, animate = true) {
@@ -686,6 +744,11 @@ const engine: D3Engine = {
     if (layoutChanged) {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
+      this.dragController?.stop();
+      if (this.tuningSettleTimeout) {
+        clearTimeout(this.tuningSettleTimeout);
+        this.tuningSettleTimeout = undefined;
+      }
     }
 
     // Apply color update to D3 circles and links based on theme (and preserve any active highlight)
@@ -734,27 +797,39 @@ const engine: D3Engine = {
             n.vy = 0;
           }
         }
-        this.simulation
-          .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(80).strength(0.2))
-          .force("charge", d3.forceManyBody<D3Node>().strength(d => -40 - Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) * 8).distanceMax(350))
-          .force("center", d3.forceCenter(0, 0).strength(0.08))
-          .force("collide", d3.forceCollide<D3Node>(d => Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) + 6).iterations(2))
-          .force("x", d3.forceX<D3Node>(0).strength(0.06))
-          .force("y", d3.forceY<D3Node>(0).strength(0.06))
-          .alpha(0)
-          .stop();
+        this.applyForceSimulationConfig();
+        this.simulation.alpha(0).stop();
+        this.dragController?.calibrateFromPositions(this.forcePositions);
         this.renderPositions();
         this.fitToView(0);
         return;
       }
 
-      this.simulation
-        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(80).strength(0.2))
-        .force("charge", d3.forceManyBody<D3Node>().strength(d => -40 - Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) * 8).distanceMax(350))
-        .force("center", d3.forceCenter(0, 0).strength(0.08))
-        .force("collide", d3.forceCollide<D3Node>(d => Math.max(5, Math.min(28, Math.sqrt(d.size || 1) * 2.5 + 3)) + 6).iterations(2))
-        .force("x", d3.forceX<D3Node>(0).strength(0.06))
-        .force("y", d3.forceY<D3Node>(0).strength(0.06));
+      if (this.forcePositions.size > 0) {
+        for (const n of this.nodes) {
+          const fp = this.forcePositions.get(n.id);
+          if (fp) {
+            n.targetX = fp.x;
+            n.targetY = fp.y;
+          }
+        }
+        this.simulation
+          .force("link", null)
+          .force("charge", null)
+          .force("center", null)
+          .force("collide", null)
+          .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.1))
+          .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.1));
+        this.tuningSettleTimeout = setTimeout(() => {
+          this.tuningSettleTimeout = undefined;
+          if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
+            this.simulation.stop();
+            this.dragController?.calibrateFromPositions(this.forcePositions);
+          }
+        }, 520);
+      } else {
+        this.applyForceSimulationConfig();
+      }
     }
 
     if (!animate) {
@@ -775,16 +850,123 @@ const engine: D3Engine = {
     }, 350);
   },
 
+  applyTuning(category) {
+    if (!this.simulation || !this.nodes) return;
+    if (this.tuningSettleTimeout) {
+      clearTimeout(this.tuningSettleTimeout);
+      this.tuningSettleTimeout = undefined;
+    }
+    if (category === 'reset') {
+      this.dragController?.stop();
+      this.forcePositions = new Map();
+      for (const [id, pos] of this.initialForcePositions.entries()) {
+        this.forcePositions.set(id, { x: pos.x, y: pos.y });
+      }
+      this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
+      if (this.currentLayout === 'force') {
+        for (const n of this.nodes) {
+          const fp = this.initialForcePositions.get(n.id);
+          if (fp) {
+            n.targetX = fp.x;
+            n.targetY = fp.y;
+          }
+        }
+        this.simulation
+          .force("link", null)
+          .force("charge", null)
+          .force("center", null)
+          .force("collide", null)
+          .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.1))
+          .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.1))
+          .alpha(0.45)
+          .restart();
+        this.tuningSettleTimeout = setTimeout(() => {
+          this.tuningSettleTimeout = undefined;
+          if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
+            this.simulation.stop();
+            this.dragController?.calibrateFromPositions(this.forcePositions);
+          }
+        }, 480);
+        this.startViewportAdaptLoop(1400);
+      } else {
+        this.recomputeSlotTargets(false);
+        this.simulation.alpha(0.4).restart();
+        this.startViewportAdaptLoop(1400);
+      }
+      return;
+    }
+
+    if (category === 'visual') {
+      this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
+      return;
+    }
+
+    if (category === 'geometry') {
+      if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        this.recomputeSlotTargets(true);
+        this.simulation.alpha(0.4).restart();
+        this.startViewportAdaptLoop(1400);
+      }
+      return;
+    }
+
+    if (category === 'physics' && this.currentLayout === 'force') {
+      this.dragController?.stop();
+      const solved = solveD3ForceLayout({
+        nodes: this.nodes,
+        connections: (this.links || []).map(l => ({
+          sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
+          targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
+          weight: l.weight ?? 0.5
+        }))
+      });
+
+      for (const [nodeId, pt] of Object.entries(solved)) {
+        this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
+      }
+      for (const n of this.nodes) {
+        const fp = this.forcePositions.get(n.id);
+        if (fp) {
+          n.targetX = fp.x;
+          n.targetY = fp.y;
+        }
+      }
+
+      this.simulation
+        .force("link", null)
+        .force("charge", null)
+        .force("center", null)
+        .force("collide", null)
+        .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.1))
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.1))
+        .alpha(0.45)
+        .restart();
+      this.tuningSettleTimeout = setTimeout(() => {
+        this.tuningSettleTimeout = undefined;
+        if (this.currentLayout === 'force' && this.simulation && !this.draggedNodeId) {
+          this.simulation.stop();
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+        }
+      }, 480);
+      this.startViewportAdaptLoop(1400);
+    }
+  },
+
   destroy() {
     if (this.highlightFrameId) {
       cancelAnimationFrame(this.highlightFrameId);
       this.highlightFrameId = null;
+    }
+    if (this.dragController) {
+      this.dragController.destroy();
+      this.dragController = null;
     }
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
     }
     if (this.fitTimeout) clearTimeout(this.fitTimeout);
+    if (this.tuningSettleTimeout) clearTimeout(this.tuningSettleTimeout);
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
