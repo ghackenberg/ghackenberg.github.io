@@ -469,6 +469,7 @@ export function getSigmaForceAtlas2Settings(slowDownOverride?: number) {
 export const GRAPH_GEOMETRY_LAYOUT_CONFIG = {
   radialInnerRatio: 0.22,
   radialOuterRatio: 0.44,
+  radialMaxOuterRatio: 0.52,
   radialMinInner2D: 90,
   radialMinOuter2D: 200,
   radialInner3D: 120,
@@ -480,6 +481,26 @@ export const GRAPH_GEOMETRY_LAYOUT_CONFIG = {
   columnsMinPadY: 50,
   mobileBreakpoint: 768,
 } as const;
+
+export function getRadialReferenceBounds2D(
+  width: number,
+  height: number,
+  centerOrigin = false
+): [{ x: number; y: number }, { x: number; y: number }] {
+  const minDim = Math.min(width, height);
+  const refOuter = Math.max(
+    GRAPH_GEOMETRY_LAYOUT_CONFIG.radialMinOuter2D *
+      (GRAPH_GEOMETRY_LAYOUT_CONFIG.radialMaxOuterRatio /
+        GRAPH_GEOMETRY_LAYOUT_CONFIG.radialOuterRatio),
+    minDim * GRAPH_GEOMETRY_LAYOUT_CONFIG.radialMaxOuterRatio
+  );
+  const cx = centerOrigin ? 0 : width / 2;
+  const cy = centerOrigin ? 0 : height / 2;
+  return [
+    { x: cx - refOuter, y: cy - refOuter },
+    { x: cx + refOuter, y: cy + refOuter },
+  ];
+}
 
 export interface Viewport2DFitResult {
   minX: number;

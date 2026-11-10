@@ -12,6 +12,26 @@ interface ActiveVisInstance {
   tuningInFlight?: boolean;
   forcePositions?: Map<string, { x: number; y: number; z?: number }>;
   initialForcePositions?: Map<string, { x: number; y: number; z?: number }>;
+  modelPositions?: Map<string, { x: number; y: number }>;
+  cy?: {
+    zoom(): number;
+    pan(): { x: number; y: number };
+    getElementById(id: string): { data(key: string): number | undefined };
+  };
+  sigma?: {
+    graphToViewport(pt: { x: number; y: number }): { x: number; y: number };
+  };
+  graph?: {
+    forEachNode?: (cb: (id: string) => void) => void;
+    getNodeAttribute?: (id: string, attr: string) => number;
+    graph2ScreenCoords?: (x: number, y: number, z: number) => { x: number; y: number };
+  };
+  nodeMap?: Map<string, { group: number }>;
+  nodes?: Array<{ id: string; group: number; x?: number; y?: number; z?: number }>;
+  network?: {
+    body?: { nodes?: Record<string, { x?: number; y?: number }> };
+    canvasToDOM(pt: { x: number; y: number }): { x: number; y: number };
+  };
 }
 
 declare global {
@@ -100,6 +120,113 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function measureRadialScreenRadii(
+  page: Page
+): Promise<{ innerR: number; outerR: number }> {
+  return page.evaluate(() => {
+    const inst = window.activeInstance as ActiveVisInstance | null | undefined;
+    if (!inst) return { innerR: 0, outerR: 0 };
+
+    const pts: Array<{ group: number; sx: number; sy: number }> = [];
+
+    // 1. Cytoscape
+    if (inst.cy && inst.modelPositions) {
+      const zoom = inst.cy.zoom() || 1;
+      const pan = inst.cy.pan();
+      for (const [id, p] of inst.modelPositions.entries()) {
+        const grp = inst.cy.getElementById(id).data('group') ?? 0;
+        pts.push({
+          group: grp,
+          sx: p.x * zoom + pan.x,
+          sy: p.y * zoom + pan.y,
+        });
+      }
+    }
+    // 2. Sigma
+    else if (inst.sigma && inst.graph?.forEachNode && inst.graph.getNodeAttribute && inst.nodeMap) {
+      const sigmaRef = inst.sigma;
+      const getAttr = inst.graph.getNodeAttribute.bind(inst.graph);
+      const mapRef = inst.nodeMap;
+      inst.graph.forEachNode((id) => {
+        const x = Number(getAttr(id, 'x') ?? 0);
+        const y = Number(getAttr(id, 'y') ?? 0);
+        const vp = sigmaRef.graphToViewport({ x, y });
+        const grp = mapRef.get(id)?.group ?? 0;
+        pts.push({ group: grp, sx: vp.x, sy: vp.y });
+      });
+    }
+    // 3. Vis-Network
+    else if (inst.network && inst.nodes) {
+      const bodyNodes = inst.network.body?.nodes ?? {};
+      for (const n of inst.nodes) {
+        const bn = bodyNodes[n.id];
+        if (bn && typeof bn.x === 'number' && typeof bn.y === 'number') {
+          const dom = inst.network.canvasToDOM({ x: bn.x, y: bn.y });
+          pts.push({ group: n.group, sx: dom.x, sy: dom.y });
+        }
+      }
+    }
+    // 4. 3D Force Graph
+    else if (inst.graph?.graph2ScreenCoords && inst.nodes) {
+      for (const n of inst.nodes) {
+        const sc = inst.graph.graph2ScreenCoords(n.x ?? 0, n.y ?? 0, n.z ?? 0);
+        pts.push({ group: n.group, sx: sc.x, sy: sc.y });
+      }
+    }
+    // 5. D3 SVG
+    else if (inst.nodes) {
+      const g = document.querySelector<SVGGElement>('#canvas svg g');
+      const ctm = g?.getCTM();
+      const scaleX = ctm?.a ?? 1;
+      const scaleY = ctm?.d ?? 1;
+      const tx = ctm?.e ?? 0;
+      const ty = ctm?.f ?? 0;
+      for (const n of inst.nodes) {
+        pts.push({
+          group: n.group,
+          sx: (n.x ?? 0) * scaleX + tx,
+          sy: (n.y ?? 0) * scaleY + ty,
+        });
+      }
+    }
+
+    if (pts.length === 0) return { innerR: 0, outerR: 0 };
+
+    // Compute center of the inner ring in screen space
+    let cx = 0;
+    let cy = 0;
+    let innerCount = 0;
+    for (const p of pts) {
+      if (p.group === 0) {
+        cx += p.sx;
+        cy += p.sy;
+        innerCount++;
+      }
+    }
+    if (innerCount === 0) return { innerR: 0, outerR: 0 };
+    cx /= innerCount;
+    cy /= innerCount;
+
+    let sumInner = 0;
+    let sumOuter = 0;
+    let outerCount = 0;
+    for (const p of pts) {
+      const dist = Math.hypot(p.sx - cx, p.sy - cy);
+      if (p.group === 0) {
+        sumInner += dist;
+      } else {
+        sumOuter += dist;
+        outerCount++;
+      }
+    }
+
+    return {
+      innerR: innerCount > 0 ? sumInner / innerCount : 0,
+      outerR: outerCount > 0 ? sumOuter / outerCount : 0,
+    };
+  });
+}
+
 async function findClickableScreenNode(
   page: Page,
   centerX: number,
@@ -167,7 +294,7 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
             (!loader || loader.style.display === 'none' || loader.style.opacity === '0')
         );
       },
-      { timeout: 25000 }
+      { timeout: 25000, polling: 50 }
     );
     await sleep(600);
 
@@ -250,11 +377,19 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
     const tuneShift = await page.evaluate(async () => {
       const panel = document.getElementById('tune-panel');
       const dirtyDot = document.getElementById('tune-dirty-dot');
+      const forceSections = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-tune-layout="force"]')
+      );
+      const radialSections = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-tune-layout="radial"]')
+      );
+      const forceVisibleInForceMode =
+        forceSections.length > 0 && forceSections.every((el) => !el.classList.contains('hidden'));
+      const radialHiddenInForceMode =
+        radialSections.length > 0 && radialSections.every((el) => el.classList.contains('hidden'));
+
       const visualSlider = document.querySelector(
         'input[data-tune-key="nodeRadius"]'
-      ) as HTMLInputElement | null;
-      const geomSlider = document.querySelector(
-        'input[data-tune-key="radialInnerRatio"]'
       ) as HTMLInputElement | null;
       const physicsSlider = document.querySelector(
         'input[data-tune-key="repulsionScale"]'
@@ -263,33 +398,34 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
         !panel ||
         panel.classList.contains('hidden') ||
         !visualSlider ||
-        !geomSlider ||
         !physicsSlider
       ) {
-        return { panelOpen: false, visualAndGeomOk: false };
+        return {
+          panelOpen: false,
+          contextVisInForceOk: false,
+          visualOk: false,
+        };
       }
 
       visualSlider.value = '10.5';
       visualSlider.dispatchEvent(new Event('input', { bubbles: true }));
-      geomSlider.value = '0.26';
-      geomSlider.dispatchEvent(new Event('input', { bubbles: true }));
       physicsSlider.value = '1.65';
       physicsSlider.dispatchEvent(new Event('input', { bubbles: true }));
       physicsSlider.dispatchEvent(new Event('change', { bubbles: true }));
 
       const visualVal = document.querySelector('[data-tune-val="nodeRadius"]')?.textContent?.trim();
-      const geomVal = document.querySelector('[data-tune-val="radialInnerRatio"]')?.textContent?.trim();
       const dotVisible = Boolean(dirtyDot && !dirtyDot.classList.contains('hidden'));
       return {
         panelOpen: true,
-        visualAndGeomOk: visualVal === '10.5' && geomVal === '0.26' && dotVisible,
+        contextVisInForceOk: forceVisibleInForceMode && radialHiddenInForceMode,
+        visualOk: visualVal === '10.5' && dotVisible,
       };
     });
 
     await sleep(120);
     await page.waitForFunction(
       () => !(window.activeInstance as ActiveVisInstance | null | undefined)?.tuningInFlight,
-      { timeout: 10000 }
+      { timeout: 15000, polling: 50 }
     );
     await sleep(600);
 
@@ -327,21 +463,90 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
       return { maxD, dotHidden };
     });
 
+    // Switch to radial layout to test context-sensitive Radial Rings & independent screen-space ring radii
+    await page.select('#layout-selector', 'radial');
+    await sleep(1100);
+
+    const radialContextOk = await page.evaluate(() => {
+      const forceSections = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-tune-layout="force"]')
+      );
+      const radialSections = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-tune-layout="radial"]')
+      );
+      return (
+        forceSections.length > 0 &&
+        forceSections.every((el) => el.classList.contains('hidden')) &&
+        radialSections.length > 0 &&
+        radialSections.every((el) => !el.classList.contains('hidden'))
+      );
+    });
+
+    const baseRadii = await measureRadialScreenRadii(page);
+
+    // 1. Increase Inner Ring (0.22 -> 0.30)
+    await page.evaluate(() => {
+      const innerSlider = document.querySelector(
+        'input[data-tune-key="radialInnerRatio"]'
+      ) as HTMLInputElement | null;
+      if (innerSlider) {
+        innerSlider.value = '0.30';
+        innerSlider.dispatchEvent(new Event('input', { bubbles: true }));
+        innerSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+    await sleep(650);
+    const afterInnerRadii = await measureRadialScreenRadii(page);
+
+    // 2. Decrease Outer Ring (0.44 -> 0.35)
+    await page.evaluate(() => {
+      const outerSlider = document.querySelector(
+        'input[data-tune-key="radialOuterRatio"]'
+      ) as HTMLInputElement | null;
+      if (outerSlider) {
+        outerSlider.value = '0.35';
+        outerSlider.dispatchEvent(new Event('input', { bubbles: true }));
+        outerSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+    await sleep(650);
+    const afterOuterRadii = await measureRadialScreenRadii(page);
+
+    const innerDeltaOnInnerTune = afterInnerRadii.innerR - baseRadii.innerR;
+    const outerDriftOnInnerTune = Math.abs(afterInnerRadii.outerR - baseRadii.outerR);
+    const outerDeltaOnOuterTune = baseRadii.outerR - afterOuterRadii.outerR;
+    const innerDriftOnOuterTune = Math.abs(afterOuterRadii.innerR - afterInnerRadii.innerR);
+
+    const radialRingTuneOk =
+      radialContextOk &&
+      innerDeltaOnInnerTune > 10 &&
+      outerDriftOnInnerTune < 3 &&
+      outerDeltaOnOuterTune > 10 &&
+      innerDriftOnOuterTune < 3;
+
+    // Reset and return to force layout for Check 4
+    await page.click('#tune-reset-btn');
+    await sleep(300);
+    await page.select('#layout-selector', 'force');
+    await sleep(950);
+
     // Close tuning panel
     await page.click('#tune-toggle-btn');
     await sleep(250);
 
     if (
       tuneShift.panelOpen &&
-      tuneShift.visualAndGeomOk &&
+      tuneShift.contextVisInForceOk &&
+      tuneShift.visualOk &&
       tuneDeltaAfterChange > 1.0 &&
       resetState.maxD < 0.05 &&
-      resetState.dotHidden
+      resetState.dotHidden &&
+      radialRingTuneOk
     ) {
       liveTuningOk = true;
     } else {
       errors.push(
-        `Check 3 failed: panelOpen=${String(tuneShift.panelOpen)}, visualAndGeomOk=${String(tuneShift.visualAndGeomOk)}, tuneDelta=${tuneDeltaAfterChange.toFixed(2)}, resetDelta=${resetState.maxD.toFixed(4)}, dotHidden=${String(resetState.dotHidden)}`
+        `Check 3 failed: panelOpen=${String(tuneShift.panelOpen)}, contextForce=${String(tuneShift.contextVisInForceOk)}, contextRadial=${String(radialContextOk)}, visualOk=${String(tuneShift.visualOk)}, tuneDelta=${tuneDeltaAfterChange.toFixed(2)}, resetDelta=${resetState.maxD.toFixed(4)}, innerDelta=${innerDeltaOnInnerTune.toFixed(1)}px (outerDrift=${outerDriftOnInnerTune.toFixed(1)}px), outerDelta=${outerDeltaOnOuterTune.toFixed(1)}px (innerDrift=${innerDriftOnOuterTune.toFixed(1)}px)`
       );
     }
 

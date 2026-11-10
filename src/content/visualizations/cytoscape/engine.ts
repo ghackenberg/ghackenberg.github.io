@@ -6,6 +6,7 @@ import {
   easeHighlightTransition,
   getGraphStyleTokens,
   compute2DViewportFit,
+  getRadialReferenceBounds2D,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -757,6 +758,9 @@ const engine: CytoscapeEngine = {
       if (Number.isFinite(p.x) && Number.isFinite(p.y)) {
         points.push({ x: p.x, y: p.y });
       }
+    }
+    if (!isSubgraph && this.currentLayout === 'radial') {
+      points.push(...getRadialReferenceBounds2D(width, height, false));
     }
 
     const fit = compute2DViewportFit(points, width, height, r, isSubgraph);

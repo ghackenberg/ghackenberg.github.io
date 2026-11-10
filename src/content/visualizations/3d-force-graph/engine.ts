@@ -1,6 +1,7 @@
 import ForceGraph3D from '3d-force-graph';
 import {
   GRAPH_COLORS,
+  GRAPH_GEOMETRY_LAYOUT_CONFIG,
   GRAPH_PHYSICS_CONFIG,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
@@ -851,6 +852,31 @@ const engine: Force3DEngine = {
         if (uCoord > maxU) maxU = uCoord;
         if (wCoord < minW) minW = wCoord;
         if (wCoord > maxW) maxW = wCoord;
+      }
+
+      if (!isSubgraph && this.currentLayout === 'radial') {
+        const maxOuterR =
+          GRAPH_GEOMETRY_LAYOUT_CONFIG.radialOuter3D *
+          (GRAPH_GEOMETRY_LAYOUT_CONFIG.radialMaxOuterRatio /
+            GRAPH_GEOMETRY_LAYOUT_CONFIG.radialOuterRatio);
+        const refPts = [
+          { x: maxOuterR, y: 0, z: 0 },
+          { x: -maxOuterR, y: 0, z: 0 },
+          { x: 0, y: maxOuterR, z: 0 },
+          { x: 0, y: -maxOuterR, z: 0 },
+        ];
+        for (const rp of refPts) {
+          const rCoord = rp.x * rightX + rp.y * rightY + rp.z * rightZ;
+          const uCoord = rp.x * upX + rp.y * upY + rp.z * upZ;
+          const wCoord = rp.x * dirX + rp.y * dirY + rp.z * dirZ;
+          projectedNodes.push({ r: rCoord, u: uCoord, w: wCoord, rho: 10 });
+          if (rCoord < minR) minR = rCoord;
+          if (rCoord > maxR) maxR = rCoord;
+          if (uCoord < minU) minU = uCoord;
+          if (uCoord > maxU) maxU = uCoord;
+          if (wCoord < minW) minW = wCoord;
+          if (wCoord > maxW) maxW = wCoord;
+        }
       }
 
       if (projectedNodes.length === 0 || !Number.isFinite(minR) || !Number.isFinite(maxR)) return;

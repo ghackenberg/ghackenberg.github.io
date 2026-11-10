@@ -7,6 +7,7 @@ import {
   easeHighlightTransition,
   getGraphStyleTokens,
   compute2DViewportFit,
+  getRadialReferenceBounds2D,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -874,6 +875,9 @@ const engine: VisNetworkEngine = {
         points.push({ x: p.x, y: p.y });
       }
     }
+    if (!isSubgraph && this.currentLayout === 'radial') {
+      points.push(...getRadialReferenceBounds2D(width, height, true));
+    }
 
     const fit = compute2DViewportFit(points, width, height, r, isSubgraph);
     if (!fit) return;
@@ -901,6 +905,9 @@ const engine: VisNetworkEngine = {
       if (p && typeof p.x === 'number' && typeof p.y === 'number') {
         points.push({ x: p.x, y: p.y });
       }
+    }
+    if (!isSubgraph && this.currentLayout === 'radial') {
+      points.push(...getRadialReferenceBounds2D(width, height, true));
     }
 
     const fit = compute2DViewportFit(points, width, height, r, isSubgraph);

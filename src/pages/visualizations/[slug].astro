@@ -276,7 +276,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               </div>
 
               <!-- 1. Edge Specificity Weighting -->
-              <div class="space-y-1.5">
+              <div data-tune-layout="force" class="space-y-1.5">
                 <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Edge Specificity</div>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -294,9 +294,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 </label>
               </div>
 
-              <!-- 2. Layout Physics & Geometry -->
-              <div class="space-y-1.5 pt-1 border-t border-element-border/60">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Layout &amp; Rings</div>
+              <!-- 2a. Force Physics -->
+              <div data-tune-layout="force" class="space-y-1.5 pt-1 border-t border-element-border/60">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Force Physics</div>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Link Distance</span>
@@ -318,6 +318,11 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                   </div>
                   <input type="range" data-tune-key="gravityScale" data-tune-cat="physics" min="0.2" max="2.5" step="0.05" value="1.0" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
+              </div>
+
+              <!-- 2b. Radial Rings -->
+              <div data-tune-layout="radial" class="hidden space-y-1.5">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Radial Rings</div>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Inner Ring (Tags)</span>
@@ -335,7 +340,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               </div>
 
               <!-- 3. Visuals & Focus -->
-              <div class="space-y-1.5 pt-1 border-t border-element-border/60">
+              <div data-tune-section="visual" class="space-y-1.5 pt-1 border-t border-element-border/60">
                 <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Visuals &amp; Focus</div>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -724,6 +729,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             }
             selector.value = currentLayout;
           }
+          syncTuneLayoutVisibility(currentLayout);
 
           // Initialize engine with UTM tracking
           const isLight = document.documentElement.classList.contains('light');
@@ -752,6 +758,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       if (selector) {
         selector.addEventListener('change', (e) => {
           const newLayout = (e.target as HTMLSelectElement).value;
+          syncTuneLayoutVisibility(newLayout);
           if (activeInstance) {
             const url = new URL(window.location.href);
             url.searchParams.set('layout', newLayout);
@@ -793,6 +800,21 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       const tuneResetBtn = document.getElementById('tune-reset-btn');
       const tunePanel = document.getElementById('tune-panel');
       const tuneDirtyDot = document.getElementById('tune-dirty-dot');
+
+      const syncTuneLayoutVisibility = (layoutId: string) => {
+        if (!tuneHud) return;
+        const sections = tuneHud.querySelectorAll<HTMLElement>('[data-tune-layout]');
+        sections.forEach((sec) => {
+          const targetLayout = sec.dataset.tuneLayout;
+          sec.classList.toggle('hidden', targetLayout !== layoutId);
+        });
+        const visualSection = tuneHud.querySelector<HTMLElement>('[data-tune-section="visual"]');
+        if (visualSection) {
+          const hasAbove = layoutId === 'force' || layoutId === 'radial';
+          visualSection.classList.toggle('pt-1', hasAbove);
+          visualSection.classList.toggle('border-t', hasAbove);
+        }
+      };
 
       if (tuneHud) {
         const stopCanvasEvent = (ev: Event) => {

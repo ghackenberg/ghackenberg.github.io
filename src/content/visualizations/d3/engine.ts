@@ -10,6 +10,7 @@ import {
   getGraphStyleTokens,
   getGraphTuningState,
   compute2DViewportFit,
+  getRadialReferenceBounds2D,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -609,14 +610,23 @@ const engine: D3Engine = {
   fitToView(duration = 600) {
     if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
     if (this.width <= 0 || this.height <= 0) return;
+    if (this.viewportAdaptFrameId) {
+      cancelAnimationFrame(this.viewportAdaptFrameId);
+      this.viewportAdaptFrameId = null;
+    }
+    this.svg.interrupt();
 
     const isSubgraph = Boolean(this.focusedNodeIds && this.focusedNodeIds.size > 0);
     const activeNodes = isSubgraph
       ? this.nodes.filter(n => this.focusedNodeIds!.has(n.id))
       : this.nodes;
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
+    const points =
+      !isSubgraph && this.currentLayout === 'radial'
+        ? getRadialReferenceBounds2D(this.width, this.height, false)
+        : activeNodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 }));
     const fit = compute2DViewportFit(
-      activeNodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
+      points,
       this.width,
       this.height,
       r,
@@ -646,8 +656,12 @@ const engine: D3Engine = {
       ? this.nodes.filter(n => this.focusedNodeIds!.has(n.id))
       : this.nodes;
     const r = getGraphStyleTokens(Boolean(this.isLight)).nodeRadius;
+    const points =
+      !isSubgraph && this.currentLayout === 'radial'
+        ? getRadialReferenceBounds2D(this.width, this.height, false)
+        : activeNodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 }));
     const fit = compute2DViewportFit(
-      activeNodes.map(n => ({ x: n.x ?? 0, y: n.y ?? 0 })),
+      points,
       this.width,
       this.height,
       r,
@@ -668,6 +682,11 @@ const engine: D3Engine = {
     durationMs = GRAPH_VIEWPORT_CONFIG.adaptDurationMs,
     baseAlpha: number = GRAPH_VIEWPORT_CONFIG.adaptAlpha
   ) {
+    if (this.fitTimeout) {
+      clearTimeout(this.fitTimeout);
+      this.fitTimeout = undefined;
+    }
+    this.svg?.interrupt();
     if (this.viewportAdaptFrameId) {
       cancelAnimationFrame(this.viewportAdaptFrameId);
       this.viewportAdaptFrameId = null;
@@ -686,6 +705,7 @@ const engine: D3Engine = {
       if (now - startTime < durationMs) {
         this.viewportAdaptFrameId = requestAnimationFrame(tick);
       } else {
+        this.stepViewportTowardCloud(1);
         this.viewportAdaptFrameId = null;
       }
     };
@@ -768,6 +788,14 @@ const engine: D3Engine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
+      if (this.viewportAdaptFrameId) {
+        cancelAnimationFrame(this.viewportAdaptFrameId);
+        this.viewportAdaptFrameId = null;
+      }
+      if (this.fitTimeout) {
+        clearTimeout(this.fitTimeout);
+        this.fitTimeout = undefined;
+      }
       if (this.tuningSettleTimeout) {
         clearTimeout(this.tuningSettleTimeout);
         this.tuningSettleTimeout = undefined;
@@ -789,24 +817,26 @@ const engine: D3Engine = {
 
       // Apply positional forces
       this.simulation
-        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.08))
-        .force("charge", d3.forceManyBody().strength(-30))
+        .velocityDecay(0.4)
+        .force("link", null)
+        .force("charge", null)
         .force("center", null)
-        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.2))
-        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.2))
-        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 10).strength(0.8));
+        .force("collide", null)
+        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.5))
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.5));
 
     } else if (layout === 'columns') {
       this.recomputeSlotTargets(false);
 
       // Apply columnar forces
       this.simulation
-        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.02))
-        .force("charge", d3.forceManyBody().strength(-20))
+        .velocityDecay(0.4)
+        .force("link", null)
+        .force("charge", null)
         .force("center", null)
+        .force("collide", null)
         .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.5))
-        .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.5))
-        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 8).strength(0.8));
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.5));
 
     } else {
       // Force-directed (default)
@@ -876,13 +906,29 @@ const engine: D3Engine = {
     }
 
     // Trigger transition
-    this.simulation.alpha(0.3).restart();
+    this.simulation.alpha(0.45).restart();
+    if (layout === 'radial' || layout === 'columns') {
+      this.tuningSettleTimeout = setTimeout(() => {
+        this.tuningSettleTimeout = undefined;
+        if ((this.currentLayout === 'radial' || this.currentLayout === 'columns') && this.simulation && !this.draggedNodeId) {
+          this.simulation.stop();
+          if (this.nodes) {
+            for (const n of this.nodes) {
+              if (typeof n.targetX === 'number' && typeof n.targetY === 'number') {
+                n.x = n.targetX;
+                n.y = n.targetY;
+                n.vx = 0;
+                n.vy = 0;
+              }
+            }
+            this.renderPositions();
+          }
+        }
+      }, 450);
+    }
 
     // Smoothly auto-fit once simulation transitions
-    if (this.fitTimeout) clearTimeout(this.fitTimeout);
-    this.fitTimeout = setTimeout(() => {
-      this.fitToView(600);
-    }, 350);
+    this.startViewportAdaptLoop(750, 0.22);
   },
 
   applyTuning(category) {
@@ -939,7 +985,24 @@ const engine: D3Engine = {
         this.startViewportAdaptLoop(1400);
       } else {
         this.recomputeSlotTargets(false);
-        this.simulation.alpha(0.4).restart();
+        this.simulation.alpha(0.55).restart();
+        this.tuningSettleTimeout = setTimeout(() => {
+          this.tuningSettleTimeout = undefined;
+          if ((this.currentLayout === 'radial' || this.currentLayout === 'columns') && this.simulation && !this.draggedNodeId) {
+            this.simulation.stop();
+            if (this.nodes) {
+              for (const n of this.nodes) {
+                if (typeof n.targetX === 'number' && typeof n.targetY === 'number') {
+                  n.x = n.targetX;
+                  n.y = n.targetY;
+                  n.vx = 0;
+                  n.vy = 0;
+                }
+              }
+              this.renderPositions();
+            }
+          }
+        }, 420);
         this.startViewportAdaptLoop(1400);
       }
       return;
@@ -953,7 +1016,24 @@ const engine: D3Engine = {
     if (category === 'geometry') {
       if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
         this.recomputeSlotTargets(true);
-        this.simulation.alpha(0.4).restart();
+        this.simulation.velocityDecay(0.4).alpha(0.6).restart();
+        this.tuningSettleTimeout = setTimeout(() => {
+          this.tuningSettleTimeout = undefined;
+          if ((this.currentLayout === 'radial' || this.currentLayout === 'columns') && this.simulation && !this.draggedNodeId) {
+            this.simulation.stop();
+            if (this.nodes) {
+              for (const n of this.nodes) {
+                if (typeof n.targetX === 'number' && typeof n.targetY === 'number') {
+                  n.x = n.targetX;
+                  n.y = n.targetY;
+                  n.vx = 0;
+                  n.vy = 0;
+                }
+              }
+              this.renderPositions();
+            }
+          }
+        }, 320);
         this.startViewportAdaptLoop(1400);
       }
       return;

@@ -2,6 +2,7 @@ import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import {
   GRAPH_COLORS,
+  GRAPH_GEOMETRY_LAYOUT_CONFIG,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
@@ -690,6 +691,18 @@ const engine: SigmaEngine = {
     let minY = fullMinY;
     let maxY = fullMaxY;
 
+    if (!isSubgraph && this.currentLayout === 'radial') {
+      const maxR =
+        12 *
+          (GRAPH_GEOMETRY_LAYOUT_CONFIG.radialMaxOuterRatio /
+            GRAPH_GEOMETRY_LAYOUT_CONFIG.radialOuterRatio) +
+        1.2;
+      minX = -maxR;
+      maxX = maxR;
+      minY = -maxR;
+      maxY = maxR;
+    }
+
     if (isSubgraph && Number.isFinite(subMinX) && Number.isFinite(subMaxX)) {
       const fullSpanX = Math.max(1e-3, fullMaxX - fullMinX);
       const fullSpanY = Math.max(1e-3, fullMaxY - fullMinY);
@@ -956,7 +969,11 @@ const engine: SigmaEngine = {
       });
 
       if (this.sigma) {
-        this.sigma.refresh();
+        if (resetCamera) {
+          this.stepViewportTowardCloud(progress < 1 ? 0.25 : 1);
+        } else {
+          this.sigma.refresh();
+        }
       }
 
       if (progress < 1) {
