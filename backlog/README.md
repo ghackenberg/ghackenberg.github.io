@@ -32,7 +32,7 @@ Ideen für künftige Artikel, Hochschulkurse, Keynotes und interaktive Visualisi
 
 | ID | Titel / Arbeitstitel | Typ | Sprache | Hebel / Priorität | Status | Spezifikation |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| *Noch keine offenen Einträge* | — | — | — | — | — | [Vorlage](./content/TEMPLATE.md) |
+| **CONTENT-001** | 5 Graph-Engines auf demselben Wissensgraphen: WebGL vs. Canvas 2D vs. SVG, Build-zu-Client-Solver-Parität und 60-FPS-Interaktion im Praxis-Benchmark | `post` | `de` | Hoch | `idea` | [001-five-graph-engines-architecture-and-60fps-benchmarks.md](./content/001-five-graph-engines-architecture-and-60fps-benchmarks.md) |
 
 ---
 

@@ -9,8 +9,8 @@ This skill governs the creation, documentation, and technical benchmarking of in
 
 ## 1. Directory Structure & Schema
 Every visualization entry lives under `src/content/visualizations/<slug>/`:
-- File: `src/content/visualizations/<slug>/index.md` or `index.mdx`.
-- Frontmatter schema (`src/content.config.ts`):
+- File: `src/content/visualizations/<slug>/index.md` or `index.mdx` paired with `src/content/visualizations/<slug>/engine.ts`.
+- Frontmatter schema ([`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts)):
   ```yaml
   title: "Three.js: 3D Force-Directed Graph"
   description: "GPU-accelerated force-directed 3D network visualization leveraging Three.js WebGL rendering and spatial force simulation."
@@ -36,5 +36,21 @@ When building or embedding interactive Canvas/WebGL viewports:
 - **Drag vs. Click Disambiguation**: When interactive nodes are clickable links or inspectable modals, suppress click events if the pointer displacement exceeds 12px during the gesture.
 - **Perceptual Stability**: Interactive visual states (hover, camera zoom, focus tiers) must never resize neighboring DOM layout rows or cause Cumulative Layout Shifts (CLS).
 
-## 4. Verification Gate
-Visualization entries and interactive engines are verified during the master release verification gate (see `build-engineering`).
+## 4. Shared Architecture & Parity Contract
+All interactive graph engines must maintain 100% mathematical parity between static build layouts and live client interactions:
+- **Unified Layout Solvers**: Share deterministic build-time and live client solvers via [`src/commons/shared/graph-solvers.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-solvers.ts), consumed identically by [`src/commons/server/graph-layout-endpoint.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/graph-layout-endpoint.ts) and all 5 engines in `src/content/visualizations/<slug>/engine.ts`. Live `#tune-hud` physics sliders must invoke time-sliced non-blocking `solve*LayoutAsync` generators (`<= 8.5 ms` frame budget with stale-generation cancellation) to prevent main-thread freezes.
+- **Shared Payload & Reference Geometry**: Centralize graph payloads, ego-network hop attenuation, canonical style tokens, tuning state (`GraphTuningState`), and fixed radial reference bounds (`getRadialReferenceBounds2D`) in [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts).
+- **Calibrated Drag & Tooltip Controllers**: Delegate 2D/3D equilibrium-calibrated node dragging and neighborhood reconfiguration to [`src/commons/client/graph-drag-controller.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/graph-drag-controller.ts), and render focus/hover overlays via the shared Preact HUD in [`src/commons/client/vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx).
+- **Strict Client Privacy**: Enforce zero `localStorage` or `sessionStorage` usage across all visualization client and shared modules.
+
+## 5. Verification & Performance Benchmarking
+Run the three domain-specific CLI gates in PowerShell before relying on the master release verification gate (see `build-engineering`):
+```powershell
+npm run validate:vis
+npm run test:vis:e2e
+npm run test:vis:e2e -- --ci
+npm run benchmark:vis
+```
+- **`npm run validate:vis`** ([`src/scripts/validate-visualizations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-visualizations.ts)): Deterministic Node.js gate verifying storage privacy, solver cluster separation (`>= 1.9x`), geometry layouts, tuning reset determinism, and 2D/3D drag reconfiguration.
+- **`npm run test:vis:e2e`** ([`src/scripts/test-visualizations-e2e.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/test-visualizations-e2e.ts), or `-- --ci` for ANGLE SwiftShader WebGL): Executes 25 Puppeteer browser UI checks across all 5 graph engines.
+- **`npm run benchmark:vis`** ([`src/scripts/benchmark-visualizations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/benchmark-visualizations.ts)): Local hardware 60 FPS and P95 frame-time benchmark across `idle`, `hover`, `drag`, `layout`, and `tuning`.

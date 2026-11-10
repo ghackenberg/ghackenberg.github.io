@@ -43,6 +43,10 @@ const DOMAIN_COMMAND_OWNERS: Record<string, string[]> = {
   'lint:styles': ['presentation-authoring', 'build-engineering'],
   'newsletter:build': ['newsletter-authoring', 'build-engineering'],
   'newsletter:sync': ['newsletter-authoring', 'build-engineering'],
+
+  'validate:vis': ['visualization-authoring', 'build-engineering'],
+  'test:vis:e2e': ['visualization-authoring', 'build-engineering'],
+  'benchmark:vis': ['visualization-authoring'],
 };
 
 const BASH_PATTERNS = [
