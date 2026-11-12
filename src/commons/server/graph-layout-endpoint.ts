@@ -19,7 +19,7 @@ import {
 } from '@commons/shared/graph-solvers';
 import { getCanonicalGraphPayloadArtifact } from './graph-payload-endpoint';
 
-const SOLVER_VERSION = 'v20';
+const SOLVER_VERSION = 'v21';
 
 let cachedSolversFileHash: string | null = null;
 function getSolversFileHash(): string {

@@ -263,6 +263,12 @@ async function findClickableScreenNode(
   return null;
 }
 
+interface XfState {
+  saw: boolean;
+  bad: string;
+  stop: boolean;
+}
+
 async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Promise<E2EResult> {
   const errors: string[] = [];
   const onConsole = (msg: { type(): string; text(): string }) => {
@@ -320,6 +326,157 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
       errors.push(
         `Check 1 failed: forceSize=${bootState.forceSize}, initSize=${bootState.initSize}, surface=${String(bootState.hasRenderSurface)}`
       );
+    }
+
+    // =========================================================================
+    // CHECK 1b (D3 only): Theme-Cluster pills frame their text exactly (symmetric padding, no clipping)
+    // =========================================================================
+    if (engine === 'd3') {
+      const pillReport = await page.evaluate(() => {
+        const out: { name: string; leftPad: number; rightPad: number; textInside: boolean }[] = [];
+        const pills = Array.from(document.querySelectorAll('#canvas .cluster-pill'));
+        for (const pill of pills) {
+          const rectEl = pill.querySelector('rect');
+          const dotEl = pill.querySelector('circle');
+          const textEl = pill.querySelector('text');
+          if (!rectEl || !dotEl || !textEl) continue;
+          const r = rectEl.getBoundingClientRect();
+          const d = dotEl.getBoundingClientRect();
+          const t = textEl.getBoundingClientRect();
+          const modelW = Number(rectEl.getAttribute('width')) || r.width;
+          const scale = modelW > 0 ? r.width / modelW : 1;
+          const leftPad = (d.left - r.left) / scale;
+          const rightPad = (r.right - t.right) / scale;
+          out.push({
+            name: (textEl.textContent || '').trim(),
+            leftPad,
+            rightPad,
+            textInside: t.left >= r.left && t.right <= r.right,
+          });
+        }
+        return out;
+      });
+      const badPills = pillReport.filter(
+        (p) =>
+          !p.textInside ||
+          p.rightPad < 4 ||
+          p.leftPad < 4 ||
+          Math.abs(p.leftPad - p.rightPad) > 4
+      );
+      if (pillReport.length === 0) {
+        errors.push('Check 1b failed: no D3 .cluster-pill elements found');
+        bootOk = false;
+      } else if (badPills.length > 0) {
+        errors.push(
+          `Check 1b failed: ${badPills.length}/${pillReport.length} cluster pills do not frame their text: ${badPills
+            .map((p) => `${p.name} (L=${p.leftPad.toFixed(1)}, R=${p.rightPad.toFixed(1)})`)
+            .join('; ')}`
+        );
+        bootOk = false;
+      }
+    }
+
+    // =========================================================================
+    // CHECK 1c (D3 only): a newly split cluster pill must start invisible (fade-in, no pop-in)
+    // =========================================================================
+    if (engine === 'd3') {
+      const setK = async (k: number) => {
+        await page.evaluate((val: number) => {
+          const slider = document.querySelector('input[data-tune-key="clusterCount"]') as HTMLInputElement | null;
+          if (!slider) return;
+          slider.value = String(val);
+          slider.dispatchEvent(new Event('input', { bubbles: true }));
+          slider.dispatchEvent(new Event('change', { bubbles: true }));
+        }, k);
+      };
+      const readPills = () =>
+        page.evaluate(() =>
+          Array.from(document.querySelectorAll('#canvas .cluster-pill')).map((p) =>
+            Number.parseFloat((p as SVGGElement).style.opacity || '1')
+          )
+        );
+      await setK(5);
+      await page.waitForFunction(() => document.querySelectorAll('#canvas .cluster-pill').length >= 5, {
+        timeout: 8000,
+        polling: 'raf',
+      });
+      const atT0 = await readPills();
+      const hasInvisibleNewPill = atT0.length >= 5 && atT0.some((o) => o < 0.1);
+      const noPopIn = atT0.filter((o) => o > 0.9).length <= 4;
+      if (!hasInvisibleNewPill || !noPopIn) {
+        errors.push(
+          `Check 1c failed: new cluster pill must start at alpha~0 after K 4->5, got opacities=[${atT0.map((o) => o.toFixed(2)).join(', ')}]`
+        );
+        bootOk = false;
+      }
+      await sleep(200);
+      await page.waitForFunction(
+        () => !(window.activeInstance as ActiveVisInstance | null | undefined)?.tuningInFlight,
+        { timeout: 25000, polling: 50 }
+      );
+      await sleep(900);
+      const settled = await readPills();
+      if (!settled.every((o) => o > 0.9)) {
+        errors.push(
+          `Check 1c failed: pills must settle at ~0.97 after the transition, got [${settled.map((o) => o.toFixed(2)).join(', ')}]`
+        );
+        bootOk = false;
+      }
+      // Label cross-fade: while a continuing cluster changes its label, both texts coexist with alpha in (0,1);
+      // after the transition only the new text remains.
+      let sawCrossfade = false;
+      let crossfadeBad = '';
+      for (const k of [6, 7, 8]) {
+        await page.evaluate(() => {
+          const w = window as Window & { __xf?: XfState };
+          w.__xf = { saw: false, bad: '', stop: false };
+          const loop = () => {
+            const st = w.__xf;
+            if (!st || st.stop) return;
+            for (const pill of Array.from(document.querySelectorAll('#canvas .cluster-pill'))) {
+              const texts = Array.from(pill.children).filter((c) => c.tagName.toLowerCase() === 'text') as SVGTextElement[];
+              if (texts.length >= 2) {
+                const alphas = texts.map((t) => Number.parseFloat(t.style.opacity || '1'));
+                st.saw = true;
+                if (alphas.some((a) => !(a >= 0 && a <= 1))) st.bad = `alphas=${alphas.join(',')}`;
+              }
+            }
+            requestAnimationFrame(loop);
+          };
+          requestAnimationFrame(loop);
+        });
+        await setK(k);
+        await sleep(250);
+        await page.waitForFunction(
+          () => !(window.activeInstance as ActiveVisInstance | null | undefined)?.tuningInFlight,
+          { timeout: 25000, polling: 50 }
+        );
+        await sleep(900);
+        const res = await page.evaluate(() => {
+          const w = window as Window & { __xf?: XfState };
+          if (w.__xf) w.__xf.stop = true;
+          const multi = Array.from(document.querySelectorAll('#canvas .cluster-pill')).filter(
+            (pill) => Array.from(pill.children).filter((c) => c.tagName.toLowerCase() === 'text').length !== 1
+          ).length;
+          return { saw: Boolean(w.__xf?.saw), bad: w.__xf?.bad || '', multi };
+        });
+        sawCrossfade = sawCrossfade || res.saw;
+        if (res.bad) crossfadeBad = res.bad;
+        if (res.multi > 0) crossfadeBad = `${res.multi} pills still show multiple label texts after the transition`;
+      }
+      if (!sawCrossfade || crossfadeBad) {
+        errors.push(
+          `Check 1d failed: label cross-fade (sawBothTexts=${String(sawCrossfade)}) ${crossfadeBad}`
+        );
+        bootOk = false;
+      }
+      await setK(4);
+      await sleep(200);
+      await page.waitForFunction(
+        () => !(window.activeInstance as ActiveVisInstance | null | undefined)?.tuningInFlight,
+        { timeout: 25000, polling: 50 }
+      );
+      await sleep(900);
     }
 
     const stageBox = (await page.$eval('#canvas', (el) => {

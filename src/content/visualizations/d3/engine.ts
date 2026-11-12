@@ -8,6 +8,7 @@ import {
   blendHexColor,
   buildRegularPolygonSvgPoints,
   easeHighlightTransition,
+  formatClusterLabelShort,
   getClusterPillDimensions,
   getEdgeLinkDistance2D,
   getEdgeLinkStrength2D,
@@ -27,10 +28,17 @@ import {
   getRestEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
-  isDefaultGraphTuningState,
   reclusterCanonicalGraphPayload,
   resolveClusterPillVisualState,
+  createKChangeTransition,
+  getKChangeTransitionProgress,
+  sampleKChangeClusterLabel,
+  sampleKChangeClusterPill,
+  sampleKChangeGhostPills,
+  sampleKChangeNodeColor,
+  sampleKChangeNodePosition,
   type CanonicalGraphPayload,
+  type GraphKChangeTransition,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
@@ -61,6 +69,8 @@ export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
   pillBadgeTextEl?: SVGTextElement;
   activeHopDist?: number;
   activeCoverage?: number;
+  pillWidthPx?: number;
+  pillGeometryLocked?: boolean;
 }
 
 export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
@@ -97,7 +107,12 @@ export interface D3Engine {
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
   activeBadgeLinks?: D3Link[];
-  rebuildClusterTopology?(targetK: number): void;
+  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>): boolean;
+  finishKTransition?(): void;
+  hasPendingKTransition?(): boolean;
+  discardPendingKTransition?(): void;
+  getWarmSeedPositions?(): ReadonlyMap<string, { x: number; y: number }>;
   tooltipController: GraphTooltipController | null;
   dragController?: GraphDragPhysicsController2D | null;
   hoveredNodeId?: string | null;
@@ -126,6 +141,128 @@ export interface D3Engine {
   updateLayout(layout: string, isLight: boolean, animate?: boolean): void;
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
   destroy(): void;
+}
+
+const D3_PILL_PAD_X = 9;
+const D3_PILL_DOT_R = 3;
+const D3_PILL_DOT_GAP = 5;
+const D3_PILL_DOT_LEAD_W = D3_PILL_DOT_R * 2 + D3_PILL_DOT_GAP;
+const D3_PILL_FONT_FAMILY = 'Inter, system-ui, -apple-system, sans-serif';
+
+interface D3PillDom {
+  g: d3.Selection<SVGGElement, undefined, null, undefined>;
+  rect: d3.Selection<SVGRectElement, undefined, null, undefined>;
+  dot: d3.Selection<SVGCircleElement, undefined, null, undefined>;
+  txt: d3.Selection<SVGTextElement, undefined, null, undefined>;
+  titleTspan: d3.Selection<SVGTSpanElement, undefined, null, undefined>;
+  badgeG: d3.Selection<SVGGElement, undefined, null, undefined>;
+  badgeRect: d3.Selection<SVGRectElement, undefined, null, undefined>;
+  badgeTxt: d3.Selection<SVGTextElement, undefined, null, undefined>;
+}
+
+/** Creates the SVG DOM of a cluster pill (explicit font attributes, geometry synced separately). */
+function buildD3ClusterPillDom(
+  parentEl: SVGGElement,
+  name: string,
+  clusterHue: string,
+  isLight: boolean,
+  canvasBg: string
+): D3PillDom {
+  const dims = getClusterPillDimensions(name, undefined, false, 1);
+  const pillH = dims.pillH;
+  const g = d3.select<SVGGElement, undefined>(parentEl).append<SVGGElement>("g")
+    .attr("class", "cluster-pill")
+    .style("pointer-events", "all")
+    .style("opacity", "0.97");
+  const rect = g.append<SVGRectElement>("rect")
+    .attr("x", -50).attr("y", -pillH / 2).attr("width", 100).attr("height", pillH)
+    .attr("rx", 6)
+    .style("fill", blendHexColor(clusterHue, canvasBg, 0.13))
+    .style("stroke", blendHexColor(clusterHue, canvasBg, 0.72))
+    .style("stroke-width", "1.25px");
+  const dot = g.append<SVGCircleElement>("circle")
+    .attr("cx", 0).attr("cy", 0).attr("r", D3_PILL_DOT_R)
+    .style("fill", clusterHue);
+  const txt = g.append<SVGTextElement>("text")
+    .attr("x", 0)
+    .attr("y", 0.5)
+    .attr("text-anchor", "start")
+    .attr("dominant-baseline", "central")
+    .style("font-family", D3_PILL_FONT_FAMILY)
+    .style("font-size", "10px")
+    .style("font-weight", "600")
+    .style("fill", getThemeTokens(isLight).textHeading);
+  const titleTspan = txt.append<SVGTSpanElement>("tspan").text(dims.baseLabel);
+  const badgeG = g.append<SVGGElement>("g")
+    .attr("class", "cluster-pct-badge")
+    .attr("transform", `translate(${50 + dims.badgeGap}, 0)`)
+    .style("display", "none")
+    .style("pointer-events", "none");
+  const badgeRect = badgeG.append<SVGRectElement>("rect")
+    .attr("x", 0).attr("y", -dims.badgeH / 2).attr("width", 28).attr("height", dims.badgeH)
+    .attr("rx", 5)
+    .style("fill", blendHexColor(clusterHue, canvasBg, 0.26))
+    .style("stroke", clusterHue)
+    .style("stroke-width", "1.5px");
+  const badgeTxt = badgeG.append<SVGTextElement>("text")
+    .attr("x", 14).attr("y", 0.5)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .style("font-family", D3_PILL_FONT_FAMILY)
+    .style("font-size", "10px")
+    .style("font-weight", "700")
+    .style("fill", clusterHue)
+    .text("");
+  return { g, rect, dot, txt, titleTspan, badgeG, badgeRect, badgeTxt };
+}
+
+/**
+ * Synchronously frames the pill text: symmetric 9px inner padding, computed from the real glyph
+ * advance (max of getComputedTextLength / getBBox) so the pill is correct before first paint.
+ * Returns the measured text width (0 when the element is not measurable yet).
+ */
+function syncD3PillGeometry(
+  els: {
+    rect?: SVGRectElement;
+    dot?: SVGCircleElement;
+    txt?: SVGTextElement;
+    badgeG?: SVGGElement;
+  },
+  name: string
+): { pillW: number; measured: boolean } {
+  const dims = getClusterPillDimensions(name, undefined, false, 1);
+  let textW = 0;
+  const t = els.txt;
+  if (t) {
+    try {
+      const cl = typeof t.getComputedTextLength === "function" ? t.getComputedTextLength() : 0;
+      const bb = typeof t.getBBox === "function" ? t.getBBox().width : 0;
+      textW = Math.ceil(Math.max(Number.isFinite(cl) ? cl : 0, Number.isFinite(bb) ? bb : 0));
+    } catch {
+      textW = 0;
+    }
+  }
+  const measured = textW > 0;
+  if (!measured) textW = dims.baseW;
+  const pillW = Math.ceil(D3_PILL_DOT_LEAD_W + textW + 2 * D3_PILL_PAD_X);
+  const leftContentX = -pillW / 2 + D3_PILL_PAD_X;
+  els.rect?.setAttribute("x", String(-pillW / 2));
+  els.rect?.setAttribute("width", String(pillW));
+  els.rect?.setAttribute("y", String(-dims.pillH / 2));
+  els.rect?.setAttribute("height", String(dims.pillH));
+  els.dot?.setAttribute("cx", String(leftContentX + D3_PILL_DOT_R));
+  els.txt?.setAttribute("x", String(leftContentX + D3_PILL_DOT_LEAD_W));
+  els.badgeG?.setAttribute("transform", `translate(${pillW / 2 + dims.badgeGap}, 0)`);
+  return { pillW, measured };
+}
+
+function syncD3ClusterPillGeometry(n: D3Node): void {
+  const res = syncD3PillGeometry(
+    { rect: n.pillRectEl, dot: n.pillDotEl, txt: n.pillTextEl, badgeG: n.pillBadgeGroupEl },
+    n.name
+  );
+  n.pillWidthPx = res.pillW;
+  if (res.measured) n.pillGeometryLocked = true;
 }
 
 const engine: D3Engine = {
@@ -324,110 +461,145 @@ const engine: D3Engine = {
         .style("stroke-width", "1.5px");
 
       this.nodeElements.filter(d => d.group === 0).each(function (n) {
-        const nodeSel = d3.select(this);
         const clusterHue = getNodeClusterColor(n, currentIsLight) || curColors[0];
-        const dims = getClusterPillDimensions(n.name, undefined, false, 1);
-        let pillW = dims.pillW;
-        const pillH = dims.pillH;
-        let contentStartX = -dims.totalTextW / 2;
-
-        const g = nodeSel.append<SVGGElement>("g")
-          .attr("class", "cluster-pill")
-          .style("pointer-events", "all")
-          .style("opacity", "0.97");
-
-        const rect = g.append<SVGRectElement>("rect")
-          .attr("x", -pillW / 2)
-          .attr("y", -pillH / 2)
-          .attr("width", pillW)
-          .attr("height", pillH)
-          .attr("rx", 6)
-          .style("fill", blendHexColor(clusterHue, canvasBg, 0.13))
-          .style("stroke", blendHexColor(clusterHue, canvasBg, 0.72))
-          .style("stroke-width", "1.25px");
-
-        const dot = g.append<SVGCircleElement>("circle")
-          .attr("cx", contentStartX + 3)
-          .attr("cy", 0)
-          .attr("r", 3)
-          .style("fill", clusterHue);
-
-        const txt = g.append<SVGTextElement>("text")
-          .attr("x", contentStartX + dims.dotLeadW)
-          .attr("y", 0.5)
-          .attr("text-anchor", "start")
-          .attr("dominant-baseline", "central")
-          .style("font", "600 10px Inter, system-ui, -apple-system, sans-serif")
-          .style("fill", getThemeTokens(currentIsLight).textHeading);
-
-        const titleTspan = txt.append<SVGTSpanElement>("tspan").text(dims.baseLabel);
-
-        const svgTextEl = txt.node();
-        if (svgTextEl && typeof svgTextEl.getComputedTextLength === "function") {
-          try {
-            const actualW = Math.ceil(svgTextEl.getComputedTextLength());
-            if (Number.isFinite(actualW) && actualW > dims.baseW) {
-              const adjustedTotalW = dims.dotLeadW + actualW;
-              pillW = Math.ceil(adjustedTotalW + 16);
-              contentStartX = -adjustedTotalW / 2;
-              rect.attr("x", -pillW / 2).attr("width", pillW);
-              dot.attr("cx", contentStartX + 3);
-              txt.attr("x", contentStartX + dims.dotLeadW);
-            }
-          } catch {
-            // Ignore if SVG is not attached or getComputedTextLength is unsupported
-          }
-        }
-
-        const badgeG = g.append<SVGGElement>("g")
-          .attr("class", "cluster-pct-badge")
-          .attr("transform", `translate(${pillW / 2 + dims.badgeGap}, 0)`)
-          .style("display", "none")
-          .style("pointer-events", "none");
-
-        const badgeRect = badgeG.append<SVGRectElement>("rect")
-          .attr("x", 0)
-          .attr("y", -dims.badgeH / 2)
-          .attr("width", 28)
-          .attr("height", dims.badgeH)
-          .attr("rx", 5)
-          .style("fill", blendHexColor(clusterHue, canvasBg, 0.26))
-          .style("stroke", clusterHue)
-          .style("stroke-width", "1.5px");
-
-        const badgeTxt = badgeG.append<SVGTextElement>("text")
-          .attr("x", 14)
-          .attr("y", 0.5)
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "central")
-          .style("font", "700 10px Inter, system-ui, -apple-system, sans-serif")
-          .style("fill", clusterHue)
-          .text("");
-
-        n.pillGroupEl = g.node() || undefined;
-        n.pillRectEl = rect.node() || undefined;
-        n.pillDotEl = dot.node() || undefined;
-        n.pillTextEl = txt.node() || undefined;
-        n.pillTitleTspanEl = titleTspan.node() || undefined;
-        n.pillBadgeGroupEl = badgeG.node() || undefined;
-        n.pillBadgeRectEl = badgeRect.node() || undefined;
-        n.pillBadgeTextEl = badgeTxt.node() || undefined;
+        const els = buildD3ClusterPillDom(this, n.name, clusterHue, currentIsLight, canvasBg);
+        n.pillGroupEl = els.g.node() || undefined;
+        n.pillRectEl = els.rect.node() || undefined;
+        n.pillDotEl = els.dot.node() || undefined;
+        n.pillTextEl = els.txt.node() || undefined;
+        n.pillTitleTspanEl = els.titleTspan.node() || undefined;
+        n.pillBadgeGroupEl = els.badgeG.node() || undefined;
+        n.pillBadgeRectEl = els.badgeRect.node() || undefined;
+        n.pillBadgeTextEl = els.badgeTxt.node() || undefined;
+        n.pillGeometryLocked = false;
+        syncD3ClusterPillGeometry(n);
       });
     };
 
+    try {
+      await Promise.all([
+        document.fonts?.load?.("600 10px Inter", "Theme Cluster"),
+        document.fonts?.load?.("700 10px Inter", "100%"),
+      ]);
+      await (document.fonts?.ready ?? Promise.resolve());
+    } catch {
+      // Font loading API unavailable: fall back to synchronous measurement
+    }
     mountSvgElements();
 
-    this.rebuildClusterTopology = (targetK: number) => {
+    // Late webfont swaps change glyph advances: re-frame every pill once fonts finish loading.
+    document.fonts?.addEventListener?.("loadingdone", () => {
+      for (const n of this.nodes || []) {
+        if (n.group === 0) {
+          n.pillGeometryLocked = false;
+          syncD3ClusterPillGeometry(n);
+        }
+      }
+    });
+
+    // ---- K-change transition (shared helper logic lives in graph-payload.ts) ----
+    let pendingK: {
+      prevNodes: GraphNodePayload[];
+      prevPositions: Map<string, { x: number; y: number }>;
+      mergeTarget?: Record<string, string>;
+    } | null = null;
+    let kFrameId: number | null = null;
+    const labelSwaps = new Map<string, { oldName: string; oldPillW: number }>();
+    const restoreSwappedLabels = () => {
+      for (const id of labelSwaps.keys()) {
+        const n = nodeLookup.get(id);
+        if (!n) continue;
+        if (n.pillTitleTspanEl) n.pillTitleTspanEl.textContent = formatClusterLabelShort(n.name);
+        n.pillGeometryLocked = false;
+        syncD3ClusterPillGeometry(n);
+      }
+      labelSwaps.clear();
+    };
+    let kFinish: (() => void) | null = null;
+    const ghostLayer = this.svgGroup.append<SVGGElement>("g").style("pointer-events", "none");
+
+    const spawnGhosts = (tr: GraphKChangeTransition) => {
+      const isLightNow = Boolean(this.isLight);
+      const canvasBg = getThemeTokens(isLightNow).canvasBg;
+      ghostLayer.selectAll("*").remove();
+      const ghosts = new Map<string, { g: SVGGElement }>();
+      for (const gp of sampleKChangeGhostPills(tr, 0)) {
+        const hue = isLightNow ? gp.colorLight : gp.colorDark;
+        const els = buildD3ClusterPillDom(ghostLayer.node()!, gp.name, hue, isLightNow, canvasBg);
+        const gNode = els.g.node();
+        if (!gNode) continue;
+        syncD3PillGeometry(
+          {
+            rect: els.rect.node() ?? undefined,
+            dot: els.dot.node() ?? undefined,
+            txt: els.txt.node() ?? undefined,
+            badgeG: els.badgeG.node() ?? undefined,
+          },
+          gp.name
+        );
+        gNode.setAttribute("transform", `translate(${gp.x},${gp.y})`);
+        gNode.style.opacity = String(gp.alpha);
+        ghosts.set(gp.id, { g: gNode });
+      }
+      return ghosts;
+    };
+
+    this.finishKTransition = () => {
+      if (kFinish) kFinish();
+    };
+
+    this.getWarmSeedPositions = () => {
+      if (pendingK) return pendingK.prevPositions;
+      return this.forcePositions;
+    };
+
+    this.hasPendingKTransition = () => pendingK !== null;
+    this.discardPendingKTransition = () => {
+      if (!pendingK) return;
+      pendingK = null;
+      restoreSwappedLabels();
+      ghostLayer.selectAll("*").remove();
+      for (const n of this.nodes || []) {
+        if (n.group === 0) n.pillGroupEl?.style.setProperty("opacity", "0.97");
+      }
+    };
+
+    this.rebuildClusterTopology = (targetK: number, opts?: { restoreDefault?: boolean }) => {
       if (!this.canonicalPayload || !this.simulation) return;
-      const nextCanonical =
-        targetK === DEFAULT_TOPIC_CLUSTER_COUNT
-          ? this.canonicalPayload
-          : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+      this.finishKTransition?.();
+      const prevNodes = (this.nodes || []).map((n) => ({
+        id: n.id,
+        name: n.name,
+        size: n.size,
+        group: n.group,
+        colorDark: n.colorDark,
+        colorLight: n.colorLight,
+      })) as GraphNodePayload[];
+      const stabilized = reclusterCanonicalGraphPayload(this.canonicalPayload, targetK, this.nodes || []);
+      let nextCanonical: CanonicalGraphPayload = stabilized;
+      if (opts?.restoreDefault && targetK === DEFAULT_TOPIC_CLUSTER_COUNT) {
+        const meta = new Map(stabilized.nodes.map((n) => [n.id, n]));
+        nextCanonical = {
+          ...this.canonicalPayload,
+          nodes: this.canonicalPayload.nodes.map((n) => {
+            const m = meta.get(n.id);
+            return n.group === 0 && m?.originClusterId
+              ? { ...n, originClusterId: m.originClusterId, originKind: m.originKind }
+              : n;
+          }),
+          mergeTargetByOldClusterId: stabilized.mergeTargetByOldClusterId,
+        };
+      }
 
       const prevPosById = new Map<string, { x: number; y: number }>();
       for (const n of this.nodes || []) {
         prevPosById.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
       }
+      pendingK = {
+        prevNodes,
+        prevPositions: prevPosById,
+        mergeTarget: nextCanonical.mergeTargetByOldClusterId,
+      };
 
       const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
       for (const c of nextCanonical.connections) {
@@ -441,8 +613,12 @@ const engine: D3Engine = {
         }
       }
 
+      this.forcePositions = new Map();
       this.nodes = nextCanonical.nodes.map((n, idx) => {
-        const existing = prevPosById.get(n.id);
+        const existing =
+          n.group === 0 && n.originClusterId
+            ? (prevPosById.get(n.originClusterId) ?? prevPosById.get(n.id))
+            : prevPosById.get(n.id);
         let nx = existing?.x;
         let ny = existing?.y;
         if (nx === undefined || ny === undefined) {
@@ -499,8 +675,175 @@ const engine: D3Engine = {
       this.simulation.nodes(this.nodes);
       this.applyForceSimulationConfig();
       mountSvgElements();
+      // Show the previous content colours until the transition starts (no colour pop).
+      for (const n of this.nodes) {
+        const prevC = n.group !== 0 ? prevNodes.find((p) => p.id === n.id) : undefined;
+        if (prevC && n.circleEl) {
+          const c = (this.isLight ? prevC.colorLight : prevC.colorDark) ?? undefined;
+          if (c) {
+            n.circleEl.style.fill = c;
+            n.circleEl.style.stroke = c;
+          }
+        }
+      }
       rebuildDragController();
       this.renderPositions();
+      // Pre-transition state: split pills hidden, ghost pills of vanishing clusters stay visible.
+      const preTr = createKChangeTransition({
+        prevNodes,
+        prevPositions: prevPosById,
+        nextNodes: this.nodes,
+        nextPositions: this.forcePositions,
+        mergeTargetByOldClusterId: nextCanonical.mergeTargetByOldClusterId,
+        now: performance.now(),
+      });
+      spawnGhosts(preTr);
+      // Continuing clusters with a new label keep showing the OLD label until the cross-fade starts.
+      labelSwaps.clear();
+      for (const n of this.nodes) {
+        if (n.group !== 0) continue;
+        const xf = sampleKChangeClusterLabel(preTr, n.id, n.name, 0);
+        if (!xf || !n.pillTitleTspanEl) continue;
+        n.pillTitleTspanEl.textContent = formatClusterLabelShort(xf.oldLabel);
+        n.pillGeometryLocked = false;
+        syncD3ClusterPillGeometry(n);
+        labelSwaps.set(n.id, { oldName: xf.oldLabel, oldPillW: n.pillWidthPx ?? xf.oldPillW });
+      }
+      for (const n of this.nodes) {
+        if (n.group === 0 && !preTr.continuingClusterIds.has(n.id)) {
+          n.pillGroupEl?.style.setProperty("opacity", "0");
+        }
+      }
+    };
+
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>) => {
+      const pk = pendingK;
+      pendingK = null;
+      if (!pk || !this.nodes) {
+        return false;
+      }
+      this.finishKTransition?.();
+      const nodes = this.nodes;
+      const isLightNow = Boolean(this.isLight);
+      const canvasBg = getThemeTokens(isLightNow).canvasBg;
+      const tr = createKChangeTransition({
+        prevNodes: pk.prevNodes,
+        prevPositions: pk.prevPositions,
+        nextNodes: nodes,
+        nextPositions,
+        mergeTargetByOldClusterId: pk.mergeTarget,
+        now: performance.now(),
+      });
+      this.simulation?.alpha(0).stop();
+
+      const ghosts = spawnGhosts(tr);
+      const swapEls = new Map<string, { newTxt: SVGTextElement; oldTextW: number; newTextW: number; oldPillW: number; newPillW: number }>();
+      for (const [id, sw] of labelSwaps) {
+        const n = nodeLookup.get(id);
+        const oldTxt = n?.pillTextEl;
+        if (!n || !oldTxt || !oldTxt.parentNode) continue;
+        const newTxt = oldTxt.cloneNode(true) as SVGTextElement;
+        newTxt.classList.add("cluster-pill-label-new");
+        const tspan = newTxt.querySelector("tspan");
+        if (tspan) tspan.textContent = formatClusterLabelShort(n.name);
+        oldTxt.parentNode.insertBefore(newTxt, oldTxt.nextSibling);
+        let newTextW = 0;
+        try {
+          newTextW = Math.ceil(Math.max(newTxt.getComputedTextLength(), newTxt.getBBox().width));
+        } catch {
+          newTextW = 0;
+        }
+        if (!(newTextW > 0)) newTextW = getClusterPillDimensions(n.name, undefined, false, 1).baseW;
+        const newPillW = Math.ceil(D3_PILL_DOT_LEAD_W + newTextW + 2 * D3_PILL_PAD_X);
+        swapEls.set(id, { newTxt, oldTextW: sw.oldPillW - D3_PILL_DOT_LEAD_W - 2 * D3_PILL_PAD_X, newTextW, oldPillW: sw.oldPillW, newPillW });
+      }
+
+      const finish = () => {
+        if (kFrameId !== null) cancelAnimationFrame(kFrameId);
+        kFrameId = null;
+        kFinish = null;
+        ghostLayer.selectAll("*").remove();
+        for (const sw of swapEls.values()) sw.newTxt.remove();
+        for (const n of nodes) {
+          if (n.pillTextEl) n.pillTextEl.style.opacity = "";
+        }
+        restoreSwappedLabels();
+        for (const n of nodes) {
+          const p = nextPositions.get(n.id);
+          if (p) {
+            n.x = p.x;
+            n.y = p.y;
+            n.vx = 0;
+            n.vy = 0;
+            this.forcePositions.set(n.id, { x: p.x, y: p.y });
+          }
+          if (n.group === 0) {
+            n.pillGroupEl?.style.setProperty("opacity", "0.97");
+          }
+        }
+        this.renderPositions();
+        this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
+        this.dragController?.calibrateFromPositions(this.forcePositions);
+      };
+      kFinish = finish;
+
+      const frame = (now: number) => {
+        const progress = getKChangeTransitionProgress(tr, now);
+        for (const n of nodes) {
+          const nextColor = { dark: n.colorDark ?? GRAPH_COLORS.dark[0], light: n.colorLight ?? GRAPH_COLORS.light[0] };
+          if (n.group === 0) {
+            const s = sampleKChangeClusterPill(tr, n.id, nextColor, isLightNow, progress);
+            if (!s) continue;
+            const sw = swapEls.get(n.id);
+            const xf = sw ? sampleKChangeClusterLabel(tr, n.id, n.name, progress) : null;
+            if (sw && xf && n.pillTextEl) {
+              const pw = Math.round(sw.oldPillW + (sw.newPillW - sw.oldPillW) * xf.blend);
+              const left = -pw / 2 + D3_PILL_PAD_X;
+              const regionStart = left + D3_PILL_DOT_LEAD_W;
+              const regionW = pw - D3_PILL_DOT_LEAD_W - 2 * D3_PILL_PAD_X;
+              n.pillRectEl?.setAttribute("x", String(-pw / 2));
+              n.pillRectEl?.setAttribute("width", String(pw));
+              n.pillDotEl?.setAttribute("cx", String(left + D3_PILL_DOT_R));
+              n.pillTextEl.setAttribute("x", String(regionStart + (regionW - sw.oldTextW) / 2));
+              sw.newTxt.setAttribute("x", String(regionStart + (regionW - sw.newTextW) / 2));
+              n.pillTextEl.style.opacity = String(xf.oldAlpha);
+              sw.newTxt.style.opacity = String(xf.newAlpha);
+              n.pillBadgeGroupEl?.setAttribute("transform", `translate(${pw / 2 + 4}, 0)`);
+            }
+            n.x = s.x;
+            n.y = s.y;
+            if (n.pillGroupEl) n.pillGroupEl.style.opacity = String(s.alpha);
+            n.pillRectEl?.style.setProperty("fill", blendHexColor(s.color, canvasBg, 0.13));
+            n.pillRectEl?.style.setProperty("stroke", blendHexColor(s.color, canvasBg, 0.72));
+            n.pillDotEl?.style.setProperty("fill", s.color);
+          } else {
+            const p = sampleKChangeNodePosition(tr, n.id, progress);
+            if (p) {
+              n.x = p.x;
+              n.y = p.y;
+            }
+            const c = sampleKChangeNodeColor(tr, n.id, nextColor, isLightNow, progress);
+            n.displayColor = c;
+            n.circleEl?.style.setProperty("fill", c);
+            n.circleEl?.style.setProperty("stroke", c);
+          }
+        }
+        for (const gp of sampleKChangeGhostPills(tr, progress)) {
+          const el = ghosts.get(gp.id);
+          if (!el) continue;
+          el.g.setAttribute("transform", `translate(${gp.x},${gp.y})`);
+          el.g.style.opacity = String(gp.alpha);
+        }
+        this.renderPositions();
+        if (progress < 1) {
+          kFrameId = requestAnimationFrame(frame);
+        } else {
+          finish();
+        }
+      };
+      frame(performance.now());
+      this.startViewportAdaptLoop(1400);
+      return true;
     };
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
@@ -806,6 +1149,7 @@ const engine: D3Engine = {
         navigateToNode(node as D3Node);
       },
       onNodeDragStart: (rawNode, sx, sy) => {
+        this.finishKTransition?.();
         const d = this.nodes?.find(n => n.id === rawNode.id);
         if (!d) return;
         if (this.viewportAdaptFrameId) {
@@ -952,6 +1296,7 @@ const engine: D3Engine = {
         const ny = d.y ?? 0;
         d.el?.setAttribute("transform", `translate(${nx},${ny})`);
         if (d.group === 0 && d.pillGroupEl) {
+          if (!d.pillGeometryLocked) syncD3ClusterPillGeometry(d);
           d.pillGroupEl.setAttribute("transform", "translate(0,0)");
         }
       }
@@ -1139,6 +1484,7 @@ const engine: D3Engine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
+      this.discardPendingKTransition?.();
       if (this.viewportAdaptFrameId) {
         cancelAnimationFrame(this.viewportAdaptFrameId);
         this.viewportAdaptFrameId = null;
@@ -1284,6 +1630,7 @@ const engine: D3Engine = {
 
   applyTuning(category) {
     if (!this.simulation || !this.nodes) return;
+    this.finishKTransition?.();
     if (this.tuningSettleTimeout) {
       clearTimeout(this.tuningSettleTimeout);
       this.tuningSettleTimeout = undefined;
@@ -1294,7 +1641,7 @@ const engine: D3Engine = {
       this.dragController?.stop();
       const targetK = getGraphTuningState().clusterCount;
       if (this.activeClusterCount !== targetK) {
-        this.rebuildClusterTopology?.(targetK);
+        this.rebuildClusterTopology?.(targetK, { restoreDefault: true });
       }
       this.forcePositions = new Map();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1302,6 +1649,9 @@ const engine: D3Engine = {
       }
       this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
       if (this.currentLayout === 'force') {
+        if (this.hasPendingKTransition?.() && this.playKTransition?.(new Map(this.initialForcePositions))) {
+          return;
+        }
         for (const n of this.nodes) {
           const fp = this.initialForcePositions.get(n.id);
           if (fp) {
@@ -1339,6 +1689,7 @@ const engine: D3Engine = {
         }, 480);
         this.startViewportAdaptLoop(1400);
       } else {
+        this.discardPendingKTransition?.();
         this.recomputeSlotTargets(false);
         this.simulation.alpha(0.55).restart();
         this.tuningSettleTimeout = setTimeout(() => {
@@ -1404,6 +1755,11 @@ const engine: D3Engine = {
 
       const applySolvedD3Positions = (solved: Record<string, { x: number; y: number }>) => {
         if (!this.simulation || !this.nodes || this.currentLayout !== 'force') return;
+        if (this.hasPendingKTransition?.()) {
+          const solvedMap = new Map<string, { x: number; y: number }>();
+          for (const [nodeId, pt] of Object.entries(solved)) solvedMap.set(nodeId, { x: pt.x, y: pt.y });
+          if (this.playKTransition?.(solvedMap)) return;
+        }
         for (const [nodeId, pt] of Object.entries(solved)) {
           this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
         }
@@ -1446,14 +1802,7 @@ const engine: D3Engine = {
         this.startViewportAdaptLoop(1400);
       };
 
-      if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
-        this.tuningInFlight = false;
-        const solved: Record<string, { x: number; y: number }> = {};
-        for (const [id, pos] of this.initialForcePositions.entries()) {
-          solved[id] = { x: pos.x, y: pos.y };
-        }
-        applySolvedD3Positions(solved);
-      } else {
+      {
         this.tuningInFlight = true;
         void solveD3ForceLayoutAsync(
           {
@@ -1462,7 +1811,8 @@ const engine: D3Engine = {
               sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
               targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
               weight: l.weight ?? 0.5
-            }))
+            })),
+            seedPositions: this.getWarmSeedPositions?.() ?? this.forcePositions
           },
           { shouldCancel: () => this.tuningGeneration !== gen }
         ).then((solved) => {
@@ -1475,6 +1825,7 @@ const engine: D3Engine = {
   },
 
   destroy() {
+    this.finishKTransition?.();
     this.tuningGeneration = (this.tuningGeneration || 0) + 1;
     this.tuningInFlight = false;
     if (this.highlightFrameId) {

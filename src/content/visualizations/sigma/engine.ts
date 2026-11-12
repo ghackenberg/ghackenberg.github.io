@@ -25,9 +25,16 @@ import {
   isBackboneEdge,
   getNodeHopZIndex,
   getEdgeHopZIndex,
-  isDefaultGraphTuningState,
-  reclusterCanonicalGraphPayload,
+  computeKChangeStartPositions,
+  resolveKChangeCanonical,
+  sampleKChangeClusterLabel,
+  sampleKChangeClusterPill,
+  sampleKChangeGhostPills,
+  sampleKChangeNodeColor,
+  sampleKChangeNodePosition,
   type CanonicalGraphPayload,
+  type ClusterLabelCrossfade,
+  type GraphNodePayload,
   type SigmaNode,
   type SigmaEdge
 } from '@commons/shared/graph-payload';
@@ -42,6 +49,7 @@ import {
   type GraphDragPhysicsController2D,
 } from '@commons/client/graph-drag-controller';
 import { getThemeTokens } from '@commons/shared/domain-themes';
+import { createKChangeController, type KChangeController } from '@commons/client/graph-k-transition';
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 function getNodeColor(
@@ -73,7 +81,9 @@ export interface SigmaEngine {
   sigma: Sigma | null;
   canonicalPayload?: CanonicalGraphPayload | null;
   activeClusterCount?: number;
-  rebuildClusterTopology?(targetK: number): void;
+  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
+  kChange?: KChangeController | null;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>): boolean;
   nodeMap: Map<string, SigmaNodeData> | null;
   tooltipController: GraphTooltipController | null;
   dragController?: GraphDragPhysicsController2D | null;
@@ -102,6 +112,7 @@ export interface SigmaEngine {
   stepViewportTowardCloud(alpha: number): void;
   startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   getForcePositions(): Record<string, { x: number; y: number }>;
+  getLivePositions(): Map<string, { x: number; y: number }>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
@@ -289,12 +300,27 @@ const engine: SigmaEngine = {
     const adjacency = buildGraphAdjacency(edges);
     let lastHighlightedKey = '';
 
-    this.rebuildClusterTopology = (targetK: number) => {
+    this.kChange?.destroy();
+    this.kChange = createKChangeController();
+
+    this.rebuildClusterTopology = (targetK: number, opts?: { restoreDefault?: boolean }) => {
       if (!this.canonicalPayload || !this.graph || !this.sigma || !this.payload) return;
-      const nextCanonical =
-        targetK === DEFAULT_TOPIC_CLUSTER_COUNT
-          ? this.canonicalPayload
-          : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+      this.kChange?.finish();
+      const prevPayloadNodes: GraphNodePayload[] = this.payload.sigma.nodes.map((n) => ({
+        id: n.id,
+        name: n.label,
+        size: n.rawSize ?? 1,
+        group: n.group ?? 0,
+        colorDark: n.colorDark,
+        colorLight: n.colorLight,
+      }));
+      const prevMetaById = new Map(prevPayloadNodes.map((m) => [m.id, m]));
+      const nextCanonical = resolveKChangeCanonical(
+        this.canonicalPayload,
+        targetK,
+        prevPayloadNodes,
+        Boolean(opts?.restoreDefault)
+      );
 
       const currentIsLight = Boolean(this.isLight);
       const curTokens = getGraphStyleTokens(currentIsLight);
@@ -306,33 +332,18 @@ const engine: SigmaEngine = {
         prevPosById.set(nId, { x: nx, y: ny });
       });
 
-      const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
-      for (const c of nextCanonical.connections) {
-        const pt = prevPosById.get(c.sourceId);
-        if (pt && (c.weight ?? 0) >= 0.4) {
-          const cur = itemCoordsByCluster.get(c.targetId) || { sumX: 0, sumY: 0, count: 0 };
-          cur.sumX += pt.x;
-          cur.sumY += pt.y;
-          cur.count += 1;
-          itemCoordsByCluster.set(c.targetId, cur);
-        }
-      }
+      const startPos = computeKChangeStartPositions(nextCanonical.nodes, nextCanonical.connections, prevPosById, targetK, 6);
 
-      const nextSigmaNodes: SigmaNodeData[] = nextCanonical.nodes.map((n, idx) => {
-        const existing = prevPosById.get(n.id);
-        let nx = existing?.x;
-        let ny = existing?.y;
-        if (nx === undefined || ny === undefined) {
-          const centroid = itemCoordsByCluster.get(n.id);
-          if (centroid && centroid.count > 0) {
-            nx = centroid.sumX / centroid.count;
-            ny = centroid.sumY / centroid.count;
-          } else {
-            const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
-            nx = Math.cos(angle) * 6;
-            ny = Math.sin(angle) * 6;
-          }
-        }
+      this.forcePositions.clear();
+      const nextSigmaNodes: SigmaNodeData[] = nextCanonical.nodes.map((n) => {
+        const sp = startPos.get(n.id) ?? { x: 0, y: 0 };
+        const nx = sp.x;
+        const ny = sp.y;
+        const prevMeta = prevMetaById.get(n.id);
+        const displayColor =
+          n.group !== 0 && prevMeta
+            ? getNodeColor(prevMeta, currentIsLight)
+            : getNodeColor(n, currentIsLight);
         this.forcePositions.set(n.id, { x: nx, y: ny });
         return {
           id: n.id,
@@ -344,7 +355,9 @@ const engine: SigmaEngine = {
           group: n.group,
           colorDark: n.colorDark,
           colorLight: n.colorLight,
-          color: getNodeColor(n, currentIsLight),
+          color: displayColor,
+          originClusterId: n.originClusterId,
+          originKind: n.originKind,
           typeLabel: n.typeLabel,
           description: n.description,
           date: n.date,
@@ -386,7 +399,7 @@ const engine: SigmaEngine = {
           colorDark: n.colorDark,
           colorLight: n.colorLight,
           hidden: grp === 0,
-          color: getNodeColor(n, currentIsLight),
+          color: n.color,
         });
       });
 
@@ -424,7 +437,69 @@ const engine: SigmaEngine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       rebuildDragController(nextSigmaNodes, nextSigmaEdges);
+      this.kChange?.begin({
+        prevNodes: prevPayloadNodes,
+        prevPositions: prevPosById,
+        nextNodes: nextSigmaNodes.map((n) => ({
+          id: n.id,
+          name: n.label,
+          size: n.rawSize ?? 1,
+          group: n.group ?? 0,
+          colorDark: n.colorDark,
+          colorLight: n.colorLight,
+          originClusterId: n.originClusterId,
+          originKind: n.originKind,
+        })),
+        nextStartPositions: startPos,
+        mergeTargetByOldClusterId: nextCanonical.mergeTargetByOldClusterId,
+      });
       this.sigma.refresh();
+    };
+
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>) => {
+      const isLightNow = Boolean(this.isLight);
+      return (
+        this.kChange?.play(nextPositions, {
+          onFrame: (tr, progress) => {
+            if (!this.graph || !this.sigma) return;
+            const g = this.graph;
+            g.forEachNode((nId) => {
+              const grp = (g.getNodeAttribute(nId, 'group') as number | undefined) ?? 0;
+              const raw = this.nodeMap?.get(nId);
+              const nextColor = {
+                dark: raw?.colorDark ?? GRAPH_COLORS.dark[0],
+                light: raw?.colorLight ?? GRAPH_COLORS.light[0],
+              };
+              if (grp === 0) {
+                const s = sampleKChangeClusterPill(tr, nId, nextColor, isLightNow, progress);
+                if (s) {
+                  g.setNodeAttribute(nId, 'x', s.x);
+                  g.setNodeAttribute(nId, 'y', s.y);
+                }
+              } else {
+                const p = sampleKChangeNodePosition(tr, nId, progress);
+                if (p) {
+                  g.setNodeAttribute(nId, 'x', p.x);
+                  g.setNodeAttribute(nId, 'y', p.y);
+                }
+                g.setNodeAttribute(nId, 'color', sampleKChangeNodeColor(tr, nId, nextColor, isLightNow, progress));
+              }
+            });
+            this.sigma.refresh();
+          },
+          onFinish: () => {
+            if (!this.graph || !this.sigma) return;
+            for (const [id, p] of nextPositions) {
+              if (!this.graph.hasNode(id)) continue;
+              this.graph.setNodeAttribute(id, 'x', p.x);
+              this.graph.setNodeAttribute(id, 'y', p.y);
+              this.forcePositions.set(id, { x: p.x, y: p.y });
+            }
+            this.applyHighlight?.(null, true);
+            this.dragController?.calibrateFromPositions(this.forcePositions);
+          },
+        }) ?? false
+      );
     };
 
     const fgCanvas = document.createElement('canvas');
@@ -556,7 +631,10 @@ const engine: SigmaEngine = {
         clusterColor?: string;
         hopDistance?: number;
         activeCoverage?: number;
+        alphaOverride?: number;
+        crossfadeFrom?: { text: string; blend: number };
       }[] = [];
+      const kAct = this.kChange?.getActive() ?? null;
 
       this.graph.forEachNode(nId => {
         if (!this.graph || !this.sigma) return;
@@ -576,18 +654,52 @@ const engine: SigmaEngine = {
           const activeCoverage = activeContentCoverageMap
             ? ((activeContentCoverageMap as Map<string, number>).get(nId) ?? 0)
             : undefined;
+          let pillColor = getNodeClusterColor(rawNode, currentIsLight);
+          let pillAlpha: number | undefined;
+          let pillXf: ClusterLabelCrossfade | null = null;
+          if (kAct) {
+            const s = sampleKChangeClusterPill(
+              kAct.tr,
+              nId,
+              { dark: rawNode?.colorDark ?? GRAPH_COLORS.dark[0], light: rawNode?.colorLight ?? GRAPH_COLORS.light[0] },
+              currentIsLight,
+              kAct.progress
+            );
+            if (s) {
+              pillColor = s.color;
+              pillAlpha = s.alpha;
+              pillXf = sampleKChangeClusterLabel(kAct.tr, nId, name, kAct.progress);
+            }
+          }
           clusterCalloutSpecs.push({
             id: nId,
             text: name,
             x: p.x,
             y: p.y,
             radiusPx: rScreen,
-            clusterColor: getNodeClusterColor(rawNode, currentIsLight),
+            clusterColor: pillColor,
             hopDistance: effectiveHop,
             activeCoverage,
+            alphaOverride: pillAlpha,
+            crossfadeFrom: pillXf ? { text: pillXf.oldLabel, blend: pillXf.blend } : undefined,
           });
         }
       });
+
+      if (kAct) {
+        for (const gp of sampleKChangeGhostPills(kAct.tr, kAct.progress)) {
+          const gv = this.sigma.graphToViewport({ x: gp.x, y: gp.y });
+          clusterCalloutSpecs.push({
+            id: `ghost:${gp.id}`,
+            text: gp.name,
+            x: gv.x,
+            y: gv.y,
+            radiusPx: 0,
+            clusterColor: currentIsLight ? gp.colorLight : gp.colorDark,
+            alphaOverride: gp.alpha,
+          });
+        }
+      }
 
       const dims = this.sigma.getDimensions();
       drawClusterCalloutLabels2D(ctx, allCalloutNodes, clusterCalloutSpecs, currentIsLight, dims);
@@ -830,6 +942,7 @@ const engine: SigmaEngine = {
         }
       },
       onNodeDragStart: (rawNode, sx, sy) => {
+        this.kChange?.finish();
         if (!this.sigma || !this.graph) return;
         draggedNode = rawNode.id;
         this.hoveredNodeId = draggedNode;
@@ -1076,6 +1189,17 @@ const engine: SigmaEngine = {
     });
   },
 
+  getLivePositions(): Map<string, { x: number; y: number }> {
+    const live = new Map<string, { x: number; y: number }>();
+    this.graph?.forEachNode((nId) => {
+      live.set(nId, {
+        x: Number(this.graph?.getNodeAttribute(nId, 'x') ?? 0),
+        y: Number(this.graph?.getNodeAttribute(nId, 'y') ?? 0),
+      });
+    });
+    return live;
+  },
+
   getForcePositions(): Record<string, { x: number; y: number }> {
     const targets: Record<string, { x: number; y: number }> = {};
     if (this.forcePositions.size > 0) {
@@ -1111,6 +1235,7 @@ const engine: SigmaEngine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
+      this.kChange?.discard();
       this.sigma.setCustomBBox(null);
     }
 
@@ -1153,6 +1278,7 @@ const engine: SigmaEngine = {
       return;
     }
     if (category === 'physics') {
+      this.kChange?.finish();
       const targetK = getGraphTuningState().clusterCount;
       if (this.activeClusterCount !== targetK) {
         this.rebuildClusterTopology?.(targetK);
@@ -1164,21 +1290,13 @@ const engine: SigmaEngine = {
         this.graph?.setEdgeAttribute(edge, 'weight', getEdgePhysicsMetrics(rawW).stiffnessFactor);
       });
       if (this.currentLayout === 'force' && this.payload) {
-        if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
-          this.tuningInFlight = false;
-          this.forcePositions.clear();
-          const targets: Record<string, { x: number; y: number }> = {};
-          for (const [id, pos] of this.initialForcePositions.entries()) {
-            this.forcePositions.set(id, { x: pos.x, y: pos.y });
-            targets[id] = { x: pos.x, y: pos.y };
-          }
-          this.animateTo(targets, 450, undefined, true);
-        } else {
+        {
           this.tuningInFlight = true;
           void solveSigmaForceAtlas2LayoutAsync(
             {
               nodes: this.payload.sigma.nodes,
               connections: this.payload.sigma.edges,
+              seedPositions: this.kChange?.getSeedPositions() ?? this.getLivePositions(),
             },
             { shouldCancel: () => this.tuningGeneration !== gen }
           ).then((solved) => {
@@ -1188,6 +1306,14 @@ const engine: SigmaEngine = {
             this.forcePositions.clear();
             for (const [nodeId, pt] of Object.entries(solved)) {
               this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
+            }
+            if (this.kChange?.hasPending()) {
+              const solvedMap = new Map<string, { x: number; y: number }>();
+              for (const [nodeId, pt] of Object.entries(solved)) solvedMap.set(nodeId, { x: pt.x, y: pt.y });
+              if (this.playKTransition?.(solvedMap)) {
+                this.startViewportAdaptLoop(1400);
+                return;
+              }
             }
             this.animateTo(solved, 450, undefined, true);
           });
@@ -1203,8 +1329,10 @@ const engine: SigmaEngine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
-      if (this.activeClusterCount !== 10) {
-        this.rebuildClusterTopology?.(10);
+      this.kChange?.finish();
+      const resetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== resetK) {
+        this.rebuildClusterTopology?.(resetK, { restoreDefault: true });
       }
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1222,8 +1350,13 @@ const engine: SigmaEngine = {
         for (const [id, pos] of this.initialForcePositions.entries()) {
           targets[id] = { x: pos.x, y: pos.y };
         }
+        if (this.kChange?.hasPending() && this.playKTransition?.(new Map(this.initialForcePositions))) {
+          this.startViewportAdaptLoop(1400);
+          return;
+        }
         this.animateTo(targets, 450, undefined, true);
       } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        this.kChange?.discard();
         const { targets, signature } = this.computeLayoutTargets(this.currentLayout, false);
         this.lastOrderSignature = signature;
         this.animateTo(targets, 450, undefined, true);
@@ -1294,6 +1427,8 @@ const engine: SigmaEngine = {
   },
 
   destroy() {
+    this.kChange?.destroy();
+    this.kChange = null;
     this.tuningGeneration = (this.tuningGeneration || 0) + 1;
     this.tuningInFlight = false;
     if (this.highlightFrameId) {

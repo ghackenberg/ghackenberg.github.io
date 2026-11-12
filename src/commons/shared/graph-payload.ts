@@ -33,6 +33,12 @@ export interface GraphNodePayload {
   date?: string;
   image?: string;
   tags?: string[];
+  /** Cluster hubs only: full list of grouped tag slugs (used for Jaccard matching across K changes). */
+  memberTags?: string[];
+  /** Cluster hubs only: id of the previous cluster this one continues or was split from. */
+  originClusterId?: string;
+  /** 'match': continues the origin cluster (colour inherited); 'split': new cluster spawned from origin. */
+  originKind?: 'match' | 'split';
 }
 
 export interface GraphConnectionPayload {
@@ -54,6 +60,8 @@ export interface CanonicalGraphPayload {
   nodes: GraphNodePayload[];
   connections: GraphConnectionPayload[];
   rawTags?: RawTagSummary[];
+  /** Old cluster ids that disappeared during re-clustering -> new cluster id they merge into. */
+  mergeTargetByOldClusterId?: Record<string, string>;
 }
 
 export interface CytoscapeElement {
@@ -98,6 +106,8 @@ export interface SigmaNode {
   date?: string;
   image?: string;
   tags?: string[];
+  originClusterId?: string;
+  originKind?: 'match' | 'split';
 }
 
 export interface SigmaEdge {
@@ -946,6 +956,240 @@ export function interpolateHexColor(fromHex: string, toHex: string, t: number): 
   return blendHexColor(toHex, fromHex, t);
 }
 
+// ---------------------------------------------------------------------------
+// K-change / timeline transition helpers (shared by all five engines, SYSTEM-014)
+// ---------------------------------------------------------------------------
+
+export const CLUSTER_TRANSITION_MS = 520;
+export const CLUSTER_PILL_REST_ALPHA = 0.97;
+
+export function interpolateHexColorOklab(fromHex: string, toHex: string, t: number): string {
+  if (t <= 0 || fromHex === toHex) return fromHex;
+  if (t >= 1) return toHex;
+  const [l0, a0, b0] = hexToOklab(fromHex);
+  const [l1, a1, b1] = hexToOklab(toHex);
+  return oklabToHex(l0 + (l1 - l0) * t, a0 + (a1 - a0) * t, b0 + (b1 - b0) * t);
+}
+
+export interface TransitionPoint {
+  x: number;
+  y: number;
+  z?: number;
+}
+
+export interface TransitionClusterInfo {
+  id: string;
+  name: string;
+  colorDark: string;
+  colorLight: string;
+}
+
+export interface GraphKChangeTransition {
+  startedAt: number;
+  durationMs: number;
+  prevPositions: Map<string, TransitionPoint>;
+  nextPositions: Map<string, TransitionPoint>;
+  prevColors: Map<string, { dark: string; light: string }>;
+  prevClusters: Map<string, TransitionClusterInfo>;
+  /** New cluster id -> previous cluster id it continues or splits from. */
+  originByNewClusterId: Map<string, string>;
+  /** New clusters that visually continue an old one (same inherited colour). */
+  continuingClusterIds: Set<string>;
+  /** Old clusters that vanish: id -> new cluster id they merge into. */
+  ghostTargetByOldId: Map<string, string>;
+}
+
+export interface GhostClusterPill extends TransitionClusterInfo {
+  x: number;
+  y: number;
+  z?: number;
+  alpha: number;
+}
+
+export interface CreateKChangeTransitionOptions {
+  prevNodes: ReadonlyArray<GraphNodePayload>;
+  prevPositions: ReadonlyMap<string, TransitionPoint>;
+  nextNodes: ReadonlyArray<GraphNodePayload>;
+  nextPositions: ReadonlyMap<string, TransitionPoint>;
+  mergeTargetByOldClusterId?: Readonly<Record<string, string>>;
+  now: number;
+  durationMs?: number;
+}
+
+export function createKChangeTransition(opts: CreateKChangeTransitionOptions): GraphKChangeTransition {
+  const prevPositions = new Map<string, TransitionPoint>();
+  for (const [id, p] of opts.prevPositions) prevPositions.set(id, { x: p.x, y: p.y, z: p.z });
+  const nextPositions = new Map<string, TransitionPoint>();
+  for (const [id, p] of opts.nextPositions) nextPositions.set(id, { x: p.x, y: p.y, z: p.z });
+  const prevColors = new Map<string, { dark: string; light: string }>();
+  const prevClusters = new Map<string, TransitionClusterInfo>();
+  for (const n of opts.prevNodes) {
+    if (n.colorDark && n.colorLight) prevColors.set(n.id, { dark: n.colorDark, light: n.colorLight });
+    if (n.group === 0) {
+      prevClusters.set(n.id, {
+        id: n.id,
+        name: n.name,
+        colorDark: n.colorDark ?? CLUSTER_PALETTE.dark[0],
+        colorLight: n.colorLight ?? CLUSTER_PALETTE.light[0],
+      });
+    }
+  }
+  const originByNewClusterId = new Map<string, string>();
+  const continuingClusterIds = new Set<string>();
+  const nextClusterIds = new Set<string>();
+  for (const n of opts.nextNodes) {
+    if (n.group !== 0) continue;
+    nextClusterIds.add(n.id);
+    const originId = n.originClusterId ?? (prevClusters.has(n.id) ? n.id : undefined);
+    if (!originId) continue;
+    originByNewClusterId.set(n.id, originId);
+    const old = prevClusters.get(originId);
+    if (old && (n.originKind ? n.originKind === 'match' : old.colorDark === n.colorDark)) {
+      continuingClusterIds.add(n.id);
+    }
+  }
+  const claimedOld = new Set<string>();
+  for (const id of continuingClusterIds) claimedOld.add(originByNewClusterId.get(id)!);
+  const ghostTargetByOldId = new Map<string, string>();
+  for (const oldId of prevClusters.keys()) {
+    if (claimedOld.has(oldId)) continue;
+    const target = opts.mergeTargetByOldClusterId?.[oldId];
+    if (target && nextClusterIds.has(target)) ghostTargetByOldId.set(oldId, target);
+  }
+  return {
+    startedAt: opts.now,
+    durationMs: opts.durationMs ?? CLUSTER_TRANSITION_MS,
+    prevPositions,
+    nextPositions,
+    prevColors,
+    prevClusters,
+    originByNewClusterId,
+    continuingClusterIds,
+    ghostTargetByOldId,
+  };
+}
+
+/** Raw (linear) progress 0..1 for the given wall-clock time. */
+export function getKChangeTransitionProgress(tr: GraphKChangeTransition, now: number): number {
+  if (tr.durationMs <= 0) return 1;
+  return Math.max(0, Math.min(1, (now - tr.startedAt) / tr.durationMs));
+}
+
+function lerpTransitionPoint(a: TransitionPoint, b: TransitionPoint, e: number): TransitionPoint {
+  return {
+    x: a.x + (b.x - a.x) * e,
+    y: a.y + (b.y - a.y) * e,
+    z: a.z !== undefined || b.z !== undefined ? (a.z ?? 0) + ((b.z ?? 0) - (a.z ?? 0)) * e : undefined,
+  };
+}
+
+/** Interpolated (eased) node position. Nodes without a previous position start at their target. */
+export function sampleKChangeNodePosition(
+  tr: GraphKChangeTransition,
+  nodeId: string,
+  progress: number
+): TransitionPoint | null {
+  const to = tr.nextPositions.get(nodeId);
+  if (!to) return null;
+  const from = tr.prevPositions.get(nodeId);
+  if (!from) return to;
+  return lerpTransitionPoint(from, to, easeHighlightTransition(progress));
+}
+
+export function sampleKChangeNodeColor(
+  tr: GraphKChangeTransition,
+  nodeId: string,
+  nextColor: { dark: string; light: string },
+  isLight: boolean,
+  progress: number
+): string {
+  const prev = tr.prevColors.get(nodeId);
+  const to = isLight ? nextColor.light : nextColor.dark;
+  if (!prev) return to;
+  return interpolateHexColorOklab(isLight ? prev.light : prev.dark, to, easeHighlightTransition(progress));
+}
+
+/** Continuing / newly split cluster pill: position, alpha and colour while transitioning. */
+export function sampleKChangeClusterPill(
+  tr: GraphKChangeTransition,
+  clusterId: string,
+  nextColor: { dark: string; light: string },
+  isLight: boolean,
+  progress: number
+): { x: number; y: number; z?: number; alpha: number; color: string } | null {
+  const to = tr.nextPositions.get(clusterId);
+  if (!to) return null;
+  const e = easeHighlightTransition(progress);
+  const originId = tr.originByNewClusterId.get(clusterId);
+  const from = originId ? tr.prevPositions.get(originId) : undefined;
+  const pos = from ? lerpTransitionPoint(from, to, e) : to;
+  const continuing = tr.continuingClusterIds.has(clusterId);
+  // New (split/born) pills fade in with a slightly delayed, eased start: alpha 0 -> 0.97
+  const fade = easeHighlightTransition((progress - 0.12) / 0.88);
+  const alpha = continuing ? CLUSTER_PILL_REST_ALPHA : CLUSTER_PILL_REST_ALPHA * fade;
+  const prevInfo = originId ? tr.prevClusters.get(originId) : undefined;
+  const target = isLight ? nextColor.light : nextColor.dark;
+  const color =
+    prevInfo && continuing
+      ? interpolateHexColorOklab(isLight ? prevInfo.colorLight : prevInfo.colorDark, target, e)
+      : target;
+  return { x: pos.x, y: pos.y, z: pos.z, alpha, color };
+}
+
+export interface ClusterLabelCrossfade {
+  oldLabel: string;
+  newLabel: string;
+  /** Eased blend 0..1: new label alpha = blend, old label alpha = 1 - blend. */
+  blend: number;
+  oldAlpha: number;
+  newAlpha: number;
+  oldPillW: number;
+  newPillW: number;
+  /** Interpolated frame width (symmetric inner padding at every frame). */
+  pillW: number;
+}
+
+/** Label cross-fade state for a continuing cluster whose label changed; null when unchanged. */
+export function sampleKChangeClusterLabel(
+  tr: GraphKChangeTransition,
+  clusterId: string,
+  newName: string,
+  progress: number
+): ClusterLabelCrossfade | null {
+  if (!tr.continuingClusterIds.has(clusterId)) return null;
+  const originId = tr.originByNewClusterId.get(clusterId);
+  const old = originId ? tr.prevClusters.get(originId) : undefined;
+  if (!old || old.name === newName) return null;
+  const blend = easeHighlightTransition(progress);
+  const oldPillW = getClusterPillDimensions(old.name).pillW;
+  const newPillW = getClusterPillDimensions(newName).pillW;
+  return {
+    oldLabel: old.name,
+    newLabel: newName,
+    blend,
+    oldAlpha: 1 - blend,
+    newAlpha: blend,
+    oldPillW,
+    newPillW,
+    pillW: Math.round(oldPillW + (newPillW - oldPillW) * blend),
+  };
+}
+
+/** Ghost pills of vanishing clusters gliding to their merge target while fading out. */
+export function sampleKChangeGhostPills(tr: GraphKChangeTransition, progress: number): GhostClusterPill[] {
+  const e = easeHighlightTransition(progress);
+  const out: GhostClusterPill[] = [];
+  for (const [oldId, targetId] of tr.ghostTargetByOldId) {
+    const info = tr.prevClusters.get(oldId);
+    const from = tr.prevPositions.get(oldId);
+    const to = tr.nextPositions.get(targetId);
+    if (!info || !from || !to) continue;
+    const pos = lerpTransitionPoint(from, to, e);
+    out.push({ ...info, x: pos.x, y: pos.y, z: pos.z, alpha: CLUSTER_PILL_REST_ALPHA * (1 - e) });
+  }
+  return out;
+}
+
 export function getAttenuatedNodeScale(
   hopDistance: number | undefined,
   activeClusterCoverage?: number
@@ -1091,7 +1335,7 @@ export function getAttenuatedEdgeStyle(
 }
 
 export function formatClusterLabelShort(name: string): string {
-  return name.length > 32 ? `${name.slice(0, 30)}…` : name;
+  return name.length > 44 ? `${name.slice(0, 42)}…` : name;
 }
 
 export interface ClusterPillVisualState {
@@ -1157,11 +1401,11 @@ export function measureTextWidthPx(text: string, font: string): number {
       sharedTextMeasureCtx.font = font;
       const w = sharedTextMeasureCtx.measureText(text).width;
       if (Number.isFinite(w) && w > 0) {
-        return Math.ceil(w);
+        return Math.ceil(w) + 4;
       }
     }
   }
-  return Math.ceil(text.length * 6.0);
+  return Math.ceil(text.length * 6.35) + 4;
 }
 
 export function getClusterPillDimensions(
@@ -1235,6 +1479,11 @@ export interface ClusterCalloutSpecInput {
   measuredBaseW?: number;
   measuredSepW?: number;
   measuredPctW?: number;
+  /** Transition alpha (0..0.97): scales the resolved pill alpha (split fade-in / merge fade-out). */
+  alphaOverride?: number;
+  /** Label cross-fade: previous label text + eased blend 0..1 (old fades out, new fades in). */
+  crossfadeFrom?: { text: string; blend: number };
+  measuredOldBaseW?: number;
 }
 
 export interface ClusterCalloutPlacement {
@@ -1262,6 +1511,7 @@ export interface ClusterCalloutPlacement {
   clusterColor?: string;
   alpha: number;
   isHighlighted: boolean;
+  crossfade?: { oldLabel: string; oldBaseW: number; newBaseW: number; blend: number };
 }
 
 export function computeClusterCalloutPlacements2D(
@@ -1280,11 +1530,26 @@ export function computeClusterCalloutPlacements2D(
 
   for (const c of clusterSpecs) {
     const pillState = resolveClusterPillVisualState(c, anyFocusActive);
-    const dims = getClusterPillDimensions(c.text, c.activeCoverage, pillState.isHighlighted, s, {
+    let dims = getClusterPillDimensions(c.text, c.activeCoverage, pillState.isHighlighted, s, {
       baseW: c.measuredBaseW,
       sepW: c.measuredSepW,
       pctW: c.measuredPctW,
     });
+    let crossfade: ClusterCalloutPlacement['crossfade'];
+    if (c.crossfadeFrom) {
+      const oldDims = getClusterPillDimensions(c.crossfadeFrom.text, undefined, false, s, {
+        baseW: c.measuredOldBaseW,
+      });
+      const b = Math.max(0, Math.min(1, c.crossfadeFrom.blend));
+      const pw = Math.round(oldDims.pillW + (dims.pillW - oldDims.pillW) * b);
+      crossfade = {
+        oldLabel: oldDims.baseLabel,
+        oldBaseW: oldDims.baseW,
+        newBaseW: dims.baseW,
+        blend: b,
+      };
+      dims = { ...dims, pillW: pw, totalTextW: pw - 16 * s };
+    }
 
     result.set(c.id, {
       id: c.id,
@@ -1309,7 +1574,11 @@ export function computeClusterCalloutPlacements2D(
       baseLabel: dims.baseLabel,
       pctText: dims.pctText,
       clusterColor: c.clusterColor,
-      alpha: pillState.alpha,
+      crossfade,
+      alpha:
+        c.alphaOverride !== undefined
+          ? pillState.alpha * Math.max(0, Math.min(1, c.alphaOverride / CLUSTER_PILL_REST_ALPHA))
+          : pillState.alpha,
       isHighlighted: pillState.isHighlighted,
     });
   }
@@ -1347,9 +1616,15 @@ export function drawClusterCalloutLabels2D(
       ctx.font = boldFont;
       measuredPctW = ctx.measureText(pctText).width;
     }
+    let measuredOldBaseW: number | undefined;
+    if (c.crossfadeFrom) {
+      ctx.font = baseFont;
+      measuredOldBaseW = ctx.measureText(formatClusterLabelShort(c.crossfadeFrom.text)).width;
+    }
     return {
       ...c,
       measuredBaseW,
+      measuredOldBaseW,
       measuredSepW: 0,
       measuredPctW,
     };
@@ -1405,7 +1680,18 @@ export function drawClusterCalloutLabels2D(
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
     ctx.fillStyle = textColor;
-    ctx.fillText(pl.baseLabel, textStartX, pl.py + 0.5);
+    if (pl.crossfade) {
+      const regionW = pl.totalTextW - pl.dotLeadW;
+      const xf = pl.crossfade;
+      const baseAlpha = ctx.globalAlpha;
+      ctx.globalAlpha = baseAlpha * (1 - xf.blend);
+      ctx.fillText(xf.oldLabel, textStartX + (regionW - xf.oldBaseW) / 2, pl.py + 0.5);
+      ctx.globalAlpha = baseAlpha * xf.blend;
+      ctx.fillText(pl.baseLabel, textStartX + (regionW - xf.newBaseW) / 2, pl.py + 0.5);
+      ctx.globalAlpha = baseAlpha;
+    } else {
+      ctx.fillText(pl.baseLabel, textStartX, pl.py + 0.5);
+    }
 
     // External right-docked coverage percentage satellite badge (zero main pill resize)
     if (pl.pctText && pl.badgeW > 0) {
@@ -1974,10 +2260,122 @@ export function buildAutomaticTagClusters(
   return partitionTagsIntoTopicClusters(tags, N_ITEMS, targetClusterCount);
 }
 
+interface ClusterIdentityStabilization {
+  colorByNewId: Map<string, { dark: string; light: string }>;
+  originByNewId: Map<string, string>;
+  kindByNewId: Map<string, 'match' | 'split'>;
+  mergeTargetByOldId: Record<string, string>;
+}
+
+/**
+ * Matches new clusters to previous clusters by tag-set Jaccard similarity (greedy, highest first,
+ * sim > 0). Matched clusters inherit the exact colour pair; unmatched (split) clusters take the
+ * first unused palette pair and point to the previous cluster with the largest tag overlap.
+ * Previous clusters left unmatched (merged away) are mapped to their best-overlapping new cluster.
+ */
+function stabilizeClusterIdentity(
+  tagClusters: ReadonlyArray<TagClusterDescriptor>,
+  previousNodes: ReadonlyArray<GraphNodePayload>
+): ClusterIdentityStabilization {
+  const prev = previousNodes
+    .filter((n) => n.group === 0)
+    .map((n) => ({ node: n, tags: new Set<string>(n.memberTags ?? n.tags ?? []) }))
+    .sort((a, b) => a.node.id.localeCompare(b.node.id));
+  const next = tagClusters
+    .map((cl) => ({ cl, tags: new Set<string>(cl.members.map((m) => m.slug)) }))
+    .sort((a, b) => a.cl.nodeId.localeCompare(b.cl.nodeId));
+  const inter = (a: Set<string>, b: Set<string>): number => {
+    let c = 0;
+    for (const s of a) if (b.has(s)) c++;
+    return c;
+  };
+  const pairs: { oi: number; ni: number; sim: number }[] = [];
+  prev.forEach((p, oi) => {
+    next.forEach((n, ni) => {
+      const shared = inter(p.tags, n.tags);
+      if (shared === 0) return;
+      pairs.push({ oi, ni, sim: shared / (p.tags.size + n.tags.size - shared) });
+    });
+  });
+  pairs.sort((a, b) => b.sim - a.sim || a.oi - b.oi || a.ni - b.ni);
+
+  const matchedOld = new Set<number>();
+  const matchedNew = new Map<number, number>();
+  for (const pr of pairs) {
+    if (pr.sim <= 0 || matchedOld.has(pr.oi) || matchedNew.has(pr.ni)) continue;
+    matchedOld.add(pr.oi);
+    matchedNew.set(pr.ni, pr.oi);
+  }
+
+  const colorByNewId = new Map<string, { dark: string; light: string }>();
+  const originByNewId = new Map<string, string>();
+  const kindByNewId = new Map<string, 'match' | 'split'>();
+  const usedDark = new Set<string>();
+  const palDark = CLUSTER_PALETTE.dark as readonly string[];
+  const palLight = CLUSTER_PALETTE.light as readonly string[];
+
+  for (const [ni, oi] of matchedNew) {
+    const old = prev[oi].node;
+    const dark = old.colorDark ?? palDark[ni % palDark.length];
+    const light = old.colorLight ?? palLight[ni % palLight.length];
+    colorByNewId.set(next[ni].cl.nodeId, { dark, light });
+    originByNewId.set(next[ni].cl.nodeId, old.id);
+    kindByNewId.set(next[ni].cl.nodeId, 'match');
+    usedDark.add(dark.toLowerCase());
+  }
+  // Colours still carried by unmatched old clusters stay reserved until they have faded out.
+  const reserved = new Set(
+    prev
+      .filter((_, oi) => !matchedOld.has(oi))
+      .map((p) => (p.node.colorDark ?? '').toLowerCase())
+  );
+  next.forEach((n, ni) => {
+    if (matchedNew.has(ni)) return;
+    let idx = palDark.findIndex(
+      (d) => !usedDark.has(d.toLowerCase()) && !reserved.has(d.toLowerCase())
+    );
+    if (idx < 0) idx = palDark.findIndex((d) => !usedDark.has(d.toLowerCase()));
+    if (idx < 0) idx = ni % palDark.length;
+    usedDark.add(palDark[idx].toLowerCase());
+    colorByNewId.set(n.cl.nodeId, { dark: palDark[idx], light: palLight[idx] });
+    let best = -1;
+    let bestShared = 0;
+    prev.forEach((p, oi) => {
+      const shared = inter(p.tags, n.tags);
+      if (shared > bestShared) {
+        bestShared = shared;
+        best = oi;
+      }
+    });
+    if (best >= 0) {
+      originByNewId.set(n.cl.nodeId, prev[best].node.id);
+      kindByNewId.set(n.cl.nodeId, 'split');
+    }
+  });
+  const mergeTargetByOldId: Record<string, string> = {};
+  prev.forEach((p, oi) => {
+    if (matchedOld.has(oi)) return;
+    let best = -1;
+    let bestShared = 0;
+    next.forEach((n, ni) => {
+      const shared = inter(p.tags, n.tags);
+      if (shared > bestShared) {
+        bestShared = shared;
+        best = ni;
+      }
+    });
+    if (best < 0 && next.length > 0) best = 0;
+    if (best >= 0) mergeTargetByOldId[p.node.id] = next[best].cl.nodeId;
+  });
+
+  return { colorByNewId, originByNewId, kindByNewId, mergeTargetByOldId };
+}
+
 function buildClusteredGraphFromItemsAndTags(
   contentNodes: ReadonlyArray<GraphNodePayload>,
   rawTags: ReadonlyArray<RawTagSummary>,
-  targetClusterCount: number = DEFAULT_TOPIC_CLUSTER_COUNT
+  targetClusterCount: number = DEFAULT_TOPIC_CLUSTER_COUNT,
+  previousNodes?: ReadonlyArray<GraphNodePayload>
 ): CanonicalGraphPayload {
   const tagTitleMap = new Map<string, string>();
   const tagItemsMap = new Map<string, Set<string>>();
@@ -2035,6 +2433,10 @@ function buildClusteredGraphFromItemsAndTags(
       light: CLUSTER_PALETTE.light[cIdx % CLUSTER_PALETTE.light.length],
     });
   });
+  const stabilized = previousNodes ? stabilizeClusterIdentity(tagClusters, previousNodes) : null;
+  if (stabilized) {
+    for (const [nodeId, colors] of stabilized.colorByNewId) clusterColorByNodeId.set(nodeId, colors);
+  }
 
   const itemColorMap = new Map<string, { dark: string; light: string }>();
 
@@ -2147,6 +2549,13 @@ function buildClusteredGraphFromItemsAndTags(
       typeLabel: 'Tag',
       description: `${linkedItemsCount} linked content items (cumulative overlap: ${covSum.toFixed(1)}) across ${cl.members.length} grouped tags: ${memberPreview}${suffix}.`,
       tags: cl.members.slice(0, 6).map((m) => m.slug),
+      memberTags: cl.members.map((m) => m.slug),
+      ...(stabilized?.originByNewId.has(cl.nodeId)
+        ? {
+            originClusterId: stabilized.originByNewId.get(cl.nodeId),
+            originKind: stabilized.kindByNewId.get(cl.nodeId),
+          }
+        : {}),
     };
   });
 
@@ -2176,12 +2585,14 @@ function buildClusteredGraphFromItemsAndTags(
     nodes: visNodes,
     connections: visConnections,
     rawTags: rawTags.map((rt) => ({ ...rt })),
+    ...(stabilized ? { mergeTargetByOldClusterId: stabilized.mergeTargetByOldId } : {}),
   };
 }
 
 export function reclusterCanonicalGraphPayload(
   canonical: CanonicalGraphPayload,
-  targetClusterCount: number
+  targetClusterCount: number,
+  previousNodes?: ReadonlyArray<GraphNodePayload>
 ): CanonicalGraphPayload {
   const clampedK = Math.max(2, Math.min(18, Math.round(targetClusterCount)));
   const contentNodes = canonical.nodes.filter((n) => n.group !== 0);
@@ -2193,7 +2604,7 @@ export function reclusterCanonicalGraphPayload(
     }
     rawTags = Array.from(slugSet).map((slug) => ({ id: slug, name: slug }));
   }
-  return buildClusteredGraphFromItemsAndTags(contentNodes, rawTags, clampedK);
+  return buildClusteredGraphFromItemsAndTags(contentNodes, rawTags, clampedK, previousNodes);
 }
 
 export async function buildCanonicalGraphPayload(
@@ -2407,6 +2818,76 @@ export async function buildCanonicalGraphPayload(
   }
 
   return buildClusteredGraphFromItemsAndTags(contentNodes, rawTags, DEFAULT_TOPIC_CLUSTER_COUNT);
+}
+
+/**
+ * Re-clusters the canonical payload to K clusters with colour/identity stabilization against the
+ * currently displayed nodes. With `restoreDefault` (tuning reset) and K == default, the pristine
+ * canonical colours are kept while still carrying origin/merge metadata for the transition.
+ */
+export function resolveKChangeCanonical(
+  canonical: CanonicalGraphPayload,
+  targetK: number,
+  currentNodes: ReadonlyArray<GraphNodePayload>,
+  restoreDefault = false
+): CanonicalGraphPayload {
+  const stabilized = reclusterCanonicalGraphPayload(canonical, targetK, currentNodes);
+  if (!restoreDefault || targetK !== DEFAULT_TOPIC_CLUSTER_COUNT) return stabilized;
+  const meta = new Map(stabilized.nodes.map((n) => [n.id, n]));
+  return {
+    ...canonical,
+    nodes: canonical.nodes.map((n) => {
+      const m = meta.get(n.id);
+      return n.group === 0 && m?.originClusterId
+        ? { ...n, originClusterId: m.originClusterId, originKind: m.originKind }
+        : n;
+    }),
+    mergeTargetByOldClusterId: stabilized.mergeTargetByOldClusterId,
+  };
+}
+
+/**
+ * Start positions for the new node set right after a K change: content nodes keep their previous
+ * position, clusters start at their origin cluster (or the centroid of their strongest items).
+ */
+export function computeKChangeStartPositions(
+  nextNodes: ReadonlyArray<GraphNodePayload>,
+  connections: ReadonlyArray<GraphConnectionPayload>,
+  prev: ReadonlyMap<string, TransitionPoint>,
+  targetK: number,
+  fallbackRadius = 140
+): Map<string, TransitionPoint> {
+  const sums = new Map<string, { x: number; y: number; z: number; count: number }>();
+  for (const c of connections) {
+    const pt = prev.get(c.sourceId);
+    if (pt && (c.weight ?? 0) >= 0.4) {
+      const cur = sums.get(c.targetId) || { x: 0, y: 0, z: 0, count: 0 };
+      cur.x += pt.x;
+      cur.y += pt.y;
+      cur.z += pt.z ?? 0;
+      cur.count += 1;
+      sums.set(c.targetId, cur);
+    }
+  }
+  const out = new Map<string, TransitionPoint>();
+  nextNodes.forEach((n, idx) => {
+    const existing =
+      n.group === 0 && n.originClusterId
+        ? (prev.get(n.originClusterId) ?? prev.get(n.id))
+        : prev.get(n.id);
+    if (existing) {
+      out.set(n.id, { x: existing.x, y: existing.y, z: existing.z });
+      return;
+    }
+    const cen = sums.get(n.id);
+    if (cen && cen.count > 0) {
+      out.set(n.id, { x: cen.x / cen.count, y: cen.y / cen.count, z: cen.z / cen.count });
+      return;
+    }
+    const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
+    out.set(n.id, { x: Math.cos(angle) * fallbackRadius, y: Math.sin(angle) * fallbackRadius, z: 0 });
+  });
+  return out;
 }
 
 export function computeBipartiteEdgeCohesionWeights(

@@ -100,6 +100,27 @@ Die Implementierung und Verifikation von Etappe 1 (`SOLVER_VERSION = 'v19'`) üb
 
 ---
 
+## 4a. Etappe 1b: Warm-Start-Seeding, Jaccard-Farbvererbung & Pill-Morphing (`SOLVER_VERSION = 'v21'`)
+
+Etappe 1b liefert die wiederverwendbaren Bausteine, die der Timeline-Player (Etappe 2) unverändert nutzt:
+
+1. **Warm-Start-Seeding (`SolverGraphInput.seedPositions`, [`graph-solvers.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-solvers.ts)):**
+   - `buildInitialSpiralPositions` überlagert den kalten Spiral-Start mit Seeds: eigener Seed > Seed des `originClusterId` (Geschwister-Cluster mit gleichem Ursprung werden deterministisch um `rank · 20 px` versetzt, bevorzugt in Richtung des Schwerpunkts ihrer verbundenen Content-Seeds) > coverage-gewichteter Schwerpunkt der verbundenen Content-Seeds. Neue Content-Knoten ohne Seed übernehmen den relativen Offset ihres Primär-Hubs.
+   - D3-, Vis- und 3D-Solver starten bei Seeds mit ruhigerer Temperatur (`alpha = 0.45` bzw. Vis-`heat = 0.45`). Sync- und Async-Varianten teilen sich dieselbe Init-Funktion (`maxDelta = 0.0000 px`).
+   - **Kaltpfad bleibt bit-identisch:** Ohne `seedPositions` wird kein Warm-Code ausgeführt (`heat = 1`, kein `alpha`-Override), damit gecachte statische Layouts gültig bleiben.
+   - **Live-Tuning ist immer warm:** Physik-/K-Tuning übergibt die aktuellen Live-Positionen (`forcePositions`, Cytoscape `modelPositions`), sodass Drag-and-Drop-Anpassungen erhalten bleiben. Nur `applyTuning('reset')` kehrt zu `initialForcePositions` und Default-K zurück.
+2. **Jaccard-Farbvererbung (`reclusterCanonicalGraphPayload(canonical, K, previousNodes?)`):**
+   - Neue Cluster werden über das Jaccard-Maß der Tag-Mengen (`memberTags`) greedy (höchste Ähnlichkeit zuerst, `sim > 0`) den vorherigen Clustern zugeordnet. Treffer erben **exakt** `colorDark/colorLight` und erhalten `originClusterId` + `originKind = 'match'`.
+   - Nicht zugeordnete (abgespaltene) Cluster erhalten das erste unbenutzte `CLUSTER_PALETTE`-Paar und `originKind = 'split'` mit dem Alt-Cluster der größten Tag-Überlappung als Ursprung. Verschwindende Alt-Cluster (K sinkt) werden in `mergeTargetByOldClusterId` auf den überlappungsstärksten neuen Cluster abgebildet. Content-Knotenfarben werden mit den stabilisierten Cluster-Farben per `mixHexColorsOklab` neu berechnet.
+3. **Split-/Merge-Pill-Morphing (~`520 ms`, `easeHighlightTransition`):**
+   - Gemeinsame Helfer in [`graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts) (`createKChangeTransition`, `sampleKChangeNodePosition/NodeColor/ClusterPill/GhostPills`, `resolveKChangeCanonical`, `computeKChangeStartPositions`) und der Controller [`graph-k-transition.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/graph-k-transition.ts) steuern alle fünf Engines identisch: Content-Knoten interpolieren Position und OKLab-Farbe; fortgesetzte Cluster gleiten Alt→Neu; neu gespaltene Cluster spawnen an der Eltern-Position (`alpha 0 → 0.97`); verschwindende Cluster bleiben als Ghost-Pill bestehen und gleiten zum Merge-Ziel (`alpha 0.97 → 0`). Overlay: 2D-Canvas (Cytoscape/Sigma/Vis/3D via `alphaOverride`), temporäre SVG-`<g class="cluster-pill">` in D3.
+4. **D3-Pill-Messregeln (kein Flackern, exakter Textrahmen):**
+   - `formatClusterLabelShort` kürzt erst ab `44` Zeichen (`slice(0, 42) + '…'`); `measureTextWidthPx` addiert `+4 px` Sicherheitsrand (SSR-Fallback `length · 6.35`).
+   - D3 wartet in `init()` auf `document.fonts.ready`, setzt explizit `font-family/size/weight` und rahmt jede Pill synchron in `syncD3ClusterPillGeometry` (vor dem ersten Paint): `textW = ceil(max(getComputedTextLength, getBBox().width))`, `pillW = ceil(11 + textW + 2·9)` mit symmetrischem 9-px-Innenabstand (Punkt-Radius 3, Lücke 5). E2E prüft `rect.right − text.right ≥ 4`, `dot.left − rect.left ≥ 4` und Symmetrie ≤ 4 px.
+5. **Validierungs-Gates (`validate:vis`, Gate 3b):** Warm-Start-Determinismus, Sync/Async-Parität, Farbvererbung K=4→5→4, Merge-Targets, Label-Länge ≤ 44 und unveränderter Kaltpfad.
+
+---
+
 ## 5. Betroffene Dateien & Komponenten
 
 | Datei / Modul | Geplante Änderung im Rahmen von `SYSTEM-014` (Etappe 2) |

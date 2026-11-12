@@ -23,9 +23,16 @@ import {
   getAttenuatedEdgeStyle,
   getRestEdgeStyle,
   getNodeHopZIndex,
-  isDefaultGraphTuningState,
-  reclusterCanonicalGraphPayload,
-  type CanonicalGraphPayload
+  computeKChangeStartPositions,
+  resolveKChangeCanonical,
+  sampleKChangeClusterLabel,
+  sampleKChangeClusterPill,
+  sampleKChangeGhostPills,
+  sampleKChangeNodeColor,
+  sampleKChangeNodePosition,
+  type CanonicalGraphPayload,
+  type ClusterLabelCrossfade,
+  type GraphNodePayload
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
@@ -38,6 +45,7 @@ import {
   createGraphDragPhysicsController2D,
   type GraphDragPhysicsController2D,
 } from '@commons/client/graph-drag-controller';
+import { createKChangeController, type KChangeController } from '@commons/client/graph-k-transition';
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
@@ -69,6 +77,8 @@ export interface CytoscapeNodeMeta {
   date?: string;
   image?: string;
   tags?: string[];
+  originClusterId?: string;
+  originKind?: 'match' | 'split';
 }
 
 export interface CytoscapeEdgeMeta {
@@ -84,7 +94,9 @@ export interface CytoscapeEngine {
   cy: Core | null;
   canonicalPayload?: CanonicalGraphPayload | null;
   activeClusterCount?: number;
-  rebuildClusterTopology?(targetK: number): void;
+  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
+  kChange?: KChangeController | null;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>): boolean;
   tooltipController: GraphTooltipController | null;
   fgCanvas?: HTMLCanvasElement | null;
   drawScene?: (() => void) | null;
@@ -471,8 +483,11 @@ const engine: CytoscapeEngine = {
         clusterColor?: string;
         hopDistance?: number;
         activeCoverage?: number;
+        alphaOverride?: number;
+        crossfadeFrom?: { text: string; blend: number };
       }[] = [];
 
+      const kAct = this.kChange?.getActive() ?? null;
       for (const n of this.nodeMetaList) {
         const p = this.modelPositions.get(n.id);
         if (!p) continue;
@@ -490,15 +505,48 @@ const engine: CytoscapeEngine = {
           const activeCoverage = activeContentCoverageMap
             ? (activeContentCoverageMap.get(n.id) ?? 0)
             : undefined;
+          let pillColor = getNodeClusterColor(n, currentIsLight);
+          let pillAlpha: number | undefined;
+          let pillXf: ClusterLabelCrossfade | null = null;
+          if (kAct) {
+            const s = sampleKChangeClusterPill(
+              kAct.tr,
+              n.id,
+              { dark: n.colorDark ?? currentPalette[0], light: n.colorLight ?? currentPalette[0] },
+              currentIsLight,
+              kAct.progress
+            );
+            if (s) {
+              pillColor = s.color;
+              pillAlpha = s.alpha;
+              pillXf = sampleKChangeClusterLabel(kAct.tr, n.id, n.name, kAct.progress);
+            }
+          }
           clusterCalloutSpecs.push({
             id: n.id,
             text: n.name,
             x: rx,
             y: ry,
             radiusPx: radius,
-            clusterColor: getNodeClusterColor(n, currentIsLight),
+            clusterColor: pillColor,
             hopDistance: effectiveHop,
             activeCoverage,
+            alphaOverride: pillAlpha,
+            crossfadeFrom: pillXf ? { text: pillXf.oldLabel, blend: pillXf.blend } : undefined,
+          });
+        }
+      }
+
+      if (kAct) {
+        for (const gp of sampleKChangeGhostPills(kAct.tr, kAct.progress)) {
+          clusterCalloutSpecs.push({
+            id: `ghost:${gp.id}`,
+            text: gp.name,
+            x: gp.x * zoom + panX,
+            y: gp.y * zoom + panY,
+            radiusPx: 0,
+            clusterColor: currentIsLight ? gp.colorLight : gp.colorDark,
+            alphaOverride: gp.alpha,
           });
         }
       }
@@ -702,12 +750,20 @@ const engine: CytoscapeEngine = {
 
     rebuildDragController(controllerNodes, controllerEdges);
 
-    this.rebuildClusterTopology = (targetK: number) => {
+    this.kChange?.destroy();
+    this.kChange = createKChangeController();
+
+    this.rebuildClusterTopology = (targetK: number, opts?: { restoreDefault?: boolean }) => {
       if (!this.canonicalPayload || !this.cy) return;
-      const nextCanonical =
-        targetK === DEFAULT_TOPIC_CLUSTER_COUNT
-          ? this.canonicalPayload
-          : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+      this.kChange?.finish();
+      const prevPayloadNodes: GraphNodePayload[] = this.nodeMetaList.map((m) => ({ ...m }));
+      const prevMetaById = new Map(prevPayloadNodes.map((m) => [m.id, m]));
+      const nextCanonical = resolveKChangeCanonical(
+        this.canonicalPayload,
+        targetK,
+        prevPayloadNodes,
+        Boolean(opts?.restoreDefault)
+      );
 
       const currentIsLight = Boolean(this.isLight);
       const curTokens = getGraphStyleTokens(currentIsLight);
@@ -719,17 +775,7 @@ const engine: CytoscapeEngine = {
         prevPosById.set(id, { x: p.x, y: p.y });
       }
 
-      const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
-      for (const c of nextCanonical.connections) {
-        const pt = prevPosById.get(c.sourceId);
-        if (pt && (c.weight ?? 0) >= 0.4) {
-          const cur = itemCoordsByCluster.get(c.targetId) || { sumX: 0, sumY: 0, count: 0 };
-          cur.sumX += pt.x;
-          cur.sumY += pt.y;
-          cur.count += 1;
-          itemCoordsByCluster.set(c.targetId, cur);
-        }
-      }
+      const startPos = computeKChangeStartPositions(nextCanonical.nodes, nextCanonical.connections, prevPosById, targetK);
 
       this.nodeMetaList = [];
       this.edgeMetaList = [];
@@ -745,25 +791,16 @@ const engine: CytoscapeEngine = {
       const nextCtrlEdges: { source: string; target: string; weight: number }[] = [];
       const nextRawEdges: { source: string; target: string }[] = [];
 
-      nextCanonical.nodes.forEach((n, idx) => {
-        const existing = prevPosById.get(n.id);
-        let px = existing?.x;
-        let py = existing?.y;
-        if (px === undefined || py === undefined) {
-          const centroid = itemCoordsByCluster.get(n.id);
-          if (centroid && centroid.count > 0) {
-            px = centroid.sumX / centroid.count;
-            py = centroid.sumY / centroid.count;
-          } else {
-            const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
-            px = Math.cos(angle) * 140;
-            py = Math.sin(angle) * 140;
-          }
-        }
+      nextCanonical.nodes.forEach((n) => {
+        const sp = startPos.get(n.id) ?? { x: 0, y: 0 };
+        const px = sp.x;
+        const py = sp.y;
         const col = getNodeBaseColor(n, currentIsLight) || curPalette[n.group] || curPalette[0];
         this.modelPositions.set(n.id, { x: px, y: py });
         this.forcePositions.set(n.id, { x: px, y: py });
-        nodeDisplayColorMap.set(n.id, col);
+        const prevMeta = prevMetaById.get(n.id);
+        const prevCol = n.group !== 0 && prevMeta ? getNodeBaseColor(prevMeta, currentIsLight) : undefined;
+        nodeDisplayColorMap.set(n.id, prevCol || col);
         nodeDisplaySizeMap.set(n.id, curBaseDiameter * getNodeRestRadiusScale(n.group, n.size));
 
         this.nodeMetaList.push({
@@ -778,6 +815,8 @@ const engine: CytoscapeEngine = {
           date: n.date,
           image: n.image,
           tags: n.tags ? [...n.tags] : undefined,
+          originClusterId: n.originClusterId,
+          originKind: n.originKind,
         });
         nextCtrlNodes.push({ id: n.id, group: n.group, x: px, y: py });
         nextCyElements.push({
@@ -840,7 +879,51 @@ const engine: CytoscapeEngine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       rebuildDragController(nextCtrlNodes, nextCtrlEdges);
+      this.kChange?.begin({
+        prevNodes: prevPayloadNodes,
+        prevPositions: prevPosById,
+        nextNodes: this.nodeMetaList,
+        nextStartPositions: startPos,
+        mergeTargetByOldClusterId: nextCanonical.mergeTargetByOldClusterId,
+      });
       drawForegroundOverlay();
+    };
+
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>) => {
+      const isLightNow = Boolean(this.isLight);
+      return (
+        this.kChange?.play(nextPositions, {
+          onFrame: (tr, progress) => {
+            for (const meta of this.nodeMetaList) {
+              const nextColor = {
+                dark: meta.colorDark ?? GRAPH_COLORS.dark[0],
+                light: meta.colorLight ?? GRAPH_COLORS.light[0],
+              };
+              if (meta.group === 0) {
+                const s = sampleKChangeClusterPill(tr, meta.id, nextColor, isLightNow, progress);
+                if (s) this.modelPositions.set(meta.id, { x: s.x, y: s.y });
+              } else {
+                const p = sampleKChangeNodePosition(tr, meta.id, progress);
+                if (p) this.modelPositions.set(meta.id, { x: p.x, y: p.y });
+                nodeDisplayColorMap.set(
+                  meta.id,
+                  sampleKChangeNodeColor(tr, meta.id, nextColor, isLightNow, progress)
+                );
+              }
+            }
+            drawForegroundOverlay();
+          },
+          onFinish: () => {
+            for (const [id, p] of nextPositions) {
+              this.modelPositions.set(id, { x: p.x, y: p.y });
+              this.forcePositions.set(id, { x: p.x, y: p.y });
+            }
+            syncPositionsToCy();
+            this.applyHighlight?.(null, true);
+            this.calibrateDragEquilibrium?.(true);
+          },
+        }) ?? false
+      );
     };
 
     const calibrateDragEquilibrium = (syncFromCy = false) => {
@@ -924,6 +1007,7 @@ const engine: CytoscapeEngine = {
       },
       onNodeDragStart: (rawNode, sx, sy) => {
         if (!this.cy) return;
+        this.kChange?.finish();
         grabbedNodeId = rawNode.id;
         this.hoveredNodeId = grabbedNodeId;
         this.lastDraggedAt = performance.now();
@@ -1265,6 +1349,7 @@ const engine: CytoscapeEngine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
+      this.kChange?.discard();
     }
 
     // Apply color update to nodes and edges based on theme (and preserve any active highlight)
@@ -1277,6 +1362,7 @@ const engine: CytoscapeEngine = {
 
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset') {
     if (!this.cy) return;
+    this.kChange?.finish();
     if (category === 'visual') {
       this.applyHighlight?.(this.hoveredNodeId ?? null, true);
       return;
@@ -1296,29 +1382,22 @@ const engine: CytoscapeEngine = {
         if (this.activeClusterCount !== targetK) {
           this.rebuildClusterTopology?.(targetK);
         }
-        if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
-          this.tuningInFlight = false;
-          const targets: Record<string, { x: number; y: number }> = {};
-          this.forcePositions.clear();
-          for (const [id, pos] of this.initialForcePositions.entries()) {
-            this.forcePositions.set(id, { x: pos.x, y: pos.y });
-            targets[id] = { x: pos.x, y: pos.y };
-          }
-          this.animateTo(targets, 450, undefined, true, false);
-        } else {
+        {
           this.tuningInFlight = true;
           const nodes: SolverGraphNode[] = this.nodeMetaList.map((n) => ({
             id: n.id,
             group: n.group,
             size: n.size,
+            originClusterId: n.originClusterId,
           }));
           const connections: SolverGraphEdge[] = this.edgeMetaList.map((e) => ({
             source: e.source,
             target: e.target,
             weight: e.weight,
           }));
+          const seedPositions = this.kChange?.getSeedPositions() ?? new Map(this.modelPositions);
           void solveCytoscapeCoseLayoutAsync(
-            { nodes, connections },
+            { nodes, connections, seedPositions },
             { shouldCancel: () => this.tuningGeneration !== gen }
           ).then((targets) => {
             if (!targets || this.tuningGeneration !== gen || !this.cy) return;
@@ -1327,6 +1406,14 @@ const engine: CytoscapeEngine = {
             this.forcePositions.clear();
             for (const [id, pt] of Object.entries(targets)) {
               this.forcePositions.set(id, { x: pt.x, y: pt.y });
+            }
+            if (this.kChange?.hasPending()) {
+              const solved = new Map<string, { x: number; y: number }>();
+              for (const [id, pt] of Object.entries(targets)) solved.set(id, { x: pt.x, y: pt.y });
+              if (this.playKTransition?.(solved)) {
+                this.startViewportAdaptLoop(1400);
+                return;
+              }
             }
             this.animateTo(targets, 450, undefined, true, false);
           });
@@ -1340,7 +1427,7 @@ const engine: CytoscapeEngine = {
       this.dragController?.stop();
       const targetK = getGraphTuningState().clusterCount;
       if (this.activeClusterCount !== targetK) {
-        this.rebuildClusterTopology?.(targetK);
+        this.rebuildClusterTopology?.(targetK, { restoreDefault: true });
       }
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
@@ -1352,8 +1439,13 @@ const engine: CytoscapeEngine = {
         for (const [id, pos] of this.initialForcePositions.entries()) {
           targets[id] = { x: pos.x, y: pos.y };
         }
+        if (this.kChange?.hasPending() && this.playKTransition?.(new Map(this.initialForcePositions))) {
+          this.startViewportAdaptLoop(1400);
+          return;
+        }
         this.animateTo(targets, 450, undefined, true, false);
       } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        this.kChange?.discard();
         const targets = this.computeLayoutTargets(this.currentLayout, false);
         this.animateTo(targets, 450, undefined, true, false);
       }
@@ -1361,6 +1453,8 @@ const engine: CytoscapeEngine = {
   },
 
   destroy() {
+    this.kChange?.destroy();
+    this.kChange = null;
     this.tuningGeneration = (this.tuningGeneration || 0) + 1;
     this.tuningInFlight = false;
     if (this.highlightFrameId) {

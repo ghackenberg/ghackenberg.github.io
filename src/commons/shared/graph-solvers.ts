@@ -46,6 +46,14 @@ export interface SolverGraphNode {
   x?: number;
   y?: number;
   z?: number;
+  /** Cluster hub node id this (hub) node was split/derived from during re-clustering. */
+  originClusterId?: string;
+}
+
+export interface SolverSeedPoint {
+  x: number;
+  y: number;
+  z?: number;
 }
 
 export interface SolverGraphEdge {
@@ -59,6 +67,8 @@ export interface SolverGraphEdge {
 export interface SolverGraphInput {
   nodes: readonly SolverGraphNode[];
   connections: readonly SolverGraphEdge[];
+  /** Warm-start seeds (current live positions). Absent => byte-identical cold start. */
+  seedPositions?: ReadonlyMap<string, SolverSeedPoint> | Record<string, SolverSeedPoint>;
 }
 
 export interface Geometry2DOptions {
@@ -358,6 +368,142 @@ interface InitialSpiralPositions {
   init3D: Point3D[];
 }
 
+function lookupSeed(
+  seeds: NonNullable<SolverGraphInput['seedPositions']>,
+  id: string
+): SolverSeedPoint | undefined {
+  const raw = seeds instanceof Map ? seeds.get(id) : (seeds as Record<string, SolverSeedPoint>)[id];
+  if (!raw || !Number.isFinite(raw.x) || !Number.isFinite(raw.y)) return undefined;
+  return raw;
+}
+
+/**
+ * Overlays warm-start seeds onto the deterministic cold spiral layout (mutates the maps).
+ * Priority: own seed > seed of originClusterId (siblings offset ~20px) > coverage-weighted
+ * centroid of connected content seeds > cold position. Fully deterministic (no RNG, sorted ids).
+ */
+function applyWarmStartSeeds(
+  input: SolverGraphInput,
+  hubIds: ReadonlySet<string>,
+  primaryHubByNode: ReadonlyMap<string, string>,
+  hubEdgesByNode: ReadonlyMap<string, { hubId: string; weight: number }[]>,
+  pos2DById: Map<string, Point2D>,
+  pos3DById: Map<string, Point3D>
+): void {
+  const seeds = input.seedPositions!;
+  const goldenAngle = 2.3999632297286533;
+  const nodes = input.nodes;
+  const coldHub2D = new Map<string, Point2D>();
+  const coldHub3D = new Map<string, Point3D>();
+  for (const id of hubIds) {
+    coldHub2D.set(id, { ...pos2DById.get(id)! });
+    coldHub3D.set(id, { ...pos3DById.get(id)! });
+  }
+
+  const contentSeedByHub = new Map<string, { x: number; y: number; z: number; w: number; hasZ: boolean }>();
+  for (const n of nodes) {
+    if (hubIds.has(n.id)) continue;
+    const s = lookupSeed(seeds, n.id);
+    if (!s) continue;
+    for (const e of hubEdgesByNode.get(n.id) ?? []) {
+      const w = Math.max(0.01, e.weight);
+      let acc = contentSeedByHub.get(e.hubId);
+      if (!acc) {
+        acc = { x: 0, y: 0, z: 0, w: 0, hasZ: false };
+        contentSeedByHub.set(e.hubId, acc);
+      }
+      acc.x += s.x * w;
+      acc.y += s.y * w;
+      acc.z += (s.z ?? 0) * w;
+      acc.w += w;
+      if (typeof s.z === 'number') acc.hasZ = true;
+    }
+  }
+
+  const hubNodes = nodes
+    .filter((n) => hubIds.has(n.id))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const siblingRank = new Map<string, number>();
+  const siblingCountByOrigin = new Map<string, number>();
+  for (const h of hubNodes) {
+    const origin = h.originClusterId;
+    if (!origin || lookupSeed(seeds, h.id)) continue;
+    const base = siblingCountByOrigin.get(origin) ?? (hubIds.has(origin) ? 1 : 0);
+    siblingRank.set(h.id, base);
+    siblingCountByOrigin.set(origin, base + 1);
+  }
+
+  for (const h of hubNodes) {
+    const own = lookupSeed(seeds, h.id);
+    const cold3 = coldHub3D.get(h.id)!;
+    const cs = contentSeedByHub.get(h.id);
+    let p2: Point2D | undefined;
+    let p3: Point3D | undefined;
+    if (own) {
+      p2 = { x: own.x, y: own.y };
+      p3 = { x: own.x, y: own.y, z: own.z ?? cold3.z };
+    } else {
+      const originSeed = h.originClusterId ? lookupSeed(seeds, h.originClusterId) : undefined;
+      if (originSeed) {
+        const rank = siblingRank.get(h.id) ?? 0;
+        let dx2 = Math.cos(rank * goldenAngle);
+        let dy2 = Math.sin(rank * goldenAngle);
+        if (cs && cs.w > 0) {
+          const tx = cs.x / cs.w - originSeed.x;
+          const ty = cs.y / cs.w - originSeed.y;
+          const len = Math.hypot(tx, ty);
+          if (len > 1) {
+            dx2 = tx / len;
+            dy2 = ty / len;
+          }
+        }
+        const off = rank * 20;
+        p2 = { x: originSeed.x + dx2 * off, y: originSeed.y + dy2 * off };
+        p3 = {
+          x: originSeed.x + dx2 * off,
+          y: originSeed.y + dy2 * off,
+          z: (originSeed.z ?? cold3.z) + Math.sin(rank * goldenAngle * 0.5) * off * 0.5,
+        };
+      } else if (cs && cs.w > 0) {
+        p2 = { x: cs.x / cs.w, y: cs.y / cs.w };
+        p3 = { x: cs.x / cs.w, y: cs.y / cs.w, z: cs.hasZ ? cs.z / cs.w : cold3.z };
+      }
+    }
+    if (p2 && p3) {
+      pos2DById.set(h.id, p2);
+      pos3DById.set(h.id, p3);
+    }
+  }
+
+  for (const n of nodes) {
+    if (hubIds.has(n.id)) continue;
+    const s = lookupSeed(seeds, n.id);
+    if (s) {
+      pos2DById.set(n.id, { x: s.x, y: s.y });
+      const c3 = pos3DById.get(n.id);
+      pos3DById.set(n.id, { x: s.x, y: s.y, z: s.z ?? c3?.z ?? 0 });
+      continue;
+    }
+    const hubId = primaryHubByNode.get(n.id);
+    const c2 = pos2DById.get(n.id);
+    const c3 = pos3DById.get(n.id);
+    const ch2 = hubId ? coldHub2D.get(hubId) : undefined;
+    const ch3 = hubId ? coldHub3D.get(hubId) : undefined;
+    const nh2 = hubId ? pos2DById.get(hubId) : undefined;
+    const nh3 = hubId ? pos3DById.get(hubId) : undefined;
+    if (c2 && ch2 && nh2) {
+      pos2DById.set(n.id, { x: nh2.x + (c2.x - ch2.x), y: nh2.y + (c2.y - ch2.y) });
+    }
+    if (c3 && ch3 && nh3) {
+      pos3DById.set(n.id, {
+        x: nh3.x + (c3.x - ch3.x),
+        y: nh3.y + (c3.y - ch3.y),
+        z: nh3.z + (c3.z - ch3.z),
+      });
+    }
+  }
+}
+
 function buildInitialSpiralPositions(input: SolverGraphInput): InitialSpiralPositions {
   const nodes = input.nodes;
   const nCount = nodes.length;
@@ -518,6 +664,17 @@ function buildInitialSpiralPositions(input: SolverGraphInput): InitialSpiralPosi
       z: Math.sin(angle) * r3,
     });
   });
+
+  if (input.seedPositions) {
+    applyWarmStartSeeds(
+      input,
+      hubIdsSet,
+      primaryHubByNode,
+      hubEdgesByNode,
+      pos2DById,
+      pos3DById
+    );
+  }
 
   const init2D: Point2D[] = new Array<Point2D>(nCount);
   const init3D: Point3D[] = new Array<Point3D>(nCount);
@@ -1049,6 +1206,7 @@ function createD3HeadlessSimulation(
     .force('x', d3.forceX<D3HeadlessNode>(0).strength(centerStrength))
     .force('y', d3.forceY<D3HeadlessNode>(0).strength(centerStrength))
     .stop();
+  if (input.seedPositions) simulation.alpha(0.45);
 
   return { simNodes, simulation };
 }
@@ -1119,9 +1277,10 @@ function stepVisNetworkIteration(
   damping: number,
   minSeparation: number,
   maxVelocity: number,
-  timestep: number
+  timestep: number,
+  heat = 1
 ): void {
-  const cooling = Math.pow(0.015, iter / iterations);
+  const cooling = Math.pow(0.015, iter / iterations) * heat;
 
   for (let i = 0; i < simNodes.length; i++) {
     const n = simNodes[i];
@@ -1249,6 +1408,7 @@ function createVisNetworkSolverState(input: SolverGraphInput, init: InitialSpira
     maxVelocity: 50,
     timestep: 0.5,
     iterations: GRAPH_PHYSICS_CONFIG.visIterations,
+    heat: input.seedPositions ? 0.45 : 1,
   };
 }
 
@@ -1278,7 +1438,8 @@ export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<stri
       s.damping,
       s.minSeparation,
       s.maxVelocity,
-      s.timestep
+      s.timestep,
+      s.heat
     );
   }
   return finalizeVisNetworkTargets(s.simNodes, input.nodes);
@@ -1305,7 +1466,8 @@ export async function solveVisNetworkForceLayoutAsync(
       s.damping,
       s.minSeparation,
       s.maxVelocity,
-      s.timestep
+      s.timestep,
+      s.heat
     );
     if ((iter & 7) === 7) {
       if (options?.shouldCancel?.()) return null;
@@ -1398,6 +1560,7 @@ function create3DForceSimulation(
         n.vz = (n.vz || 0) - (n.z || 0) * k;
       }
     });
+  if (input.seedPositions) simulation.alpha(0.45);
 
   return { simNodes, simulation };
 }

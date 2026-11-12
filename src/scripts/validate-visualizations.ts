@@ -7,7 +7,12 @@ import {
   buildCanonicalGraphPayload,
   buildGraphAdjacency,
   computeClusterCalloutPlacements2D,
+  formatClusterLabelShort,
   computeHopDistances,
+  createKChangeTransition,
+  sampleKChangeClusterLabel,
+  sampleKChangeClusterPill,
+  sampleKChangeNodeColor,
   getCoseEdgeElasticity,
   getCoseEdgeIdealLength,
   getClusterPillDimensions,
@@ -1231,6 +1236,301 @@ async function main() {
     '[Gate 3: Dynamic Re-Clustering] Solver produced non-finite coordinates on re-clustered topologies (K=6 / K=12)',
     failures
   );
+
+  // =========================================================================
+  // GATE 3b: Cluster identity stabilization, warm-start solvers, labels, cold-path stability
+  // =========================================================================
+  const clusterNodesOf = (payload: CanonicalGraphPayload) => payload.nodes.filter((n) => n.group === 0);
+  const k4Base = reclustered4;
+  const k5 = reclusterCanonicalGraphPayload(canonical, 5, k4Base.nodes);
+  const k4Again = reclusterCanonicalGraphPayload(canonical, 4, k5.nodes);
+
+  const checkColourInheritance = (
+    label: string,
+    prev: CanonicalGraphPayload,
+    next: CanonicalGraphPayload
+  ): number => {
+    const prevById = new Map(clusterNodesOf(prev).map((n) => [n.id, n]));
+    const nextClusters = clusterNodesOf(next);
+    let matched = 0;
+    for (const c of nextClusters) {
+      if (c.originKind === 'match') {
+        matched++;
+        const old = c.originClusterId ? prevById.get(c.originClusterId) : undefined;
+        assertCondition(
+          Boolean(old) && old!.colorDark === c.colorDark && old!.colorLight === c.colorLight,
+          `[Gate 3b: Colour Inheritance] ${label}: matched cluster ${c.id} did not inherit the exact colour pair of ${c.originClusterId}`,
+          failures
+        );
+      } else if (c.originKind === 'split') {
+        const old = c.originClusterId ? prevById.get(c.originClusterId) : undefined;
+        assertCondition(
+          Boolean(old) && old!.colorDark !== c.colorDark,
+          `[Gate 3b: Colour Inheritance] ${label}: split cluster ${c.id} must receive a fresh palette colour and a valid origin`,
+          failures
+        );
+      }
+    }
+    const darkSet = new Set(nextClusters.map((c) => c.colorDark));
+    assertCondition(
+      darkSet.size === nextClusters.length,
+      `[Gate 3b: Colour Inheritance] ${label}: cluster colours are not unique`,
+      failures
+    );
+    const unmatchedOld = Array.from(prevById.keys()).filter(
+      (id) => !nextClusters.some((c) => c.originKind === 'match' && c.originClusterId === id)
+    );
+    for (const id of unmatchedOld) {
+      const target = next.mergeTargetByOldClusterId?.[id];
+      assertCondition(
+        Boolean(target) && nextClusters.some((c) => c.id === target),
+        `[Gate 3b: Merge Targets] ${label}: vanishing cluster ${id} has no valid merge target`,
+        failures
+      );
+    }
+    return matched;
+  };
+  const matched45 = checkColourInheritance('K=4->5', k4Base, k5);
+  const matched54 = checkColourInheritance('K=5->4', k5, k4Again);
+  assertCondition(
+    clusterNodesOf(k5).length === 5 && clusterNodesOf(k4Again).length === 4 && matched45 >= 2 && matched54 >= 2,
+    `[Gate 3b: Colour Inheritance] Expected K=4->5->4 with >=2 matched clusters per step, got matched=${matched45}/${matched54}`,
+    failures
+  );
+  const colourSeedless = reclusterCanonicalGraphPayload(canonical, 5);
+  assertCondition(
+    clusterNodesOf(colourSeedless).every((c) => c.originClusterId === undefined && c.originKind === undefined),
+    '[Gate 3b: Cold Re-Clustering] Re-clustering without previous nodes must not set origin metadata',
+    failures
+  );
+
+  // Label truncation: default and re-clustered names must fit the 44-char pill label budget
+  const longestLabel = Math.max(
+    ...[k4Base, k5, reclustered6].flatMap((p) => clusterNodesOf(p).map((n) => n.name.length))
+  );
+  assertCondition(
+    clusterNodesOf(k4Base).every((n) => formatClusterLabelShort(n.name) === n.name) &&
+      formatClusterLabelShort('x'.repeat(60)).length === 43,
+    `[Gate 3b: Labels] Default cluster labels must not be truncated (<=44 chars); longest=${longestLabel}`,
+    failures
+  );
+
+  // Cold-start path unchanged: explicit undefined seeds must reproduce the cold layouts bit-for-bit
+  const coldIn = { nodes: canonical.nodes, connections: canonical.connections, seedPositions: undefined };
+  const coldCy = solveCytoscapeCoseLayout(coldIn);
+  const coldSigma = solveSigmaForceAtlas2Layout(coldIn);
+  const coldD3 = solveD3ForceLayout(coldIn);
+  const coldVis = solveVisNetworkForceLayout(coldIn);
+  const cold3D = solve3DForceLayout(coldIn);
+  let coldDelta = 0;
+  for (const n of canonical.nodes) {
+    coldDelta = Math.max(
+      coldDelta,
+      Math.hypot(coldCy[n.id].x - cyPos1[n.id].x, coldCy[n.id].y - cyPos1[n.id].y),
+      Math.hypot(coldSigma[n.id].x - sigmaPos1[n.id].x, coldSigma[n.id].y - sigmaPos1[n.id].y),
+      Math.hypot(coldD3[n.id].x - d3Pos1[n.id].x, coldD3[n.id].y - d3Pos1[n.id].y),
+      Math.hypot(coldVis[n.id].x - visPos1[n.id].x, coldVis[n.id].y - visPos1[n.id].y),
+      Math.hypot(
+        cold3D[n.id].x - force3DPos1[n.id].x,
+        cold3D[n.id].y - force3DPos1[n.id].y,
+        cold3D[n.id].z - force3DPos1[n.id].z
+      )
+    );
+  }
+  assertCondition(
+    coldDelta === 0,
+    `[Gate 3b: Cold Start] Solvers without seedPositions diverged from the cold layouts: maxDelta=${coldDelta}`,
+    failures
+  );
+
+  // Warm start K=4 -> K=5: deterministic, sync == async, and continuity beats a cold re-layout
+  const seeds2D = new Map<string, { x: number; y: number }>();
+  const seeds3D = new Map<string, { x: number; y: number; z: number }>();
+  for (const n of canonical.nodes) {
+    seeds2D.set(n.id, { x: d3Pos1[n.id].x, y: d3Pos1[n.id].y });
+    seeds3D.set(n.id, { x: force3DPos1[n.id].x, y: force3DPos1[n.id].y, z: force3DPos1[n.id].z });
+  }
+  const warm2DIn = { nodes: k5.nodes, connections: k5.connections, seedPositions: seeds2D };
+  const warm3DIn = { nodes: k5.nodes, connections: k5.connections, seedPositions: seeds3D };
+  const warmRuns2D: Record<string, { sync: Record<string, Point2D>; again: Record<string, Point2D>; async: Record<string, Point2D> | null }> = {};
+  const warmSolvers2D: Record<string, [typeof solveD3ForceLayout, typeof solveD3ForceLayoutAsync]> = {
+    cytoscape: [solveCytoscapeCoseLayout, solveCytoscapeCoseLayoutAsync],
+    sigma: [solveSigmaForceAtlas2Layout, solveSigmaForceAtlas2LayoutAsync],
+    d3: [solveD3ForceLayout, solveD3ForceLayoutAsync],
+    'vis-network': [solveVisNetworkForceLayout, solveVisNetworkForceLayoutAsync],
+  };
+  for (const [name, [syncFn, asyncFn]] of Object.entries(warmSolvers2D)) {
+    warmRuns2D[name] = {
+      sync: syncFn(warm2DIn),
+      again: syncFn(warm2DIn),
+      async: await asyncFn(warm2DIn),
+    };
+  }
+  const warm3DSync = solve3DForceLayout(warm3DIn);
+  const warm3DAgain = solve3DForceLayout(warm3DIn);
+  const warm3DAsync = await solve3DForceLayoutAsync(warm3DIn);
+  let warmDeterminismDelta = 0;
+  let warmParityDelta = 0;
+  for (const n of k5.nodes) {
+    for (const run of Object.values(warmRuns2D)) {
+      warmDeterminismDelta = Math.max(
+        warmDeterminismDelta,
+        Math.hypot(run.sync[n.id].x - run.again[n.id].x, run.sync[n.id].y - run.again[n.id].y)
+      );
+      warmParityDelta = Math.max(
+        warmParityDelta,
+        run.async
+          ? Math.hypot(run.sync[n.id].x - run.async[n.id].x, run.sync[n.id].y - run.async[n.id].y)
+          : Infinity
+      );
+    }
+    warmDeterminismDelta = Math.max(
+      warmDeterminismDelta,
+      Math.hypot(
+        warm3DSync[n.id].x - warm3DAgain[n.id].x,
+        warm3DSync[n.id].y - warm3DAgain[n.id].y,
+        warm3DSync[n.id].z - warm3DAgain[n.id].z
+      )
+    );
+    warmParityDelta = Math.max(
+      warmParityDelta,
+      warm3DAsync
+        ? Math.hypot(
+            warm3DSync[n.id].x - warm3DAsync[n.id].x,
+            warm3DSync[n.id].y - warm3DAsync[n.id].y,
+            warm3DSync[n.id].z - warm3DAsync[n.id].z
+          )
+        : Infinity
+    );
+  }
+  assertCondition(
+    warmDeterminismDelta === 0,
+    `[Gate 3b: Warm Start] Warm-started solvers are not deterministic: maxDelta=${warmDeterminismDelta}`,
+    failures
+  );
+  assertCondition(
+    warmParityDelta === 0,
+    `[Gate 3b: Warm Start] Sync-vs-async parity broken for warm starts: maxDelta=${warmParityDelta}`,
+    failures
+  );
+  const medianOf = (vals: number[]): number => {
+    const s = [...vals].sort((a, b) => a - b);
+    return s.length === 0 ? 0 : s[Math.floor(s.length / 2)];
+  };
+  const contentIds = k5.nodes.filter((n) => n.group !== 0).map((n) => n.id);
+  const coldK5D3 = solveD3ForceLayout(k5);
+  const warmShift = medianOf(
+    contentIds.map((id) =>
+      Math.hypot(warmRuns2D.d3.sync[id].x - seeds2D.get(id)!.x, warmRuns2D.d3.sync[id].y - seeds2D.get(id)!.y)
+    )
+  );
+  const coldShift = medianOf(
+    contentIds.map((id) =>
+      Math.hypot(coldK5D3[id].x - seeds2D.get(id)!.x, coldK5D3[id].y - seeds2D.get(id)!.y)
+    )
+  );
+  assertCondition(
+    Number.isFinite(warmShift) && warmShift < coldShift,
+    `[Gate 3b: Warm Start] Warm start must keep content nodes closer to their previous positions than a cold layout (warm=${warmShift.toFixed(1)}px, cold=${coldShift.toFixed(1)}px)`,
+    failures
+  );
+  console.log(
+    `[Gate 3b Summary] K=4->5->4 matched=${matched45}/${matched54} | warm determinism=${warmDeterminismDelta.toFixed(4)}px parity=${warmParityDelta.toFixed(4)}px | median shift warm=${warmShift.toFixed(1)}px vs cold=${coldShift.toFixed(1)}px | cold-path delta=${coldDelta.toFixed(4)}px | longest cluster label=${longestLabel}`
+  );
+
+  // Transition fade-in: split clusters start invisible, continuing ones stay solid, colours blend (no snap)
+  {
+    const prevPosMap = new Map<string, { x: number; y: number }>();
+    for (const n of canonical.nodes) prevPosMap.set(n.id, { x: d3Pos1[n.id].x, y: d3Pos1[n.id].y });
+    const nextPosMap = new Map<string, { x: number; y: number }>();
+    for (const n of k5.nodes) nextPosMap.set(n.id, warmRuns2D.d3.sync[n.id]);
+    const tr = createKChangeTransition({
+      prevNodes: k4Base.nodes,
+      prevPositions: prevPosMap,
+      nextNodes: k5.nodes,
+      nextPositions: nextPosMap,
+      mergeTargetByOldClusterId: k5.mergeTargetByOldClusterId,
+      now: 0,
+    });
+    const splitClusters = clusterNodesOf(k5).filter((c) => !tr.continuingClusterIds.has(c.id));
+    const pillAt = (id: string, p: number) =>
+      sampleKChangeClusterPill(tr, id, { dark: CLUSTER_PALETTE.dark[0], light: CLUSTER_PALETTE.light[0] }, false, p);
+    assertCondition(
+      splitClusters.length >= 1 &&
+        splitClusters.every((c) => (pillAt(c.id, 0)?.alpha ?? 1) < 0.02) &&
+        splitClusters.every((c) => (pillAt(c.id, 1)?.alpha ?? 0) > 0.96) &&
+        splitClusters.every((c) => (pillAt(c.id, 0.1)?.alpha ?? 1) < 0.05),
+      '[Gate 3b: Pill Fade-In] A newly created cluster pill must start at alpha~0 (delayed eased fade-in to 0.97)',
+      failures
+    );
+    const contentNode = k5.nodes.find((n) => n.group !== 0 && tr.prevColors.has(n.id))!;
+    const c0 = sampleKChangeNodeColor(
+      tr,
+      contentNode.id,
+      { dark: contentNode.colorDark!, light: contentNode.colorLight! },
+      false,
+      0
+    );
+    assertCondition(
+      c0 === tr.prevColors.get(contentNode.id)!.dark,
+      '[Gate 3b: Colour Blend] Content colours must start at the previous colour at t=0 (no snap)',
+      failures
+    );
+    // Label cross-fade across a K sweep: changed labels blend (0<alpha<1 mid-way), unchanged labels never cross-fade
+    let xfChanged = 0;
+    let xfOk = true;
+    let sweepPrev: CanonicalGraphPayload = k4Base;
+    for (const kk of [5, 6, 7, 8, 6, 4, 3]) {
+      const nextK = reclusterCanonicalGraphPayload(canonical, kk, sweepPrev.nodes);
+      const prevPositions = new Map<string, { x: number; y: number }>(
+        sweepPrev.nodes.map((n, i) => [n.id, { x: i, y: i }])
+      );
+      const nextPositions = new Map<string, { x: number; y: number }>(
+        nextK.nodes.map((n, i) => [n.id, { x: i * 2, y: i }])
+      );
+      const trK = createKChangeTransition({
+        prevNodes: sweepPrev.nodes,
+        prevPositions,
+        nextNodes: nextK.nodes,
+        nextPositions,
+        mergeTargetByOldClusterId: nextK.mergeTargetByOldClusterId,
+        now: 0,
+      });
+      for (const c of clusterNodesOf(nextK)) {
+        const origin = c.originClusterId ? trK.prevClusters.get(c.originClusterId) : undefined;
+        const mid = sampleKChangeClusterLabel(trK, c.id, c.name, 0.5);
+        const start = sampleKChangeClusterLabel(trK, c.id, c.name, 0);
+        const end = sampleKChangeClusterLabel(trK, c.id, c.name, 1);
+        const shouldFade = trK.continuingClusterIds.has(c.id) && origin !== undefined && origin.name !== c.name;
+        if (!shouldFade) {
+          if (mid !== null) xfOk = false;
+          continue;
+        }
+        xfChanged++;
+        if (
+          !mid ||
+          !start ||
+          !end ||
+          !(mid.oldAlpha > 0 && mid.oldAlpha < 1 && mid.newAlpha > 0 && mid.newAlpha < 1) ||
+          start.oldAlpha !== 1 ||
+          end.newAlpha !== 1 ||
+          mid.oldLabel !== origin!.name ||
+          mid.newLabel !== c.name ||
+          mid.pillW < Math.min(mid.oldPillW, mid.newPillW) ||
+          mid.pillW > Math.max(mid.oldPillW, mid.newPillW)
+        ) {
+          xfOk = false;
+        }
+      }
+      sweepPrev = nextK;
+    }
+    assertCondition(
+      xfOk && xfChanged >= 1,
+      `[Gate 3b: Label Cross-Fade] Changed labels of continuing clusters must cross-fade (old+new alpha in (0,1) mid-way, interpolated pill width); unchanged must not (changed=${xfChanged})`,
+      failures
+    );
+    console.log(`[Gate 3b Summary] Label cross-fades across K sweep: ${xfChanged}`);
+  }
 
   // Verify centered Theme-Cluster Pill placement (no offset, no leader line) & Elliptical Pill Clearance
   const calloutAllNodes = canonical.nodes.map((n) => ({
