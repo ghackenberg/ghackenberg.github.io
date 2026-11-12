@@ -23,6 +23,7 @@ Initiativen, die das Zusammenspiel aus Frontend-Features auf `hackenberg.tech` u
 | **SYSTEM-011** | Quadratisches SVG-Standardformat, Bestands-Migration & Aspect-Ratio-Linter | Visual Design / CI / QA | Mittel | `proposed` | [011-square-svg-aspect-ratio-migration-and-linter.md](./system/011-square-svg-aspect-ratio-migration-and-linter.md) |
 | **SYSTEM-012** | Natives Astro Asset-Hashing, Content-Layer Dependency-Tracking & Ablösung manueller Dev-Watcher-Workarounds | Build Engineering / Content Layer / DX | Mittel | `implemented` | [012-astro-content-layer-asset-hashing-and-dependency-tracking.md](./system/012-astro-content-layer-asset-hashing-and-dependency-tracking.md) |
 | **SYSTEM-013** | Ganzheitliche SEO-, GEO/AIO- & Reader-Retention-Remediation (Audit 11/2026) | SEO / GEO / Analytics / UX Retention | Hoch | `implemented` | [013-seo-geo-retention-audit-remediation.md](./system/013-seo-geo-retention-audit-remediation.md) |
+| **SYSTEM-014** | Chronologische Wissensgraph-Evolution, Dynamische Cluster-Mitose & 60-FPS-Timeline-Player (Etappe 2) | Visualizations / Graph Physics / Interactive UX | Hoch | `planned` | [014-temporal-knowledge-graph-timeline-and-cluster-evolution.md](./system/014-temporal-knowledge-graph-timeline-and-cluster-evolution.md) |
 
 ---
 

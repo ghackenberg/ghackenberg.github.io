@@ -37,6 +37,7 @@ const optimizedScreenshot = screenshotImg ? await getImage({
 
 import { getCanonicalGraphPayloadArtifact, getGraphPayloadEndpointUrl } from "@commons/server/graph-payload-endpoint";
 import { getGraphLayoutEndpointUrl } from "@commons/server/graph-layout-endpoint";
+import { buildRegularPolygonSvgPoints } from "@commons/shared/graph-payload";
 
 const payloadArtifact = await getCanonicalGraphPayloadArtifact();
 const payloadUrl = await getGraphPayloadEndpointUrl();
@@ -275,22 +276,29 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 </div>
               </div>
 
-              <!-- 1. Edge Specificity Weighting -->
+              <!-- 1. Edge Cohesion & Hubs -->
               <div data-tune-layout="force" class="space-y-1.5">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Edge Specificity</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Edge Cohesion &amp; Hubs</div>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Topic Clusters (K)</span>
+                    <span data-tune-val="clusterCount" class="font-mono text-[10px] text-gray-400 light:text-slate-500">4</span>
+                  </div>
+                  <input type="range" data-tune-key="clusterCount" data-tune-cat="physics" min="2" max="18" step="1" value="4" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Stiffness Exp (γ)</span>
-                    <span data-tune-val="stiffnessExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.65</span>
+                    <span data-tune-val="stiffnessExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">2.10</span>
                   </div>
-                  <input type="range" data-tune-key="stiffnessExponent" data-tune-cat="physics" min="0" max="2.6" step="0.05" value="1.65" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="stiffnessExponent" data-tune-cat="physics" min="-1.0" max="2.6" step="0.05" value="2.1" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Distance Exp (β)</span>
-                    <span data-tune-val="distanceExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.15</span>
+                    <span data-tune-val="distanceExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.35</span>
                   </div>
-                  <input type="range" data-tune-key="distanceExponent" data-tune-cat="physics" min="0" max="2.0" step="0.05" value="1.15" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="distanceExponent" data-tune-cat="physics" min="-1.0" max="2.0" step="0.05" value="1.35" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
               </div>
 
@@ -300,9 +308,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Link Distance</span>
-                    <span data-tune-val="baseLinkDistance2D" class="font-mono text-[10px] text-gray-400 light:text-slate-500">26</span>
+                    <span data-tune-val="baseLinkDistance2D" class="font-mono text-[10px] text-gray-400 light:text-slate-500">18</span>
                   </div>
-                  <input type="range" data-tune-key="baseLinkDistance2D" data-tune-cat="physics" min="14" max="60" step="2" value="26" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="baseLinkDistance2D" data-tune-cat="physics" min="14" max="60" step="2" value="18" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -310,6 +318,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                     <span data-tune-val="repulsionScale" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.00</span>
                   </div>
                   <input type="range" data-tune-key="repulsionScale" data-tune-cat="physics" min="0.3" max="2.5" step="0.05" value="1.0" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Hub Repulsion (α)</span>
+                    <span data-tune-val="degreeRepulsion" class="font-mono text-[10px] text-gray-400 light:text-slate-500">0.48</span>
+                  </div>
+                  <input type="range" data-tune-key="degreeRepulsion" data-tune-cat="physics" min="0" max="1.5" step="0.05" value="0.48" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -404,45 +419,110 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           ></div>
         </div>
 
-        <!-- Floating Glassmorphic Legend -->
-        <div class="artifact-card-footer px-3.5 py-2.5 text-xs select-none">
-          <div class="grid grid-cols-3 md:flex md:flex-wrap md:items-center md:justify-center gap-x-3 gap-y-1.5 md:gap-x-5 w-full">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-posts border border-white/20 shadow-sm shadow-domain-posts/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Posts</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-publications border border-white/20 shadow-sm shadow-domain-publications/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Publications</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-presentations border border-white/20 shadow-sm shadow-domain-presentations/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Presentations</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-courses border border-white/20 shadow-sm shadow-domain-courses/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Courses</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-projects border border-white/20 shadow-sm shadow-domain-projects/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Projects</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-services border border-white/20 shadow-sm shadow-domain-services/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Services</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-newsletters border border-white/20 shadow-sm shadow-domain-newsletters/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Newsletters</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-visualizations border border-white/20 shadow-sm shadow-domain-visualizations/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Visualizations</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-tags border border-white/20 shadow-sm shadow-domain-tags/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Tags</span>
-            </div>
+        <!-- Interactive Content-Type Filter Bar -->
+        <div
+          id="content-filter-bar"
+          class="artifact-card-footer px-3.5 py-2.5 text-xs select-none"
+          role="group"
+          aria-label="Filter graph nodes by content type"
+        >
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 w-full">
+            <button
+              type="button"
+              data-content-filter="all"
+              aria-pressed="true"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-domain-visualizations/15 border-domain-visualizations/50 text-gray-100 light:text-slate-900 shadow-sm"
+            >
+              All
+            </button>
+            <button
+              type="button"
+              data-content-filter="1"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 1)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Posts</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="2"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 2)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Publications</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="3"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 3)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Presentations</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="4"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 4)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Courses</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="5"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 5)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Projects</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="6"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 6)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Services</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="7"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 7)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Newsletters</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="8"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 8)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Visualizations</span>
+            </button>
           </div>
         </div>
       </div>
@@ -474,6 +554,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       setGraphTuningState,
       resetGraphTuningState,
       isDefaultGraphTuningState,
+      getActiveContentFilterGroups,
+      resetContentFilterGroups,
+      toggleContentFilterGroup,
       type CanonicalGraphPayload,
       type EnginePayloads,
       type GraphLayoutPayload,
@@ -816,6 +899,50 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         }
       };
 
+      // Interactive Content-Type Filter Bar wiring
+      const contentFilterBar = document.getElementById('content-filter-bar');
+      const syncContentFilterUI = () => {
+        if (!contentFilterBar) return;
+        const activeGroups = getActiveContentFilterGroups();
+        const isAll = activeGroups === null || activeGroups.size === 0;
+        const buttons = contentFilterBar.querySelectorAll<HTMLButtonElement>('button[data-content-filter]');
+        buttons.forEach((btn) => {
+          const val = btn.dataset.contentFilter;
+          const isActive =
+            val === 'all' ? isAll : !isAll && activeGroups !== null && activeGroups.has(Number(val));
+          btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          btn.classList.toggle('bg-domain-visualizations/15', isActive);
+          btn.classList.toggle('border-domain-visualizations/50', isActive);
+          btn.classList.toggle('text-gray-100', isActive);
+          btn.classList.toggle('light:text-slate-900', isActive);
+          btn.classList.toggle('shadow-sm', isActive);
+          btn.classList.toggle('bg-element-bg/70', !isActive);
+          btn.classList.toggle('border-element-border', !isActive);
+          btn.classList.toggle('text-gray-300', !isActive);
+          btn.classList.toggle('light:text-slate-600', !isActive);
+        });
+      };
+
+      if (contentFilterBar) {
+        const buttons = contentFilterBar.querySelectorAll<HTMLButtonElement>('button[data-content-filter]');
+        buttons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const val = btn.dataset.contentFilter;
+            if (!val || val === 'all') {
+              resetContentFilterGroups();
+            } else {
+              const groupNum = Number(val);
+              if (Number.isFinite(groupNum) && groupNum >= 1 && groupNum <= 8) {
+                toggleContentFilterGroup(groupNum);
+              }
+            }
+            syncContentFilterUI();
+            activeInstance?.applyTuning?.('visual');
+          });
+        });
+        syncContentFilterUI();
+      }
+
       if (tuneHud) {
         const stopCanvasEvent = (ev: Event) => {
           ev.stopPropagation();
@@ -825,6 +952,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         });
 
         const formatTuneValue = (key: keyof GraphTuningState, val: number): string => {
+          if (key === 'clusterCount') return String(Math.round(val));
           if (key === 'highlightMaxHops') return String(Math.round(val));
           if (key === 'baseLinkDistance2D') return String(Math.round(val));
           if (key === 'nodeRadius' || key === 'edgeWidth') return val.toFixed(1);
@@ -897,6 +1025,8 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             physicsDebounceTimer = null;
           }
           resetGraphTuningState();
+          resetContentFilterGroups();
+          syncContentFilterUI();
           syncTuneUI();
           activeInstance?.applyTuning?.('reset');
         });

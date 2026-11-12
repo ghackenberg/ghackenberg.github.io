@@ -1,11 +1,15 @@
 import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
 import { DataSet } from 'vis-data';
 import {
+  DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
+  drawClusterCalloutLabels2D,
+  drawRegularPolygonNode2D,
   easeHighlightTransition,
   getGraphStyleTokens,
+  getGraphTuningState,
   compute2DViewportFit,
   getRadialReferenceBounds2D,
   buildGraphAdjacency,
@@ -13,10 +17,14 @@ import {
   interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedNodeScale,
-  getAttenuatedEdgeStyle,
+  getNodeBaseColor,
+  getNodeClusterColor,
+  getNodeRestRadiusScale,
+  getRestEdgeStyle,
   getNodeHopZIndex,
-  getEdgeHopZIndex,
-  isDefaultGraphTuningState
+  isDefaultGraphTuningState,
+  reclusterCanonicalGraphPayload,
+  type CanonicalGraphPayload
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
@@ -64,16 +72,6 @@ interface VisNetworkWithBody extends Network {
   };
 }
 
-function getVisNodeColors(isLight: boolean) {
-  const palette = GRAPH_COLORS[isLight ? 'light' : 'dark'];
-  return palette.map((color) => ({
-    background: color,
-    border: color,
-    highlight: { background: color, border: color },
-    hover: { background: color, border: color }
-  }));
-}
-
 export interface VisPayloadNode {
   id: string;
   name: string;
@@ -86,15 +84,19 @@ export interface VisPayloadNode {
   date?: string;
   typeLabel?: string;
   description?: string;
+  colorDark?: string;
+  colorLight?: string;
 }
 
 export interface VisPayloadConnection {
   sourceId: string;
   targetId: string;
   weight?: number;
+  coverage?: number;
 }
 
 export interface VisNetworkPayload {
+  canonical?: CanonicalGraphPayload;
   'vis-network': {
     nodes: VisPayloadNode[];
     connections: VisPayloadConnection[];
@@ -121,6 +123,9 @@ export interface VisNetworkExtraOptions extends Options {
 export interface VisNetworkEngine {
   layouts: { id: string; label: string }[];
   container?: HTMLElement | null;
+  canonicalPayload?: CanonicalGraphPayload | null;
+  activeClusterCount?: number;
+  rebuildClusterTopology?(targetK: number): void;
   nodes?: VisPayloadNode[];
   connections?: VisPayloadConnection[];
   visNodes?: DataSet<VisCustomNode> | null;
@@ -177,10 +182,15 @@ const engine: VisNetworkEngine = {
     this.container = container;
     this.nodes = payload['vis-network'].nodes;
     this.connections = payload['vis-network'].connections;
+    this.canonicalPayload = payload.canonical ?? {
+      nodes: (this.nodes || []).map((n) => ({ ...n })),
+      connections: (this.connections || []).map((c) => ({ ...c })),
+    };
+    this.activeClusterCount =
+      (this.nodes || []).filter((n) => n.group === 0).length || DEFAULT_TOPIC_CLUSTER_COUNT;
     this.forcePositions = new Map();
     this.initialForcePositions = new Map();
 
-    const colors = getVisNodeColors(isLight);
     const styleTokens = getGraphStyleTokens(isLight);
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
@@ -190,36 +200,50 @@ const engine: VisNetworkEngine = {
       const ny = typeof n.y === 'number' ? n.y : 0;
       this.forcePositions.set(n.id, { x: nx, y: ny });
       this.initialForcePositions.set(n.id, { x: nx, y: ny });
+      const isCluster = n.group === 0;
+      const restSize = isCluster ? 0 : styleTokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size);
+      const nodeColor = getNodeBaseColor(n, isLight) || groupColors[n.group] || groupColors[0];
+      const visColor = {
+        background: 'rgba(0,0,0,0)',
+        border: 'rgba(0,0,0,0)',
+        highlight: { background: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)' },
+        hover: { background: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)' },
+      };
       return {
         id: n.id,
         label: '',
         shape: 'dot',
-        size: styleTokens.nodeRadius,
-        displaySize: styleTokens.nodeRadius,
-        displayColor: groupColors[n.group] || groupColors[0],
+        size: 0,
+        displaySize: restSize,
+        displayColor: nodeColor,
         x: nx,
         y: ny,
         rawGroup: n.group,
-        color: colors[n.group],
+        color: visColor,
         chosen: false
       };
     }));
 
-    this.visEdges = new DataSet<VisCustomEdge>((this.connections || []).map((c, idx) => ({
-      id: `${c.sourceId}-${c.targetId}-${idx}`,
-      from: c.sourceId,
-      to: c.targetId,
-      width: styleTokens.edgeWidth,
-      hoverWidth: styleTokens.edgeWidth,
-      displayWidth: styleTokens.edgeWidth,
-      displayColor: styleTokens.edgeColor,
-      chosen: false,
-      color: {
-        color: styleTokens.edgeColor,
-        highlight: styleTokens.edgeColor,
-        hover: styleTokens.edgeColor
-      }
-    })));
+    this.visEdges = new DataSet<VisCustomEdge>((this.connections || []).map((c, idx) => {
+      const rest = getRestEdgeStyle(c.weight, isLight);
+      return {
+        id: `${c.sourceId}-${c.targetId}-${idx}`,
+        from: c.sourceId,
+        to: c.targetId,
+        hidden: true,
+        width: 0,
+        hoverWidth: 0,
+        displayWidth: rest.width,
+        displayColor: rest.color,
+        chosen: false,
+        color: {
+          color: 'rgba(0,0,0,0)',
+          highlight: 'rgba(0,0,0,0)',
+          hover: 'rgba(0,0,0,0)',
+          opacity: 0
+        }
+      };
+    }));
 
     const data = {
       nodes: this.visNodes || undefined,
@@ -309,60 +333,288 @@ const engine: VisNetworkEngine = {
     const edgeDisplayColorMap = new Map<string, string>();
     const edgeDisplayWidthMap = new Map<string, number>();
 
-    const rawNodesList = (this.nodes || []).map((n) => {
-      const col = groupColors[n.group] || groupColors[0];
+    let rawNodesList = (this.nodes || []).map((n) => {
+      const col = getNodeBaseColor(n, isLight) || groupColors[n.group] || groupColors[0];
       nodeDisplayColorMap.set(n.id, col);
-      nodeDisplaySizeMap.set(n.id, styleTokens.nodeRadius);
-      return { id: n.id, group: n.group };
+      nodeDisplaySizeMap.set(
+        n.id,
+        n.group === 0 ? 0 : styleTokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size)
+      );
+      return {
+        id: n.id,
+        name: n.name,
+        group: n.group,
+        size: n.size,
+        colorDark: n.colorDark,
+        colorLight: n.colorLight,
+      };
     });
 
-    const rawEdgesList = (this.connections || []).map((c, idx) => {
+    let rawEdgesList = (this.connections || []).map((c, idx) => {
       const eid = `${c.sourceId}-${c.targetId}-${idx}`;
-      edgeDisplayColorMap.set(eid, styleTokens.edgeColor);
-      edgeDisplayWidthMap.set(eid, styleTokens.edgeWidth);
-      return { id: eid, from: c.sourceId, to: c.targetId };
+      const weight = c.weight ?? 0.5;
+      const rest = getRestEdgeStyle(weight, isLight);
+      edgeDisplayColorMap.set(eid, rest.color);
+      edgeDisplayWidthMap.set(eid, rest.width);
+      return { id: eid, from: c.sourceId, to: c.targetId, weight, coverage: c.coverage };
     });
 
-    this.network.on('afterDrawing', (ctx: CanvasRenderingContext2D) => {
-      const dists = this.activeHighlightDists;
-      const secId = this.secondaryHoveredNodeId ?? null;
-      if ((!dists && !secId) || !this.network) return;
+    const rebuildDragController = () => {
+      if (this.dragController) {
+        this.dragController.destroy();
+      }
+      this.dragController = createGraphDragPhysicsController2D({
+        nodes: (this.nodes || []).map((n) => ({
+          id: n.id,
+          group: n.group,
+          x: typeof n.x === 'number' ? n.x : 0,
+          y: typeof n.y === 'number' ? n.y : 0,
+        })),
+        edges: (this.connections || []).map((c) => ({
+          source: c.sourceId,
+          target: c.targetId,
+          weight: c.weight ?? 0.5,
+        })),
+        isLight: () => Boolean(this.isLight),
+        onTick: (positions, draggedId) => {
+          if (!this.network) return;
+          const bodyNodes = (this.network as VisNetworkWithBody).body?.nodes;
+          for (const [id, pt] of positions.entries()) {
+            if (id === draggedId) continue;
+            const bNode = bodyNodes?.[id];
+            if (bNode) {
+              bNode.x = pt.x;
+              bNode.y = pt.y;
+            } else {
+              this.network.moveNode(id, pt.x, pt.y);
+            }
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
+          }
+          this.network.redraw();
+        },
+        onSettleComplete: (positions) => {
+          if (!this.visNodes) return;
+          const updates: VisNode[] = [];
+          for (const [id, pt] of positions.entries()) {
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
+            updates.push({ id, x: pt.x, y: pt.y });
+          }
+          this.visNodes.update(updates);
+        },
+      });
+    };
 
+    this.rebuildClusterTopology = (targetK: number) => {
+      if (!this.canonicalPayload || !this.visNodes || !this.visEdges || !this.network) return;
+      const nextCanonical =
+        targetK === DEFAULT_TOPIC_CLUSTER_COUNT
+          ? this.canonicalPayload
+          : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+
+      const currentIsLight = Boolean(this.isLight);
+      const curTokens = getGraphStyleTokens(currentIsLight);
+      const curPalette = GRAPH_COLORS[currentIsLight ? 'light' : 'dark'];
+
+      const prevPosById = new Map<string, { x: number; y: number }>();
       const bodyNodes = (this.network as VisNetworkWithBody).body?.nodes;
-      const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
-      const palette = GRAPH_COLORS[this.isLight ? 'light' : 'dark'];
+      for (const n of this.nodes || []) {
+        const bp = bodyNodes?.[n.id] || this.forcePositions.get(n.id);
+        if (bp) prevPosById.set(n.id, { x: bp.x, y: bp.y });
+      }
 
-      type DrawItem =
-        | { isNode: false; z: number; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
-        | { isNode: true; z: number; x: number; y: number; radius: number; color: string };
-
-      const items: DrawItem[] = [];
-
-      if (dists) {
-        for (const edge of rawEdgesList) {
-          const edgeZ = getEdgeHopZIndex(dists.get(edge.from), dists.get(edge.to));
-          if (edgeZ < 8) continue;
-          const p1 = bodyNodes?.[edge.from] || this.forcePositions.get(edge.from);
-          const p2 = bodyNodes?.[edge.to] || this.forcePositions.get(edge.to);
-          if (!p1 || !p2) continue;
-          items.push({
-            isNode: false,
-            z: edgeZ,
-            x1: p1.x,
-            y1: p1.y,
-            x2: p2.x,
-            y2: p2.y,
-            color: edgeDisplayColorMap.get(edge.id) || currentTokens.edgeColor,
-            width: edgeDisplayWidthMap.get(edge.id) ?? currentTokens.edgeWidth
-          });
+      const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
+      for (const c of nextCanonical.connections) {
+        const pt = prevPosById.get(c.sourceId);
+        if (pt && (c.weight ?? 0) >= 0.4) {
+          const cur = itemCoordsByCluster.get(c.targetId) || { sumX: 0, sumY: 0, count: 0 };
+          cur.sumX += pt.x;
+          cur.sumY += pt.y;
+          cur.count += 1;
+          itemCoordsByCluster.set(c.targetId, cur);
         }
       }
 
+      this.nodes = nextCanonical.nodes.map((n, idx) => {
+        const existing = prevPosById.get(n.id);
+        let nx = existing?.x;
+        let ny = existing?.y;
+        if (nx === undefined || ny === undefined) {
+          const centroid = itemCoordsByCluster.get(n.id);
+          if (centroid && centroid.count > 0) {
+            nx = centroid.sumX / centroid.count;
+            ny = centroid.sumY / centroid.count;
+          } else {
+            const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
+            nx = Math.cos(angle) * 140;
+            ny = Math.sin(angle) * 140;
+          }
+        }
+        this.forcePositions.set(n.id, { x: nx, y: ny });
+        return {
+          ...n,
+          x: nx,
+          y: ny,
+        };
+      });
+      this.connections = nextCanonical.connections.map((c) => ({ ...c }));
+
+      nodeDisplayColorMap.clear();
+      nodeDisplaySizeMap.clear();
+      edgeDisplayColorMap.clear();
+      edgeDisplayWidthMap.clear();
+
+      rawNodesList = this.nodes.map((n) => {
+        const col = getNodeBaseColor(n, currentIsLight) || curPalette[n.group] || curPalette[0];
+        nodeDisplayColorMap.set(n.id, col);
+        nodeDisplaySizeMap.set(
+          n.id,
+          n.group === 0 ? 0 : curTokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size)
+        );
+        return {
+          id: n.id,
+          name: n.name,
+          group: n.group,
+          size: n.size,
+          colorDark: n.colorDark,
+          colorLight: n.colorLight,
+        };
+      });
+
+      rawEdgesList = this.connections.map((c, idx) => {
+        const eid = `${c.sourceId}-${c.targetId}-${idx}`;
+        const weight = c.weight ?? 0.5;
+        const rest = getRestEdgeStyle(weight, currentIsLight);
+        edgeDisplayColorMap.set(eid, rest.color);
+        edgeDisplayWidthMap.set(eid, rest.width);
+        return { id: eid, from: c.sourceId, to: c.targetId, weight, coverage: c.coverage };
+      });
+
+      const freshAdj = buildGraphAdjacency(this.connections);
+      adjacency.clear();
+      for (const [k, v] of freshAdj.entries()) {
+        adjacency.set(k, v);
+      }
+
+      this.visNodes.clear();
+      this.visNodes.add(
+        this.nodes.map((n) => {
+          const isCluster = n.group === 0;
+          const restSize = isCluster ? 0 : curTokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size);
+          const nodeColor = getNodeBaseColor(n, currentIsLight) || curPalette[n.group] || curPalette[0];
+          const visColor = {
+            background: 'rgba(0,0,0,0)',
+            border: 'rgba(0,0,0,0)',
+            highlight: { background: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)' },
+            hover: { background: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)' },
+          };
+          return {
+            id: n.id,
+            label: '',
+            shape: 'dot',
+            size: 0,
+            displaySize: restSize,
+            displayColor: nodeColor,
+            x: n.x ?? 0,
+            y: n.y ?? 0,
+            rawGroup: n.group,
+            color: visColor,
+            chosen: false,
+          };
+        })
+      );
+
+      this.visEdges.clear();
+      this.visEdges.add(
+        this.connections.map((c, idx) => {
+          const rest = getRestEdgeStyle(c.weight, currentIsLight);
+          return {
+            id: `${c.sourceId}-${c.targetId}-${idx}`,
+            from: c.sourceId,
+            to: c.targetId,
+            hidden: true,
+            width: 0,
+            hoverWidth: 0,
+            displayWidth: rest.width,
+            displayColor: rest.color,
+            chosen: false,
+            color: {
+              color: 'rgba(0,0,0,0)',
+              highlight: 'rgba(0,0,0,0)',
+              hover: 'rgba(0,0,0,0)',
+              opacity: 0,
+            },
+          };
+        })
+      );
+
+      this.activeClusterCount = targetK;
+      this.hoveredNodeId = null;
+      this.secondaryHoveredNodeId = null;
+      this.activeHighlightDists = null;
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+      rebuildDragController();
+    };
+
+    this.network.on('afterDrawing', (ctx: CanvasRenderingContext2D) => {
+      if (!this.network) return;
+      const dists = this.activeHighlightDists;
+      const secId = this.secondaryHoveredNodeId ?? null;
+      const currentIsLight = Boolean(this.isLight);
+      const bodyNodes = (this.network as VisNetworkWithBody).body?.nodes;
+      const currentTokens = getGraphStyleTokens(currentIsLight);
+      const palette = GRAPH_COLORS[currentIsLight ? 'light' : 'dark'];
+
+      type DrawItem = {
+        isNode: true;
+        z: number;
+        x: number;
+        y: number;
+        radius: number;
+        group: number;
+        color: string;
+      };
+
+      let activeContentCoverageMap: Map<string, number> | null = null;
+      let activeClusterContentCoverageMap: Map<string, number> | null = null;
+      if (dists) {
+        for (const node of rawNodesList) {
+          if (dists.get(node.id) === 0) {
+            if (node.group !== 0) {
+              activeContentCoverageMap = new Map<string, number>();
+              for (const edge of rawEdgesList) {
+                if (edge.from === node.id) {
+                  activeContentCoverageMap.set(edge.to, edge.coverage ?? edge.weight);
+                } else if (edge.to === node.id) {
+                  activeContentCoverageMap.set(edge.from, edge.coverage ?? edge.weight);
+                }
+              }
+            } else {
+              activeClusterContentCoverageMap = new Map<string, number>();
+              for (const edge of rawEdgesList) {
+                if (edge.from === node.id) {
+                  activeClusterContentCoverageMap.set(edge.to, edge.coverage ?? edge.weight);
+                } else if (edge.to === node.id) {
+                  activeClusterContentCoverageMap.set(edge.from, edge.coverage ?? edge.weight);
+                }
+              }
+            }
+            break;
+          }
+        }
+      }
+
+      const items: DrawItem[] = [];
+
       for (const node of rawNodesList) {
+        if (node.group === 0) continue;
         const id = node.id;
         const hopDist = dists ? dists.get(id) : undefined;
-        const nodeZ = secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
-        if (nodeZ < 10) continue;
+        const itemCov = activeClusterContentCoverageMap
+          ? (activeClusterContentCoverageMap.get(id) ?? 0)
+          : undefined;
+        const nodeZ =
+          secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist, itemCov) : 2;
         const p = bodyNodes?.[id] || this.forcePositions.get(id);
         if (!p) continue;
         items.push({
@@ -371,34 +623,86 @@ const engine: VisNetworkEngine = {
           x: p.x,
           y: p.y,
           radius: nodeDisplaySizeMap.get(id) ?? currentTokens.nodeRadius,
-          color: nodeDisplayColorMap.get(id) || palette[node.group] || palette[0]
+          group: node.group,
+          color:
+            nodeDisplayColorMap.get(id) ||
+            getNodeBaseColor(node, currentIsLight) ||
+            palette[node.group] ||
+            palette[0],
         });
       }
 
-      if (items.length === 0) return;
-      items.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+      if (items.length > 0) {
+        items.sort((a, b) => a.z - b.z);
+        ctx.save();
+        ctx.lineCap = 'round';
+        for (const item of items) {
+          drawRegularPolygonNode2D(
+            ctx,
+            item.x,
+            item.y,
+            item.radius,
+            item.group,
+            item.color,
+            item.color,
+            1.5
+          );
+        }
+        ctx.restore();
+      }
 
-      ctx.save();
-      ctx.lineCap = 'round';
-      for (const item of items) {
-        if (!item.isNode) {
-          ctx.beginPath();
-          ctx.strokeStyle = item.color;
-          ctx.lineWidth = item.width;
-          ctx.moveTo(item.x1, item.y1);
-          ctx.lineTo(item.x2, item.y2);
-          ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
-          ctx.fillStyle = item.color;
-          ctx.fill();
-          ctx.lineWidth = 1.5;
-          ctx.strokeStyle = item.color;
-          ctx.stroke();
+      const scale = Math.max(0.05, this.network.getScale() || 1);
+
+      const allCalloutNodes: { id: string; x: number; y: number; radiusPx: number; group?: number }[] = [];
+      const clusterCalloutSpecs: {
+        id: string;
+        text: string;
+        x: number;
+        y: number;
+        radiusPx: number;
+        hopDistance?: number;
+        activeCoverage?: number;
+        clusterColor?: string;
+      }[] = [];
+
+      for (const node of rawNodesList) {
+        const p = bodyNodes?.[node.id] || this.forcePositions.get(node.id);
+        if (!p) continue;
+        const rWorld =
+          node.group === 0
+            ? 0
+            : (nodeDisplaySizeMap.get(node.id) ??
+              currentTokens.nodeRadius * getNodeRestRadiusScale(node.group, node.size));
+        const sx = p.x * scale;
+        const sy = p.y * scale;
+        const sr = rWorld * scale;
+        allCalloutNodes.push({ id: node.id, x: sx, y: sy, radiusPx: sr, group: node.group });
+        if (node.group === 0) {
+          const hopDist = dists ? dists.get(node.id) : undefined;
+          const isSecHover = secId !== null && node.id === secId;
+          const effectiveHop = isSecHover ? 0 : dists ? (hopDist ?? 99) : undefined;
+          const activeCoverage = activeContentCoverageMap
+            ? (activeContentCoverageMap.get(node.id) ?? 0)
+            : undefined;
+          clusterCalloutSpecs.push({
+            id: node.id,
+            text: node.name,
+            x: sx,
+            y: sy,
+            radiusPx: 0,
+            hopDistance: effectiveHop,
+            activeCoverage,
+            clusterColor: getNodeClusterColor(node, currentIsLight),
+          });
         }
       }
-      ctx.restore();
+
+      if (clusterCalloutSpecs.length > 0) {
+        ctx.save();
+        ctx.scale(1 / scale, 1 / scale);
+        drawClusterCalloutLabels2D(ctx, allCalloutNodes, clusterCalloutSpecs, currentIsLight);
+        ctx.restore();
+      }
     });
 
     this.applyHighlight = (activeId: string | null, immediate = false) => {
@@ -419,8 +723,22 @@ const engine: VisNetworkEngine = {
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
       this.activeHighlightDists = dists;
 
+      const activeRawNode = activeId ? rawNodesList.find((rn) => rn.id === activeId) : undefined;
+      let activeClusterContentCov: Map<string, number> | null = null;
+      if (activeRawNode && activeRawNode.group === 0) {
+        activeClusterContentCov = new Map<string, number>();
+        for (const edge of rawEdgesList) {
+          if (edge.from === activeId) {
+            activeClusterContentCov.set(edge.to, edge.coverage ?? edge.weight);
+          } else if (edge.to === activeId) {
+            activeClusterContentCov.set(edge.from, edge.coverage ?? edge.weight);
+          }
+        }
+      }
+
       const nodeTrans: {
         id: string;
+        group: number;
         startColor: string;
         targetColor: string;
         startSize: number;
@@ -430,68 +748,40 @@ const engine: VisNetworkEngine = {
 
       for (const node of rawNodesList) {
         const id = node.id;
-        const baseColor = palette[node.group] || palette[0];
+        const baseColor = getNodeBaseColor(node, currentIsLight) || palette[node.group] || palette[0];
         const startColor = nodeDisplayColorMap.get(id) || baseColor;
-        const startSize = nodeDisplaySizeMap.get(id) ?? currentTokens.nodeRadius;
+        const restScale = getNodeRestRadiusScale(node.group, node.size);
+        const startSize =
+          node.group === 0
+            ? 0
+            : (nodeDisplaySizeMap.get(id) ?? (currentTokens.nodeRadius * restScale));
         const hopDist = dists ? dists.get(id) : undefined;
         const isSecHover = secId !== null && id === secId;
-        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const itemCov =
+          activeClusterContentCov && node.group !== 0
+            ? (activeClusterContentCov.get(id) ?? 0)
+            : undefined;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist, itemCov) : 1;
         const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
         const targetColor = isSecHover
           ? baseColor
           : dists
-            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight, itemCov)
             : baseColor;
-        const targetSize = currentTokens.nodeRadius * targetScale;
+        const targetSize = node.group === 0 ? 0 : currentTokens.nodeRadius * restScale * targetScale;
         nodeTrans.push({
           id,
+          group: node.group,
           startColor,
           targetColor,
           startSize,
           targetSize,
-          changed: startColor !== targetColor || Math.abs(startSize - targetSize) > 1e-3
-        });
-      }
-
-      const edgeTrans: {
-        id: string;
-        startColor: string;
-        targetColor: string;
-        startWidth: number;
-        targetWidth: number;
-        changed: boolean;
-      }[] = [];
-      const edgeZMap = new Map<string, number>();
-
-      for (const edge of rawEdgesList) {
-        const edgeId = edge.id;
-        const dSrc = dists ? dists.get(edge.from) : undefined;
-        const dTgt = dists ? dists.get(edge.to) : undefined;
-        const startColor = edgeDisplayColorMap.get(edgeId) || currentTokens.edgeColor;
-        const startWidth = edgeDisplayWidthMap.get(edgeId) ?? currentTokens.edgeWidth;
-        const targetStyle = dists
-          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
-          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
-        if (dists) {
-          edgeZMap.set(edgeId, getEdgeHopZIndex(dSrc, dTgt));
-        }
-        edgeTrans.push({
-          id: edgeId,
-          startColor,
-          targetColor: targetStyle.color,
-          startWidth,
-          targetWidth: targetStyle.width,
-          changed: startColor !== targetStyle.color || Math.abs(startWidth - targetStyle.width) > 1e-3
+          changed: startColor !== targetColor || Math.abs(startSize - targetSize) > 1e-3 || immediate
         });
       }
 
       if (dists) {
         const internalBody = (this.network as VisNetworkWithBody | null | undefined)?.body;
-        if (internalBody?.edgeIndices) {
-          internalBody.edgeIndices.sort(
-            (a, b) => (edgeZMap.get(String(a)) ?? 1) - (edgeZMap.get(String(b)) ?? 1)
-          );
-        }
         if (internalBody?.nodeIndices) {
           internalBody.nodeIndices.sort(
             (a, b) => getNodeHopZIndex(dists.get(String(a))) - getNodeHopZIndex(dists.get(String(b)))
@@ -503,29 +793,29 @@ const engine: VisNetworkEngine = {
         if (!this.visNodes || !this.visEdges || !this.network) return;
         const internalBody = (this.network as VisNetworkWithBody).body;
         const bodyNodes = internalBody?.nodes;
-        const bodyEdges = internalBody?.edges;
 
         const nodeUpdates: VisCustomNode[] = [];
         for (const nt of nodeTrans) {
           if (!nt.changed && !commitDataSet) continue;
           const c = ease >= 1 ? nt.targetColor : interpolateHexColor(nt.startColor, nt.targetColor, ease);
-          const s = ease >= 1 ? nt.targetSize : nt.startSize + (nt.targetSize - nt.startSize) * ease;
+          const s = nt.group === 0 ? 0 : (ease >= 1 ? nt.targetSize : nt.startSize + (nt.targetSize - nt.startSize) * ease);
           nodeDisplayColorMap.set(nt.id, c);
           nodeDisplaySizeMap.set(nt.id, s);
 
+          const visCol = 'rgba(0,0,0,0)';
           const bNode = bodyNodes?.[nt.id];
           if (bNode?.options) {
-            bNode.options.size = s;
+            bNode.options.size = 0;
             if (bNode.options.color) {
-              bNode.options.color.background = c;
-              bNode.options.color.border = c;
+              bNode.options.color.background = visCol;
+              bNode.options.color.border = visCol;
               if (bNode.options.color.highlight) {
-                bNode.options.color.highlight.background = c;
-                bNode.options.color.highlight.border = c;
+                bNode.options.color.highlight.background = visCol;
+                bNode.options.color.highlight.border = visCol;
               }
               if (bNode.options.color.hover) {
-                bNode.options.color.hover.background = c;
-                bNode.options.color.hover.border = c;
+                bNode.options.color.hover.background = visCol;
+                bNode.options.color.hover.border = visCol;
               }
             }
           }
@@ -533,49 +823,14 @@ const engine: VisNetworkEngine = {
           if (commitDataSet && nt.changed) {
             nodeUpdates.push({
               id: nt.id,
-              size: s,
+              size: 0,
               displaySize: s,
               displayColor: c,
               color: {
-                background: c,
-                border: c,
-                highlight: { background: c, border: c },
-                hover: { background: c, border: c }
-              }
-            });
-          }
-        }
-
-        const edgeUpdates: VisCustomEdge[] = [];
-        for (const et of edgeTrans) {
-          if (!et.changed && !commitDataSet) continue;
-          const c = ease >= 1 ? et.targetColor : interpolateHexColor(et.startColor, et.targetColor, ease);
-          const w = ease >= 1 ? et.targetWidth : et.startWidth + (et.targetWidth - et.startWidth) * ease;
-          edgeDisplayColorMap.set(et.id, c);
-          edgeDisplayWidthMap.set(et.id, w);
-
-          const bEdge = bodyEdges?.[et.id];
-          if (bEdge?.options) {
-            bEdge.options.width = w;
-            bEdge.options.hoverWidth = w;
-            if (bEdge.options.color) {
-              bEdge.options.color.color = c;
-              bEdge.options.color.highlight = c;
-              bEdge.options.color.hover = c;
-            }
-          }
-
-          if (commitDataSet && et.changed) {
-            edgeUpdates.push({
-              id: et.id,
-              width: w,
-              hoverWidth: w,
-              displayWidth: w,
-              displayColor: c,
-              color: {
-                color: c,
-                highlight: c,
-                hover: c
+                background: visCol,
+                border: visCol,
+                highlight: { background: visCol, border: visCol },
+                hover: { background: visCol, border: visCol }
               }
             });
           }
@@ -583,7 +838,6 @@ const engine: VisNetworkEngine = {
 
         if (commitDataSet) {
           if (nodeUpdates.length > 0) this.visNodes.update(nodeUpdates);
-          if (edgeUpdates.length > 0) this.visEdges.update(edgeUpdates);
         }
         this.network.redraw();
       };
@@ -611,45 +865,7 @@ const engine: VisNetworkEngine = {
       this.highlightFrameId = requestAnimationFrame(step);
     };
 
-    this.dragController = createGraphDragPhysicsController2D({
-      nodes: (this.nodes || []).map((n) => ({
-        id: n.id,
-        group: n.group,
-        x: typeof n.x === 'number' ? n.x : 0,
-        y: typeof n.y === 'number' ? n.y : 0,
-      })),
-      edges: (this.connections || []).map((c) => ({
-        source: c.sourceId,
-        target: c.targetId,
-        weight: c.weight ?? 0.5,
-      })),
-      isLight: () => Boolean(this.isLight),
-      onTick: (positions, draggedId) => {
-        if (!this.network) return;
-        const bodyNodes = (this.network as VisNetworkWithBody).body?.nodes;
-        for (const [id, pt] of positions.entries()) {
-          if (id === draggedId) continue;
-          const bNode = bodyNodes?.[id];
-          if (bNode) {
-            bNode.x = pt.x;
-            bNode.y = pt.y;
-          } else {
-            this.network.moveNode(id, pt.x, pt.y);
-          }
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
-        }
-        this.network.redraw();
-      },
-      onSettleComplete: (positions) => {
-        if (!this.visNodes) return;
-        const updates: VisNode[] = [];
-        for (const [id, pt] of positions.entries()) {
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
-          updates.push({ id, x: pt.x, y: pt.y });
-        }
-        this.visNodes.update(updates);
-      },
-    });
+    rebuildDragController();
 
     this.tooltipController?.bindProximityInteraction({
       getScreenNodes: () => {
@@ -1056,6 +1272,10 @@ const engine: VisNetworkEngine = {
       const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       if (this.currentLayout === 'force' && this.nodes && this.connections) {
         this.dragController?.stop();
+        const targetK = getGraphTuningState().clusterCount;
+        if (this.activeClusterCount !== targetK) {
+          this.rebuildClusterTopology?.(targetK);
+        }
         if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
           this.tuningInFlight = false;
           const targets: Record<string, { x: number; y: number }> = {};
@@ -1090,6 +1310,10 @@ const engine: VisNetworkEngine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK);
+      }
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
         this.forcePositions.set(id, { x: pos.x, y: pos.y });

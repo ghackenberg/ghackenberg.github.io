@@ -1,5 +1,6 @@
 import ForceGraph3D from '3d-force-graph';
 import {
+  DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
   GRAPH_GEOMETRY_LAYOUT_CONFIG,
   GRAPH_PHYSICS_CONFIG,
@@ -15,8 +16,18 @@ import {
   interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedNodeScale,
-  getAttenuatedEdgeStyle,
+  getNodeBaseColor,
+  getNodeClusterColor,
+  getNodeRestRadiusScale,
+  getRestEdgeStyle,
   isDefaultGraphTuningState,
+  formatClusterLabelShort,
+  drawClusterCalloutLabels2D,
+  drawRegularPolygonNode2D,
+  getNodeHopZIndex,
+  reclusterCanonicalGraphPayload,
+  type CanonicalGraphPayload,
+  type GraphConnectionPayload,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
 import {
@@ -73,6 +84,7 @@ export interface Force3DLink {
   source: string | Force3DNode;
   target: string | Force3DNode;
   weight?: number;
+  coverage?: number;
   displayColor?: string;
   displayWidth?: number;
   __lineObj?: ThreeObjectLike;
@@ -110,9 +122,15 @@ export interface Force3DEngine {
   layouts: { id: string; label: string }[];
   nodes: Force3DNode[] | null;
   links: Force3DLink[] | null;
+  nodeLookup?: Map<string, Force3DNode> | null;
   graph: ReturnType<typeof ForceGraph3D> | null;
+  fgCanvas?: HTMLCanvasElement | null;
   tooltipController: GraphTooltipController | null;
   dragController?: GraphDragPhysicsController3D | null;
+  canonicalPayload?: CanonicalGraphPayload | null;
+  initialClusteredNodes?: GraphNodePayload[] | null;
+  initialClusteredConnections?: GraphConnectionPayload[] | null;
+  activeClusterCount?: number;
   hoveredNodeId: string | null;
   secondaryHoveredNodeId?: string | null;
   draggedNodeId: string | null;
@@ -139,10 +157,12 @@ export interface Force3DEngine {
   cleanupControlsListeners?: (() => void) | null;
   highlightFrameId: number | null;
   applyHighlight?(immediate?: boolean): void;
+  drawForegroundOverlay?(): void;
+  rebuildClusterTopology?(targetK: number): void;
   applyForces(initialLoad?: boolean): void;
   stepCameraTowardCloud(alpha: number): void;
   startCameraAdaptLoop(durationMs?: number, baseAlpha?: number): void;
-  init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
+  init(container: HTMLElement, payload: { canonical?: CanonicalGraphPayload; '3d-force'?: { nodes: GraphNodePayload[]; connections: GraphConnectionPayload[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: GraphConnectionPayload[] } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<Force3DEngine>;
   computeLayoutTargets(layout: string, useCurrentOrder?: boolean): { targets: Record<string, { x: number; y: number; z: number }>; signature: string };
   updateLayout(layout: string, isLight: boolean): void;
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
@@ -158,9 +178,15 @@ const engine: Force3DEngine = {
   ],
   nodes: null,
   links: null,
+  nodeLookup: null,
   graph: null,
+  fgCanvas: null,
   tooltipController: null,
   dragController: null,
+  canonicalPayload: null,
+  initialClusteredNodes: null,
+  initialClusteredConnections: null,
+  activeClusterCount: DEFAULT_TOPIC_CLUSTER_COUNT,
   hoveredNodeId: null,
   draggedNodeId: null,
   adjacency: null,
@@ -180,7 +206,7 @@ const engine: Force3DEngine = {
   cleanupControlsListeners: null,
   highlightFrameId: null,
 
-  async init(container: HTMLElement, payload: { '3d-force'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: { sourceId: string; targetId: string; weight?: number }[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
+  async init(container: HTMLElement, payload: { canonical?: CanonicalGraphPayload; '3d-force'?: { nodes: GraphNodePayload[]; connections: GraphConnectionPayload[] }; '3d-force-graph'?: { nodes: GraphNodePayload[]; connections: GraphConnectionPayload[] } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     this.container = container;
     this.currentLayout = undefined;
     this.isLight = isLight;
@@ -188,6 +214,13 @@ const engine: Force3DEngine = {
     this.secondaryHoveredNodeId = null;
     this.draggedNodeId = null;
     const engineData = payload['3d-force-graph'] || payload['3d-force'] || { nodes: [], connections: [] };
+    this.canonicalPayload = payload.canonical ?? {
+      nodes: engineData.nodes,
+      connections: engineData.connections,
+    };
+    this.initialClusteredNodes = engineData.nodes.map((n) => ({ ...n }));
+    this.initialClusteredConnections = engineData.connections.map((c) => ({ ...c }));
+    this.activeClusterCount = getGraphTuningState().clusterCount;
     this.adjacency = buildGraphAdjacency(engineData.connections);
     this.activeDistances = null;
     this.lastOrderSignature = '';
@@ -205,6 +238,8 @@ const engine: Force3DEngine = {
       const nz = typeof n.z === 'number' ? n.z : 0;
       this.forcePositions.set(n.id, { x: nx, y: ny, z: nz });
       this.initialForcePositions.set(n.id, { x: nx, y: ny, z: nz });
+      const baseVal = Number((6 * Math.pow(getNodeRestRadiusScale(n.group, n.size), 3)).toFixed(3));
+      const nodeColor = getNodeBaseColor(n, isLight) || colors[n.group] || colors[0];
       return {
         ...n,
         x: nx,
@@ -213,25 +248,30 @@ const engine: Force3DEngine = {
         fx: nx,
         fy: ny,
         fz: nz,
-        val: 6,
-        displayVal: 6,
-        color: colors[n.group] || colors[0],
-        displayColor: colors[n.group] || colors[0]
+        val: baseVal,
+        displayVal: baseVal,
+        color: nodeColor,
+        displayColor: nodeColor
       };
     });
 
-    this.links = engineData.connections.map((c) => ({
-      source: c.sourceId,
-      target: c.targetId,
-      weight: c.weight,
-      displayColor: initialStyleTokens.edgeColor,
-      displayWidth: initialStyleTokens.edgeWidth
-    }));
+    this.links = engineData.connections.map((c) => {
+      const rest = getRestEdgeStyle(c.weight, isLight);
+      return {
+        source: c.sourceId,
+        target: c.targetId,
+        weight: c.weight,
+        coverage: c.coverage ?? c.weight ?? 0.5,
+        displayColor: rest.color,
+        displayWidth: rest.width
+      };
+    });
 
     const nodeLookup = new Map<string, Force3DNode>();
     for (const n of this.nodes) {
       nodeLookup.set(n.id, n);
     }
+    this.nodeLookup = nodeLookup;
 
     this.dragController = createGraphDragPhysicsController3D({
       nodes: this.nodes.map((n) => ({
@@ -251,7 +291,7 @@ const engine: Force3DEngine = {
         if (!this.graph || !this.nodes) return;
         for (const [id, pt] of positions.entries()) {
           if (id === draggedId) continue;
-          const n = nodeLookup.get(id);
+          const n = this.nodeLookup?.get(id);
           if (n) {
             n.x = pt.x;
             n.y = pt.y;
@@ -268,6 +308,7 @@ const engine: Force3DEngine = {
         } catch {
           // Suppress
         }
+        this.drawForegroundOverlay?.();
       },
     });
 
@@ -276,7 +317,6 @@ const engine: Force3DEngine = {
     const utmCampaign = String(extraOptions.utmCampaign || 'interactive_visualization');
 
     let lastHighlightedKey = '';
-    const baseCylinderWidth = Math.ceil(initialStyleTokens.edgeWidth * 10) / 10;
 
     const applyMeshVisualState = (
       obj: ThreeObjectLike | undefined,
@@ -328,46 +368,44 @@ const engine: Force3DEngine = {
       const radiusRatio = currentTokens.nodeRadius / 8;
       const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
 
+      const activeNodeObj = activeNodeId ? this.nodeLookup?.get(activeNodeId) : undefined;
+      let activeClusterContentCov: Map<string, number> | null = null;
+      if (activeNodeObj && activeNodeObj.group === 0 && this.links) {
+        activeClusterContentCov = new Map<string, number>();
+        for (const l of this.links) {
+          const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+          const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+          if (srcId === activeNodeId) {
+            activeClusterContentCov.set(tgtId, l.coverage ?? l.weight ?? 0.5);
+          } else if (tgtId === activeNodeId) {
+            activeClusterContentCov.set(srcId, l.coverage ?? l.weight ?? 0.5);
+          }
+        }
+      }
+
       const nodeTrans = (this.nodes || []).map((n) => {
-        const baseColor = palette[n.group] || palette[0];
+        const baseColor = getNodeBaseColor(n, currentIsLight) || palette[n.group] || palette[0];
         const startColor = n.displayColor || baseColor;
         const startVal = n.displayVal ?? n.val;
         const hopDist = dists ? dists.get(n.id) : undefined;
         const isSecHover = secId !== null && n.id === secId;
+        const itemCov =
+          activeClusterContentCov && n.group !== 0
+            ? (activeClusterContentCov.get(n.id) ?? 0)
+            : undefined;
         const targetColor = isSecHover
           ? baseColor
           : dists
-            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight, itemCov)
             : baseColor;
-        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist, itemCov) : 1;
         const targetScale = (isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale) * radiusRatio;
         const targetVal = n.val * Math.pow(targetScale, 3);
-        const isForeground = Boolean((hopDist !== undefined && hopDist < 1.8) || isSecHover);
-        const changed = startColor !== targetColor || Math.abs(startVal - targetVal) > 1e-3;
+        const isForeground = Boolean(
+          (itemCov !== undefined ? itemCov > 0 : hopDist !== undefined && hopDist < 1.8) || isSecHover
+        );
+        const changed = startColor !== targetColor || Math.abs(startVal - targetVal) > 1e-3 || immediate;
         return { node: n, startColor, targetColor, startVal, targetVal, isForeground, changed };
-      });
-
-      const linkTrans = (this.links || []).map((l) => {
-        const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
-        const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
-        const dSrc = dists ? dists.get(srcId) : undefined;
-        const dTgt = dists ? dists.get(tgtId) : undefined;
-        const startColor = l.displayColor || currentTokens.edgeColor;
-        const startWidth = l.displayWidth ?? currentTokens.edgeWidth;
-        const targetStyle = dists
-          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
-          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
-        const isForeground = Boolean(dists && (dSrc === 0 || dTgt === 0));
-        const changed = startColor !== targetStyle.color || Math.abs(startWidth - targetStyle.width) > 1e-3;
-        return {
-          link: l,
-          startColor,
-          targetColor: targetStyle.color,
-          startWidth,
-          targetWidth: targetStyle.width,
-          isForeground,
-          changed
-        };
       });
 
       const renderStep = (ease: number) => {
@@ -380,6 +418,10 @@ const engine: Force3DEngine = {
 
           const nodeObj = nt.node.__threeObj;
           if (nodeObj) {
+            if (nt.node.group === 0) {
+              applyMeshVisualState(nodeObj, nextColor, 0, false, false, 0);
+              continue;
+            }
             const scaleRatio = Math.cbrt(Math.max(0.01, nextVal / nt.node.val));
             nodeObj.scale?.set?.(scaleRatio, scaleRatio, scaleRatio);
             if (dists) {
@@ -393,33 +435,7 @@ const engine: Force3DEngine = {
             }
           }
         }
-
-        for (const lt of linkTrans) {
-          if (!lt.changed && ease < 1) continue;
-          const nextColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          const nextWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
-          lt.link.displayColor = nextColor;
-          lt.link.displayWidth = nextWidth;
-
-          const lineObj = lt.link.__lineObj || lt.link.__threeObj;
-          if (lineObj) {
-            const lineMesh = lineObj.children && lineObj.children.length > 0 ? lineObj.children[0] : lineObj;
-            const widthRatio = Math.max(0.1, nextWidth / baseCylinderWidth);
-            if (lineMesh.scale) {
-              lineMesh.scale.x = widthRatio;
-              lineMesh.scale.y = widthRatio;
-            }
-            if (dists) {
-              if (lt.isForeground) {
-                applyMeshVisualState(lineObj, nextColor, 20, true, true, 1);
-              } else {
-                applyMeshVisualState(lineObj, nextColor, 1, true, false, 1);
-              }
-            } else {
-              applyMeshVisualState(lineObj, nextColor, 5, true, true, 1);
-            }
-          }
-        }
+        this.drawForegroundOverlay?.();
       };
 
       if (immediate) {
@@ -458,13 +474,15 @@ const engine: Force3DEngine = {
       .showNavInfo(false)
       .enableNodeDrag(false)
       .nodeLabel(() => '')
+      .nodeVisibility(() => false)
       .nodeVal((n: Force3DNode) => n.val)
       .nodeColor((n: Force3DNode) => {
         const currentIsLight = Boolean(this.isLight);
         const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-        return n.displayColor || palette[n.group] || palette[0];
+        return n.displayColor || getNodeBaseColor(n, currentIsLight) || palette[n.group] || palette[0];
       })
-      .linkOpacity(1)
+      .linkVisibility(false)
+      .linkOpacity(0)
       .linkColor((l: Force3DLink) => {
         const currentTokens = getGraphStyleTokens(Boolean(this.isLight));
         return l.displayColor || currentTokens.edgeColor;
@@ -474,15 +492,184 @@ const engine: Force3DEngine = {
         if (!materialsInitialized) {
           materialsInitialized = true;
           refreshHighlight(true);
+        } else {
+          this.drawForegroundOverlay?.();
         }
       });
 
-    // Hide any internal 3d-force-graph scene tooltip element and mount our Preact tooltip AFTER ForceGraph3D()(container)
-    // so kapsule's container DOM clearing does not detach tooltipEl.
+    // Hide any internal 3d-force-graph scene tooltip element and mount our 2D foreground overlay canvas + Preact tooltip AFTER ForceGraph3D()(container)
+    // so kapsule's container DOM clearing does not detach them.
     const internalTooltip = container.querySelector<HTMLElement>('.scene-tooltip, .graph-tooltip');
     if (internalTooltip) {
       internalTooltip.style.display = 'none';
     }
+
+    const fgCanvas = document.createElement('canvas');
+    fgCanvas.className = 'force3d-foreground-overlay';
+    fgCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;';
+    container.appendChild(fgCanvas);
+    this.fgCanvas = fgCanvas;
+
+    const syncFgCanvasSize = () => {
+      if (!this.fgCanvas || !this.container) return;
+      const dpr = window.devicePixelRatio || 1;
+      const w = this.container.clientWidth || 1;
+      const h = this.container.clientHeight || 1;
+      const targetW = Math.round(w * dpr);
+      const targetH = Math.round(h * dpr);
+      if (this.fgCanvas.width !== targetW || this.fgCanvas.height !== targetH) {
+        this.fgCanvas.width = targetW;
+        this.fgCanvas.height = targetH;
+      }
+    };
+    syncFgCanvasSize();
+
+    this.drawForegroundOverlay = () => {
+      if (!this.fgCanvas || !this.graph || !this.nodes) return;
+      syncFgCanvasSize();
+      const fgCtx = this.fgCanvas.getContext('2d');
+      if (!fgCtx) return;
+      const dpr = window.devicePixelRatio || 1;
+      const width = this.container?.clientWidth || 800;
+      const height = this.container?.clientHeight || 500;
+      fgCtx.save();
+      fgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      fgCtx.clearRect(0, 0, width, height);
+
+      const currentIsLight = Boolean(this.isLight);
+      const palette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+      const dists = this.activeDistances;
+      const secId = this.secondaryHoveredNodeId ?? null;
+
+      // Draw always-on cluster pill labels for group === 0 nodes with integrated coverage
+      let activeContentCoverageMap: Map<string, number> | null = null;
+      let activeClusterContentCoverageMap: Map<string, number> | null = null;
+      if (dists && this.links) {
+        for (const n of this.nodes) {
+          if (dists.get(n.id) === 0) {
+            if (n.group !== 0) {
+              activeContentCoverageMap = new Map<string, number>();
+              for (const l of this.links) {
+                const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+                const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+                if (srcId === n.id) {
+                  activeContentCoverageMap.set(tgtId, l.coverage ?? l.weight ?? 0.5);
+                } else if (tgtId === n.id) {
+                  activeContentCoverageMap.set(srcId, l.coverage ?? l.weight ?? 0.5);
+                }
+              }
+            } else {
+              activeClusterContentCoverageMap = new Map<string, number>();
+              for (const l of this.links) {
+                const srcId = typeof l.source === 'object' ? l.source.id : String(l.source);
+                const tgtId = typeof l.target === 'object' ? l.target.id : String(l.target);
+                if (srcId === n.id) {
+                  activeClusterContentCoverageMap.set(tgtId, l.coverage ?? l.weight ?? 0.5);
+                } else if (tgtId === n.id) {
+                  activeClusterContentCoverageMap.set(srcId, l.coverage ?? l.weight ?? 0.5);
+                }
+              }
+            }
+            break;
+          }
+        }
+      }
+
+      const allCalloutNodes: { id: string; x: number; y: number; radiusPx: number; group?: number }[] = [];
+      const clusterCalloutSpecs: {
+        id: string;
+        text: string;
+        x: number;
+        y: number;
+        radiusPx: number;
+        hopDistance?: number;
+        activeCoverage?: number;
+        clusterColor?: string;
+      }[] = [];
+      const contentPolygonItems: {
+        sortKey: number;
+        x: number;
+        y: number;
+        radius: number;
+        group: number;
+        color: string;
+      }[] = [];
+
+      for (const n of this.nodes) {
+        try {
+          const sc = this.graph.graph2ScreenCoords(n.x || 0, n.y || 0, n.z || 0);
+          if (!sc || !Number.isFinite(sc.x) || !Number.isFinite(sc.y)) continue;
+          const hopDist = dists ? dists.get(n.id) : undefined;
+          const isSecHover = secId !== null && n.id === secId;
+          const scaleFactor = Math.cbrt(Math.max(0.01, (n.displayVal ?? n.val) / Math.max(0.01, n.val)));
+          const screenRadius = n.group === 0 ? 0 : Math.max(2, 6.5 * scaleFactor);
+          allCalloutNodes.push({
+            id: n.id,
+            x: sc.x,
+            y: sc.y,
+            radiusPx: screenRadius,
+            group: n.group,
+          });
+          if (n.group === 0) {
+            const effectiveHop = isSecHover ? 0 : dists ? (hopDist ?? 99) : undefined;
+            const activeCoverage = activeContentCoverageMap
+              ? (activeContentCoverageMap.get(n.id) ?? 0)
+              : undefined;
+            clusterCalloutSpecs.push({
+              id: n.id,
+              text: formatClusterLabelShort(n.name || ''),
+              x: sc.x,
+              y: sc.y,
+              radiusPx: 0,
+              hopDistance: effectiveHop,
+              activeCoverage,
+              clusterColor: getNodeClusterColor(n, currentIsLight),
+            });
+          } else {
+            const itemCov = activeClusterContentCoverageMap
+              ? (activeClusterContentCoverageMap.get(n.id) ?? 0)
+              : undefined;
+            const nodeZ = isSecHover ? 48 : dists ? getNodeHopZIndex(hopDist, itemCov) : 2;
+            const color =
+              n.displayColor || getNodeBaseColor(n, currentIsLight) || palette[n.group] || palette[0];
+            contentPolygonItems.push({
+              sortKey: nodeZ * 10 - (sc.z || 0) * 0.001,
+              x: sc.x,
+              y: sc.y,
+              radius: screenRadius,
+              group: n.group,
+              color,
+            });
+          }
+        } catch {
+          // Suppress projection error
+        }
+      }
+
+      if (contentPolygonItems.length > 0) {
+        contentPolygonItems.sort((a, b) => a.sortKey - b.sortKey);
+        for (const item of contentPolygonItems) {
+          drawRegularPolygonNode2D(
+            fgCtx,
+            item.x,
+            item.y,
+            item.radius,
+            item.group,
+            item.color,
+            item.color,
+            1.5
+          );
+        }
+      }
+
+      drawClusterCalloutLabels2D(fgCtx, allCalloutNodes, clusterCalloutSpecs, currentIsLight, {
+        width,
+        height,
+      });
+
+      fgCtx.restore();
+    };
+
     this.tooltipController = createGraphTooltipController(container);
 
     let dragDepth = 0;
@@ -699,6 +886,7 @@ const engine: Force3DEngine = {
         if (!this.draggedNodeId && this.initialized) {
           this.startCameraAdaptLoop(2400);
         }
+        this.drawForegroundOverlay?.();
       };
       controls.addEventListener?.('change', onControlsRotate);
       controls.addEventListener?.('end', onControlsRotate);
@@ -1011,6 +1199,7 @@ const engine: Force3DEngine = {
         controls?.update?.();
       }
       camera.lookAt?.(nextTargetX, nextTargetY, nextTargetZ);
+      this.drawForegroundOverlay?.();
     } catch {
       // Suppress if scene/camera is not yet ready
     }
@@ -1078,7 +1267,7 @@ const engine: Force3DEngine = {
 
     const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodes.forEach(n => {
-      n.color = colors[n.group] || colors[0];
+      n.color = getNodeBaseColor(n, isLight) || colors[n.group] || colors[0];
     });
     this.applyHighlight?.(true);
 
@@ -1141,6 +1330,143 @@ const engine: Force3DEngine = {
     }
   },
 
+  rebuildClusterTopology(targetK: number) {
+    if (!this.graph || !this.nodes || !this.canonicalPayload) return;
+    const reclustered =
+      targetK === DEFAULT_TOPIC_CLUSTER_COUNT && this.initialClusteredNodes && this.initialClusteredConnections
+        ? {
+            nodes: this.initialClusteredNodes.map((n) => ({ ...n })),
+            connections: this.initialClusteredConnections.map((c) => ({ ...c })),
+          }
+        : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+
+    this.activeClusterCount = targetK;
+    this.hoveredNodeId = null;
+    this.secondaryHoveredNodeId = null;
+    this.draggedNodeId = null;
+    this.focusedNodeIds = null;
+    this.tooltipController?.clearFocus();
+
+    const existingById = new Map<string, Force3DNode>();
+    let sumX = 0;
+    let sumY = 0;
+    let sumZ = 0;
+    let count = 0;
+    for (const n of this.nodes) {
+      existingById.set(n.id, n);
+      if (typeof n.x === 'number' && typeof n.y === 'number' && typeof n.z === 'number') {
+        sumX += n.x;
+        sumY += n.y;
+        sumZ += n.z;
+        count++;
+      }
+    }
+    const cx = count > 0 ? sumX / count : 0;
+    const cy = count > 0 ? sumY / count : 0;
+    const cz = count > 0 ? sumZ / count : 0;
+    const currentIsLight = Boolean(this.isLight);
+    const colors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+
+    this.nodes = reclustered.nodes.map((n, idx) => {
+      const prev = existingById.get(n.id);
+      const initPos = targetK === DEFAULT_TOPIC_CLUSTER_COUNT ? this.initialForcePositions.get(n.id) : undefined;
+      const angle = idx * 2.399963229728653;
+      const nx = prev?.x ?? initPos?.x ?? cx + Math.cos(angle) * 55;
+      const ny = prev?.y ?? initPos?.y ?? cy + Math.sin(angle) * 55;
+      const nz = prev?.z ?? initPos?.z ?? cz + ((idx % 5) - 2) * 28;
+      const baseVal = Number((6 * Math.pow(getNodeRestRadiusScale(n.group, n.size), 3)).toFixed(3));
+      const nodeColor = getNodeBaseColor(n, currentIsLight) || colors[n.group] || colors[0];
+      return {
+        ...n,
+        x: nx,
+        y: ny,
+        z: nz,
+        fx: nx,
+        fy: ny,
+        fz: nz,
+        val: baseVal,
+        displayVal: baseVal,
+        color: nodeColor,
+        displayColor: nodeColor,
+      };
+    });
+
+    this.links = reclustered.connections.map((c) => {
+      const rest = getRestEdgeStyle(c.weight, currentIsLight);
+      return {
+        source: c.sourceId,
+        target: c.targetId,
+        weight: c.weight,
+        coverage: c.coverage ?? c.weight ?? 0.5,
+        displayColor: rest.color,
+        displayWidth: rest.width,
+      };
+    });
+
+    if (this.nodeLookup) {
+      this.nodeLookup.clear();
+      for (const n of this.nodes) {
+        this.nodeLookup.set(n.id, n);
+      }
+    }
+
+    const nextAdj = buildGraphAdjacency(reclustered.connections);
+    if (this.adjacency) {
+      this.adjacency.clear();
+      for (const [k, v] of nextAdj.entries()) {
+        this.adjacency.set(k, v);
+      }
+    } else {
+      this.adjacency = nextAdj;
+    }
+
+    this.graph.graphData({ nodes: this.nodes, links: this.links });
+    this.applyForces(false);
+
+    this.dragController?.destroy();
+    this.dragController = createGraphDragPhysicsController3D({
+      nodes: this.nodes.map((n) => ({
+        id: n.id,
+        group: n.group,
+        x: n.x ?? 0,
+        y: n.y ?? 0,
+        z: n.z ?? 0,
+      })),
+      edges: reclustered.connections.map((c) => ({
+        source: c.sourceId,
+        target: c.targetId,
+        weight: c.weight ?? 0.5,
+      })),
+      isLight: () => Boolean(this.isLight),
+      onTick: (positions, draggedId) => {
+        if (!this.graph || !this.nodes) return;
+        for (const [id, pt] of positions.entries()) {
+          if (id === draggedId) continue;
+          const n = this.nodeLookup?.get(id);
+          if (n) {
+            n.x = pt.x;
+            n.y = pt.y;
+            n.z = pt.z;
+            n.fx = pt.x;
+            n.fy = pt.y;
+            n.fz = pt.z;
+          }
+          this.forcePositions.set(id, { x: pt.x, y: pt.y, z: pt.z });
+        }
+        try {
+          this.graph.cooldownTicks(1);
+          this.graph.d3ReheatSimulation();
+        } catch {
+          // Suppress
+        }
+        this.drawForegroundOverlay?.();
+      },
+    });
+
+    this.applyHighlight?.(true);
+    this.drawForegroundOverlay?.();
+  },
+
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset') {
     if (!this.graph || !this.nodes) return;
     if (category === 'visual') {
@@ -1156,6 +1482,10 @@ const engine: Force3DEngine = {
       return;
     }
     if (category === 'physics') {
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK);
+      }
       const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       this.dragController?.stop();
       this.applyForces(false);
@@ -1192,6 +1522,10 @@ const engine: Force3DEngine = {
             this.animateTo(solved, 450, undefined, true);
           });
         }
+      } else if (this.currentLayout === 'radial' || this.currentLayout === 'columns') {
+        const { targets, signature } = this.computeLayoutTargets(this.currentLayout, true);
+        this.lastOrderSignature = signature;
+        this.animateTo(targets, 400, undefined, true);
       }
       return;
     }
@@ -1199,6 +1533,9 @@ const engine: Force3DEngine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
+      if (this.activeClusterCount !== DEFAULT_TOPIC_CLUSTER_COUNT) {
+        this.rebuildClusterTopology?.(DEFAULT_TOPIC_CLUSTER_COUNT);
+      }
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
         this.forcePositions.set(id, { x: pos.x, y: pos.y, z: pos.z });
@@ -1275,6 +1612,7 @@ const engine: Force3DEngine = {
           // Suppress
         }
       }
+      this.drawForegroundOverlay?.();
 
       if (progress < 1) {
         this.animationFrameId = requestAnimationFrame(step);
@@ -1301,6 +1639,7 @@ const engine: Force3DEngine = {
         } catch {
           // Suppress if the internal engine is not ready
         }
+        this.drawForegroundOverlay?.();
       }
     };
 
@@ -1339,6 +1678,10 @@ const engine: Force3DEngine = {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
     }
+    if (this.fgCanvas) {
+      this.fgCanvas.remove();
+      this.fgCanvas = null;
+    }
     if (this.container && this.mouseMoveHandler) {
       this.container.removeEventListener('pointermove', this.mouseMoveHandler, { capture: true });
       this.container.removeEventListener('mousemove', this.mouseMoveHandler, { capture: true });
@@ -1361,6 +1704,10 @@ const engine: Force3DEngine = {
     }
     this.nodes = null;
     this.links = null;
+    this.nodeLookup = null;
+    this.canonicalPayload = null;
+    this.initialClusteredNodes = null;
+    this.initialClusteredConnections = null;
   }
 };
 

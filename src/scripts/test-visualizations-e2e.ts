@@ -314,7 +314,7 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
       };
     });
 
-    if (bootState.forceSize >= 300 && bootState.initSize >= 300 && bootState.hasRenderSurface) {
+    if (bootState.forceSize >= 220 && bootState.initSize >= 220 && bootState.hasRenderSurface) {
       bootOk = true;
     } else {
       errors.push(

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {
+  GRAPH_PHYSICS_CONFIG,
   type CanonicalGraphPayload,
   type GraphLayoutPayload,
   type GraphLayoutPositions,
@@ -18,7 +19,22 @@ import {
 } from '@commons/shared/graph-solvers';
 import { getCanonicalGraphPayloadArtifact } from './graph-payload-endpoint';
 
-const SOLVER_VERSION = 'v10';
+const SOLVER_VERSION = 'v20';
+
+let cachedSolversFileHash: string | null = null;
+function getSolversFileHash(): string {
+  if (cachedSolversFileHash !== null) {
+    return cachedSolversFileHash;
+  }
+  try {
+    const solversPath = path.join(process.cwd(), 'src', 'commons', 'shared', 'graph-solvers.ts');
+    const raw = fs.readFileSync(solversPath, 'utf8');
+    cachedSolversFileHash = crypto.createHash('sha256').update(raw).digest('hex').slice(0, 12);
+  } catch {
+    cachedSolversFileHash = SOLVER_VERSION;
+  }
+  return cachedSolversFileHash;
+}
 
 export const VISUALIZATION_ENGINES: readonly VisualizationEngineType[] = [
   'cytoscape',
@@ -63,7 +79,13 @@ export function computeTopologyHash(canonical: CanonicalGraphPayload): string {
     c.weight ?? 1,
   ]);
 
-  const seed = JSON.stringify([SOLVER_VERSION, nodeTopology, edgeTopology]);
+  const seed = JSON.stringify([
+    SOLVER_VERSION,
+    getSolversFileHash(),
+    GRAPH_PHYSICS_CONFIG,
+    nodeTopology,
+    edgeTopology,
+  ]);
   return crypto.createHash('sha256').update(seed).digest('hex').slice(0, 12);
 }
 

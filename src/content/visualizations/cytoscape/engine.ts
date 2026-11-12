@@ -1,10 +1,15 @@
 import cytoscape, { type Core, type NodeSingular } from 'cytoscape';
 import {
+  DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
+  drawClusterCalloutLabels2D,
+  drawRegularPolygonNode2D,
   easeHighlightTransition,
+  getCytoscapePolygonPoints,
   getGraphStyleTokens,
+  getGraphTuningState,
   compute2DViewportFit,
   getRadialReferenceBounds2D,
   buildGraphAdjacency,
@@ -12,10 +17,15 @@ import {
   interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedNodeScale,
+  getNodeBaseColor,
+  getNodeClusterColor,
+  getNodeRestRadiusScale,
   getAttenuatedEdgeStyle,
+  getRestEdgeStyle,
   getNodeHopZIndex,
-  getEdgeHopZIndex,
-  isDefaultGraphTuningState
+  isDefaultGraphTuningState,
+  reclusterCanonicalGraphPayload,
+  type CanonicalGraphPayload
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
@@ -33,7 +43,18 @@ import { createGraphTooltipController, type GraphTooltipController, type RawGrap
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
   const grp = node.data('group') ?? 0;
   const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-  return colors[grp] || colors[0];
+  return (
+    getNodeBaseColor(
+      {
+        group: grp,
+        colorDark: node.data('colorDark'),
+        colorLight: node.data('colorLight'),
+      },
+      isLight
+    ) ||
+    colors[grp] ||
+    colors[0]
+  );
 }
 
 export interface CytoscapeNodeMeta {
@@ -41,6 +62,8 @@ export interface CytoscapeNodeMeta {
   name: string;
   size: number;
   group: number;
+  colorDark?: string;
+  colorLight?: string;
   typeLabel?: string;
   description?: string;
   date?: string;
@@ -53,11 +76,15 @@ export interface CytoscapeEdgeMeta {
   source: string;
   target: string;
   weight: number;
+  coverage?: number;
 }
 
 export interface CytoscapeEngine {
   layouts: { id: string; label: string }[];
   cy: Core | null;
+  canonicalPayload?: CanonicalGraphPayload | null;
+  activeClusterCount?: number;
+  rebuildClusterTopology?(targetK: number): void;
   tooltipController: GraphTooltipController | null;
   fgCanvas?: HTMLCanvasElement | null;
   drawScene?: (() => void) | null;
@@ -86,7 +113,7 @@ export interface CytoscapeEngine {
   animationFrameId?: number | null;
   viewportAdaptFrameId?: number | null;
   resizeObserver: ResizeObserver | null;
-  init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
+  init(container: HTMLElement, payload: { canonical?: CanonicalGraphPayload; cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<CytoscapeEngine>;
   stepViewportTowardCloud(alpha: number): void;
   startViewportAdaptLoop(durationMs?: number, baseAlpha?: number): void;
   runLayout(mode: string, animate: boolean): void;
@@ -123,7 +150,7 @@ const engine: CytoscapeEngine = {
   viewportAdaptFrameId: null,
   resizeObserver: null,
 
-  async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
+  async init(container: HTMLElement, payload: { canonical?: CanonicalGraphPayload; cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean, extraOptions: Record<string, string> = {}) {
     const styleTokens = getGraphStyleTokens(isLight);
     const baseDiameter = styleTokens.nodeRadius * 2;
 
@@ -141,6 +168,7 @@ const engine: CytoscapeEngine = {
     this.initialForcePositions = new Map();
     this.tuningGeneration = (this.tuningGeneration || 0) + 1;
     this.tuningInFlight = false;
+    this.canonicalPayload = payload.canonical ?? null;
 
     this.cy = cytoscape({
       container: container,
@@ -154,6 +182,9 @@ const engine: CytoscapeEngine = {
         {
           selector: 'node',
           style: {
+            'shape': 'polygon',
+            'shape-polygon-points': (node: NodeSingular) =>
+              getCytoscapePolygonPoints(node.data('group') ?? 1).join(' '),
             'background-color': (node: NodeSingular) => getNodeColor(node, isLight),
             'label': '',
             'width': baseDiameter,
@@ -165,10 +196,19 @@ const engine: CytoscapeEngine = {
           }
         },
         {
+          selector: 'node[group = 0]',
+          style: {
+            'background-opacity': 0,
+            'border-width': 0
+          }
+        },
+        {
           selector: 'edge',
           style: {
             'width': styleTokens.edgeWidth,
             'line-color': styleTokens.edgeColor,
+            'opacity': 0,
+            'line-opacity': 0,
             'curve-style': 'straight',
             'overlay-opacity': 0,
             'events': 'no'
@@ -186,7 +226,7 @@ const engine: CytoscapeEngine = {
       cyInternalWrapper.style.pointerEvents = 'none';
     }
 
-    const cyNodes = this.cy.nodes().toArray();
+    let cyNodes = this.cy.nodes().toArray();
     const cyEdges = this.cy.edges().toArray();
     const nodeDisplayColorMap = new Map<string, string>();
     const nodeDisplaySizeMap = new Map<string, number>();
@@ -200,22 +240,31 @@ const engine: CytoscapeEngine = {
       const id = n.id();
       const data = n.data();
       const group = Number(data.group ?? 0);
+      const rawSize = Number(data.rawSize ?? data.size ?? 1);
       const pos = n.position();
       const px = Number.isFinite(pos.x) ? pos.x : 0;
       const py = Number.isFinite(pos.y) ? pos.y : 0;
-      const col = palette[group] || palette[0];
+      const col =
+        getNodeBaseColor(
+          { group, colorDark: data.colorDark, colorLight: data.colorLight },
+          isLight
+        ) ||
+        palette[group] ||
+        palette[0];
 
       this.modelPositions.set(id, { x: px, y: py });
       this.forcePositions.set(id, { x: px, y: py });
       this.initialForcePositions.set(id, { x: px, y: py });
       nodeDisplayColorMap.set(id, col);
-      nodeDisplaySizeMap.set(id, baseDiameter);
+      nodeDisplaySizeMap.set(id, baseDiameter * getNodeRestRadiusScale(group, rawSize));
 
       this.nodeMetaList.push({
         id,
         name: String(data.name || ''),
-        size: Number(data.rawSize ?? data.size ?? 1),
+        size: rawSize,
         group,
+        colorDark: data.colorDark,
+        colorLight: data.colorLight,
         typeLabel: data.typeLabel,
         description: data.description,
         date: data.date,
@@ -225,6 +274,8 @@ const engine: CytoscapeEngine = {
 
       controllerNodes.push({ id, group, x: px, y: py });
     }
+    this.activeClusterCount =
+      this.nodeMetaList.filter((n) => n.group === 0).length || DEFAULT_TOPIC_CLUSTER_COUNT;
 
     const rawEdges: { source: string; target: string }[] = [];
     const controllerEdges: { source: string; target: string; weight: number }[] = [];
@@ -234,11 +285,25 @@ const engine: CytoscapeEngine = {
       const source = e.source().id();
       const target = e.target().id();
       const weight = Number(e.data('weight') ?? 0.5);
+      const coverage = typeof e.data('coverage') === 'number' ? Number(e.data('coverage')) : undefined;
       rawEdges.push({ source, target });
       controllerEdges.push({ source, target, weight });
-      this.edgeMetaList.push({ id, source, target, weight });
-      edgeDisplayColorMap.set(id, styleTokens.edgeColor);
-      edgeDisplayWidthMap.set(id, styleTokens.edgeWidth);
+      this.edgeMetaList.push({ id, source, target, weight, coverage });
+      const restStyle = getRestEdgeStyle(weight, isLight);
+      edgeDisplayColorMap.set(id, restStyle.color);
+      edgeDisplayWidthMap.set(id, restStyle.width);
+    }
+
+    if (!this.canonicalPayload) {
+      this.canonicalPayload = {
+        nodes: this.nodeMetaList.map((n) => ({ ...n })),
+        connections: this.edgeMetaList.map((e) => ({
+          sourceId: e.source,
+          targetId: e.target,
+          weight: e.weight,
+          coverage: e.coverage,
+        })),
+      };
     }
 
     const adjacency = buildGraphAdjacency(rawEdges);
@@ -296,72 +361,69 @@ const engine: CytoscapeEngine = {
       const currentBaseDiameter = currentTokens.nodeRadius * 2;
       const currentPalette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
 
-      type DrawItem =
-        | { isNode: false; z: number; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
-        | { isNode: true; z: number; x: number; y: number; radius: number; borderWidth: number; color: string };
+      type DrawItem = {
+        isNode: true;
+        z: number;
+        x: number;
+        y: number;
+        radius: number;
+        group: number;
+        borderWidth: number;
+        color: string;
+      };
 
       const fgItems: DrawItem[] = [];
 
       ctx.save();
       ctx.lineCap = 'round';
 
-      // 1. Draw background edges batched into a single path
-      let bgEdgeColor = currentTokens.edgeColor;
-      let bgEdgeWidth = currentTokens.edgeWidth * zoom;
-      let hasBgEdges = false;
-      ctx.beginPath();
-
-      for (const e of this.edgeMetaList) {
-        const p1 = this.modelPositions.get(e.source);
-        const p2 = this.modelPositions.get(e.target);
-        if (!p1 || !p2) continue;
-        const x1 = p1.x * zoom + panX;
-        const y1 = p1.y * zoom + panY;
-        const x2 = p2.x * zoom + panX;
-        const y2 = p2.y * zoom + panY;
-
-        const edgeZ = dists ? getEdgeHopZIndex(dists.get(e.source), dists.get(e.target)) : 1;
-        const modelWidth = edgeDisplayWidthMap.get(e.id) ?? currentTokens.edgeWidth;
-        const color = edgeDisplayColorMap.get(e.id) || currentTokens.edgeColor;
-
-        if (edgeZ >= 8) {
-          fgItems.push({
-            isNode: false,
-            z: edgeZ,
-            x1,
-            y1,
-            x2,
-            y2,
-            color,
-            width: modelWidth * zoom
-          });
-        } else {
-          bgEdgeColor = color;
-          bgEdgeWidth = modelWidth * zoom;
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          hasBgEdges = true;
+      let activeContentCoverageMap: Map<string, number> | null = null;
+      let activeClusterContentCoverageMap: Map<string, number> | null = null;
+      if (dists) {
+        for (const n of this.nodeMetaList) {
+          if (dists.get(n.id) === 0) {
+            if (n.group !== 0) {
+              activeContentCoverageMap = new Map<string, number>();
+              for (const e of this.edgeMetaList) {
+                if (e.source === n.id) {
+                  activeContentCoverageMap.set(e.target, e.coverage ?? e.weight);
+                } else if (e.target === n.id) {
+                  activeContentCoverageMap.set(e.source, e.coverage ?? e.weight);
+                }
+              }
+            } else {
+              activeClusterContentCoverageMap = new Map<string, number>();
+              for (const e of this.edgeMetaList) {
+                if (e.source === n.id) {
+                  activeClusterContentCoverageMap.set(e.target, e.coverage ?? e.weight);
+                } else if (e.target === n.id) {
+                  activeClusterContentCoverageMap.set(e.source, e.coverage ?? e.weight);
+                }
+              }
+            }
+            break;
+          }
         }
       }
 
-      if (hasBgEdges) {
-        ctx.strokeStyle = bgEdgeColor;
-        ctx.lineWidth = bgEdgeWidth;
-        ctx.stroke();
-      }
-
-      // 2. Draw background nodes (nodeZ < 10) and collect foreground nodes (nodeZ >= 10)
+      // 1. Edges are 100% hidden visually in both rest and hover states.
+      // 2. Draw background content nodes (group !== 0, nodeZ < 10) and collect foreground content nodes (nodeZ >= 10)
       const borderW = 1.5 * zoom;
       for (const n of this.nodeMetaList) {
+        if (n.group === 0) continue; // Theme-Cluster nodes are rendered as Pill Nodes below
         const id = n.id;
         const p = this.modelPositions.get(id);
         if (!p) continue;
         const rx = p.x * zoom + panX;
         const ry = p.y * zoom + panY;
         const hopDist = dists ? dists.get(id) : undefined;
-        const nodeZ = secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
-        const modelDiameter = nodeDisplaySizeMap.get(id) ?? currentBaseDiameter;
-        const color = nodeDisplayColorMap.get(id) || currentPalette[n.group] || currentPalette[0];
+        const itemCov = activeClusterContentCoverageMap
+          ? (activeClusterContentCoverageMap.get(id) ?? 0)
+          : undefined;
+        const nodeZ =
+          secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist, itemCov) : 2;
+        const modelDiameter = nodeDisplaySizeMap.get(id) ?? (currentBaseDiameter * getNodeRestRadiusScale(n.group, n.size));
+        const color = nodeDisplayColorMap.get(id) || getNodeBaseColor(n, currentIsLight) || currentPalette[n.group] || currentPalette[0];
         const radius = (modelDiameter * zoom) / 2;
 
         if (nodeZ >= 10) {
@@ -371,42 +433,80 @@ const engine: CytoscapeEngine = {
             x: rx,
             y: ry,
             radius,
+            group: n.group,
             borderWidth: borderW,
             color
           });
         } else {
-          ctx.beginPath();
-          ctx.arc(rx, ry, radius, 0, Math.PI * 2);
-          ctx.fillStyle = color;
-          ctx.fill();
-          ctx.lineWidth = borderW;
-          ctx.strokeStyle = color;
-          ctx.stroke();
+          drawRegularPolygonNode2D(ctx, rx, ry, radius, n.group, color, color, borderW);
         }
       }
 
-      // 3. Draw foreground edges and nodes sorted by exact Z-order
+      // 3. Draw foreground content nodes sorted by exact Z-order
       if (fgItems.length > 0) {
-        fgItems.sort((a, b) => a.z - b.z || (a.isNode ? 1 : 0) - (b.isNode ? 1 : 0));
+        fgItems.sort((a, b) => a.z - b.z);
         for (const item of fgItems) {
-          if (!item.isNode) {
-            ctx.beginPath();
-            ctx.strokeStyle = item.color;
-            ctx.lineWidth = item.width;
-            ctx.moveTo(item.x1, item.y1);
-            ctx.lineTo(item.x2, item.y2);
-            ctx.stroke();
-          } else {
-            ctx.beginPath();
-            ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
-            ctx.fillStyle = item.color;
-            ctx.fill();
-            ctx.lineWidth = item.borderWidth;
-            ctx.strokeStyle = item.color;
-            ctx.stroke();
-          }
+          drawRegularPolygonNode2D(
+            ctx,
+            item.x,
+            item.y,
+            item.radius,
+            item.group,
+            item.color,
+            item.color,
+            item.borderWidth
+          );
         }
       }
+
+      // 4. Draw Theme-Cluster Pill nodes (group === 0) centered directly at (rx, ry)
+
+      const allCalloutNodes: { id: string; x: number; y: number; radiusPx: number; group?: number }[] = [];
+      const clusterCalloutSpecs: {
+        id: string;
+        text: string;
+        x: number;
+        y: number;
+        radiusPx: number;
+        clusterColor?: string;
+        hopDistance?: number;
+        activeCoverage?: number;
+      }[] = [];
+
+      for (const n of this.nodeMetaList) {
+        const p = this.modelPositions.get(n.id);
+        if (!p) continue;
+        const rx = p.x * zoom + panX;
+        const ry = p.y * zoom + panY;
+        const modelDiameter =
+          nodeDisplaySizeMap.get(n.id) ??
+          currentBaseDiameter * getNodeRestRadiusScale(n.group, n.size);
+        const radius = (modelDiameter * zoom) / 2;
+        allCalloutNodes.push({ id: n.id, x: rx, y: ry, radiusPx: radius, group: n.group });
+        if (n.group === 0) {
+          const hopDist = dists ? dists.get(n.id) : undefined;
+          const isSecHover = secId !== null && n.id === secId;
+          const effectiveHop = isSecHover ? 0 : dists ? (hopDist ?? 99) : undefined;
+          const activeCoverage = activeContentCoverageMap
+            ? (activeContentCoverageMap.get(n.id) ?? 0)
+            : undefined;
+          clusterCalloutSpecs.push({
+            id: n.id,
+            text: n.name,
+            x: rx,
+            y: ry,
+            radiusPx: radius,
+            clusterColor: getNodeClusterColor(n, currentIsLight),
+            hopDistance: effectiveHop,
+            activeCoverage,
+          });
+        }
+      }
+
+      drawClusterCalloutLabels2D(ctx, allCalloutNodes, clusterCalloutSpecs, currentIsLight, {
+        width: w,
+        height: h,
+      });
 
       ctx.restore();
     };
@@ -433,6 +533,19 @@ const engine: CytoscapeEngine = {
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
       this.activeHighlightDists = dists;
 
+      const activeNodeMeta = activeId ? this.nodeMetaList.find((nm) => nm.id === activeId) : undefined;
+      let activeClusterContentCov: Map<string, number> | null = null;
+      if (activeNodeMeta && activeNodeMeta.group === 0) {
+        activeClusterContentCov = new Map<string, number>();
+        for (const e of this.edgeMetaList) {
+          if (e.source === activeId) {
+            activeClusterContentCov.set(e.target, e.coverage ?? e.weight);
+          } else if (e.target === activeId) {
+            activeClusterContentCov.set(e.source, e.coverage ?? e.weight);
+          }
+        }
+      }
+
       const nodeTrans: {
         id: string;
         startColor: string;
@@ -444,19 +557,24 @@ const engine: CytoscapeEngine = {
 
       for (const n of this.nodeMetaList) {
         const id = n.id;
-        const baseColor = currentPalette[n.group] || currentPalette[0];
+        const baseColor = getNodeBaseColor(n, currentIsLight) || currentPalette[n.group] || currentPalette[0];
         const startColor = nodeDisplayColorMap.get(id) || baseColor;
-        const startSize = nodeDisplaySizeMap.get(id) ?? currentBaseDiameter;
+        const restScale = getNodeRestRadiusScale(n.group, n.size);
+        const startSize = nodeDisplaySizeMap.get(id) ?? (currentBaseDiameter * restScale);
         const hopDist = dists ? dists.get(id) : undefined;
         const isSecHover = secId !== null && id === secId;
-        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const itemCov =
+          activeClusterContentCov && n.group !== 0
+            ? (activeClusterContentCov.get(id) ?? 0)
+            : undefined;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist, itemCov) : 1;
         const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
         const targetColor = isSecHover
           ? baseColor
           : dists
-            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight, itemCov)
             : baseColor;
-        const targetSize = currentBaseDiameter * targetScale;
+        const targetSize = currentBaseDiameter * restScale * targetScale;
         nodeTrans.push({
           id,
           startColor,
@@ -482,8 +600,8 @@ const engine: CytoscapeEngine = {
         const dSrc = dists ? dists.get(e.source) : undefined;
         const dTgt = dists ? dists.get(e.target) : undefined;
         const targetStyle = dists
-          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight)
-          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+          ? getAttenuatedEdgeStyle(dSrc, dTgt, currentIsLight, e.weight)
+          : getRestEdgeStyle(e.weight, currentIsLight);
         edgeTrans.push({
           id: e.id,
           startColor,
@@ -551,28 +669,179 @@ const engine: CytoscapeEngine = {
 
     let grabbedNodeId: string | null = null;
 
-    this.dragController = createGraphDragPhysicsController2D({
-      nodes: controllerNodes,
-      edges: controllerEdges,
-      isLight: () => Boolean(this.isLight),
-      onTick: (positions, draggedId) => {
-        if (!this.cy) return;
-        for (const [id, pt] of positions.entries()) {
-          if (id === draggedId) continue;
-          this.modelPositions.set(id, { x: pt.x, y: pt.y });
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
+    const rebuildDragController = (
+      nodesList: { id: string; group: number; x: number; y: number }[],
+      edgesList: { source: string; target: string; weight: number }[]
+    ) => {
+      if (this.dragController) {
+        this.dragController.destroy();
+      }
+      this.dragController = createGraphDragPhysicsController2D({
+        nodes: nodesList,
+        edges: edgesList,
+        isLight: () => Boolean(this.isLight),
+        onTick: (positions, draggedId) => {
+          if (!this.cy) return;
+          for (const [id, pt] of positions.entries()) {
+            if (id === draggedId) continue;
+            this.modelPositions.set(id, { x: pt.x, y: pt.y });
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
+          }
+          drawForegroundOverlay();
+        },
+        onSettleComplete: (positions) => {
+          for (const [id, pt] of positions.entries()) {
+            this.modelPositions.set(id, { x: pt.x, y: pt.y });
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
+          }
+          syncPositionsToCy();
+          drawForegroundOverlay();
+        },
+      });
+    };
+
+    rebuildDragController(controllerNodes, controllerEdges);
+
+    this.rebuildClusterTopology = (targetK: number) => {
+      if (!this.canonicalPayload || !this.cy) return;
+      const nextCanonical =
+        targetK === DEFAULT_TOPIC_CLUSTER_COUNT
+          ? this.canonicalPayload
+          : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+
+      const currentIsLight = Boolean(this.isLight);
+      const curTokens = getGraphStyleTokens(currentIsLight);
+      const curBaseDiameter = curTokens.nodeRadius * 2;
+      const curPalette = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+
+      const prevPosById = new Map<string, { x: number; y: number }>();
+      for (const [id, p] of this.modelPositions.entries()) {
+        prevPosById.set(id, { x: p.x, y: p.y });
+      }
+
+      const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
+      for (const c of nextCanonical.connections) {
+        const pt = prevPosById.get(c.sourceId);
+        if (pt && (c.weight ?? 0) >= 0.4) {
+          const cur = itemCoordsByCluster.get(c.targetId) || { sumX: 0, sumY: 0, count: 0 };
+          cur.sumX += pt.x;
+          cur.sumY += pt.y;
+          cur.count += 1;
+          itemCoordsByCluster.set(c.targetId, cur);
         }
-        drawForegroundOverlay();
-      },
-      onSettleComplete: (positions) => {
-        for (const [id, pt] of positions.entries()) {
-          this.modelPositions.set(id, { x: pt.x, y: pt.y });
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
+      }
+
+      this.nodeMetaList = [];
+      this.edgeMetaList = [];
+      this.modelPositions.clear();
+      this.forcePositions.clear();
+      nodeDisplayColorMap.clear();
+      nodeDisplaySizeMap.clear();
+      edgeDisplayColorMap.clear();
+      edgeDisplayWidthMap.clear();
+
+      const nextCyElements: cytoscape.ElementDefinition[] = [];
+      const nextCtrlNodes: { id: string; group: number; x: number; y: number }[] = [];
+      const nextCtrlEdges: { source: string; target: string; weight: number }[] = [];
+      const nextRawEdges: { source: string; target: string }[] = [];
+
+      nextCanonical.nodes.forEach((n, idx) => {
+        const existing = prevPosById.get(n.id);
+        let px = existing?.x;
+        let py = existing?.y;
+        if (px === undefined || py === undefined) {
+          const centroid = itemCoordsByCluster.get(n.id);
+          if (centroid && centroid.count > 0) {
+            px = centroid.sumX / centroid.count;
+            py = centroid.sumY / centroid.count;
+          } else {
+            const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
+            px = Math.cos(angle) * 140;
+            py = Math.sin(angle) * 140;
+          }
         }
-        syncPositionsToCy();
-        drawForegroundOverlay();
-      },
-    });
+        const col = getNodeBaseColor(n, currentIsLight) || curPalette[n.group] || curPalette[0];
+        this.modelPositions.set(n.id, { x: px, y: py });
+        this.forcePositions.set(n.id, { x: px, y: py });
+        nodeDisplayColorMap.set(n.id, col);
+        nodeDisplaySizeMap.set(n.id, curBaseDiameter * getNodeRestRadiusScale(n.group, n.size));
+
+        this.nodeMetaList.push({
+          id: n.id,
+          name: n.name,
+          size: n.size,
+          group: n.group,
+          colorDark: n.colorDark,
+          colorLight: n.colorLight,
+          typeLabel: n.typeLabel,
+          description: n.description,
+          date: n.date,
+          image: n.image,
+          tags: n.tags ? [...n.tags] : undefined,
+        });
+        nextCtrlNodes.push({ id: n.id, group: n.group, x: px, y: py });
+        nextCyElements.push({
+          data: {
+            id: n.id,
+            name: n.name,
+            group: n.group,
+            color: col,
+            colorDark: n.colorDark,
+            colorLight: n.colorLight,
+            size: 16 * getNodeRestRadiusScale(n.group, n.size),
+            rawSize: n.size,
+          },
+          position: { x: px, y: py },
+        });
+      });
+
+      for (const c of nextCanonical.connections) {
+        const eid = `${c.sourceId}--${c.targetId}`;
+        const weight = c.weight ?? 0.5;
+        const restStyle = getRestEdgeStyle(weight, currentIsLight);
+        edgeDisplayColorMap.set(eid, restStyle.color);
+        edgeDisplayWidthMap.set(eid, restStyle.width);
+        this.edgeMetaList.push({
+          id: eid,
+          source: c.sourceId,
+          target: c.targetId,
+          weight,
+          coverage: c.coverage,
+        });
+        nextRawEdges.push({ source: c.sourceId, target: c.targetId });
+        nextCtrlEdges.push({ source: c.sourceId, target: c.targetId, weight });
+        nextCyElements.push({
+          data: {
+            id: eid,
+            source: c.sourceId,
+            target: c.targetId,
+            weight,
+            coverage: c.coverage,
+          },
+        });
+      }
+
+      const freshAdj = buildGraphAdjacency(nextRawEdges);
+      adjacency.clear();
+      for (const [k, v] of freshAdj.entries()) {
+        adjacency.set(k, v);
+      }
+
+      this.cy.batch(() => {
+        this.cy!.elements().remove();
+        this.cy!.add(nextCyElements);
+      });
+      cyNodes = this.cy.nodes().toArray();
+
+      this.activeClusterCount = targetK;
+      this.hoveredNodeId = null;
+      this.secondaryHoveredNodeId = null;
+      this.activeHighlightDists = null;
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+      rebuildDragController(nextCtrlNodes, nextCtrlEdges);
+      drawForegroundOverlay();
+    };
 
     const calibrateDragEquilibrium = (syncFromCy = false) => {
       if (syncFromCy) {
@@ -1023,6 +1292,10 @@ const engine: CytoscapeEngine = {
       if (this.currentLayout === 'force') {
         const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
         this.dragController?.stop();
+        const targetK = getGraphTuningState().clusterCount;
+        if (this.activeClusterCount !== targetK) {
+          this.rebuildClusterTopology?.(targetK);
+        }
         if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
           this.tuningInFlight = false;
           const targets: Record<string, { x: number; y: number }> = {};
@@ -1065,6 +1338,10 @@ const engine: CytoscapeEngine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK);
+      }
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {
         this.forcePositions.set(id, { x: pos.x, y: pos.y });

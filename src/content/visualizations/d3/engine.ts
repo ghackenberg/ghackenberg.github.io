@@ -1,10 +1,14 @@
 import * as d3 from 'd3';
 import {
+  DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
   GRAPH_PHYSICS_CONFIG,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
+  blendHexColor,
+  buildRegularPolygonSvgPoints,
   easeHighlightTransition,
+  getClusterPillDimensions,
   getEdgeLinkDistance2D,
   getEdgeLinkStrength2D,
   getGraphStyleTokens,
@@ -16,12 +20,20 @@ import {
   interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedNodeScale,
+  getNodeBaseColor,
+  getNodeClusterColor,
+  getNodeRestRadiusScale,
   getAttenuatedEdgeStyle,
+  getRestEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
   isDefaultGraphTuningState,
+  reclusterCanonicalGraphPayload,
+  resolveClusterPillVisualState,
+  type CanonicalGraphPayload,
   type GraphNodePayload
 } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 import {
   compute2DGeometryTargets,
   solveD3ForceLayoutAsync,
@@ -38,22 +50,35 @@ export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
   displayColor?: string;
   displayRadius?: number;
   el?: SVGGElement;
-  circleEl?: SVGCircleElement;
+  circleEl?: SVGPolygonElement | SVGCircleElement;
+  pillGroupEl?: SVGGElement;
+  pillRectEl?: SVGRectElement;
+  pillDotEl?: SVGCircleElement;
+  pillTextEl?: SVGTextElement;
+  pillTitleTspanEl?: SVGTSpanElement;
+  pillBadgeGroupEl?: SVGGElement;
+  pillBadgeRectEl?: SVGRectElement;
+  pillBadgeTextEl?: SVGTextElement;
+  activeHopDist?: number;
+  activeCoverage?: number;
 }
 
 export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
   source: string | D3Node;
   target: string | D3Node;
   weight?: number;
+  coverage?: number;
   displayColor?: string;
   displayWidth?: number;
   el?: SVGLineElement;
+  badgeEl?: SVGGElement;
 }
 
 export interface D3Payload {
+  canonical?: CanonicalGraphPayload;
   d3: {
     nodes: GraphNodePayload[];
-    connections: { sourceId: string; targetId: string; weight?: number }[];
+    connections: { sourceId: string; targetId: string; weight?: number; coverage?: number }[];
   };
 }
 
@@ -61,6 +86,8 @@ export interface D3Engine {
   layouts: { id: string; label: string }[];
   width: number;
   height: number;
+  canonicalPayload?: CanonicalGraphPayload | null;
+  activeClusterCount?: number;
   nodes: D3Node[] | null;
   links: D3Link[] | null;
   svg: d3.Selection<SVGSVGElement, D3Node, null, undefined> | null;
@@ -69,6 +96,8 @@ export interface D3Engine {
   simulation: d3.Simulation<D3Node, D3Link> | null;
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
+  activeBadgeLinks?: D3Link[];
+  rebuildClusterTopology?(targetK: number): void;
   tooltipController: GraphTooltipController | null;
   dragController?: GraphDragPhysicsController2D | null;
   hoveredNodeId?: string | null;
@@ -127,6 +156,10 @@ const engine: D3Engine = {
     this.height = container.offsetHeight || 500;
     this.forcePositions = new Map();
     this.initialForcePositions = new Map();
+    this.canonicalPayload = payload.canonical ?? {
+      nodes: payload.d3.nodes.map((n) => ({ ...n })),
+      connections: payload.d3.connections.map((c) => ({ ...c })),
+    };
 
     this.nodes = payload.d3.nodes.map((n) => {
       const nx = typeof n.x === 'number' ? n.x : 0;
@@ -139,11 +172,15 @@ const engine: D3Engine = {
         y: ny
       };
     });
+    this.activeClusterCount =
+      this.nodes.filter((n) => n.group === 0).length || DEFAULT_TOPIC_CLUSTER_COUNT;
+    this.activeBadgeLinks = [];
 
     this.links = payload.d3.connections.map((c) => ({
       source: c.sourceId,
       target: c.targetId,
-      weight: c.weight
+      weight: c.weight,
+      coverage: c.coverage
     })).filter((l) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
 
     const nodeLookup = new Map<string, D3Node>();
@@ -151,33 +188,39 @@ const engine: D3Engine = {
       nodeLookup.set(n.id, n);
     }
 
-    this.dragController = createGraphDragPhysicsController2D({
-      nodes: this.nodes.map((n) => ({
-        id: n.id,
-        group: n.group,
-        x: n.x ?? 0,
-        y: n.y ?? 0,
-      })),
-      edges: this.links.map((l) => ({
-        source: typeof l.source === 'object' ? l.source.id : String(l.source),
-        target: typeof l.target === 'object' ? l.target.id : String(l.target),
-        weight: l.weight ?? 0.5,
-      })),
-      isLight: () => Boolean(this.isLight),
-      onTick: (positions, draggedId) => {
-        if (!this.nodes) return;
-        for (const [id, pt] of positions.entries()) {
-          if (id === draggedId) continue;
-          const n = nodeLookup.get(id);
-          if (n) {
-            n.x = pt.x;
-            n.y = pt.y;
+    const rebuildDragController = () => {
+      if (this.dragController) {
+        this.dragController.destroy();
+      }
+      this.dragController = createGraphDragPhysicsController2D({
+        nodes: (this.nodes || []).map((n) => ({
+          id: n.id,
+          group: n.group,
+          x: n.x ?? 0,
+          y: n.y ?? 0,
+        })),
+        edges: (this.links || []).map((l) => ({
+          source: typeof l.source === 'object' ? l.source.id : String(l.source),
+          target: typeof l.target === 'object' ? l.target.id : String(l.target),
+          weight: l.weight ?? 0.5,
+        })),
+        isLight: () => Boolean(this.isLight),
+        onTick: (positions, draggedId) => {
+          if (!this.nodes) return;
+          for (const [id, pt] of positions.entries()) {
+            if (id === draggedId) continue;
+            const n = nodeLookup.get(id);
+            if (n) {
+              n.x = pt.x;
+              n.y = pt.y;
+            }
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
           }
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
-        }
-        this.renderPositions();
-      },
-    });
+          this.renderPositions();
+        },
+      });
+    };
+    rebuildDragController();
 
     container.style.touchAction = 'pan-y';
 
@@ -205,20 +248,10 @@ const engine: D3Engine = {
     // Create D3 simulation
     this.simulation = d3.forceSimulation<D3Node>(this.nodes);
 
-    const styleTokens = getGraphStyleTokens(isLight);
-
     const bgLinkLayer = this.svgGroup.append<SVGGElement>("g");
     const bgNodeLayer = this.svgGroup.append<SVGGElement>("g");
     const fgLayer = this.svgGroup.append<SVGGElement>("g");
-
-    this.linkElements = bgLinkLayer.selectAll<SVGLineElement, D3Link>(".link")
-      .data(this.links)
-      .enter().append("line")
-      .each(function (l) {
-        l.el = this;
-      })
-      .style("stroke", styleTokens.edgeColor)
-      .style("stroke-width", `${styleTokens.edgeWidth}px`);
+    const badgeLayer = this.svgGroup.append<SVGGElement>("g").style("pointer-events", "none");
 
     let lastDraggedAt = 0;
     let lastHighlightedKey = '';
@@ -232,6 +265,243 @@ const engine: D3Engine = {
         target: typeof l.target === 'object' ? l.target.id : String(l.target)
       }))
     );
+
+    const mountSvgElements = () => {
+      const currentIsLight = Boolean(this.isLight ?? isLight);
+      const curTokens = getGraphStyleTokens(currentIsLight);
+      const curColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+      const canvasBg = getThemeTokens(currentIsLight).canvasBg;
+
+      bgLinkLayer.selectAll("*").remove();
+      bgNodeLayer.selectAll("*").remove();
+      fgLayer.selectAll("*").remove();
+      badgeLayer.selectAll("*").remove();
+      this.activeBadgeLinks = [];
+
+      this.linkElements = bgLinkLayer.selectAll<SVGLineElement, D3Link>(".link")
+        .data(this.links || [])
+        .enter().append("line")
+        .each(function (l) {
+          l.el = this;
+          const rest = getRestEdgeStyle(l.weight, currentIsLight);
+          l.displayColor = rest.color;
+          l.displayWidth = rest.width;
+          this.style.stroke = rest.color;
+          this.style.strokeWidth = `${rest.width}px`;
+          this.style.strokeOpacity = "0";
+          this.style.display = "none";
+        });
+
+      this.nodeElements = bgNodeLayer.selectAll<SVGGElement, D3Node>(".node")
+        .data(this.nodes || [])
+        .enter().append("g")
+        .each(function (n) {
+          n.el = this;
+        })
+        .style("cursor", "pointer");
+
+      this.nodeElements.append("polygon")
+        .attr("class", "node-dot")
+        .each(function (n) {
+          n.circleEl = this;
+          n.displayRadius = curTokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size);
+          if (n.group === 0) {
+            this.style.display = "none";
+            this.style.opacity = "0";
+          }
+        })
+        .attr("points", d =>
+          d.group === 0
+            ? "0,0"
+            : buildRegularPolygonSvgPoints(
+                curTokens.nodeRadius * getNodeRestRadiusScale(d.group, d.size),
+                d.group
+              )
+        )
+        .style("fill", d => getNodeBaseColor(d, currentIsLight) || curColors[d.group] || curColors[0])
+        .style("stroke", d => getNodeBaseColor(d, currentIsLight) || curColors[d.group] || curColors[0])
+        .style("stroke-linejoin", "round")
+        .style("stroke-width", "1.5px");
+
+      this.nodeElements.filter(d => d.group === 0).each(function (n) {
+        const nodeSel = d3.select(this);
+        const clusterHue = getNodeClusterColor(n, currentIsLight) || curColors[0];
+        const dims = getClusterPillDimensions(n.name, undefined, false, 1);
+        let pillW = dims.pillW;
+        const pillH = dims.pillH;
+        let contentStartX = -dims.totalTextW / 2;
+
+        const g = nodeSel.append<SVGGElement>("g")
+          .attr("class", "cluster-pill")
+          .style("pointer-events", "all")
+          .style("opacity", "0.97");
+
+        const rect = g.append<SVGRectElement>("rect")
+          .attr("x", -pillW / 2)
+          .attr("y", -pillH / 2)
+          .attr("width", pillW)
+          .attr("height", pillH)
+          .attr("rx", 6)
+          .style("fill", blendHexColor(clusterHue, canvasBg, 0.13))
+          .style("stroke", blendHexColor(clusterHue, canvasBg, 0.72))
+          .style("stroke-width", "1.25px");
+
+        const dot = g.append<SVGCircleElement>("circle")
+          .attr("cx", contentStartX + 3)
+          .attr("cy", 0)
+          .attr("r", 3)
+          .style("fill", clusterHue);
+
+        const txt = g.append<SVGTextElement>("text")
+          .attr("x", contentStartX + dims.dotLeadW)
+          .attr("y", 0.5)
+          .attr("text-anchor", "start")
+          .attr("dominant-baseline", "central")
+          .style("font", "600 10px Inter, system-ui, -apple-system, sans-serif")
+          .style("fill", getThemeTokens(currentIsLight).textHeading);
+
+        const titleTspan = txt.append<SVGTSpanElement>("tspan").text(dims.baseLabel);
+
+        const svgTextEl = txt.node();
+        if (svgTextEl && typeof svgTextEl.getComputedTextLength === "function") {
+          try {
+            const actualW = Math.ceil(svgTextEl.getComputedTextLength());
+            if (Number.isFinite(actualW) && actualW > dims.baseW) {
+              const adjustedTotalW = dims.dotLeadW + actualW;
+              pillW = Math.ceil(adjustedTotalW + 16);
+              contentStartX = -adjustedTotalW / 2;
+              rect.attr("x", -pillW / 2).attr("width", pillW);
+              dot.attr("cx", contentStartX + 3);
+              txt.attr("x", contentStartX + dims.dotLeadW);
+            }
+          } catch {
+            // Ignore if SVG is not attached or getComputedTextLength is unsupported
+          }
+        }
+
+        const badgeG = g.append<SVGGElement>("g")
+          .attr("class", "cluster-pct-badge")
+          .attr("transform", `translate(${pillW / 2 + dims.badgeGap}, 0)`)
+          .style("display", "none")
+          .style("pointer-events", "none");
+
+        const badgeRect = badgeG.append<SVGRectElement>("rect")
+          .attr("x", 0)
+          .attr("y", -dims.badgeH / 2)
+          .attr("width", 28)
+          .attr("height", dims.badgeH)
+          .attr("rx", 5)
+          .style("fill", blendHexColor(clusterHue, canvasBg, 0.26))
+          .style("stroke", clusterHue)
+          .style("stroke-width", "1.5px");
+
+        const badgeTxt = badgeG.append<SVGTextElement>("text")
+          .attr("x", 14)
+          .attr("y", 0.5)
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "central")
+          .style("font", "700 10px Inter, system-ui, -apple-system, sans-serif")
+          .style("fill", clusterHue)
+          .text("");
+
+        n.pillGroupEl = g.node() || undefined;
+        n.pillRectEl = rect.node() || undefined;
+        n.pillDotEl = dot.node() || undefined;
+        n.pillTextEl = txt.node() || undefined;
+        n.pillTitleTspanEl = titleTspan.node() || undefined;
+        n.pillBadgeGroupEl = badgeG.node() || undefined;
+        n.pillBadgeRectEl = badgeRect.node() || undefined;
+        n.pillBadgeTextEl = badgeTxt.node() || undefined;
+      });
+    };
+
+    mountSvgElements();
+
+    this.rebuildClusterTopology = (targetK: number) => {
+      if (!this.canonicalPayload || !this.simulation) return;
+      const nextCanonical =
+        targetK === DEFAULT_TOPIC_CLUSTER_COUNT
+          ? this.canonicalPayload
+          : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK);
+
+      const prevPosById = new Map<string, { x: number; y: number }>();
+      for (const n of this.nodes || []) {
+        prevPosById.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+      }
+
+      const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
+      for (const c of nextCanonical.connections) {
+        const pt = prevPosById.get(c.sourceId);
+        if (pt && (c.weight ?? 0) >= 0.4) {
+          const cur = itemCoordsByCluster.get(c.targetId) || { sumX: 0, sumY: 0, count: 0 };
+          cur.sumX += pt.x;
+          cur.sumY += pt.y;
+          cur.count += 1;
+          itemCoordsByCluster.set(c.targetId, cur);
+        }
+      }
+
+      this.nodes = nextCanonical.nodes.map((n, idx) => {
+        const existing = prevPosById.get(n.id);
+        let nx = existing?.x;
+        let ny = existing?.y;
+        if (nx === undefined || ny === undefined) {
+          const centroid = itemCoordsByCluster.get(n.id);
+          if (centroid && centroid.count > 0) {
+            nx = centroid.sumX / centroid.count;
+            ny = centroid.sumY / centroid.count;
+          } else {
+            const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
+            nx = Math.cos(angle) * 140;
+            ny = Math.sin(angle) * 140;
+          }
+        }
+        this.forcePositions.set(n.id, { x: nx, y: ny });
+        return {
+          ...n,
+          x: nx,
+          y: ny,
+        };
+      });
+
+      nodeLookup.clear();
+      for (const n of this.nodes) {
+        nodeLookup.set(n.id, n);
+      }
+
+      this.links = nextCanonical.connections
+        .map((c) => ({
+          source: c.sourceId,
+          target: c.targetId,
+          weight: c.weight,
+          coverage: c.coverage,
+        }))
+        .filter((l) => nodeLookup.has(String(l.source)) && nodeLookup.has(String(l.target)));
+
+      const freshAdj = buildGraphAdjacency(
+        this.links.map((l) => ({
+          source: typeof l.source === 'object' ? l.source.id : String(l.source),
+          target: typeof l.target === 'object' ? l.target.id : String(l.target),
+        }))
+      );
+      adjacency.clear();
+      for (const [k, v] of freshAdj.entries()) {
+        adjacency.set(k, v);
+      }
+
+      this.activeClusterCount = targetK;
+      this.hoveredNodeId = null;
+      this.secondaryHoveredNodeId = null;
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+
+      this.simulation.stop();
+      this.simulation.nodes(this.nodes);
+      this.applyForceSimulationConfig();
+      mountSvgElements();
+      rebuildDragController();
+      this.renderPositions();
+    };
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
       const secId = this.secondaryHoveredNodeId ?? null;
@@ -248,6 +518,38 @@ const engine: D3Engine = {
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
+
+      // Clear floating edge badges and collect active coverage for cluster pills or cluster-hovered content nodes
+      badgeLayer.selectAll("*").remove();
+      this.activeBadgeLinks = [];
+      const activeClusterCoverage = new Map<string, number>();
+      const activeContentCoverage = new Map<string, number>();
+      const activeNodeObj = activeId ? nodeLookup.get(activeId) : undefined;
+      if (activeNodeObj && this.links) {
+        if (activeNodeObj.group !== 0) {
+          for (const l of this.links) {
+            const sObj = typeof l.source === 'object' ? l.source : nodeLookup.get(String(l.source));
+            const tObj = typeof l.target === 'object' ? l.target : nodeLookup.get(String(l.target));
+            if (!sObj || !tObj) continue;
+            if (sObj.id === activeId && tObj.group === 0) {
+              activeClusterCoverage.set(tObj.id, l.coverage ?? l.weight ?? 0.5);
+            } else if (tObj.id === activeId && sObj.group === 0) {
+              activeClusterCoverage.set(sObj.id, l.coverage ?? l.weight ?? 0.5);
+            }
+          }
+        } else {
+          for (const l of this.links) {
+            const sObj = typeof l.source === 'object' ? l.source : nodeLookup.get(String(l.source));
+            const tObj = typeof l.target === 'object' ? l.target : nodeLookup.get(String(l.target));
+            if (!sObj || !tObj) continue;
+            if (sObj.id === activeId && tObj.group !== 0) {
+              activeContentCoverage.set(tObj.id, l.coverage ?? l.weight ?? 0.5);
+            } else if (tObj.id === activeId && sObj.group !== 0) {
+              activeContentCoverage.set(sObj.id, l.coverage ?? l.weight ?? 0.5);
+            }
+          }
+        }
+      }
 
       const bgLinkNode = bgLinkLayer.node();
       const bgNodeGroup = bgNodeLayer.node();
@@ -270,7 +572,16 @@ const engine: D3Engine = {
 
           this.nodeElements.each(function (n: D3Node) {
             const hopDist = dists ? dists.get(n.id) : undefined;
-            const nodeZ = secId !== null && n.id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+            const itemCov =
+              activeNodeObj?.group === 0 && n.group !== 0
+                ? (activeContentCoverage.get(n.id) ?? 0)
+                : undefined;
+            const nodeZ =
+              secId !== null && n.id === secId
+                ? 48
+                : dists
+                  ? getNodeHopZIndex(hopDist, itemCov)
+                  : 2;
             if (nodeZ >= 10) {
               fgItems.push({ el: this, z: nodeZ, isNode: true });
             } else if (this.parentNode !== bgNodeGroup) {
@@ -296,27 +607,75 @@ const engine: D3Engine = {
         }
       }
 
+      const anyFocusActive = Boolean(dists || secId);
+
       const nodeTrans = (this.nodes || []).map((n) => {
-        const baseColor = groupColors[n.group] || groupColors[0];
+        const baseColor = getNodeBaseColor(n, currentIsLight) || groupColors[n.group] || groupColors[0];
         const startColor = n.displayColor || baseColor;
-        const startRadius = n.displayRadius ?? currentTokens.nodeRadius;
+        const restScale = getNodeRestRadiusScale(n.group, n.size);
+        const startRadius = n.displayRadius ?? (currentTokens.nodeRadius * restScale);
         const hopDist = dists ? dists.get(n.id) : undefined;
         const isSecHover = secId !== null && n.id === secId;
+        const itemCov =
+          activeNodeObj?.group === 0 && n.group !== 0
+            ? (activeContentCoverage.get(n.id) ?? 0)
+            : undefined;
         const targetColor = isSecHover
           ? baseColor
           : dists
-            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight, itemCov)
             : baseColor;
-        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist, itemCov) : 1;
         const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
-        const targetRadius = currentTokens.nodeRadius * targetScale;
+        const targetRadius = currentTokens.nodeRadius * restScale * targetScale;
+
+        if (n.group === 0 && n.pillGroupEl && n.pillRectEl && n.pillTextEl) {
+          const canvasBg = getThemeTokens(currentIsLight).canvasBg;
+          const clusterHue = getNodeClusterColor(n, currentIsLight) || groupColors[0];
+          const cov = activeClusterCoverage.size > 0 ? (activeClusterCoverage.get(n.id) ?? 0) : undefined;
+          const effectiveHop = isSecHover ? 0 : dists ? (hopDist ?? 99) : undefined;
+          const pillState = resolveClusterPillVisualState(
+            { hopDistance: effectiveHop, activeCoverage: cov },
+            anyFocusActive
+          );
+          const dims = getClusterPillDimensions(n.name, cov, pillState.isHighlighted, 1);
+
+          n.activeHopDist = effectiveHop;
+          n.activeCoverage = cov;
+
+          n.pillGroupEl.style.opacity = String(pillState.alpha);
+          n.pillRectEl.style.fill = blendHexColor(clusterHue, canvasBg, pillState.isHighlighted ? 0.22 : 0.13);
+          n.pillRectEl.style.stroke = blendHexColor(clusterHue, canvasBg, pillState.isHighlighted ? 1.0 : 0.72);
+          n.pillRectEl.style.strokeWidth = pillState.isHighlighted ? "1.8px" : "1.25px";
+          if (n.pillDotEl) {
+            n.pillDotEl.style.fill = clusterHue;
+          }
+          n.pillTextEl.style.fill = getThemeTokens(currentIsLight).textHeading;
+          if (n.pillBadgeGroupEl && n.pillBadgeRectEl && n.pillBadgeTextEl) {
+            if (pillState.pctText && dims.badgeW > 0) {
+              n.pillBadgeGroupEl.style.display = "";
+              n.pillBadgeRectEl.setAttribute("width", String(dims.badgeW));
+              n.pillBadgeRectEl.setAttribute("height", String(dims.badgeH));
+              n.pillBadgeRectEl.setAttribute("y", String(-dims.badgeH / 2));
+              n.pillBadgeRectEl.style.fill = blendHexColor(clusterHue, canvasBg, 0.26);
+              n.pillBadgeRectEl.style.stroke = clusterHue;
+              n.pillBadgeTextEl.setAttribute("x", String(dims.badgeW / 2));
+              n.pillBadgeTextEl.style.fill = clusterHue;
+              n.pillBadgeTextEl.textContent = pillState.pctText;
+            } else {
+              n.pillBadgeGroupEl.style.display = "none";
+              n.pillBadgeTextEl.textContent = "";
+            }
+          }
+        }
+
         return {
           node: n,
           startColor,
           targetColor,
           startRadius,
           targetRadius,
-          changed: startColor !== targetColor || Math.abs(startRadius - targetRadius) > 1e-3
+          changed: startColor !== targetColor || Math.abs(startRadius - targetRadius) > 1e-3 || immediate
         };
       });
 
@@ -326,8 +685,8 @@ const engine: D3Engine = {
         const startColor = l.displayColor || currentTokens.edgeColor;
         const startWidth = l.displayWidth ?? currentTokens.edgeWidth;
         const targetStyle = dists
-          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight)
-          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight, l.weight)
+          : getRestEdgeStyle(l.weight, currentIsLight);
         return {
           link: l,
           startColor,
@@ -346,25 +705,22 @@ const engine: D3Engine = {
           nt.node.displayColor = nextColor;
           nt.node.displayRadius = nextRadius;
           const circleEl = nt.node.circleEl;
-          if (circleEl) {
-            circleEl.setAttribute("r", String(nextRadius));
+          if (circleEl && nt.node.group !== 0) {
+            circleEl.setAttribute("points", buildRegularPolygonSvgPoints(nextRadius, nt.node.group));
             circleEl.style.fill = nextColor;
             circleEl.style.stroke = nextColor;
           }
         }
         for (const lt of linkTrans) {
-          if (!lt.changed && ease < 1) continue;
-          const nextColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          const nextWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
-          lt.link.displayColor = nextColor;
-          lt.link.displayWidth = nextWidth;
           const lineEl = lt.link.el;
           if (lineEl) {
-            lineEl.style.stroke = nextColor;
-            lineEl.style.strokeWidth = `${nextWidth}px`;
+            lineEl.style.strokeOpacity = "0";
+            lineEl.style.display = "none";
           }
         }
       };
+
+      this.renderPositions();
 
       if (immediate) {
         renderStep(1);
@@ -385,26 +741,6 @@ const engine: D3Engine = {
       this.highlightFrameId = requestAnimationFrame(step);
     };
     this.applyHighlight = applyHighlight;
-
-    this.nodeElements = bgNodeLayer.selectAll<SVGGElement, D3Node>(".node")
-      .data(this.nodes)
-      .enter().append("g")
-      .each(function (n) {
-        n.el = this;
-      })
-      .style("cursor", "pointer");
-
-    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-
-    this.nodeElements.append("circle")
-      .attr("class", "node-dot")
-      .each(function (n) {
-        n.circleEl = this;
-      })
-      .attr("r", styleTokens.nodeRadius)
-      .style("fill", d => colors[d.group] || colors[0])
-      .style("stroke", d => colors[d.group] || colors[0])
-      .style("stroke-width", "1.5px");
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || 'd3');
@@ -600,9 +936,24 @@ const engine: D3Engine = {
         el.setAttribute("y2", String(t.y ?? 0));
       }
     }
+    if (this.activeBadgeLinks && this.activeBadgeLinks.length > 0) {
+      for (const l of this.activeBadgeLinks) {
+        if (!l.badgeEl) continue;
+        const s = l.source as D3Node;
+        const t = l.target as D3Node;
+        const mx = ((s.x ?? 0) + (t.x ?? 0)) / 2;
+        const my = ((s.y ?? 0) + (t.y ?? 0)) / 2;
+        l.badgeEl.setAttribute("transform", `translate(${mx},${my})`);
+      }
+    }
     if (this.nodes) {
       for (const d of this.nodes) {
-        d.el?.setAttribute("transform", `translate(${d.x ?? 0},${d.y ?? 0})`);
+        const nx = d.x ?? 0;
+        const ny = d.y ?? 0;
+        d.el?.setAttribute("transform", `translate(${nx},${ny})`);
+        if (d.group === 0 && d.pillGroupEl) {
+          d.pillGroupEl.setAttribute("transform", "translate(0,0)");
+        }
       }
     }
   },
@@ -941,6 +1292,10 @@ const engine: D3Engine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK);
+      }
       this.forcePositions = new Map();
       for (const [id, pos] of this.initialForcePositions.entries()) {
         this.forcePositions.set(id, { x: pos.x, y: pos.y });
@@ -1042,6 +1397,10 @@ const engine: D3Engine = {
     if (category === 'physics' && this.currentLayout === 'force') {
       const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       this.dragController?.stop();
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK);
+      }
 
       const applySolvedD3Positions = (solved: Record<string, { x: number; y: number }>) => {
         if (!this.simulation || !this.nodes || this.currentLayout !== 'force') return;

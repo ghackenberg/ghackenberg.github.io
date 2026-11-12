@@ -22,8 +22,10 @@ import {
   getEdgePhysicsMetrics,
   getGraphStyleTokens,
   getGraphTuningState,
+  getNodeDegreeRepulsionFactor,
+  getNodeRestRadiusScale,
   getSigmaForceAtlas2Settings,
-  initialCoords,
+  isBackboneEdge,
 } from '@commons/shared/graph-payload';
 
 export interface Point2D {
@@ -97,69 +99,705 @@ function resolveEdgeEndpoints(edge: SolverGraphEdge): { src: string; tgt: string
   return { src, tgt, weight };
 }
 
-function buildSigmaForceAtlas2Graph(input: SolverGraphInput): Graph {
+export function computeGraphCommunities(
+  nodes: readonly SolverGraphNode[],
+  connections: readonly SolverGraphEdge[]
+): { communityByNode: Map<string, number>; communityCount: number } {
+  const nCount = nodes.length;
+  const communityByNode = new Map<string, number>();
+  if (nCount === 0) {
+    return { communityByNode, communityCount: 0 };
+  }
+
+  // Direct Tag-Cluster Supernode community assignment when group === 0 represents Tag Clusters (2..24 hubs)
+  const tagNodes: { node: SolverGraphNode; idx: number }[] = [];
+  nodes.forEach((n, idx) => {
+    if ((n.group ?? 0) === 0) {
+      tagNodes.push({ node: n, idx });
+    }
+  });
+
+  if (tagNodes.length >= 2 && tagNodes.length <= 24) {
+    const K = tagNodes.length;
+    const tagClusterIndexById = new Map<string, number>();
+    tagNodes.forEach((entry, cIdx) => {
+      tagClusterIndexById.set(entry.node.id, cIdx);
+    });
+
+    const bestClusterByContentId = new Map<string, { cIdx: number; weight: number; tagId: string }>();
+    for (const c of connections) {
+      const { src, tgt, weight } = resolveEdgeEndpoints(c);
+      let contentId: string | null = null;
+      let tagId: string | null = null;
+      let cIdx: number | undefined;
+
+      if (tagClusterIndexById.has(tgt) && !tagClusterIndexById.has(src)) {
+        contentId = src;
+        tagId = tgt;
+        cIdx = tagClusterIndexById.get(tgt);
+      } else if (tagClusterIndexById.has(src) && !tagClusterIndexById.has(tgt)) {
+        contentId = tgt;
+        tagId = src;
+        cIdx = tagClusterIndexById.get(src);
+      }
+
+      if (contentId !== null && tagId !== null && cIdx !== undefined) {
+        const prev = bestClusterByContentId.get(contentId);
+        if (
+          !prev ||
+          weight > prev.weight + 1e-9 ||
+          (Math.abs(weight - prev.weight) <= 1e-9 && tagId.localeCompare(prev.tagId) < 0)
+        ) {
+          bestClusterByContentId.set(contentId, { cIdx, weight, tagId });
+        }
+      }
+    }
+
+    const rawComm = new Array<number>(nCount).fill(0);
+    const membersByRawComm: number[][] = Array.from({ length: K }, () => []);
+    for (let i = 0; i < nCount; i++) {
+      const n = nodes[i];
+      const tagC = tagClusterIndexById.get(n.id);
+      const assigned = tagC !== undefined ? tagC : (bestClusterByContentId.get(n.id)?.cIdx ?? 0);
+      rawComm[i] = assigned;
+      membersByRawComm[assigned].push(i);
+    }
+
+    const sortedCommOrder = Array.from({ length: K }, (_, c) => c).sort((a, b) => {
+      const diff = membersByRawComm[b].length - membersByRawComm[a].length;
+      if (diff !== 0) return diff;
+      return tagNodes[a].idx - tagNodes[b].idx;
+    });
+
+    const rankByRawComm = new Array<number>(K).fill(0);
+    sortedCommOrder.forEach((oldC, newRank) => {
+      rankByRawComm[oldC] = newRank;
+    });
+
+    for (let i = 0; i < nCount; i++) {
+      communityByNode.set(nodes[i].id, rankByRawComm[rawComm[i]]);
+    }
+
+    return { communityByNode, communityCount: K };
+  }
+
+  const nodeIndexById = new Map<string, number>();
+  nodes.forEach((n, idx) => nodeIndexById.set(n.id, idx));
+
+  const adj: Map<number, number>[] = Array.from({ length: nCount }, () => new Map<number, number>());
+  const rawDegree = new Array<number>(nCount).fill(0);
+  let totalWeight2M = 0;
+
+  for (const c of connections) {
+    const { src, tgt, weight } = resolveEdgeEndpoints(c);
+    const u = nodeIndexById.get(src);
+    const v = nodeIndexById.get(tgt);
+    if (u === undefined || v === undefined || u === v) continue;
+    const affinity = isBackboneEdge(weight) ? weight * 4.0 : weight * 0.12;
+    const prevUV = adj[u].get(v) || 0;
+    adj[u].set(v, prevUV + affinity);
+    adj[v].set(u, prevUV + affinity);
+    rawDegree[u] += affinity;
+    rawDegree[v] += affinity;
+    totalWeight2M += 2 * affinity;
+  }
+
+  if (totalWeight2M <= 0) {
+    for (const n of nodes) communityByNode.set(n.id, 0);
+    return { communityByNode, communityCount: 1 };
+  }
+
+  // 1. Deterministic Louvain local moving pass
+  const gamma = 1.05;
+  const comm = Array.from({ length: nCount }, (_, i) => i);
+  const sigmaTot = [...rawDegree];
+
+  for (let pass = 0; pass < 24; pass++) {
+    let moved = false;
+    for (let i = 0; i < nCount; i++) {
+      const ki = rawDegree[i];
+      if (ki <= 0) continue;
+      const oldC = comm[i];
+      sigmaTot[oldC] -= ki;
+
+      const commWeights = new Map<number, number>();
+      commWeights.set(oldC, 0);
+      for (const [j, w] of adj[i].entries()) {
+        const cj = comm[j];
+        commWeights.set(cj, (commWeights.get(cj) || 0) + w);
+      }
+
+      let bestC = oldC;
+      let bestGain = -Infinity;
+      for (const [cId, wIC] of commWeights.entries()) {
+        const gain = wIC - gamma * ((sigmaTot[cId] * ki) / totalWeight2M);
+        if (gain > bestGain + 1e-12 || (Math.abs(gain - bestGain) <= 1e-12 && cId < bestC)) {
+          bestGain = gain;
+          bestC = cId;
+        }
+      }
+
+      comm[i] = bestC;
+      sigmaTot[bestC] += ki;
+      if (bestC !== oldC) moved = true;
+    }
+    if (!moved) break;
+  }
+
+  // Compact initial communities
+  let commMap = new Map<number, number>();
+  let nextId = 0;
+  for (let i = 0; i < nCount; i++) {
+    const c = comm[i];
+    if (!commMap.has(c)) commMap.set(c, nextId++);
+    comm[i] = commMap.get(c)!;
+  }
+
+  const buildCommunityLists = (cArr: number[], count: number) => {
+    const members: number[][] = Array.from({ length: count }, () => []);
+    for (let i = 0; i < nCount; i++) {
+      members[cArr[i]].push(i);
+    }
+    return members;
+  };
+
+  const mergeTwoCommunities = (cSmall: number, cTarget: number) => {
+    for (let i = 0; i < nCount; i++) {
+      if (comm[i] === cSmall) comm[i] = cTarget;
+    }
+    commMap = new Map<number, number>();
+    nextId = 0;
+    for (let i = 0; i < nCount; i++) {
+      const c = comm[i];
+      if (!commMap.has(c)) commMap.set(c, nextId++);
+      comm[i] = commMap.get(c)!;
+    }
+  };
+
+  // 2. Hierarchical greedy modularity merge & small-community (< 14 nodes) consolidation (targeting 8..11 communities)
+  while (nextId > 1) {
+    const members = buildCommunityLists(comm, nextId);
+    // Find smallest community
+    let minIdx = -1;
+    let minSize = Infinity;
+    for (let c = 0; c < nextId; c++) {
+      if (members[c].length < minSize) {
+        minSize = members[c].length;
+        minIdx = c;
+      }
+    }
+
+    if (minSize >= 14 && nextId <= 11) {
+      break;
+    }
+
+    // Merge minIdx into the neighbor community with highest affinity (penalizing oversized targets)
+    const interWeights = new Array<number>(nextId).fill(0);
+    for (const u of members[minIdx]) {
+      for (const [v, w] of adj[u].entries()) {
+        const cv = comm[v];
+        if (cv !== minIdx) {
+          interWeights[cv] += w;
+        }
+      }
+    }
+
+    let bestTarget = -1;
+    let bestScore = -Infinity;
+    for (let c = 0; c < nextId; c++) {
+      if (c === minIdx) continue;
+      const w = interWeights[c];
+      if (w > 0) {
+        const sizePenalty = Math.pow(Math.max(10, members[c].length), 0.45);
+        const score = w / sizePenalty;
+        if (score > bestScore) {
+          bestScore = score;
+          bestTarget = c;
+        }
+      }
+    }
+
+    if (bestTarget === -1) {
+      // Disconnected component: merge into smallest other community
+      let fallbackSize = Infinity;
+      for (let c = 0; c < nextId; c++) {
+        if (c === minIdx) continue;
+        if (members[c].length < fallbackSize) {
+          fallbackSize = members[c].length;
+          bestTarget = c;
+        }
+      }
+    }
+
+    if (bestTarget === -1) break;
+    mergeTwoCommunities(minIdx, bestTarget);
+  }
+
+  // 3. Sort community IDs 0 .. K-1 descending by node count (tie-break by earliest node index)
+  const finalMembers = buildCommunityLists(comm, nextId);
+  const sortedCommOrder = Array.from({ length: nextId }, (_, c) => c).sort((a, b) => {
+    const diff = finalMembers[b].length - finalMembers[a].length;
+    if (diff !== 0) return diff;
+    return (finalMembers[a][0] ?? 0) - (finalMembers[b][0] ?? 0);
+  });
+
+  const rankByOldComm = new Array<number>(nextId).fill(0);
+  sortedCommOrder.forEach((oldC, newRank) => {
+    rankByOldComm[oldC] = newRank;
+  });
+
+  for (let i = 0; i < nCount; i++) {
+    communityByNode.set(nodes[i].id, rankByOldComm[comm[i]]);
+  }
+
+  return { communityByNode, communityCount: nextId };
+}
+
+interface InitialSpiralPositions {
+  init2D: Point2D[];
+  init3D: Point3D[];
+}
+
+function buildInitialSpiralPositions(input: SolverGraphInput): InitialSpiralPositions {
+  const nodes = input.nodes;
+  const nCount = nodes.length;
+  const hubIdsSet = new Set<string>();
+  const primaryHubByNode = new Map<string, string>();
+  const primaryWeightByNode = new Map<string, number>();
+  const hubEdgesByNode = new Map<string, { hubId: string; weight: number }[]>();
+
+  for (const n of nodes) {
+    if ((n.group ?? 0) === 0) {
+      hubIdsSet.add(n.id);
+      primaryHubByNode.set(n.id, n.id);
+      primaryWeightByNode.set(n.id, 1.0);
+    }
+  }
+
+  for (const c of input.connections) {
+    const { src, tgt, weight } = resolveEdgeEndpoints(c);
+    const srcIsHub = hubIdsSet.has(src);
+    const tgtIsHub = hubIdsSet.has(tgt);
+    if (srcIsHub && !tgtIsHub) {
+      let list = hubEdgesByNode.get(tgt);
+      if (!list) {
+        list = [];
+        hubEdgesByNode.set(tgt, list);
+      }
+      list.push({ hubId: src, weight });
+      const prev = primaryWeightByNode.get(tgt);
+      if (prev === undefined || weight > prev) {
+        primaryWeightByNode.set(tgt, weight);
+        primaryHubByNode.set(tgt, src);
+      }
+    } else if (tgtIsHub && !srcIsHub) {
+      let list = hubEdgesByNode.get(src);
+      if (!list) {
+        list = [];
+        hubEdgesByNode.set(src, list);
+      }
+      list.push({ hubId: tgt, weight });
+      const prev = primaryWeightByNode.get(src);
+      if (prev === undefined || weight > prev) {
+        primaryWeightByNode.set(src, weight);
+        primaryHubByNode.set(src, tgt);
+      }
+    }
+  }
+
+  const sortedHubIds = Array.from(hubIdsSet).sort((a, b) => a.localeCompare(b));
+  const goldenAngle = 2.3999632297286533;
+  const hubPos2DById = new Map<string, Point2D>();
+  const hubPos3DById = new Map<string, Point3D>();
+  const hubCount = sortedHubIds.length;
+
+  sortedHubIds.forEach((hubId, hubRank) => {
+    const angle = hubRank * goldenAngle;
+    const r2 = 125 * Math.sqrt(hubRank + 1);
+    hubPos2DById.set(hubId, {
+      x: Math.cos(angle) * r2,
+      y: Math.sin(angle) * r2,
+    });
+
+    const yNorm = hubCount > 1 ? 1 - (hubRank / (hubCount - 1)) * 2 : 0;
+    const radialNorm = Math.sqrt(Math.max(0, 1 - yNorm * yNorm));
+    const r3 = 42 * (hubRank + 0.8);
+    hubPos3DById.set(hubId, {
+      x: Math.cos(angle) * radialNorm * r3,
+      y: yNorm * r3,
+      z: Math.sin(angle) * radialNorm * r3,
+    });
+  });
+
+  const membersByHub = new Map<string, SolverGraphNode[]>();
+  for (const hubId of sortedHubIds) {
+    membersByHub.set(hubId, []);
+  }
+  const unassignedNodes: SolverGraphNode[] = [];
+
+  for (const n of nodes) {
+    if (hubIdsSet.has(n.id)) continue;
+    const hubId = primaryHubByNode.get(n.id);
+    if (hubId && membersByHub.has(hubId)) {
+      membersByHub.get(hubId)!.push(n);
+    } else {
+      unassignedNodes.push(n);
+    }
+  }
+
+  const pos2DById = new Map<string, Point2D>(hubPos2DById);
+  const pos3DById = new Map<string, Point3D>(hubPos3DById);
+
+  sortedHubIds.forEach((hubId, hubRank) => {
+    const fallback2D = hubPos2DById.get(hubId)!;
+    const fallback3D = hubPos3DById.get(hubId)!;
+    const members = membersByHub.get(hubId) ?? [];
+    members.sort((a, b) => {
+      const wDiff = (primaryWeightByNode.get(b.id) ?? 0) - (primaryWeightByNode.get(a.id) ?? 0);
+      if (Math.abs(wDiff) > 1e-9) return wDiff;
+      return a.id.localeCompare(b.id);
+    });
+    const mCount = members.length;
+    const phaseOffset = hubRank * 0.75;
+    members.forEach((m, localIdx) => {
+      const incident = hubEdgesByNode.get(m.id) ?? [];
+      let anchor2DX = 0;
+      let anchor2DY = 0;
+      let anchor3DX = 0;
+      let anchor3DY = 0;
+      let anchor3DZ = 0;
+      let totalStiff = 0;
+      for (const edge of incident) {
+        const h2 = hubPos2DById.get(edge.hubId);
+        const h3 = hubPos3DById.get(edge.hubId);
+        if (!h2 || !h3) continue;
+        const wStiff = Math.pow(Math.max(0.05, edge.weight), 2.1);
+        anchor2DX += h2.x * wStiff;
+        anchor2DY += h2.y * wStiff;
+        anchor3DX += h3.x * wStiff;
+        anchor3DY += h3.y * wStiff;
+        anchor3DZ += h3.z * wStiff;
+        totalStiff += wStiff;
+      }
+      const base2DX = totalStiff > 0 ? anchor2DX / totalStiff : fallback2D.x;
+      const base2DY = totalStiff > 0 ? anchor2DY / totalStiff : fallback2D.y;
+      const base3DX = totalStiff > 0 ? anchor3DX / totalStiff : fallback3D.x;
+      const base3DY = totalStiff > 0 ? anchor3DY / totalStiff : fallback3D.y;
+      const base3DZ = totalStiff > 0 ? anchor3DZ / totalStiff : fallback3D.z;
+
+      const localAngle = phaseOffset + (localIdx + 1) * goldenAngle;
+      const rLocal2D = 8 * Math.sqrt(localIdx + 1);
+      pos2DById.set(m.id, {
+        x: base2DX + Math.cos(localAngle) * rLocal2D,
+        y: base2DY + Math.sin(localAngle) * rLocal2D,
+      });
+
+      const yNorm = mCount > 1 ? 1 - (localIdx / (mCount - 1)) * 2 : 0;
+      const radialNorm = Math.sqrt(Math.max(0, 1 - yNorm * yNorm));
+      const rLocal3D = 8 * Math.cbrt(localIdx + 1);
+      pos3DById.set(m.id, {
+        x: base3DX + Math.cos(localAngle) * radialNorm * rLocal3D,
+        y: base3DY + yNorm * rLocal3D,
+        z: base3DZ + Math.sin(localAngle) * radialNorm * rLocal3D,
+      });
+    });
+  });
+
+  unassignedNodes.sort((a, b) => a.id.localeCompare(b.id));
+  unassignedNodes.forEach((n, idx) => {
+    const angle = (hubCount + idx) * goldenAngle;
+    const r2 = 12 * Math.sqrt(idx + 1);
+    pos2DById.set(n.id, {
+      x: Math.cos(angle) * r2,
+      y: Math.sin(angle) * r2,
+    });
+    const r3 = 16 * Math.cbrt(idx + 1);
+    pos3DById.set(n.id, {
+      x: Math.cos(angle) * r3,
+      y: 0,
+      z: Math.sin(angle) * r3,
+    });
+  });
+
+  const init2D: Point2D[] = new Array<Point2D>(nCount);
+  const init3D: Point3D[] = new Array<Point3D>(nCount);
+  for (let i = 0; i < nCount; i++) {
+    const id = nodes[i].id;
+    init2D[i] = pos2DById.get(id) ?? { x: 0, y: 0 };
+    init3D[i] = pos3DById.get(id) ?? { x: 0, y: 0, z: 0 };
+  }
+
+  return { init2D, init3D };
+}
+
+function enforceClusterPillClearance2D(
+  nodes: readonly SolverGraphNode[],
+  rawCoordsById: Map<string, Point2D>
+): void {
+  const hubs: { id: string; pt: Point2D }[] = [];
+  const contentIds: string[] = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+    const pt = rawCoordsById.get(n.id);
+    if (!pt) continue;
+    if ((n.group ?? 0) === 0) {
+      hubs.push({ id: n.id, pt });
+    } else {
+      contentIds.push(n.id);
+    }
+  }
+
+  if (hubs.length === 0 || contentIds.length === 0) return;
+
+  const boxHalfW = 79.5;
+  const boxHalfH = 17.2;
+
+  const isInsideAnyHub = (x: number, y: number): boolean => {
+    for (let k = 0; k < hubs.length; k++) {
+      const hp = hubs[k].pt;
+      if (Math.abs(x - hp.x) < boxHalfW && Math.abs(y - hp.y) < boxHalfH) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  for (let i = 0; i < contentIds.length; i++) {
+    const pt = rawCoordsById.get(contentIds[i]);
+    if (!pt) continue;
+    for (let h = 0; h < hubs.length; h++) {
+      const hub = hubs[h].pt;
+      const dx = pt.x - hub.x;
+      const dy = pt.y - hub.y;
+      if (Math.abs(dx) < boxHalfW && Math.abs(dy) < boxHalfH) {
+        const sy = dy === 0 ? (i % 2 === 0 ? 1 : -1) : Math.sign(dy);
+        const sx = dx === 0 ? (i % 2 === 0 ? 1 : -1) : Math.sign(dx);
+        const stagger = (i % 5) * 0.85;
+        const targetY = boxHalfH + 0.8 + stagger;
+        const targetX = boxHalfW + 1.2 + stagger;
+        const candidates: Point2D[] = [
+          { x: pt.x, y: hub.y + sy * targetY },
+          { x: pt.x, y: hub.y - sy * targetY },
+          { x: hub.x + sx * targetX, y: pt.y },
+          { x: hub.x - sx * targetX, y: pt.y },
+          { x: hub.x + sx * targetX, y: hub.y + sy * targetY },
+          { x: hub.x - sx * targetX, y: hub.y - sy * targetY },
+        ];
+        for (const cand of candidates) {
+          if (!isInsideAnyHub(cand.x, cand.y)) {
+            pt.x = cand.x;
+            pt.y = cand.y;
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function enforceClusterPillClearance3D(
+  nodes: readonly SolverGraphNode[],
+  rawCoordsById: Map<string, Point3D>
+): void {
+  const hubs: { id: string; pt: Point3D }[] = [];
+  const contentIds: string[] = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+    const pt = rawCoordsById.get(n.id);
+    if (!pt) continue;
+    if ((n.group ?? 0) === 0) {
+      hubs.push({ id: n.id, pt });
+    } else {
+      contentIds.push(n.id);
+    }
+  }
+
+  if (hubs.length === 0 || contentIds.length === 0) return;
+
+  const boxHalfW = 79.5;
+  const boxHalfH = 17.2;
+
+  const isInsideAnyHub = (x: number, y: number): boolean => {
+    for (let k = 0; k < hubs.length; k++) {
+      const hp = hubs[k].pt;
+      if (Math.abs(x - hp.x) < boxHalfW && Math.abs(y - hp.y) < boxHalfH) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  for (let i = 0; i < contentIds.length; i++) {
+    const pt = rawCoordsById.get(contentIds[i]);
+    if (!pt) continue;
+    for (let h = 0; h < hubs.length; h++) {
+      const hub = hubs[h].pt;
+      const dx = pt.x - hub.x;
+      const dy = pt.y - hub.y;
+      if (Math.abs(dx) < boxHalfW && Math.abs(dy) < boxHalfH) {
+        const sy = dy === 0 ? (i % 2 === 0 ? 1 : -1) : Math.sign(dy);
+        const sx = dx === 0 ? (i % 2 === 0 ? 1 : -1) : Math.sign(dx);
+        const stagger = (i % 5) * 0.85;
+        const targetY = boxHalfH + 0.8 + stagger;
+        const targetX = boxHalfW + 1.2 + stagger;
+        const candidates: Point2D[] = [
+          { x: pt.x, y: hub.y + sy * targetY },
+          { x: pt.x, y: hub.y - sy * targetY },
+          { x: hub.x + sx * targetX, y: pt.y },
+          { x: hub.x - sx * targetX, y: pt.y },
+          { x: hub.x + sx * targetX, y: hub.y + sy * targetY },
+          { x: hub.x - sx * targetX, y: hub.y - sy * targetY },
+        ];
+        for (const cand of candidates) {
+          if (!isInsideAnyHub(cand.x, cand.y)) {
+            pt.x = cand.x;
+            pt.y = cand.y;
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function centerPositions2D(
+  nodes: readonly SolverGraphNode[],
+  rawCoordsById: Map<string, Point2D>
+): Record<string, Point2D> {
+  const nCount = nodes.length;
+  if (nCount === 0) return {};
+
+  enforceClusterPillClearance2D(nodes, rawCoordsById);
+
+  let sumX = 0;
+  let sumY = 0;
+  for (let i = 0; i < nCount; i++) {
+    const pt = rawCoordsById.get(nodes[i].id);
+    if (pt) {
+      sumX += pt.x;
+      sumY += pt.y;
+    }
+  }
+  const meanX = sumX / nCount;
+  const meanY = sumY / nCount;
+
+  const targets: Record<string, Point2D> = {};
+  for (let i = 0; i < nCount; i++) {
+    const id = nodes[i].id;
+    const pt = rawCoordsById.get(id) ?? { x: 0, y: 0 };
+    targets[id] = {
+      x: round2(pt.x - meanX),
+      y: round2(pt.y - meanY),
+    };
+  }
+  return targets;
+}
+
+function centerPositions3D(
+  nodes: readonly SolverGraphNode[],
+  rawCoordsById: Map<string, Point3D>
+): Record<string, Point3D> {
+  const nCount = nodes.length;
+  if (nCount === 0) return {};
+
+  enforceClusterPillClearance3D(nodes, rawCoordsById);
+
+  let sumX = 0;
+  let sumY = 0;
+  let sumZ = 0;
+  for (let i = 0; i < nCount; i++) {
+    const pt = rawCoordsById.get(nodes[i].id);
+    if (pt) {
+      sumX += pt.x;
+      sumY += pt.y;
+      sumZ += pt.z;
+    }
+  }
+  const meanX = sumX / nCount;
+  const meanY = sumY / nCount;
+  const meanZ = sumZ / nCount;
+
+  const targets: Record<string, Point3D> = {};
+  for (let i = 0; i < nCount; i++) {
+    const id = nodes[i].id;
+    const pt = rawCoordsById.get(id) ?? { x: 0, y: 0, z: 0 };
+    targets[id] = {
+      x: round2(pt.x - meanX),
+      y: round2(pt.y - meanY),
+      z: round2(pt.z - meanZ),
+    };
+  }
+  return targets;
+}
+
+function buildSigmaForceAtlas2Graph(input: SolverGraphInput, init: InitialSpiralPositions): Graph {
   const graph = new Graph();
   const nodes = input.nodes;
-  const total = nodes.length;
   const baseRadius = getGraphStyleTokens(false).nodeRadius;
 
   nodes.forEach((n, i) => {
-    const init = initialCoords(i, total);
+    const p = init.init2D[i];
     graph.addNode(n.id, {
-      x: init.x,
-      y: init.y,
-      size: baseRadius,
+      x: p.x,
+      y: p.y,
+      size: baseRadius * getNodeRestRadiusScale(n.group, n.size),
     });
   });
 
   input.connections.forEach((c) => {
     const { src, tgt, weight } = resolveEdgeEndpoints(c);
     if (src && tgt && src !== tgt && graph.hasNode(src) && graph.hasNode(tgt) && !graph.hasEdge(src, tgt)) {
+      const m = getEdgePhysicsMetrics(weight);
+      const fa2Weight = Math.max(
+        0.0002,
+        Math.min(0.45, 0.06 * (m.stiffnessFactor / Math.pow(m.distanceFactor, 0.85)))
+      );
       graph.addUndirectedEdge(src, tgt, {
-        weight: getEdgePhysicsMetrics(weight).stiffnessFactor,
+        weight: fa2Weight,
       });
     }
   });
   return graph;
 }
 
-function extractSigmaCenteredTargets(graph: Graph): Record<string, Point2D> {
-  let sumX = 0;
-  let sumY = 0;
-  let count = 0;
+function extractSigmaCenteredTargets(
+  graph: Graph,
+  nodes: readonly SolverGraphNode[]
+): Record<string, Point2D> {
+  const rawMap = new Map<string, Point2D>();
   graph.forEachNode((nodeId) => {
-    sumX += Number(graph.getNodeAttribute(nodeId, 'x') || 0);
-    sumY += Number(graph.getNodeAttribute(nodeId, 'y') || 0);
-    count++;
+    rawMap.set(nodeId, {
+      x: Number(graph.getNodeAttribute(nodeId, 'x') || 0),
+      y: Number(graph.getNodeAttribute(nodeId, 'y') || 0),
+    });
   });
-
-  const meanX = count > 0 ? sumX / count : 0;
-  const meanY = count > 0 ? sumY / count : 0;
-
-  const targets: Record<string, Point2D> = {};
-  graph.forEachNode((nodeId) => {
-    const x = Number(graph.getNodeAttribute(nodeId, 'x') || 0) - meanX;
-    const y = Number(graph.getNodeAttribute(nodeId, 'y') || 0) - meanY;
-    targets[nodeId] = { x: round2(x), y: round2(y) };
-  });
-
-  return targets;
+  return centerPositions2D(nodes, rawMap);
 }
 
 export function solveSigmaForceAtlas2Layout(input: SolverGraphInput): Record<string, Point2D> {
-  const graph = buildSigmaForceAtlas2Graph(input);
-  forceAtlas2.assign(graph, {
-    iterations: GRAPH_PHYSICS_CONFIG.sigmaIterations,
-    settings: getSigmaForceAtlas2Settings(),
-  });
-  return extractSigmaCenteredTargets(graph);
+  const init = buildInitialSpiralPositions(input);
+  const graph = buildSigmaForceAtlas2Graph(input, init);
+  const settings = getSigmaForceAtlas2Settings();
+  const totalIter = GRAPH_PHYSICS_CONFIG.sigmaIterations;
+  for (let done = 0; done < totalIter; ) {
+    const step = Math.min(20, totalIter - done);
+    forceAtlas2.assign(graph, {
+      iterations: step,
+      settings,
+    });
+    done += step;
+  }
+  return extractSigmaCenteredTargets(graph, input.nodes);
 }
 
 export async function solveSigmaForceAtlas2LayoutAsync(
   input: SolverGraphInput,
   options?: AsyncSolverOptions
 ): Promise<Record<string, Point2D> | null> {
-  const graph = buildSigmaForceAtlas2Graph(input);
+  const init = buildInitialSpiralPositions(input);
+  const graph = buildSigmaForceAtlas2Graph(input, init);
   const settings = getSigmaForceAtlas2Settings();
   const totalIter = GRAPH_PHYSICS_CONFIG.sigmaIterations;
   const budgetMs = options?.frameBudgetMs ?? 8.5;
@@ -180,25 +818,28 @@ export async function solveSigmaForceAtlas2LayoutAsync(
     }
   }
 
-  return extractSigmaCenteredTargets(graph);
+  return extractSigmaCenteredTargets(graph, input.nodes);
 }
 
-function createCytoscapeHeadlessInstance(input: SolverGraphInput): cytoscape.Core {
+function createCytoscapeHeadlessInstance(
+  input: SolverGraphInput,
+  init: InitialSpiralPositions
+): cytoscape.Core {
   const nodes = input.nodes;
-  const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
 
   const elements: cytoscape.ElementDefinition[] = [];
   nodes.forEach((n, i) => {
-    const init = initialCoords(i, total);
+    const p = init.init2D[i];
     elements.push({
       data: {
         id: n.id,
+        group: n.group ?? 0,
         weight: n.size || 1,
       },
       position: {
-        x: init.x,
-        y: init.y,
+        x: p.x,
+        y: p.y,
       },
     });
   });
@@ -220,6 +861,10 @@ function createCytoscapeHeadlessInstance(input: SolverGraphInput): cytoscape.Cor
   return cytoscape({
     headless: true,
     elements,
+    layout: {
+      name: 'preset',
+      fit: false,
+    },
     style: [
       {
         selector: 'node',
@@ -246,7 +891,15 @@ function buildCytoscapeCoseLayoutOptions(
       getCoseEdgeIdealLength(Number(edge.data('weight') || 0.5)),
     nodeOverlap: 20,
     componentSpacing: 100,
-    nodeRepulsion: () => Math.round(GRAPH_PHYSICS_CONFIG.coseNodeRepulsion * tuning.repulsionScale),
+    nodeRepulsion: (node: cytoscape.NodeSingular) => {
+      const isHub = Number(node.data('group') ?? 0) === 0;
+      const repFactor = isHub
+        ? 0.55 * getNodeDegreeRepulsionFactor(2)
+        : getNodeDegreeRepulsionFactor(node.degree(false));
+      return Math.round(
+        GRAPH_PHYSICS_CONFIG.coseNodeRepulsion * tuning.repulsionScale * repFactor
+      );
+    },
     edgeElasticity: (edge: cytoscape.EdgeSingular) =>
       getCoseEdgeElasticity(Number(edge.data('weight') || 0.5)),
     nestingFactor: 5,
@@ -255,34 +908,23 @@ function buildCytoscapeCoseLayoutOptions(
   };
 }
 
-function extractCytoscapeCenteredTargets(cy: cytoscape.Core): Record<string, Point2D> {
-  let sumX = 0;
-  let sumY = 0;
-  let count = 0;
+function extractCytoscapeCenteredTargets(
+  cy: cytoscape.Core,
+  nodes: readonly SolverGraphNode[]
+): Record<string, Point2D> {
+  const rawMap = new Map<string, Point2D>();
   cy.nodes().forEach((n) => {
     const pos = n.position();
-    sumX += pos.x;
-    sumY += pos.y;
-    count++;
+    rawMap.set(n.id(), { x: pos.x, y: pos.y });
   });
-  const meanX = count > 0 ? sumX / count : 0;
-  const meanY = count > 0 ? sumY / count : 0;
-
-  const targets: Record<string, Point2D> = {};
-  cy.nodes().forEach((n) => {
-    const pos = n.position();
-    targets[n.id()] = {
-      x: round2(pos.x - meanX),
-      y: round2(pos.y - meanY),
-    };
-  });
-  return targets;
+  return centerPositions2D(nodes, rawMap);
 }
 
 export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string, Point2D> {
-  const cy = createCytoscapeHeadlessInstance(input);
+  const init = buildInitialSpiralPositions(input);
+  const cy = createCytoscapeHeadlessInstance(input, init);
   cy.layout(buildCytoscapeCoseLayoutOptions(false)).run();
-  const targets = extractCytoscapeCenteredTargets(cy);
+  const targets = extractCytoscapeCenteredTargets(cy, input.nodes);
   cy.destroy();
   return targets;
 }
@@ -300,68 +942,26 @@ export async function solveCytoscapeCoseLayoutAsync(
     return null;
   }
 
-  const cy = createCytoscapeHeadlessInstance(input);
+  const init = buildInitialSpiralPositions(input);
+  const cy = createCytoscapeHeadlessInstance(input, init);
   await yieldToNextFrame();
   if (options?.shouldCancel?.()) {
     cy.destroy();
     return null;
   }
 
-  const layout = cy.layout(buildCytoscapeCoseLayoutOptions(true));
-  await yieldToNextFrame();
-  if (options?.shouldCancel?.()) {
-    cy.destroy();
-    return null;
-  }
-
-  return new Promise((resolve) => {
-    let settled = false;
-    let stoppingSync = false;
-
-    layout.on('layoutstop', () => {
-      if (stoppingSync) return;
-      if (!settled) {
-        settled = true;
-        const targets = extractCytoscapeCenteredTargets(cy);
-        cy.destroy();
-        resolve(targets);
-        return;
-      }
-      cy.destroy();
-    });
-
-    const scheduleCheck = (cb: () => void) => {
-      if (typeof requestAnimationFrame === 'function') {
-        requestAnimationFrame(() => cb());
-      } else {
-        setTimeout(cb, 16);
-      }
-    };
-
-    const pollCancel = () => {
-      if (settled) return;
-      if (options?.shouldCancel?.()) {
-        settled = true;
-        stoppingSync = true;
-        layout.stop();
-        stoppingSync = false;
-        resolve(null);
-        return;
-      }
-      scheduleCheck(pollCancel);
-    };
-
-    layout.run();
-    if (!settled && options?.shouldCancel) {
-      scheduleCheck(pollCancel);
-    }
-  });
+  cy.layout(buildCytoscapeCoseLayoutOptions(false)).run();
+  const targets = extractCytoscapeCenteredTargets(cy, input.nodes);
+  cy.destroy();
+  return targets;
 }
 
 interface D3HeadlessNode extends d3.SimulationNodeDatum {
   id: string;
+  group: number;
   size: number;
   radius: number;
+  degree: number;
   x: number;
   y: number;
 }
@@ -372,27 +972,18 @@ interface D3HeadlessLink extends d3.SimulationLinkDatum<D3HeadlessNode> {
   weight: number;
 }
 
-function createD3HeadlessSimulation(input: SolverGraphInput): {
+function createD3HeadlessSimulation(
+  input: SolverGraphInput,
+  init: InitialSpiralPositions
+): {
   simNodes: D3HeadlessNode[];
   simulation: d3.Simulation<D3HeadlessNode, D3HeadlessLink>;
 } {
   const nodes = input.nodes;
-  const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
   const tuning = getGraphTuningState();
   const baseRadius = getGraphStyleTokens(false).nodeRadius;
   const collisionRadius = baseRadius + GRAPH_PHYSICS_CONFIG.collisionPadding2D;
-
-  const simNodes: D3HeadlessNode[] = nodes.map((n, i) => {
-    const init = initialCoords(i, total);
-    return {
-      id: n.id,
-      size: n.size || 1,
-      radius: baseRadius,
-      x: init.x,
-      y: init.y,
-    };
-  });
 
   const simLinks: D3HeadlessLink[] = input.connections
     .map((c) => {
@@ -401,6 +992,30 @@ function createD3HeadlessSimulation(input: SolverGraphInput): {
     })
     .filter((l) => nodeIds.has(String(l.source)) && nodeIds.has(String(l.target)));
 
+  const degreeById = new Map<string, number>();
+  for (const c of input.connections) {
+    const { src, tgt } = resolveEdgeEndpoints(c);
+    if (!nodeIds.has(src) || !nodeIds.has(tgt)) continue;
+    degreeById.set(src, (degreeById.get(src) || 0) + 1);
+    if (src !== tgt) {
+      degreeById.set(tgt, (degreeById.get(tgt) || 0) + 1);
+    }
+  }
+
+  const simNodes: D3HeadlessNode[] = nodes.map((n, i) => {
+    const p = init.init2D[i];
+    return {
+      id: n.id,
+      group: n.group ?? 0,
+      size: n.size || 1,
+      radius: baseRadius,
+      degree: degreeById.get(n.id) || 0,
+      x: p.x,
+      y: p.y,
+    };
+  });
+
+  const centerStrength = GRAPH_PHYSICS_CONFIG.d3CenterGravityStrength * tuning.gravityScale;
   const simulation = d3
     .forceSimulation<D3HeadlessNode>(simNodes)
     .force(
@@ -415,46 +1030,47 @@ function createD3HeadlessSimulation(input: SolverGraphInput): {
       'charge',
       d3
         .forceManyBody<D3HeadlessNode>()
-        .strength(GRAPH_PHYSICS_CONFIG.d3ChargeStrength * tuning.repulsionScale)
+        .strength((d) => {
+          const repFactor =
+            d.group === 0
+              ? 0.55 * getNodeDegreeRepulsionFactor(2)
+              : getNodeDegreeRepulsionFactor(d.degree);
+          return GRAPH_PHYSICS_CONFIG.d3ChargeStrength * tuning.repulsionScale * repFactor;
+        })
         .distanceMax(GRAPH_PHYSICS_CONFIG.d3ChargeDistanceMax)
     )
-    .force('center', d3.forceCenter<D3HeadlessNode>(0, 0).strength(0.05))
     .force(
       'collide',
       d3
         .forceCollide<D3HeadlessNode>()
-        .radius(collisionRadius)
+        .radius((d) => Math.round(collisionRadius * getNodeRestRadiusScale(d.group, d.size)))
         .iterations(2)
     )
-    .force(
-      'x',
-      d3.forceX<D3HeadlessNode>(0).strength(GRAPH_PHYSICS_CONFIG.d3CenterGravityStrength * tuning.gravityScale)
-    )
-    .force(
-      'y',
-      d3.forceY<D3HeadlessNode>(0).strength(GRAPH_PHYSICS_CONFIG.d3CenterGravityStrength * tuning.gravityScale)
-    )
+    .force('x', d3.forceX<D3HeadlessNode>(0).strength(centerStrength))
+    .force('y', d3.forceY<D3HeadlessNode>(0).strength(centerStrength))
     .stop();
 
   return { simNodes, simulation };
 }
 
 export function solveD3ForceLayout(input: SolverGraphInput): Record<string, Point2D> {
-  const { simNodes, simulation } = createD3HeadlessSimulation(input);
+  const init = buildInitialSpiralPositions(input);
+  const { simNodes, simulation } = createD3HeadlessSimulation(input, init);
   simulation.tick(500);
 
-  const targets: Record<string, Point2D> = {};
+  const rawMap = new Map<string, Point2D>();
   for (const n of simNodes) {
-    targets[n.id] = { x: round2(n.x), y: round2(n.y) };
+    rawMap.set(n.id, { x: n.x, y: n.y });
   }
-  return targets;
+  return centerPositions2D(input.nodes, rawMap);
 }
 
 export async function solveD3ForceLayoutAsync(
   input: SolverGraphInput,
   options?: AsyncSolverOptions
 ): Promise<Record<string, Point2D> | null> {
-  const { simNodes, simulation } = createD3HeadlessSimulation(input);
+  const init = buildInitialSpiralPositions(input);
+  const { simNodes, simulation } = createD3HeadlessSimulation(input, init);
   const totalTicks = 500;
   const budgetMs = options?.frameBudgetMs ?? 8.5;
   let sliceStart = performance.now();
@@ -471,11 +1087,11 @@ export async function solveD3ForceLayoutAsync(
     }
   }
 
-  const targets: Record<string, Point2D> = {};
+  const rawMap = new Map<string, Point2D>();
   for (const n of simNodes) {
-    targets[n.id] = { x: round2(n.x), y: round2(n.y) };
+    rawMap.set(n.id, { x: n.x, y: n.y });
   }
-  return targets;
+  return centerPositions2D(input.nodes, rawMap);
 }
 
 interface VisSolverNode {
@@ -487,6 +1103,8 @@ interface VisSolverNode {
   fx: number;
   fy: number;
   degree: number;
+  isHub: boolean;
+  repulsionFactor: number;
   mass: number;
 }
 
@@ -519,11 +1137,12 @@ function stepVisNetworkIteration(
       const dx = ni.x - nj.x;
       const dy = ni.y - nj.y;
       const distSq = dx * dx + dy * dy;
-      if (distSq > 380 * 380) continue;
+      if (distSq > 480 * 480) continue;
       const distance = Math.sqrt(distSq) || 0.5;
 
       let repForce =
-        (gravitationalConstant * ni.mass * nj.mass) / (distance * Math.max(14, distance));
+        (gravitationalConstant * ni.repulsionFactor * nj.repulsionFactor) /
+        (distance * Math.max(14, distance) * Math.pow(Math.max(28, distance) / 28, 0.55));
       if (distance < minSeparation) {
         repForce -= ((minSeparation - distance) * 1.2) / distance;
       }
@@ -546,10 +1165,12 @@ function stepVisNetworkIteration(
     const springForce = (localSpringK * (localEdgeLen - distance)) / distance;
     const fx = dx * springForce;
     const fy = dy * springForce;
-    u.fx += fx;
-    u.fy += fy;
-    v.fx -= fx;
-    v.fy -= fy;
+    const uShare = u.isHub ? 0.015 : 1.85;
+    const vShare = v.isHub ? 0.015 : 1.85;
+    u.fx += fx * uShare;
+    u.fy += fy * uShare;
+    v.fx -= fx * vShare;
+    v.fy -= fy * vShare;
   }
 
   const effStep = timestep * (0.25 + 0.75 * cooling);
@@ -573,7 +1194,7 @@ function stepVisNetworkIteration(
   }
 }
 
-function createVisNetworkSolverState(input: SolverGraphInput) {
+function createVisNetworkSolverState(input: SolverGraphInput, init: InitialSpiralPositions) {
   const nodes = input.nodes;
   const total = nodes.length;
   const tuning = getGraphTuningState();
@@ -581,34 +1202,39 @@ function createVisNetworkSolverState(input: SolverGraphInput) {
   const nodeIndexById = new Map<string, number>();
   nodes.forEach((n, idx) => nodeIndexById.set(n.id, idx));
 
-  const edges: [number, number, number][] = [];
   const connectedEdgeCounts = new Array<number>(total).fill(0);
+  const edges: [number, number, number][] = [];
   for (const c of input.connections) {
     const { src, tgt, weight } = resolveEdgeEndpoints(c);
     const srcIdx = nodeIndexById.get(src);
     const tgtIdx = nodeIndexById.get(tgt);
     if (srcIdx !== undefined && tgtIdx !== undefined) {
-      edges.push([srcIdx, tgtIdx, weight]);
       connectedEdgeCounts[srcIdx]++;
       if (srcIdx !== tgtIdx) {
         connectedEdgeCounts[tgtIdx]++;
       }
+      edges.push([srcIdx, tgtIdx, weight]);
     }
   }
 
   const simNodes: VisSolverNode[] = nodes.map((n, i) => {
-    const init = initialCoords(i, total);
+    const p = init.init2D[i];
     const deg = connectedEdgeCounts[i];
+    const isHub = (n.group ?? 0) === 0;
     return {
       id: n.id,
-      x: init.x,
-      y: init.y,
+      x: p.x,
+      y: p.y,
       vx: 0,
       vy: 0,
       fx: 0,
       fy: 0,
       degree: deg,
-      mass: 1 + Math.min(2.5, Math.sqrt(deg) * 0.22),
+      isHub,
+      repulsionFactor: isHub
+        ? 0.55 * getNodeDegreeRepulsionFactor(2)
+        : getNodeDegreeRepulsionFactor(deg),
+      mass: 1.0,
     };
   });
 
@@ -626,25 +1252,20 @@ function createVisNetworkSolverState(input: SolverGraphInput) {
   };
 }
 
-function finalizeVisNetworkTargets(simNodes: VisSolverNode[]): Record<string, Point2D> {
-  let sumX = 0;
-  let sumY = 0;
+function finalizeVisNetworkTargets(
+  simNodes: VisSolverNode[],
+  nodes: readonly SolverGraphNode[]
+): Record<string, Point2D> {
+  const rawMap = new Map<string, Point2D>();
   for (const n of simNodes) {
-    sumX += n.x;
-    sumY += n.y;
+    rawMap.set(n.id, { x: n.x, y: n.y });
   }
-  const meanX = simNodes.length > 0 ? sumX / simNodes.length : 0;
-  const meanY = simNodes.length > 0 ? sumY / simNodes.length : 0;
-
-  const targets: Record<string, Point2D> = {};
-  for (const n of simNodes) {
-    targets[n.id] = { x: round2(n.x - meanX), y: round2(n.y - meanY) };
-  }
-  return targets;
+  return centerPositions2D(nodes, rawMap);
 }
 
 export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<string, Point2D> {
-  const s = createVisNetworkSolverState(input);
+  const init = buildInitialSpiralPositions(input);
+  const s = createVisNetworkSolverState(input, init);
   for (let iter = 0; iter < s.iterations; iter++) {
     stepVisNetworkIteration(
       s.simNodes,
@@ -660,14 +1281,15 @@ export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<stri
       s.timestep
     );
   }
-  return finalizeVisNetworkTargets(s.simNodes);
+  return finalizeVisNetworkTargets(s.simNodes, input.nodes);
 }
 
 export async function solveVisNetworkForceLayoutAsync(
   input: SolverGraphInput,
   options?: AsyncSolverOptions
 ): Promise<Record<string, Point2D> | null> {
-  const s = createVisNetworkSolverState(input);
+  const init = buildInitialSpiralPositions(input);
+  const s = createVisNetworkSolverState(input, init);
   const budgetMs = options?.frameBudgetMs ?? 8.5;
   let sliceStart = performance.now();
 
@@ -694,32 +1316,24 @@ export async function solveVisNetworkForceLayoutAsync(
       }
     }
   }
-  return finalizeVisNetworkTargets(s.simNodes);
+  return finalizeVisNetworkTargets(s.simNodes, input.nodes);
 }
 
-function create3DForceSimulation(input: SolverGraphInput): {
-  simNodes: SimNode3D[];
+interface SolverSimNode3D extends SimNode3D {
+  group: number;
+  degree: number;
+}
+
+function create3DForceSimulation(
+  input: SolverGraphInput,
+  init: InitialSpiralPositions
+): {
+  simNodes: SolverSimNode3D[];
   simulation: ReturnType<typeof forceSimulation3D>;
 } {
   const nodes = input.nodes;
-  const total = nodes.length;
   const nodeIds = new Set(nodes.map((n) => n.id));
   const tuning = getGraphTuningState();
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-
-  const simNodes: SimNode3D[] = nodes.map((n, i) => {
-    const yNorm = total > 1 ? 1 - (i / (total - 1)) * 2 : 0;
-    const radialNorm = Math.sqrt(Math.max(0, 1 - yNorm * yNorm));
-    const theta = goldenAngle * i;
-    const r = Math.sqrt(i + 1) * 18;
-    return {
-      id: n.id,
-      val: 6,
-      x: Math.cos(theta) * radialNorm * r,
-      y: yNorm * r,
-      z: Math.sin(theta) * radialNorm * r,
-    };
-  });
 
   const simLinks: SimLink3D[] = input.connections
     .map((c) => {
@@ -727,6 +1341,29 @@ function create3DForceSimulation(input: SolverGraphInput): {
       return { source: src, target: tgt, weight };
     })
     .filter((l) => nodeIds.has(String(l.source)) && nodeIds.has(String(l.target)));
+
+  const degreeById = new Map<string, number>();
+  for (const c of input.connections) {
+    const { src, tgt } = resolveEdgeEndpoints(c);
+    if (!nodeIds.has(src) || !nodeIds.has(tgt)) continue;
+    degreeById.set(src, (degreeById.get(src) || 0) + 1);
+    if (src !== tgt) {
+      degreeById.set(tgt, (degreeById.get(tgt) || 0) + 1);
+    }
+  }
+
+  const simNodes: SolverSimNode3D[] = nodes.map((n, i) => {
+    const p = init.init3D[i];
+    return {
+      id: n.id,
+      group: n.group ?? 0,
+      val: 6,
+      degree: degreeById.get(n.id) || 0,
+      x: p.x,
+      y: p.y,
+      z: p.z,
+    };
+  });
 
   const radialGravity = GRAPH_PHYSICS_CONFIG.force3DCenterGravityStrength * tuning.gravityScale;
   const simulation = forceSimulation3D(simNodes, 3)
@@ -742,8 +1379,15 @@ function create3DForceSimulation(input: SolverGraphInput): {
     .force(
       'charge',
       forceManyBody3D()
-        .strength(GRAPH_PHYSICS_CONFIG.force3DChargeStrength * tuning.repulsionScale)
-        .distanceMax(320)
+        .strength((d: SimNode3D) => {
+          const node3D = d as SolverSimNode3D;
+          const repFactor =
+            node3D.group === 0
+              ? 0.55 * getNodeDegreeRepulsionFactor(2)
+              : getNodeDegreeRepulsionFactor(node3D.degree ?? 0);
+          return GRAPH_PHYSICS_CONFIG.force3DChargeStrength * tuning.repulsionScale * repFactor;
+        })
+        .distanceMax(240)
     )
     .force('center', forceCenter3D(0, 0, 0))
     .force('radialGravity', (alpha: number) => {
@@ -759,21 +1403,23 @@ function create3DForceSimulation(input: SolverGraphInput): {
 }
 
 export function solve3DForceLayout(input: SolverGraphInput): Record<string, Point3D> {
-  const { simNodes, simulation } = create3DForceSimulation(input);
+  const init = buildInitialSpiralPositions(input);
+  const { simNodes, simulation } = create3DForceSimulation(input, init);
   simulation.tick(GRAPH_PHYSICS_CONFIG.force3DIterations);
 
-  const targets: Record<string, Point3D> = {};
+  const rawMap = new Map<string, Point3D>();
   for (const n of simNodes) {
-    targets[n.id] = { x: round2(n.x), y: round2(n.y), z: round2(n.z) };
+    rawMap.set(n.id, { x: n.x, y: n.y, z: n.z });
   }
-  return targets;
+  return centerPositions3D(input.nodes, rawMap);
 }
 
 export async function solve3DForceLayoutAsync(
   input: SolverGraphInput,
   options?: AsyncSolverOptions
 ): Promise<Record<string, Point3D> | null> {
-  const { simNodes, simulation } = create3DForceSimulation(input);
+  const init = buildInitialSpiralPositions(input);
+  const { simNodes, simulation } = create3DForceSimulation(input, init);
   const totalTicks = GRAPH_PHYSICS_CONFIG.force3DIterations;
   const budgetMs = options?.frameBudgetMs ?? 8.5;
   let sliceStart = performance.now();
@@ -790,11 +1436,11 @@ export async function solve3DForceLayoutAsync(
     }
   }
 
-  const targets: Record<string, Point3D> = {};
+  const rawMap = new Map<string, Point3D>();
   for (const n of simNodes) {
-    targets[n.id] = { x: round2(n.x), y: round2(n.y), z: round2(n.z) };
+    rawMap.set(n.id, { x: n.x, y: n.y, z: n.z });
   }
-  return targets;
+  return centerPositions3D(input.nodes, rawMap);
 }
 
 export function compute2DGeometryTargets(

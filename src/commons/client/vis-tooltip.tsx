@@ -4,6 +4,8 @@ import {
   GRAPH_GROUP_NAMES,
   HIGHLIGHT_TRANSITION_MS,
   easeHighlightTransition,
+  getClusterPillDimensions,
+  getNodeClusterColor,
 } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 
@@ -12,6 +14,8 @@ export interface VisTooltipNodeData {
   name: string;
   size: number;
   group: number;
+  colorDark?: string;
+  colorLight?: string;
   image?: string;
   tags?: string[];
   date?: string;
@@ -467,8 +471,43 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         }
       : null;
 
-    // 8 candidate sectors around the hovered node (N, S, E, W, NE, NW, SE, SW)
+    // Collect screen-space bounding boxes of Theme-Cluster Pills (group === 0) + their external % badges
+    const focusNodeId =
+      targetEl === hoverTooltipEl ? (secondaryHoveredNodeId ?? activeNodeId) : activeNodeId;
+    const connectedSet =
+      focusNodeId && activeConfig?.adjacency ? activeConfig.adjacency.get(focusNodeId) : undefined;
+    const clusterPillRects: {
+      l: number;
+      t: number;
+      r: number;
+      b: number;
+      isActiveCluster: boolean;
+    }[] = [];
+    const screenNodes = activeConfig?.getScreenNodes?.() || [];
+    for (const sn of screenNodes) {
+      if (sn.node.group !== 0) continue;
+      const isActiveCluster = Boolean(
+        sn.node.id === focusNodeId || connectedSet?.has(sn.node.id)
+      );
+      const dims = getClusterPillDimensions(
+        sn.node.name || sn.node.id,
+        isActiveCluster ? 1.0 : undefined,
+        isActiveCluster,
+        1
+      );
+      const extraBadgeW = isActiveCluster ? dims.badgeGap + Math.max(dims.badgeW, 42) : 0;
+      clusterPillRects.push({
+        l: sn.x - dims.pillW / 2 - 6,
+        t: sn.y - dims.pillH / 2 - 6,
+        r: sn.x + dims.pillW / 2 + extraBadgeW + 6,
+        b: sn.y + dims.pillH / 2 + 6,
+        isActiveCluster,
+      });
+    }
+
+    // Candidate sectors around the hovered node (N, S, E, W, NE, NW, SE, SW + extended cardinal offsets)
     const diag = Math.round(gap * 0.78);
+    const farGap = gap + 28;
     const candidates = [
       { left: x - tWidth / 2, top: y - gap - tHeight, bias: 0 },       // N
       { left: x + diag, top: y - diag - tHeight, bias: 2 },            // NE
@@ -478,6 +517,10 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       { left: x + diag, top: y + diag, bias: 6 },                      // SE
       { left: x - diag - tWidth, top: y + diag, bias: 6 },             // SW
       { left: x - tWidth / 2, top: y + gap, bias: 8 },                 // S
+      { left: x - tWidth / 2, top: y - farGap - tHeight, bias: 14 },   // Far N
+      { left: x + farGap, top: y - tHeight / 2, bias: 16 },            // Far E
+      { left: x - farGap - tWidth, top: y - tHeight / 2, bias: 16 },   // Far W
+      { left: x - tWidth / 2, top: y + farGap, bias: 18 },             // Far S
     ];
 
     let bestLeft = candidates[0].left;
@@ -500,7 +543,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       if (right > cWidth - pad) penalty += 2000 + (right - (cWidth - pad)) * 25;
       if (bottom > cHeight - pad) penalty += 2000 + (bottom - (cHeight - pad)) * 25;
 
-      // 2. Legend, layout selector, and primary pinned tooltip overlap penalty
+      // 2. Legend, layout selector, hovered node itself, and primary pinned tooltip overlap penalty
       if (legendRect && rectsOverlap(c.left, c.top, right, bottom, legendRect.l, legendRect.t, legendRect.r, legendRect.b)) {
         penalty += 1800;
       }
@@ -509,6 +552,23 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
       }
       if (avoidRect && rectsOverlap(c.left, c.top, right, bottom, avoidRect.l, avoidRect.t, avoidRect.r, avoidRect.b)) {
         penalty += 2600;
+      }
+      if (rectsOverlap(c.left, c.top, right, bottom, x - 14, y - 14, x + 14, y + 14)) {
+        penalty += 2500;
+      }
+
+      // 2b. Theme-Cluster Pill & external % badge collision avoidance
+      for (const cp of clusterPillRects) {
+        if (rectsOverlap(c.left, c.top, right, bottom, cp.l, cp.t, cp.r, cp.b)) {
+          const overlapW = Math.max(0, Math.min(right, cp.r) - Math.max(c.left, cp.l));
+          const overlapH = Math.max(0, Math.min(bottom, cp.b) - Math.max(c.top, cp.t));
+          const overlapArea = overlapW * overlapH;
+          if (cp.isActiveCluster) {
+            penalty += 12000 + overlapArea * 4;
+          } else {
+            penalty += 320 + overlapArea * 0.5;
+          }
+        }
       }
 
       // 3. 1-hop neighbor nodes and connecting edge segments penalty
@@ -626,7 +686,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
     const themeTokens = getThemeTokens(isLight);
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
     const typeLabel = node.typeLabel || GRAPH_GROUP_NAMES[node.group] || 'Item';
-    const accentColor = groupColors[node.group] || themeTokens.nodeDefault;
+    const accentColor = getNodeClusterColor(node, isLight) || groupColors[node.group] || themeTokens.nodeDefault;
     const tagColor = groupColors[0];
 
     if (pinnedNodeId !== null) {
@@ -678,7 +738,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
     const themeTokens = getThemeTokens(isLight);
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
     const typeLabel = node.typeLabel || GRAPH_GROUP_NAMES[node.group] || 'Item';
-    const accentColor = groupColors[node.group] || themeTokens.nodeDefault;
+    const accentColor = getNodeClusterColor(node, isLight) || groupColors[node.group] || themeTokens.nodeDefault;
     const tagColor = groupColors[0];
 
     render(
@@ -881,6 +941,25 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
         };
       };
 
+      const getCandidateDistance = (
+        px: number,
+        py: number,
+        c: ProximityNodeCandidate
+      ): number => {
+        if (c.node.group === 0) {
+          const dims = getClusterPillDimensions(c.node.name);
+          const halfW = dims.pillW / 2;
+          const halfH = dims.pillH / 2;
+          const dx = Math.max(0, Math.abs(px - c.x) - halfW);
+          const dy = Math.max(0, Math.abs(py - c.y) - halfH);
+          if (dx === 0 && dy === 0) {
+            return Math.hypot((px - c.x) / Math.max(1, halfW), (py - c.y) / Math.max(1, halfH)) * 0.5;
+          }
+          return Math.hypot(dx, dy);
+        }
+        return Math.hypot(px - c.x, py - c.y);
+      };
+
       const findNearest = (
         px: number,
         py: number,
@@ -895,7 +974,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           for (const c of candidates) {
             if (!focusSet.has(c.node.id)) continue;
             if (!Number.isFinite(c.x) || !Number.isFinite(c.y)) continue;
-            const d = Math.hypot(px - c.x, py - c.y);
+            const d = getCandidateDistance(px, py, c);
             if (d <= minDist) {
               minDist = d;
               best = c;
@@ -907,7 +986,7 @@ export function createGraphTooltipController(container: HTMLElement): GraphToolt
           minDist = maxRadius;
           for (const c of candidates) {
             if (!Number.isFinite(c.x) || !Number.isFinite(c.y)) continue;
-            const d = Math.hypot(px - c.x, py - c.y);
+            const d = getCandidateDistance(px, py, c);
             if (d <= minDist) {
               minDist = d;
               best = c;
