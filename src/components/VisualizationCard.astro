@@ -7,7 +7,7 @@ interface Props {
   description: string;
   href: string;
   engineId?: string;
-  image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  image?: string | ImageMetadata | { src: string | ImageMetadata; title: string; description: string };
   tags?: string[];
   activeTag?: string | string[];
   showTags?: boolean;
@@ -27,11 +27,12 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
 const isImageObj = Boolean(image && typeof image === 'object' && 'src' in image && image.src);
-const imageImg = isImageObj ? (image as { src: ImageMetadata }).src : (image as ImageMetadata | undefined);
+const imageImg = isImageObj ? (image as { src: string | ImageMetadata }).src : (image as string | ImageMetadata | undefined);
+const isStringImage = typeof imageImg === 'string';
 const imageTitle = isImageObj ? (image as { title: string }).title : title;
 const imageDesc = isImageObj ? (image as { description: string }).description : (description ? `${title} – ${description}` : `Interactive network diagram preview for ${title}`);
 
-const optimizedImage = imageImg ? await getImage({
+const optimizedImage = imageImg && !isStringImage ? await getImage({
   src: imageImg,
   format: 'webp',
   width: 640,
@@ -69,8 +70,8 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
         </defs>
         <image 
           role="img"
-          href={optimizedImage ? optimizedImage.src : (imageImg ? imageImg.src : '')} 
-          x="0" 
+          href={isStringImage ? imageImg : (optimizedImage ? optimizedImage.src : (imageImg ? imageImg.src : ''))} 
+          x="0"  
           y="0" 
           width="160" 
           height="90" 

@@ -13,6 +13,7 @@ import NewsletterCard from "@components/NewsletterCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getPageNumbers } from "@commons/client/pagination";
+import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -484,16 +485,19 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {visualizations.map((vis) => (
-              <VisualizationCard
-                title={vis.data.title}
-                description={vis.data.description}
-                href={`/visualizations/${vis.id}/`}
-                image={vis.data.image}
-                tags={vis.data.tags}
-                activeTag={tag.id}
-              />
-            ))}
+            {(await (async () => {
+              const { previews } = await ensureVisPreviewAssets();
+              return visualizations.map((vis) => (
+                <VisualizationCard
+                  title={vis.data.title}
+                  description={vis.data.description}
+                  href={`/visualizations/${vis.id}/`}
+                  image={previews[vis.id] ?? vis.data.image}
+                  tags={vis.data.tags}
+                  activeTag={tag.id}
+                />
+              ));
+            })())}
           </div>
         </div>
       )}

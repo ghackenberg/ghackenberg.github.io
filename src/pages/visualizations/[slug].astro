@@ -10,6 +10,7 @@ import TagChip from "@components/TagChip.astro";
 import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
+import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
 
 export async function getStaticPaths() {
   const visualizations = await getCollection("visualizations");
@@ -23,11 +24,16 @@ const { vis } = Astro.props;
 const type = vis.id;
 const title = vis.data.title;
 const description = vis.data.description;
-const screenshot = vis.data.image;
+const { previews: visPreviews } = await ensureVisPreviewAssets();
+const dynamicPreviewUrl = visPreviews[type];
+const fallbackScreenshot = vis.data.image;
+const screenshot = dynamicPreviewUrl ?? fallbackScreenshot;
 
 const { Content } = await render(vis);
 
-const screenshotImg = screenshot ? (typeof screenshot === 'object' && 'src' in screenshot ? screenshot.src : screenshot) : null;
+const screenshotImg = !dynamicPreviewUrl && fallbackScreenshot
+  ? (typeof fallbackScreenshot === 'object' && 'src' in fallbackScreenshot ? fallbackScreenshot.src : fallbackScreenshot)
+  : null;
 const optimizedScreenshot = screenshotImg ? await getImage({
   src: screenshotImg,
   format: 'webp',

@@ -8,8 +8,10 @@ import FilterToolbar from "@components/FilterToolbar.astro";
 import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
+import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
 
 const visualizations = await getCollection("visualizations");
+const { previews: visPreviews } = await ensureVisPreviewAssets();
 
 // Extract unique tags from all visualizations
 const tagsSet = new Set<string>();
@@ -21,7 +23,9 @@ for (const vis of visualizations) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = visualizations.map(v => (v.data.tags || []).map(t => t.toLowerCase()));
 
-const firstVisScreenshot = visualizations.find(v => v.data.image)?.data.image;
+const firstVisScreenshot =
+  (visualizations.length > 0 ? visPreviews[visualizations[0].id] : undefined) ||
+  visualizations.find(v => v.data.image)?.data.image;
 
 ---
 
@@ -75,7 +79,7 @@ const firstVisScreenshot = visualizations.find(v => v.data.image)?.data.image;
                   title={vis.data.title}
                   description={vis.data.description}
                   href={`/visualizations/${vis.id}/`}
-                  image={vis.data.image}
+                  image={visPreviews[vis.id] ?? vis.data.image}
                   tags={vis.data.tags}
                 />
               </div>

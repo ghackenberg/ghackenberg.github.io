@@ -14,6 +14,7 @@ import VisualizationCard from '@components/VisualizationCard.astro';
 import TagChip from '@components/TagChip.astro';
 import { getCollection, getEntries, render } from 'astro:content';
 import { formatDate } from '@commons/shared/format';
+import { ensureVisPreviewAssets } from '@commons/server/vis-preview-assets';
 
 export async function getStaticPaths() {
   const issues = await getCollection('newsletters');
@@ -55,6 +56,11 @@ const [
     ? getEntries(issue.data.featuredVisualizations)
     : Promise.resolve([]),
 ]);
+
+const { previews: visPreviews } =
+  featuredVisualizations.length > 0
+    ? await ensureVisPreviewAssets()
+    : { previews: {} as Record<string, string> };
 
 const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Dr. Georg Hackenberg`;
 const newsletterSchema = buildNewsletterIssueSchema({
@@ -298,7 +304,7 @@ const newsletterSchema = buildNewsletterIssueSchema({
               title={vis.data.title}
               description={vis.data.description}
               href={`/visualizations/${vis.id}/`}
-              image={vis.data.image}
+              image={visPreviews[vis.id] ?? vis.data.image}
               tags={vis.data.tags}
             />
           ))}

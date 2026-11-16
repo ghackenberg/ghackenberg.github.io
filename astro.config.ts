@@ -33,6 +33,7 @@ import {
 import { getFileContentHash, getHashedFilename } from '@commons/server/content-hash.js';
 import { BRANDING_CACHE_DIR, ensureBrandingAssets } from '@commons/server/branding-assets.js';
 import { MAP_CACHE_DIR, ensureMapAssets } from '@commons/server/map-assets.js';
+import { VIS_PREVIEW_CACHE_DIR, syncCachedVisPreviewsToDist } from '@commons/server/vis-preview-assets.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
@@ -151,6 +152,22 @@ function copyContentAssets(): AstroIntegration {
             if (mapMatch) {
               const themeSuffix = mapMatch[2] || '';
               const filePath = path.join(MAP_CACHE_DIR, `${mapMatch[1]}${themeSuffix}.png`);
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                res.writeHead(200, {
+                  'Content-Type': 'image/png',
+                  'Cache-Control': 'no-cache',
+                });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+
+            // Dev server middleware for cached visualization preview screenshots
+            const visPreviewMatch = cleanUrl.match(
+              /^\/assets\/vis-previews\/(cytoscape|sigma|d3|vis-network|3d-force-graph)-([a-f0-9]{8})\.png$/
+            );
+            if (visPreviewMatch) {
+              const filePath = path.join(VIS_PREVIEW_CACHE_DIR, `${visPreviewMatch[1]}.png`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
                 res.writeHead(200, {
                   'Content-Type': 'image/png',
@@ -380,6 +397,9 @@ function copyContentAssets(): AstroIntegration {
 
         // Ensure static map assets are synced into dist/
         await ensureMapAssets({ outDir });
+
+        // Ensure visualization preview screenshots are synced into dist/
+        syncCachedVisPreviewsToDist(outDir);
 
         // Copy cached branding & OG assets into dist/ and remove _internal/
         const { ogImagePath, iconFiles } = await ensureBrandingAssets();
