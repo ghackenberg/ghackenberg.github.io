@@ -10,6 +10,9 @@ import {
   easeHighlightTransition,
   getGraphStyleTokens,
   getGraphTuningState,
+  isDefaultGraphTuningState,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_STRENGTH,
   compute2DViewportFit,
   getRadialReferenceBounds2D,
   buildGraphAdjacency,
@@ -31,8 +34,10 @@ import {
   sampleKChangeNodePosition,
   type CanonicalGraphPayload,
   type ClusterLabelCrossfade,
-  type GraphNodePayload
+  type GraphNodePayload,
+  type TimelineNodeFx
 } from '@commons/shared/graph-payload';
+import type { TimelineAdapter, TimelineGhostNode, TimelineSnapshot } from '@commons/client/graph-timeline-controller';
 import {
   compute2DGeometryTargets,
   solveVisNetworkForceLayoutAsync,
@@ -96,6 +101,7 @@ export interface VisPayloadNode {
   colorLight?: string;
   originClusterId?: string;
   originKind?: 'match' | 'split';
+  memberTags?: string[];
 }
 
 export interface VisPayloadConnection {
@@ -135,9 +141,15 @@ export interface VisNetworkEngine {
   container?: HTMLElement | null;
   canonicalPayload?: CanonicalGraphPayload | null;
   activeClusterCount?: number;
-  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
+  rebuildClusterTopology?(
+    targetK: number,
+    opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+  ): void;
+  timelineAdapter?: TimelineAdapter;
+  timelineFx?: ReadonlyMap<string, TimelineNodeFx> | null;
+  timelineGhosts?: TimelineGhostNode[];
   kChange?: KChangeController | null;
-  playKTransition?(nextPositions: Map<string, { x: number; y: number }>): boolean;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>, durationMs?: number): boolean;
   getLivePositions?(): Map<string, { x: number; y: number }>;
   nodes?: VisPayloadNode[];
   connections?: VisPayloadConnection[];
@@ -430,17 +442,21 @@ const engine: VisNetworkEngine = {
       return live;
     };
 
-    this.rebuildClusterTopology = (targetK: number, opts?: { restoreDefault?: boolean }) => {
+    this.rebuildClusterTopology = (
+      targetK: number,
+      opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+    ) => {
       if (!this.canonicalPayload || !this.visNodes || !this.visEdges || !this.network) return;
       this.kChange?.finish();
       const prevPayloadNodes: GraphNodePayload[] = rawNodesList.map((m) => ({ ...m }));
       const prevMetaById = new Map(prevPayloadNodes.map((m) => [m.id, m]));
-      const nextCanonical = resolveKChangeCanonical(
-        this.canonicalPayload,
-        targetK,
-        prevPayloadNodes,
-        Boolean(opts?.restoreDefault)
-      );
+      const nextCanonical: CanonicalGraphPayload = opts?.snapshot
+        ? {
+            nodes: opts.snapshot.nodes,
+            connections: opts.snapshot.connections,
+            mergeTargetByOldClusterId: opts.snapshot.mergeTargetByOldClusterId,
+          }
+        : resolveKChangeCanonical(this.canonicalPayload, targetK, prevPayloadNodes, Boolean(opts?.restoreDefault));
 
       const currentIsLight = Boolean(this.isLight);
       const curTokens = getGraphStyleTokens(currentIsLight);
@@ -453,7 +469,12 @@ const engine: VisNetworkEngine = {
         if (bp) prevPosById.set(n.id, { x: bp.x, y: bp.y });
       }
 
-      const startPos = computeKChangeStartPositions(nextCanonical.nodes, nextCanonical.connections, prevPosById, targetK);
+      const startPos = opts?.snapshot
+        ? new Map<string, { x: number; y: number }>(opts.snapshot.start)
+        : computeKChangeStartPositions(nextCanonical.nodes, nextCanonical.connections, prevPosById, targetK);
+      if (opts?.snapshot) {
+        for (const [id, p] of startPos) if (!prevPosById.has(id)) prevPosById.set(id, { x: p.x, y: p.y });
+      }
       this.forcePositions.clear();
       this.nodes = nextCanonical.nodes.map((n) => {
         const sp = startPos.get(n.id) ?? { x: 0, y: 0 };
@@ -489,6 +510,7 @@ const engine: VisNetworkEngine = {
           colorLight: n.colorLight,
           originClusterId: n.originClusterId,
           originKind: n.originKind,
+          memberTags: n.memberTags,
         };
       });
 
@@ -575,10 +597,11 @@ const engine: VisNetworkEngine = {
       });
     };
 
-    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>) => {
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>, durationMs?: number) => {
       const isLightNow = Boolean(this.isLight);
       return (
         this.kChange?.play(nextPositions, {
+          durationMs,
           onFrame: (tr, progress) => {
             if (!this.network) return;
             const bodyNodes = (this.network as VisNetworkWithBody).body?.nodes;
@@ -615,6 +638,15 @@ const engine: VisNetworkEngine = {
             this.visNodes.update(updates);
             this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
             this.dragController?.calibrateFromPositions(this.forcePositions);
+            const bodyAfter = (this.network as VisNetworkWithBody).body?.nodes;
+            for (const [id, p] of nextPositions) {
+              const bn = bodyAfter?.[id];
+              if (bn) {
+                bn.x = p.x;
+                bn.y = p.y;
+              }
+            }
+            this.network.redraw();
           },
         }) ?? false
       );
@@ -637,6 +669,7 @@ const engine: VisNetworkEngine = {
         radius: number;
         group: number;
         color: string;
+        alpha: number;
       };
 
       let activeContentCoverageMap: Map<string, number> | null = null;
@@ -686,13 +719,26 @@ const engine: VisNetworkEngine = {
           z: nodeZ,
           x: p.x,
           y: p.y,
-          radius: nodeDisplaySizeMap.get(id) ?? currentTokens.nodeRadius,
+          radius: (nodeDisplaySizeMap.get(id) ?? currentTokens.nodeRadius) * (this.timelineFx?.get(id)?.scale ?? 1),
           group: node.group,
           color:
             nodeDisplayColorMap.get(id) ||
             getNodeBaseColor(node, currentIsLight) ||
             palette[node.group] ||
             palette[0],
+          alpha: this.timelineFx?.get(id)?.alpha ?? 1,
+        });
+      }
+      for (const g of this.timelineGhosts ?? []) {
+        items.push({
+          isNode: true,
+          z: 0,
+          x: g.x,
+          y: g.y,
+          radius: currentTokens.nodeRadius * getNodeRestRadiusScale(g.group, 1) * g.scale,
+          group: g.group,
+          color: (currentIsLight ? g.colorLight : g.colorDark) || palette[g.group] || palette[0],
+          alpha: g.alpha,
         });
       }
 
@@ -701,6 +747,7 @@ const engine: VisNetworkEngine = {
         ctx.save();
         ctx.lineCap = 'round';
         for (const item of items) {
+          ctx.globalAlpha = item.alpha;
           drawRegularPolygonNode2D(
             ctx,
             item.x,
@@ -712,6 +759,7 @@ const engine: VisNetworkEngine = {
             1.5
           );
         }
+        ctx.globalAlpha = 1;
         ctx.restore();
       }
 
@@ -1170,6 +1218,106 @@ const engine: VisNetworkEngine = {
         }
       });
     }, { rootMargin: '100px 0px' });
+    // ---- Timeline adapter (SYSTEM-014 Etappe 2) ----
+    this.timelineFx = null;
+    this.timelineGhosts = [];
+    this.timelineAdapter = {
+      isForceLayout: () => this.currentLayout === 'force',
+      is3D: () => false,
+      getCanonical: () => this.canonicalPayload ?? null,
+      getKTarget: () => getGraphTuningState().clusterCount,
+      getPhysicsKey: () => JSON.stringify(getGraphTuningState()),
+      isDefaultTuning: () => isDefaultGraphTuningState(),
+      getCurrentNodes: () => {
+        const canonById = new Map((this.canonicalPayload?.nodes || []).map((n) => [n.id, n]));
+        return (this.nodes || []).map((n) => ({
+          id: n.id,
+          name: n.name,
+          size: n.size,
+          group: n.group,
+          colorDark: n.colorDark,
+          colorLight: n.colorLight,
+          tags: n.tags,
+          memberTags: n.memberTags ?? canonById.get(n.id)?.memberTags,
+        }));
+      },
+      getLivePositions: () => this.getLivePositions?.() ?? new Map(),
+      getRestPositions: () => this.initialForcePositions,
+      applySnapshot: (snapshot, start, morph) => {
+        const startXY = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of start) startXY.set(id, { x: p.x, y: p.y });
+        this.rebuildClusterTopology?.(snapshot.clusterCount, { snapshot: { ...snapshot, start: startXY } });
+        if (!morph) {
+          this.kChange?.discard();
+          this.applyHighlight?.(null, true);
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+        }
+        this.startViewportAdaptLoop(900);
+      },
+      solveWarm: async (snapshot, seeds, shouldCancel, anchors, anchorWeights) => {
+        const solved = await solveVisNetworkForceLayoutAsync(
+          {
+            nodes: snapshot.nodes.map((n) => ({
+              id: n.id,
+              group: n.group,
+              size: n.size,
+              originClusterId: n.originClusterId,
+            })),
+            connections: snapshot.connections,
+            seedPositions: seeds,
+            anchorPositions: anchors,
+            anchorStrength: anchors ? (anchorWeights ? TIMELINE_CLUSTER_ANCHOR_STRENGTH : TIMELINE_ANCHOR_STRENGTH) : undefined,
+            anchorWeights,
+          },
+          { shouldCancel }
+        );
+        if (!solved) return null;
+        const out = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of Object.entries(solved)) out.set(id, { x: p.x, y: p.y });
+        return out;
+      },
+      playMorph: (next, durationMs) => {
+        const xy = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of next) xy.set(id, { x: p.x, y: p.y });
+        return this.playKTransition?.(xy, durationMs) ?? false;
+      },
+      setNodeFx: (fx, ghosts) => {
+        this.timelineFx = fx;
+        this.timelineGhosts = ghosts;
+        this.network?.redraw();
+      },
+      setPositions: (positions, final) => {
+        const body = (this.network as VisNetworkWithBody | null | undefined)?.body?.nodes;
+        for (const [id, p] of positions) {
+          const bn = body?.[id];
+          if (bn) {
+            bn.x = p.x;
+            bn.y = p.y;
+          }
+        }
+        this.network?.redraw();
+        if (final && this.visNodes) {
+          const updates: VisNode[] = [];
+          for (const [id, p] of positions) {
+            this.forcePositions.set(id, { x: p.x, y: p.y });
+            updates.push({ id, x: p.x, y: p.y });
+          }
+          this.visNodes.update(updates);
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+          for (const [id, p] of positions) {
+            const bn = body?.[id];
+            if (bn) {
+              bn.x = p.x;
+              bn.y = p.y;
+            }
+          }
+          this.network?.redraw();
+          this.startViewportAdaptLoop(900);
+        }
+      },
+      finishMorph: () => this.kChange?.finish(),
+    };
+
     this.intersectionObserver.observe(container);
 
     return this;

@@ -10,6 +10,9 @@ import {
   getCytoscapePolygonPoints,
   getGraphStyleTokens,
   getGraphTuningState,
+  isDefaultGraphTuningState,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_STRENGTH,
   compute2DViewportFit,
   getRadialReferenceBounds2D,
   buildGraphAdjacency,
@@ -32,8 +35,10 @@ import {
   sampleKChangeNodePosition,
   type CanonicalGraphPayload,
   type ClusterLabelCrossfade,
-  type GraphNodePayload
+  type GraphNodePayload,
+  type TimelineNodeFx
 } from '@commons/shared/graph-payload';
+import type { TimelineAdapter, TimelineGhostNode, TimelineSnapshot } from '@commons/client/graph-timeline-controller';
 import {
   compute2DGeometryTargets,
   solveCytoscapeCoseLayout,
@@ -79,6 +84,7 @@ export interface CytoscapeNodeMeta {
   tags?: string[];
   originClusterId?: string;
   originKind?: 'match' | 'split';
+  memberTags?: string[];
 }
 
 export interface CytoscapeEdgeMeta {
@@ -94,9 +100,15 @@ export interface CytoscapeEngine {
   cy: Core | null;
   canonicalPayload?: CanonicalGraphPayload | null;
   activeClusterCount?: number;
-  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
+  rebuildClusterTopology?(
+    targetK: number,
+    opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+  ): void;
+  timelineAdapter?: TimelineAdapter;
+  timelineFx?: ReadonlyMap<string, TimelineNodeFx> | null;
+  timelineGhosts?: TimelineGhostNode[];
   kChange?: KChangeController | null;
-  playKTransition?(nextPositions: Map<string, { x: number; y: number }>): boolean;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>, durationMs?: number): boolean;
   tooltipController: GraphTooltipController | null;
   fgCanvas?: HTMLCanvasElement | null;
   drawScene?: (() => void) | null;
@@ -382,6 +394,7 @@ const engine: CytoscapeEngine = {
         group: number;
         borderWidth: number;
         color: string;
+        alpha: number;
       };
 
       const fgItems: DrawItem[] = [];
@@ -436,7 +449,9 @@ const engine: CytoscapeEngine = {
           secId !== null && id === secId ? 48 : dists ? getNodeHopZIndex(hopDist, itemCov) : 2;
         const modelDiameter = nodeDisplaySizeMap.get(id) ?? (currentBaseDiameter * getNodeRestRadiusScale(n.group, n.size));
         const color = nodeDisplayColorMap.get(id) || getNodeBaseColor(n, currentIsLight) || currentPalette[n.group] || currentPalette[0];
-        const radius = (modelDiameter * zoom) / 2;
+        const nodeFx = this.timelineFx?.get(id);
+        const radius = ((modelDiameter * zoom) / 2) * (nodeFx?.scale ?? 1);
+        const nodeAlpha = nodeFx?.alpha ?? 1;
 
         if (nodeZ >= 10) {
           fgItems.push({
@@ -447,10 +462,13 @@ const engine: CytoscapeEngine = {
             radius,
             group: n.group,
             borderWidth: borderW,
-            color
+            color,
+            alpha: nodeAlpha
           });
         } else {
+          ctx.globalAlpha = nodeAlpha;
           drawRegularPolygonNode2D(ctx, rx, ry, radius, n.group, color, color, borderW);
+          ctx.globalAlpha = 1;
         }
       }
 
@@ -458,6 +476,7 @@ const engine: CytoscapeEngine = {
       if (fgItems.length > 0) {
         fgItems.sort((a, b) => a.z - b.z);
         for (const item of fgItems) {
+          ctx.globalAlpha = item.alpha;
           drawRegularPolygonNode2D(
             ctx,
             item.x,
@@ -468,7 +487,17 @@ const engine: CytoscapeEngine = {
             item.color,
             item.borderWidth
           );
+          ctx.globalAlpha = 1;
         }
+      }
+
+      // 3b. Vanishing timeline items (fade-out ghosts)
+      for (const g of this.timelineGhosts ?? []) {
+        const gcol = (currentIsLight ? g.colorLight : g.colorDark) || currentPalette[g.group] || currentPalette[0];
+        const gr = ((currentBaseDiameter * getNodeRestRadiusScale(g.group, 1) * zoom) / 2) * g.scale;
+        ctx.globalAlpha = g.alpha;
+        drawRegularPolygonNode2D(ctx, g.x * zoom + panX, g.y * zoom + panY, gr, g.group, gcol, gcol, borderW);
+        ctx.globalAlpha = 1;
       }
 
       // 4. Draw Theme-Cluster Pill nodes (group === 0) centered directly at (rx, ry)
@@ -753,17 +782,21 @@ const engine: CytoscapeEngine = {
     this.kChange?.destroy();
     this.kChange = createKChangeController();
 
-    this.rebuildClusterTopology = (targetK: number, opts?: { restoreDefault?: boolean }) => {
+    this.rebuildClusterTopology = (
+      targetK: number,
+      opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+    ) => {
       if (!this.canonicalPayload || !this.cy) return;
       this.kChange?.finish();
       const prevPayloadNodes: GraphNodePayload[] = this.nodeMetaList.map((m) => ({ ...m }));
       const prevMetaById = new Map(prevPayloadNodes.map((m) => [m.id, m]));
-      const nextCanonical = resolveKChangeCanonical(
-        this.canonicalPayload,
-        targetK,
-        prevPayloadNodes,
-        Boolean(opts?.restoreDefault)
-      );
+      const nextCanonical: CanonicalGraphPayload = opts?.snapshot
+        ? {
+            nodes: opts.snapshot.nodes,
+            connections: opts.snapshot.connections,
+            mergeTargetByOldClusterId: opts.snapshot.mergeTargetByOldClusterId,
+          }
+        : resolveKChangeCanonical(this.canonicalPayload, targetK, prevPayloadNodes, Boolean(opts?.restoreDefault));
 
       const currentIsLight = Boolean(this.isLight);
       const curTokens = getGraphStyleTokens(currentIsLight);
@@ -775,7 +808,12 @@ const engine: CytoscapeEngine = {
         prevPosById.set(id, { x: p.x, y: p.y });
       }
 
-      const startPos = computeKChangeStartPositions(nextCanonical.nodes, nextCanonical.connections, prevPosById, targetK);
+      const startPos = opts?.snapshot
+        ? new Map<string, { x: number; y: number }>(opts.snapshot.start)
+        : computeKChangeStartPositions(nextCanonical.nodes, nextCanonical.connections, prevPosById, targetK);
+      if (opts?.snapshot) {
+        for (const [id, p] of startPos) if (!prevPosById.has(id)) prevPosById.set(id, { x: p.x, y: p.y });
+      }
 
       this.nodeMetaList = [];
       this.edgeMetaList = [];
@@ -817,6 +855,7 @@ const engine: CytoscapeEngine = {
           tags: n.tags ? [...n.tags] : undefined,
           originClusterId: n.originClusterId,
           originKind: n.originKind,
+          memberTags: n.memberTags ? [...n.memberTags] : undefined,
         });
         nextCtrlNodes.push({ id: n.id, group: n.group, x: px, y: py });
         nextCyElements.push({
@@ -889,10 +928,11 @@ const engine: CytoscapeEngine = {
       drawForegroundOverlay();
     };
 
-    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>) => {
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>, durationMs?: number) => {
       const isLightNow = Boolean(this.isLight);
       return (
         this.kChange?.play(nextPositions, {
+          durationMs,
           onFrame: (tr, progress) => {
             for (const meta of this.nodeMetaList) {
               const nextColor = {
@@ -1099,6 +1139,92 @@ const engine: CytoscapeEngine = {
         }
       }
     });
+    // ---- Timeline adapter (SYSTEM-014 Etappe 2) ----
+    this.timelineFx = null;
+    this.timelineGhosts = [];
+    this.timelineAdapter = {
+      isForceLayout: () => this.currentLayout === 'force',
+      is3D: () => false,
+      getCanonical: () => this.canonicalPayload ?? null,
+      getKTarget: () => getGraphTuningState().clusterCount,
+      getPhysicsKey: () => JSON.stringify(getGraphTuningState()),
+      isDefaultTuning: () => isDefaultGraphTuningState(),
+      getCurrentNodes: () => {
+        const canonById = new Map((this.canonicalPayload?.nodes || []).map((n) => [n.id, n]));
+        return this.nodeMetaList.map((m) => ({
+          ...m,
+          memberTags: m.memberTags ?? canonById.get(m.id)?.memberTags,
+        }));
+      },
+      getLivePositions: () => {
+        const live = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of this.modelPositions) live.set(id, { x: p.x, y: p.y });
+        return live;
+      },
+      getRestPositions: () => this.initialForcePositions,
+      applySnapshot: (snapshot, start, morph) => {
+        const startXY = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of start) startXY.set(id, { x: p.x, y: p.y });
+        this.rebuildClusterTopology?.(snapshot.clusterCount, { snapshot: { ...snapshot, start: startXY } });
+        if (!morph) {
+          this.kChange?.discard();
+          this.applyHighlight?.(null, true);
+          this.syncPositionsToCy?.();
+          this.calibrateDragEquilibrium?.(true);
+        }
+        this.startViewportAdaptLoop(900);
+      },
+      solveWarm: async (snapshot, seeds, shouldCancel, anchors, anchorWeights) => {
+        const solved = await solveCytoscapeCoseLayoutAsync(
+          {
+            nodes: snapshot.nodes.map((n) => ({
+              id: n.id,
+              group: n.group,
+              size: n.size,
+              originClusterId: n.originClusterId,
+            })),
+            connections: snapshot.connections.map((c) => ({
+              source: c.sourceId,
+              target: c.targetId,
+              weight: c.weight ?? 0.5,
+            })),
+            seedPositions: seeds,
+            anchorPositions: anchors,
+            anchorStrength: anchors ? (anchorWeights ? TIMELINE_CLUSTER_ANCHOR_STRENGTH : TIMELINE_ANCHOR_STRENGTH) : undefined,
+            anchorWeights,
+          },
+          { shouldCancel }
+        );
+        if (!solved) return null;
+        const out = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of Object.entries(solved)) out.set(id, { x: p.x, y: p.y });
+        return out;
+      },
+      playMorph: (next, durationMs) => {
+        const xy = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of next) xy.set(id, { x: p.x, y: p.y });
+        return this.playKTransition?.(xy, durationMs) ?? false;
+      },
+      setNodeFx: (fx, ghosts) => {
+        this.timelineFx = fx;
+        this.timelineGhosts = ghosts;
+        drawForegroundOverlay();
+      },
+      setPositions: (positions, final) => {
+        for (const [id, p] of positions) {
+          if (this.modelPositions.has(id)) this.modelPositions.set(id, { x: p.x, y: p.y });
+        }
+        drawForegroundOverlay();
+        if (final) {
+          for (const [id, p] of this.modelPositions) this.forcePositions.set(id, { x: p.x, y: p.y });
+          this.syncPositionsToCy?.();
+          this.calibrateDragEquilibrium?.(true);
+          this.startViewportAdaptLoop(900);
+        }
+      },
+      finishMorph: () => this.kChange?.finish(),
+    };
+
     this.resizeObserver.observe(container);
 
     return this;

@@ -14,6 +14,9 @@ import {
   getEdgeLinkStrength2D,
   getGraphStyleTokens,
   getGraphTuningState,
+  isDefaultGraphTuningState,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_STRENGTH,
   compute2DViewportFit,
   getRadialReferenceBounds2D,
   buildGraphAdjacency,
@@ -39,8 +42,10 @@ import {
   sampleKChangeNodePosition,
   type CanonicalGraphPayload,
   type GraphKChangeTransition,
-  type GraphNodePayload
+  type GraphNodePayload,
+  type TimelineNodeFx
 } from '@commons/shared/graph-payload';
+import type { TimelineAdapter, TimelineGhostNode, TimelineSnapshot } from '@commons/client/graph-timeline-controller';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import {
   compute2DGeometryTargets,
@@ -107,12 +112,17 @@ export interface D3Engine {
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
   activeBadgeLinks?: D3Link[];
-  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
-  playKTransition?(nextPositions: Map<string, { x: number; y: number }>): boolean;
+  rebuildClusterTopology?(
+    targetK: number,
+    opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+  ): void;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>, durationMs?: number): boolean;
   finishKTransition?(): void;
   hasPendingKTransition?(): boolean;
   discardPendingKTransition?(): void;
   getWarmSeedPositions?(): ReadonlyMap<string, { x: number; y: number }>;
+  timelineAdapter?: TimelineAdapter;
+  setTimelineFx?(fx: ReadonlyMap<string, TimelineNodeFx>, ghosts: TimelineGhostNode[]): void;
   tooltipController: GraphTooltipController | null;
   dragController?: GraphDragPhysicsController2D | null;
   hoveredNodeId?: string | null;
@@ -564,7 +574,10 @@ const engine: D3Engine = {
       }
     };
 
-    this.rebuildClusterTopology = (targetK: number, opts?: { restoreDefault?: boolean }) => {
+    this.rebuildClusterTopology = (
+      targetK: number,
+      opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+    ) => {
       if (!this.canonicalPayload || !this.simulation) return;
       this.finishKTransition?.();
       const prevNodes = (this.nodes || []).map((n) => ({
@@ -575,9 +588,16 @@ const engine: D3Engine = {
         colorDark: n.colorDark,
         colorLight: n.colorLight,
       })) as GraphNodePayload[];
-      const stabilized = reclusterCanonicalGraphPayload(this.canonicalPayload, targetK, this.nodes || []);
+      const stabilized: CanonicalGraphPayload = opts?.snapshot
+        ? {
+            nodes: opts.snapshot.nodes,
+            connections: opts.snapshot.connections,
+            mergeTargetByOldClusterId: opts.snapshot.mergeTargetByOldClusterId,
+          }
+        : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK, this.nodes || []);
       let nextCanonical: CanonicalGraphPayload = stabilized;
-      if (opts?.restoreDefault && targetK === DEFAULT_TOPIC_CLUSTER_COUNT) {
+      const canonicalK = this.canonicalPayload.nodes.filter((n) => n.group === 0).length;
+      if (opts?.restoreDefault && targetK === canonicalK) {
         const meta = new Map(stabilized.nodes.map((n) => [n.id, n]));
         nextCanonical = {
           ...this.canonicalPayload,
@@ -594,6 +614,11 @@ const engine: D3Engine = {
       const prevPosById = new Map<string, { x: number; y: number }>();
       for (const n of this.nodes || []) {
         prevPosById.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+      }
+      if (opts?.snapshot) {
+        for (const [id, p] of opts.snapshot.start) {
+          if (!prevPosById.has(id)) prevPosById.set(id, { x: p.x, y: p.y });
+        }
       }
       pendingK = {
         prevNodes,
@@ -615,10 +640,12 @@ const engine: D3Engine = {
 
       this.forcePositions = new Map();
       this.nodes = nextCanonical.nodes.map((n, idx) => {
+        const snapStart = opts?.snapshot?.start.get(n.id);
         const existing =
-          n.group === 0 && n.originClusterId
+          snapStart ??
+          (n.group === 0 && n.originClusterId
             ? (prevPosById.get(n.originClusterId) ?? prevPosById.get(n.id))
-            : prevPosById.get(n.id);
+            : prevPosById.get(n.id));
         let nx = existing?.x;
         let ny = existing?.y;
         if (nx === undefined || ny === undefined) {
@@ -716,7 +743,7 @@ const engine: D3Engine = {
       }
     };
 
-    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>) => {
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>, durationMs?: number) => {
       const pk = pendingK;
       pendingK = null;
       if (!pk || !this.nodes) {
@@ -733,6 +760,7 @@ const engine: D3Engine = {
         nextPositions,
         mergeTargetByOldClusterId: pk.mergeTarget,
         now: performance.now(),
+        durationMs,
       });
       this.simulation?.alpha(0).stop();
 
@@ -1262,6 +1290,123 @@ const engine: D3Engine = {
         }
       }
     });
+    // ---- Timeline (SYSTEM-014 Etappe 2): per-node appear/vanish fx + engine adapter ----
+    const timelineGhostLayer = this.svgGroup!.append<SVGGElement>("g").style("pointer-events", "none");
+    const fxTouched = new Set<string>();
+    const ghostEls = new Map<string, SVGPolygonElement>();
+    this.setTimelineFx = (fx, ghosts) => {
+      const tokens = getGraphStyleTokens(Boolean(this.isLight));
+      for (const n of this.nodes || []) {
+        if (n.group === 0 || !n.circleEl) continue;
+        const f = fx.get(n.id);
+        const baseR = n.displayRadius ?? tokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size);
+        if (f) {
+          n.circleEl.setAttribute("points", buildRegularPolygonSvgPoints(baseR * f.scale, n.group));
+          n.circleEl.style.opacity = String(f.alpha);
+          fxTouched.add(n.id);
+        } else if (fxTouched.has(n.id)) {
+          n.circleEl.setAttribute("points", buildRegularPolygonSvgPoints(baseR, n.group));
+          n.circleEl.style.opacity = "";
+          fxTouched.delete(n.id);
+        }
+      }
+      const seen = new Set<string>();
+      for (const g of ghosts) {
+        seen.add(g.id);
+        let el = ghostEls.get(g.id);
+        if (!el) {
+          el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+          el.style.strokeLinejoin = "round";
+          el.style.strokeWidth = "1.5px";
+          timelineGhostLayer.node()?.appendChild(el);
+          ghostEls.set(g.id, el);
+        }
+        const hex = (this.isLight ? g.colorLight : g.colorDark) || GRAPH_COLORS.dark[g.group];
+        const r = tokens.nodeRadius * getNodeRestRadiusScale(g.group, 1) * g.scale;
+        el.setAttribute("points", buildRegularPolygonSvgPoints(r, g.group));
+        el.setAttribute("transform", `translate(${g.x},${g.y})`);
+        el.style.fill = hex;
+        el.style.stroke = hex;
+        el.style.opacity = String(g.alpha);
+      }
+      for (const [id, el] of Array.from(ghostEls.entries())) {
+        if (seen.has(id)) continue;
+        el.remove();
+        ghostEls.delete(id);
+      }
+    };
+
+    this.timelineAdapter = {
+      isForceLayout: () => this.currentLayout === 'force',
+      is3D: () => false,
+      getCanonical: () => this.canonicalPayload ?? null,
+      getKTarget: () => getGraphTuningState().clusterCount,
+      getPhysicsKey: () => JSON.stringify(getGraphTuningState()),
+      isDefaultTuning: () => isDefaultGraphTuningState(),
+      getCurrentNodes: () => this.nodes || [],
+      getLivePositions: () => {
+        const live = new Map<string, { x: number; y: number }>();
+        for (const n of this.nodes || []) live.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+        return live;
+      },
+      getRestPositions: () => this.initialForcePositions,
+      applySnapshot: (snapshot, start, morph) => {
+        const startXY = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of start) startXY.set(id, { x: p.x, y: p.y });
+        this.rebuildClusterTopology?.(snapshot.clusterCount, { snapshot: { ...snapshot, start: startXY } });
+        if (!morph) {
+          this.discardPendingKTransition?.();
+          this.applyHighlight?.(null, true);
+        }
+        this.startViewportAdaptLoop(900);
+      },
+      solveWarm: async (snapshot, seeds, shouldCancel, anchors, anchorWeights) => {
+        const solved = await solveD3ForceLayoutAsync(
+          {
+            nodes: snapshot.nodes,
+            connections: snapshot.connections.map((c) => ({
+              sourceId: c.sourceId,
+              targetId: c.targetId,
+              weight: c.weight ?? 0.5,
+            })),
+            seedPositions: seeds,
+            anchorPositions: anchors,
+            anchorStrength: anchors ? (anchorWeights ? TIMELINE_CLUSTER_ANCHOR_STRENGTH : TIMELINE_ANCHOR_STRENGTH) : undefined,
+            anchorWeights,
+          },
+          { shouldCancel }
+        );
+        if (!solved) return null;
+        const out = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of Object.entries(solved)) out.set(id, { x: p.x, y: p.y });
+        return out;
+      },
+      playMorph: (next, durationMs) => {
+        const xy = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of next) xy.set(id, { x: p.x, y: p.y });
+        return this.playKTransition?.(xy, durationMs) ?? false;
+      },
+      setNodeFx: (fx, ghosts) => this.setTimelineFx?.(fx, ghosts),
+      setPositions: (positions, final) => {
+        for (const n of this.nodes || []) {
+          const p = positions.get(n.id);
+          if (p) {
+            n.x = p.x;
+            n.y = p.y;
+            n.vx = 0;
+            n.vy = 0;
+          }
+        }
+        this.renderPositions();
+        if (final) {
+          for (const n of this.nodes || []) this.forcePositions.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+          this.startViewportAdaptLoop(900);
+        }
+      },
+      finishMorph: () => this.finishKTransition?.(),
+    };
+
     this.resizeObserver.observe(container);
 
     return this;

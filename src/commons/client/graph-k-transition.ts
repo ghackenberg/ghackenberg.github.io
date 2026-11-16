@@ -19,6 +19,8 @@ export interface KChangePlayCallbacks {
   onFrame: (tr: GraphKChangeTransition, progress: number) => void;
   /** Called once when the transition completes or is finished early. */
   onFinish: (tr: GraphKChangeTransition) => void;
+  /** Overrides CLUSTER_TRANSITION_MS (e.g. ~1 ms for prefers-reduced-motion). */
+  durationMs?: number;
 }
 
 export interface KChangeController {
@@ -73,6 +75,7 @@ export function createKChangeController(): KChangeController {
         nextPositions,
         mergeTargetByOldClusterId: pk.mergeTargetByOldClusterId,
         now: performance.now(),
+        durationMs: cb.durationMs,
       });
       active = { tr, progress: 0 };
       const finish = () => {

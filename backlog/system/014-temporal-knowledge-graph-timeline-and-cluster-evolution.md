@@ -2,7 +2,7 @@
 
 - **ID:** `SYSTEM-014`
 - **Kategorie / Domäne:** `Visualizations / Graph Physics / Interactive UX`
-- **Status:** `planned`
+- **Status:** `in-progress` (Etappe 1/1b/2 implementiert, Verifikation läuft)
 - **Priorität / Hebel:** `Hoch` (Interaktive Zeitreise durch die Werk- und Themen-Evolution über alle 5 Graph-Engines mit Mental-Map-Erhaltung)
 - **Erstellt am:** `2026-11-12`
 - **Ursprung:** Session 2026-11-12 (Zweistufige Architektur-Roadmap: Etappe 1 Dynamische Themen-Cluster & Coverage-Visualisierung $\rightarrow$ Etappe 2 Temporale Wissensgraph-Evolution)
@@ -24,8 +24,8 @@ Bislang bildet diese Darstellung jedoch ausschließlich einen statischen Quersch
 
 Etappe 1 legt das direkte mathematische und visuelle Fundament in [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts), [`src/commons/shared/graph-solvers.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-solvers.ts) und [`src/pages/visualizations/[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/visualizations/[slug].astro):
 
-1. **Dynamische Cluster-Anzahl $K \in [2, 18]$ mit Makro-Default $K = 4$ (`clusterCount` in `GraphTuningState`):**
-   - Standardmäßig gruppiert der Wissensgraph die 126 Fach-Tags in `DEFAULT_TOPIC_CLUSTER_COUNT = 4` klar getrennte Makro-Themencluster (`Software Architecture · Software Engineering`, `Systems Engineering · Software Systems`, `Data Visualization · Hyperkit Software`, `Computer Vision · Motion Capture & Tracking`), während der Live-Slider im Tune-Panel (`Topic Clusters (K)`) eine stufenlose Verfeinerung von `2` bis `18` Clustern erlaubt.
+1. **Dynamische Cluster-Anzahl $K \in [2, 18]$ mit dimensionalem Simplex-Default ($K = 3$ in 2D, $K = 4$ in 3D):**
+   - Standardmäßig gruppiert der Wissensgraph die 126 Fach-Tags in `DEFAULT_TOPIC_CLUSTER_COUNT = 3` (2D-Dreiecks-Simplex für `cytoscape`, `sigma`, `d3`, `vis-network`) bzw. `DEFAULT_TOPIC_CLUSTER_COUNT_3D = 4` (3D-Tetraeder-Simplex für `3d-force-graph`) klar getrennte Makro-Themencluster (`getDefaultTopicClusterCount(engine)`), während der Live-Slider im Tune-Panel (`Topic Clusters (K)`) eine stufenlose Verfeinerung von `2` bis `18` Clustern erlaubt. (`SOLVER_VERSION = 'v23'`, getrennte Layout-Caches pro `targetK`.)
    - `CanonicalGraphPayload` transportiert die kompakte `rawTags`-Metadatenliste, sodass das Client-Bundle über `reclusterCanonicalGraphPayload(canonical, clusterCount)` jederzeit ohne Server-Roundtrip für beliebige Teilmengen von Content-Knoten und beliebige Werte von $K$ neu clustern kann.
 2. **Unsichtbare Physik-Kanten, Cluster-Farbpalette & OKLab-Farbmischung (`colorDark` / `colorLight`):**
    - Kanten werden in allen fünf Engines weder im Ruhezustand noch bei Hover visuell gezeichnet (`100 %` unsichtbar), wirken aber vollständig als kontinuierliche, stufenfreie Physik-Federn (`weight = clampNumber(baseMaxWeight * relToMax^(1 / 2.1), 0.20, 0.96)`), sodass Multi-Cluster-Knoten exakt an ihrem überlappungsgewichteten Schwerpunkt zwischen den zugehörigen Themen-Clustern liegen.
@@ -48,9 +48,9 @@ Etappe 1 legt das direkte mathematische und visuelle Fundament in [`src/commons/
    - Alle Content-Knoten (`group: 1..8`) verfügen über ein kanonisches Datum (`date`). Daraus wird eine geordnete Sequenz von $T \approx 16\text{--}24$ chronologischen Keyframes $t_1 < t_2 < \dots < t_T$ (z. B. auf Jahres-/Halbjahres- bzw. Quantil-Basis) gebildet.
    - Für jeden Zeitpunkt $t_k$ umfasst die aktive Knotenmenge $V_{\text{content}}(t_k) = \{ u \mid \text{date}(u) \le t_k \}$ sowie die bis dahin tatsächlich verwendeten Tags $V_{\text{tags}}(t_k)$.
 2. **Skalierendes Cluster-Budget $K(t_k)$:**
-   - In frühen Jahren mit wenigen Beiträgen wäre $K = 10$ übersegmentiert. Daher wächst die Cluster-Anzahl organisch mit dem Korpusumfang:
+   - In frühen Jahren mit wenigen Beiträgen wäre $K = 4$ bereits eine Übersegmentierung (bei $N \lesssim 20$ gilt $K = 2$). Daher wächst die Cluster-Anzahl organisch mit dem Korpusumfang:
      $$K(t_k) = \min\!\left(K_{\text{target}}, \max\!\left(2, \left\lfloor \sqrt{\frac{|V_{\text{content}}(t_k)|}{2.2}} \right\rfloor\right)\right)$$
-   - Am rechten Ende der Timeline ($t_T = \text{Heute}$) erreicht $K(t_T)$ exakt den im Tuning-HUD gewählten Wert $K_{\text{target}}$ (Standard: `10`), sodass der Endzustand zu 100 % mit dem statischen Initial-Layout übereinstimmt.
+   - Am rechten Ende der Timeline ($t_T = \text{Heute}$) erreicht $K(t_T)$ exakt den im Tuning-HUD gewählten Wert $K_{\text{target}}$ (Standard: `3` für 2D, `4` für 3D), sodass der Endzustand zu 100 % mit dem statischen Initial-Layout übereinstimmt.
 
 ### 3.2 Mental-Map-Erhaltung durch Bipartites Jaccard-Cluster-Matching (Mitose, Fusion, Persistenz)
 
@@ -118,6 +118,27 @@ Etappe 1b liefert die wiederverwendbaren Bausteine, die der Timeline-Player (Eta
    - `formatClusterLabelShort` kürzt erst ab `44` Zeichen (`slice(0, 42) + '…'`); `measureTextWidthPx` addiert `+4 px` Sicherheitsrand (SSR-Fallback `length · 6.35`).
    - D3 wartet in `init()` auf `document.fonts.ready`, setzt explizit `font-family/size/weight` und rahmt jede Pill synchron in `syncD3ClusterPillGeometry` (vor dem ersten Paint): `textW = ceil(max(getComputedTextLength, getBBox().width))`, `pillW = ceil(11 + textW + 2·9)` mit symmetrischem 9-px-Innenabstand (Punkt-Radius 3, Lücke 5). E2E prüft `rect.right − text.right ≥ 4`, `dot.left − rect.left ≥ 4` und Symmetrie ≤ 4 px.
 5. **Validierungs-Gates (`validate:vis`, Gate 3b):** Warm-Start-Determinismus, Sync/Async-Parität, Farbvererbung K=4→5→4, Merge-Targets, Label-Länge ≤ 44 und unveränderter Kaltpfad.
+
+---
+
+## 4b. Etappe 2: Umgesetzter Timeline-Player (`SOLVER_VERSION = 'v22'`)
+
+Der Timeline-Player ist implementiert (alle 5 Engines). Design-Entscheidungen:
+
+1. **Granularität:** Jedes Content-Item ist ein eigener Schritt (aktuell 223 Schritte), sortiert nach `timestamp` (UTC-ms aus `pubDate`, stabiler Tie-Break per `id`, undatierte Items zuletzt). Neues Feld `GraphNodePayload.timestamp`. Schritt `s` zeigt exakt `s + 1` Items; die Sichtbarkeitsmenge wächst streng monoton.
+2. **Feste End-Cluster & organisches Erscheinen (`buildTemporalGraphKeyframes`):** Die finale Cluster-Topologie für `K_target` (Default `3` für 2D-Engines, `4` für `3d-force-graph`) wird **einmalig** auf dem Gesamtkorpus berechnet (`finalCanonical`). Während der Timeline erfolgt **kein** temporäres Re-Clustering und keine Farbverschiebung: Jeder Schritt `s` zeigt die chronologischen Content-Items `0..s` mit ihren **exakten finalen Kanten-Gewichten und OKLab-Farben** sowie ausschließlich jene Themen-Cluster (`group === 0`), die bereits mindestens ein aktives Content-Item besitzen.
+3. **Sichtbarkeits-Wachstum:** Sobald ein zuvor verborgenes Cluster sein erstes Item erhält, erscheint es sanft per Fade-in (`0 -> 0.97` über `520 ms`) am Schwerpunkt seiner aktiven Items (und blendet beim Rückwärts-Scrubben als Ghost-Pill aus). Der UI-Zähler `N Items · K Clusters` meldet die Anzahl der aktuell aktiven Cluster.
+4. **100 % Identitäts- & Farbstabilität:** Da die Partition fest bleibt, behalten alle Themen-Cluster vom ersten Erscheinen bis zum Ende ihre exakte `id`, `name` und `colorDark/colorLight` (`0` Umbenennungen, `0` Farbwechsel, `0` Gewichts-Drift; letzter Schritt = `0.0000 px` Parität zum statischen Graphen). Bei manueller Änderung des `K`-Sliders wird `buildTemporalGraphKeyframes(canonical, newKTarget)` sofort neu aufgebaut.
+5. **Positionen:** Bestehende Knoten behalten ihre Live-Position (Drag-Anpassungen bleiben erhalten). Neue Cluster spawnen am Ursprungs-Cluster (Geschwister `20 px · Rang` versetzt), neue Items am Barycentrum ihrer Cluster (`w^2.1`) auf dem ersten freien Platz (`computeTimelineStartPositions`, nie im Ursprung, ohne Überlappung/Pill-Box). Nur bei Re-Clustering-Schritten läuft der asynchrone Warm-Start-Solver (Latest-Wins-Abbruch, Cache pro `von->nach | K | Physik | Seed-Signatur`) und anschließend der 520-ms-Cluster-Morph; zwischen Re-Clusterings gibt es keinen Solver-Lauf.
+6. **FX:** Neue Items blenden per `sampleTimelineNodeFx` ein (alpha 0→1, Skalierung 0.35→1, 320 ms), entfernte Items blenden als Ghost-Knoten aus; pro Knoten unabhängig, damit schnelle Schritte nicht abgeschnitten werden.
+7. **Controller:** [`graph-timeline-controller.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/graph-timeline-controller.ts) ist engine-agnostisch; jede Engine liefert nur einen `TimelineAdapter` (`applySnapshot`, `solveWarm`, `playMorph`, `setNodeFx`, Live-/Ruhepositionen). Wiedergabe: 4 Schritte/s bei `1x` (~56 s Gesamtlauf), `2x` halbiert, `0.5x` verdoppelt. Scrubben: ein Apply pro Frame, Solver latest-wins. `prefers-reduced-motion`: kein animierter Morph (1 ms) und kurzes 120-ms-Fade.
+8. **UI & Layouts:** Eigene Zeile `#timeline-bar` direkt über der Filterleiste (Play/Pause mit `Space`, Schritt zurück/vor, Scrubber, `0.5x/1x/2x`, Datum, `N Items · K Clusters`). Play am Ende startet von vorn; Tune-Reset und Layoutwechsel führen zum Endzustand zurück. Die Timeline wirkt nur im **Force-Layout**; in Radial/Columns ist die Leiste deaktiviert (Tooltip: "The timeline is available in the force-directed layout"). Tune-Änderungen während eines Laufs invalidieren den Cache und wenden den aktuellen Schritt mit neuem `K_target` an.
+10. **Hintergrund-Solve statt Live-Iteration (v22):** Ein Schritt wird vollständig headless gelöst (warm aus den Live-Positionen, bis zu 2 bzw. 3 Runden bis `maxDelta < 4/1 px`, `shouldCancel` = Latest-Wins) — das sichtbare Layout bleibt währenddessen unverändert. Erst mit fertigen Zielpositionen wird die Topologie getauscht und alles gemeinsam in ~520 ms animiert (Positionen, Farben, Ein-/Ausblenden, Pill-Morphing). Die Wiedergabe ist konvergenz-gesteuert: nächster Schritt erst nach Solve + Animation + Mindest-Verweildauer (`0.5x/1x/2x` = 2000/1000/500 ms/4); `stats.playbackViolations` und `stepLog` (`startedAt/animStartedAt/settledAt`) belegen das im E2E. Beim Scrubben liefern abgeschlossene Schritte einen Cache (`settledCache`) für sofortige Reaktion.
+11. **Mental-Map-Stabilität (Final-Layout-Seeded + Procrustes-to-Final + $u^2$-Blend, ankerfrei):**
+    - **Ankerfrei (`TIMELINE_ANCHOR_ENABLED = false`, `TIMELINE_CLUSTER_ANCHOR_ENABLED = false`):** Alle Knoten (Content und Cluster) konvergieren in jedem Zwischenschritt $t < T - 1$ völlig frei ohne künstliche Anker-Federn.
+    - **Final-Layout-Seeding:** Jeder Zwischenschritt $t$ wird deterministisch und pfadunabhängig aus den auf die aktiven Knoten gefilterten End-Koordinaten (`finalPositions`, also `initialForcePositions` bzw. gelöstem `kTarget`-Endlayout) geseedet. Vorwärts-Play und Rückwärts-Scrubben liefern für Schritt $t$ bit-identische Layouts.
+    - **Procrustes-to-Final + quadratischer Blend ($u^2$):** Das frei konvergierte Layout wird per Cluster-gewichtetem Procrustes (`computeFinalLayoutAlignmentWeights`: Cluster `1.0`, Content `0.01`) direkt auf das gefilterte `finalPositions` ausgerichtet und mit $\text{blend} = (t / (T - 1))^2$ weich auf das Endlayout übergeblendet (`0 %` am Start, `25 %` in der Mitte, `100 %` am Ende; `0.0000 px` statische Parität, `N-2 -> N-1` Rotation `< 5°`).
+    - **Gates:** `validate:vis` Gate 3c/3d (Schritt-Determinismus `0.0000 px`, `N-2 -> N-1` Rotation `< 5°`, Cluster-Zentrierung `offset/intra < 0.85`, topische Separation) und `test:vis:e2e` Check 6 über alle 5 Engines.
 
 ---
 

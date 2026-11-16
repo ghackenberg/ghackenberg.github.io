@@ -3,6 +3,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {
   GRAPH_PHYSICS_CONFIG,
+  getDefaultTopicClusterCount,
+  reclusterCanonicalGraphPayload,
   type CanonicalGraphPayload,
   type GraphLayoutPayload,
   type GraphLayoutPositions,
@@ -19,7 +21,7 @@ import {
 } from '@commons/shared/graph-solvers';
 import { getCanonicalGraphPayloadArtifact } from './graph-payload-endpoint';
 
-const SOLVER_VERSION = 'v21';
+const SOLVER_VERSION = 'v23';
 
 let cachedSolversFileHash: string | null = null;
 function getSolversFileHash(): string {
@@ -57,7 +59,8 @@ export interface GraphLayoutBundle {
 
 const memoryLayoutCache = new Map<VisualizationEngineType, GraphLayoutBundle>();
 
-export function computeTopologyHash(canonical: CanonicalGraphPayload): string {
+export function computeTopologyHash(canonical: CanonicalGraphPayload, targetK?: number): string {
+  const effectiveK = targetK ?? canonical.nodes.filter((n) => n.group === 0).length;
   const degreeCounts = new Map<string, number>();
   for (const conn of canonical.connections) {
     const src = conn.source ?? conn.sourceId;
@@ -82,6 +85,7 @@ export function computeTopologyHash(canonical: CanonicalGraphPayload): string {
   const seed = JSON.stringify([
     SOLVER_VERSION,
     getSolversFileHash(),
+    effectiveK,
     GRAPH_PHYSICS_CONFIG,
     nodeTopology,
     edgeTopology,
@@ -140,7 +144,12 @@ export async function getGraphLayoutBundle(
   engine: VisualizationEngineType
 ): Promise<GraphLayoutBundle> {
   const { payload: canonical } = await getCanonicalGraphPayloadArtifact();
-  const topologyHash = computeTopologyHash(canonical);
+  const targetK = getDefaultTopicClusterCount(engine);
+  const effectiveCanonical =
+    canonical.nodes.filter((n) => n.group === 0).length === targetK
+      ? canonical
+      : reclusterCanonicalGraphPayload(canonical, targetK);
+  const topologyHash = computeTopologyHash(effectiveCanonical, targetK);
 
   const memCached = memoryLayoutCache.get(engine);
   if (memCached && memCached.topologyHash === topologyHash) {
@@ -173,7 +182,7 @@ export async function getGraphLayoutBundle(
   }
 
   if (!payload) {
-    const positions = computeEnginePositions(engine, canonical);
+    const positions = computeEnginePositions(engine, effectiveCanonical);
     payload = {
       engine,
       topologyHash,

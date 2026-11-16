@@ -4,7 +4,16 @@ import YAML from 'yaml';
 import {
   CLUSTER_PALETTE,
   DEFAULT_TOPIC_CLUSTER_COUNT,
+  DEFAULT_TOPIC_CLUSTER_COUNT_3D,
+  TIMELINE_ANCHOR_ENABLED,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_ENABLED,
+  alignAndBlendToFinalLayout,
+  alignLayoutProcrustes,
+  annotateClusterTransition,
   buildCanonicalGraphPayload,
+  buildTemporalGraphKeyframes,
+  computeTimelineStartPositions,
   buildGraphAdjacency,
   computeClusterCalloutPlacements2D,
   formatClusterLabelShort,
@@ -973,11 +982,19 @@ async function main() {
     const c = communityByNode.get(n.id) ?? 0;
     if (c >= 0 && c < communityCount) communityCounts[c]++;
   }
+
+  const canonical3D = reclusterCanonicalGraphPayload(canonical, DEFAULT_TOPIC_CLUSTER_COUNT_3D);
+  const pairSets3D = buildContentPairSets(canonical3D);
+  const { communityByNode: communityByNode3D, communityCount: communityCount3D } = computeGraphCommunities(
+    canonical3D.nodes,
+    canonical3D.connections
+  );
+
   const cyPos1 = solveCytoscapeCoseLayout(canonical);
   const sigmaPos1 = solveSigmaForceAtlas2Layout(canonical);
   const d3Pos1 = solveD3ForceLayout(canonical);
   const visPos1 = solveVisNetworkForceLayout(canonical);
-  const force3DPos1 = solve3DForceLayout(canonical);
+  const force3DPos1 = solve3DForceLayout(canonical3D);
 
   const cyStats = evaluate2DSolverQuality(
     'cytoscape',
@@ -1018,10 +1035,10 @@ async function main() {
   const force3DStats = evaluate3DSolverQuality(
     '3d-force-graph',
     force3DPos1,
-    canonical,
-    pairSets,
-    communityByNode,
-    communityCount,
+    canonical3D,
+    pairSets3D,
+    communityByNode3D,
+    communityCount3D,
     failures
   );
 
@@ -1032,7 +1049,7 @@ async function main() {
   const sigmaPos2 = solveSigmaForceAtlas2Layout(canonical);
   const d3Pos2 = solveD3ForceLayout(canonical);
   const visPos2 = solveVisNetworkForceLayout(canonical);
-  const force3DPos2 = solve3DForceLayout(canonical);
+  const force3DPos2 = solve3DForceLayout(canonical3D);
 
   let maxDeterminismDelta = 0;
   for (const n of canonical.nodes) {
@@ -1040,12 +1057,15 @@ async function main() {
     const dSig = Math.hypot(sigmaPos1[n.id].x - sigmaPos2[n.id].x, sigmaPos1[n.id].y - sigmaPos2[n.id].y);
     const dD3 = Math.hypot(d3Pos1[n.id].x - d3Pos2[n.id].x, d3Pos1[n.id].y - d3Pos2[n.id].y);
     const dVis = Math.hypot(visPos1[n.id].x - visPos2[n.id].x, visPos1[n.id].y - visPos2[n.id].y);
+    maxDeterminismDelta = Math.max(maxDeterminismDelta, dCy, dSig, dD3, dVis);
+  }
+  for (const n of canonical3D.nodes) {
     const d3D = Math.hypot(
       force3DPos1[n.id].x - force3DPos2[n.id].x,
       force3DPos1[n.id].y - force3DPos2[n.id].y,
       force3DPos1[n.id].z - force3DPos2[n.id].z
     );
-    maxDeterminismDelta = Math.max(maxDeterminismDelta, dCy, dSig, dD3, dVis, d3D);
+    maxDeterminismDelta = Math.max(maxDeterminismDelta, d3D);
   }
   assertCondition(
     maxDeterminismDelta === 0,
@@ -1055,11 +1075,12 @@ async function main() {
 
   // Sync-vs-Async & Hydrated Client Input Parity Check (0.0000 px across all 5 engines)
   const hydratedClientInput = hydrateEnginePayloads(canonical);
+  const hydratedClientInput3D = hydrateEnginePayloads(canonical3D);
   const cyAsyncPos = await solveCytoscapeCoseLayoutAsync(hydratedClientInput);
   const sigmaAsyncPos = await solveSigmaForceAtlas2LayoutAsync(hydratedClientInput);
   const d3AsyncPos = await solveD3ForceLayoutAsync(hydratedClientInput);
   const visAsyncPos = await solveVisNetworkForceLayoutAsync(hydratedClientInput);
-  const force3DAsyncPos = await solve3DForceLayoutAsync(hydratedClientInput);
+  const force3DAsyncPos = await solve3DForceLayoutAsync(hydratedClientInput3D);
 
   let maxAsyncParityDelta = 0;
   for (const n of canonical.nodes) {
@@ -1075,6 +1096,9 @@ async function main() {
     const dVis = visAsyncPos
       ? Math.hypot(visPos1[n.id].x - visAsyncPos[n.id].x, visPos1[n.id].y - visAsyncPos[n.id].y)
       : Infinity;
+    maxAsyncParityDelta = Math.max(maxAsyncParityDelta, dCy, dSig, dD3, dVis);
+  }
+  for (const n of canonical3D.nodes) {
     const d3D = force3DAsyncPos
       ? Math.hypot(
           force3DPos1[n.id].x - force3DAsyncPos[n.id].x,
@@ -1082,7 +1106,7 @@ async function main() {
           force3DPos1[n.id].z - force3DAsyncPos[n.id].z
         )
       : Infinity;
-    maxAsyncParityDelta = Math.max(maxAsyncParityDelta, dCy, dSig, dD3, dVis, d3D);
+    maxAsyncParityDelta = Math.max(maxAsyncParityDelta, d3D);
   }
   assertCondition(
     maxAsyncParityDelta === 0,
@@ -1096,7 +1120,7 @@ async function main() {
   const sigmaStepPos = solveSigmaForceAtlas2Layout(hydratedClientInput);
   const d3StepPos = solveD3ForceLayout(hydratedClientInput);
   const visStepPos = solveVisNetworkForceLayout(hydratedClientInput);
-  const force3DStepPos = solve3DForceLayout(hydratedClientInput);
+  const force3DStepPos = solve3DForceLayout(hydratedClientInput3D);
   resetGraphTuningState();
 
   const stepDummyFailures: string[] = [];
@@ -1104,7 +1128,7 @@ async function main() {
   const sigmaStepArch = evaluateArchipelagoCorridors('sigma', sigmaStepPos, canonical, communityByNode, communityCount, stepDummyFailures);
   const d3StepArch = evaluateArchipelagoCorridors('d3', d3StepPos, canonical, communityByNode, communityCount, stepDummyFailures);
   const visStepArch = evaluateArchipelagoCorridors('vis-network', visStepPos, canonical, communityByNode, communityCount, stepDummyFailures);
-  const force3DStepArch = evaluateArchipelagoCorridors('3d-force-graph', force3DStepPos, canonical, communityByNode, communityCount, stepDummyFailures);
+  const force3DStepArch = evaluateArchipelagoCorridors('3d-force-graph', force3DStepPos, canonical3D, communityByNode3D, communityCount3D, stepDummyFailures);
 
   const stepRadiusChanges = {
     cy: Math.abs(cyStepArch.meanMedianRadius - cyStats.meanMedianRadius) / Math.max(1e-6, cyStats.meanMedianRadius),
@@ -1317,11 +1341,12 @@ async function main() {
 
   // Cold-start path unchanged: explicit undefined seeds must reproduce the cold layouts bit-for-bit
   const coldIn = { nodes: canonical.nodes, connections: canonical.connections, seedPositions: undefined };
+  const cold3DIn = { nodes: canonical3D.nodes, connections: canonical3D.connections, seedPositions: undefined };
   const coldCy = solveCytoscapeCoseLayout(coldIn);
   const coldSigma = solveSigmaForceAtlas2Layout(coldIn);
   const coldD3 = solveD3ForceLayout(coldIn);
   const coldVis = solveVisNetworkForceLayout(coldIn);
-  const cold3D = solve3DForceLayout(coldIn);
+  const cold3D = solve3DForceLayout(cold3DIn);
   let coldDelta = 0;
   for (const n of canonical.nodes) {
     coldDelta = Math.max(
@@ -1329,7 +1354,12 @@ async function main() {
       Math.hypot(coldCy[n.id].x - cyPos1[n.id].x, coldCy[n.id].y - cyPos1[n.id].y),
       Math.hypot(coldSigma[n.id].x - sigmaPos1[n.id].x, coldSigma[n.id].y - sigmaPos1[n.id].y),
       Math.hypot(coldD3[n.id].x - d3Pos1[n.id].x, coldD3[n.id].y - d3Pos1[n.id].y),
-      Math.hypot(coldVis[n.id].x - visPos1[n.id].x, coldVis[n.id].y - visPos1[n.id].y),
+      Math.hypot(coldVis[n.id].x - visPos1[n.id].x, coldVis[n.id].y - visPos1[n.id].y)
+    );
+  }
+  for (const n of canonical3D.nodes) {
+    coldDelta = Math.max(
+      coldDelta,
       Math.hypot(
         cold3D[n.id].x - force3DPos1[n.id].x,
         cold3D[n.id].y - force3DPos1[n.id].y,
@@ -1343,11 +1373,13 @@ async function main() {
     failures
   );
 
-  // Warm start K=4 -> K=5: deterministic, sync == async, and continuity beats a cold re-layout
+  // Warm start K=3 -> K=5 (2D) / K=4 -> K=5 (3D): deterministic, sync == async, and continuity beats a cold re-layout
   const seeds2D = new Map<string, { x: number; y: number }>();
   const seeds3D = new Map<string, { x: number; y: number; z: number }>();
   for (const n of canonical.nodes) {
     seeds2D.set(n.id, { x: d3Pos1[n.id].x, y: d3Pos1[n.id].y });
+  }
+  for (const n of canonical3D.nodes) {
     seeds3D.set(n.id, { x: force3DPos1[n.id].x, y: force3DPos1[n.id].y, z: force3DPos1[n.id].z });
   }
   const warm2DIn = { nodes: k5.nodes, connections: k5.connections, seedPositions: seeds2D };
@@ -1530,6 +1562,588 @@ async function main() {
       failures
     );
     console.log(`[Gate 3b Summary] Label cross-fades across K sweep: ${xfChanged}`);
+  }
+
+  // =========================================================================
+  // GATE 3c: Temporal timeline (per-item keyframes, K(t), parity, persistence, continuity, placement)
+  // =========================================================================
+  {
+    const tl0 = performance.now();
+    const contentCount = canonical.nodes.filter((n) => n.group !== 0).length;
+    const datedCount = canonical.nodes.filter((n) => n.group !== 0 && typeof n.timestamp === 'number').length;
+    assertCondition(
+      datedCount >= Math.floor(contentCount * 0.8),
+      `[Gate 3c: Timeline] Expected >=80% of content items to carry a timestamp, got ${datedCount}/${contentCount}`,
+      failures
+    );
+    const kfs = buildTemporalGraphKeyframes(canonical, DEFAULT_TOPIC_CLUSTER_COUNT);
+    assertCondition(
+      kfs.total === contentCount && kfs.orderedIds.length === contentCount,
+      `[Gate 3c: Timeline] One step per content item expected (${kfs.total} vs ${contentCount})`,
+      failures
+    );
+
+    // Temporal monotonicity: step s shows exactly s+1 items in date order; the visible set strictly grows
+    const stampById = new Map(canonical.nodes.map((n) => [n.id, n.timestamp ?? Infinity]));
+    let monotonic = true;
+    let chronological = true;
+    let prevIds = new Set<string>();
+    for (let s = 0; s < kfs.total; s++) {
+      const kf = kfs.getKeyframe(s);
+      const ids = new Set(kf.nodes.filter((n) => n.group !== 0).map((n) => n.id));
+      if (ids.size !== s + 1) monotonic = false;
+      for (const id of prevIds) if (!ids.has(id)) monotonic = false;
+      if (s > 0 && !ids.has(kfs.orderedIds[s])) monotonic = false;
+      if (s > 0 && (stampById.get(kfs.orderedIds[s]) ?? Infinity) < (stampById.get(kfs.orderedIds[s - 1]) ?? Infinity)) {
+        chronological = false;
+      }
+      prevIds = ids;
+    }
+    assertCondition(
+      monotonic && chronological,
+      `[Gate 3c: Monotonicity] Visible item set must strictly grow by one item per step in date order (monotonic=${String(monotonic)}, chronological=${String(chronological)})`,
+      failures
+    );
+
+    // Monotonic active cluster growth (only clusters with >=1 active content item are shown)
+    let kOk = true;
+    let prevK = 0;
+    for (let s = 0; s < kfs.total; s++) {
+      const kf = kfs.getKeyframe(s);
+      const k = kf.clusterCount;
+      if (kfs.getKForStep(s) !== k || k < prevK || k < 1 || k > DEFAULT_TOPIC_CLUSTER_COUNT) kOk = false;
+      const deg = new Map<string, number>();
+      for (const c of kf.connections) {
+        deg.set(c.sourceId, (deg.get(c.sourceId) || 0) + 1);
+        deg.set(c.targetId, (deg.get(c.targetId) || 0) + 1);
+      }
+      for (const cl of kf.nodes) {
+        if (cl.group === 0 && (deg.get(cl.id) ?? 0) < 1) kOk = false;
+      }
+      prevK = k;
+    }
+    const lastKf = kfs.getKeyframe(kfs.total - 1);
+    assertCondition(
+      kOk && lastKf.clusterCount === DEFAULT_TOPIC_CLUSTER_COUNT && kfs.getKForStep(kfs.total - 1) === DEFAULT_TOPIC_CLUSTER_COUNT,
+      `[Gate 3c: Active Clusters] Active clusters must grow monotonically with >=1 connected item and reach K=${DEFAULT_TOPIC_CLUSTER_COUNT} (got ${lastKf.clusterCount})`,
+      failures
+    );
+
+    // Last-step parity with the static graph (K=4 default and a K=6 target), incl. 0.0000 px layout parity
+    const stripNodes = (nodes: ReadonlyArray<CanonicalGraphPayload['nodes'][number]>) =>
+      nodes.map((n) => ({
+        id: n.id,
+        name: n.name,
+        group: n.group,
+        colorDark: n.colorDark,
+        colorLight: n.colorLight,
+        tags: n.tags,
+        memberTags: n.memberTags,
+        connectionCount: n.connectionCount,
+        description: n.description,
+      }));
+    const stripConns = (conns: CanonicalGraphPayload['connections']) =>
+      conns.map((c) => ({ s: c.sourceId, t: c.targetId, w: c.weight, c: c.coverage }));
+    const parityOf = (kTarget: number, staticGraph: CanonicalGraphPayload): boolean => {
+      const k = buildTemporalGraphKeyframes(canonical, kTarget).getKeyframe(kfs.total - 1);
+      return (
+        JSON.stringify(stripNodes(k.nodes)) === JSON.stringify(stripNodes(staticGraph.nodes)) &&
+        JSON.stringify(stripConns(k.connections)) === JSON.stringify(stripConns(staticGraph.connections))
+      );
+    };
+    const parityDefault = parityOf(DEFAULT_TOPIC_CLUSTER_COUNT, canonical);
+    const parity4 = parityOf(DEFAULT_TOPIC_CLUSTER_COUNT_3D, canonical3D);
+    const parity6 = parityOf(6, reclustered6);
+    assertCondition(
+      parityDefault && parity4 && parity6,
+      `[Gate 3c: Last-Step Parity] Last timeline step must be identical to the static graph (K=3: ${String(parityDefault)}, K=4: ${String(parity4)}, K=6: ${String(parity6)})`,
+      failures
+    );
+    const lastSolve = solveD3ForceLayout({ nodes: lastKf.nodes, connections: lastKf.connections });
+    let lastParityDelta = 0;
+    for (const n of canonical.nodes) {
+      lastParityDelta = Math.max(
+        lastParityDelta,
+        Math.hypot(lastSolve[n.id].x - d3Pos1[n.id].x, lastSolve[n.id].y - d3Pos1[n.id].y)
+      );
+    }
+    assertCondition(
+      lastParityDelta === 0,
+      `[Gate 3c: Last-Step Parity] Layout of the last timeline step deviates from the static layout by ${lastParityDelta}px`,
+      failures
+    );
+
+    // 100% stability of fixed final cluster IDs, labels, colors & edge weights across all steps
+    const finalClusterById = new Map(
+      canonical.nodes.filter((n) => n.group === 0).map((n) => [n.id, n])
+    );
+    const finalConnByKey = new Map(
+      canonical.connections.map((c) => [`${c.sourceId}->${c.targetId}`, c])
+    );
+    let clusterRenames = 0;
+    let colourBreaks = 0;
+    let weightDrift = 0;
+    for (let s = 0; s < kfs.total; s++) {
+      const kf = kfs.getKeyframe(s);
+      for (const c of kf.nodes) {
+        if (c.group !== 0) continue;
+        const ref = finalClusterById.get(c.id);
+        if (!ref || ref.name !== c.name) clusterRenames++;
+        if (!ref || ref.colorDark !== c.colorDark || ref.colorLight !== c.colorLight) colourBreaks++;
+      }
+      for (const e of kf.connections) {
+        const ref = finalConnByKey.get(`${e.sourceId}->${e.targetId}`);
+        if (!ref || ref.weight !== e.weight || ref.coverage !== e.coverage) weightDrift++;
+      }
+    }
+    assertCondition(
+      clusterRenames === 0 && colourBreaks === 0 && weightDrift === 0,
+      `[Gate 3c: Fixed Cluster Stability] Expected 0 renames, 0 color breaks, 0 weight drift (renames=${clusterRenames}, colourBreaks=${colourBreaks}, weightDrift=${weightDrift})`,
+      failures
+    );
+
+    // Placement: new items spawn near their clusters (never at the origin), without overlap, deterministically
+    const midStep = Math.floor(kfs.total * 0.55);
+    const midKf = kfs.getKeyframe(midStep);
+    const nextKf = kfs.getKeyframe(Math.min(kfs.total - 1, midStep + 12));
+    const live = new Map<string, { x: number; y: number }>();
+    for (const n of midKf.nodes) live.set(n.id, { x: d3Pos1[n.id]?.x ?? 0, y: d3Pos1[n.id]?.y ?? 0 });
+    const annotatedNext = annotateClusterTransition(nextKf.nodes, midKf.nodes).nodes;
+    const placeA = computeTimelineStartPositions({ nextNodes: annotatedNext, connections: nextKf.connections, live });
+    const placeB = computeTimelineStartPositions({ nextNodes: annotatedNext, connections: nextKf.connections, live });
+    const newItems = annotatedNext.filter((n) => n.group !== 0 && !live.has(n.id));
+    let placementOk = newItems.length > 0 && JSON.stringify([...placeA]) === JSON.stringify([...placeB]);
+    let minGap = Infinity;
+    const allPts = [...placeA.entries()];
+    for (const n of newItems) {
+      const p = placeA.get(n.id)!;
+      if (p.x === 0 && p.y === 0) placementOk = false;
+      for (const [id, q] of allPts) {
+        if (id === n.id) continue;
+        minGap = Math.min(minGap, Math.hypot(p.x - q.x, p.y - q.y));
+      }
+    }
+    assertCondition(
+      placementOk && minGap >= 15,
+      `[Gate 3c: Placement] New timeline items must spawn deterministically near their clusters without overlap (minGap=${minGap.toFixed(1)}px)`,
+      failures
+    );
+    const tlMs = performance.now() - tl0;
+    console.log(
+      `[Gate 3c Summary] steps=${kfs.total} cluster-appearance steps=${kfs.reclusterSteps.length} (${kfs.reclusterSteps.join(',')}) | renames=${clusterRenames} colourBreaks=${colourBreaks} weightDrift=${weightDrift} | last-step layout delta=${lastParityDelta.toFixed(4)}px | placement minGap=${minGap.toFixed(1)}px | gate time ${tlMs.toFixed(0)}ms`
+    );
+  }
+
+  // =========================================================================
+  // GATE 3d: Procrustes alignment (timeline mental-map preservation, mechanism #1)
+  // =========================================================================
+  {
+    // Exactness on a synthetic similarity transform (2D + 3D)
+    const mk2 = (n: number) =>
+      new Map(Array.from({ length: n }, (_, i) => [`n${i}`, { x: Math.cos(i * 1.3) * (20 + i * 3), y: Math.sin(i * 0.9) * (15 + i * 4) }] as const));
+    const base2 = mk2(24);
+    const xf2 = new Map(
+      Array.from(base2, ([id, p]) => {
+        const a = 0.7;
+        const s = 1.1;
+        return [id, { x: s * (Math.cos(a) * p.x - Math.sin(a) * p.y) + 31, y: s * (Math.sin(a) * p.x + Math.cos(a) * p.y) - 17 }] as const;
+      })
+    );
+    const r2 = alignLayoutProcrustes(base2, xf2, { allowScale: true });
+    const base3 = new Map(
+      Array.from({ length: 24 }, (_, i) => [`n${i}`, { x: Math.cos(i * 1.3) * (20 + i * 3), y: Math.sin(i * 0.9) * (15 + i * 4), z: Math.sin(i * 0.37) * (10 + i * 2) }] as const)
+    );
+    const xf3 = new Map(
+      Array.from(base3, ([id, p]) => {
+        const a = 0.6;
+        const b = -0.4;
+        const x1 = Math.cos(a) * p.x - Math.sin(a) * p.y;
+        const y1 = Math.sin(a) * p.x + Math.cos(a) * p.y;
+        const y2 = Math.cos(b) * y1 - Math.sin(b) * p.z;
+        const z2 = Math.sin(b) * y1 + Math.cos(b) * p.z;
+        return [id, { x: x1 * 0.95 + 5, y: y2 * 0.95 - 9, z: z2 * 0.95 + 3 }] as const;
+      })
+    );
+    const r3 = alignLayoutProcrustes(base3, xf3, { is3D: true, allowScale: true });
+    assertCondition(
+      r2.rmsAfter < 1e-6 && r3.rmsAfter < 1e-6 && Math.abs(r2.scale - 1 / 1.1) < 1e-9,
+      `[Gate 3d: Procrustes] Closed-form alignment must recover a similarity transform exactly (2D rms=${r2.rmsAfter.toExponential(2)}, 3D rms=${r3.rmsAfter.toExponential(2)})`,
+      failures
+    );
+
+    // With vs. without Procrustes over a (strided) timeline run per engine
+    assertCondition(
+      !TIMELINE_ANCHOR_ENABLED && !TIMELINE_CLUSTER_ANCHOR_ENABLED,
+      `[Gate 3d: Config] Expected TIMELINE_ANCHOR_ENABLED=false and TIMELINE_CLUSTER_ANCHOR_ENABLED=false (got ${String(TIMELINE_ANCHOR_ENABLED)}, ${String(TIMELINE_CLUSTER_ANCHOR_ENABLED)})`,
+      failures
+    );
+    const kfs2d = buildTemporalGraphKeyframes(canonical, DEFAULT_TOPIC_CLUSTER_COUNT);
+    const kfs3dOnly = buildTemporalGraphKeyframes(canonical3D, DEFAULT_TOPIC_CLUSTER_COUNT_3D);
+    const kfs3d = kfs2d;
+    const stride = 28;
+    const chainSteps: number[] = [];
+    for (let s = 40; s < kfs3d.total - 1; s += stride) chainSteps.push(s);
+    type PtMap = Map<string, { x: number; y: number; z?: number }>;
+    const engines3d: { name: string; is3D: boolean; solve: (input: Parameters<typeof solveD3ForceLayout>[0]) => Record<string, { x: number; y: number; z?: number }> }[] = [
+      { name: 'cytoscape', is3D: false, solve: solveCytoscapeCoseLayout },
+      { name: 'sigma', is3D: false, solve: solveSigmaForceAtlas2Layout },
+      { name: 'd3', is3D: false, solve: solveD3ForceLayout },
+      { name: 'vis-network', is3D: false, solve: solveVisNetworkForceLayout },
+      { name: '3d-force-graph', is3D: true, solve: solve3DForceLayout },
+    ];
+    const stat = (vals: number[]) => {
+      const s = [...vals].sort((a, b) => a - b);
+      const n = Math.max(1, s.length);
+      return {
+        mean: s.reduce((a, b) => a + b, 0) / n,
+        median: s[Math.floor(s.length / 2)] ?? 0,
+        p95: s[Math.min(s.length - 1, Math.floor(s.length * 0.95))] ?? 0,
+      };
+    };
+    // Anchored solves must stay deterministic and sync == async (all 5 engines)
+    {
+      type AsyncSolver = (input: Parameters<typeof solveD3ForceLayout>[0]) => Promise<Record<string, { x: number; y: number; z?: number }> | null>;
+      const asyncSolvers: Record<string, AsyncSolver> = {
+        cytoscape: solveCytoscapeCoseLayoutAsync,
+        sigma: solveSigmaForceAtlas2LayoutAsync,
+        d3: solveD3ForceLayoutAsync,
+        'vis-network': solveVisNetworkForceLayoutAsync,
+        '3d-force-graph': solve3DForceLayoutAsync,
+      };
+      const kfPrev = kfs3d.getKeyframe(90);
+      const kfNext = kfs3d.getKeyframe(100);
+      let anchorParity = 0;
+      for (const eng of engines3d) {
+        const prevPos = new Map(Object.entries(eng.solve({ nodes: kfPrev.nodes, connections: kfPrev.connections }))) as PtMap;
+        const ann = annotateClusterTransition(kfNext.nodes, kfPrev.nodes);
+        const start = computeTimelineStartPositions({
+          nextNodes: ann.nodes,
+          connections: kfNext.connections,
+          live: prevPos,
+          is3D: eng.is3D,
+        });
+        const input = {
+          nodes: ann.nodes,
+          connections: kfNext.connections,
+          seedPositions: start,
+          anchorPositions: prevPos,
+          anchorStrength: TIMELINE_ANCHOR_STRENGTH,
+        };
+        const sync = eng.solve(input);
+        const asyncRes = await asyncSolvers[eng.name](input);
+        let engParity = 0;
+        for (const n of ann.nodes) {
+          const a = sync[n.id];
+          const b = asyncRes?.[n.id];
+          engParity = Math.max(engParity, b ? Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0)) : Infinity);
+          anchorParity = Math.max(
+            anchorParity,
+            b ? Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0)) : Infinity
+          );
+        }
+        if (engParity !== 0) console.log(`[Gate 3d: Anchors] ${eng.name} sync-vs-async maxDelta=${engParity}`);
+      }
+      assertCondition(
+        anchorParity === 0,
+        `[Gate 3d: Anchors] Anchored solvers must be identical sync vs async: maxDelta=${anchorParity}`,
+        failures
+      );
+    }
+    const lines: string[] = [];
+    const sepLines: string[] = [];
+    const t3d0 = performance.now();
+    const separationRatio = (pos: PtMap, nodes: CanonicalGraphPayload['nodes'], conns: CanonicalGraphPayload['connections']): number => {
+      const clusterIds = new Set(nodes.filter((n) => n.group === 0).map((n) => n.id));
+      const best = new Map<string, { hub: string; w: number }>();
+      for (const c of conns) {
+        const hub = clusterIds.has(c.targetId) ? c.targetId : clusterIds.has(c.sourceId) ? c.sourceId : null;
+        const item = hub === c.targetId ? c.sourceId : c.targetId;
+        if (!hub) continue;
+        const w = c.weight ?? 0.5;
+        const cur = best.get(item);
+        if (!cur || w > cur.w) best.set(item, { hub, w });
+      }
+      const members = new Map<string, string[]>();
+      for (const [item, b] of best) (members.get(b.hub) ?? members.set(b.hub, []).get(b.hub)!).push(item);
+      const centroids: { x: number; y: number; z: number }[] = [];
+      let intraSum = 0;
+      let intraCnt = 0;
+      for (const ids of members.values()) {
+        const pts = ids.map((id) => pos.get(id)).filter((p): p is { x: number; y: number; z?: number } => Boolean(p));
+        if (pts.length < 2) continue;
+        const cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+        const cy = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+        const cz = pts.reduce((a, p) => a + (p.z ?? 0), 0) / pts.length;
+        centroids.push({ x: cx, y: cy, z: cz });
+        for (const p of pts) {
+          intraSum += Math.hypot(p.x - cx, p.y - cy, (p.z ?? 0) - cz);
+          intraCnt++;
+        }
+      }
+      let interSum = 0;
+      let interCnt = 0;
+      for (let i = 0; i < centroids.length; i++) {
+        for (let j = i + 1; j < centroids.length; j++) {
+          interSum += Math.hypot(centroids[i].x - centroids[j].x, centroids[i].y - centroids[j].y, centroids[i].z - centroids[j].z);
+          interCnt++;
+        }
+      }
+      return intraCnt > 0 && interCnt > 0 ? interSum / interCnt / (intraSum / intraCnt) : 0;
+    };
+    const clusterCenterOffsetRatio = (
+      pos: PtMap,
+      nodes: CanonicalGraphPayload['nodes'],
+      conns: CanonicalGraphPayload['connections']
+    ): number => {
+      const clusterIds = new Set(nodes.filter((n) => n.group === 0).map((n) => n.id));
+      const best = new Map<string, { hub: string; w: number }>();
+      for (const c of conns) {
+        const hub = clusterIds.has(c.targetId) ? c.targetId : clusterIds.has(c.sourceId) ? c.sourceId : null;
+        const item = hub === c.targetId ? c.sourceId : c.targetId;
+        if (!hub) continue;
+        const w = c.weight ?? 0.5;
+        const cur = best.get(item);
+        if (!cur || w > cur.w) best.set(item, { hub, w });
+      }
+      const members = new Map<string, string[]>();
+      for (const [item, b] of best) (members.get(b.hub) ?? members.set(b.hub, []).get(b.hub)!).push(item);
+      let ratioSum = 0;
+      let ratioCnt = 0;
+      for (const [hubId, ids] of members) {
+        const hubPt = pos.get(hubId);
+        const pts = ids.map((id) => pos.get(id)).filter((p): p is { x: number; y: number; z?: number } => Boolean(p));
+        if (!hubPt || pts.length < 2) continue;
+        const cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+        const cy = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+        const cz = pts.reduce((a, p) => a + (p.z ?? 0), 0) / pts.length;
+        const intraMean =
+          pts.reduce((a, p) => a + Math.hypot(p.x - cx, p.y - cy, (p.z ?? 0) - cz), 0) / pts.length;
+        if (intraMean > 1e-6) {
+          const offset = Math.hypot(hubPt.x - cx, hubPt.y - cy, (hubPt.z ?? 0) - cz);
+          ratioSum += offset / intraMean;
+          ratioCnt++;
+        }
+      }
+      return ratioCnt > 0 ? ratioSum / ratioCnt : 0;
+    };
+    const finalPosByEngine: Record<string, PtMap> = {
+      cytoscape: new Map(Object.entries(cyPos1)),
+      sigma: new Map(Object.entries(sigmaPos1)),
+      d3: new Map(Object.entries(d3Pos1)),
+      'vis-network': new Map(Object.entries(visPos1)),
+      '3d-force-graph': new Map(Object.entries(force3DPos1)),
+    };
+    const clusterLines: string[] = [];
+    const centerLines: string[] = [];
+    const penultLines: string[] = [];
+    for (const eng of engines3d) {
+      const engKfs = eng.is3D ? kfs3dOnly : kfs2d;
+      const finalPosMap = finalPosByEngine[eng.name];
+      const filterSeed = (nodes: CanonicalGraphPayload['nodes']): PtMap => {
+        const s = new Map<string, { x: number; y: number; z?: number }>();
+        for (const n of nodes) {
+          const p = finalPosMap.get(n.id);
+          if (p) s.set(n.id, { x: p.x, y: p.y, z: p.z });
+        }
+        return s;
+      };
+      const runUnalignedChain = (): { disp: number[]; clusterDisp: number[]; sep: number } => {
+        const disp: number[] = [];
+        const clusterDisp: number[] = [];
+        const seps: number[] = [];
+        let prevNodes: CanonicalGraphPayload['nodes'] | null = null;
+        let prevPos: PtMap | null = null;
+        for (const step of chainSteps) {
+          const kf = engKfs.getKeyframe(step);
+          let pos: PtMap;
+          if (!prevPos || !prevNodes) {
+            pos = new Map(Object.entries(eng.solve({ nodes: kf.nodes, connections: kf.connections })));
+          } else {
+            const ann = annotateClusterTransition(kf.nodes, prevNodes);
+            const start = computeTimelineStartPositions({
+              nextNodes: ann.nodes,
+              connections: kf.connections,
+              live: prevPos,
+              is3D: eng.is3D,
+            });
+            pos = new Map(
+              Object.entries(
+                eng.solve({
+                  nodes: ann.nodes,
+                  connections: kf.connections,
+                  seedPositions: start,
+                })
+              )
+            ) as PtMap;
+            const clusterIdSet = new Set(ann.nodes.filter((n) => n.group === 0).map((n) => n.id));
+            for (const [id, p] of pos) {
+              const q = prevPos.get(id);
+              if (q) {
+                const d = Math.hypot(p.x - q.x, p.y - q.y, (p.z ?? 0) - (q.z ?? 0));
+                disp.push(d);
+                if (clusterIdSet.has(id)) clusterDisp.push(d);
+              }
+            }
+          }
+          seps.push(separationRatio(pos, kf.nodes, kf.connections));
+          prevNodes = kf.nodes;
+          prevPos = pos;
+        }
+        return { disp, clusterDisp, sep: seps.reduce((a, b) => a + b, 0) / Math.max(1, seps.length) };
+      };
+      const runFinalSeededChain = (): {
+        disp: number[];
+        clusterDisp: number[];
+        sep: number;
+        centerOffset: number;
+        determinismDelta: number;
+      } => {
+        const disp: number[] = [];
+        const clusterDisp: number[] = [];
+        const seps: number[] = [];
+        const centerOffsets: number[] = [];
+        let determinismDelta = 0;
+        let prevPos: PtMap | null = null;
+        for (const step of chainSteps) {
+          const kf = engKfs.getKeyframe(step);
+          const seed = filterSeed(kf.nodes);
+          const raw1 = new Map(
+            Object.entries(
+              eng.solve({
+                nodes: kf.nodes,
+                connections: kf.connections,
+                seedPositions: seed,
+              })
+            )
+          ) as PtMap;
+          const raw2 = new Map(
+            Object.entries(
+              eng.solve({
+                nodes: kf.nodes,
+                connections: kf.connections,
+                seedPositions: seed,
+              })
+            )
+          ) as PtMap;
+          for (const n of kf.nodes) {
+            const p1 = raw1.get(n.id)!;
+            const p2 = raw2.get(n.id)!;
+            determinismDelta = Math.max(
+              determinismDelta,
+              Math.hypot(p1.x - p2.x, p1.y - p2.y, (p1.z ?? 0) - (p2.z ?? 0))
+            );
+          }
+          const { blended: pos } = alignAndBlendToFinalLayout(
+            raw1,
+            finalPosMap,
+            kf.nodes,
+            step,
+            engKfs.total,
+            eng.is3D
+          );
+          if (prevPos) {
+            const clusterIdSet = new Set(kf.nodes.filter((n) => n.group === 0).map((n) => n.id));
+            for (const [id, p] of pos) {
+              const q = prevPos.get(id);
+              if (q) {
+                const d = Math.hypot(p.x - q.x, p.y - q.y, (p.z ?? 0) - (q.z ?? 0));
+                disp.push(d);
+                if (clusterIdSet.has(id)) clusterDisp.push(d);
+              }
+            }
+          }
+          seps.push(separationRatio(pos, kf.nodes, kf.connections));
+          centerOffsets.push(clusterCenterOffsetRatio(pos, kf.nodes, kf.connections));
+          prevPos = pos;
+        }
+        return {
+          disp,
+          clusterDisp,
+          sep: seps.reduce((a, b) => a + b, 0) / Math.max(1, seps.length),
+          centerOffset: centerOffsets.reduce((a, b) => a + b, 0) / Math.max(1, centerOffsets.length),
+          determinismDelta,
+        };
+      };
+      const none = runUnalignedChain();
+      const seeded = runFinalSeededChain();
+      const sNone = stat(none.disp);
+      const sSeeded = stat(seeded.disp);
+      const cNone = stat(none.clusterDisp);
+      const cSeeded = stat(seeded.clusterDisp);
+      assertCondition(
+        seeded.determinismDelta === 0,
+        `[Gate 3d: Determinism] ${eng.name}: final-seeded step solve must be 100% deterministic (maxDelta=${seeded.determinismDelta})`,
+        failures
+      );
+      assertCondition(
+        sSeeded.mean <= sNone.mean * 1.001 + 0.01,
+        `[Gate 3d: Stability] ${eng.name}: final-seeded + Procrustes + u^2 blend must not increase mean step displacement (seeded=${sSeeded.mean.toFixed(2)}px, none=${sNone.mean.toFixed(2)}px)`,
+        failures
+      );
+      assertCondition(
+        cSeeded.mean <= cNone.mean * 1.001 + 0.01,
+        `[Gate 3d: Cluster Stability] ${eng.name}: final-seeded + Procrustes + u^2 blend must not increase mean cluster displacement (seeded=${cSeeded.mean.toFixed(2)}px, none=${cNone.mean.toFixed(2)}px)`,
+        failures
+      );
+      assertCondition(
+        seeded.sep >= none.sep * 0.8,
+        `[Gate 3d: Quality] ${eng.name}: topical separation degraded (seeded=${seeded.sep.toFixed(2)}x vs none=${none.sep.toFixed(2)}x)`,
+        failures
+      );
+      assertCondition(
+        seeded.centerOffset < 0.85,
+        `[Gate 3d: Cluster Centering] ${eng.name}: cluster hub drifted out of its primary content cloud (offset/intra=${seeded.centerOffset.toFixed(2)} >= 0.85)`,
+        failures
+      );
+
+      // Penultimate-to-final (N-2 -> N-1) transition guard
+      const penultStep = Math.max(0, engKfs.total - 2);
+      const penultKf = engKfs.getKeyframe(penultStep);
+      const penultSeed = filterSeed(penultKf.nodes);
+      const penultRaw = new Map(
+        Object.entries(
+          eng.solve({
+            nodes: penultKf.nodes,
+            connections: penultKf.connections,
+            seedPositions: penultSeed,
+          })
+        )
+      ) as PtMap;
+      const { blended: penultPos } = alignAndBlendToFinalLayout(
+        penultRaw,
+        finalPosMap,
+        penultKf.nodes,
+        penultStep,
+        engKfs.total,
+        eng.is3D
+      );
+      const penultRot = alignLayoutProcrustes(finalPosMap, penultPos, {
+        is3D: eng.is3D,
+        allowScale: true,
+      });
+      const penultRotDeg = (Math.abs(penultRot.rotation) * 180) / Math.PI;
+      const penultDisps: number[] = [];
+      for (const [id, p] of penultPos) {
+        const fPt = finalPosMap.get(id);
+        if (fPt) penultDisps.push(Math.hypot(p.x - fPt.x, p.y - fPt.y, (p.z ?? 0) - (fPt.z ?? 0)));
+      }
+      const penultMedDisp = stat(penultDisps).median;
+      assertCondition(
+        penultRotDeg < 5,
+        `[Gate 3d: N-2 -> N-1 Rotation] ${eng.name}: penultimate-to-final rotation ${penultRotDeg.toFixed(2)} deg >= 5 deg`,
+        failures
+      );
+
+      const f = (s: { mean: number; median: number; p95: number }) => `${s.mean.toFixed(1)}/${s.median.toFixed(1)}/${s.p95.toFixed(1)}`;
+      lines.push(`${eng.name}: none ${f(sNone)} | final-seeded+u2 ${f(sSeeded)}`);
+      clusterLines.push(`${eng.name}: none ${f(cNone)} | final-seeded+u2 ${f(cSeeded)}`);
+      sepLines.push(`${eng.name}: none ${none.sep.toFixed(2)}x, final-seeded+u2 ${seeded.sep.toFixed(2)}x`);
+      centerLines.push(`${eng.name}: ${seeded.centerOffset.toFixed(2)}x`);
+      penultLines.push(`${eng.name}: rot=${penultRotDeg.toFixed(2)}deg medDisp=${penultMedDisp.toFixed(2)}px`);
+    }
+    console.log(
+      `[Gate 3d Summary] consecutive-step displacement mean/median/p95 px over ${chainSteps.length} strided timeline steps (stride ${stride}, final-seeded + Procrustes-to-final + u^2 blend, anchors=0):\n  all nodes:\n    ${lines.join('\n    ')}\n  theme clusters (group=0):\n    ${clusterLines.join('\n    ')}\n  topical separation at mid steps (inter/intra): ${sepLines.join(' | ')}\n  cluster hub offset/intra (<0.85): ${centerLines.join(' | ')}\n  N-2 -> N-1 transition (<5deg): ${penultLines.join(' | ')} | ${(performance.now() - t3d0).toFixed(0)}ms`
+    );
   }
 
   // Verify centered Theme-Cluster Pill placement (no offset, no leader line) & Elliptical Pill Clearance

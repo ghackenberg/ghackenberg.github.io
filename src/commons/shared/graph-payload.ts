@@ -39,6 +39,8 @@ export interface GraphNodePayload {
   originClusterId?: string;
   /** 'match': continues the origin cluster (colour inherited); 'split': new cluster spawned from origin. */
   originKind?: 'match' | 'split';
+  /** Publication time (epoch ms, UTC) of content nodes; absent for undated items. */
+  timestamp?: number;
 }
 
 export interface GraphConnectionPayload {
@@ -108,6 +110,7 @@ export interface SigmaNode {
   tags?: string[];
   originClusterId?: string;
   originKind?: 'match' | 'split';
+  memberTags?: string[];
 }
 
 export interface SigmaEdge {
@@ -192,11 +195,18 @@ export interface GraphStyleTokens {
   nodeHoverScale: number;
 }
 
-export const DEFAULT_TOPIC_CLUSTER_COUNT = 4;
+export const DEFAULT_TOPIC_CLUSTER_COUNT = 3;
+export const DEFAULT_TOPIC_CLUSTER_COUNT_3D = 4;
+
+export function getDefaultTopicClusterCount(engineType?: string): number {
+  return engineType === '3d-force-graph' || engineType === '3d-force'
+    ? DEFAULT_TOPIC_CLUSTER_COUNT_3D
+    : DEFAULT_TOPIC_CLUSTER_COUNT;
+}
 
 export interface GraphTuningState {
   // 1. Edge Cohesion & Hubs
-  clusterCount: number;        // default: 4    (range 2 .. 18, step 1)
+  clusterCount: number;        // default: 3 (2D) / 4 (3D)  (range 2 .. 18, step 1)
   stiffnessExponent: number;   // default: 2.10 (range -1.0 .. 2.6, step 0.05)
   distanceExponent: number;    // default: 1.35 (range -1.0 .. 2.0, step 0.05)
   // 2. Layout Physics & Geometry
@@ -229,7 +239,26 @@ export const DEFAULT_GRAPH_TUNING_STATE: Readonly<GraphTuningState> = {
   backgroundRetention: 0.34,
 };
 
+let defaultClusterCountForEngine = DEFAULT_TOPIC_CLUSTER_COUNT;
 let currentGraphTuningState: GraphTuningState = { ...DEFAULT_GRAPH_TUNING_STATE };
+
+export function configureDefaultClusterCount(count: number): void {
+  const prevDefault = defaultClusterCountForEngine;
+  defaultClusterCountForEngine = count;
+  if (currentGraphTuningState.clusterCount === prevDefault) {
+    currentGraphTuningState = {
+      ...currentGraphTuningState,
+      clusterCount: count,
+    };
+  }
+}
+
+export function getDefaultGraphTuningState(): Readonly<GraphTuningState> {
+  return {
+    ...DEFAULT_GRAPH_TUNING_STATE,
+    clusterCount: defaultClusterCountForEngine,
+  };
+}
 
 export function getGraphTuningState(): Readonly<GraphTuningState> {
   return currentGraphTuningState;
@@ -244,14 +273,15 @@ export function setGraphTuningState(patch: Partial<GraphTuningState>): Readonly<
 }
 
 export function resetGraphTuningState(): Readonly<GraphTuningState> {
-  currentGraphTuningState = { ...DEFAULT_GRAPH_TUNING_STATE };
+  currentGraphTuningState = getDefaultGraphTuningState();
   return currentGraphTuningState;
 }
 
 export function isDefaultGraphTuningState(): boolean {
-  const keys = Object.keys(DEFAULT_GRAPH_TUNING_STATE) as (keyof GraphTuningState)[];
+  const defaults = getDefaultGraphTuningState();
+  const keys = Object.keys(defaults) as (keyof GraphTuningState)[];
   return keys.every(
-    (k) => Math.abs(currentGraphTuningState[k] - DEFAULT_GRAPH_TUNING_STATE[k]) < 1e-4
+    (k) => Math.abs(currentGraphTuningState[k] - defaults[k]) < 1e-4
   );
 }
 
@@ -2375,7 +2405,8 @@ function buildClusteredGraphFromItemsAndTags(
   contentNodes: ReadonlyArray<GraphNodePayload>,
   rawTags: ReadonlyArray<RawTagSummary>,
   targetClusterCount: number = DEFAULT_TOPIC_CLUSTER_COUNT,
-  previousNodes?: ReadonlyArray<GraphNodePayload>
+  previousNodes?: ReadonlyArray<GraphNodePayload>,
+  options?: { fixedClusters?: ReadonlyArray<TagClusterDescriptor>; staticColors?: boolean }
 ): CanonicalGraphPayload {
   const tagTitleMap = new Map<string, string>();
   const tagItemsMap = new Map<string, Set<string>>();
@@ -2405,7 +2436,9 @@ function buildClusteredGraphFromItemsAndTags(
     }))
     .sort((a, b) => b.items.size - a.items.size || a.slug.localeCompare(b.slug));
 
-  const tagClusters = partitionTagsIntoTopicClusters(tags, N_ITEMS, targetClusterCount);
+  const tagClusters = options?.fixedClusters
+    ? [...options.fixedClusters]
+    : partitionTagsIntoTopicClusters(tags, N_ITEMS, targetClusterCount);
 
   const clusterByTagSlug = new Map<string, TagClusterDescriptor>();
   const tagItemCountBySlug = new Map<string, number>();
@@ -2414,6 +2447,9 @@ function buildClusteredGraphFromItemsAndTags(
       clusterByTagSlug.set(m.slug, cl);
       tagItemCountBySlug.set(m.slug, m.itemCount);
     }
+  }
+  if (options?.fixedClusters) {
+    for (const [slug, items] of tagItemsMap) tagItemCountBySlug.set(slug, items.size);
   }
 
   const getTagIdf = (slug: string): number => {
@@ -2434,7 +2470,7 @@ function buildClusteredGraphFromItemsAndTags(
     });
   });
   const stabilized = previousNodes ? stabilizeClusterIdentity(tagClusters, previousNodes) : null;
-  if (stabilized) {
+  if (stabilized && !options?.staticColors) {
     for (const [nodeId, colors] of stabilized.colorByNewId) clusterColorByNodeId.set(nodeId, colors);
   }
 
@@ -2607,6 +2643,18 @@ export function reclusterCanonicalGraphPayload(
   return buildClusteredGraphFromItemsAndTags(contentNodes, rawTags, clampedK, previousNodes);
 }
 
+function toTimestampMs(value: Date | string | number | null | undefined): number | undefined {
+  if (value instanceof Date) {
+    const t = value.getTime();
+    return Number.isFinite(t) ? t : undefined;
+  }
+  if (typeof value === 'string' || typeof value === 'number') {
+    const t = new Date(value).getTime();
+    return Number.isFinite(t) ? t : undefined;
+  }
+  return undefined;
+}
+
 export async function buildCanonicalGraphPayload(
   options: BuildGraphPayloadOptions
 ): Promise<CanonicalGraphPayload> {
@@ -2642,6 +2690,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Post",
       description: post.data.description,
       date: post.data.pubDate ? formatDate(post.data.pubDate, 'short') : undefined,
+      timestamp: toTimestampMs(post.data.pubDate),
       image: imageSrc,
       tags: dedupTags(post.data.tags)
     });
@@ -2658,6 +2707,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Publication",
       description: pub.data.abstract || pub.data.book,
       date: pub.data.pubDate ? formatDate(pub.data.pubDate, 'short') : undefined,
+      timestamp: toTimestampMs(pub.data.pubDate),
       tags: dedupTags(pub.data.tags)
     });
   }
@@ -2683,6 +2733,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Presentation",
       description: pres.data.subtitle || pres.data.description,
       date: pres.data.pubDate ? formatDate(pres.data.pubDate, 'short') : undefined,
+      timestamp: toTimestampMs(pres.data.pubDate),
       image: imageSrc,
       tags: dedupTags(pres.data.tags)
     });
@@ -2709,6 +2760,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Course",
       description: course.data.description,
       date: course.data.pubDate ? formatDate(course.data.pubDate, 'short') : undefined,
+      timestamp: toTimestampMs(course.data.pubDate),
       image: imageSrc,
       tags: dedupTags(course.data.tags)
     });
@@ -2735,6 +2787,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Project",
       description: project.data.description,
       date: project.data.pubDate ? formatDate(project.data.pubDate, 'short') : undefined,
+      timestamp: toTimestampMs(project.data.pubDate),
       image: imageSrc,
       tags: dedupTags(project.data.tags)
     });
@@ -2761,6 +2814,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Service",
       description: service.data.description,
       date: service.data.pubDate ? formatDate(service.data.pubDate, 'short') : undefined,
+      timestamp: toTimestampMs(service.data.pubDate),
       image: imageSrc,
       tags: dedupTags(service.data.tags)
     });
@@ -2787,6 +2841,7 @@ export async function buildCanonicalGraphPayload(
       typeLabel: "Newsletter",
       description: nl.data.description,
       date: nl.data.pubDate ? formatDate(nl.data.pubDate, "short") : undefined,
+      timestamp: toTimestampMs(nl.data.pubDate),
       image: imageSrc,
       tags: dedupTags(nl.data.tags)
     });
@@ -2832,7 +2887,8 @@ export function resolveKChangeCanonical(
   restoreDefault = false
 ): CanonicalGraphPayload {
   const stabilized = reclusterCanonicalGraphPayload(canonical, targetK, currentNodes);
-  if (!restoreDefault || targetK !== DEFAULT_TOPIC_CLUSTER_COUNT) return stabilized;
+  const canonicalK = canonical.nodes.filter((n) => n.group === 0).length;
+  if (!restoreDefault || targetK !== canonicalK) return stabilized;
   const meta = new Map(stabilized.nodes.map((n) => [n.id, n]));
   return {
     ...canonical,
@@ -2888,6 +2944,830 @@ export function computeKChangeStartPositions(
     out.set(n.id, { x: Math.cos(angle) * fallbackRadius, y: Math.sin(angle) * fallbackRadius, z: 0 });
   });
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Temporal timeline (SYSTEM-014 Etappe 2): per-item keyframes, K(t), placement
+// ---------------------------------------------------------------------------
+
+export const TIMELINE_BASE_STEPS_PER_SECOND = 4;
+export const TIMELINE_FX_MS = 320;
+export const TIMELINE_MIN_RECLUSTER_DELTA = 6;
+export const TIMELINE_RECLUSTER_GROWTH = 1.3;
+
+/** K(t) = min(K_target, max(2, floor(sqrt(N(t) / 2.2)))) */
+export function deriveKForStep(itemCount: number, kTarget: number): number {
+  const target = Math.max(2, Math.min(18, Math.round(kTarget)));
+  return Math.min(target, Math.max(2, Math.floor(Math.sqrt(Math.max(0, itemCount) / 2.2))));
+}
+
+/**
+ * Re-clustering policy with hysteresis: re-cluster at the first step, whenever K(t) changes, when the
+ * item count grew by >= 30 % (and >= 6 items) since the last re-cluster, and always at the last step
+ * (so the final graph is the static graph). Between re-clusters the partition stays fixed.
+ */
+export function deriveTimelineReclusterSteps(total: number, kTarget: number): number[] {
+  const steps: number[] = [];
+  let lastN = 0;
+  let lastK = 0;
+  for (let s = 0; s < total; s++) {
+    const n = s + 1;
+    const k = deriveKForStep(n, kTarget);
+    const grew =
+      n >= Math.ceil(lastN * TIMELINE_RECLUSTER_GROWTH) && n - lastN >= TIMELINE_MIN_RECLUSTER_DELTA;
+    if (s === 0 || k !== lastK || grew || s === total - 1) {
+      steps.push(s);
+      lastN = n;
+      lastK = k;
+    }
+  }
+  return steps;
+}
+
+export interface TemporalKeyframe {
+  step: number;
+  itemCount: number;
+  clusterCount: number;
+  epochStep: number;
+  isReclusterStep: boolean;
+  clusterSignature: string;
+  itemId: string | null;
+  timestamp: number | null;
+  nodes: GraphNodePayload[];
+  connections: GraphConnectionPayload[];
+  mergeTargetByOldClusterId?: Record<string, string>;
+}
+
+export interface TemporalGraphKeyframes {
+  total: number;
+  kTarget: number;
+  orderedIds: string[];
+  reclusterSteps: number[];
+  getKForStep(step: number): number;
+  getKeyframe(step: number): TemporalKeyframe;
+  clearCache(): void;
+}
+
+export function formatTimelineDateLabel(timestamp: number | null): string {
+  if (timestamp === null || !Number.isFinite(timestamp)) return 'Undated';
+  return new Date(timestamp).toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+export function buildTemporalGraphKeyframes(
+  canonical: CanonicalGraphPayload,
+  kTarget: number
+): TemporalGraphKeyframes {
+  const clampedK = Math.max(2, Math.min(18, Math.round(kTarget)));
+  const canonicalK = canonical.nodes.filter((n) => n.group === 0).length;
+  const finalCanonical =
+    canonicalK === clampedK ? canonical : reclusterCanonicalGraphPayload(canonical, clampedK);
+
+  const content = finalCanonical.nodes.filter((n) => n.group !== 0);
+  const stampOf = (n: GraphNodePayload): number | null =>
+    typeof n.timestamp === 'number' && Number.isFinite(n.timestamp) ? n.timestamp : null;
+  const ordered = [...content].sort((a, b) => {
+    const ta = stampOf(a);
+    const tb = stampOf(b);
+    if (ta !== tb) {
+      if (ta === null) return 1;
+      if (tb === null) return -1;
+      return ta - tb;
+    }
+    return a.id.localeCompare(b.id);
+  });
+  const total = ordered.length;
+
+  const finalClusterIds = new Set(
+    finalCanonical.nodes.filter((n) => n.group === 0).map((n) => n.id)
+  );
+  const clustersOfContent = new Map<string, Set<string>>();
+  for (const c of finalCanonical.connections) {
+    const isTargetCluster = finalClusterIds.has(c.targetId);
+    const isSourceCluster = finalClusterIds.has(c.sourceId);
+    if (isTargetCluster === isSourceCluster) continue;
+    const clusterId = isTargetCluster ? c.targetId : c.sourceId;
+    const contentId = isTargetCluster ? c.sourceId : c.targetId;
+    let set = clustersOfContent.get(contentId);
+    if (!set) {
+      set = new Set<string>();
+      clustersOfContent.set(contentId, set);
+    }
+    set.add(clusterId);
+  }
+
+  // Precompute the active cluster count at every step and the steps where a new cluster appears
+  const activeCountAtStep: number[] = new Array(total).fill(0);
+  const reclusterSteps: number[] = [];
+  const seenClusters = new Set<string>();
+  for (let s = 0; s < total; s++) {
+    const prevCount = seenClusters.size;
+    const cSet = clustersOfContent.get(ordered[s].id);
+    if (cSet) {
+      for (const cid of cSet) seenClusters.add(cid);
+    }
+    activeCountAtStep[s] = seenClusters.size;
+    if (s === 0 || seenClusters.size > prevCount || s === total - 1) {
+      if (reclusterSteps[reclusterSteps.length - 1] !== s) reclusterSteps.push(s);
+    }
+  }
+  const reclusterStepSet = new Set(reclusterSteps);
+  const keyframeCache = new Map<number, TemporalKeyframe>();
+
+  const getKeyframe = (stepIn: number): TemporalKeyframe => {
+    const step = Math.max(0, Math.min(Math.max(0, total - 1), Math.round(stepIn)));
+    const cached = keyframeCache.get(step);
+    if (cached) return cached;
+
+    const visible = new Set<string>();
+    const activeClusters = new Set<string>();
+    for (let i = 0; i <= step && i < total; i++) {
+      const id = ordered[i].id;
+      visible.add(id);
+      const cSet = clustersOfContent.get(id);
+      if (cSet) {
+        for (const cid of cSet) activeClusters.add(cid);
+      }
+    }
+
+    const nodes = finalCanonical.nodes
+      .filter((n) => (n.group === 0 ? activeClusters.has(n.id) : visible.has(n.id)))
+      .map((n) => ({ ...n }));
+    const nodeIds = new Set(nodes.map((n) => n.id));
+    const connections = finalCanonical.connections
+      .filter((c) => nodeIds.has(c.sourceId) && nodeIds.has(c.targetId))
+      .map((c) => ({ ...c }));
+    const degree = new Map<string, number>();
+    for (const c of connections) {
+      degree.set(c.sourceId, (degree.get(c.sourceId) || 0) + 1);
+      degree.set(c.targetId, (degree.get(c.targetId) || 0) + 1);
+    }
+    for (const n of nodes) n.connectionCount = degree.get(n.id) || 0;
+
+    let epochStep = 0;
+    for (const rs of reclusterSteps) {
+      if (rs <= step) epochStep = rs;
+      else break;
+    }
+
+    const clusterIds = nodes.filter((n) => n.group === 0).map((n) => n.id);
+    const keyframe: TemporalKeyframe = {
+      step,
+      itemCount: Math.min(total, step + 1),
+      clusterCount: clusterIds.length,
+      epochStep,
+      isReclusterStep: reclusterStepSet.has(step),
+      clusterSignature: [...clusterIds].sort().join('|'),
+      itemId: ordered[step]?.id ?? null,
+      timestamp: ordered[step] ? stampOf(ordered[step]) : null,
+      nodes,
+      connections,
+    };
+    keyframeCache.set(step, keyframe);
+    return keyframe;
+  };
+
+  return {
+    total,
+    kTarget: clampedK,
+    orderedIds: ordered.map((n) => n.id),
+    reclusterSteps,
+    getKForStep: (step: number) =>
+      activeCountAtStep[Math.max(0, Math.min(Math.max(0, total - 1), Math.round(step)))] ?? 0,
+    getKeyframe,
+    clearCache: () => {
+      keyframeCache.clear();
+    },
+  };
+}
+
+/**
+ * Annotates cluster nodes of `nextNodes` with originClusterId/originKind relative to the currently
+ * displayed nodes (tag-set Jaccard, greedy) WITHOUT touching colours. Used for arbitrary jumps/scrubs.
+ */
+export function annotateClusterTransition(
+  nextNodes: ReadonlyArray<GraphNodePayload>,
+  prevNodes: ReadonlyArray<GraphNodePayload>
+): { nodes: GraphNodePayload[]; mergeTargetByOldClusterId: Record<string, string> } {
+  const prev = prevNodes
+    .filter((n) => n.group === 0)
+    .map((n) => ({ id: n.id, tags: new Set<string>(n.memberTags ?? n.tags ?? []) }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const next = nextNodes
+    .filter((n) => n.group === 0)
+    .map((n) => ({ id: n.id, tags: new Set<string>(n.memberTags ?? n.tags ?? []) }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const inter = (a: Set<string>, b: Set<string>): number => {
+    let c = 0;
+    for (const s of a) if (b.has(s)) c++;
+    return c;
+  };
+  const pairs: { oi: number; ni: number; sim: number }[] = [];
+  prev.forEach((p, oi) =>
+    next.forEach((n, ni) => {
+      const shared = inter(p.tags, n.tags);
+      if (shared > 0) pairs.push({ oi, ni, sim: shared / (p.tags.size + n.tags.size - shared) });
+    })
+  );
+  pairs.sort((a, b) => b.sim - a.sim || a.oi - b.oi || a.ni - b.ni);
+  const matchedOld = new Set<number>();
+  const matchedNew = new Map<number, number>();
+  for (const pr of pairs) {
+    if (matchedOld.has(pr.oi) || matchedNew.has(pr.ni)) continue;
+    matchedOld.add(pr.oi);
+    matchedNew.set(pr.ni, pr.oi);
+  }
+  const originById = new Map<string, { origin: string; kind: 'match' | 'split' }>();
+  next.forEach((n, ni) => {
+    const oi = matchedNew.get(ni);
+    if (oi !== undefined) {
+      originById.set(n.id, { origin: prev[oi].id, kind: 'match' });
+      return;
+    }
+    let best = -1;
+    let bestShared = 0;
+    prev.forEach((p, i) => {
+      const shared = inter(p.tags, n.tags);
+      if (shared > bestShared) {
+        bestShared = shared;
+        best = i;
+      }
+    });
+    if (best >= 0) originById.set(n.id, { origin: prev[best].id, kind: 'split' });
+  });
+  const mergeTargetByOldClusterId: Record<string, string> = {};
+  prev.forEach((p, oi) => {
+    if (matchedOld.has(oi)) return;
+    let best = -1;
+    let bestShared = 0;
+    next.forEach((n, ni) => {
+      const shared = inter(p.tags, n.tags);
+      if (shared > bestShared) {
+        bestShared = shared;
+        best = ni;
+      }
+    });
+    if (best < 0 && next.length > 0) best = 0;
+    if (best >= 0) mergeTargetByOldClusterId[p.id] = next[best].id;
+  });
+  const nodes = nextNodes.map((n) => {
+    if (n.group !== 0) return n;
+    const { originClusterId: _o, originKind: _k, ...rest } = n;
+    void _o;
+    void _k;
+    const info = originById.get(n.id);
+    return info ? { ...rest, originClusterId: info.origin, originKind: info.kind } : rest;
+  });
+  return { nodes, mergeTargetByOldClusterId };
+}
+
+/**
+ * Start positions for a new timeline snapshot: persisting nodes keep their live position, new clusters
+ * spawn at their origin cluster (or the centroid of their live items), new items spawn at the
+ * barycentre of their connected clusters (never at the origin) on the first free spot nearby.
+ */
+export function computeTimelineStartPositions(opts: {
+  nextNodes: ReadonlyArray<GraphNodePayload>;
+  connections: ReadonlyArray<GraphConnectionPayload>;
+  live: ReadonlyMap<string, TransitionPoint>;
+  is3D?: boolean;
+  fallbackRadius?: number;
+}): Map<string, TransitionPoint> {
+  const is3D = Boolean(opts.is3D);
+  const goldenAngle = 2.3999632297286533;
+  const out = new Map<string, TransitionPoint>();
+  const isCluster = new Map<string, boolean>();
+  for (const n of opts.nextNodes) isCluster.set(n.id, n.group === 0);
+  for (const n of opts.nextNodes) {
+    const p = opts.live.get(n.id);
+    if (p) out.set(n.id, { x: p.x, y: p.y, z: p.z ?? 0 });
+  }
+
+  const itemsOfCluster = new Map<string, { id: string; w: number }[]>();
+  const clustersOfItem = new Map<string, { id: string; w: number }[]>();
+  for (const c of opts.connections) {
+    const sc = isCluster.get(c.sourceId);
+    const tc = isCluster.get(c.targetId);
+    if (sc === undefined || tc === undefined || sc === tc) continue;
+    const clusterId = sc ? c.sourceId : c.targetId;
+    const itemId = sc ? c.targetId : c.sourceId;
+    const w = c.weight ?? 0.5;
+    (itemsOfCluster.get(clusterId) ?? itemsOfCluster.set(clusterId, []).get(clusterId)!).push({ id: itemId, w });
+    (clustersOfItem.get(itemId) ?? clustersOfItem.set(itemId, []).get(itemId)!).push({ id: clusterId, w });
+  }
+
+  const centroidOf = (ids: Iterable<string>): TransitionPoint | null => {
+    let sx = 0;
+    let sy = 0;
+    let sz = 0;
+    let cnt = 0;
+    for (const id of ids) {
+      const p = out.get(id);
+      if (!p) continue;
+      sx += p.x;
+      sy += p.y;
+      sz += p.z ?? 0;
+      cnt++;
+    }
+    return cnt > 0 ? { x: sx / cnt, y: sy / cnt, z: sz / cnt } : null;
+  };
+
+  // 1. new clusters
+  const siblingCount = new Map<string, number>();
+  let ringIdx = 0;
+  for (const n of opts.nextNodes) {
+    if (n.group !== 0 || out.has(n.id)) continue;
+    const originPos = n.originClusterId ? opts.live.get(n.originClusterId) : undefined;
+    let pos: TransitionPoint | null = null;
+    if (originPos) {
+      const rank = siblingCount.get(n.originClusterId!) ?? 0;
+      siblingCount.set(n.originClusterId!, rank + 1);
+      const off = rank * 20;
+      pos = {
+        x: originPos.x + Math.cos(rank * goldenAngle) * off,
+        y: originPos.y + Math.sin(rank * goldenAngle) * off,
+        z: originPos.z ?? 0,
+      };
+    } else {
+      const strong = (itemsOfCluster.get(n.id) ?? []).filter((e) => e.w >= 0.4).map((e) => e.id);
+      pos = centroidOf(strong) ?? centroidOf((itemsOfCluster.get(n.id) ?? []).map((e) => e.id));
+    }
+    if (!pos) {
+      const r = opts.fallbackRadius ?? 140;
+      const a = ringIdx++ * goldenAngle;
+      pos = { x: Math.cos(a) * r, y: Math.sin(a) * r, z: 0 };
+    }
+    out.set(n.id, pos);
+  }
+
+  // 2. new items
+  const globalCentroid = centroidOf(Array.from(out.keys())) ?? { x: 0, y: 0, z: 0 };
+  const occupied: TransitionPoint[] = Array.from(out.values());
+  const hubs: TransitionPoint[] = [];
+  for (const n of opts.nextNodes) {
+    if (n.group === 0) {
+      const p = out.get(n.id);
+      if (p) hubs.push(p);
+    }
+  }
+  const minSep = is3D ? 11 : 17;
+  for (const n of opts.nextNodes) {
+    if (n.group === 0 || out.has(n.id)) continue;
+    let bx = globalCentroid.x;
+    let by = globalCentroid.y;
+    let bz = globalCentroid.z ?? 0;
+    const conns = clustersOfItem.get(n.id) ?? [];
+    let totalW = 0;
+    let ax = 0;
+    let ay = 0;
+    let az = 0;
+    for (const e of conns) {
+      const p = out.get(e.id);
+      if (!p) continue;
+      const w = Math.pow(Math.max(0.05, e.w), 2.1);
+      ax += p.x * w;
+      ay += p.y * w;
+      az += (p.z ?? 0) * w;
+      totalW += w;
+    }
+    if (totalW > 0) {
+      bx = ax / totalW;
+      by = ay / totalW;
+      bz = az / totalW;
+    }
+    let chosen: TransitionPoint | null = null;
+    let fallback: TransitionPoint = { x: bx, y: by, z: bz };
+    for (let k = 0; k < 140 && !chosen; k++) {
+      const ang = k * goldenAngle;
+      const r = (is3D ? 9 : 10) + (is3D ? 5 : 6) * Math.sqrt(k);
+      let cand: TransitionPoint;
+      if (is3D) {
+        const t = (k + 0.5) / 140;
+        const polar = Math.acos(1 - 2 * t);
+        cand = {
+          x: bx + r * Math.sin(polar) * Math.cos(ang),
+          y: by + r * Math.cos(polar),
+          z: bz + r * Math.sin(polar) * Math.sin(ang),
+        };
+      } else {
+        cand = { x: bx + Math.cos(ang) * r, y: by + Math.sin(ang) * r, z: 0 };
+      }
+      fallback = cand;
+      let ok = true;
+      for (const o of occupied) {
+        const dx = cand.x - o.x;
+        const dy = cand.y - o.y;
+        const dz = is3D ? (cand.z ?? 0) - (o.z ?? 0) : 0;
+        if (dx * dx + dy * dy + dz * dz < minSep * minSep) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok && !is3D) {
+        for (const h of hubs) {
+          if (Math.abs(cand.x - h.x) < 84 && Math.abs(cand.y - h.y) < 21) {
+            ok = false;
+            break;
+          }
+        }
+      }
+      if (ok) chosen = cand;
+    }
+    const finalPos = chosen ?? fallback;
+    out.set(n.id, finalPos);
+    occupied.push(finalPos);
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Procrustes alignment (timeline mental-map preservation, mechanism #1)
+// ---------------------------------------------------------------------------
+
+/** Timeline anchor force (mechanism #2) for content nodes: disabled so content nodes converge freely. */
+export const TIMELINE_ANCHOR_ENABLED = false;
+/** d3 forceX/forceY-equivalent strength; CoSE/ForceAtlas2 use the damped blend lambda = 1 - 1/(1 + 10 * strength). */
+export const TIMELINE_ANCHOR_STRENGTH = 0.06;
+
+/** Cluster-only anchor force: disabled in favor of final-layout-seeded free convergence + Procrustes-to-final + u^2 blend. */
+export const TIMELINE_CLUSTER_ANCHOR_ENABLED = false;
+export const TIMELINE_CLUSTER_ANCHOR_STRENGTH = 0.12;
+
+/**
+ * Computes per-node anchor weights for Theme-Cluster hubs (`group === 0`) only.
+ * Matched clusters (`originKind !== 'split'`) receive `sim * sim` (Jaccard similarity of `memberTags`),
+ * while newly split clusters and all content nodes (`group !== 0`) are omitted (0 anchor force).
+ */
+export function computeClusterAnchorWeights(
+  prevNodes: ReadonlyArray<GraphNodePayload>,
+  nextNodes: ReadonlyArray<GraphNodePayload>
+): Map<string, number> {
+  const prevClusterById = new Map<string, GraphNodePayload>();
+  for (const n of prevNodes) {
+    if (n.group === 0) prevClusterById.set(n.id, n);
+  }
+  const weights = new Map<string, number>();
+  for (const next of nextNodes) {
+    if (next.group !== 0 || next.originKind === 'split') continue;
+    const prev = prevClusterById.get(next.id);
+    if (!prev) continue;
+    const a = new Set(prev.memberTags ?? prev.tags ?? []);
+    const b = new Set(next.memberTags ?? next.tags ?? []);
+    let inter = 0;
+    for (const t of a) if (b.has(t)) inter++;
+    const union = a.size + b.size - inter;
+    const sim = union === 0 ? 1.0 : inter / union;
+    if (sim > 0) weights.set(next.id, sim * sim);
+  }
+  return weights;
+}
+
+/** Single switch for the timeline Procrustes mechanism (skipped at the final step to keep static parity). */
+export const TIMELINE_PROCRUSTES_ENABLED = true;
+
+export interface ProcrustesOptions {
+  is3D?: boolean;
+  /** Allow a uniform scale (clamped to [scaleMin, scaleMax]); mirroring is never allowed. */
+  allowScale?: boolean;
+  scaleMin?: number;
+  scaleMax?: number;
+  /** Optional per-node weights (default: equal weights for all common nodes). */
+  weights?: ReadonlyMap<string, number> | Record<string, number>;
+}
+
+/**
+ * Computes per-node Procrustes weights based on Theme-Cluster (`group === 0`) tag stability.
+ * Unchanged clusters get weight 1.0, mutated clusters drop toward 0.05, and content nodes act
+ * as a 0.01 tie-breaker so content converges freely while anchoring the global frame on stable clusters.
+ */
+export function computeClusterStabilityProcrustesWeights(
+  prevNodes: ReadonlyArray<GraphNodePayload>,
+  nextNodes: ReadonlyArray<GraphNodePayload>
+): Map<string, number> {
+  const prevById = new Map<string, GraphNodePayload>();
+  for (const n of prevNodes) prevById.set(n.id, n);
+
+  const commonClusters: { prev: GraphNodePayload; next: GraphNodePayload }[] = [];
+  const commonContentIds: string[] = [];
+  for (const next of nextNodes) {
+    const prev = prevById.get(next.id);
+    if (!prev) continue;
+    if (next.group === 0 && prev.group === 0) {
+      commonClusters.push({ prev, next });
+    } else if (next.group !== 0 && prev.group !== 0) {
+      commonContentIds.push(next.id);
+    }
+  }
+
+  const weights = new Map<string, number>();
+  if (commonClusters.length >= 2) {
+    for (const { prev, next } of commonClusters) {
+      const a = new Set(prev.memberTags ?? []);
+      const b = new Set(next.memberTags ?? []);
+      let inter = 0;
+      for (const t of a) if (b.has(t)) inter++;
+      const union = a.size + b.size - inter;
+      const sim = union === 0 ? 1.0 : inter / union;
+      weights.set(next.id, 0.05 + 0.95 * sim * sim);
+    }
+    for (const id of commonContentIds) {
+      weights.set(id, 0.01);
+    }
+  } else {
+    for (const { next } of commonClusters) weights.set(next.id, 1.0);
+    for (const id of commonContentIds) weights.set(id, 1.0);
+  }
+  return weights;
+}
+
+/**
+ * Builds Procrustes alignment weights for aligning an intermediate timeline solve onto the filtered
+ * final layout: Theme-Clusters (`group === 0`) get weight 1.0 and content nodes get 0.01 when >= 2
+ * clusters are active (uniform 1.0 otherwise).
+ */
+export function computeFinalLayoutAlignmentWeights(
+  nodes: ReadonlyArray<GraphNodePayload>
+): Map<string, number> {
+  const clusterCount = nodes.reduce((acc, n) => acc + (n.group === 0 ? 1 : 0), 0);
+  const weights = new Map<string, number>();
+  for (const n of nodes) {
+    weights.set(n.id, clusterCount >= 2 ? (n.group === 0 ? 1.0 : 0.01) : 1.0);
+  }
+  return weights;
+}
+
+/**
+ * Aligns a freely-converged intermediate timeline layout onto the filtered final layout via
+ * cluster-weighted Procrustes, then smoothly blends toward the final layout using `u^2`.
+ */
+export function alignAndBlendToFinalLayout(
+  solved: ReadonlyMap<string, TransitionPoint>,
+  finalPositions: ReadonlyMap<string, TransitionPoint>,
+  nodes: ReadonlyArray<GraphNodePayload>,
+  step: number,
+  total: number,
+  is3D: boolean
+): { blended: Map<string, TransitionPoint>; procrustes: ProcrustesResult } {
+  const seedForStep = new Map<string, TransitionPoint>();
+  for (const n of nodes) {
+    const pt = finalPositions.get(n.id);
+    if (pt) seedForStep.set(n.id, { x: pt.x, y: pt.y, z: pt.z });
+  }
+  const weights = computeFinalLayoutAlignmentWeights(nodes);
+  const procrustes = alignLayoutProcrustes(seedForStep, solved, {
+    is3D,
+    allowScale: true,
+    weights,
+  });
+  const u = total > 1 ? Math.max(0, Math.min(1, step / (total - 1))) : 1;
+  const blend = u * u;
+  const blended = new Map<string, TransitionPoint>();
+  for (const [id, pt] of procrustes.aligned) {
+    const fin = seedForStep.get(id);
+    if (fin && blend > 0) {
+      blended.set(id, {
+        x: (1 - blend) * pt.x + blend * fin.x,
+        y: (1 - blend) * pt.y + blend * fin.y,
+        z: is3D ? (1 - blend) * (pt.z ?? 0) + blend * (fin.z ?? 0) : pt.z,
+      });
+    } else {
+      blended.set(id, { x: pt.x, y: pt.y, z: pt.z });
+    }
+  }
+  return { blended, procrustes };
+}
+
+export interface ProcrustesResult {
+  aligned: Map<string, TransitionPoint>;
+  scale: number;
+  /** Rotation angle in radians (2D) or rotation angle of the quaternion (3D). */
+  rotation: number;
+  commonCount: number;
+  rmsBefore: number;
+  rmsAfter: number;
+}
+
+function jacobiEigenSymmetric4(m: number[][]): { values: number[]; vectors: number[][] } {
+  const a = m.map((r) => [...r]);
+  const v = [
+    [1, 0, 0, 0],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, 1],
+  ];
+  for (let sweep = 0; sweep < 24; sweep++) {
+    let off = 0;
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) off += a[i][j] * a[i][j];
+    if (off < 1e-24) break;
+    for (let p = 0; p < 3; p++) {
+      for (let q = p + 1; q < 4; q++) {
+        if (Math.abs(a[p][q]) < 1e-30) continue;
+        const theta = (a[q][q] - a[p][p]) / (2 * a[p][q]);
+        const t = Math.sign(theta || 1) / (Math.abs(theta) + Math.sqrt(theta * theta + 1));
+        const c = 1 / Math.sqrt(t * t + 1);
+        const s = t * c;
+        for (let k = 0; k < 4; k++) {
+          const akp = a[k][p];
+          const akq = a[k][q];
+          a[k][p] = c * akp - s * akq;
+          a[k][q] = s * akp + c * akq;
+        }
+        for (let k = 0; k < 4; k++) {
+          const apk = a[p][k];
+          const aqk = a[q][k];
+          a[p][k] = c * apk - s * aqk;
+          a[q][k] = s * apk + c * aqk;
+        }
+        for (let k = 0; k < 4; k++) {
+          const vkp = v[k][p];
+          const vkq = v[k][q];
+          v[k][p] = c * vkp - s * vkq;
+          v[k][q] = s * vkp + c * vkq;
+        }
+      }
+    }
+  }
+  return { values: [a[0][0], a[1][1], a[2][2], a[3][3]], vectors: v };
+}
+
+/**
+ * Closed-form similarity alignment (translation + rotation + clamped uniform scale, no mirror) mapping
+ * the `next` positions of the nodes present in BOTH layouts onto their `prev` positions (weighted least
+ * squares, equal weights by default). The transform is applied to ALL nodes of `next` (including new ones).
+ * 2D: complex closed form. 3D: Horn's quaternion method with a deterministic Jacobi eigen-solver.
+ */
+export function alignLayoutProcrustes(
+  prev: ReadonlyMap<string, TransitionPoint>,
+  next: ReadonlyMap<string, TransitionPoint>,
+  opts: ProcrustesOptions = {}
+): ProcrustesResult {
+  const is3D = Boolean(opts.is3D);
+  const allowScale = opts.allowScale !== false;
+  const sMin = opts.scaleMin ?? 0.85;
+  const sMax = opts.scaleMax ?? 1.15;
+  const readWeight = (id: string): number => {
+    if (!opts.weights) return 1;
+    if (opts.weights instanceof Map) return opts.weights.get(id) ?? 1;
+    return (opts.weights as Record<string, number>)[id] ?? 1;
+  };
+  const common: { id: string; n: TransitionPoint; p: TransitionPoint; w: number }[] = [];
+  for (const [id, n] of next) {
+    const p = prev.get(id);
+    if (!p) continue;
+    common.push({ id, n, p, w: Math.max(1e-6, readWeight(id)) });
+  }
+  const identity = (): ProcrustesResult => ({
+    aligned: new Map(Array.from(next, ([id, p]) => [id, { x: p.x, y: p.y, z: p.z }] as const)),
+    scale: 1,
+    rotation: 0,
+    commonCount: common.length,
+    rmsBefore: 0,
+    rmsAfter: 0,
+  });
+  if (common.length < 2) return identity();
+
+  let sw = 0;
+  const cn = { x: 0, y: 0, z: 0 };
+  const cp = { x: 0, y: 0, z: 0 };
+  for (const c of common) {
+    sw += c.w;
+    cn.x += c.w * c.n.x;
+    cn.y += c.w * c.n.y;
+    cn.z += c.w * (c.n.z ?? 0);
+    cp.x += c.w * c.p.x;
+    cp.y += c.w * c.p.y;
+    cp.z += c.w * (c.p.z ?? 0);
+  }
+  cn.x /= sw;
+  cn.y /= sw;
+  cn.z /= sw;
+  cp.x /= sw;
+  cp.y /= sw;
+  cp.z /= sw;
+
+  let denom = 0;
+  let rotate: (x: number, y: number, z: number) => [number, number, number];
+  let rotation = 0;
+  let dotSum = 0; // Σ w · b·(R a)
+  if (!is3D) {
+    let dot = 0;
+    let cross = 0;
+    for (const c of common) {
+      const ax = c.n.x - cn.x;
+      const ay = c.n.y - cn.y;
+      const bx = c.p.x - cp.x;
+      const by = c.p.y - cp.y;
+      dot += c.w * (ax * bx + ay * by);
+      cross += c.w * (ax * by - ay * bx);
+      denom += c.w * (ax * ax + ay * ay);
+    }
+    rotation = Math.atan2(cross, dot);
+    const cs = Math.cos(rotation);
+    const sn = Math.sin(rotation);
+    dotSum = cs * dot + sn * cross;
+    rotate = (x, y) => [cs * x - sn * y, sn * x + cs * y, 0];
+  } else {
+    const S = [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ];
+    for (const c of common) {
+      const a = [c.n.x - cn.x, c.n.y - cn.y, (c.n.z ?? 0) - cn.z];
+      const b = [c.p.x - cp.x, c.p.y - cp.y, (c.p.z ?? 0) - cp.z];
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) S[i][j] += c.w * a[i] * b[j];
+      denom += c.w * (a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+    }
+    const N = [
+      [S[0][0] + S[1][1] + S[2][2], S[1][2] - S[2][1], S[2][0] - S[0][2], S[0][1] - S[1][0]],
+      [S[1][2] - S[2][1], S[0][0] - S[1][1] - S[2][2], S[0][1] + S[1][0], S[2][0] + S[0][2]],
+      [S[2][0] - S[0][2], S[0][1] + S[1][0], -S[0][0] + S[1][1] - S[2][2], S[1][2] + S[2][1]],
+      [S[0][1] - S[1][0], S[2][0] + S[0][2], S[1][2] + S[2][1], -S[0][0] - S[1][1] + S[2][2]],
+    ];
+    const eig = jacobiEigenSymmetric4(N);
+    let best = 0;
+    for (let i = 1; i < 4; i++) if (eig.values[i] > eig.values[best]) best = i;
+    let qw = eig.vectors[0][best];
+    let qx = eig.vectors[1][best];
+    let qy = eig.vectors[2][best];
+    let qz = eig.vectors[3][best];
+    if (qw < 0 || (qw === 0 && qx < 0)) {
+      qw = -qw;
+      qx = -qx;
+      qy = -qy;
+      qz = -qz;
+    }
+    const qn = Math.hypot(qw, qx, qy, qz) || 1;
+    qw /= qn;
+    qx /= qn;
+    qy /= qn;
+    qz /= qn;
+    rotation = 2 * Math.acos(Math.max(-1, Math.min(1, qw)));
+    const r00 = 1 - 2 * (qy * qy + qz * qz);
+    const r01 = 2 * (qx * qy - qz * qw);
+    const r02 = 2 * (qx * qz + qy * qw);
+    const r10 = 2 * (qx * qy + qz * qw);
+    const r11 = 1 - 2 * (qx * qx + qz * qz);
+    const r12 = 2 * (qy * qz - qx * qw);
+    const r20 = 2 * (qx * qz - qy * qw);
+    const r21 = 2 * (qy * qz + qx * qw);
+    const r22 = 1 - 2 * (qx * qx + qy * qy);
+    rotate = (x, y, z) => [
+      r00 * x + r01 * y + r02 * z,
+      r10 * x + r11 * y + r12 * z,
+      r20 * x + r21 * y + r22 * z,
+    ];
+    for (const c of common) {
+      const a = [c.n.x - cn.x, c.n.y - cn.y, (c.n.z ?? 0) - cn.z];
+      const ra = rotate(a[0], a[1], a[2]);
+      dotSum +=
+        c.w * (ra[0] * (c.p.x - cp.x) + ra[1] * (c.p.y - cp.y) + ra[2] * ((c.p.z ?? 0) - cp.z));
+    }
+  }
+
+  let scale = 1;
+  if (allowScale && denom > 1e-12) scale = Math.max(sMin, Math.min(sMax, dotSum / denom));
+
+  const aligned = new Map<string, TransitionPoint>();
+  for (const [id, p] of next) {
+    const r = rotate(p.x - cn.x, p.y - cn.y, (p.z ?? 0) - cn.z);
+    aligned.set(id, {
+      x: scale * r[0] + cp.x,
+      y: scale * r[1] + cp.y,
+      z: is3D ? scale * r[2] + cp.z : p.z,
+    });
+  }
+  let before = 0;
+  let after = 0;
+  for (const c of common) {
+    before += Math.hypot(c.n.x - c.p.x, c.n.y - c.p.y, is3D ? (c.n.z ?? 0) - (c.p.z ?? 0) : 0) ** 2;
+    const q = aligned.get(c.id)!;
+    after += Math.hypot(q.x - c.p.x, q.y - c.p.y, is3D ? (q.z ?? 0) - (c.p.z ?? 0) : 0) ** 2;
+  }
+  return {
+    aligned,
+    scale,
+    rotation,
+    commonCount: common.length,
+    rmsBefore: Math.sqrt(before / common.length),
+    rmsAfter: Math.sqrt(after / common.length),
+  };
+}
+
+export interface TimelineNodeFx {
+  alpha: number;
+  scale: number;
+}
+
+/** Appear/vanish effect of a content node (eased): in = alpha 0->1 & scale 0.35->1, out = reverse. */
+export function sampleTimelineNodeFx(kind: 'in' | 'out', progress: number): TimelineNodeFx {
+  const e = easeHighlightTransition(progress);
+  return kind === 'in'
+    ? { alpha: e, scale: 0.35 + 0.65 * e }
+    : { alpha: 1 - e, scale: 1 - 0.65 * e };
 }
 
 export function computeBipartiteEdgeCohesionWeights(

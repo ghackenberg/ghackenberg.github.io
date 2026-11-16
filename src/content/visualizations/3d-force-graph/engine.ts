@@ -1,6 +1,6 @@
 import ForceGraph3D from '3d-force-graph';
 import {
-  DEFAULT_TOPIC_CLUSTER_COUNT,
+  DEFAULT_TOPIC_CLUSTER_COUNT_3D,
   GRAPH_COLORS,
   GRAPH_GEOMETRY_LAYOUT_CONFIG,
   GRAPH_PHYSICS_CONFIG,
@@ -11,6 +11,9 @@ import {
   getEdgeLinkStrength3D,
   getGraphStyleTokens,
   getGraphTuningState,
+  isDefaultGraphTuningState,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_STRENGTH,
   buildGraphAdjacency,
   computeHopDistances,
   interpolateHexColor,
@@ -34,7 +37,8 @@ import {
   type CanonicalGraphPayload,
   type ClusterLabelCrossfade,
   type GraphConnectionPayload,
-  type GraphNodePayload
+  type GraphNodePayload,
+  type TimelineNodeFx
 } from '@commons/shared/graph-payload';
 import {
   compute3DGeometryTargets,
@@ -46,6 +50,7 @@ import {
   type GraphDragPhysicsController3D,
 } from '@commons/client/graph-drag-controller';
 import { createKChangeController, type KChangeController } from '@commons/client/graph-k-transition';
+import type { TimelineAdapter, TimelineGhostNode, TimelineSnapshot } from '@commons/client/graph-timeline-controller';
 import { createGraphTooltipController, type GraphTooltipController, type RawGraphNode } from '@commons/client/vis-tooltip';
 
 export interface ThreeColorLike {
@@ -165,9 +170,18 @@ export interface Force3DEngine {
   highlightFrameId: number | null;
   applyHighlight?(immediate?: boolean): void;
   drawForegroundOverlay?(): void;
-  rebuildClusterTopology?(targetK: number, opts?: { restoreDefault?: boolean }): void;
+  rebuildClusterTopology?(
+    targetK: number,
+    opts?: {
+      restoreDefault?: boolean;
+      snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number; z: number }> };
+    }
+  ): void;
+  timelineAdapter?: TimelineAdapter;
+  timelineFx?: ReadonlyMap<string, TimelineNodeFx> | null;
+  timelineGhosts?: TimelineGhostNode[];
   kChange?: KChangeController | null;
-  playKTransition?(nextPositions: Map<string, { x: number; y: number; z: number }>): boolean;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number; z: number }>, durationMs?: number): boolean;
   getLivePositions?(): Map<string, { x: number; y: number; z: number }>;
   applyForces(initialLoad?: boolean): void;
   stepCameraTowardCloud(alpha: number): void;
@@ -196,7 +210,7 @@ const engine: Force3DEngine = {
   canonicalPayload: null,
   initialClusteredNodes: null,
   initialClusteredConnections: null,
-  activeClusterCount: DEFAULT_TOPIC_CLUSTER_COUNT,
+  activeClusterCount: DEFAULT_TOPIC_CLUSTER_COUNT_3D,
   hoveredNodeId: null,
   draggedNodeId: null,
   adjacency: null,
@@ -608,6 +622,7 @@ const engine: Force3DEngine = {
         radius: number;
         group: number;
         color: string;
+        alpha: number;
       }[] = [];
 
       for (const n of this.nodes) {
@@ -617,7 +632,8 @@ const engine: Force3DEngine = {
           const hopDist = dists ? dists.get(n.id) : undefined;
           const isSecHover = secId !== null && n.id === secId;
           const scaleFactor = Math.cbrt(Math.max(0.01, (n.displayVal ?? n.val) / Math.max(0.01, n.val)));
-          const screenRadius = n.group === 0 ? 0 : Math.max(2, 6.5 * scaleFactor);
+          const nodeFx = n.group === 0 ? undefined : this.timelineFx?.get(n.id);
+          const screenRadius = n.group === 0 ? 0 : Math.max(2, 6.5 * scaleFactor) * (nodeFx?.scale ?? 1);
           allCalloutNodes.push({
             id: n.id,
             x: sc.x,
@@ -673,6 +689,7 @@ const engine: Force3DEngine = {
               radius: screenRadius,
               group: n.group,
               color,
+              alpha: nodeFx?.alpha ?? 1,
             });
           }
         } catch {
@@ -683,6 +700,7 @@ const engine: Force3DEngine = {
       if (contentPolygonItems.length > 0) {
         contentPolygonItems.sort((a, b) => a.sortKey - b.sortKey);
         for (const item of contentPolygonItems) {
+          fgCtx.globalAlpha = item.alpha;
           drawRegularPolygonNode2D(
             fgCtx,
             item.x,
@@ -693,6 +711,20 @@ const engine: Force3DEngine = {
             item.color,
             1.5
           );
+        }
+        fgCtx.globalAlpha = 1;
+      }
+
+      for (const g of this.timelineGhosts ?? []) {
+        try {
+          const gs = this.graph.graph2ScreenCoords(g.x, g.y, g.z ?? 0);
+          if (!gs || !Number.isFinite(gs.x) || !Number.isFinite(gs.y)) continue;
+          const gcol = (currentIsLight ? g.colorLight : g.colorDark) || palette[g.group] || palette[0];
+          fgCtx.globalAlpha = g.alpha;
+          drawRegularPolygonNode2D(fgCtx, gs.x, gs.y, Math.max(2, 6.5 * g.scale), g.group, gcol, gcol, 1.5);
+          fgCtx.globalAlpha = 1;
+        } catch {
+          // Suppress projection error
         }
       }
 
@@ -972,6 +1004,97 @@ const engine: Force3DEngine = {
     this.initialized = false;
     this.updateLayout(layout, isLight);
     this.initialized = true;
+
+    // ---- Timeline adapter (SYSTEM-014 Etappe 2) ----
+    this.timelineFx = null;
+    this.timelineGhosts = [];
+    this.timelineAdapter = {
+      isForceLayout: () => this.currentLayout === 'force',
+      is3D: () => true,
+      getCanonical: () => this.canonicalPayload ?? null,
+      getKTarget: () => getGraphTuningState().clusterCount,
+      getPhysicsKey: () => JSON.stringify(getGraphTuningState()),
+      isDefaultTuning: () => isDefaultGraphTuningState(),
+      getCurrentNodes: () => this.nodes || [],
+      getLivePositions: () => this.getLivePositions?.() ?? new Map(),
+      getRestPositions: () => this.initialForcePositions,
+      applySnapshot: (snapshot, start, morph) => {
+        const start3 = new Map<string, { x: number; y: number; z: number }>();
+        for (const [id, p] of start) start3.set(id, { x: p.x, y: p.y, z: p.z ?? 0 });
+        this.rebuildClusterTopology?.(snapshot.clusterCount, { snapshot: { ...snapshot, start: start3 } });
+        if (!morph) {
+          this.kChange?.discard();
+          this.applyHighlight?.(true);
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+        }
+        this.startCameraAdaptLoop(900);
+      },
+      solveWarm: async (snapshot, seeds, shouldCancel, anchors, anchorWeights) => {
+        const solved = await solve3DForceLayoutAsync(
+          {
+            nodes: snapshot.nodes.map((n) => ({
+              id: n.id,
+              group: n.group,
+              size: n.size,
+              originClusterId: n.originClusterId,
+            })),
+            connections: snapshot.connections.map((c) => ({
+              sourceId: c.sourceId,
+              targetId: c.targetId,
+              weight: c.weight ?? 0.5,
+            })),
+            seedPositions: seeds,
+            anchorPositions: anchors,
+            anchorStrength: anchors ? (anchorWeights ? TIMELINE_CLUSTER_ANCHOR_STRENGTH : TIMELINE_ANCHOR_STRENGTH) : undefined,
+            anchorWeights,
+          },
+          { shouldCancel }
+        );
+        if (!solved) return null;
+        const out = new Map<string, { x: number; y: number; z: number }>();
+        for (const [id, p] of Object.entries(solved)) out.set(id, { x: p.x, y: p.y, z: p.z });
+        return out;
+      },
+      playMorph: (next, durationMs) => {
+        const p3 = new Map<string, { x: number; y: number; z: number }>();
+        for (const [id, p] of next) p3.set(id, { x: p.x, y: p.y, z: p.z ?? 0 });
+        return this.playKTransition?.(p3, durationMs) ?? false;
+      },
+      setNodeFx: (fx, ghosts) => {
+        this.timelineFx = fx;
+        this.timelineGhosts = ghosts;
+        this.drawForegroundOverlay?.();
+      },
+      setPositions: (positions, final) => {
+        for (const n of this.nodes || []) {
+          const p = positions.get(n.id);
+          if (!p) continue;
+          n.x = p.x;
+          n.y = p.y;
+          n.z = p.z ?? 0;
+          n.fx = n.x;
+          n.fy = n.y;
+          n.fz = n.z;
+        }
+        this.drawForegroundOverlay?.();
+        if (final) {
+          for (const n of this.nodes || []) {
+            this.forcePositions.set(n.id, { x: n.x ?? 0, y: n.y ?? 0, z: n.z ?? 0 });
+          }
+          try {
+            if (this.graph && this.initialized) {
+              this.graph.cooldownTicks(1);
+              this.graph.d3ReheatSimulation();
+            }
+          } catch {
+            // Suppress
+          }
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+          this.startCameraAdaptLoop(900);
+        }
+      },
+      finishMorph: () => this.kChange?.finish(),
+    };
 
     this.stepCameraTowardCloud(1);
     this.startCameraAdaptLoop(500);
@@ -1386,7 +1509,13 @@ const engine: Force3DEngine = {
     }
   },
 
-  rebuildClusterTopology(targetK: number, opts?: { restoreDefault?: boolean }) {
+  rebuildClusterTopology(
+    targetK: number,
+    opts?: {
+      restoreDefault?: boolean;
+      snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number; z: number }> };
+    }
+  ) {
     if (!this.graph || !this.nodes || !this.canonicalPayload) return;
     this.kChange?.finish();
     const prevPayloadNodes: GraphNodePayload[] = this.nodes.map((n) => ({
@@ -1400,19 +1529,19 @@ const engine: Force3DEngine = {
     const prevMetaById = new Map(prevPayloadNodes.map((m) => [m.id, m]));
     const prevPos = new Map<string, { x: number; y: number; z: number }>();
     for (const n of this.nodes) prevPos.set(n.id, { x: n.x ?? 0, y: n.y ?? 0, z: n.z ?? 0 });
-    const reclustered = resolveKChangeCanonical(
-      this.canonicalPayload,
-      targetK,
-      prevPayloadNodes,
-      Boolean(opts?.restoreDefault)
-    );
-    const startPos = computeKChangeStartPositions(
-      reclustered.nodes,
-      reclustered.connections,
-      prevPos,
-      targetK,
-      55
-    );
+    const reclustered: CanonicalGraphPayload = opts?.snapshot
+      ? {
+          nodes: opts.snapshot.nodes,
+          connections: opts.snapshot.connections,
+          mergeTargetByOldClusterId: opts.snapshot.mergeTargetByOldClusterId,
+        }
+      : resolveKChangeCanonical(this.canonicalPayload, targetK, prevPayloadNodes, Boolean(opts?.restoreDefault));
+    const startPos = opts?.snapshot
+      ? new Map<string, { x: number; y: number; z?: number }>(opts.snapshot.start)
+      : computeKChangeStartPositions(reclustered.nodes, reclustered.connections, prevPos, targetK, 55);
+    if (opts?.snapshot) {
+      for (const [id, p] of startPos) if (!prevPos.has(id)) prevPos.set(id, { x: p.x, y: p.y, z: p.z ?? 0 });
+    }
 
     this.activeClusterCount = targetK;
     this.hoveredNodeId = null;
@@ -1542,10 +1671,11 @@ const engine: Force3DEngine = {
     return live;
   },
 
-  playKTransition(nextPositions: Map<string, { x: number; y: number; z: number }>) {
+  playKTransition(nextPositions: Map<string, { x: number; y: number; z: number }>, durationMs?: number) {
     const isLightNow = Boolean(this.isLight);
     return (
       this.kChange?.play(nextPositions, {
+        durationMs,
         onFrame: (tr, progress) => {
           for (const n of this.nodes || []) {
             const nextColor = {
@@ -1665,8 +1795,8 @@ const engine: Force3DEngine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
-      if (this.activeClusterCount !== DEFAULT_TOPIC_CLUSTER_COUNT) {
-        this.rebuildClusterTopology?.(DEFAULT_TOPIC_CLUSTER_COUNT, { restoreDefault: true });
+      if (this.activeClusterCount !== DEFAULT_TOPIC_CLUSTER_COUNT_3D) {
+        this.rebuildClusterTopology?.(DEFAULT_TOPIC_CLUSTER_COUNT_3D, { restoreDefault: true });
       }
       this.forcePositions.clear();
       for (const [id, pos] of this.initialForcePositions.entries()) {

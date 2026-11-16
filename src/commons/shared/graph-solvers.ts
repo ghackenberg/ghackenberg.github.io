@@ -69,6 +69,12 @@ export interface SolverGraphInput {
   connections: readonly SolverGraphEdge[];
   /** Warm-start seeds (current live positions). Absent => byte-identical cold start. */
   seedPositions?: ReadonlyMap<string, SolverSeedPoint> | Record<string, SolverSeedPoint>;
+  /** Timeline anchors: previous settled positions; nodes with an anchor get a weak spring toward it. */
+  anchorPositions?: ReadonlyMap<string, SolverSeedPoint> | Record<string, SolverSeedPoint>;
+  /** Anchor strength (d3 forceX/forceY-equivalent units); absent/0 disables anchors (cold path unchanged). */
+  anchorStrength?: number;
+  /** Optional per-node anchor weights in [0, 1]; when provided, omitted/0 nodes receive zero anchor force. */
+  anchorWeights?: ReadonlyMap<string, number> | Record<string, number>;
 }
 
 export interface Geometry2DOptions {
@@ -366,6 +372,27 @@ export function computeGraphCommunities(
 interface InitialSpiralPositions {
   init2D: Point2D[];
   init3D: Point3D[];
+}
+
+function lookupAnchorWeight(input: SolverGraphInput, id: string): number {
+  const weights = input.anchorWeights;
+  if (!weights) return 1;
+  const w = weights instanceof Map ? weights.get(id) : (weights as Record<string, number>)[id];
+  return typeof w === 'number' && Number.isFinite(w) ? Math.max(0, Math.min(1, w)) : 0;
+}
+
+function lookupAnchor(input: SolverGraphInput, id: string): SolverSeedPoint | undefined {
+  const anchors = input.anchorPositions;
+  if (!anchors || !((input.anchorStrength ?? 0) > 0)) return undefined;
+  if (!(lookupAnchorWeight(input, id) > 0)) return undefined;
+  const raw = anchors instanceof Map ? anchors.get(id) : (anchors as Record<string, SolverSeedPoint>)[id];
+  if (!raw || !Number.isFinite(raw.x) || !Number.isFinite(raw.y)) return undefined;
+  return raw;
+}
+
+/** Damped post-blend helper (retained for reference; CoSE/ForceAtlas2 use pure warm-start + cluster-weighted Procrustes). */
+export function anchorBlendLambda(strength: number): number {
+  return 1 - 1 / (1 + 10 * Math.max(0, strength));
 }
 
 function lookupSeed(
@@ -921,7 +948,8 @@ function buildSigmaForceAtlas2Graph(input: SolverGraphInput, init: InitialSpiral
 
 function extractSigmaCenteredTargets(
   graph: Graph,
-  nodes: readonly SolverGraphNode[]
+  nodes: readonly SolverGraphNode[],
+  input?: SolverGraphInput
 ): Record<string, Point2D> {
   const rawMap = new Map<string, Point2D>();
   graph.forEachNode((nodeId) => {
@@ -930,6 +958,7 @@ function extractSigmaCenteredTargets(
       y: Number(graph.getNodeAttribute(nodeId, 'y') || 0),
     });
   });
+  void input;
   return centerPositions2D(nodes, rawMap);
 }
 
@@ -946,7 +975,7 @@ export function solveSigmaForceAtlas2Layout(input: SolverGraphInput): Record<str
     });
     done += step;
   }
-  return extractSigmaCenteredTargets(graph, input.nodes);
+  return extractSigmaCenteredTargets(graph, input.nodes, input);
 }
 
 export async function solveSigmaForceAtlas2LayoutAsync(
@@ -975,7 +1004,7 @@ export async function solveSigmaForceAtlas2LayoutAsync(
     }
   }
 
-  return extractSigmaCenteredTargets(graph, input.nodes);
+  return extractSigmaCenteredTargets(graph, input.nodes, input);
 }
 
 function createCytoscapeHeadlessInstance(
@@ -1065,23 +1094,41 @@ function buildCytoscapeCoseLayoutOptions(
   };
 }
 
+/** CoSE uses Math.random for coincident-node jitter; pin it to a fixed PRNG so warm-started solves are deterministic. */
+function runCoseDeterministic(cy: cytoscape.Core): void {
+  const original = Math.random;
+  let state = 0x9e3779b9;
+  Math.random = () => {
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  try {
+    cy.layout(buildCytoscapeCoseLayoutOptions(false)).run();
+  } finally {
+    Math.random = original;
+  }
+}
 function extractCytoscapeCenteredTargets(
   cy: cytoscape.Core,
-  nodes: readonly SolverGraphNode[]
+  nodes: readonly SolverGraphNode[],
+  input?: SolverGraphInput
 ): Record<string, Point2D> {
   const rawMap = new Map<string, Point2D>();
   cy.nodes().forEach((n) => {
     const pos = n.position();
     rawMap.set(n.id(), { x: pos.x, y: pos.y });
   });
+  void input;
   return centerPositions2D(nodes, rawMap);
 }
 
 export function solveCytoscapeCoseLayout(input: SolverGraphInput): Record<string, Point2D> {
   const init = buildInitialSpiralPositions(input);
   const cy = createCytoscapeHeadlessInstance(input, init);
-  cy.layout(buildCytoscapeCoseLayoutOptions(false)).run();
-  const targets = extractCytoscapeCenteredTargets(cy, input.nodes);
+  runCoseDeterministic(cy);
+  const targets = extractCytoscapeCenteredTargets(cy, input.nodes, input);
   cy.destroy();
   return targets;
 }
@@ -1107,8 +1154,8 @@ export async function solveCytoscapeCoseLayoutAsync(
     return null;
   }
 
-  cy.layout(buildCytoscapeCoseLayoutOptions(false)).run();
-  const targets = extractCytoscapeCenteredTargets(cy, input.nodes);
+  runCoseDeterministic(cy);
+  const targets = extractCytoscapeCenteredTargets(cy, input.nodes, input);
   cy.destroy();
   return targets;
 }
@@ -1207,6 +1254,19 @@ function createD3HeadlessSimulation(
     .force('y', d3.forceY<D3HeadlessNode>(0).strength(centerStrength))
     .stop();
   if (input.seedPositions) simulation.alpha(0.45);
+  const anchoredD3 = simNodes
+    .map((n) => ({ n, a: lookupAnchor(input, n.id), w: lookupAnchorWeight(input, n.id) }))
+    .filter((e) => e.a !== undefined);
+  if (anchoredD3.length > 0) {
+    const strength = input.anchorStrength ?? 0;
+    simulation.force('anchor', (alpha: number) => {
+      // per-node weight applied below
+      for (const e of anchoredD3) {
+        e.n.vx = (e.n.vx || 0) + (e.a!.x - e.n.x) * strength * alpha * e.w;
+        e.n.vy = (e.n.vy || 0) + (e.a!.y - e.n.y) * strength * alpha * e.w;
+      }
+    });
+  }
 
   return { simNodes, simulation };
 }
@@ -1264,6 +1324,9 @@ interface VisSolverNode {
   isHub: boolean;
   repulsionFactor: number;
   mass: number;
+  ax?: number;
+  ay?: number;
+  aw?: number;
 }
 
 function stepVisNetworkIteration(
@@ -1278,7 +1341,8 @@ function stepVisNetworkIteration(
   minSeparation: number,
   maxVelocity: number,
   timestep: number,
-  heat = 1
+  heat = 1,
+  anchorK = 0
 ): void {
   const cooling = Math.pow(0.015, iter / iterations) * heat;
 
@@ -1287,6 +1351,10 @@ function stepVisNetworkIteration(
     const gravityForce = centralGravity * n.mass;
     n.fx = -n.x * gravityForce;
     n.fy = -n.y * gravityForce;
+    if (anchorK > 0 && n.ax !== undefined && n.ay !== undefined) {
+      n.fx += (n.ax - n.x) * anchorK * (n.aw ?? 1) * n.mass;
+      n.fy += (n.ay - n.y) * anchorK * (n.aw ?? 1) * n.mass;
+    }
   }
 
   for (let i = 0; i < simNodes.length; i++) {
@@ -1394,6 +1462,9 @@ function createVisNetworkSolverState(input: SolverGraphInput, init: InitialSpira
         ? 0.55 * getNodeDegreeRepulsionFactor(2)
         : getNodeDegreeRepulsionFactor(deg),
       mass: 1.0,
+      ...(lookupAnchor(input, n.id)
+        ? { ax: lookupAnchor(input, n.id)!.x, ay: lookupAnchor(input, n.id)!.y, aw: lookupAnchorWeight(input, n.id) }
+        : {}),
     };
   });
 
@@ -1409,6 +1480,7 @@ function createVisNetworkSolverState(input: SolverGraphInput, init: InitialSpira
     timestep: 0.5,
     iterations: GRAPH_PHYSICS_CONFIG.visIterations,
     heat: input.seedPositions ? 0.45 : 1,
+    anchorK: input.anchorStrength ?? 0,
   };
 }
 
@@ -1439,7 +1511,8 @@ export function solveVisNetworkForceLayout(input: SolverGraphInput): Record<stri
       s.minSeparation,
       s.maxVelocity,
       s.timestep,
-      s.heat
+      s.heat,
+      s.anchorK
     );
   }
   return finalizeVisNetworkTargets(s.simNodes, input.nodes);
@@ -1467,7 +1540,8 @@ export async function solveVisNetworkForceLayoutAsync(
       s.minSeparation,
       s.maxVelocity,
       s.timestep,
-      s.heat
+      s.heat,
+      s.anchorK
     );
     if ((iter & 7) === 7) {
       if (options?.shouldCancel?.()) return null;
@@ -1561,6 +1635,20 @@ function create3DForceSimulation(
       }
     });
   if (input.seedPositions) simulation.alpha(0.45);
+  const anchored3D = simNodes
+    .map((n) => ({ n, a: lookupAnchor(input, n.id), w: lookupAnchorWeight(input, n.id) }))
+    .filter((e) => e.a !== undefined);
+  if (anchored3D.length > 0) {
+    const strength = input.anchorStrength ?? 0;
+    simulation.force('anchor', (alpha: number) => {
+      // per-node weight applied below
+      for (const e of anchored3D) {
+        e.n.vx = (e.n.vx || 0) + (e.a!.x - (e.n.x || 0)) * strength * alpha * e.w;
+        e.n.vy = (e.n.vy || 0) + (e.a!.y - (e.n.y || 0)) * strength * alpha * e.w;
+        e.n.vz = (e.n.vz || 0) + ((e.a!.z ?? 0) - (e.n.z || 0)) * strength * alpha * e.w;
+      }
+    });
+  }
 
   return { simNodes, simulation };
 }

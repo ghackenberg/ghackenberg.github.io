@@ -37,11 +37,12 @@ const optimizedScreenshot = screenshotImg ? await getImage({
 
 import { getCanonicalGraphPayloadArtifact, getGraphPayloadEndpointUrl } from "@commons/server/graph-payload-endpoint";
 import { getGraphLayoutEndpointUrl } from "@commons/server/graph-layout-endpoint";
-import { buildRegularPolygonSvgPoints } from "@commons/shared/graph-payload";
+import { buildRegularPolygonSvgPoints, getDefaultTopicClusterCount } from "@commons/shared/graph-payload";
 
 const payloadArtifact = await getCanonicalGraphPayloadArtifact();
 const payloadUrl = await getGraphPayloadEndpointUrl();
 const layoutUrl = await getGraphLayoutEndpointUrl(type);
+const defaultClusterCount = getDefaultTopicClusterCount(type);
 
 
 const engineSwitcherItems = [
@@ -282,9 +283,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Topic Clusters (K)</span>
-                    <span data-tune-val="clusterCount" class="font-mono text-[10px] text-gray-400 light:text-slate-500">4</span>
+                    <span data-tune-val="clusterCount" class="font-mono text-[10px] text-gray-400 light:text-slate-500">{defaultClusterCount}</span>
                   </div>
-                  <input type="range" data-tune-key="clusterCount" data-tune-cat="physics" min="2" max="18" step="1" value="4" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="clusterCount" data-tune-cat="physics" min="2" max="18" step="1" value={defaultClusterCount} class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -419,6 +420,86 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           ></div>
         </div>
 
+        <!-- Timeline Player (SYSTEM-014 Etappe 2): replays the graph item by item -->
+        <div
+          id="timeline-bar"
+          class="artifact-card-footer px-3.5 py-2 text-xs select-none"
+          role="group"
+          aria-label="Timeline: replay the knowledge graph item by item"
+          tabindex="0"
+        >
+          <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 w-full">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                id="timeline-prev"
+                aria-label="Previous item"
+                title="Previous item"
+                disabled
+                class="timeline-btn inline-flex items-center justify-center w-7 h-7 rounded-lg border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M8.5 1.5v9L3 6z" /></svg>
+              </button>
+              <button
+                type="button"
+                id="timeline-play"
+                aria-label="Play timeline"
+                aria-pressed="false"
+                title="Play / Pause (Space)"
+                disabled
+                class="timeline-btn inline-flex items-center justify-center w-8 h-7 rounded-lg border transition-colors cursor-pointer bg-domain-visualizations/15 border-domain-visualizations/50 text-gray-100 light:text-slate-900 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg id="timeline-icon-play" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" /></svg>
+                <svg id="timeline-icon-pause" class="hidden" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2.5 1.5h2.75v9H2.5zM6.75 1.5H9.5v9H6.75z" /></svg>
+              </button>
+              <button
+                type="button"
+                id="timeline-next"
+                aria-label="Next item"
+                title="Next item"
+                disabled
+                class="timeline-btn inline-flex items-center justify-center w-7 h-7 rounded-lg border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3.5 1.5v9L9 6z" /></svg>
+              </button>
+            </div>
+            <input
+              type="range"
+              id="timeline-scrubber"
+              min="0"
+              max="0"
+              step="1"
+              value="0"
+              disabled
+              aria-label="Timeline position (one step per content item)"
+              class="tune-slider order-last basis-full sm:order-none sm:basis-auto sm:flex-1 min-w-[8rem] h-1.5 cursor-pointer"
+            />
+            <div class="flex items-center gap-1 shrink-0">
+              <label for="timeline-speed" class="sr-only">Playback speed</label>
+              <select
+                id="timeline-speed"
+                aria-label="Playback speed"
+                class="bg-element-bg/70 border border-element-border rounded-lg text-gray-200 light:text-slate-800 font-semibold text-[11px] sm:text-xs cursor-pointer px-1.5 py-0.5 focus:outline-none"
+              >
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+            <span
+              id="timeline-date"
+              class="shrink-0 px-2 py-0.5 rounded-lg border border-element-border bg-element-bg/70 font-semibold tabular-nums text-gray-200 light:text-slate-800 text-[11px] sm:text-xs"
+              title="Publication date of the current item"
+            >—</span>
+            <span
+              id="timeline-counter"
+              role="status"
+              aria-live="polite"
+              class="shrink-0 font-semibold tabular-nums text-gray-300 light:text-slate-600 text-[11px] sm:text-xs"
+            >0 Items · 0 Clusters</span>
+          </div>
+        </div>
+
         <!-- Interactive Content-Type Filter Bar -->
         <div
           id="content-filter-bar"
@@ -549,7 +630,17 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
   <script>
     import { getThemeTokens } from '@commons/shared/domain-themes';
     import {
+      createGraphTimelineController,
+      type GraphTimelineController,
+      type TimelineAdapter,
+      type TimelineState,
+    } from '@commons/client/graph-timeline-controller';
+    import {
+      DEFAULT_TOPIC_CLUSTER_COUNT,
+      configureDefaultClusterCount,
+      getDefaultTopicClusterCount,
       hydrateEnginePayloads,
+      reclusterCanonicalGraphPayload,
       getGraphTuningState,
       setGraphTuningState,
       resetGraphTuningState,
@@ -567,6 +658,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       destroy(): void;
       updateLayout(layout: string, isLight: boolean): void;
       applyTuning?(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
+      timelineAdapter?: TimelineAdapter;
       layouts: { id: string; label: string }[];
     }
 
@@ -580,6 +672,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         GRAPH_TYPE: string;
         GRAPH_PAYLOAD: EnginePayloads;
         activeInstance: GraphInstance | null;
+        activeTimeline: GraphTimelineController | null;
       }
     }
 
@@ -602,7 +695,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
     }
 
     async function loadHydratedGraphPayload(
-      _type: string,
+      type: string,
       payloadUrl: string,
       layoutUrl: string
     ): Promise<EnginePayloads> {
@@ -612,7 +705,12 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           ? fetchWithMemoryCache<GraphLayoutPayload>(layoutUrl).catch(() => null)
           : Promise.resolve(null),
       ]);
-      return hydrateEnginePayloads(canonicalPayload, layoutData?.positions);
+      const targetK = getDefaultTopicClusterCount(type);
+      const effectiveCanonical =
+        targetK !== DEFAULT_TOPIC_CLUSTER_COUNT
+          ? reclusterCanonicalGraphPayload(canonicalPayload, targetK)
+          : canonicalPayload;
+      return hydrateEnginePayloads(effectiveCanonical, layoutData?.positions);
     }
 
     function onReady(fn: () => void) {
@@ -688,6 +786,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
       const stageEl = container.closest('.visualization-stage') as HTMLElement | null;
       const type = container.dataset.graphType || '';
+      configureDefaultClusterCount(getDefaultTopicClusterCount(type));
       const payloadUrl =
         stageEl?.dataset.payloadUrl ||
         container.dataset.payloadUrl ||
@@ -736,6 +835,11 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
       async function runInit() {
         if (!container) return;
+        timelineUnsub?.();
+        timelineUnsub = null;
+        timeline?.destroy();
+        timeline = null;
+        window.activeTimeline = null;
         if (activeInstance) {
           if (typeof activeInstance.destroy === 'function') {
             activeInstance.destroy();
@@ -822,6 +926,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             utmCampaign: 'interactive_visualization'
           });
           window.activeInstance = activeInstance;
+          attachTimeline();
 
         } catch (e) {
           console.error("Failed to load visualization: ", e);
@@ -839,16 +944,18 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
       // Handle layout change
       if (selector) {
-        selector.addEventListener('change', (e) => {
+        selector.addEventListener('change', async (e) => {
           const newLayout = (e.target as HTMLSelectElement).value;
           syncTuneLayoutVisibility(newLayout);
           if (activeInstance) {
+            await timeline?.resetToEnd();
             const url = new URL(window.location.href);
             url.searchParams.set('layout', newLayout);
             window.history.pushState({}, '', url.toString());
             
             const isLight = document.documentElement.classList.contains('light');
             activeInstance.updateLayout(newLayout, isLight);
+            syncTimelineUI(timeline ? timeline.getState() : null);
           }
         });
       }
@@ -873,6 +980,83 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           const params = new URLSearchParams(window.location.search);
           const currentLayout = params.get('layout') || activeInstance.layouts[0].id;
           activeInstance.updateLayout(currentLayout, isLight);
+        }
+      });
+
+      // ---- Timeline Player wiring (SYSTEM-014 Etappe 2) ----
+      const timelineBar = document.getElementById('timeline-bar');
+      const tlPlay = document.getElementById('timeline-play') as HTMLButtonElement | null;
+      const tlPrev = document.getElementById('timeline-prev') as HTMLButtonElement | null;
+      const tlNext = document.getElementById('timeline-next') as HTMLButtonElement | null;
+      const tlScrubber = document.getElementById('timeline-scrubber') as HTMLInputElement | null;
+      const tlSpeed = document.getElementById('timeline-speed') as HTMLSelectElement | null;
+      const tlDate = document.getElementById('timeline-date');
+      const tlCounter = document.getElementById('timeline-counter');
+      const tlIconPlay = document.getElementById('timeline-icon-play');
+      const tlIconPause = document.getElementById('timeline-icon-pause');
+      let timeline: GraphTimelineController | null = null;
+      let timelineUnsub: (() => void) | null = null;
+
+      const syncTimelineUI = (state: TimelineState | null) => {
+        const layoutOk = Boolean(activeInstance?.timelineAdapter?.isForceLayout());
+        const enabled = Boolean(state && state.total > 0 && layoutOk);
+        for (const el of [tlPlay, tlPrev, tlNext, tlScrubber]) {
+          if (el) el.disabled = !enabled;
+        }
+        if (timelineBar) {
+          timelineBar.title = layoutOk ? '' : 'The timeline is available in the force-directed layout.';
+          timelineBar.dataset.timelineEnabled = enabled ? 'true' : 'false';
+        }
+        if (!state) return;
+        if (tlScrubber) {
+          tlScrubber.max = String(state.lastStep);
+          tlScrubber.value = String(state.step);
+          tlScrubber.setAttribute('aria-valuetext', `Item ${state.step + 1} of ${state.total}`);
+        }
+        if (tlCounter) tlCounter.textContent = `${state.itemCount} Items · ${state.clusterCount} Clusters`;
+        if (tlDate) tlDate.textContent = state.dateLabel || '—';
+        if (tlPlay) {
+          tlPlay.setAttribute('aria-pressed', state.playing ? 'true' : 'false');
+          tlPlay.setAttribute('aria-label', state.playing ? 'Pause timeline' : 'Play timeline');
+        }
+        tlIconPlay?.classList.toggle('hidden', state.playing);
+        tlIconPause?.classList.toggle('hidden', !state.playing);
+        if (timelineBar) {
+          timelineBar.dataset.timelineStep = String(state.step);
+          timelineBar.dataset.timelinePlaying = state.playing ? 'true' : 'false';
+        }
+      };
+
+      const attachTimeline = () => {
+        timelineUnsub?.();
+        timeline?.destroy();
+        timeline = null;
+        window.activeTimeline = null;
+        const adapter = activeInstance?.timelineAdapter;
+        if (adapter) {
+          timeline = createGraphTimelineController(adapter);
+          window.activeTimeline = timeline;
+          timelineUnsub = timeline.subscribe(syncTimelineUI);
+          if (tlSpeed) timeline.setSpeed(Number(tlSpeed.value) || 1);
+          syncTimelineUI(timeline.getState());
+        } else {
+          syncTimelineUI(null);
+        }
+      };
+
+      tlPlay?.addEventListener('click', () => timeline?.toggle());
+      tlPrev?.addEventListener('click', () => timeline?.stepBy(-1));
+      tlNext?.addEventListener('click', () => timeline?.stepBy(1));
+      tlScrubber?.addEventListener('input', () => {
+        const v = Number(tlScrubber.value);
+        if (Number.isFinite(v)) timeline?.seek(v);
+      });
+      tlSpeed?.addEventListener('change', () => timeline?.setSpeed(Number(tlSpeed.value) || 1));
+      timelineBar?.addEventListener('keydown', (ev) => {
+        const target = ev.target as HTMLElement | null;
+        if (ev.key === ' ' && target && target.tagName !== 'BUTTON' && target.tagName !== 'SELECT') {
+          ev.preventDefault();
+          timeline?.toggle();
         }
       });
 
@@ -1013,13 +1197,17 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             } else {
               if (physicsDebounceTimer) clearTimeout(physicsDebounceTimer);
               physicsDebounceTimer = setTimeout(() => {
-                activeInstance?.applyTuning?.(cat);
+                if (cat === 'physics' && timeline?.isActive()) {
+                  timeline.onTuningChanged();
+                } else {
+                  activeInstance?.applyTuning?.(cat);
+                }
               }, 60);
             }
           });
         });
 
-        tuneResetBtn?.addEventListener('click', () => {
+        tuneResetBtn?.addEventListener('click', async () => {
           if (physicsDebounceTimer) {
             clearTimeout(physicsDebounceTimer);
             physicsDebounceTimer = null;
@@ -1028,6 +1216,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           resetContentFilterGroups();
           syncContentFilterUI();
           syncTuneUI();
+          await timeline?.resetToEnd();
           activeInstance?.applyTuning?.('reset');
         });
 
