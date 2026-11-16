@@ -56,9 +56,12 @@ interface SceneContextResult {
 
 ### B. `validate_image_prompt`
 Prüft einen entworfenen Prompt vor der Vorlage an den User:
-- Stimmen Stilvorgaben (Pixar/Disney Comic, cel shading)?
-- Sind unzulässige Posen oder Frames enthalten?
+- Stimmen Stilvorgaben (Pixar/Disney Comic, `crisp dark ink outlines`, `bold cel shading`, `#030712` Dark Slate)?
+- Sind unzulässige Posen, Frames oder Stil-Abweichungen (z. B. `"3D illustration"`, `"off-white"`) enthalten?
 - Entspricht das Farbschema den Richtlinien?
+
+### C. `resolve_post_hero_prompt`
+Ermittelt anhand der letzten 2–3 Posts in `src/content/posts/` automatisch die nächste freie Surface-Rotation (`Surface A` / `B` / `C`) und setzt das exakte kanonische Prompt-Template aus [`archetypes/posts.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/posts.md) deterministisch zusammen.
 
 ---
 

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Perceptual OKLab color blending between cluster hues, rectangular cluster pill clearance with satellite coverage badge, and N-gon content type polygons">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-oklab" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-text-muted)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" rx="12" fill="var(--svg-bg)" />
+
+  <!-- Top Zone: Perceptual OKLab Blending -->
+  <text x="240" y="34" font-family="Outfit, Inter, system-ui, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" text-anchor="middle" fill="var(--svg-text-primary)">PERCEPTUAL OKLAB BLENDING</text>
+  <text x="240" y="54" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Chroma-preserved mixing across 3 cluster hues</text>
+
+  <!-- 3 Cluster Hue Swatches -->
+  <rect x="36" y="76" width="96" height="30" rx="15" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="84" y="91" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">Sky 50%</text>
+
+  <rect x="36" y="118" width="96" height="30" rx="15" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.6" />
+  <text x="84" y="133" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">Amber 30%</text>
+
+  <rect x="36" y="160" width="96" height="30" rx="15" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="84" y="175" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">Mint 20%</text>
+
+  <!-- Weighted curves into OKLab mixer -->
+  <path d="M 136 91 Q 186 91 214 126" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-oklab)" />
+  <path d="M 136 133 L 210 133" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1.6" marker-end="url(#arr-oklab)" />
+  <path d="M 136 175 Q 186 175 214 140" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.4" marker-end="url(#arr-oklab)" />
+
+  <!-- OKLab Mixed Output -->
+  <rect x="218" y="106" width="126" height="54" rx="10" fill="var(--svg-accent-1-bg)" stroke="var(--svg-accent-1-border)" stroke-width="1.8" />
+  <text x="281" y="124" font-family="Outfit, Inter, system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-accent-1-text)">OKLab Mix</text>
+  <text x="281" y="144" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" dominant-baseline="central" fill="var(--svg-accent-1-subtext)">Vivid Chroma</text>
+
+  <!-- Contrast: sRGB Mud -->
+  <rect x="366" y="106" width="84" height="54" rx="10" fill="var(--svg-card-alt)" stroke="var(--svg-border)" stroke-width="1.4" stroke-dasharray="4,3" />
+  <text x="408" y="124" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-text-secondary)">sRGB</text>
+  <text x="408" y="144" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-text-muted)">Muddy Gray</text>
+
+  <!-- Horizon Divider -->
+  <path d="M 24 214 Q 240 202 456 214" fill="none" stroke="var(--svg-border)" stroke-width="1.2" stroke-dasharray="4,4" />
+
+  <!-- Bottom-Left Zone: Pill Clearance & Satellite Badge -->
+  <text x="150" y="242" font-family="Outfit, Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="0.04em" text-anchor="middle" fill="var(--svg-text-primary)">PILL CLEARANCE</text>
+  <text x="150" y="260" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">boxHalfW = 79.5, boxHalfH = 17.2</text>
+
+  <!-- Clearance Exclusion Zone -->
+  <rect x="32" y="308" width="236" height="72" rx="8" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="1.3" stroke-dasharray="5,3" />
+
+  <!-- Cluster Pill -->
+  <rect x="48" y="328" width="136" height="32" rx="16" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <text x="116" y="344" font-family="Outfit, Inter, system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">#AI · Graphs</text>
+
+  <!-- Satellite % Coverage Badge -->
+  <rect x="192" y="331" width="58" height="26" rx="13" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <text x="221" y="344" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">72%</text>
+
+  <!-- Pushed-out staggered content nodes -->
+  <polygon points="82,280 89,292 75,292" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+  <rect x="150" y="278" width="12" height="12" rx="2" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.5" />
+  <polygon points="104,394 111,399 108,407 100,407 97,399" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <circle cx="196" cy="400" r="6.5" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+
+  <text x="150" y="438" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">Staggered outside zone</text>
+
+  <!-- Vertical separator -->
+  <line x1="288" y1="234" x2="288" y2="452" stroke="var(--svg-border)" stroke-width="1" stroke-dasharray="3,4" />
+
+  <!-- Bottom-Right Zone: 8 Content N-Gon Shapes -->
+  <text x="378" y="242" font-family="Outfit, Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="0.04em" text-anchor="middle" fill="var(--svg-text-primary)">8 N-GON TYPES</text>
+  <text x="378" y="260" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">3 to 10 equal-area corners</text>
+
+  <!-- Row 1: Triangle (3) & Square (4) -->
+  <polygon points="334,292 345,310 323,310" fill="var(--svg-accent-2-bg)" stroke="var(--svg-accent-2-border)" stroke-width="1.6" />
+  <text x="334" y="328" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">3: Posts</text>
+
+  <rect x="411" y="292" width="18" height="18" rx="2" fill="var(--svg-accent-3-bg)" stroke="var(--svg-accent-3-border)" stroke-width="1.6" />
+  <text x="420" y="328" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">4: Pubs</text>
+
+  <!-- Row 2: Pentagon (5) & Hexagon (6) -->
+  <polygon points="334,352 344,359 340,371 328,371 324,359" fill="var(--svg-accent-4-bg)" stroke="var(--svg-accent-4-border)" stroke-width="1.6" />
+  <text x="334" y="388" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">5: Decks</text>
+
+  <polygon points="420,351 429,356 429,367 420,372 411,367 411,356" fill="var(--svg-accent-5-bg)" stroke="var(--svg-accent-5-border)" stroke-width="1.6" />
+  <text x="420" y="388" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">6: Courses</text>
+
+  <!-- Row 3: Octagon (8) & Decagon (10) -->
+  <polygon points="330,411 338,411 344,417 344,425 338,431 330,431 324,425 324,417" fill="var(--svg-accent-6-bg)" stroke="var(--svg-accent-6-border)" stroke-width="1.6" />
+  <text x="334" y="446" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">7–8: Work</text>
+
+  <circle cx="420" cy="421" r="10" fill="var(--svg-accent-9-bg)" stroke="var(--svg-accent-9-border)" stroke-width="1.6" />
+  <text x="420" y="446" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--svg-text-secondary)">9–10: News/Vis</text>
+</svg>

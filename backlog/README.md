@@ -34,6 +34,8 @@ Ideen für künftige Artikel, Hochschulkurse, Keynotes und interaktive Visualisi
 | ID | Titel / Arbeitstitel | Typ | Sprache | Hebel / Priorität | Status | Spezifikation |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **CONTENT-001** | 5 Graph-Engines auf demselben Wissensgraphen: WebGL vs. Canvas 2D vs. SVG, Build-zu-Client-Solver-Parität und 60-FPS-Interaktion im Praxis-Benchmark | `post` | `de` | Hoch | `idea` | [001-five-graph-engines-architecture-and-60fps-benchmarks.md](./content/001-five-graph-engines-architecture-and-60fps-benchmarks.md) |
+| **CONTENT-002** | Edge-Free Knowledge Graphs: OKLab & Cluster Pills | `post` | `en` | Hoch | `idea` | [002-edge-free-knowledge-graphs-oklab-cluster-pills.md](./content/002-edge-free-knowledge-graphs-oklab-cluster-pills.md) |
+| **CONTENT-003** | Temporal Knowledge Graphs: Mitosis & 60fps Timelines | `post` | `en` | Hoch | `idea` | [003-temporal-knowledge-graphs-mitosis-60fps-timelines.md](./content/003-temporal-knowledge-graphs-mitosis-60fps-timelines.md) |
 
 ---
 

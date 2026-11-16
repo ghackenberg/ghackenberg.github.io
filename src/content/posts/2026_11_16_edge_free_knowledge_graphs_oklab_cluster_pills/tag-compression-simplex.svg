@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Dimensional compression from 126 individual tag hubs into 3-cluster 2D triangle simplex and 4-cluster 3D tetrahedron simplex">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-compress" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" rx="12" fill="var(--svg-bg)" />
+
+  <!-- Top Zone: 126 Individual Tag Hubs (High-Dimensional Clutter) -->
+  <text x="240" y="34" font-family="Outfit, Inter, system-ui, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" text-anchor="middle" fill="var(--svg-text-primary)">126 INDIVIDUAL TAG HUBS</text>
+  <text x="240" y="54" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">High-dimensional hairball on 2D/3D canvas</text>
+
+  <!-- Crossing hairball edges -->
+  <g stroke="var(--svg-node-red-border)" stroke-width="1.2" opacity="0.38">
+    <line x1="78" y1="92" x2="210" y2="152" />
+    <line x1="78" y1="92" x2="355" y2="118" />
+    <line x1="125" y1="158" x2="270" y2="85" />
+    <line x1="125" y1="158" x2="395" y2="150" />
+    <line x1="168" y1="88" x2="310" y2="162" />
+    <line x1="168" y1="88" x2="245" y2="132" />
+    <line x1="210" y1="152" x2="355" y2="118" />
+    <line x1="270" y1="85" x2="395" y2="150" />
+    <line x1="245" y1="132" x2="110" y2="122" />
+    <line x1="310" y1="162" x2="175" y2="138" />
+    <line x1="110" y1="122" x2="335" y2="92" />
+    <line x1="335" y1="92" x2="210" y2="152" />
+    <line x1="175" y1="138" x2="395" y2="150" />
+    <line x1="270" y1="85" x2="168" y2="88" />
+  </g>
+
+  <!-- Cluttered small tag nodes -->
+  <g fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="1.2">
+    <circle cx="78" cy="92" r="5" />
+    <circle cx="110" cy="122" r="4.5" />
+    <circle cx="125" cy="158" r="5" />
+    <circle cx="168" cy="88" r="5" />
+    <circle cx="175" cy="138" r="4.5" />
+    <circle cx="210" cy="152" r="5" />
+    <circle cx="245" cy="132" r="5.5" />
+    <circle cx="270" cy="85" r="5" />
+    <circle cx="310" cy="162" r="5" />
+    <circle cx="335" cy="92" r="4.5" />
+    <circle cx="355" cy="118" r="5" />
+    <circle cx="395" cy="150" r="5" />
+  </g>
+
+  <!-- Overlapping clutter label pills -->
+  <rect x="64" y="76" width="66" height="22" rx="11" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1" opacity="0.92" />
+  <text x="97" y="87" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-red-text)">#webgl</text>
+
+  <rect x="195" y="108" width="84" height="22" rx="11" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1" opacity="0.92" />
+  <text x="237" y="119" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-red-text)">#shaders</text>
+
+  <rect x="315" y="128" width="96" height="22" rx="11" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1" opacity="0.92" />
+  <text x="363" y="139" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-red-text)">#typescript</text>
+
+  <!-- Horizon Divider & Compression Arrow -->
+  <path d="M 24 196 Q 240 184 456 196" fill="none" stroke="var(--svg-border)" stroke-width="1.2" stroke-dasharray="4,4" />
+  <line x1="240" y1="176" x2="240" y2="212" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-compress)" />
+  <rect x="148" y="216" width="184" height="24" rx="12" fill="var(--svg-pill-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.2" />
+  <text x="240" y="228" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">CLUSTER K ∈ [2, 18]</text>
+
+  <!-- Bottom-Left Zone: 2D Triangle Simplex (K = 3) -->
+  <text x="128" y="264" font-family="Outfit, Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="0.04em" text-anchor="middle" fill="var(--svg-text-primary)">2D SIMPLEX (K = 3)</text>
+
+  <!-- Triangle invisible physics springs (dashed) -->
+  <polygon points="128,298 62,422 194,422" fill="none" stroke="var(--svg-line)" stroke-width="1.4" stroke-dasharray="4,3" />
+
+  <!-- Interior content N-gons -->
+  <polygon points="128,354 135,366 121,366" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.4" />
+  <rect x="97" y="382" width="11" height="11" rx="2" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.4" />
+  <polygon points="154,380 160,385 158,392 150,392 148,385" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.4" />
+
+  <!-- 3 Cluster Pills -->
+  <rect x="86" y="282" width="84" height="26" rx="13" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="128" y="295" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">#AI</text>
+
+  <rect x="24" y="416" width="84" height="26" rx="13" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.6" />
+  <text x="66" y="429" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">#Systems</text>
+
+  <rect x="148" y="416" width="84" height="26" rx="13" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="190" y="429" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">#Visuals</text>
+
+  <!-- Vertical subtle separator -->
+  <line x1="246" y1="254" x2="246" y2="452" stroke="var(--svg-border)" stroke-width="1" stroke-dasharray="3,4" />
+
+  <!-- Bottom-Right Zone: 3D Tetrahedron Simplex (K = 4) -->
+  <text x="358" y="264" font-family="Outfit, Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="0.04em" text-anchor="middle" fill="var(--svg-text-primary)">3D TETRAHEDRON (K = 4)</text>
+
+  <!-- Tetrahedron edges (dashed invisible springs) -->
+  <g stroke="var(--svg-line)" stroke-width="1.3" stroke-dasharray="4,3">
+    <line x1="358" y1="298" x2="288" y2="418" />
+    <line x1="358" y1="298" x2="424" y2="418" />
+    <line x1="358" y1="298" x2="368" y2="352" />
+    <line x1="288" y1="418" x2="424" y2="418" />
+    <line x1="288" y1="418" x2="368" y2="352" />
+    <line x1="424" y1="418" x2="368" y2="352" />
+  </g>
+
+  <!-- Interior 3D nodes -->
+  <circle cx="332" cy="378" r="5.5" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.4" />
+  <circle cx="378" cy="392" r="5.5" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.4" />
+
+  <!-- 4 Cluster Pills -->
+  <rect x="316" y="282" width="84" height="26" rx="13" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="358" y="295" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">#AI</text>
+
+  <rect x="352" y="338" width="90" height="24" rx="12" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.5" />
+  <text x="397" y="350" font-family="Outfit, Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-purple-text)">#Research</text>
+
+  <rect x="256" y="416" width="82" height="26" rx="13" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.6" />
+  <text x="297" y="429" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">#Systems</text>
+
+  <rect x="374" y="416" width="82" height="26" rx="13" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="415" y="429" font-family="Outfit, Inter, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">#Visuals</text>
+</svg>

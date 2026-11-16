@@ -41,5 +41,8 @@ Before prompting or generating images, inspect the specialized Level 3 specifica
 - **Pipeline Step Cards (`Pipeline.astro`)**: Aspect ratio 16:9, strictly NO avatar, "1-Hero + 1–2 Interaction" rule, central virtual square safe-zone (50–56% width), luminous nebula background.
 - **Story Hero Cards (`StoryHeroSlide.astro`)**: Aspect ratio 4:3, narrative stage framing.
 
-## 5. Procedural User Review Gate
-**MANDATORY**: Align on the visual strategy and prompt framing with the user (e.g. during the `/grill-me` gate) before calling `generate_image`.
+## 5. Subagent Prompting & Visual Verification Gate
+- **Mandatory Template Grounding**: The built-in `image-generator` subagent cannot read workspace Level 3 resources on its own. Before calling `invoke_subagent` (`image-generator`), **ALWAYS** read the target `resources/archetypes/<type>.md` file and copy its Canonical Prompt Template verbatim into the subagent prompt.
+- **Anti-Drift Style Contract**: Never paraphrase style keywords into `"3D illustration"`, `"photorealistic"`, or `"off-white"` / `"light background"` for dark-slate archetypes. Always include `"Stylized Disney/Pixar comic-book vector illustration, crisp dark ink outlines, bold cel shading, deep slate surface (#030712)"`.
+- **Visual Style Gate Before Commit**: Inspect every generated image with `read_file` against three criteria—(1) dark-slate `#030712` canvas, (2) crisp dark ink outlines, (3) bold 2D cel shading without soft 3D rendering—before copying it into `src/content/`.
+- **User Review Gate**: Align on the visual strategy and prompt framing with the user (e.g. during `/grill-me`) before calling `image-generator`.
