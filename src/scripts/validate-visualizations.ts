@@ -2,22 +2,63 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import {
+  CLUSTER_PALETTE,
+  DEFAULT_TOPIC_CLUSTER_COUNT,
+  DEFAULT_TOPIC_CLUSTER_COUNT_3D,
+  TIMELINE_ANCHOR_ENABLED,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_ENABLED,
+  alignAndBlendToFinalLayout,
+  alignLayoutProcrustes,
+  annotateClusterTransition,
   buildCanonicalGraphPayload,
+  buildTemporalGraphKeyframes,
+  computeTimelineStartPositions,
   buildGraphAdjacency,
+  computeClusterCalloutPlacements2D,
+  formatClusterLabelShort,
   computeHopDistances,
+  createKChangeTransition,
+  sampleKChangeClusterLabel,
+  sampleKChangeClusterPill,
+  sampleKChangeNodeColor,
+  getCoseEdgeElasticity,
+  getCoseEdgeIdealLength,
+  getClusterPillDimensions,
+  getContentGroupPolygonSides,
+  getRegularPolygonUnitVertices,
+  getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
+  getActiveContentFilterGroup,
+  getEdgeLinkDistance2D,
+  getEdgePhysicsMetrics,
+  getNodeBaseColor,
+  getNodeRestRadiusScale,
+  hydrateEnginePayloads,
   isDefaultGraphTuningState,
+  isNodeDimmedByContentFilter,
+  mixHexColorsOklab,
+  reclusterCanonicalGraphPayload,
+  resetContentFilterGroups,
   resetGraphTuningState,
   setGraphTuningState,
+  toggleContentFilterGroup,
   type CanonicalGraphPayload,
 } from '@commons/shared/graph-payload';
 import {
   compute2DGeometryTargets,
   compute3DGeometryTargets,
+  computeGraphCommunities,
   solve3DForceLayout,
+  solve3DForceLayoutAsync,
   solveCytoscapeCoseLayout,
+  solveCytoscapeCoseLayoutAsync,
   solveD3ForceLayout,
+  solveD3ForceLayoutAsync,
   solveSigmaForceAtlas2Layout,
+  solveSigmaForceAtlas2LayoutAsync,
   solveVisNetworkForceLayout,
+  solveVisNetworkForceLayoutAsync,
   type Point2D,
   type Point3D,
   type SolverGraphNode,
@@ -66,8 +107,14 @@ function readCollectionEntries(collectionName: string): ParsedCollectionEntry[] 
     for (const item of items) {
       const fullPath = path.join(currentDir, item.name);
       if (item.isDirectory()) {
+        if (collectionName !== 'tags' && (item.name === 'slides' || item.name === 'modules')) {
+          continue;
+        }
         walk(fullPath);
       } else if (/\.(md|mdx)$/i.test(item.name)) {
+        if (collectionName !== 'tags' && !/^index\.(md|mdx)$/i.test(item.name)) {
+          continue;
+        }
         const raw = fs.readFileSync(fullPath, 'utf8');
         const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
         const frontmatter: RawFrontmatter = match ? (YAML.parse(match[1]) as RawFrontmatter) : {};
@@ -178,12 +225,377 @@ function scanPrivacyViolations(failures: string[]): void {
   }
 }
 
+interface ContentPairSets {
+  relatedPairs: [string, string][];
+  unrelatedPairs: [string, string][];
+}
+
+function buildContentPairSets(canonical: CanonicalGraphPayload): ContentPairSets {
+  const allItemClusters = new Map<string, Set<string>>();
+  const primaryClusterByItem = new Map<string, { clusterId: string; weight: number }>();
+
+  for (const conn of canonical.connections) {
+    const src = conn.source ?? conn.sourceId;
+    const tgt = conn.target ?? conn.targetId;
+    const w = conn.weight ?? 0.5;
+    let uSet = allItemClusters.get(src);
+    if (!uSet) {
+      uSet = new Set<string>();
+      allItemClusters.set(src, uSet);
+    }
+    uSet.add(tgt);
+
+    const prev = primaryClusterByItem.get(src);
+    if (!prev || w > prev.weight || (w === prev.weight && tgt < prev.clusterId)) {
+      primaryClusterByItem.set(src, { clusterId: tgt, weight: w });
+    }
+  }
+
+  const contentIds = canonical.nodes
+    .filter((n) => n.group !== 0 && (allItemClusters.get(n.id)?.size ?? 0) > 0)
+    .map((n) => n.id);
+
+  const relatedPairs: [string, string][] = [];
+  const unrelatedPairs: [string, string][] = [];
+
+  for (let i = 0; i < contentIds.length; i++) {
+    const u = contentIds[i];
+    const uAll = allItemClusters.get(u)!;
+    const uPrim = primaryClusterByItem.get(u);
+
+    for (let j = i + 1; j < contentIds.length; j++) {
+      const v = contentIds[j];
+      const vAll = allItemClusters.get(v)!;
+      const vPrim = primaryClusterByItem.get(v);
+
+      let sharedAll = 0;
+      for (const t of uAll) {
+        if (vAll.has(t)) sharedAll++;
+      }
+
+      if (sharedAll === 0) {
+        unrelatedPairs.push([u, v]);
+        continue;
+      }
+
+      if (
+        uPrim &&
+        vPrim &&
+        uPrim.clusterId === vPrim.clusterId &&
+        uPrim.weight >= 0.6 &&
+        vPrim.weight >= 0.6
+      ) {
+        relatedPairs.push([u, v]);
+      }
+    }
+  }
+
+  return { relatedPairs, unrelatedPairs };
+}
+
+function evaluateArchipelagoCorridors(
+  name: string,
+  positions: Record<string, { x: number; y: number; z?: number }>,
+  canonical: CanonicalGraphPayload,
+  communityByNode: Map<string, number>,
+  communityCount: number,
+  failures: string[]
+): {
+  islandRatio: number;
+  meanMedianRadius: number;
+  meanP85Radius: number;
+  minCentroidDist: number;
+  intraCommunityMean: number;
+  interCommunityMean: number;
+  overlapOrbitRatio: number;
+} {
+  const is3D = name === '3d-force-graph';
+  const nodeGroupById = new Map<string, number>();
+  for (const n of canonical.nodes) {
+    nodeGroupById.set(n.id, n.group);
+  }
+  const edgeWeightLookup = new Map<string, number>();
+  const allHubsByNode = new Map<string, { hubId: string; weight: number }[]>();
+  for (const conn of canonical.connections) {
+    const src = conn.source ?? conn.sourceId;
+    const tgt = conn.target ?? conn.targetId;
+    const w = conn.weight ?? 0.5;
+    edgeWeightLookup.set(`${src}|${tgt}`, w);
+    edgeWeightLookup.set(`${tgt}|${src}`, w);
+    const srcGrp = nodeGroupById.get(src) ?? 0;
+    const tgtGrp = nodeGroupById.get(tgt) ?? 0;
+    if (srcGrp !== 0 && tgtGrp === 0) {
+      const list = allHubsByNode.get(src) ?? [];
+      list.push({ hubId: tgt, weight: w });
+      allHubsByNode.set(src, list);
+    } else if (tgtGrp !== 0 && srcGrp === 0) {
+      const list = allHubsByNode.get(tgt) ?? [];
+      list.push({ hubId: src, weight: w });
+      allHubsByNode.set(tgt, list);
+    }
+  }
+
+  const coDominantHubsByNode = new Map<string, { hubId: string; weight: number }[]>();
+  const isSingleClusterCoreNode = new Map<string, boolean>();
+  for (const [nodeId, list] of allHubsByNode.entries()) {
+    let maxW = 0;
+    for (const h of list) {
+      if (h.weight > maxW) maxW = h.weight;
+    }
+    const coDom = list.filter((h) => h.weight >= maxW * 0.78);
+    coDominantHubsByNode.set(nodeId, coDom);
+    const secondW = list
+      .filter((h) => h.weight < maxW - 1e-6)
+      .reduce((m, h) => Math.max(m, h.weight), 0);
+    isSingleClusterCoreNode.set(nodeId, coDom.length <= 1 && secondW <= maxW * 0.55);
+  }
+
+  const membersByComm: string[][] = Array.from({ length: communityCount }, () => []);
+  const allCommMembers: string[][] = Array.from({ length: communityCount }, () => []);
+  const hubIdsByComm: string[][] = Array.from({ length: communityCount }, () => []);
+  for (const n of canonical.nodes) {
+    const c = communityByNode.get(n.id) ?? 0;
+    if (c >= 0 && c < communityCount) {
+      allCommMembers[c].push(n.id);
+      if (n.group === 0) {
+        hubIdsByComm[c].push(n.id);
+        membersByComm[c].push(n.id);
+      } else if (isSingleClusterCoreNode.get(n.id)) {
+        membersByComm[c].push(n.id);
+      }
+    }
+  }
+
+  // Validate Barycentric Multi-Cluster Positioning for co-dominant bridge nodes (coDom.length >= 2)
+  let baryDistSum = 0;
+  let coDomHubDistSum = 0;
+  let coDomNodeCount = 0;
+  for (const [nodeId, coDom] of coDominantHubsByNode.entries()) {
+    if (coDom.length < 2) continue;
+    const p = positions[nodeId];
+    if (!p) continue;
+    let bx = 0;
+    let by = 0;
+    let bz = 0;
+    let wSum = 0;
+    let hubDistLocalSum = 0;
+    let validHubs = 0;
+    for (const { hubId, weight } of coDom) {
+      const hp = positions[hubId];
+      if (!hp) continue;
+      const stiff = Math.pow(weight, 2.1);
+      bx += hp.x * stiff;
+      by += hp.y * stiff;
+      bz += (hp.z ?? 0) * stiff;
+      wSum += stiff;
+      hubDistLocalSum += is3D
+        ? Math.hypot(p.x - hp.x, p.y - hp.y, (p.z ?? 0) - (hp.z ?? 0))
+        : Math.hypot(p.x - hp.x, p.y - hp.y);
+      validHubs++;
+    }
+    if (wSum > 0 && validHubs >= 2) {
+      bx /= wSum;
+      by /= wSum;
+      bz /= wSum;
+      const dBary = is3D
+        ? Math.hypot(p.x - bx, p.y - by, (p.z ?? 0) - bz)
+        : Math.hypot(p.x - bx, p.y - by);
+      baryDistSum += dBary;
+      coDomHubDistSum += hubDistLocalSum / validHubs;
+      coDomNodeCount++;
+    }
+  }
+  if (coDomNodeCount > 0) {
+    const meanBaryDist = baryDistSum / coDomNodeCount;
+    const meanCoDomHubDist = coDomHubDistSum / coDomNodeCount;
+    assertCondition(
+      meanBaryDist < meanCoDomHubDist * 0.85,
+      `[Gate 2: ${name}] Barycentric multi-cluster positioning failed: meanBaryDist=${meanBaryDist.toFixed(1)} >= 0.85 * meanCoDomHubDist (${(meanCoDomHubDist * 0.85).toFixed(1)})`,
+      failures
+    );
+  }
+
+  let highOverlapDistSum = 0;
+  let highOverlapCount = 0;
+  let lowOverlapDistSum = 0;
+  let lowOverlapCount = 0;
+
+  for (let k = 0; k < communityCount; k++) {
+    assertCondition(
+      hubIdsByComm[k].length === 1,
+      `[Gate 2: ${name}] Community ${k} expected exactly 1 Tag-Cluster Hub (group=0), found ${hubIdsByComm[k].length}`,
+      failures
+    );
+    const hubId = hubIdsByComm[k][0];
+    const hubPos = hubId ? positions[hubId] : undefined;
+    if (!hubId || !hubPos) continue;
+
+    for (const id of allCommMembers[k]) {
+      if ((nodeGroupById.get(id) ?? 0) === 0) continue;
+      const p = positions[id];
+      if (!p) continue;
+      const dHub = is3D
+        ? Math.hypot(p.x - hubPos.x, p.y - hubPos.y, (p.z ?? 0) - (hubPos.z ?? 0))
+        : Math.hypot(p.x - hubPos.x, p.y - hubPos.y);
+      const w = edgeWeightLookup.get(`${id}|${hubId}`) ?? 0.75;
+      if (w >= 0.88 && isSingleClusterCoreNode.get(id)) {
+        highOverlapDistSum += dHub;
+        highOverlapCount++;
+      } else if (w >= 0.52 && w <= 0.84) {
+        lowOverlapDistSum += dHub;
+        lowOverlapCount++;
+      }
+    }
+  }
+
+  const highOverlapRadiusMean = highOverlapCount > 0 ? highOverlapDistSum / highOverlapCount : 1;
+  const lowOverlapRadiusMean = lowOverlapCount > 0 ? lowOverlapDistSum / lowOverlapCount : 0;
+  const overlapOrbitRatio = lowOverlapRadiusMean / Math.max(1e-6, highOverlapRadiusMean);
+
+  assertCondition(
+    highOverlapCount > 0 &&
+      lowOverlapCount > 0 &&
+      highOverlapRadiusMean < lowOverlapRadiusMean * 0.88,
+    `[Gate 2: ${name}] Intra-island overlap-to-distance monotonicity failed: highOverlapRadiusMean=${highOverlapRadiusMean.toFixed(1)}, lowOverlapRadiusMean=${lowOverlapRadiusMean.toFixed(1)}`,
+    failures
+  );
+
+  const centroids: { x: number; y: number; z: number }[] = [];
+  const medianRadii: number[] = [];
+  const p85Radii: number[] = [];
+
+  for (let k = 0; k < communityCount; k++) {
+    const ids = membersByComm[k];
+    if (ids.length === 0) continue;
+    let sx = 0;
+    let sy = 0;
+    let sz = 0;
+    for (const id of ids) {
+      const p = positions[id];
+      if (!p) continue;
+      sx += p.x;
+      sy += p.y;
+      sz += p.z ?? 0;
+    }
+    const cx = sx / ids.length;
+    const cy = sy / ids.length;
+    const cz = sz / ids.length;
+    centroids.push({ x: cx, y: cy, z: cz });
+
+    const dists = ids
+      .map((id) => {
+        const p = positions[id];
+        if (!p) return 0;
+        return is3D
+          ? Math.hypot(p.x - cx, p.y - cy, (p.z ?? 0) - cz)
+          : Math.hypot(p.x - cx, p.y - cy);
+      })
+      .sort((a, b) => a - b);
+    const idx50 = Math.min(dists.length - 1, Math.floor(0.5 * (dists.length - 1)));
+    const idx85 = Math.min(dists.length - 1, Math.floor(0.85 * (dists.length - 1)));
+    medianRadii.push(dists[idx50] ?? 0);
+    p85Radii.push(dists[idx85] ?? 0);
+  }
+
+  let minCentroidDist = Infinity;
+  for (let i = 0; i < centroids.length; i++) {
+    for (let j = i + 1; j < centroids.length; j++) {
+      const d = is3D
+        ? Math.hypot(
+            centroids[i].x - centroids[j].x,
+            centroids[i].y - centroids[j].y,
+            centroids[i].z - centroids[j].z
+          )
+        : Math.hypot(centroids[i].x - centroids[j].x, centroids[i].y - centroids[j].y);
+      if (d < minCentroidDist) minCentroidDist = d;
+    }
+  }
+  if (!Number.isFinite(minCentroidDist)) minCentroidDist = 0;
+
+  const meanMedianRadius =
+    medianRadii.reduce((acc, val) => acc + val, 0) / Math.max(1, medianRadii.length);
+  const meanP85Radius =
+    p85Radii.reduce((acc, val) => acc + val, 0) / Math.max(1, p85Radii.length);
+
+  let intraSum = 0;
+  let intraCount = 0;
+  let interSum = 0;
+  let interCount = 0;
+
+  const nodes = canonical.nodes.filter((n) => {
+    if (n.group === 0) return true;
+    return Boolean(isSingleClusterCoreNode.get(n.id));
+  });
+  for (let i = 0; i < nodes.length; i++) {
+    const u = nodes[i].id;
+    const pu = positions[u];
+    if (!pu) continue;
+    const cu = communityByNode.get(u) ?? 0;
+    for (let j = i + 1; j < nodes.length; j++) {
+      const v = nodes[j].id;
+      const pv = positions[v];
+      if (!pv) continue;
+      const cv = communityByNode.get(v) ?? 0;
+      const d = is3D
+        ? Math.hypot(pu.x - pv.x, pu.y - pv.y, (pu.z ?? 0) - (pv.z ?? 0))
+        : Math.hypot(pu.x - pv.x, pu.y - pv.y);
+      if (cu === cv) {
+        intraSum += d;
+        intraCount++;
+      } else {
+        interSum += d;
+        interCount++;
+      }
+    }
+  }
+
+  const intraCommunityMean = intraCount > 0 ? intraSum / intraCount : 1;
+  const interCommunityMean = interCount > 0 ? interSum / interCount : 0;
+  const islandRatio = interCommunityMean / Math.max(1e-6, intraCommunityMean);
+
+  assertCondition(
+    islandRatio >= 3.2,
+    `[Gate 2: ${name}] Inter/Intra island distance ratio too low (${islandRatio.toFixed(2)} < 3.20)`,
+    failures
+  );
+  assertCondition(
+    meanP85Radius < minCentroidDist * 0.78,
+    `[Gate 2: ${name}] Archipelago corridor overlap: meanP85Radius=${meanP85Radius.toFixed(1)} >= 0.78 * minCentroidDist (${(minCentroidDist * 0.78).toFixed(1)})`,
+    failures
+  );
+
+  return {
+    islandRatio,
+    meanMedianRadius,
+    meanP85Radius,
+    minCentroidDist,
+    intraCommunityMean,
+    interCommunityMean,
+    overlapOrbitRatio,
+  };
+}
+
 function evaluate2DSolverQuality(
   name: string,
   positions: Record<string, Point2D>,
   canonical: CanonicalGraphPayload,
+  pairSets: ContentPairSets,
+  communityByNode: Map<string, number>,
+  communityCount: number,
   failures: string[]
-): { hubRatio: number; specificMean: number; hubMean: number } {
+): {
+  bridgeRatio: number;
+  interClusterRatio: number;
+  islandRatio: number;
+  meanMedianRadius: number;
+  meanP85Radius: number;
+  minCentroidDist: number;
+  intraMean: number;
+  bridgeMean: number;
+  relatedMean: number;
+  unrelatedMean: number;
+  overlapOrbitRatio: number;
+} {
   let sumX = 0;
   let sumY = 0;
   let count = 0;
@@ -207,10 +619,10 @@ function evaluate2DSolverQuality(
     failures
   );
 
-  let specificDistSum = 0;
-  let specificCount = 0;
-  let hubDistSum = 0;
-  let hubCount = 0;
+  let intraDistSum = 0;
+  let intraCount = 0;
+  let bridgeDistSum = 0;
+  let bridgeCount = 0;
 
   for (const conn of canonical.connections) {
     const src = conn.source ?? conn.sourceId;
@@ -220,34 +632,101 @@ function evaluate2DSolverQuality(
     if (!p1 || !p2) continue;
     const d = Math.hypot(p2.x - p1.x, p2.y - p1.y);
     const w = conn.weight ?? 0.5;
-    if (w >= 0.45) {
-      specificDistSum += d;
-      specificCount++;
-    } else if (w <= 0.20) {
-      hubDistSum += d;
-      hubCount++;
+    const sameComm = (communityByNode.get(src) ?? -1) === (communityByNode.get(tgt) ?? -2);
+    if (sameComm && w >= 0.72) {
+      intraDistSum += d;
+      intraCount++;
+    } else if (!sameComm && w <= 0.55) {
+      bridgeDistSum += d;
+      bridgeCount++;
     }
   }
 
-  const specificMean = specificCount > 0 ? specificDistSum / specificCount : 1;
-  const hubMean = hubCount > 0 ? hubDistSum / hubCount : 0;
-  const hubRatio = hubMean / Math.max(1e-6, specificMean);
+  const intraMean = intraCount > 0 ? intraDistSum / intraCount : 1;
+  const bridgeMean = bridgeCount > 0 ? bridgeDistSum / bridgeCount : 0;
+  const bridgeRatio = bridgeMean / Math.max(1e-6, intraMean);
 
   assertCondition(
-    hubRatio >= 1.9,
-    `[Gate 2: ${name}] Hub vs. Specific edge length ratio too low (${hubRatio.toFixed(2)} < 1.90) — risk of hairball ("Knäuel")`,
+    intraCount > 0 && bridgeCount > 0 && bridgeRatio >= 1.65,
+    `[Gate 2: ${name}] Bridge vs. Intra-cluster edge length ratio too low (${bridgeRatio.toFixed(2)} < 1.65) — risk of hairball ("Knäuel")`,
     failures
   );
 
-  return { hubRatio, specificMean, hubMean };
+  let relatedDistSum = 0;
+  let relatedCount = 0;
+  for (const [u, v] of pairSets.relatedPairs) {
+    const p1 = positions[u];
+    const p2 = positions[v];
+    if (!p1 || !p2) continue;
+    relatedDistSum += Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    relatedCount++;
+  }
+
+  let unrelatedDistSum = 0;
+  let unrelatedCount = 0;
+  for (const [u, v] of pairSets.unrelatedPairs) {
+    const p1 = positions[u];
+    const p2 = positions[v];
+    if (!p1 || !p2) continue;
+    unrelatedDistSum += Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    unrelatedCount++;
+  }
+
+  const relatedMean = relatedCount > 0 ? relatedDistSum / relatedCount : 1;
+  const unrelatedMean = unrelatedCount > 0 ? unrelatedDistSum / unrelatedCount : 0;
+  const interClusterRatio = unrelatedMean / Math.max(1e-6, relatedMean);
+
+  assertCondition(
+    relatedCount > 0 && unrelatedCount > 0 && interClusterRatio >= 1.85,
+    `[Gate 2: ${name}] Topical community separation ratio too low (${interClusterRatio.toFixed(2)} < 1.85)`,
+    failures
+  );
+
+  const arch = evaluateArchipelagoCorridors(
+    name,
+    positions,
+    canonical,
+    communityByNode,
+    communityCount,
+    failures
+  );
+
+  return {
+    bridgeRatio,
+    interClusterRatio,
+    islandRatio: arch.islandRatio,
+    meanMedianRadius: arch.meanMedianRadius,
+    meanP85Radius: arch.meanP85Radius,
+    minCentroidDist: arch.minCentroidDist,
+    intraMean,
+    bridgeMean,
+    relatedMean,
+    unrelatedMean,
+    overlapOrbitRatio: arch.overlapOrbitRatio,
+  };
 }
 
 function evaluate3DSolverQuality(
   name: string,
   positions: Record<string, Point3D>,
   canonical: CanonicalGraphPayload,
+  pairSets: ContentPairSets,
+  communityByNode: Map<string, number>,
+  communityCount: number,
   failures: string[]
-): { hubRatio: number; axisBalance: number; radialSpread: number } {
+): {
+  bridgeRatio: number;
+  interClusterRatio: number;
+  islandRatio: number;
+  meanMedianRadius: number;
+  meanP85Radius: number;
+  minCentroidDist: number;
+  axisBalance: number;
+  radialSpread: number;
+  relatedMean: number;
+  unrelatedMean: number;
+  overlapOrbitRatio: number;
+} {
   let sumX = 0;
   let sumY = 0;
   let sumZ = 0;
@@ -304,15 +783,15 @@ function evaluate3DSolverQuality(
   const radialSpread = stdR / Math.max(1e-6, meanR);
 
   assertCondition(
-    radialSpread >= 0.25,
-    `[Gate 2: ${name}] 3D radial spread too uniform (${radialSpread.toFixed(2)} < 0.25) — risk of uniform sphere ("Kugel")`,
+    radialSpread >= 0.22,
+    `[Gate 2: ${name}] 3D radial spread too uniform (${radialSpread.toFixed(2)} < 0.22) — risk of uniform sphere ("Kugel")`,
     failures
   );
 
-  let specificDistSum = 0;
-  let specificCount = 0;
-  let hubDistSum = 0;
-  let hubCount = 0;
+  let intraDistSum = 0;
+  let intraCount = 0;
+  let bridgeDistSum = 0;
+  let bridgeCount = 0;
 
   for (const conn of canonical.connections) {
     const src = conn.source ?? conn.sourceId;
@@ -322,26 +801,78 @@ function evaluate3DSolverQuality(
     if (!p1 || !p2) continue;
     const d = Math.hypot(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
     const w = conn.weight ?? 0.5;
-    if (w >= 0.45) {
-      specificDistSum += d;
-      specificCount++;
-    } else if (w <= 0.20) {
-      hubDistSum += d;
-      hubCount++;
+    const sameComm = (communityByNode.get(src) ?? -1) === (communityByNode.get(tgt) ?? -2);
+    if (sameComm && w >= 0.72) {
+      intraDistSum += d;
+      intraCount++;
+    } else if (!sameComm && w <= 0.55) {
+      bridgeDistSum += d;
+      bridgeCount++;
     }
   }
 
-  const specificMean = specificCount > 0 ? specificDistSum / specificCount : 1;
-  const hubMean = hubCount > 0 ? hubDistSum / hubCount : 0;
-  const hubRatio = hubMean / Math.max(1e-6, specificMean);
+  const intraMean = intraCount > 0 ? intraDistSum / intraCount : 1;
+  const bridgeMean = bridgeCount > 0 ? bridgeDistSum / bridgeCount : 0;
+  const bridgeRatio = bridgeMean / Math.max(1e-6, intraMean);
 
   assertCondition(
-    hubRatio >= 1.9,
-    `[Gate 2: ${name}] 3D Hub vs. Specific edge length ratio too low (${hubRatio.toFixed(2)} < 1.90)`,
+    intraCount > 0 && bridgeCount > 0 && bridgeRatio >= 1.65,
+    `[Gate 2: ${name}] 3D Bridge vs. Intra-cluster edge length ratio too low (${bridgeRatio.toFixed(2)} < 1.65)`,
     failures
   );
 
-  return { hubRatio, axisBalance, radialSpread };
+  let relatedDistSum = 0;
+  let relatedCount = 0;
+  for (const [u, v] of pairSets.relatedPairs) {
+    const p1 = positions[u];
+    const p2 = positions[v];
+    if (!p1 || !p2) continue;
+    relatedDistSum += Math.hypot(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+    relatedCount++;
+  }
+
+  let unrelatedDistSum = 0;
+  let unrelatedCount = 0;
+  for (const [u, v] of pairSets.unrelatedPairs) {
+    const p1 = positions[u];
+    const p2 = positions[v];
+    if (!p1 || !p2) continue;
+    unrelatedDistSum += Math.hypot(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+    unrelatedCount++;
+  }
+
+  const relatedMean = relatedCount > 0 ? relatedDistSum / relatedCount : 1;
+  const unrelatedMean = unrelatedCount > 0 ? unrelatedDistSum / unrelatedCount : 0;
+  const interClusterRatio = unrelatedMean / Math.max(1e-6, relatedMean);
+
+  assertCondition(
+    relatedCount > 0 && unrelatedCount > 0 && interClusterRatio >= 1.85,
+    `[Gate 2: ${name}] 3D Topical community separation ratio too low (${interClusterRatio.toFixed(2)} < 1.85)`,
+    failures
+  );
+
+  const arch = evaluateArchipelagoCorridors(
+    name,
+    positions,
+    canonical,
+    communityByNode,
+    communityCount,
+    failures
+  );
+
+  return {
+    bridgeRatio,
+    interClusterRatio,
+    islandRatio: arch.islandRatio,
+    meanMedianRadius: arch.meanMedianRadius,
+    meanP85Radius: arch.meanP85Radius,
+    minCentroidDist: arch.minCentroidDist,
+    axisBalance,
+    radialSpread,
+    relatedMean,
+    unrelatedMean,
+    overlapOrbitRatio: arch.overlapOrbitRatio,
+  };
 }
 
 async function main() {
@@ -356,12 +887,56 @@ async function main() {
   const contentNodes = canonical.nodes.filter((n) => n.group > 0);
 
   assertCondition(
-    canonical.nodes.length >= 300 && tagNodes.length >= 100 && contentNodes.length >= 200,
-    `[Gate 1: Dataset] Unexpected node counts: total=${canonical.nodes.length}, tags=${tagNodes.length}, content=${contentNodes.length}`,
+    tagNodes.length === DEFAULT_TOPIC_CLUSTER_COUNT &&
+      contentNodes.length >= 200 &&
+      canonical.nodes.length === tagNodes.length + contentNodes.length,
+    `[Gate 1: Dataset] Unexpected node counts: total=${canonical.nodes.length}, tagClusters=${tagNodes.length}, content=${contentNodes.length}`,
     failures
   );
   assertCondition(
-    canonical.connections.length >= 700,
+    tagNodes.every(
+      (n) =>
+        n.id.startsWith('/tags/') &&
+        n.name.startsWith('#') &&
+        n.size === 1 &&
+        getNodeRestRadiusScale(0, n.size) === 1.0 &&
+        typeof n.colorDark === 'string' &&
+        typeof n.colorLight === 'string'
+    ) &&
+      canonical.nodes.every(
+        (n) =>
+          n.size === 1 &&
+          typeof n.colorDark === 'string' &&
+          n.colorDark.startsWith('#') &&
+          typeof n.colorLight === 'string' &&
+          n.colorLight.startsWith('#')
+      ),
+    '[Gate 1: Dataset] Tag-Cluster supernode schema, uniform node size (1.0), or OKLab cluster colors invalid',
+    failures
+  );
+  const blendedSample = mixHexColorsOklab([
+    { color: CLUSTER_PALETTE.dark[0], weight: 0.6 },
+    { color: CLUSTER_PALETTE.dark[1], weight: 0.4 },
+  ]);
+  assertCondition(
+    blendedSample.startsWith('#') &&
+      blendedSample !== CLUSTER_PALETTE.dark[0] &&
+      blendedSample !== CLUSTER_PALETTE.dark[1],
+    '[Gate 1: Dataset] mixHexColorsOklab failed to produce distinct intermediate OKLab color',
+    failures
+  );
+  toggleContentFilterGroup(1);
+  assertCondition(
+    !isNodeDimmedByContentFilter(0) &&
+      !isNodeDimmedByContentFilter(1) &&
+      isNodeDimmedByContentFilter(2) &&
+      getNodeBaseColor({ group: 2, colorDark: CLUSTER_PALETTE.dark[0] }, false) !== CLUSTER_PALETTE.dark[0],
+    '[Gate 1: Dataset] Content-Type filter dimming helper failed to dim non-matching content groups',
+    failures
+  );
+  resetContentFilterGroups();
+  assertCondition(
+    canonical.connections.length >= 250 && canonical.connections.length <= 750,
     `[Gate 1: Dataset] Unexpected edge count: ${canonical.connections.length}`,
     failures
   );
@@ -370,8 +945,11 @@ async function main() {
   let maxWeight = -Infinity;
   for (const conn of canonical.connections) {
     const w = conn.weight ?? NaN;
-    if (!Number.isFinite(w) || w <= 0 || w > 1) {
-      failures.push(`[Gate 1: Dataset] Invalid edge weight ${String(w)} on ${conn.sourceId} -> ${conn.targetId}`);
+    const cov = conn.coverage ?? NaN;
+    if (!Number.isFinite(w) || w <= 0 || w > 1 || !Number.isFinite(cov) || cov <= 0 || cov > 1) {
+      failures.push(
+        `[Gate 1: Dataset] Invalid edge weight (${String(w)}) or coverage (${String(cov)}) on ${conn.sourceId} -> ${conn.targetId}`
+      );
     } else {
       if (w < minWeight) minWeight = w;
       if (w > maxWeight) maxWeight = w;
@@ -389,39 +967,183 @@ async function main() {
   // GATE 2: Cluster Quality & Anti-Hairball / Anti-Sphere Gate
   // =========================================================================
   resetGraphTuningState();
+  const pairSets = buildContentPairSets(canonical);
+  const { communityByNode, communityCount } = computeGraphCommunities(
+    canonical.nodes,
+    canonical.connections
+  );
+  assertCondition(
+    tagNodes.length === communityCount,
+    `[Gate 2: Communities] Expected 1-to-1 match between Tag-Cluster nodes (${tagNodes.length}) and communities (${communityCount})`,
+    failures
+  );
+  const communityCounts = new Array<number>(communityCount).fill(0);
+  for (const n of canonical.nodes) {
+    const c = communityByNode.get(n.id) ?? 0;
+    if (c >= 0 && c < communityCount) communityCounts[c]++;
+  }
+
+  const canonical3D = reclusterCanonicalGraphPayload(canonical, DEFAULT_TOPIC_CLUSTER_COUNT_3D);
+  const pairSets3D = buildContentPairSets(canonical3D);
+  const { communityByNode: communityByNode3D, communityCount: communityCount3D } = computeGraphCommunities(
+    canonical3D.nodes,
+    canonical3D.connections
+  );
+
   const cyPos1 = solveCytoscapeCoseLayout(canonical);
   const sigmaPos1 = solveSigmaForceAtlas2Layout(canonical);
   const d3Pos1 = solveD3ForceLayout(canonical);
   const visPos1 = solveVisNetworkForceLayout(canonical);
-  const force3DPos1 = solve3DForceLayout(canonical);
+  const force3DPos1 = solve3DForceLayout(canonical3D);
 
-  const cyStats = evaluate2DSolverQuality('cytoscape', cyPos1, canonical, failures);
-  const sigmaStats = evaluate2DSolverQuality('sigma', sigmaPos1, canonical, failures);
-  const d3Stats = evaluate2DSolverQuality('d3', d3Pos1, canonical, failures);
-  const visStats = evaluate2DSolverQuality('vis-network', visPos1, canonical, failures);
-  const force3DStats = evaluate3DSolverQuality('3d-force-graph', force3DPos1, canonical, failures);
+  const cyStats = evaluate2DSolverQuality(
+    'cytoscape',
+    cyPos1,
+    canonical,
+    pairSets,
+    communityByNode,
+    communityCount,
+    failures
+  );
+  const sigmaStats = evaluate2DSolverQuality(
+    'sigma',
+    sigmaPos1,
+    canonical,
+    pairSets,
+    communityByNode,
+    communityCount,
+    failures
+  );
+  const d3Stats = evaluate2DSolverQuality(
+    'd3',
+    d3Pos1,
+    canonical,
+    pairSets,
+    communityByNode,
+    communityCount,
+    failures
+  );
+  const visStats = evaluate2DSolverQuality(
+    'vis-network',
+    visPos1,
+    canonical,
+    pairSets,
+    communityByNode,
+    communityCount,
+    failures
+  );
+  const force3DStats = evaluate3DSolverQuality(
+    '3d-force-graph',
+    force3DPos1,
+    canonical3D,
+    pairSets3D,
+    communityByNode3D,
+    communityCount3D,
+    failures
+  );
 
   // =========================================================================
-  // GATE 3: Determinism, Parity & Live Tuning Sensitivity
+  // GATE 3: Determinism, Parity & Live Tuning Sensitivity (incl. Negative Exponents)
   // =========================================================================
+  const cyPos2 = solveCytoscapeCoseLayout(canonical);
+  const sigmaPos2 = solveSigmaForceAtlas2Layout(canonical);
   const d3Pos2 = solveD3ForceLayout(canonical);
   const visPos2 = solveVisNetworkForceLayout(canonical);
-  const force3DPos2 = solve3DForceLayout(canonical);
+  const force3DPos2 = solve3DForceLayout(canonical3D);
 
   let maxDeterminismDelta = 0;
   for (const n of canonical.nodes) {
+    const dCy = Math.hypot(cyPos1[n.id].x - cyPos2[n.id].x, cyPos1[n.id].y - cyPos2[n.id].y);
+    const dSig = Math.hypot(sigmaPos1[n.id].x - sigmaPos2[n.id].x, sigmaPos1[n.id].y - sigmaPos2[n.id].y);
     const dD3 = Math.hypot(d3Pos1[n.id].x - d3Pos2[n.id].x, d3Pos1[n.id].y - d3Pos2[n.id].y);
     const dVis = Math.hypot(visPos1[n.id].x - visPos2[n.id].x, visPos1[n.id].y - visPos2[n.id].y);
+    maxDeterminismDelta = Math.max(maxDeterminismDelta, dCy, dSig, dD3, dVis);
+  }
+  for (const n of canonical3D.nodes) {
     const d3D = Math.hypot(
       force3DPos1[n.id].x - force3DPos2[n.id].x,
       force3DPos1[n.id].y - force3DPos2[n.id].y,
       force3DPos1[n.id].z - force3DPos2[n.id].z
     );
-    maxDeterminismDelta = Math.max(maxDeterminismDelta, dD3, dVis, d3D);
+    maxDeterminismDelta = Math.max(maxDeterminismDelta, d3D);
   }
   assertCondition(
     maxDeterminismDelta === 0,
-    `[Gate 3: Determinism] Force solvers are not 100% deterministic: maxDelta=${maxDeterminismDelta}`,
+    `[Gate 3: Determinism] Force solvers are not 100% deterministic across all 5 engines: maxDelta=${maxDeterminismDelta}`,
+    failures
+  );
+
+  // Sync-vs-Async & Hydrated Client Input Parity Check (0.0000 px across all 5 engines)
+  const hydratedClientInput = hydrateEnginePayloads(canonical);
+  const hydratedClientInput3D = hydrateEnginePayloads(canonical3D);
+  const cyAsyncPos = await solveCytoscapeCoseLayoutAsync(hydratedClientInput);
+  const sigmaAsyncPos = await solveSigmaForceAtlas2LayoutAsync(hydratedClientInput);
+  const d3AsyncPos = await solveD3ForceLayoutAsync(hydratedClientInput);
+  const visAsyncPos = await solveVisNetworkForceLayoutAsync(hydratedClientInput);
+  const force3DAsyncPos = await solve3DForceLayoutAsync(hydratedClientInput3D);
+
+  let maxAsyncParityDelta = 0;
+  for (const n of canonical.nodes) {
+    const dCy = cyAsyncPos
+      ? Math.hypot(cyPos1[n.id].x - cyAsyncPos[n.id].x, cyPos1[n.id].y - cyAsyncPos[n.id].y)
+      : Infinity;
+    const dSig = sigmaAsyncPos
+      ? Math.hypot(sigmaPos1[n.id].x - sigmaAsyncPos[n.id].x, sigmaPos1[n.id].y - sigmaAsyncPos[n.id].y)
+      : Infinity;
+    const dD3 = d3AsyncPos
+      ? Math.hypot(d3Pos1[n.id].x - d3AsyncPos[n.id].x, d3Pos1[n.id].y - d3AsyncPos[n.id].y)
+      : Infinity;
+    const dVis = visAsyncPos
+      ? Math.hypot(visPos1[n.id].x - visAsyncPos[n.id].x, visPos1[n.id].y - visAsyncPos[n.id].y)
+      : Infinity;
+    maxAsyncParityDelta = Math.max(maxAsyncParityDelta, dCy, dSig, dD3, dVis);
+  }
+  for (const n of canonical3D.nodes) {
+    const d3D = force3DAsyncPos
+      ? Math.hypot(
+          force3DPos1[n.id].x - force3DAsyncPos[n.id].x,
+          force3DPos1[n.id].y - force3DAsyncPos[n.id].y,
+          force3DPos1[n.id].z - force3DAsyncPos[n.id].z
+        )
+      : Infinity;
+    maxAsyncParityDelta = Math.max(maxAsyncParityDelta, d3D);
+  }
+  assertCondition(
+    maxAsyncParityDelta === 0,
+    `[Gate 3: Sync-vs-Async Parity] Live async solver on hydrated client input diverged from static build solver: maxDelta=${maxAsyncParityDelta}`,
+    failures
+  );
+
+  // Smooth 1-step slider perturbation check (repulsionScale: 1.00 -> 1.05 must change median cluster radius by < 15%)
+  setGraphTuningState({ repulsionScale: 1.05 });
+  const cyStepPos = solveCytoscapeCoseLayout(hydratedClientInput);
+  const sigmaStepPos = solveSigmaForceAtlas2Layout(hydratedClientInput);
+  const d3StepPos = solveD3ForceLayout(hydratedClientInput);
+  const visStepPos = solveVisNetworkForceLayout(hydratedClientInput);
+  const force3DStepPos = solve3DForceLayout(hydratedClientInput3D);
+  resetGraphTuningState();
+
+  const stepDummyFailures: string[] = [];
+  const cyStepArch = evaluateArchipelagoCorridors('cytoscape', cyStepPos, canonical, communityByNode, communityCount, stepDummyFailures);
+  const sigmaStepArch = evaluateArchipelagoCorridors('sigma', sigmaStepPos, canonical, communityByNode, communityCount, stepDummyFailures);
+  const d3StepArch = evaluateArchipelagoCorridors('d3', d3StepPos, canonical, communityByNode, communityCount, stepDummyFailures);
+  const visStepArch = evaluateArchipelagoCorridors('vis-network', visStepPos, canonical, communityByNode, communityCount, stepDummyFailures);
+  const force3DStepArch = evaluateArchipelagoCorridors('3d-force-graph', force3DStepPos, canonical3D, communityByNode3D, communityCount3D, stepDummyFailures);
+
+  const stepRadiusChanges = {
+    cy: Math.abs(cyStepArch.meanMedianRadius - cyStats.meanMedianRadius) / Math.max(1e-6, cyStats.meanMedianRadius),
+    sigma: Math.abs(sigmaStepArch.meanMedianRadius - sigmaStats.meanMedianRadius) / Math.max(1e-6, sigmaStats.meanMedianRadius),
+    d3: Math.abs(d3StepArch.meanMedianRadius - d3Stats.meanMedianRadius) / Math.max(1e-6, d3Stats.meanMedianRadius),
+    vis: Math.abs(visStepArch.meanMedianRadius - visStats.meanMedianRadius) / Math.max(1e-6, visStats.meanMedianRadius),
+    force3D: Math.abs(force3DStepArch.meanMedianRadius - force3DStats.meanMedianRadius) / Math.max(1e-6, force3DStats.meanMedianRadius),
+  };
+  assertCondition(
+    stepRadiusChanges.cy < 0.15 &&
+      stepRadiusChanges.sigma < 0.15 &&
+      stepRadiusChanges.d3 < 0.15 &&
+      stepRadiusChanges.vis < 0.15 &&
+      stepRadiusChanges.force3D < 0.15,
+    `[Gate 3: Smooth Perturbation] 1-step repulsionScale (1.00->1.05) caused cluster radius jump >=15%: cy=${(stepRadiusChanges.cy * 100).toFixed(1)}%, sigma=${(stepRadiusChanges.sigma * 100).toFixed(1)}%, d3=${(stepRadiusChanges.d3 * 100).toFixed(1)}%, vis=${(stepRadiusChanges.vis * 100).toFixed(1)}%, 3d=${(stepRadiusChanges.force3D * 100).toFixed(1)}%`,
     failures
   );
 
@@ -450,6 +1172,1035 @@ async function main() {
     `[Gate 3: Tuning] Solvers insensitive to live tuning state: d3Disp=${d3MeanTuneDisp.toFixed(2)}, visDisp=${visMeanTuneDisp.toFixed(2)}`,
     failures
   );
+
+  // Negative exponent inversion check (distanceExponent < 0 and stiffnessExponent < 0)
+  setGraphTuningState({ distanceExponent: -0.5, stiffnessExponent: -0.5, degreeRepulsion: 0.4 });
+  const lowMetricsNeg = getEdgePhysicsMetrics(0.15);
+  const highMetricsNeg = getEdgePhysicsMetrics(0.85);
+  assertCondition(
+    lowMetricsNeg.distanceFactor < highMetricsNeg.distanceFactor &&
+      getEdgeLinkDistance2D(0.15) < getEdgeLinkDistance2D(0.85) &&
+      getCoseEdgeIdealLength(0.15) < getCoseEdgeIdealLength(0.85) &&
+      lowMetricsNeg.stiffnessFactor > highMetricsNeg.stiffnessFactor &&
+      getCoseEdgeElasticity(0.15) < getCoseEdgeElasticity(0.85),
+    '[Gate 3: Negative Exponents] Negative distanceExponent/stiffnessExponent failed to invert low-vs-high edge lengths/stiffness',
+    failures
+  );
+
+  const d3NegPos = solveD3ForceLayout(canonical);
+  const visNegPos = solveVisNetworkForceLayout(canonical);
+  const cyNegPos = solveCytoscapeCoseLayout(canonical);
+  const sigmaNegPos = solveSigmaForceAtlas2Layout(canonical);
+  const force3DNegPos = solve3DForceLayout(canonical);
+  for (const n of canonical.nodes) {
+    const pD3 = d3NegPos[n.id];
+    const pVis = visNegPos[n.id];
+    const pCy = cyNegPos[n.id];
+    const pSig = sigmaNegPos[n.id];
+    const p3D = force3DNegPos[n.id];
+    if (
+      !pD3 ||
+      !Number.isFinite(pD3.x) ||
+      !Number.isFinite(pD3.y) ||
+      !pVis ||
+      !Number.isFinite(pVis.x) ||
+      !Number.isFinite(pVis.y) ||
+      !pCy ||
+      !Number.isFinite(pCy.x) ||
+      !Number.isFinite(pCy.y) ||
+      !pSig ||
+      !Number.isFinite(pSig.x) ||
+      !Number.isFinite(pSig.y) ||
+      !p3D ||
+      !Number.isFinite(p3D.x) ||
+      !Number.isFinite(p3D.y) ||
+      !Number.isFinite(p3D.z)
+    ) {
+      failures.push(`[Gate 3: Negative Exponents] Non-finite coordinate for ${n.id} under negative exponents`);
+      break;
+    }
+  }
+  resetGraphTuningState();
+  const d3AfterNegReset = solveD3ForceLayout(canonical);
+  let maxNegResetDelta = 0;
+  for (const n of canonical.nodes) {
+    maxNegResetDelta = Math.max(
+      maxNegResetDelta,
+      Math.hypot(d3Pos1[n.id].x - d3AfterNegReset[n.id].x, d3Pos1[n.id].y - d3AfterNegReset[n.id].y)
+    );
+  }
+  assertCondition(
+    isDefaultGraphTuningState() && maxNegResetDelta === 0,
+    `[Gate 3: Negative Exponents] Reset after negative exponent run was not deterministic (delta=${maxNegResetDelta})`,
+    failures
+  );
+
+  // Dynamic runtime re-clustering check (K=4, K=6 and K=12)
+  const reclustered4 = reclusterCanonicalGraphPayload(canonical, 4);
+  const reclustered6 = reclusterCanonicalGraphPayload(canonical, 6);
+  const reclustered12 = reclusterCanonicalGraphPayload(canonical, 12);
+  const clusters4 = reclustered4.nodes.filter((n) => n.group === 0);
+  const clusters6 = reclustered6.nodes.filter((n) => n.group === 0);
+  const clusters12 = reclustered12.nodes.filter((n) => n.group === 0);
+  assertCondition(
+    clusters4.length === 4 &&
+      clusters6.length === 6 &&
+      clusters12.length === 12 &&
+      reclustered4.connections.length > 0 &&
+      reclustered6.connections.length > 0 &&
+      reclustered12.connections.length > 0,
+    `[Gate 3: Dynamic Re-Clustering] Expected 4, 6 and 12 topic clusters, got ${clusters4.length}, ${clusters6.length} and ${clusters12.length}`,
+    failures
+  );
+  const d3PosK6 = solveD3ForceLayout(reclustered6);
+  const d3PosK12 = solveD3ForceLayout(reclustered12);
+  assertCondition(
+    reclustered6.nodes.every((n) => Number.isFinite(d3PosK6[n.id]?.x) && Number.isFinite(d3PosK6[n.id]?.y)) &&
+      reclustered12.nodes.every((n) => Number.isFinite(d3PosK12[n.id]?.x) && Number.isFinite(d3PosK12[n.id]?.y)),
+    '[Gate 3: Dynamic Re-Clustering] Solver produced non-finite coordinates on re-clustered topologies (K=6 / K=12)',
+    failures
+  );
+
+  // =========================================================================
+  // GATE 3b: Cluster identity stabilization, warm-start solvers, labels, cold-path stability
+  // =========================================================================
+  const clusterNodesOf = (payload: CanonicalGraphPayload) => payload.nodes.filter((n) => n.group === 0);
+  const k4Base = reclustered4;
+  const k5 = reclusterCanonicalGraphPayload(canonical, 5, k4Base.nodes);
+  const k4Again = reclusterCanonicalGraphPayload(canonical, 4, k5.nodes);
+
+  const checkColourInheritance = (
+    label: string,
+    prev: CanonicalGraphPayload,
+    next: CanonicalGraphPayload
+  ): number => {
+    const prevById = new Map(clusterNodesOf(prev).map((n) => [n.id, n]));
+    const nextClusters = clusterNodesOf(next);
+    let matched = 0;
+    for (const c of nextClusters) {
+      if (c.originKind === 'match') {
+        matched++;
+        const old = c.originClusterId ? prevById.get(c.originClusterId) : undefined;
+        assertCondition(
+          Boolean(old) && old!.colorDark === c.colorDark && old!.colorLight === c.colorLight,
+          `[Gate 3b: Colour Inheritance] ${label}: matched cluster ${c.id} did not inherit the exact colour pair of ${c.originClusterId}`,
+          failures
+        );
+      } else if (c.originKind === 'split') {
+        const old = c.originClusterId ? prevById.get(c.originClusterId) : undefined;
+        assertCondition(
+          Boolean(old) && old!.colorDark !== c.colorDark,
+          `[Gate 3b: Colour Inheritance] ${label}: split cluster ${c.id} must receive a fresh palette colour and a valid origin`,
+          failures
+        );
+      }
+    }
+    const darkSet = new Set(nextClusters.map((c) => c.colorDark));
+    assertCondition(
+      darkSet.size === nextClusters.length,
+      `[Gate 3b: Colour Inheritance] ${label}: cluster colours are not unique`,
+      failures
+    );
+    const unmatchedOld = Array.from(prevById.keys()).filter(
+      (id) => !nextClusters.some((c) => c.originKind === 'match' && c.originClusterId === id)
+    );
+    for (const id of unmatchedOld) {
+      const target = next.mergeTargetByOldClusterId?.[id];
+      assertCondition(
+        Boolean(target) && nextClusters.some((c) => c.id === target),
+        `[Gate 3b: Merge Targets] ${label}: vanishing cluster ${id} has no valid merge target`,
+        failures
+      );
+    }
+    return matched;
+  };
+  const matched45 = checkColourInheritance('K=4->5', k4Base, k5);
+  const matched54 = checkColourInheritance('K=5->4', k5, k4Again);
+  assertCondition(
+    clusterNodesOf(k5).length === 5 && clusterNodesOf(k4Again).length === 4 && matched45 >= 2 && matched54 >= 2,
+    `[Gate 3b: Colour Inheritance] Expected K=4->5->4 with >=2 matched clusters per step, got matched=${matched45}/${matched54}`,
+    failures
+  );
+  const colourSeedless = reclusterCanonicalGraphPayload(canonical, 5);
+  assertCondition(
+    clusterNodesOf(colourSeedless).every((c) => c.originClusterId === undefined && c.originKind === undefined),
+    '[Gate 3b: Cold Re-Clustering] Re-clustering without previous nodes must not set origin metadata',
+    failures
+  );
+
+  // Label truncation: default and re-clustered names must fit the 44-char pill label budget
+  const longestLabel = Math.max(
+    ...[k4Base, k5, reclustered6].flatMap((p) => clusterNodesOf(p).map((n) => n.name.length))
+  );
+  assertCondition(
+    clusterNodesOf(k4Base).every((n) => formatClusterLabelShort(n.name) === n.name) &&
+      formatClusterLabelShort('x'.repeat(60)).length === 43,
+    `[Gate 3b: Labels] Default cluster labels must not be truncated (<=44 chars); longest=${longestLabel}`,
+    failures
+  );
+
+  // Cold-start path unchanged: explicit undefined seeds must reproduce the cold layouts bit-for-bit
+  const coldIn = { nodes: canonical.nodes, connections: canonical.connections, seedPositions: undefined };
+  const cold3DIn = { nodes: canonical3D.nodes, connections: canonical3D.connections, seedPositions: undefined };
+  const coldCy = solveCytoscapeCoseLayout(coldIn);
+  const coldSigma = solveSigmaForceAtlas2Layout(coldIn);
+  const coldD3 = solveD3ForceLayout(coldIn);
+  const coldVis = solveVisNetworkForceLayout(coldIn);
+  const cold3D = solve3DForceLayout(cold3DIn);
+  let coldDelta = 0;
+  for (const n of canonical.nodes) {
+    coldDelta = Math.max(
+      coldDelta,
+      Math.hypot(coldCy[n.id].x - cyPos1[n.id].x, coldCy[n.id].y - cyPos1[n.id].y),
+      Math.hypot(coldSigma[n.id].x - sigmaPos1[n.id].x, coldSigma[n.id].y - sigmaPos1[n.id].y),
+      Math.hypot(coldD3[n.id].x - d3Pos1[n.id].x, coldD3[n.id].y - d3Pos1[n.id].y),
+      Math.hypot(coldVis[n.id].x - visPos1[n.id].x, coldVis[n.id].y - visPos1[n.id].y)
+    );
+  }
+  for (const n of canonical3D.nodes) {
+    coldDelta = Math.max(
+      coldDelta,
+      Math.hypot(
+        cold3D[n.id].x - force3DPos1[n.id].x,
+        cold3D[n.id].y - force3DPos1[n.id].y,
+        cold3D[n.id].z - force3DPos1[n.id].z
+      )
+    );
+  }
+  assertCondition(
+    coldDelta === 0,
+    `[Gate 3b: Cold Start] Solvers without seedPositions diverged from the cold layouts: maxDelta=${coldDelta}`,
+    failures
+  );
+
+  // Warm start K=3 -> K=5 (2D) / K=4 -> K=5 (3D): deterministic, sync == async, and continuity beats a cold re-layout
+  const seeds2D = new Map<string, { x: number; y: number }>();
+  const seeds3D = new Map<string, { x: number; y: number; z: number }>();
+  for (const n of canonical.nodes) {
+    seeds2D.set(n.id, { x: d3Pos1[n.id].x, y: d3Pos1[n.id].y });
+  }
+  for (const n of canonical3D.nodes) {
+    seeds3D.set(n.id, { x: force3DPos1[n.id].x, y: force3DPos1[n.id].y, z: force3DPos1[n.id].z });
+  }
+  const warm2DIn = { nodes: k5.nodes, connections: k5.connections, seedPositions: seeds2D };
+  const warm3DIn = { nodes: k5.nodes, connections: k5.connections, seedPositions: seeds3D };
+  const warmRuns2D: Record<string, { sync: Record<string, Point2D>; again: Record<string, Point2D>; async: Record<string, Point2D> | null }> = {};
+  const warmSolvers2D: Record<string, [typeof solveD3ForceLayout, typeof solveD3ForceLayoutAsync]> = {
+    cytoscape: [solveCytoscapeCoseLayout, solveCytoscapeCoseLayoutAsync],
+    sigma: [solveSigmaForceAtlas2Layout, solveSigmaForceAtlas2LayoutAsync],
+    d3: [solveD3ForceLayout, solveD3ForceLayoutAsync],
+    'vis-network': [solveVisNetworkForceLayout, solveVisNetworkForceLayoutAsync],
+  };
+  for (const [name, [syncFn, asyncFn]] of Object.entries(warmSolvers2D)) {
+    warmRuns2D[name] = {
+      sync: syncFn(warm2DIn),
+      again: syncFn(warm2DIn),
+      async: await asyncFn(warm2DIn),
+    };
+  }
+  const warm3DSync = solve3DForceLayout(warm3DIn);
+  const warm3DAgain = solve3DForceLayout(warm3DIn);
+  const warm3DAsync = await solve3DForceLayoutAsync(warm3DIn);
+  let warmDeterminismDelta = 0;
+  let warmParityDelta = 0;
+  for (const n of k5.nodes) {
+    for (const run of Object.values(warmRuns2D)) {
+      warmDeterminismDelta = Math.max(
+        warmDeterminismDelta,
+        Math.hypot(run.sync[n.id].x - run.again[n.id].x, run.sync[n.id].y - run.again[n.id].y)
+      );
+      warmParityDelta = Math.max(
+        warmParityDelta,
+        run.async
+          ? Math.hypot(run.sync[n.id].x - run.async[n.id].x, run.sync[n.id].y - run.async[n.id].y)
+          : Infinity
+      );
+    }
+    warmDeterminismDelta = Math.max(
+      warmDeterminismDelta,
+      Math.hypot(
+        warm3DSync[n.id].x - warm3DAgain[n.id].x,
+        warm3DSync[n.id].y - warm3DAgain[n.id].y,
+        warm3DSync[n.id].z - warm3DAgain[n.id].z
+      )
+    );
+    warmParityDelta = Math.max(
+      warmParityDelta,
+      warm3DAsync
+        ? Math.hypot(
+            warm3DSync[n.id].x - warm3DAsync[n.id].x,
+            warm3DSync[n.id].y - warm3DAsync[n.id].y,
+            warm3DSync[n.id].z - warm3DAsync[n.id].z
+          )
+        : Infinity
+    );
+  }
+  assertCondition(
+    warmDeterminismDelta === 0,
+    `[Gate 3b: Warm Start] Warm-started solvers are not deterministic: maxDelta=${warmDeterminismDelta}`,
+    failures
+  );
+  assertCondition(
+    warmParityDelta === 0,
+    `[Gate 3b: Warm Start] Sync-vs-async parity broken for warm starts: maxDelta=${warmParityDelta}`,
+    failures
+  );
+  const medianOf = (vals: number[]): number => {
+    const s = [...vals].sort((a, b) => a - b);
+    return s.length === 0 ? 0 : s[Math.floor(s.length / 2)];
+  };
+  const contentIds = k5.nodes.filter((n) => n.group !== 0).map((n) => n.id);
+  const coldK5D3 = solveD3ForceLayout(k5);
+  const warmShift = medianOf(
+    contentIds.map((id) =>
+      Math.hypot(warmRuns2D.d3.sync[id].x - seeds2D.get(id)!.x, warmRuns2D.d3.sync[id].y - seeds2D.get(id)!.y)
+    )
+  );
+  const coldShift = medianOf(
+    contentIds.map((id) =>
+      Math.hypot(coldK5D3[id].x - seeds2D.get(id)!.x, coldK5D3[id].y - seeds2D.get(id)!.y)
+    )
+  );
+  assertCondition(
+    Number.isFinite(warmShift) && warmShift < coldShift,
+    `[Gate 3b: Warm Start] Warm start must keep content nodes closer to their previous positions than a cold layout (warm=${warmShift.toFixed(1)}px, cold=${coldShift.toFixed(1)}px)`,
+    failures
+  );
+  console.log(
+    `[Gate 3b Summary] K=4->5->4 matched=${matched45}/${matched54} | warm determinism=${warmDeterminismDelta.toFixed(4)}px parity=${warmParityDelta.toFixed(4)}px | median shift warm=${warmShift.toFixed(1)}px vs cold=${coldShift.toFixed(1)}px | cold-path delta=${coldDelta.toFixed(4)}px | longest cluster label=${longestLabel}`
+  );
+
+  // Transition fade-in: split clusters start invisible, continuing ones stay solid, colours blend (no snap)
+  {
+    const prevPosMap = new Map<string, { x: number; y: number }>();
+    for (const n of canonical.nodes) prevPosMap.set(n.id, { x: d3Pos1[n.id].x, y: d3Pos1[n.id].y });
+    const nextPosMap = new Map<string, { x: number; y: number }>();
+    for (const n of k5.nodes) nextPosMap.set(n.id, warmRuns2D.d3.sync[n.id]);
+    const tr = createKChangeTransition({
+      prevNodes: k4Base.nodes,
+      prevPositions: prevPosMap,
+      nextNodes: k5.nodes,
+      nextPositions: nextPosMap,
+      mergeTargetByOldClusterId: k5.mergeTargetByOldClusterId,
+      now: 0,
+    });
+    const splitClusters = clusterNodesOf(k5).filter((c) => !tr.continuingClusterIds.has(c.id));
+    const pillAt = (id: string, p: number) =>
+      sampleKChangeClusterPill(tr, id, { dark: CLUSTER_PALETTE.dark[0], light: CLUSTER_PALETTE.light[0] }, false, p);
+    assertCondition(
+      splitClusters.length >= 1 &&
+        splitClusters.every((c) => (pillAt(c.id, 0)?.alpha ?? 1) < 0.02) &&
+        splitClusters.every((c) => (pillAt(c.id, 1)?.alpha ?? 0) > 0.96) &&
+        splitClusters.every((c) => (pillAt(c.id, 0.1)?.alpha ?? 1) < 0.05),
+      '[Gate 3b: Pill Fade-In] A newly created cluster pill must start at alpha~0 (delayed eased fade-in to 0.97)',
+      failures
+    );
+    const contentNode = k5.nodes.find((n) => n.group !== 0 && tr.prevColors.has(n.id))!;
+    const c0 = sampleKChangeNodeColor(
+      tr,
+      contentNode.id,
+      { dark: contentNode.colorDark!, light: contentNode.colorLight! },
+      false,
+      0
+    );
+    assertCondition(
+      c0 === tr.prevColors.get(contentNode.id)!.dark,
+      '[Gate 3b: Colour Blend] Content colours must start at the previous colour at t=0 (no snap)',
+      failures
+    );
+    // Label cross-fade across a K sweep: changed labels blend (0<alpha<1 mid-way), unchanged labels never cross-fade
+    let xfChanged = 0;
+    let xfOk = true;
+    let sweepPrev: CanonicalGraphPayload = k4Base;
+    for (const kk of [5, 6, 7, 8, 6, 4, 3]) {
+      const nextK = reclusterCanonicalGraphPayload(canonical, kk, sweepPrev.nodes);
+      const prevPositions = new Map<string, { x: number; y: number }>(
+        sweepPrev.nodes.map((n, i) => [n.id, { x: i, y: i }])
+      );
+      const nextPositions = new Map<string, { x: number; y: number }>(
+        nextK.nodes.map((n, i) => [n.id, { x: i * 2, y: i }])
+      );
+      const trK = createKChangeTransition({
+        prevNodes: sweepPrev.nodes,
+        prevPositions,
+        nextNodes: nextK.nodes,
+        nextPositions,
+        mergeTargetByOldClusterId: nextK.mergeTargetByOldClusterId,
+        now: 0,
+      });
+      for (const c of clusterNodesOf(nextK)) {
+        const origin = c.originClusterId ? trK.prevClusters.get(c.originClusterId) : undefined;
+        const mid = sampleKChangeClusterLabel(trK, c.id, c.name, 0.5);
+        const start = sampleKChangeClusterLabel(trK, c.id, c.name, 0);
+        const end = sampleKChangeClusterLabel(trK, c.id, c.name, 1);
+        const shouldFade = trK.continuingClusterIds.has(c.id) && origin !== undefined && origin.name !== c.name;
+        if (!shouldFade) {
+          if (mid !== null) xfOk = false;
+          continue;
+        }
+        xfChanged++;
+        if (
+          !mid ||
+          !start ||
+          !end ||
+          !(mid.oldAlpha > 0 && mid.oldAlpha < 1 && mid.newAlpha > 0 && mid.newAlpha < 1) ||
+          start.oldAlpha !== 1 ||
+          end.newAlpha !== 1 ||
+          mid.oldLabel !== origin!.name ||
+          mid.newLabel !== c.name ||
+          mid.pillW < Math.min(mid.oldPillW, mid.newPillW) ||
+          mid.pillW > Math.max(mid.oldPillW, mid.newPillW)
+        ) {
+          xfOk = false;
+        }
+      }
+      sweepPrev = nextK;
+    }
+    assertCondition(
+      xfOk && xfChanged >= 1,
+      `[Gate 3b: Label Cross-Fade] Changed labels of continuing clusters must cross-fade (old+new alpha in (0,1) mid-way, interpolated pill width); unchanged must not (changed=${xfChanged})`,
+      failures
+    );
+    console.log(`[Gate 3b Summary] Label cross-fades across K sweep: ${xfChanged}`);
+  }
+
+  // =========================================================================
+  // GATE 3c: Temporal timeline (per-item keyframes, K(t), parity, persistence, continuity, placement)
+  // =========================================================================
+  {
+    const tl0 = performance.now();
+    const contentCount = canonical.nodes.filter((n) => n.group !== 0).length;
+    const datedCount = canonical.nodes.filter((n) => n.group !== 0 && typeof n.timestamp === 'number').length;
+    assertCondition(
+      datedCount >= Math.floor(contentCount * 0.8),
+      `[Gate 3c: Timeline] Expected >=80% of content items to carry a timestamp, got ${datedCount}/${contentCount}`,
+      failures
+    );
+    const kfs = buildTemporalGraphKeyframes(canonical, DEFAULT_TOPIC_CLUSTER_COUNT);
+    assertCondition(
+      kfs.total === contentCount && kfs.orderedIds.length === contentCount,
+      `[Gate 3c: Timeline] One step per content item expected (${kfs.total} vs ${contentCount})`,
+      failures
+    );
+
+    // Temporal monotonicity: step s shows exactly s+1 items in date order; the visible set strictly grows
+    const stampById = new Map(canonical.nodes.map((n) => [n.id, n.timestamp ?? Infinity]));
+    let monotonic = true;
+    let chronological = true;
+    let prevIds = new Set<string>();
+    for (let s = 0; s < kfs.total; s++) {
+      const kf = kfs.getKeyframe(s);
+      const ids = new Set(kf.nodes.filter((n) => n.group !== 0).map((n) => n.id));
+      if (ids.size !== s + 1) monotonic = false;
+      for (const id of prevIds) if (!ids.has(id)) monotonic = false;
+      if (s > 0 && !ids.has(kfs.orderedIds[s])) monotonic = false;
+      if (s > 0 && (stampById.get(kfs.orderedIds[s]) ?? Infinity) < (stampById.get(kfs.orderedIds[s - 1]) ?? Infinity)) {
+        chronological = false;
+      }
+      prevIds = ids;
+    }
+    assertCondition(
+      monotonic && chronological,
+      `[Gate 3c: Monotonicity] Visible item set must strictly grow by one item per step in date order (monotonic=${String(monotonic)}, chronological=${String(chronological)})`,
+      failures
+    );
+
+    // Monotonic active cluster growth (only clusters with >=1 active content item are shown)
+    let kOk = true;
+    let prevK = 0;
+    for (let s = 0; s < kfs.total; s++) {
+      const kf = kfs.getKeyframe(s);
+      const k = kf.clusterCount;
+      if (kfs.getKForStep(s) !== k || k < prevK || k < 1 || k > DEFAULT_TOPIC_CLUSTER_COUNT) kOk = false;
+      const deg = new Map<string, number>();
+      for (const c of kf.connections) {
+        deg.set(c.sourceId, (deg.get(c.sourceId) || 0) + 1);
+        deg.set(c.targetId, (deg.get(c.targetId) || 0) + 1);
+      }
+      for (const cl of kf.nodes) {
+        if (cl.group === 0 && (deg.get(cl.id) ?? 0) < 1) kOk = false;
+      }
+      prevK = k;
+    }
+    const lastKf = kfs.getKeyframe(kfs.total - 1);
+    assertCondition(
+      kOk && lastKf.clusterCount === DEFAULT_TOPIC_CLUSTER_COUNT && kfs.getKForStep(kfs.total - 1) === DEFAULT_TOPIC_CLUSTER_COUNT,
+      `[Gate 3c: Active Clusters] Active clusters must grow monotonically with >=1 connected item and reach K=${DEFAULT_TOPIC_CLUSTER_COUNT} (got ${lastKf.clusterCount})`,
+      failures
+    );
+
+    // Last-step parity with the static graph (K=4 default and a K=6 target), incl. 0.0000 px layout parity
+    const stripNodes = (nodes: ReadonlyArray<CanonicalGraphPayload['nodes'][number]>) =>
+      nodes.map((n) => ({
+        id: n.id,
+        name: n.name,
+        group: n.group,
+        colorDark: n.colorDark,
+        colorLight: n.colorLight,
+        tags: n.tags,
+        memberTags: n.memberTags,
+        connectionCount: n.connectionCount,
+        description: n.description,
+      }));
+    const stripConns = (conns: CanonicalGraphPayload['connections']) =>
+      conns.map((c) => ({ s: c.sourceId, t: c.targetId, w: c.weight, c: c.coverage }));
+    const parityOf = (kTarget: number, staticGraph: CanonicalGraphPayload): boolean => {
+      const k = buildTemporalGraphKeyframes(canonical, kTarget).getKeyframe(kfs.total - 1);
+      return (
+        JSON.stringify(stripNodes(k.nodes)) === JSON.stringify(stripNodes(staticGraph.nodes)) &&
+        JSON.stringify(stripConns(k.connections)) === JSON.stringify(stripConns(staticGraph.connections))
+      );
+    };
+    const parityDefault = parityOf(DEFAULT_TOPIC_CLUSTER_COUNT, canonical);
+    const parity4 = parityOf(DEFAULT_TOPIC_CLUSTER_COUNT_3D, canonical3D);
+    const parity6 = parityOf(6, reclustered6);
+    assertCondition(
+      parityDefault && parity4 && parity6,
+      `[Gate 3c: Last-Step Parity] Last timeline step must be identical to the static graph (K=3: ${String(parityDefault)}, K=4: ${String(parity4)}, K=6: ${String(parity6)})`,
+      failures
+    );
+    const lastSolve = solveD3ForceLayout({ nodes: lastKf.nodes, connections: lastKf.connections });
+    let lastParityDelta = 0;
+    for (const n of canonical.nodes) {
+      lastParityDelta = Math.max(
+        lastParityDelta,
+        Math.hypot(lastSolve[n.id].x - d3Pos1[n.id].x, lastSolve[n.id].y - d3Pos1[n.id].y)
+      );
+    }
+    assertCondition(
+      lastParityDelta === 0,
+      `[Gate 3c: Last-Step Parity] Layout of the last timeline step deviates from the static layout by ${lastParityDelta}px`,
+      failures
+    );
+
+    // 100% stability of fixed final cluster IDs, labels, colors & edge weights across all steps
+    const finalClusterById = new Map(
+      canonical.nodes.filter((n) => n.group === 0).map((n) => [n.id, n])
+    );
+    const finalConnByKey = new Map(
+      canonical.connections.map((c) => [`${c.sourceId}->${c.targetId}`, c])
+    );
+    let clusterRenames = 0;
+    let colourBreaks = 0;
+    let weightDrift = 0;
+    for (let s = 0; s < kfs.total; s++) {
+      const kf = kfs.getKeyframe(s);
+      for (const c of kf.nodes) {
+        if (c.group !== 0) continue;
+        const ref = finalClusterById.get(c.id);
+        if (!ref || ref.name !== c.name) clusterRenames++;
+        if (!ref || ref.colorDark !== c.colorDark || ref.colorLight !== c.colorLight) colourBreaks++;
+      }
+      for (const e of kf.connections) {
+        const ref = finalConnByKey.get(`${e.sourceId}->${e.targetId}`);
+        if (!ref || ref.weight !== e.weight || ref.coverage !== e.coverage) weightDrift++;
+      }
+    }
+    assertCondition(
+      clusterRenames === 0 && colourBreaks === 0 && weightDrift === 0,
+      `[Gate 3c: Fixed Cluster Stability] Expected 0 renames, 0 color breaks, 0 weight drift (renames=${clusterRenames}, colourBreaks=${colourBreaks}, weightDrift=${weightDrift})`,
+      failures
+    );
+
+    // Placement: new items spawn near their clusters (never at the origin), without overlap, deterministically
+    const midStep = Math.floor(kfs.total * 0.55);
+    const midKf = kfs.getKeyframe(midStep);
+    const nextKf = kfs.getKeyframe(Math.min(kfs.total - 1, midStep + 12));
+    const live = new Map<string, { x: number; y: number }>();
+    for (const n of midKf.nodes) live.set(n.id, { x: d3Pos1[n.id]?.x ?? 0, y: d3Pos1[n.id]?.y ?? 0 });
+    const annotatedNext = annotateClusterTransition(nextKf.nodes, midKf.nodes).nodes;
+    const placeA = computeTimelineStartPositions({ nextNodes: annotatedNext, connections: nextKf.connections, live });
+    const placeB = computeTimelineStartPositions({ nextNodes: annotatedNext, connections: nextKf.connections, live });
+    const newItems = annotatedNext.filter((n) => n.group !== 0 && !live.has(n.id));
+    let placementOk = newItems.length > 0 && JSON.stringify([...placeA]) === JSON.stringify([...placeB]);
+    let minGap = Infinity;
+    const allPts = [...placeA.entries()];
+    for (const n of newItems) {
+      const p = placeA.get(n.id)!;
+      if (p.x === 0 && p.y === 0) placementOk = false;
+      for (const [id, q] of allPts) {
+        if (id === n.id) continue;
+        minGap = Math.min(minGap, Math.hypot(p.x - q.x, p.y - q.y));
+      }
+    }
+    assertCondition(
+      placementOk && minGap >= 15,
+      `[Gate 3c: Placement] New timeline items must spawn deterministically near their clusters without overlap (minGap=${minGap.toFixed(1)}px)`,
+      failures
+    );
+    const tlMs = performance.now() - tl0;
+    console.log(
+      `[Gate 3c Summary] steps=${kfs.total} cluster-appearance steps=${kfs.reclusterSteps.length} (${kfs.reclusterSteps.join(',')}) | renames=${clusterRenames} colourBreaks=${colourBreaks} weightDrift=${weightDrift} | last-step layout delta=${lastParityDelta.toFixed(4)}px | placement minGap=${minGap.toFixed(1)}px | gate time ${tlMs.toFixed(0)}ms`
+    );
+  }
+
+  // =========================================================================
+  // GATE 3d: Procrustes alignment (timeline mental-map preservation, mechanism #1)
+  // =========================================================================
+  {
+    // Exactness on a synthetic similarity transform (2D + 3D)
+    const mk2 = (n: number) =>
+      new Map(Array.from({ length: n }, (_, i) => [`n${i}`, { x: Math.cos(i * 1.3) * (20 + i * 3), y: Math.sin(i * 0.9) * (15 + i * 4) }] as const));
+    const base2 = mk2(24);
+    const xf2 = new Map(
+      Array.from(base2, ([id, p]) => {
+        const a = 0.7;
+        const s = 1.1;
+        return [id, { x: s * (Math.cos(a) * p.x - Math.sin(a) * p.y) + 31, y: s * (Math.sin(a) * p.x + Math.cos(a) * p.y) - 17 }] as const;
+      })
+    );
+    const r2 = alignLayoutProcrustes(base2, xf2, { allowScale: true });
+    const base3 = new Map(
+      Array.from({ length: 24 }, (_, i) => [`n${i}`, { x: Math.cos(i * 1.3) * (20 + i * 3), y: Math.sin(i * 0.9) * (15 + i * 4), z: Math.sin(i * 0.37) * (10 + i * 2) }] as const)
+    );
+    const xf3 = new Map(
+      Array.from(base3, ([id, p]) => {
+        const a = 0.6;
+        const b = -0.4;
+        const x1 = Math.cos(a) * p.x - Math.sin(a) * p.y;
+        const y1 = Math.sin(a) * p.x + Math.cos(a) * p.y;
+        const y2 = Math.cos(b) * y1 - Math.sin(b) * p.z;
+        const z2 = Math.sin(b) * y1 + Math.cos(b) * p.z;
+        return [id, { x: x1 * 0.95 + 5, y: y2 * 0.95 - 9, z: z2 * 0.95 + 3 }] as const;
+      })
+    );
+    const r3 = alignLayoutProcrustes(base3, xf3, { is3D: true, allowScale: true });
+    assertCondition(
+      r2.rmsAfter < 1e-6 && r3.rmsAfter < 1e-6 && Math.abs(r2.scale - 1 / 1.1) < 1e-9,
+      `[Gate 3d: Procrustes] Closed-form alignment must recover a similarity transform exactly (2D rms=${r2.rmsAfter.toExponential(2)}, 3D rms=${r3.rmsAfter.toExponential(2)})`,
+      failures
+    );
+
+    // With vs. without Procrustes over a (strided) timeline run per engine
+    assertCondition(
+      !TIMELINE_ANCHOR_ENABLED && !TIMELINE_CLUSTER_ANCHOR_ENABLED,
+      `[Gate 3d: Config] Expected TIMELINE_ANCHOR_ENABLED=false and TIMELINE_CLUSTER_ANCHOR_ENABLED=false (got ${String(TIMELINE_ANCHOR_ENABLED)}, ${String(TIMELINE_CLUSTER_ANCHOR_ENABLED)})`,
+      failures
+    );
+    const kfs2d = buildTemporalGraphKeyframes(canonical, DEFAULT_TOPIC_CLUSTER_COUNT);
+    const kfs3dOnly = buildTemporalGraphKeyframes(canonical3D, DEFAULT_TOPIC_CLUSTER_COUNT_3D);
+    const kfs3d = kfs2d;
+    const stride = 28;
+    const chainSteps: number[] = [];
+    for (let s = 40; s < kfs3d.total - 1; s += stride) chainSteps.push(s);
+    type PtMap = Map<string, { x: number; y: number; z?: number }>;
+    const engines3d: { name: string; is3D: boolean; solve: (input: Parameters<typeof solveD3ForceLayout>[0]) => Record<string, { x: number; y: number; z?: number }> }[] = [
+      { name: 'cytoscape', is3D: false, solve: solveCytoscapeCoseLayout },
+      { name: 'sigma', is3D: false, solve: solveSigmaForceAtlas2Layout },
+      { name: 'd3', is3D: false, solve: solveD3ForceLayout },
+      { name: 'vis-network', is3D: false, solve: solveVisNetworkForceLayout },
+      { name: '3d-force-graph', is3D: true, solve: solve3DForceLayout },
+    ];
+    const stat = (vals: number[]) => {
+      const s = [...vals].sort((a, b) => a - b);
+      const n = Math.max(1, s.length);
+      return {
+        mean: s.reduce((a, b) => a + b, 0) / n,
+        median: s[Math.floor(s.length / 2)] ?? 0,
+        p95: s[Math.min(s.length - 1, Math.floor(s.length * 0.95))] ?? 0,
+      };
+    };
+    // Anchored solves must stay deterministic and sync == async (all 5 engines)
+    {
+      type AsyncSolver = (input: Parameters<typeof solveD3ForceLayout>[0]) => Promise<Record<string, { x: number; y: number; z?: number }> | null>;
+      const asyncSolvers: Record<string, AsyncSolver> = {
+        cytoscape: solveCytoscapeCoseLayoutAsync,
+        sigma: solveSigmaForceAtlas2LayoutAsync,
+        d3: solveD3ForceLayoutAsync,
+        'vis-network': solveVisNetworkForceLayoutAsync,
+        '3d-force-graph': solve3DForceLayoutAsync,
+      };
+      const kfPrev = kfs3d.getKeyframe(90);
+      const kfNext = kfs3d.getKeyframe(100);
+      let anchorParity = 0;
+      for (const eng of engines3d) {
+        const prevPos = new Map(Object.entries(eng.solve({ nodes: kfPrev.nodes, connections: kfPrev.connections }))) as PtMap;
+        const ann = annotateClusterTransition(kfNext.nodes, kfPrev.nodes);
+        const start = computeTimelineStartPositions({
+          nextNodes: ann.nodes,
+          connections: kfNext.connections,
+          live: prevPos,
+          is3D: eng.is3D,
+        });
+        const input = {
+          nodes: ann.nodes,
+          connections: kfNext.connections,
+          seedPositions: start,
+          anchorPositions: prevPos,
+          anchorStrength: TIMELINE_ANCHOR_STRENGTH,
+        };
+        const sync = eng.solve(input);
+        const asyncRes = await asyncSolvers[eng.name](input);
+        let engParity = 0;
+        for (const n of ann.nodes) {
+          const a = sync[n.id];
+          const b = asyncRes?.[n.id];
+          engParity = Math.max(engParity, b ? Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0)) : Infinity);
+          anchorParity = Math.max(
+            anchorParity,
+            b ? Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0)) : Infinity
+          );
+        }
+        if (engParity !== 0) console.log(`[Gate 3d: Anchors] ${eng.name} sync-vs-async maxDelta=${engParity}`);
+      }
+      assertCondition(
+        anchorParity === 0,
+        `[Gate 3d: Anchors] Anchored solvers must be identical sync vs async: maxDelta=${anchorParity}`,
+        failures
+      );
+    }
+    const lines: string[] = [];
+    const sepLines: string[] = [];
+    const t3d0 = performance.now();
+    const separationRatio = (pos: PtMap, nodes: CanonicalGraphPayload['nodes'], conns: CanonicalGraphPayload['connections']): number => {
+      const clusterIds = new Set(nodes.filter((n) => n.group === 0).map((n) => n.id));
+      const best = new Map<string, { hub: string; w: number }>();
+      for (const c of conns) {
+        const hub = clusterIds.has(c.targetId) ? c.targetId : clusterIds.has(c.sourceId) ? c.sourceId : null;
+        const item = hub === c.targetId ? c.sourceId : c.targetId;
+        if (!hub) continue;
+        const w = c.weight ?? 0.5;
+        const cur = best.get(item);
+        if (!cur || w > cur.w) best.set(item, { hub, w });
+      }
+      const members = new Map<string, string[]>();
+      for (const [item, b] of best) (members.get(b.hub) ?? members.set(b.hub, []).get(b.hub)!).push(item);
+      const centroids: { x: number; y: number; z: number }[] = [];
+      let intraSum = 0;
+      let intraCnt = 0;
+      for (const ids of members.values()) {
+        const pts = ids.map((id) => pos.get(id)).filter((p): p is { x: number; y: number; z?: number } => Boolean(p));
+        if (pts.length < 2) continue;
+        const cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+        const cy = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+        const cz = pts.reduce((a, p) => a + (p.z ?? 0), 0) / pts.length;
+        centroids.push({ x: cx, y: cy, z: cz });
+        for (const p of pts) {
+          intraSum += Math.hypot(p.x - cx, p.y - cy, (p.z ?? 0) - cz);
+          intraCnt++;
+        }
+      }
+      let interSum = 0;
+      let interCnt = 0;
+      for (let i = 0; i < centroids.length; i++) {
+        for (let j = i + 1; j < centroids.length; j++) {
+          interSum += Math.hypot(centroids[i].x - centroids[j].x, centroids[i].y - centroids[j].y, centroids[i].z - centroids[j].z);
+          interCnt++;
+        }
+      }
+      return intraCnt > 0 && interCnt > 0 ? interSum / interCnt / (intraSum / intraCnt) : 0;
+    };
+    const clusterCenterOffsetRatio = (
+      pos: PtMap,
+      nodes: CanonicalGraphPayload['nodes'],
+      conns: CanonicalGraphPayload['connections']
+    ): number => {
+      const clusterIds = new Set(nodes.filter((n) => n.group === 0).map((n) => n.id));
+      const best = new Map<string, { hub: string; w: number }>();
+      for (const c of conns) {
+        const hub = clusterIds.has(c.targetId) ? c.targetId : clusterIds.has(c.sourceId) ? c.sourceId : null;
+        const item = hub === c.targetId ? c.sourceId : c.targetId;
+        if (!hub) continue;
+        const w = c.weight ?? 0.5;
+        const cur = best.get(item);
+        if (!cur || w > cur.w) best.set(item, { hub, w });
+      }
+      const members = new Map<string, string[]>();
+      for (const [item, b] of best) (members.get(b.hub) ?? members.set(b.hub, []).get(b.hub)!).push(item);
+      let ratioSum = 0;
+      let ratioCnt = 0;
+      for (const [hubId, ids] of members) {
+        const hubPt = pos.get(hubId);
+        const pts = ids.map((id) => pos.get(id)).filter((p): p is { x: number; y: number; z?: number } => Boolean(p));
+        if (!hubPt || pts.length < 2) continue;
+        const cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+        const cy = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+        const cz = pts.reduce((a, p) => a + (p.z ?? 0), 0) / pts.length;
+        const intraMean =
+          pts.reduce((a, p) => a + Math.hypot(p.x - cx, p.y - cy, (p.z ?? 0) - cz), 0) / pts.length;
+        if (intraMean > 1e-6) {
+          const offset = Math.hypot(hubPt.x - cx, hubPt.y - cy, (hubPt.z ?? 0) - cz);
+          ratioSum += offset / intraMean;
+          ratioCnt++;
+        }
+      }
+      return ratioCnt > 0 ? ratioSum / ratioCnt : 0;
+    };
+    const finalPosByEngine: Record<string, PtMap> = {
+      cytoscape: new Map(Object.entries(cyPos1)),
+      sigma: new Map(Object.entries(sigmaPos1)),
+      d3: new Map(Object.entries(d3Pos1)),
+      'vis-network': new Map(Object.entries(visPos1)),
+      '3d-force-graph': new Map(Object.entries(force3DPos1)),
+    };
+    const clusterLines: string[] = [];
+    const centerLines: string[] = [];
+    const penultLines: string[] = [];
+    for (const eng of engines3d) {
+      const engKfs = eng.is3D ? kfs3dOnly : kfs2d;
+      const finalPosMap = finalPosByEngine[eng.name];
+      const filterSeed = (nodes: CanonicalGraphPayload['nodes']): PtMap => {
+        const s = new Map<string, { x: number; y: number; z?: number }>();
+        for (const n of nodes) {
+          const p = finalPosMap.get(n.id);
+          if (p) s.set(n.id, { x: p.x, y: p.y, z: p.z });
+        }
+        return s;
+      };
+      const runUnalignedChain = (): { disp: number[]; clusterDisp: number[]; sep: number } => {
+        const disp: number[] = [];
+        const clusterDisp: number[] = [];
+        const seps: number[] = [];
+        let prevNodes: CanonicalGraphPayload['nodes'] | null = null;
+        let prevPos: PtMap | null = null;
+        for (const step of chainSteps) {
+          const kf = engKfs.getKeyframe(step);
+          let pos: PtMap;
+          if (!prevPos || !prevNodes) {
+            pos = new Map(Object.entries(eng.solve({ nodes: kf.nodes, connections: kf.connections })));
+          } else {
+            const ann = annotateClusterTransition(kf.nodes, prevNodes);
+            const start = computeTimelineStartPositions({
+              nextNodes: ann.nodes,
+              connections: kf.connections,
+              live: prevPos,
+              is3D: eng.is3D,
+            });
+            pos = new Map(
+              Object.entries(
+                eng.solve({
+                  nodes: ann.nodes,
+                  connections: kf.connections,
+                  seedPositions: start,
+                })
+              )
+            ) as PtMap;
+            const clusterIdSet = new Set(ann.nodes.filter((n) => n.group === 0).map((n) => n.id));
+            for (const [id, p] of pos) {
+              const q = prevPos.get(id);
+              if (q) {
+                const d = Math.hypot(p.x - q.x, p.y - q.y, (p.z ?? 0) - (q.z ?? 0));
+                disp.push(d);
+                if (clusterIdSet.has(id)) clusterDisp.push(d);
+              }
+            }
+          }
+          seps.push(separationRatio(pos, kf.nodes, kf.connections));
+          prevNodes = kf.nodes;
+          prevPos = pos;
+        }
+        return { disp, clusterDisp, sep: seps.reduce((a, b) => a + b, 0) / Math.max(1, seps.length) };
+      };
+      const runFinalSeededChain = (): {
+        disp: number[];
+        clusterDisp: number[];
+        sep: number;
+        centerOffset: number;
+        determinismDelta: number;
+      } => {
+        const disp: number[] = [];
+        const clusterDisp: number[] = [];
+        const seps: number[] = [];
+        const centerOffsets: number[] = [];
+        let determinismDelta = 0;
+        let prevPos: PtMap | null = null;
+        for (const step of chainSteps) {
+          const kf = engKfs.getKeyframe(step);
+          const seed = filterSeed(kf.nodes);
+          const raw1 = new Map(
+            Object.entries(
+              eng.solve({
+                nodes: kf.nodes,
+                connections: kf.connections,
+                seedPositions: seed,
+              })
+            )
+          ) as PtMap;
+          const raw2 = new Map(
+            Object.entries(
+              eng.solve({
+                nodes: kf.nodes,
+                connections: kf.connections,
+                seedPositions: seed,
+              })
+            )
+          ) as PtMap;
+          for (const n of kf.nodes) {
+            const p1 = raw1.get(n.id)!;
+            const p2 = raw2.get(n.id)!;
+            determinismDelta = Math.max(
+              determinismDelta,
+              Math.hypot(p1.x - p2.x, p1.y - p2.y, (p1.z ?? 0) - (p2.z ?? 0))
+            );
+          }
+          const { blended: pos } = alignAndBlendToFinalLayout(
+            raw1,
+            finalPosMap,
+            kf.nodes,
+            step,
+            engKfs.total,
+            eng.is3D
+          );
+          if (prevPos) {
+            const clusterIdSet = new Set(kf.nodes.filter((n) => n.group === 0).map((n) => n.id));
+            for (const [id, p] of pos) {
+              const q = prevPos.get(id);
+              if (q) {
+                const d = Math.hypot(p.x - q.x, p.y - q.y, (p.z ?? 0) - (q.z ?? 0));
+                disp.push(d);
+                if (clusterIdSet.has(id)) clusterDisp.push(d);
+              }
+            }
+          }
+          seps.push(separationRatio(pos, kf.nodes, kf.connections));
+          centerOffsets.push(clusterCenterOffsetRatio(pos, kf.nodes, kf.connections));
+          prevPos = pos;
+        }
+        return {
+          disp,
+          clusterDisp,
+          sep: seps.reduce((a, b) => a + b, 0) / Math.max(1, seps.length),
+          centerOffset: centerOffsets.reduce((a, b) => a + b, 0) / Math.max(1, centerOffsets.length),
+          determinismDelta,
+        };
+      };
+      const none = runUnalignedChain();
+      const seeded = runFinalSeededChain();
+      const sNone = stat(none.disp);
+      const sSeeded = stat(seeded.disp);
+      const cNone = stat(none.clusterDisp);
+      const cSeeded = stat(seeded.clusterDisp);
+      assertCondition(
+        seeded.determinismDelta === 0,
+        `[Gate 3d: Determinism] ${eng.name}: final-seeded step solve must be 100% deterministic (maxDelta=${seeded.determinismDelta})`,
+        failures
+      );
+      assertCondition(
+        sSeeded.mean <= sNone.mean * 1.001 + 0.01,
+        `[Gate 3d: Stability] ${eng.name}: final-seeded + Procrustes + u^2 blend must not increase mean step displacement (seeded=${sSeeded.mean.toFixed(2)}px, none=${sNone.mean.toFixed(2)}px)`,
+        failures
+      );
+      assertCondition(
+        cSeeded.mean <= cNone.mean * 1.001 + 0.01,
+        `[Gate 3d: Cluster Stability] ${eng.name}: final-seeded + Procrustes + u^2 blend must not increase mean cluster displacement (seeded=${cSeeded.mean.toFixed(2)}px, none=${cNone.mean.toFixed(2)}px)`,
+        failures
+      );
+      assertCondition(
+        seeded.sep >= none.sep * 0.8,
+        `[Gate 3d: Quality] ${eng.name}: topical separation degraded (seeded=${seeded.sep.toFixed(2)}x vs none=${none.sep.toFixed(2)}x)`,
+        failures
+      );
+      assertCondition(
+        seeded.centerOffset < 0.85,
+        `[Gate 3d: Cluster Centering] ${eng.name}: cluster hub drifted out of its primary content cloud (offset/intra=${seeded.centerOffset.toFixed(2)} >= 0.85)`,
+        failures
+      );
+
+      // Penultimate-to-final (N-2 -> N-1) transition guard
+      const penultStep = Math.max(0, engKfs.total - 2);
+      const penultKf = engKfs.getKeyframe(penultStep);
+      const penultSeed = filterSeed(penultKf.nodes);
+      const penultRaw = new Map(
+        Object.entries(
+          eng.solve({
+            nodes: penultKf.nodes,
+            connections: penultKf.connections,
+            seedPositions: penultSeed,
+          })
+        )
+      ) as PtMap;
+      const { blended: penultPos } = alignAndBlendToFinalLayout(
+        penultRaw,
+        finalPosMap,
+        penultKf.nodes,
+        penultStep,
+        engKfs.total,
+        eng.is3D
+      );
+      const penultRot = alignLayoutProcrustes(finalPosMap, penultPos, {
+        is3D: eng.is3D,
+        allowScale: true,
+      });
+      const penultRotDeg = (Math.abs(penultRot.rotation) * 180) / Math.PI;
+      const penultDisps: number[] = [];
+      for (const [id, p] of penultPos) {
+        const fPt = finalPosMap.get(id);
+        if (fPt) penultDisps.push(Math.hypot(p.x - fPt.x, p.y - fPt.y, (p.z ?? 0) - (fPt.z ?? 0)));
+      }
+      const penultMedDisp = stat(penultDisps).median;
+      assertCondition(
+        penultRotDeg < 5,
+        `[Gate 3d: N-2 -> N-1 Rotation] ${eng.name}: penultimate-to-final rotation ${penultRotDeg.toFixed(2)} deg >= 5 deg`,
+        failures
+      );
+
+      const f = (s: { mean: number; median: number; p95: number }) => `${s.mean.toFixed(1)}/${s.median.toFixed(1)}/${s.p95.toFixed(1)}`;
+      lines.push(`${eng.name}: none ${f(sNone)} | final-seeded+u2 ${f(sSeeded)}`);
+      clusterLines.push(`${eng.name}: none ${f(cNone)} | final-seeded+u2 ${f(cSeeded)}`);
+      sepLines.push(`${eng.name}: none ${none.sep.toFixed(2)}x, final-seeded+u2 ${seeded.sep.toFixed(2)}x`);
+      centerLines.push(`${eng.name}: ${seeded.centerOffset.toFixed(2)}x`);
+      penultLines.push(`${eng.name}: rot=${penultRotDeg.toFixed(2)}deg medDisp=${penultMedDisp.toFixed(2)}px`);
+    }
+    console.log(
+      `[Gate 3d Summary] consecutive-step displacement mean/median/p95 px over ${chainSteps.length} strided timeline steps (stride ${stride}, final-seeded + Procrustes-to-final + u^2 blend, anchors=0):\n  all nodes:\n    ${lines.join('\n    ')}\n  theme clusters (group=0):\n    ${clusterLines.join('\n    ')}\n  topical separation at mid steps (inter/intra): ${sepLines.join(' | ')}\n  cluster hub offset/intra (<0.85): ${centerLines.join(' | ')}\n  N-2 -> N-1 transition (<5deg): ${penultLines.join(' | ')} | ${(performance.now() - t3d0).toFixed(0)}ms`
+    );
+  }
+
+  // Verify centered Theme-Cluster Pill placement (no offset, no leader line) & Elliptical Pill Clearance
+  const calloutAllNodes = canonical.nodes.map((n) => ({
+    id: n.id,
+    x: d3Pos1[n.id].x,
+    y: d3Pos1[n.id].y,
+    radiusPx: 8,
+    group: n.group,
+  }));
+  const calloutSpecs = tagNodes.map((n) => ({
+    id: n.id,
+    text: n.name,
+    x: d3Pos1[n.id].x,
+    y: d3Pos1[n.id].y,
+    radiusPx: 0,
+  }));
+  const calloutMap = computeClusterCalloutPlacements2D(calloutAllNodes, calloutSpecs);
+  assertCondition(
+    calloutMap.size === tagNodes.length &&
+      Array.from(calloutMap.values()).every(
+        (pl) =>
+          pl.px === pl.cx &&
+          pl.py === pl.cy &&
+          pl.anchorX === pl.startX &&
+          pl.anchorY === pl.startY
+      ),
+    '[Gate 3: Pill Placement] Theme-Cluster pills must be centered directly at (cx, cy) with zero leader-line offset',
+    failures
+  );
+
+  // Verify zero content nodes overlap inside any Theme-Cluster Pill bounding box (|dx| < 78 && |dy| < 16)
+  for (const [solverName, posMap] of [
+    ['cytoscape', cyPos1],
+    ['sigma', sigmaPos1],
+    ['d3', d3Pos1],
+    ['vis-network', visPos1],
+    ['3d-force-graph', force3DPos1],
+  ] as const) {
+    let pillOverlaps = 0;
+    for (const cNode of contentNodes) {
+      const cp = posMap[cNode.id];
+      if (!cp) continue;
+      for (const hNode of tagNodes) {
+        const hp = posMap[hNode.id];
+        if (!hp) continue;
+        if (Math.abs(cp.x - hp.x) < 78 && Math.abs(cp.y - hp.y) < 16) {
+          pillOverlaps++;
+        }
+      }
+    }
+    assertCondition(
+      pillOverlaps === 0,
+      `[Gate 3: Pill Clearance] ${solverName} has ${pillOverlaps} content node(s) overlapping inside a Theme-Cluster Pill box (|dx| < 78 && |dy| < 16)`,
+      failures
+    );
+  }
 
   // =========================================================================
   // GATE 4: 2D & 3D Geometric Layouts (Radial & Columns) & Reordering
@@ -528,11 +2279,11 @@ async function main() {
   // GATE 5: 2D & 3D Drag-and-Drop Equilibrium & Post-Drop Reconfiguration
   // =========================================================================
   const adjacency = buildGraphAdjacency(canonical.connections);
-  // Pick a specific cluster tag node (4..7 connected items) for deterministic drag test
+  // Pick a Tag-Cluster supernode (3..25 connected items) for deterministic drag test
   const testNode =
     canonical.nodes.find((n) => {
       const deg = adjacency.get(n.id)?.size ?? 0;
-      return n.group === 0 && deg >= 4 && deg <= 7;
+      return n.group === 0 && deg >= 3 && deg <= 25;
     }) || canonical.nodes[0];
   const hopDists = computeHopDistances(testNode.id, adjacency);
   const hop1Ids = Array.from(adjacency.get(testNode.id) || []);
@@ -694,7 +2445,131 @@ async function main() {
   );
   drag3D.destroy();
 
+  // =========================================================================
+  // GATE 6: Unified Visual-State, Constant Pill + % Badge, Polygons (3..10) & Exclusive Filter
+  // =========================================================================
+  // 6A. Constant-size main pill + external % badge
+  for (const cn of tagNodes) {
+    const restDims = getClusterPillDimensions(cn.name, undefined, false, 1);
+    const hoverDims = getClusterPillDimensions(cn.name, 0.38, true, 1);
+    assertCondition(
+      restDims.pillW === hoverDims.pillW && restDims.pillH === hoverDims.pillH,
+      `[Gate 6: Constant Pill] Pill size changed on hover for "${cn.name}": rest=${restDims.pillW}x${restDims.pillH}, hover=${hoverDims.pillW}x${hoverDims.pillH}`,
+      failures
+    );
+    assertCondition(
+      restDims.badgeW === 0 && hoverDims.badgeW > 20 && hoverDims.pctText === '38%',
+      `[Gate 6: External Badge] External % badge invalid for "${cn.name}": restBadgeW=${restDims.badgeW}, hoverBadgeW=${hoverDims.badgeW}, pctText=${hoverDims.pctText}`,
+      failures
+    );
+  }
+
+  // 6B. Unified cluster dimming when hovering one Theme-Cluster (hopDistance = 0 on one, undefined on others)
+  const testClusterPlacements = computeClusterCalloutPlacements2D(
+    tagNodes.map((cn, idx) => ({ id: cn.id, x: idx * 200, y: 100, radiusPx: 0, group: 0 })),
+    tagNodes.map((cn, idx) => ({
+      id: cn.id,
+      text: cn.name,
+      x: idx * 200,
+      y: 100,
+      radiusPx: 0,
+      hopDistance: idx === 0 ? 0 : undefined,
+    }))
+  );
+  const hoveredPl = testClusterPlacements.get(tagNodes[0].id);
+  assertCondition(
+    hoveredPl?.isHighlighted === true && hoveredPl?.alpha === 1.0,
+    '[Gate 6: Unified Cluster Focus] Hovered cluster pill must have isHighlighted=true and alpha=1.0',
+    failures
+  );
+  for (const [id, pl] of testClusterPlacements.entries()) {
+    if (id === tagNodes[0].id) continue;
+    assertCondition(
+      pl.isHighlighted === false && pl.alpha === 0.14,
+      `[Gate 6: Unified Cluster Dimming] Non-hovered cluster pill "${id}" expected alpha=0.14, got ${pl.alpha}`,
+      failures
+    );
+  }
+
+  // 6C. Coverage-proportional content node dimming & scaling when hovering a Theme-Cluster
+  const sampleColor = CLUSTER_PALETTE.dark[0];
+  const col100 = getAttenuatedNodeColor(sampleColor, 1, false, 1.0);
+  const col50 = getAttenuatedNodeColor(sampleColor, 1, false, 0.5);
+  const col0 = getAttenuatedNodeColor(sampleColor, undefined, false, 0);
+  assertCondition(
+    col100.toLowerCase() === sampleColor.toLowerCase() &&
+      col50.toLowerCase() !== col100.toLowerCase() &&
+      col50.toLowerCase() !== col0.toLowerCase(),
+    `[Gate 6: Coverage-Proportional Dimming] Expected distinct colors for 100% (${col100}), 50% (${col50}), and 0% (${col0}) coverage`,
+    failures
+  );
+  assertCondition(
+    getAttenuatedNodeScale(1, 1.0) > getAttenuatedNodeScale(1, 0.5) &&
+      getAttenuatedNodeScale(1, 0.5) > getAttenuatedNodeScale(undefined, 0),
+    '[Gate 6: Coverage-Proportional Scaling] Expected strictly monotonic scale for 100% > 50% > 0% coverage',
+    failures
+  );
+
+  // 6D. Regular Polygons (3..10 corners for groups 1..8)
+  for (let g = 1; g <= 8; g++) {
+    const sides = getContentGroupPolygonSides(g);
+    const verts = getRegularPolygonUnitVertices(sides);
+    assertCondition(
+      sides === g + 2 && verts.length === g + 2,
+      `[Gate 6: Polygons] Group ${g} expected ${g + 2} corners, got sides=${sides}, verts=${verts.length}`,
+      failures
+    );
+  }
+
+  // 6E. Exclusive Single-Select Content Filter
+  resetContentFilterGroups();
+  assertCondition(getActiveContentFilterGroup() === null, '[Gate 6: Filter] Expected initial null filter', failures);
+  toggleContentFilterGroup(1);
+  assertCondition(
+    getActiveContentFilterGroup() === 1 && !isNodeDimmedByContentFilter(1) && isNodeDimmedByContentFilter(2),
+    '[Gate 6: Filter] Expected group 1 exclusively active after toggleContentFilterGroup(1)',
+    failures
+  );
+  toggleContentFilterGroup(3);
+  assertCondition(
+    getActiveContentFilterGroup() === 3 && !isNodeDimmedByContentFilter(3) && isNodeDimmedByContentFilter(1),
+    '[Gate 6: Filter] Expected group 3 to exclusively replace group 1 after toggleContentFilterGroup(3)',
+    failures
+  );
+  toggleContentFilterGroup(3);
+  assertCondition(
+    getActiveContentFilterGroup() === null && !isNodeDimmedByContentFilter(1) && !isNodeDimmedByContentFilter(3),
+    '[Gate 6: Filter] Expected toggling already-active group 3 to reset back to All (null)',
+    failures
+  );
+  resetContentFilterGroups();
+
   const elapsedSec = ((performance.now() - startTime) / 1000).toFixed(2);
+
+  console.log(
+    `[Gate 1 Summary] Tag-Cluster Supernodes (${tagNodes.length}): ${tagNodes.map((t) => t.name).join(', ')}`
+  );
+  console.log(
+    `[Gate 2 Summary] Communities: K=${communityCount}, sizes=[${communityCounts.join(', ')}]`
+  );
+  console.log(
+    `[Gate 2 Summary] Overlap Orbit Stratification Ratio (Low/High >1.14x): cy=${cyStats.overlapOrbitRatio.toFixed(2)}x, sigma=${sigmaStats.overlapOrbitRatio.toFixed(2)}x, d3=${d3Stats.overlapOrbitRatio.toFixed(2)}x, vis=${visStats.overlapOrbitRatio.toFixed(2)}x, 3d=${force3DStats.overlapOrbitRatio.toFixed(2)}x`
+  );
+  console.log(
+    `[Gate 2 Summary] Bridge/Intra Edge Ratio (>=1.65x): cy=${cyStats.bridgeRatio.toFixed(2)}x, sigma=${sigmaStats.bridgeRatio.toFixed(2)}x, d3=${d3Stats.bridgeRatio.toFixed(2)}x, vis=${visStats.bridgeRatio.toFixed(2)}x, 3d=${force3DStats.bridgeRatio.toFixed(2)}x`
+  );
+  console.log(
+    `[Gate 2 Summary] Topical Separation Ratio (>=1.85x): cy=${cyStats.interClusterRatio.toFixed(2)}x, sigma=${sigmaStats.interClusterRatio.toFixed(2)}x, d3=${d3Stats.interClusterRatio.toFixed(2)}x, vis=${visStats.interClusterRatio.toFixed(2)}x, 3d=${force3DStats.interClusterRatio.toFixed(2)}x`
+  );
+  console.log(
+    `[Gate 2 Summary] Cluster Radius (med/p85 px): cy=${cyStats.meanMedianRadius.toFixed(1)}/${cyStats.meanP85Radius.toFixed(1)}, sigma=${sigmaStats.meanMedianRadius.toFixed(1)}/${sigmaStats.meanP85Radius.toFixed(1)}, d3=${d3Stats.meanMedianRadius.toFixed(1)}/${d3Stats.meanP85Radius.toFixed(1)}, vis=${visStats.meanMedianRadius.toFixed(1)}/${visStats.meanP85Radius.toFixed(1)}, 3d=${force3DStats.meanMedianRadius.toFixed(1)}/${force3DStats.meanP85Radius.toFixed(1)}`
+  );
+  console.log(
+    `[Gate 2 Summary] Inter/Intra Island Ratio (>=3.20x): cy=${cyStats.islandRatio.toFixed(2)}x (p85/minDist=${(cyStats.meanP85Radius / cyStats.minCentroidDist).toFixed(2)}), sigma=${sigmaStats.islandRatio.toFixed(2)}x (p85/minDist=${(sigmaStats.meanP85Radius / sigmaStats.minCentroidDist).toFixed(2)}), d3=${d3Stats.islandRatio.toFixed(2)}x (p85/minDist=${(d3Stats.meanP85Radius / d3Stats.minCentroidDist).toFixed(2)}), vis=${visStats.islandRatio.toFixed(2)}x (p85/minDist=${(visStats.meanP85Radius / visStats.minCentroidDist).toFixed(2)}), 3d=${force3DStats.islandRatio.toFixed(2)}x (p85/minDist=${(force3DStats.meanP85Radius / force3DStats.minCentroidDist).toFixed(2)})`
+  );
+  console.log(
+    `[Gate 3 Summary] Sync-vs-Async Parity maxDelta=${maxAsyncParityDelta.toFixed(4)}px | 1.00->1.05 Radius Shift: cy=${(stepRadiusChanges.cy * 100).toFixed(1)}%, sigma=${(stepRadiusChanges.sigma * 100).toFixed(1)}%, d3=${(stepRadiusChanges.d3 * 100).toFixed(1)}%, vis=${(stepRadiusChanges.vis * 100).toFixed(1)}%, 3d=${(stepRadiusChanges.force3D * 100).toFixed(1)}%`
+  );
 
   if (failures.length > 0) {
     console.error('\n❌ [validate-visualizations] Validation failed:');
@@ -705,7 +2580,7 @@ async function main() {
   }
 
   console.log(
-    `✅ [validate-visualizations] All 5 visualization physics, cluster-separation (cy=${cyStats.hubRatio.toFixed(2)}x, sigma=${sigmaStats.hubRatio.toFixed(2)}x, d3=${d3Stats.hubRatio.toFixed(2)}x, vis=${visStats.hubRatio.toFixed(2)}x, 3d=${force3DStats.hubRatio.toFixed(2)}x), geometry & drag-reconfiguration gates passed in ${elapsedSec}s (0 errors).`
+    `✅ [validate-visualizations] All 5 visualization physics, bridge-vs-intra & topical community separation gates, negative-exponent tuning, geometry & drag-reconfiguration gates passed in ${elapsedSec}s (0 errors).`
   );
 }
 

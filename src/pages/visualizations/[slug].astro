@@ -37,10 +37,12 @@ const optimizedScreenshot = screenshotImg ? await getImage({
 
 import { getCanonicalGraphPayloadArtifact, getGraphPayloadEndpointUrl } from "@commons/server/graph-payload-endpoint";
 import { getGraphLayoutEndpointUrl } from "@commons/server/graph-layout-endpoint";
+import { buildRegularPolygonSvgPoints, getDefaultTopicClusterCount } from "@commons/shared/graph-payload";
 
 const payloadArtifact = await getCanonicalGraphPayloadArtifact();
 const payloadUrl = await getGraphPayloadEndpointUrl();
 const layoutUrl = await getGraphLayoutEndpointUrl(type);
+const defaultClusterCount = getDefaultTopicClusterCount(type);
 
 
 const engineSwitcherItems = [
@@ -275,22 +277,29 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 </div>
               </div>
 
-              <!-- 1. Edge Specificity Weighting -->
+              <!-- 1. Edge Cohesion & Hubs -->
               <div data-tune-layout="force" class="space-y-1.5">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Edge Specificity</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-domain-visualizations">Edge Cohesion &amp; Hubs</div>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Topic Clusters (K)</span>
+                    <span data-tune-val="clusterCount" class="font-mono text-[10px] text-gray-400 light:text-slate-500">{defaultClusterCount}</span>
+                  </div>
+                  <input type="range" data-tune-key="clusterCount" data-tune-cat="physics" min="2" max="18" step="1" value={defaultClusterCount} class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Stiffness Exp (γ)</span>
-                    <span data-tune-val="stiffnessExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.65</span>
+                    <span data-tune-val="stiffnessExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">2.10</span>
                   </div>
-                  <input type="range" data-tune-key="stiffnessExponent" data-tune-cat="physics" min="0" max="2.6" step="0.05" value="1.65" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="stiffnessExponent" data-tune-cat="physics" min="-1.0" max="2.6" step="0.05" value="2.1" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Distance Exp (β)</span>
-                    <span data-tune-val="distanceExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.15</span>
+                    <span data-tune-val="distanceExponent" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.35</span>
                   </div>
-                  <input type="range" data-tune-key="distanceExponent" data-tune-cat="physics" min="0" max="2.0" step="0.05" value="1.15" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="distanceExponent" data-tune-cat="physics" min="-1.0" max="2.0" step="0.05" value="1.35" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
               </div>
 
@@ -300,9 +309,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
                     <span>Link Distance</span>
-                    <span data-tune-val="baseLinkDistance2D" class="font-mono text-[10px] text-gray-400 light:text-slate-500">26</span>
+                    <span data-tune-val="baseLinkDistance2D" class="font-mono text-[10px] text-gray-400 light:text-slate-500">18</span>
                   </div>
-                  <input type="range" data-tune-key="baseLinkDistance2D" data-tune-cat="physics" min="14" max="60" step="2" value="26" class="tune-slider w-full h-1.5 cursor-pointer" />
+                  <input type="range" data-tune-key="baseLinkDistance2D" data-tune-cat="physics" min="14" max="60" step="2" value="18" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -310,6 +319,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                     <span data-tune-val="repulsionScale" class="font-mono text-[10px] text-gray-400 light:text-slate-500">1.00</span>
                   </div>
                   <input type="range" data-tune-key="repulsionScale" data-tune-cat="physics" min="0.3" max="2.5" step="0.05" value="1.0" class="tune-slider w-full h-1.5 cursor-pointer" />
+                </label>
+                <label class="block space-y-0.5">
+                  <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
+                    <span>Hub Repulsion (α)</span>
+                    <span data-tune-val="degreeRepulsion" class="font-mono text-[10px] text-gray-400 light:text-slate-500">0.48</span>
+                  </div>
+                  <input type="range" data-tune-key="degreeRepulsion" data-tune-cat="physics" min="0" max="1.5" step="0.05" value="0.48" class="tune-slider w-full h-1.5 cursor-pointer" />
                 </label>
                 <label class="block space-y-0.5">
                   <div class="flex justify-between text-[11px] text-gray-300 light:text-slate-700">
@@ -404,45 +420,190 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           ></div>
         </div>
 
-        <!-- Floating Glassmorphic Legend -->
-        <div class="artifact-card-footer px-3.5 py-2.5 text-xs select-none">
-          <div class="grid grid-cols-3 md:flex md:flex-wrap md:items-center md:justify-center gap-x-3 gap-y-1.5 md:gap-x-5 w-full">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-posts border border-white/20 shadow-sm shadow-domain-posts/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Posts</span>
+        <!-- Timeline Player (SYSTEM-014 Etappe 2): replays the graph item by item -->
+        <div
+          id="timeline-bar"
+          class="artifact-card-footer px-3.5 py-2 text-xs select-none"
+          role="group"
+          aria-label="Timeline: replay the knowledge graph item by item"
+          tabindex="0"
+        >
+          <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 w-full">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                id="timeline-prev"
+                aria-label="Previous item"
+                title="Previous item"
+                disabled
+                class="timeline-btn inline-flex items-center justify-center w-7 h-7 rounded-lg border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M8.5 1.5v9L3 6z" /></svg>
+              </button>
+              <button
+                type="button"
+                id="timeline-play"
+                aria-label="Play timeline"
+                aria-pressed="false"
+                title="Play / Pause (Space)"
+                disabled
+                class="timeline-btn inline-flex items-center justify-center w-8 h-7 rounded-lg border transition-colors cursor-pointer bg-domain-visualizations/15 border-domain-visualizations/50 text-gray-100 light:text-slate-900 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg id="timeline-icon-play" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" /></svg>
+                <svg id="timeline-icon-pause" class="hidden" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2.5 1.5h2.75v9H2.5zM6.75 1.5H9.5v9H6.75z" /></svg>
+              </button>
+              <button
+                type="button"
+                id="timeline-next"
+                aria-label="Next item"
+                title="Next item"
+                disabled
+                class="timeline-btn inline-flex items-center justify-center w-7 h-7 rounded-lg border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3.5 1.5v9L9 6z" /></svg>
+              </button>
             </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-publications border border-white/20 shadow-sm shadow-domain-publications/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Publications</span>
+            <input
+              type="range"
+              id="timeline-scrubber"
+              min="0"
+              max="0"
+              step="1"
+              value="0"
+              disabled
+              aria-label="Timeline position (one step per content item)"
+              class="tune-slider order-last basis-full sm:order-none sm:basis-auto sm:flex-1 min-w-[8rem] h-1.5 cursor-pointer"
+            />
+            <div class="flex items-center gap-1 shrink-0">
+              <label for="timeline-speed" class="sr-only">Playback speed</label>
+              <select
+                id="timeline-speed"
+                aria-label="Playback speed"
+                class="bg-element-bg/70 border border-element-border rounded-lg text-gray-200 light:text-slate-800 font-semibold text-[11px] sm:text-xs cursor-pointer px-1.5 py-0.5 focus:outline-none"
+              >
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="2">2x</option>
+              </select>
             </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-presentations border border-white/20 shadow-sm shadow-domain-presentations/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Presentations</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-courses border border-white/20 shadow-sm shadow-domain-courses/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Courses</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-projects border border-white/20 shadow-sm shadow-domain-projects/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Projects</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-services border border-white/20 shadow-sm shadow-domain-services/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Services</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-newsletters border border-white/20 shadow-sm shadow-domain-newsletters/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Newsletters</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-visualizations border border-white/20 shadow-sm shadow-domain-visualizations/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Visualizations</span>
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0 bg-domain-tags border border-white/20 shadow-sm shadow-domain-tags/30"></span>
-              <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs truncate">Tags</span>
-            </div>
+            <span
+              id="timeline-date"
+              class="shrink-0 px-2 py-0.5 rounded-lg border border-element-border bg-element-bg/70 font-semibold tabular-nums text-gray-200 light:text-slate-800 text-[11px] sm:text-xs"
+              title="Publication date of the current item"
+            >—</span>
+            <span
+              id="timeline-counter"
+              role="status"
+              aria-live="polite"
+              class="shrink-0 font-semibold tabular-nums text-gray-300 light:text-slate-600 text-[11px] sm:text-xs"
+            >0 Items · 0 Clusters</span>
+          </div>
+        </div>
+
+        <!-- Interactive Content-Type Filter Bar -->
+        <div
+          id="content-filter-bar"
+          class="artifact-card-footer px-3.5 py-2.5 text-xs select-none"
+          role="group"
+          aria-label="Filter graph nodes by content type"
+        >
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 w-full">
+            <button
+              type="button"
+              data-content-filter="all"
+              aria-pressed="true"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-domain-visualizations/15 border-domain-visualizations/50 text-gray-100 light:text-slate-900 shadow-sm"
+            >
+              All
+            </button>
+            <button
+              type="button"
+              data-content-filter="1"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 1)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Posts</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="2"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 2)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Publications</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="3"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 3)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Presentations</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="4"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 4)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Courses</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="5"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 5)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Projects</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="6"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 6)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Services</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="7"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 7)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Newsletters</span>
+            </button>
+            <button
+              type="button"
+              data-content-filter="8"
+              aria-pressed="false"
+              class="content-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition-colors cursor-pointer bg-element-bg/70 border-element-border text-gray-300 light:text-slate-600 hover:border-domain-visualizations/40 hover:text-gray-100 light:hover:text-slate-900"
+            >
+              <svg width="12" height="12" viewBox="-1.25 -1.25 2.5 2.5" class="inline-block shrink-0" aria-hidden="true">
+                <polygon points={buildRegularPolygonSvgPoints(1, 8)} fill="currentColor" fill-opacity="0.88" stroke="currentColor" stroke-width="0.22" stroke-linejoin="round" />
+              </svg>
+              <span>Visualizations</span>
+            </button>
           </div>
         </div>
       </div>
@@ -469,11 +630,24 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
   <script>
     import { getThemeTokens } from '@commons/shared/domain-themes';
     import {
+      createGraphTimelineController,
+      type GraphTimelineController,
+      type TimelineAdapter,
+      type TimelineState,
+    } from '@commons/client/graph-timeline-controller';
+    import {
+      DEFAULT_TOPIC_CLUSTER_COUNT,
+      configureDefaultClusterCount,
+      getDefaultTopicClusterCount,
       hydrateEnginePayloads,
+      reclusterCanonicalGraphPayload,
       getGraphTuningState,
       setGraphTuningState,
       resetGraphTuningState,
       isDefaultGraphTuningState,
+      getActiveContentFilterGroups,
+      resetContentFilterGroups,
+      toggleContentFilterGroup,
       type CanonicalGraphPayload,
       type EnginePayloads,
       type GraphLayoutPayload,
@@ -484,6 +658,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       destroy(): void;
       updateLayout(layout: string, isLight: boolean): void;
       applyTuning?(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
+      timelineAdapter?: TimelineAdapter;
       layouts: { id: string; label: string }[];
     }
 
@@ -497,6 +672,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         GRAPH_TYPE: string;
         GRAPH_PAYLOAD: EnginePayloads;
         activeInstance: GraphInstance | null;
+        activeTimeline: GraphTimelineController | null;
       }
     }
 
@@ -519,7 +695,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
     }
 
     async function loadHydratedGraphPayload(
-      _type: string,
+      type: string,
       payloadUrl: string,
       layoutUrl: string
     ): Promise<EnginePayloads> {
@@ -529,7 +705,12 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           ? fetchWithMemoryCache<GraphLayoutPayload>(layoutUrl).catch(() => null)
           : Promise.resolve(null),
       ]);
-      return hydrateEnginePayloads(canonicalPayload, layoutData?.positions);
+      const targetK = getDefaultTopicClusterCount(type);
+      const effectiveCanonical =
+        targetK !== DEFAULT_TOPIC_CLUSTER_COUNT
+          ? reclusterCanonicalGraphPayload(canonicalPayload, targetK)
+          : canonicalPayload;
+      return hydrateEnginePayloads(effectiveCanonical, layoutData?.positions);
     }
 
     function onReady(fn: () => void) {
@@ -605,6 +786,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
       const stageEl = container.closest('.visualization-stage') as HTMLElement | null;
       const type = container.dataset.graphType || '';
+      configureDefaultClusterCount(getDefaultTopicClusterCount(type));
       const payloadUrl =
         stageEl?.dataset.payloadUrl ||
         container.dataset.payloadUrl ||
@@ -653,6 +835,11 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
       async function runInit() {
         if (!container) return;
+        timelineUnsub?.();
+        timelineUnsub = null;
+        timeline?.destroy();
+        timeline = null;
+        window.activeTimeline = null;
         if (activeInstance) {
           if (typeof activeInstance.destroy === 'function') {
             activeInstance.destroy();
@@ -739,6 +926,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             utmCampaign: 'interactive_visualization'
           });
           window.activeInstance = activeInstance;
+          attachTimeline();
 
         } catch (e) {
           console.error("Failed to load visualization: ", e);
@@ -756,16 +944,18 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
       // Handle layout change
       if (selector) {
-        selector.addEventListener('change', (e) => {
+        selector.addEventListener('change', async (e) => {
           const newLayout = (e.target as HTMLSelectElement).value;
           syncTuneLayoutVisibility(newLayout);
           if (activeInstance) {
+            await timeline?.resetToEnd();
             const url = new URL(window.location.href);
             url.searchParams.set('layout', newLayout);
             window.history.pushState({}, '', url.toString());
             
             const isLight = document.documentElement.classList.contains('light');
             activeInstance.updateLayout(newLayout, isLight);
+            syncTimelineUI(timeline ? timeline.getState() : null);
           }
         });
       }
@@ -793,6 +983,83 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         }
       });
 
+      // ---- Timeline Player wiring (SYSTEM-014 Etappe 2) ----
+      const timelineBar = document.getElementById('timeline-bar');
+      const tlPlay = document.getElementById('timeline-play') as HTMLButtonElement | null;
+      const tlPrev = document.getElementById('timeline-prev') as HTMLButtonElement | null;
+      const tlNext = document.getElementById('timeline-next') as HTMLButtonElement | null;
+      const tlScrubber = document.getElementById('timeline-scrubber') as HTMLInputElement | null;
+      const tlSpeed = document.getElementById('timeline-speed') as HTMLSelectElement | null;
+      const tlDate = document.getElementById('timeline-date');
+      const tlCounter = document.getElementById('timeline-counter');
+      const tlIconPlay = document.getElementById('timeline-icon-play');
+      const tlIconPause = document.getElementById('timeline-icon-pause');
+      let timeline: GraphTimelineController | null = null;
+      let timelineUnsub: (() => void) | null = null;
+
+      const syncTimelineUI = (state: TimelineState | null) => {
+        const layoutOk = Boolean(activeInstance?.timelineAdapter?.isForceLayout());
+        const enabled = Boolean(state && state.total > 0 && layoutOk);
+        for (const el of [tlPlay, tlPrev, tlNext, tlScrubber]) {
+          if (el) el.disabled = !enabled;
+        }
+        if (timelineBar) {
+          timelineBar.title = layoutOk ? '' : 'The timeline is available in the force-directed layout.';
+          timelineBar.dataset.timelineEnabled = enabled ? 'true' : 'false';
+        }
+        if (!state) return;
+        if (tlScrubber) {
+          tlScrubber.max = String(state.lastStep);
+          tlScrubber.value = String(state.step);
+          tlScrubber.setAttribute('aria-valuetext', `Item ${state.step + 1} of ${state.total}`);
+        }
+        if (tlCounter) tlCounter.textContent = `${state.itemCount} Items · ${state.clusterCount} Clusters`;
+        if (tlDate) tlDate.textContent = state.dateLabel || '—';
+        if (tlPlay) {
+          tlPlay.setAttribute('aria-pressed', state.playing ? 'true' : 'false');
+          tlPlay.setAttribute('aria-label', state.playing ? 'Pause timeline' : 'Play timeline');
+        }
+        tlIconPlay?.classList.toggle('hidden', state.playing);
+        tlIconPause?.classList.toggle('hidden', !state.playing);
+        if (timelineBar) {
+          timelineBar.dataset.timelineStep = String(state.step);
+          timelineBar.dataset.timelinePlaying = state.playing ? 'true' : 'false';
+        }
+      };
+
+      const attachTimeline = () => {
+        timelineUnsub?.();
+        timeline?.destroy();
+        timeline = null;
+        window.activeTimeline = null;
+        const adapter = activeInstance?.timelineAdapter;
+        if (adapter) {
+          timeline = createGraphTimelineController(adapter);
+          window.activeTimeline = timeline;
+          timelineUnsub = timeline.subscribe(syncTimelineUI);
+          if (tlSpeed) timeline.setSpeed(Number(tlSpeed.value) || 1);
+          syncTimelineUI(timeline.getState());
+        } else {
+          syncTimelineUI(null);
+        }
+      };
+
+      tlPlay?.addEventListener('click', () => timeline?.toggle());
+      tlPrev?.addEventListener('click', () => timeline?.stepBy(-1));
+      tlNext?.addEventListener('click', () => timeline?.stepBy(1));
+      tlScrubber?.addEventListener('input', () => {
+        const v = Number(tlScrubber.value);
+        if (Number.isFinite(v)) timeline?.seek(v);
+      });
+      tlSpeed?.addEventListener('change', () => timeline?.setSpeed(Number(tlSpeed.value) || 1));
+      timelineBar?.addEventListener('keydown', (ev) => {
+        const target = ev.target as HTMLElement | null;
+        if (ev.key === ' ' && target && target.tagName !== 'BUTTON' && target.tagName !== 'SELECT') {
+          ev.preventDefault();
+          timeline?.toggle();
+        }
+      });
+
       // Floating HUD Parameter Inspector Pill wiring
       const tuneHud = document.getElementById('tune-hud');
       const tuneToggleBtn = document.getElementById('tune-toggle-btn');
@@ -816,6 +1083,50 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         }
       };
 
+      // Interactive Content-Type Filter Bar wiring
+      const contentFilterBar = document.getElementById('content-filter-bar');
+      const syncContentFilterUI = () => {
+        if (!contentFilterBar) return;
+        const activeGroups = getActiveContentFilterGroups();
+        const isAll = activeGroups === null || activeGroups.size === 0;
+        const buttons = contentFilterBar.querySelectorAll<HTMLButtonElement>('button[data-content-filter]');
+        buttons.forEach((btn) => {
+          const val = btn.dataset.contentFilter;
+          const isActive =
+            val === 'all' ? isAll : !isAll && activeGroups !== null && activeGroups.has(Number(val));
+          btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          btn.classList.toggle('bg-domain-visualizations/15', isActive);
+          btn.classList.toggle('border-domain-visualizations/50', isActive);
+          btn.classList.toggle('text-gray-100', isActive);
+          btn.classList.toggle('light:text-slate-900', isActive);
+          btn.classList.toggle('shadow-sm', isActive);
+          btn.classList.toggle('bg-element-bg/70', !isActive);
+          btn.classList.toggle('border-element-border', !isActive);
+          btn.classList.toggle('text-gray-300', !isActive);
+          btn.classList.toggle('light:text-slate-600', !isActive);
+        });
+      };
+
+      if (contentFilterBar) {
+        const buttons = contentFilterBar.querySelectorAll<HTMLButtonElement>('button[data-content-filter]');
+        buttons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const val = btn.dataset.contentFilter;
+            if (!val || val === 'all') {
+              resetContentFilterGroups();
+            } else {
+              const groupNum = Number(val);
+              if (Number.isFinite(groupNum) && groupNum >= 1 && groupNum <= 8) {
+                toggleContentFilterGroup(groupNum);
+              }
+            }
+            syncContentFilterUI();
+            activeInstance?.applyTuning?.('visual');
+          });
+        });
+        syncContentFilterUI();
+      }
+
       if (tuneHud) {
         const stopCanvasEvent = (ev: Event) => {
           ev.stopPropagation();
@@ -825,6 +1136,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         });
 
         const formatTuneValue = (key: keyof GraphTuningState, val: number): string => {
+          if (key === 'clusterCount') return String(Math.round(val));
           if (key === 'highlightMaxHops') return String(Math.round(val));
           if (key === 'baseLinkDistance2D') return String(Math.round(val));
           if (key === 'nodeRadius' || key === 'edgeWidth') return val.toFixed(1);
@@ -885,19 +1197,26 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
             } else {
               if (physicsDebounceTimer) clearTimeout(physicsDebounceTimer);
               physicsDebounceTimer = setTimeout(() => {
-                activeInstance?.applyTuning?.(cat);
+                if (cat === 'physics' && timeline?.isActive()) {
+                  timeline.onTuningChanged();
+                } else {
+                  activeInstance?.applyTuning?.(cat);
+                }
               }, 60);
             }
           });
         });
 
-        tuneResetBtn?.addEventListener('click', () => {
+        tuneResetBtn?.addEventListener('click', async () => {
           if (physicsDebounceTimer) {
             clearTimeout(physicsDebounceTimer);
             physicsDebounceTimer = null;
           }
           resetGraphTuningState();
+          resetContentFilterGroups();
+          syncContentFilterUI();
           syncTuneUI();
+          await timeline?.resetToEnd();
           activeInstance?.applyTuning?.('reset');
         });
 

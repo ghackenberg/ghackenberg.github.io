@@ -1,14 +1,22 @@
 import * as d3 from 'd3';
 import {
+  DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
   GRAPH_PHYSICS_CONFIG,
   GRAPH_VIEWPORT_CONFIG,
   HIGHLIGHT_TRANSITION_MS,
+  blendHexColor,
+  buildRegularPolygonSvgPoints,
   easeHighlightTransition,
+  formatClusterLabelShort,
+  getClusterPillDimensions,
   getEdgeLinkDistance2D,
   getEdgeLinkStrength2D,
   getGraphStyleTokens,
   getGraphTuningState,
+  isDefaultGraphTuningState,
+  TIMELINE_ANCHOR_STRENGTH,
+  TIMELINE_CLUSTER_ANCHOR_STRENGTH,
   compute2DViewportFit,
   getRadialReferenceBounds2D,
   buildGraphAdjacency,
@@ -16,12 +24,29 @@ import {
   interpolateHexColor,
   getAttenuatedNodeColor,
   getAttenuatedNodeScale,
+  getNodeBaseColor,
+  getNodeClusterColor,
+  getNodeRestRadiusScale,
   getAttenuatedEdgeStyle,
+  getRestEdgeStyle,
   getNodeHopZIndex,
   getEdgeHopZIndex,
-  isDefaultGraphTuningState,
-  type GraphNodePayload
+  reclusterCanonicalGraphPayload,
+  resolveClusterPillVisualState,
+  createKChangeTransition,
+  getKChangeTransitionProgress,
+  sampleKChangeClusterLabel,
+  sampleKChangeClusterPill,
+  sampleKChangeGhostPills,
+  sampleKChangeNodeColor,
+  sampleKChangeNodePosition,
+  type CanonicalGraphPayload,
+  type GraphKChangeTransition,
+  type GraphNodePayload,
+  type TimelineNodeFx
 } from '@commons/shared/graph-payload';
+import type { TimelineAdapter, TimelineGhostNode, TimelineSnapshot } from '@commons/client/graph-timeline-controller';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 import {
   compute2DGeometryTargets,
   solveD3ForceLayoutAsync,
@@ -38,22 +63,37 @@ export interface D3Node extends d3.SimulationNodeDatum, GraphNodePayload {
   displayColor?: string;
   displayRadius?: number;
   el?: SVGGElement;
-  circleEl?: SVGCircleElement;
+  circleEl?: SVGPolygonElement | SVGCircleElement;
+  pillGroupEl?: SVGGElement;
+  pillRectEl?: SVGRectElement;
+  pillDotEl?: SVGCircleElement;
+  pillTextEl?: SVGTextElement;
+  pillTitleTspanEl?: SVGTSpanElement;
+  pillBadgeGroupEl?: SVGGElement;
+  pillBadgeRectEl?: SVGRectElement;
+  pillBadgeTextEl?: SVGTextElement;
+  activeHopDist?: number;
+  activeCoverage?: number;
+  pillWidthPx?: number;
+  pillGeometryLocked?: boolean;
 }
 
 export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
   source: string | D3Node;
   target: string | D3Node;
   weight?: number;
+  coverage?: number;
   displayColor?: string;
   displayWidth?: number;
   el?: SVGLineElement;
+  badgeEl?: SVGGElement;
 }
 
 export interface D3Payload {
+  canonical?: CanonicalGraphPayload;
   d3: {
     nodes: GraphNodePayload[];
-    connections: { sourceId: string; targetId: string; weight?: number }[];
+    connections: { sourceId: string; targetId: string; weight?: number; coverage?: number }[];
   };
 }
 
@@ -61,6 +101,8 @@ export interface D3Engine {
   layouts: { id: string; label: string }[];
   width: number;
   height: number;
+  canonicalPayload?: CanonicalGraphPayload | null;
+  activeClusterCount?: number;
   nodes: D3Node[] | null;
   links: D3Link[] | null;
   svg: d3.Selection<SVGSVGElement, D3Node, null, undefined> | null;
@@ -69,6 +111,18 @@ export interface D3Engine {
   simulation: d3.Simulation<D3Node, D3Link> | null;
   linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
   nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
+  activeBadgeLinks?: D3Link[];
+  rebuildClusterTopology?(
+    targetK: number,
+    opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+  ): void;
+  playKTransition?(nextPositions: Map<string, { x: number; y: number }>, durationMs?: number): boolean;
+  finishKTransition?(): void;
+  hasPendingKTransition?(): boolean;
+  discardPendingKTransition?(): void;
+  getWarmSeedPositions?(): ReadonlyMap<string, { x: number; y: number }>;
+  timelineAdapter?: TimelineAdapter;
+  setTimelineFx?(fx: ReadonlyMap<string, TimelineNodeFx>, ghosts: TimelineGhostNode[]): void;
   tooltipController: GraphTooltipController | null;
   dragController?: GraphDragPhysicsController2D | null;
   hoveredNodeId?: string | null;
@@ -99,6 +153,128 @@ export interface D3Engine {
   destroy(): void;
 }
 
+const D3_PILL_PAD_X = 9;
+const D3_PILL_DOT_R = 3;
+const D3_PILL_DOT_GAP = 5;
+const D3_PILL_DOT_LEAD_W = D3_PILL_DOT_R * 2 + D3_PILL_DOT_GAP;
+const D3_PILL_FONT_FAMILY = 'Inter, system-ui, -apple-system, sans-serif';
+
+interface D3PillDom {
+  g: d3.Selection<SVGGElement, undefined, null, undefined>;
+  rect: d3.Selection<SVGRectElement, undefined, null, undefined>;
+  dot: d3.Selection<SVGCircleElement, undefined, null, undefined>;
+  txt: d3.Selection<SVGTextElement, undefined, null, undefined>;
+  titleTspan: d3.Selection<SVGTSpanElement, undefined, null, undefined>;
+  badgeG: d3.Selection<SVGGElement, undefined, null, undefined>;
+  badgeRect: d3.Selection<SVGRectElement, undefined, null, undefined>;
+  badgeTxt: d3.Selection<SVGTextElement, undefined, null, undefined>;
+}
+
+/** Creates the SVG DOM of a cluster pill (explicit font attributes, geometry synced separately). */
+function buildD3ClusterPillDom(
+  parentEl: SVGGElement,
+  name: string,
+  clusterHue: string,
+  isLight: boolean,
+  canvasBg: string
+): D3PillDom {
+  const dims = getClusterPillDimensions(name, undefined, false, 1);
+  const pillH = dims.pillH;
+  const g = d3.select<SVGGElement, undefined>(parentEl).append<SVGGElement>("g")
+    .attr("class", "cluster-pill")
+    .style("pointer-events", "all")
+    .style("opacity", "0.97");
+  const rect = g.append<SVGRectElement>("rect")
+    .attr("x", -50).attr("y", -pillH / 2).attr("width", 100).attr("height", pillH)
+    .attr("rx", 6)
+    .style("fill", blendHexColor(clusterHue, canvasBg, 0.13))
+    .style("stroke", blendHexColor(clusterHue, canvasBg, 0.72))
+    .style("stroke-width", "1.25px");
+  const dot = g.append<SVGCircleElement>("circle")
+    .attr("cx", 0).attr("cy", 0).attr("r", D3_PILL_DOT_R)
+    .style("fill", clusterHue);
+  const txt = g.append<SVGTextElement>("text")
+    .attr("x", 0)
+    .attr("y", 0.5)
+    .attr("text-anchor", "start")
+    .attr("dominant-baseline", "central")
+    .style("font-family", D3_PILL_FONT_FAMILY)
+    .style("font-size", "10px")
+    .style("font-weight", "600")
+    .style("fill", getThemeTokens(isLight).textHeading);
+  const titleTspan = txt.append<SVGTSpanElement>("tspan").text(dims.baseLabel);
+  const badgeG = g.append<SVGGElement>("g")
+    .attr("class", "cluster-pct-badge")
+    .attr("transform", `translate(${50 + dims.badgeGap}, 0)`)
+    .style("display", "none")
+    .style("pointer-events", "none");
+  const badgeRect = badgeG.append<SVGRectElement>("rect")
+    .attr("x", 0).attr("y", -dims.badgeH / 2).attr("width", 28).attr("height", dims.badgeH)
+    .attr("rx", 5)
+    .style("fill", blendHexColor(clusterHue, canvasBg, 0.26))
+    .style("stroke", clusterHue)
+    .style("stroke-width", "1.5px");
+  const badgeTxt = badgeG.append<SVGTextElement>("text")
+    .attr("x", 14).attr("y", 0.5)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .style("font-family", D3_PILL_FONT_FAMILY)
+    .style("font-size", "10px")
+    .style("font-weight", "700")
+    .style("fill", clusterHue)
+    .text("");
+  return { g, rect, dot, txt, titleTspan, badgeG, badgeRect, badgeTxt };
+}
+
+/**
+ * Synchronously frames the pill text: symmetric 9px inner padding, computed from the real glyph
+ * advance (max of getComputedTextLength / getBBox) so the pill is correct before first paint.
+ * Returns the measured text width (0 when the element is not measurable yet).
+ */
+function syncD3PillGeometry(
+  els: {
+    rect?: SVGRectElement;
+    dot?: SVGCircleElement;
+    txt?: SVGTextElement;
+    badgeG?: SVGGElement;
+  },
+  name: string
+): { pillW: number; measured: boolean } {
+  const dims = getClusterPillDimensions(name, undefined, false, 1);
+  let textW = 0;
+  const t = els.txt;
+  if (t) {
+    try {
+      const cl = typeof t.getComputedTextLength === "function" ? t.getComputedTextLength() : 0;
+      const bb = typeof t.getBBox === "function" ? t.getBBox().width : 0;
+      textW = Math.ceil(Math.max(Number.isFinite(cl) ? cl : 0, Number.isFinite(bb) ? bb : 0));
+    } catch {
+      textW = 0;
+    }
+  }
+  const measured = textW > 0;
+  if (!measured) textW = dims.baseW;
+  const pillW = Math.ceil(D3_PILL_DOT_LEAD_W + textW + 2 * D3_PILL_PAD_X);
+  const leftContentX = -pillW / 2 + D3_PILL_PAD_X;
+  els.rect?.setAttribute("x", String(-pillW / 2));
+  els.rect?.setAttribute("width", String(pillW));
+  els.rect?.setAttribute("y", String(-dims.pillH / 2));
+  els.rect?.setAttribute("height", String(dims.pillH));
+  els.dot?.setAttribute("cx", String(leftContentX + D3_PILL_DOT_R));
+  els.txt?.setAttribute("x", String(leftContentX + D3_PILL_DOT_LEAD_W));
+  els.badgeG?.setAttribute("transform", `translate(${pillW / 2 + dims.badgeGap}, 0)`);
+  return { pillW, measured };
+}
+
+function syncD3ClusterPillGeometry(n: D3Node): void {
+  const res = syncD3PillGeometry(
+    { rect: n.pillRectEl, dot: n.pillDotEl, txt: n.pillTextEl, badgeG: n.pillBadgeGroupEl },
+    n.name
+  );
+  n.pillWidthPx = res.pillW;
+  if (res.measured) n.pillGeometryLocked = true;
+}
+
 const engine: D3Engine = {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
@@ -127,6 +303,10 @@ const engine: D3Engine = {
     this.height = container.offsetHeight || 500;
     this.forcePositions = new Map();
     this.initialForcePositions = new Map();
+    this.canonicalPayload = payload.canonical ?? {
+      nodes: payload.d3.nodes.map((n) => ({ ...n })),
+      connections: payload.d3.connections.map((c) => ({ ...c })),
+    };
 
     this.nodes = payload.d3.nodes.map((n) => {
       const nx = typeof n.x === 'number' ? n.x : 0;
@@ -139,11 +319,15 @@ const engine: D3Engine = {
         y: ny
       };
     });
+    this.activeClusterCount =
+      this.nodes.filter((n) => n.group === 0).length || DEFAULT_TOPIC_CLUSTER_COUNT;
+    this.activeBadgeLinks = [];
 
     this.links = payload.d3.connections.map((c) => ({
       source: c.sourceId,
       target: c.targetId,
-      weight: c.weight
+      weight: c.weight,
+      coverage: c.coverage
     })).filter((l) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
 
     const nodeLookup = new Map<string, D3Node>();
@@ -151,33 +335,39 @@ const engine: D3Engine = {
       nodeLookup.set(n.id, n);
     }
 
-    this.dragController = createGraphDragPhysicsController2D({
-      nodes: this.nodes.map((n) => ({
-        id: n.id,
-        group: n.group,
-        x: n.x ?? 0,
-        y: n.y ?? 0,
-      })),
-      edges: this.links.map((l) => ({
-        source: typeof l.source === 'object' ? l.source.id : String(l.source),
-        target: typeof l.target === 'object' ? l.target.id : String(l.target),
-        weight: l.weight ?? 0.5,
-      })),
-      isLight: () => Boolean(this.isLight),
-      onTick: (positions, draggedId) => {
-        if (!this.nodes) return;
-        for (const [id, pt] of positions.entries()) {
-          if (id === draggedId) continue;
-          const n = nodeLookup.get(id);
-          if (n) {
-            n.x = pt.x;
-            n.y = pt.y;
+    const rebuildDragController = () => {
+      if (this.dragController) {
+        this.dragController.destroy();
+      }
+      this.dragController = createGraphDragPhysicsController2D({
+        nodes: (this.nodes || []).map((n) => ({
+          id: n.id,
+          group: n.group,
+          x: n.x ?? 0,
+          y: n.y ?? 0,
+        })),
+        edges: (this.links || []).map((l) => ({
+          source: typeof l.source === 'object' ? l.source.id : String(l.source),
+          target: typeof l.target === 'object' ? l.target.id : String(l.target),
+          weight: l.weight ?? 0.5,
+        })),
+        isLight: () => Boolean(this.isLight),
+        onTick: (positions, draggedId) => {
+          if (!this.nodes) return;
+          for (const [id, pt] of positions.entries()) {
+            if (id === draggedId) continue;
+            const n = nodeLookup.get(id);
+            if (n) {
+              n.x = pt.x;
+              n.y = pt.y;
+            }
+            this.forcePositions.set(id, { x: pt.x, y: pt.y });
           }
-          this.forcePositions.set(id, { x: pt.x, y: pt.y });
-        }
-        this.renderPositions();
-      },
-    });
+          this.renderPositions();
+        },
+      });
+    };
+    rebuildDragController();
 
     container.style.touchAction = 'pan-y';
 
@@ -205,20 +395,10 @@ const engine: D3Engine = {
     // Create D3 simulation
     this.simulation = d3.forceSimulation<D3Node>(this.nodes);
 
-    const styleTokens = getGraphStyleTokens(isLight);
-
     const bgLinkLayer = this.svgGroup.append<SVGGElement>("g");
     const bgNodeLayer = this.svgGroup.append<SVGGElement>("g");
     const fgLayer = this.svgGroup.append<SVGGElement>("g");
-
-    this.linkElements = bgLinkLayer.selectAll<SVGLineElement, D3Link>(".link")
-      .data(this.links)
-      .enter().append("line")
-      .each(function (l) {
-        l.el = this;
-      })
-      .style("stroke", styleTokens.edgeColor)
-      .style("stroke-width", `${styleTokens.edgeWidth}px`);
+    const badgeLayer = this.svgGroup.append<SVGGElement>("g").style("pointer-events", "none");
 
     let lastDraggedAt = 0;
     let lastHighlightedKey = '';
@@ -232,6 +412,467 @@ const engine: D3Engine = {
         target: typeof l.target === 'object' ? l.target.id : String(l.target)
       }))
     );
+
+    const mountSvgElements = () => {
+      const currentIsLight = Boolean(this.isLight ?? isLight);
+      const curTokens = getGraphStyleTokens(currentIsLight);
+      const curColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+      const canvasBg = getThemeTokens(currentIsLight).canvasBg;
+
+      bgLinkLayer.selectAll("*").remove();
+      bgNodeLayer.selectAll("*").remove();
+      fgLayer.selectAll("*").remove();
+      badgeLayer.selectAll("*").remove();
+      this.activeBadgeLinks = [];
+
+      this.linkElements = bgLinkLayer.selectAll<SVGLineElement, D3Link>(".link")
+        .data(this.links || [])
+        .enter().append("line")
+        .each(function (l) {
+          l.el = this;
+          const rest = getRestEdgeStyle(l.weight, currentIsLight);
+          l.displayColor = rest.color;
+          l.displayWidth = rest.width;
+          this.style.stroke = rest.color;
+          this.style.strokeWidth = `${rest.width}px`;
+          this.style.strokeOpacity = "0";
+          this.style.display = "none";
+        });
+
+      this.nodeElements = bgNodeLayer.selectAll<SVGGElement, D3Node>(".node")
+        .data(this.nodes || [])
+        .enter().append("g")
+        .each(function (n) {
+          n.el = this;
+        })
+        .style("cursor", "pointer");
+
+      this.nodeElements.append("polygon")
+        .attr("class", "node-dot")
+        .each(function (n) {
+          n.circleEl = this;
+          n.displayRadius = curTokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size);
+          if (n.group === 0) {
+            this.style.display = "none";
+            this.style.opacity = "0";
+          }
+        })
+        .attr("points", d =>
+          d.group === 0
+            ? "0,0"
+            : buildRegularPolygonSvgPoints(
+                curTokens.nodeRadius * getNodeRestRadiusScale(d.group, d.size),
+                d.group
+              )
+        )
+        .style("fill", d => getNodeBaseColor(d, currentIsLight) || curColors[d.group] || curColors[0])
+        .style("stroke", d => getNodeBaseColor(d, currentIsLight) || curColors[d.group] || curColors[0])
+        .style("stroke-linejoin", "round")
+        .style("stroke-width", "1.5px");
+
+      this.nodeElements.filter(d => d.group === 0).each(function (n) {
+        const clusterHue = getNodeClusterColor(n, currentIsLight) || curColors[0];
+        const els = buildD3ClusterPillDom(this, n.name, clusterHue, currentIsLight, canvasBg);
+        n.pillGroupEl = els.g.node() || undefined;
+        n.pillRectEl = els.rect.node() || undefined;
+        n.pillDotEl = els.dot.node() || undefined;
+        n.pillTextEl = els.txt.node() || undefined;
+        n.pillTitleTspanEl = els.titleTspan.node() || undefined;
+        n.pillBadgeGroupEl = els.badgeG.node() || undefined;
+        n.pillBadgeRectEl = els.badgeRect.node() || undefined;
+        n.pillBadgeTextEl = els.badgeTxt.node() || undefined;
+        n.pillGeometryLocked = false;
+        syncD3ClusterPillGeometry(n);
+      });
+    };
+
+    try {
+      await Promise.all([
+        document.fonts?.load?.("600 10px Inter", "Theme Cluster"),
+        document.fonts?.load?.("700 10px Inter", "100%"),
+      ]);
+      await (document.fonts?.ready ?? Promise.resolve());
+    } catch {
+      // Font loading API unavailable: fall back to synchronous measurement
+    }
+    mountSvgElements();
+
+    // Late webfont swaps change glyph advances: re-frame every pill once fonts finish loading.
+    document.fonts?.addEventListener?.("loadingdone", () => {
+      for (const n of this.nodes || []) {
+        if (n.group === 0) {
+          n.pillGeometryLocked = false;
+          syncD3ClusterPillGeometry(n);
+        }
+      }
+    });
+
+    // ---- K-change transition (shared helper logic lives in graph-payload.ts) ----
+    let pendingK: {
+      prevNodes: GraphNodePayload[];
+      prevPositions: Map<string, { x: number; y: number }>;
+      mergeTarget?: Record<string, string>;
+    } | null = null;
+    let kFrameId: number | null = null;
+    const labelSwaps = new Map<string, { oldName: string; oldPillW: number }>();
+    const restoreSwappedLabels = () => {
+      for (const id of labelSwaps.keys()) {
+        const n = nodeLookup.get(id);
+        if (!n) continue;
+        if (n.pillTitleTspanEl) n.pillTitleTspanEl.textContent = formatClusterLabelShort(n.name);
+        n.pillGeometryLocked = false;
+        syncD3ClusterPillGeometry(n);
+      }
+      labelSwaps.clear();
+    };
+    let kFinish: (() => void) | null = null;
+    const ghostLayer = this.svgGroup.append<SVGGElement>("g").style("pointer-events", "none");
+
+    const spawnGhosts = (tr: GraphKChangeTransition) => {
+      const isLightNow = Boolean(this.isLight);
+      const canvasBg = getThemeTokens(isLightNow).canvasBg;
+      ghostLayer.selectAll("*").remove();
+      const ghosts = new Map<string, { g: SVGGElement }>();
+      for (const gp of sampleKChangeGhostPills(tr, 0)) {
+        const hue = isLightNow ? gp.colorLight : gp.colorDark;
+        const els = buildD3ClusterPillDom(ghostLayer.node()!, gp.name, hue, isLightNow, canvasBg);
+        const gNode = els.g.node();
+        if (!gNode) continue;
+        syncD3PillGeometry(
+          {
+            rect: els.rect.node() ?? undefined,
+            dot: els.dot.node() ?? undefined,
+            txt: els.txt.node() ?? undefined,
+            badgeG: els.badgeG.node() ?? undefined,
+          },
+          gp.name
+        );
+        gNode.setAttribute("transform", `translate(${gp.x},${gp.y})`);
+        gNode.style.opacity = String(gp.alpha);
+        ghosts.set(gp.id, { g: gNode });
+      }
+      return ghosts;
+    };
+
+    this.finishKTransition = () => {
+      if (kFinish) kFinish();
+    };
+
+    this.getWarmSeedPositions = () => {
+      if (pendingK) return pendingK.prevPositions;
+      return this.forcePositions;
+    };
+
+    this.hasPendingKTransition = () => pendingK !== null;
+    this.discardPendingKTransition = () => {
+      if (!pendingK) return;
+      pendingK = null;
+      restoreSwappedLabels();
+      ghostLayer.selectAll("*").remove();
+      for (const n of this.nodes || []) {
+        if (n.group === 0) n.pillGroupEl?.style.setProperty("opacity", "0.97");
+      }
+    };
+
+    this.rebuildClusterTopology = (
+      targetK: number,
+      opts?: { restoreDefault?: boolean; snapshot?: TimelineSnapshot & { start: Map<string, { x: number; y: number }> } }
+    ) => {
+      if (!this.canonicalPayload || !this.simulation) return;
+      this.finishKTransition?.();
+      const prevNodes = (this.nodes || []).map((n) => ({
+        id: n.id,
+        name: n.name,
+        size: n.size,
+        group: n.group,
+        colorDark: n.colorDark,
+        colorLight: n.colorLight,
+      })) as GraphNodePayload[];
+      const stabilized: CanonicalGraphPayload = opts?.snapshot
+        ? {
+            nodes: opts.snapshot.nodes,
+            connections: opts.snapshot.connections,
+            mergeTargetByOldClusterId: opts.snapshot.mergeTargetByOldClusterId,
+          }
+        : reclusterCanonicalGraphPayload(this.canonicalPayload, targetK, this.nodes || []);
+      let nextCanonical: CanonicalGraphPayload = stabilized;
+      const canonicalK = this.canonicalPayload.nodes.filter((n) => n.group === 0).length;
+      if (opts?.restoreDefault && targetK === canonicalK) {
+        const meta = new Map(stabilized.nodes.map((n) => [n.id, n]));
+        nextCanonical = {
+          ...this.canonicalPayload,
+          nodes: this.canonicalPayload.nodes.map((n) => {
+            const m = meta.get(n.id);
+            return n.group === 0 && m?.originClusterId
+              ? { ...n, originClusterId: m.originClusterId, originKind: m.originKind }
+              : n;
+          }),
+          mergeTargetByOldClusterId: stabilized.mergeTargetByOldClusterId,
+        };
+      }
+
+      const prevPosById = new Map<string, { x: number; y: number }>();
+      for (const n of this.nodes || []) {
+        prevPosById.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+      }
+      if (opts?.snapshot) {
+        for (const [id, p] of opts.snapshot.start) {
+          if (!prevPosById.has(id)) prevPosById.set(id, { x: p.x, y: p.y });
+        }
+      }
+      pendingK = {
+        prevNodes,
+        prevPositions: prevPosById,
+        mergeTarget: nextCanonical.mergeTargetByOldClusterId,
+      };
+
+      const itemCoordsByCluster = new Map<string, { sumX: number; sumY: number; count: number }>();
+      for (const c of nextCanonical.connections) {
+        const pt = prevPosById.get(c.sourceId);
+        if (pt && (c.weight ?? 0) >= 0.4) {
+          const cur = itemCoordsByCluster.get(c.targetId) || { sumX: 0, sumY: 0, count: 0 };
+          cur.sumX += pt.x;
+          cur.sumY += pt.y;
+          cur.count += 1;
+          itemCoordsByCluster.set(c.targetId, cur);
+        }
+      }
+
+      this.forcePositions = new Map();
+      this.nodes = nextCanonical.nodes.map((n, idx) => {
+        const snapStart = opts?.snapshot?.start.get(n.id);
+        const existing =
+          snapStart ??
+          (n.group === 0 && n.originClusterId
+            ? (prevPosById.get(n.originClusterId) ?? prevPosById.get(n.id))
+            : prevPosById.get(n.id));
+        let nx = existing?.x;
+        let ny = existing?.y;
+        if (nx === undefined || ny === undefined) {
+          const centroid = itemCoordsByCluster.get(n.id);
+          if (centroid && centroid.count > 0) {
+            nx = centroid.sumX / centroid.count;
+            ny = centroid.sumY / centroid.count;
+          } else {
+            const angle = (idx * 2 * Math.PI) / Math.max(1, targetK);
+            nx = Math.cos(angle) * 140;
+            ny = Math.sin(angle) * 140;
+          }
+        }
+        this.forcePositions.set(n.id, { x: nx, y: ny });
+        return {
+          ...n,
+          x: nx,
+          y: ny,
+        };
+      });
+
+      nodeLookup.clear();
+      for (const n of this.nodes) {
+        nodeLookup.set(n.id, n);
+      }
+
+      this.links = nextCanonical.connections
+        .map((c) => ({
+          source: c.sourceId,
+          target: c.targetId,
+          weight: c.weight,
+          coverage: c.coverage,
+        }))
+        .filter((l) => nodeLookup.has(String(l.source)) && nodeLookup.has(String(l.target)));
+
+      const freshAdj = buildGraphAdjacency(
+        this.links.map((l) => ({
+          source: typeof l.source === 'object' ? l.source.id : String(l.source),
+          target: typeof l.target === 'object' ? l.target.id : String(l.target),
+        }))
+      );
+      adjacency.clear();
+      for (const [k, v] of freshAdj.entries()) {
+        adjacency.set(k, v);
+      }
+
+      this.activeClusterCount = targetK;
+      this.hoveredNodeId = null;
+      this.secondaryHoveredNodeId = null;
+      this.focusedNodeIds = null;
+      this.tooltipController?.clearFocus();
+
+      this.simulation.stop();
+      this.simulation.nodes(this.nodes);
+      this.applyForceSimulationConfig();
+      mountSvgElements();
+      // Show the previous content colours until the transition starts (no colour pop).
+      for (const n of this.nodes) {
+        const prevC = n.group !== 0 ? prevNodes.find((p) => p.id === n.id) : undefined;
+        if (prevC && n.circleEl) {
+          const c = (this.isLight ? prevC.colorLight : prevC.colorDark) ?? undefined;
+          if (c) {
+            n.circleEl.style.fill = c;
+            n.circleEl.style.stroke = c;
+          }
+        }
+      }
+      rebuildDragController();
+      this.renderPositions();
+      // Pre-transition state: split pills hidden, ghost pills of vanishing clusters stay visible.
+      const preTr = createKChangeTransition({
+        prevNodes,
+        prevPositions: prevPosById,
+        nextNodes: this.nodes,
+        nextPositions: this.forcePositions,
+        mergeTargetByOldClusterId: nextCanonical.mergeTargetByOldClusterId,
+        now: performance.now(),
+      });
+      spawnGhosts(preTr);
+      // Continuing clusters with a new label keep showing the OLD label until the cross-fade starts.
+      labelSwaps.clear();
+      for (const n of this.nodes) {
+        if (n.group !== 0) continue;
+        const xf = sampleKChangeClusterLabel(preTr, n.id, n.name, 0);
+        if (!xf || !n.pillTitleTspanEl) continue;
+        n.pillTitleTspanEl.textContent = formatClusterLabelShort(xf.oldLabel);
+        n.pillGeometryLocked = false;
+        syncD3ClusterPillGeometry(n);
+        labelSwaps.set(n.id, { oldName: xf.oldLabel, oldPillW: n.pillWidthPx ?? xf.oldPillW });
+      }
+      for (const n of this.nodes) {
+        if (n.group === 0 && !preTr.continuingClusterIds.has(n.id)) {
+          n.pillGroupEl?.style.setProperty("opacity", "0");
+        }
+      }
+    };
+
+    this.playKTransition = (nextPositions: Map<string, { x: number; y: number }>, durationMs?: number) => {
+      const pk = pendingK;
+      pendingK = null;
+      if (!pk || !this.nodes) {
+        return false;
+      }
+      this.finishKTransition?.();
+      const nodes = this.nodes;
+      const isLightNow = Boolean(this.isLight);
+      const canvasBg = getThemeTokens(isLightNow).canvasBg;
+      const tr = createKChangeTransition({
+        prevNodes: pk.prevNodes,
+        prevPositions: pk.prevPositions,
+        nextNodes: nodes,
+        nextPositions,
+        mergeTargetByOldClusterId: pk.mergeTarget,
+        now: performance.now(),
+        durationMs,
+      });
+      this.simulation?.alpha(0).stop();
+
+      const ghosts = spawnGhosts(tr);
+      const swapEls = new Map<string, { newTxt: SVGTextElement; oldTextW: number; newTextW: number; oldPillW: number; newPillW: number }>();
+      for (const [id, sw] of labelSwaps) {
+        const n = nodeLookup.get(id);
+        const oldTxt = n?.pillTextEl;
+        if (!n || !oldTxt || !oldTxt.parentNode) continue;
+        const newTxt = oldTxt.cloneNode(true) as SVGTextElement;
+        newTxt.classList.add("cluster-pill-label-new");
+        const tspan = newTxt.querySelector("tspan");
+        if (tspan) tspan.textContent = formatClusterLabelShort(n.name);
+        oldTxt.parentNode.insertBefore(newTxt, oldTxt.nextSibling);
+        let newTextW = 0;
+        try {
+          newTextW = Math.ceil(Math.max(newTxt.getComputedTextLength(), newTxt.getBBox().width));
+        } catch {
+          newTextW = 0;
+        }
+        if (!(newTextW > 0)) newTextW = getClusterPillDimensions(n.name, undefined, false, 1).baseW;
+        const newPillW = Math.ceil(D3_PILL_DOT_LEAD_W + newTextW + 2 * D3_PILL_PAD_X);
+        swapEls.set(id, { newTxt, oldTextW: sw.oldPillW - D3_PILL_DOT_LEAD_W - 2 * D3_PILL_PAD_X, newTextW, oldPillW: sw.oldPillW, newPillW });
+      }
+
+      const finish = () => {
+        if (kFrameId !== null) cancelAnimationFrame(kFrameId);
+        kFrameId = null;
+        kFinish = null;
+        ghostLayer.selectAll("*").remove();
+        for (const sw of swapEls.values()) sw.newTxt.remove();
+        for (const n of nodes) {
+          if (n.pillTextEl) n.pillTextEl.style.opacity = "";
+        }
+        restoreSwappedLabels();
+        for (const n of nodes) {
+          const p = nextPositions.get(n.id);
+          if (p) {
+            n.x = p.x;
+            n.y = p.y;
+            n.vx = 0;
+            n.vy = 0;
+            this.forcePositions.set(n.id, { x: p.x, y: p.y });
+          }
+          if (n.group === 0) {
+            n.pillGroupEl?.style.setProperty("opacity", "0.97");
+          }
+        }
+        this.renderPositions();
+        this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
+        this.dragController?.calibrateFromPositions(this.forcePositions);
+      };
+      kFinish = finish;
+
+      const frame = (now: number) => {
+        const progress = getKChangeTransitionProgress(tr, now);
+        for (const n of nodes) {
+          const nextColor = { dark: n.colorDark ?? GRAPH_COLORS.dark[0], light: n.colorLight ?? GRAPH_COLORS.light[0] };
+          if (n.group === 0) {
+            const s = sampleKChangeClusterPill(tr, n.id, nextColor, isLightNow, progress);
+            if (!s) continue;
+            const sw = swapEls.get(n.id);
+            const xf = sw ? sampleKChangeClusterLabel(tr, n.id, n.name, progress) : null;
+            if (sw && xf && n.pillTextEl) {
+              const pw = Math.round(sw.oldPillW + (sw.newPillW - sw.oldPillW) * xf.blend);
+              const left = -pw / 2 + D3_PILL_PAD_X;
+              const regionStart = left + D3_PILL_DOT_LEAD_W;
+              const regionW = pw - D3_PILL_DOT_LEAD_W - 2 * D3_PILL_PAD_X;
+              n.pillRectEl?.setAttribute("x", String(-pw / 2));
+              n.pillRectEl?.setAttribute("width", String(pw));
+              n.pillDotEl?.setAttribute("cx", String(left + D3_PILL_DOT_R));
+              n.pillTextEl.setAttribute("x", String(regionStart + (regionW - sw.oldTextW) / 2));
+              sw.newTxt.setAttribute("x", String(regionStart + (regionW - sw.newTextW) / 2));
+              n.pillTextEl.style.opacity = String(xf.oldAlpha);
+              sw.newTxt.style.opacity = String(xf.newAlpha);
+              n.pillBadgeGroupEl?.setAttribute("transform", `translate(${pw / 2 + 4}, 0)`);
+            }
+            n.x = s.x;
+            n.y = s.y;
+            if (n.pillGroupEl) n.pillGroupEl.style.opacity = String(s.alpha);
+            n.pillRectEl?.style.setProperty("fill", blendHexColor(s.color, canvasBg, 0.13));
+            n.pillRectEl?.style.setProperty("stroke", blendHexColor(s.color, canvasBg, 0.72));
+            n.pillDotEl?.style.setProperty("fill", s.color);
+          } else {
+            const p = sampleKChangeNodePosition(tr, n.id, progress);
+            if (p) {
+              n.x = p.x;
+              n.y = p.y;
+            }
+            const c = sampleKChangeNodeColor(tr, n.id, nextColor, isLightNow, progress);
+            n.displayColor = c;
+            n.circleEl?.style.setProperty("fill", c);
+            n.circleEl?.style.setProperty("stroke", c);
+          }
+        }
+        for (const gp of sampleKChangeGhostPills(tr, progress)) {
+          const el = ghosts.get(gp.id);
+          if (!el) continue;
+          el.g.setAttribute("transform", `translate(${gp.x},${gp.y})`);
+          el.g.style.opacity = String(gp.alpha);
+        }
+        this.renderPositions();
+        if (progress < 1) {
+          kFrameId = requestAnimationFrame(frame);
+        } else {
+          finish();
+        }
+      };
+      frame(performance.now());
+      this.startViewportAdaptLoop(1400);
+      return true;
+    };
 
     const applyHighlight = (activeId: string | null, immediate = false) => {
       const secId = this.secondaryHoveredNodeId ?? null;
@@ -248,6 +889,38 @@ const engine: D3Engine = {
       const currentTokens = getGraphStyleTokens(currentIsLight);
       const groupColors = currentIsLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
       const dists = activeId ? computeHopDistances(activeId, adjacency) : null;
+
+      // Clear floating edge badges and collect active coverage for cluster pills or cluster-hovered content nodes
+      badgeLayer.selectAll("*").remove();
+      this.activeBadgeLinks = [];
+      const activeClusterCoverage = new Map<string, number>();
+      const activeContentCoverage = new Map<string, number>();
+      const activeNodeObj = activeId ? nodeLookup.get(activeId) : undefined;
+      if (activeNodeObj && this.links) {
+        if (activeNodeObj.group !== 0) {
+          for (const l of this.links) {
+            const sObj = typeof l.source === 'object' ? l.source : nodeLookup.get(String(l.source));
+            const tObj = typeof l.target === 'object' ? l.target : nodeLookup.get(String(l.target));
+            if (!sObj || !tObj) continue;
+            if (sObj.id === activeId && tObj.group === 0) {
+              activeClusterCoverage.set(tObj.id, l.coverage ?? l.weight ?? 0.5);
+            } else if (tObj.id === activeId && sObj.group === 0) {
+              activeClusterCoverage.set(sObj.id, l.coverage ?? l.weight ?? 0.5);
+            }
+          }
+        } else {
+          for (const l of this.links) {
+            const sObj = typeof l.source === 'object' ? l.source : nodeLookup.get(String(l.source));
+            const tObj = typeof l.target === 'object' ? l.target : nodeLookup.get(String(l.target));
+            if (!sObj || !tObj) continue;
+            if (sObj.id === activeId && tObj.group !== 0) {
+              activeContentCoverage.set(tObj.id, l.coverage ?? l.weight ?? 0.5);
+            } else if (tObj.id === activeId && sObj.group !== 0) {
+              activeContentCoverage.set(sObj.id, l.coverage ?? l.weight ?? 0.5);
+            }
+          }
+        }
+      }
 
       const bgLinkNode = bgLinkLayer.node();
       const bgNodeGroup = bgNodeLayer.node();
@@ -270,7 +943,16 @@ const engine: D3Engine = {
 
           this.nodeElements.each(function (n: D3Node) {
             const hopDist = dists ? dists.get(n.id) : undefined;
-            const nodeZ = secId !== null && n.id === secId ? 48 : dists ? getNodeHopZIndex(hopDist) : 2;
+            const itemCov =
+              activeNodeObj?.group === 0 && n.group !== 0
+                ? (activeContentCoverage.get(n.id) ?? 0)
+                : undefined;
+            const nodeZ =
+              secId !== null && n.id === secId
+                ? 48
+                : dists
+                  ? getNodeHopZIndex(hopDist, itemCov)
+                  : 2;
             if (nodeZ >= 10) {
               fgItems.push({ el: this, z: nodeZ, isNode: true });
             } else if (this.parentNode !== bgNodeGroup) {
@@ -296,27 +978,75 @@ const engine: D3Engine = {
         }
       }
 
+      const anyFocusActive = Boolean(dists || secId);
+
       const nodeTrans = (this.nodes || []).map((n) => {
-        const baseColor = groupColors[n.group] || groupColors[0];
+        const baseColor = getNodeBaseColor(n, currentIsLight) || groupColors[n.group] || groupColors[0];
         const startColor = n.displayColor || baseColor;
-        const startRadius = n.displayRadius ?? currentTokens.nodeRadius;
+        const restScale = getNodeRestRadiusScale(n.group, n.size);
+        const startRadius = n.displayRadius ?? (currentTokens.nodeRadius * restScale);
         const hopDist = dists ? dists.get(n.id) : undefined;
         const isSecHover = secId !== null && n.id === secId;
+        const itemCov =
+          activeNodeObj?.group === 0 && n.group !== 0
+            ? (activeContentCoverage.get(n.id) ?? 0)
+            : undefined;
         const targetColor = isSecHover
           ? baseColor
           : dists
-            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight)
+            ? getAttenuatedNodeColor(baseColor, hopDist, currentIsLight, itemCov)
             : baseColor;
-        const baseScale = dists ? getAttenuatedNodeScale(hopDist) : 1;
+        const baseScale = dists ? getAttenuatedNodeScale(hopDist, itemCov) : 1;
         const targetScale = isSecHover ? Math.max(baseScale * 1.15, 1.32) : baseScale;
-        const targetRadius = currentTokens.nodeRadius * targetScale;
+        const targetRadius = currentTokens.nodeRadius * restScale * targetScale;
+
+        if (n.group === 0 && n.pillGroupEl && n.pillRectEl && n.pillTextEl) {
+          const canvasBg = getThemeTokens(currentIsLight).canvasBg;
+          const clusterHue = getNodeClusterColor(n, currentIsLight) || groupColors[0];
+          const cov = activeClusterCoverage.size > 0 ? (activeClusterCoverage.get(n.id) ?? 0) : undefined;
+          const effectiveHop = isSecHover ? 0 : dists ? (hopDist ?? 99) : undefined;
+          const pillState = resolveClusterPillVisualState(
+            { hopDistance: effectiveHop, activeCoverage: cov },
+            anyFocusActive
+          );
+          const dims = getClusterPillDimensions(n.name, cov, pillState.isHighlighted, 1);
+
+          n.activeHopDist = effectiveHop;
+          n.activeCoverage = cov;
+
+          n.pillGroupEl.style.opacity = String(pillState.alpha);
+          n.pillRectEl.style.fill = blendHexColor(clusterHue, canvasBg, pillState.isHighlighted ? 0.22 : 0.13);
+          n.pillRectEl.style.stroke = blendHexColor(clusterHue, canvasBg, pillState.isHighlighted ? 1.0 : 0.72);
+          n.pillRectEl.style.strokeWidth = pillState.isHighlighted ? "1.8px" : "1.25px";
+          if (n.pillDotEl) {
+            n.pillDotEl.style.fill = clusterHue;
+          }
+          n.pillTextEl.style.fill = getThemeTokens(currentIsLight).textHeading;
+          if (n.pillBadgeGroupEl && n.pillBadgeRectEl && n.pillBadgeTextEl) {
+            if (pillState.pctText && dims.badgeW > 0) {
+              n.pillBadgeGroupEl.style.display = "";
+              n.pillBadgeRectEl.setAttribute("width", String(dims.badgeW));
+              n.pillBadgeRectEl.setAttribute("height", String(dims.badgeH));
+              n.pillBadgeRectEl.setAttribute("y", String(-dims.badgeH / 2));
+              n.pillBadgeRectEl.style.fill = blendHexColor(clusterHue, canvasBg, 0.26);
+              n.pillBadgeRectEl.style.stroke = clusterHue;
+              n.pillBadgeTextEl.setAttribute("x", String(dims.badgeW / 2));
+              n.pillBadgeTextEl.style.fill = clusterHue;
+              n.pillBadgeTextEl.textContent = pillState.pctText;
+            } else {
+              n.pillBadgeGroupEl.style.display = "none";
+              n.pillBadgeTextEl.textContent = "";
+            }
+          }
+        }
+
         return {
           node: n,
           startColor,
           targetColor,
           startRadius,
           targetRadius,
-          changed: startColor !== targetColor || Math.abs(startRadius - targetRadius) > 1e-3
+          changed: startColor !== targetColor || Math.abs(startRadius - targetRadius) > 1e-3 || immediate
         };
       });
 
@@ -326,8 +1056,8 @@ const engine: D3Engine = {
         const startColor = l.displayColor || currentTokens.edgeColor;
         const startWidth = l.displayWidth ?? currentTokens.edgeWidth;
         const targetStyle = dists
-          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight)
-          : { color: currentTokens.edgeColor, width: currentTokens.edgeWidth };
+          ? getAttenuatedEdgeStyle(dists.get(srcId), dists.get(tgtId), currentIsLight, l.weight)
+          : getRestEdgeStyle(l.weight, currentIsLight);
         return {
           link: l,
           startColor,
@@ -346,25 +1076,22 @@ const engine: D3Engine = {
           nt.node.displayColor = nextColor;
           nt.node.displayRadius = nextRadius;
           const circleEl = nt.node.circleEl;
-          if (circleEl) {
-            circleEl.setAttribute("r", String(nextRadius));
+          if (circleEl && nt.node.group !== 0) {
+            circleEl.setAttribute("points", buildRegularPolygonSvgPoints(nextRadius, nt.node.group));
             circleEl.style.fill = nextColor;
             circleEl.style.stroke = nextColor;
           }
         }
         for (const lt of linkTrans) {
-          if (!lt.changed && ease < 1) continue;
-          const nextColor = ease >= 1 ? lt.targetColor : interpolateHexColor(lt.startColor, lt.targetColor, ease);
-          const nextWidth = ease >= 1 ? lt.targetWidth : lt.startWidth + (lt.targetWidth - lt.startWidth) * ease;
-          lt.link.displayColor = nextColor;
-          lt.link.displayWidth = nextWidth;
           const lineEl = lt.link.el;
           if (lineEl) {
-            lineEl.style.stroke = nextColor;
-            lineEl.style.strokeWidth = `${nextWidth}px`;
+            lineEl.style.strokeOpacity = "0";
+            lineEl.style.display = "none";
           }
         }
       };
+
+      this.renderPositions();
 
       if (immediate) {
         renderStep(1);
@@ -385,26 +1112,6 @@ const engine: D3Engine = {
       this.highlightFrameId = requestAnimationFrame(step);
     };
     this.applyHighlight = applyHighlight;
-
-    this.nodeElements = bgNodeLayer.selectAll<SVGGElement, D3Node>(".node")
-      .data(this.nodes)
-      .enter().append("g")
-      .each(function (n) {
-        n.el = this;
-      })
-      .style("cursor", "pointer");
-
-    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-
-    this.nodeElements.append("circle")
-      .attr("class", "node-dot")
-      .each(function (n) {
-        n.circleEl = this;
-      })
-      .attr("r", styleTokens.nodeRadius)
-      .style("fill", d => colors[d.group] || colors[0])
-      .style("stroke", d => colors[d.group] || colors[0])
-      .style("stroke-width", "1.5px");
 
     const utmSource = String(extraOptions.utmSource || 'visualizations_demo');
     const utmMedium = String(extraOptions.utmMedium || 'd3');
@@ -470,6 +1177,7 @@ const engine: D3Engine = {
         navigateToNode(node as D3Node);
       },
       onNodeDragStart: (rawNode, sx, sy) => {
+        this.finishKTransition?.();
         const d = this.nodes?.find(n => n.id === rawNode.id);
         if (!d) return;
         if (this.viewportAdaptFrameId) {
@@ -582,6 +1290,123 @@ const engine: D3Engine = {
         }
       }
     });
+    // ---- Timeline (SYSTEM-014 Etappe 2): per-node appear/vanish fx + engine adapter ----
+    const timelineGhostLayer = this.svgGroup!.append<SVGGElement>("g").style("pointer-events", "none");
+    const fxTouched = new Set<string>();
+    const ghostEls = new Map<string, SVGPolygonElement>();
+    this.setTimelineFx = (fx, ghosts) => {
+      const tokens = getGraphStyleTokens(Boolean(this.isLight));
+      for (const n of this.nodes || []) {
+        if (n.group === 0 || !n.circleEl) continue;
+        const f = fx.get(n.id);
+        const baseR = n.displayRadius ?? tokens.nodeRadius * getNodeRestRadiusScale(n.group, n.size);
+        if (f) {
+          n.circleEl.setAttribute("points", buildRegularPolygonSvgPoints(baseR * f.scale, n.group));
+          n.circleEl.style.opacity = String(f.alpha);
+          fxTouched.add(n.id);
+        } else if (fxTouched.has(n.id)) {
+          n.circleEl.setAttribute("points", buildRegularPolygonSvgPoints(baseR, n.group));
+          n.circleEl.style.opacity = "";
+          fxTouched.delete(n.id);
+        }
+      }
+      const seen = new Set<string>();
+      for (const g of ghosts) {
+        seen.add(g.id);
+        let el = ghostEls.get(g.id);
+        if (!el) {
+          el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+          el.style.strokeLinejoin = "round";
+          el.style.strokeWidth = "1.5px";
+          timelineGhostLayer.node()?.appendChild(el);
+          ghostEls.set(g.id, el);
+        }
+        const hex = (this.isLight ? g.colorLight : g.colorDark) || GRAPH_COLORS.dark[g.group];
+        const r = tokens.nodeRadius * getNodeRestRadiusScale(g.group, 1) * g.scale;
+        el.setAttribute("points", buildRegularPolygonSvgPoints(r, g.group));
+        el.setAttribute("transform", `translate(${g.x},${g.y})`);
+        el.style.fill = hex;
+        el.style.stroke = hex;
+        el.style.opacity = String(g.alpha);
+      }
+      for (const [id, el] of Array.from(ghostEls.entries())) {
+        if (seen.has(id)) continue;
+        el.remove();
+        ghostEls.delete(id);
+      }
+    };
+
+    this.timelineAdapter = {
+      isForceLayout: () => this.currentLayout === 'force',
+      is3D: () => false,
+      getCanonical: () => this.canonicalPayload ?? null,
+      getKTarget: () => getGraphTuningState().clusterCount,
+      getPhysicsKey: () => JSON.stringify(getGraphTuningState()),
+      isDefaultTuning: () => isDefaultGraphTuningState(),
+      getCurrentNodes: () => this.nodes || [],
+      getLivePositions: () => {
+        const live = new Map<string, { x: number; y: number }>();
+        for (const n of this.nodes || []) live.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+        return live;
+      },
+      getRestPositions: () => this.initialForcePositions,
+      applySnapshot: (snapshot, start, morph) => {
+        const startXY = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of start) startXY.set(id, { x: p.x, y: p.y });
+        this.rebuildClusterTopology?.(snapshot.clusterCount, { snapshot: { ...snapshot, start: startXY } });
+        if (!morph) {
+          this.discardPendingKTransition?.();
+          this.applyHighlight?.(null, true);
+        }
+        this.startViewportAdaptLoop(900);
+      },
+      solveWarm: async (snapshot, seeds, shouldCancel, anchors, anchorWeights) => {
+        const solved = await solveD3ForceLayoutAsync(
+          {
+            nodes: snapshot.nodes,
+            connections: snapshot.connections.map((c) => ({
+              sourceId: c.sourceId,
+              targetId: c.targetId,
+              weight: c.weight ?? 0.5,
+            })),
+            seedPositions: seeds,
+            anchorPositions: anchors,
+            anchorStrength: anchors ? (anchorWeights ? TIMELINE_CLUSTER_ANCHOR_STRENGTH : TIMELINE_ANCHOR_STRENGTH) : undefined,
+            anchorWeights,
+          },
+          { shouldCancel }
+        );
+        if (!solved) return null;
+        const out = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of Object.entries(solved)) out.set(id, { x: p.x, y: p.y });
+        return out;
+      },
+      playMorph: (next, durationMs) => {
+        const xy = new Map<string, { x: number; y: number }>();
+        for (const [id, p] of next) xy.set(id, { x: p.x, y: p.y });
+        return this.playKTransition?.(xy, durationMs) ?? false;
+      },
+      setNodeFx: (fx, ghosts) => this.setTimelineFx?.(fx, ghosts),
+      setPositions: (positions, final) => {
+        for (const n of this.nodes || []) {
+          const p = positions.get(n.id);
+          if (p) {
+            n.x = p.x;
+            n.y = p.y;
+            n.vx = 0;
+            n.vy = 0;
+          }
+        }
+        this.renderPositions();
+        if (final) {
+          for (const n of this.nodes || []) this.forcePositions.set(n.id, { x: n.x ?? 0, y: n.y ?? 0 });
+          this.dragController?.calibrateFromPositions(this.forcePositions);
+          this.startViewportAdaptLoop(900);
+        }
+      },
+      finishMorph: () => this.finishKTransition?.(),
+    };
+
     this.resizeObserver.observe(container);
 
     return this;
@@ -600,9 +1425,25 @@ const engine: D3Engine = {
         el.setAttribute("y2", String(t.y ?? 0));
       }
     }
+    if (this.activeBadgeLinks && this.activeBadgeLinks.length > 0) {
+      for (const l of this.activeBadgeLinks) {
+        if (!l.badgeEl) continue;
+        const s = l.source as D3Node;
+        const t = l.target as D3Node;
+        const mx = ((s.x ?? 0) + (t.x ?? 0)) / 2;
+        const my = ((s.y ?? 0) + (t.y ?? 0)) / 2;
+        l.badgeEl.setAttribute("transform", `translate(${mx},${my})`);
+      }
+    }
     if (this.nodes) {
       for (const d of this.nodes) {
-        d.el?.setAttribute("transform", `translate(${d.x ?? 0},${d.y ?? 0})`);
+        const nx = d.x ?? 0;
+        const ny = d.y ?? 0;
+        d.el?.setAttribute("transform", `translate(${nx},${ny})`);
+        if (d.group === 0 && d.pillGroupEl) {
+          if (!d.pillGeometryLocked) syncD3ClusterPillGeometry(d);
+          d.pillGroupEl.setAttribute("transform", "translate(0,0)");
+        }
       }
     }
   },
@@ -788,6 +1629,7 @@ const engine: D3Engine = {
       this.focusedNodeIds = null;
       this.tooltipController?.clearFocus();
       this.dragController?.stop();
+      this.discardPendingKTransition?.();
       if (this.viewportAdaptFrameId) {
         cancelAnimationFrame(this.viewportAdaptFrameId);
         this.viewportAdaptFrameId = null;
@@ -933,6 +1775,7 @@ const engine: D3Engine = {
 
   applyTuning(category) {
     if (!this.simulation || !this.nodes) return;
+    this.finishKTransition?.();
     if (this.tuningSettleTimeout) {
       clearTimeout(this.tuningSettleTimeout);
       this.tuningSettleTimeout = undefined;
@@ -941,12 +1784,19 @@ const engine: D3Engine = {
       this.tuningGeneration = (this.tuningGeneration || 0) + 1;
       this.tuningInFlight = false;
       this.dragController?.stop();
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK, { restoreDefault: true });
+      }
       this.forcePositions = new Map();
       for (const [id, pos] of this.initialForcePositions.entries()) {
         this.forcePositions.set(id, { x: pos.x, y: pos.y });
       }
       this.applyHighlight?.(this.draggedNodeId ?? this.hoveredNodeId ?? null, true);
       if (this.currentLayout === 'force') {
+        if (this.hasPendingKTransition?.() && this.playKTransition?.(new Map(this.initialForcePositions))) {
+          return;
+        }
         for (const n of this.nodes) {
           const fp = this.initialForcePositions.get(n.id);
           if (fp) {
@@ -984,6 +1834,7 @@ const engine: D3Engine = {
         }, 480);
         this.startViewportAdaptLoop(1400);
       } else {
+        this.discardPendingKTransition?.();
         this.recomputeSlotTargets(false);
         this.simulation.alpha(0.55).restart();
         this.tuningSettleTimeout = setTimeout(() => {
@@ -1042,9 +1893,18 @@ const engine: D3Engine = {
     if (category === 'physics' && this.currentLayout === 'force') {
       const gen = (this.tuningGeneration = (this.tuningGeneration || 0) + 1);
       this.dragController?.stop();
+      const targetK = getGraphTuningState().clusterCount;
+      if (this.activeClusterCount !== targetK) {
+        this.rebuildClusterTopology?.(targetK);
+      }
 
       const applySolvedD3Positions = (solved: Record<string, { x: number; y: number }>) => {
         if (!this.simulation || !this.nodes || this.currentLayout !== 'force') return;
+        if (this.hasPendingKTransition?.()) {
+          const solvedMap = new Map<string, { x: number; y: number }>();
+          for (const [nodeId, pt] of Object.entries(solved)) solvedMap.set(nodeId, { x: pt.x, y: pt.y });
+          if (this.playKTransition?.(solvedMap)) return;
+        }
         for (const [nodeId, pt] of Object.entries(solved)) {
           this.forcePositions.set(nodeId, { x: pt.x, y: pt.y });
         }
@@ -1087,14 +1947,7 @@ const engine: D3Engine = {
         this.startViewportAdaptLoop(1400);
       };
 
-      if (isDefaultGraphTuningState() && this.initialForcePositions.size > 0) {
-        this.tuningInFlight = false;
-        const solved: Record<string, { x: number; y: number }> = {};
-        for (const [id, pos] of this.initialForcePositions.entries()) {
-          solved[id] = { x: pos.x, y: pos.y };
-        }
-        applySolvedD3Positions(solved);
-      } else {
+      {
         this.tuningInFlight = true;
         void solveD3ForceLayoutAsync(
           {
@@ -1103,7 +1956,8 @@ const engine: D3Engine = {
               sourceId: typeof l.source === 'object' ? l.source.id : String(l.source),
               targetId: typeof l.target === 'object' ? l.target.id : String(l.target),
               weight: l.weight ?? 0.5
-            }))
+            })),
+            seedPositions: this.getWarmSeedPositions?.() ?? this.forcePositions
           },
           { shouldCancel: () => this.tuningGeneration !== gen }
         ).then((solved) => {
@@ -1116,6 +1970,7 @@ const engine: D3Engine = {
   },
 
   destroy() {
+    this.finishKTransition?.();
     this.tuningGeneration = (this.tuningGeneration || 0) + 1;
     this.tuningInFlight = false;
     if (this.highlightFrameId) {

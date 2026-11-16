@@ -2,6 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {
+  GRAPH_PHYSICS_CONFIG,
+  getDefaultTopicClusterCount,
+  reclusterCanonicalGraphPayload,
   type CanonicalGraphPayload,
   type GraphLayoutPayload,
   type GraphLayoutPositions,
@@ -18,7 +21,22 @@ import {
 } from '@commons/shared/graph-solvers';
 import { getCanonicalGraphPayloadArtifact } from './graph-payload-endpoint';
 
-const SOLVER_VERSION = 'v10';
+const SOLVER_VERSION = 'v23';
+
+let cachedSolversFileHash: string | null = null;
+function getSolversFileHash(): string {
+  if (cachedSolversFileHash !== null) {
+    return cachedSolversFileHash;
+  }
+  try {
+    const solversPath = path.join(process.cwd(), 'src', 'commons', 'shared', 'graph-solvers.ts');
+    const raw = fs.readFileSync(solversPath, 'utf8');
+    cachedSolversFileHash = crypto.createHash('sha256').update(raw).digest('hex').slice(0, 12);
+  } catch {
+    cachedSolversFileHash = SOLVER_VERSION;
+  }
+  return cachedSolversFileHash;
+}
 
 export const VISUALIZATION_ENGINES: readonly VisualizationEngineType[] = [
   'cytoscape',
@@ -41,7 +59,8 @@ export interface GraphLayoutBundle {
 
 const memoryLayoutCache = new Map<VisualizationEngineType, GraphLayoutBundle>();
 
-export function computeTopologyHash(canonical: CanonicalGraphPayload): string {
+export function computeTopologyHash(canonical: CanonicalGraphPayload, targetK?: number): string {
+  const effectiveK = targetK ?? canonical.nodes.filter((n) => n.group === 0).length;
   const degreeCounts = new Map<string, number>();
   for (const conn of canonical.connections) {
     const src = conn.source ?? conn.sourceId;
@@ -63,7 +82,14 @@ export function computeTopologyHash(canonical: CanonicalGraphPayload): string {
     c.weight ?? 1,
   ]);
 
-  const seed = JSON.stringify([SOLVER_VERSION, nodeTopology, edgeTopology]);
+  const seed = JSON.stringify([
+    SOLVER_VERSION,
+    getSolversFileHash(),
+    effectiveK,
+    GRAPH_PHYSICS_CONFIG,
+    nodeTopology,
+    edgeTopology,
+  ]);
   return crypto.createHash('sha256').update(seed).digest('hex').slice(0, 12);
 }
 
@@ -118,7 +144,12 @@ export async function getGraphLayoutBundle(
   engine: VisualizationEngineType
 ): Promise<GraphLayoutBundle> {
   const { payload: canonical } = await getCanonicalGraphPayloadArtifact();
-  const topologyHash = computeTopologyHash(canonical);
+  const targetK = getDefaultTopicClusterCount(engine);
+  const effectiveCanonical =
+    canonical.nodes.filter((n) => n.group === 0).length === targetK
+      ? canonical
+      : reclusterCanonicalGraphPayload(canonical, targetK);
+  const topologyHash = computeTopologyHash(effectiveCanonical, targetK);
 
   const memCached = memoryLayoutCache.get(engine);
   if (memCached && memCached.topologyHash === topologyHash) {
@@ -151,7 +182,7 @@ export async function getGraphLayoutBundle(
   }
 
   if (!payload) {
-    const positions = computeEnginePositions(engine, canonical);
+    const positions = computeEnginePositions(engine, effectiveCanonical);
     payload = {
       engine,
       topologyHash,
