@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Comparison of unaligned spinning keyframes versus Procrustes-aligned and u-squared blended keyframes with the timeline scrubber bar">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" rx="12" fill="var(--svg-bg)" />
+
+  <!-- Header -->
+  <text x="240" y="32" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" text-anchor="middle" fill="var(--svg-text-primary)">PROCRUSTES + u² ALIGNMENT</text>
+  <text x="240" y="51" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Eliminating rotation &amp; reflection drift</text>
+
+  <!-- Left Panel: Unaligned Keyframes -->
+  <rect x="24" y="72" width="206" height="278" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="1.5" />
+  <text x="127" y="96" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle" fill="var(--svg-node-red-text)">Unaligned Solve</text>
+  <text x="127" y="114" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Frame tumbles per step</text>
+
+  <!-- Frame t_k (tilted) -->
+  <polygon points="127,138 72,218 182,218" fill="none" stroke="var(--svg-line)" stroke-width="1.4" stroke-dasharray="4,3" />
+  <circle cx="127" cy="138" r="11" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+  <text x="127" y="138" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">A</text>
+  <circle cx="72" cy="218" r="11" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+  <text x="72" y="218" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">B</text>
+  <circle cx="182" cy="218" r="11" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <text x="182" y="218" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">C</text>
+
+  <!-- Rotation arrow -->
+  <path d="M 164 160 A 46 46 0 0 1 170 250" fill="none" stroke="var(--svg-node-red-border)" stroke-width="1.8" marker-end="url(#arr-red)" />
+
+  <!-- Frame t_{k+1} (rotated/flipped) -->
+  <polygon points="82,258 176,258 124,322" fill="none" stroke="var(--svg-node-red-border)" stroke-width="1.6" />
+  <circle cx="176" cy="258" r="11" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+  <text x="176" y="258" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">A</text>
+  <circle cx="124" cy="322" r="11" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+  <text x="124" y="322" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">B</text>
+  <circle cx="82" cy="258" r="11" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <text x="82" y="258" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">C</text>
+
+  <!-- Right Panel: Procrustes + u^2 -->
+  <rect x="250" y="72" width="206" height="278" rx="10" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+  <text x="353" y="96" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle" fill="var(--svg-node-green-text)">Procrustes + u²</text>
+  <text x="353" y="114" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Anchored to final frame</text>
+
+  <!-- Stable Triangle -->
+  <polygon points="353,144 294,254 412,254" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+  <circle cx="353" cy="144" r="13" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <text x="353" y="144" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">A</text>
+  <circle cx="294" cy="254" r="13" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+  <text x="294" y="254" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">B</text>
+  <circle cx="412" cy="254" r="13" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+  <text x="412" y="254" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">C</text>
+
+  <!-- Blend Weight Pill -->
+  <rect x="274" y="286" width="158" height="44" rx="8" fill="var(--svg-card-alt)" stroke="var(--svg-border)" stroke-width="1.2" />
+  <text x="353" y="303" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="var(--svg-text-primary)">Cluster wt: 1.0</text>
+  <text x="353" y="320" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Content: 0.01 · u²→1</text>
+
+  <!-- Bottom Bar: Timeline Scrubber UI -->
+  <rect x="24" y="368" width="432" height="90" rx="10" fill="var(--svg-card-alt)" stroke="var(--svg-border)" stroke-width="1.2" />
+  <text x="42" y="392" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-text-primary)">Timeline Bar (#timeline-bar)</text>
+  <text x="438" y="392" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="600" text-anchor="end" fill="var(--svg-node-green-text)">100% Static Parity</text>
+
+  <!-- Prev / Play / Next buttons -->
+  <rect x="42" y="408" width="28" height="28" rx="6" fill="var(--svg-pill-bg)" stroke="var(--svg-border)" stroke-width="1.2" />
+  <polygon points="59,416 59,428 51,422" fill="var(--svg-text-secondary)" />
+
+  <rect x="76" y="408" width="32" height="28" rx="6" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.4" />
+  <polygon points="88,416 88,428 98,422" fill="var(--svg-node-blue-text)" />
+
+  <rect x="114" y="408" width="28" height="28" rx="6" fill="var(--svg-pill-bg)" stroke="var(--svg-border)" stroke-width="1.2" />
+  <polygon points="125,416 125,428 133,422" fill="var(--svg-text-secondary)" />
+
+  <!-- Scrubber track & thumb -->
+  <line x1="158" y1="422" x2="438" y2="422" stroke="var(--svg-line)" stroke-width="4" stroke-linecap="round" />
+  <line x1="158" y1="422" x2="342" y2="422" stroke="var(--svg-node-blue-border)" stroke-width="4" stroke-linecap="round" />
+  <circle cx="342" cy="422" r="8" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+  <text x="298" y="446" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">u = step / (total - 1)</text>
+</svg>
