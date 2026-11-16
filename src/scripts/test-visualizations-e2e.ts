@@ -714,9 +714,12 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
     await page.select('#layout-selector', 'force');
     await sleep(950);
 
-    // Close tuning panel
-    await page.click('#tune-toggle-btn');
+    // Close tuning panel via #tune-close-btn (left sidebar overlays #tune-toggle-btn)
+    await page.click('#tune-close-btn');
     await sleep(250);
+    const panelClosed = await page.evaluate(() =>
+      Boolean(document.getElementById('tune-panel')?.classList.contains('hidden'))
+    );
 
     if (
       tuneShift.panelOpen &&
@@ -725,7 +728,8 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
       tuneDeltaAfterChange > 1.0 &&
       resetState.maxD < 0.05 &&
       resetState.dotHidden &&
-      radialRingTuneOk
+      radialRingTuneOk &&
+      panelClosed
     ) {
       liveTuningOk = true;
     } else {
@@ -886,23 +890,23 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
       if (!s0 || s0.total < 100 || s0.step !== s0.lastStep || s0.playing || s0.clusterCount !== expectedDefaultK) {
         errors.push(`Check 6a failed: timeline must start at the end state with K=${expectedDefaultK}, got ${JSON.stringify(s0)}`);
       } else {
-        const counterAtEnd = await page.$eval('#timeline-counter', (el) => el.textContent || '');
-        if (!counterAtEnd.includes(`${s0.total} Items`)) {
-          errors.push(`Check 6a failed: counter at end shows "${counterAtEnd}"`);
+        const barCheck = await page.evaluate(() => ({
+          hasDate: Boolean(document.getElementById('timeline-date')),
+          hasCounter: Boolean(document.getElementById('timeline-counter')),
+          hasSpeed: Boolean(document.getElementById('timeline-speed')),
+          scrubberVal: (document.getElementById('timeline-scrubber') as HTMLInputElement | null)?.value,
+        }));
+        if (barCheck.hasDate || barCheck.hasCounter || barCheck.hasSpeed || barCheck.scrubberVal !== String(s0.lastStep)) {
+          errors.push(`Check 6a failed: streamlined timeline bar check failed (${JSON.stringify(barCheck)})`);
         }
 
-        // 6b: Play restarts from the beginning, steps advance and counters change; measure frame rate
+        // 6b: Play restarts from the beginning and advances; measure frame rate
         await page.evaluate(() => {
-          const sel = document.getElementById('timeline-speed') as HTMLSelectElement | null;
-          if (sel) {
-            sel.value = '2';
-            sel.dispatchEvent(new Event('change', { bubbles: true }));
-          }
+          window.activeTimeline?.setSpeed(2);
         });
         await clickId('timeline-play');
         await sleep(400);
         const sA = await tlState();
-        const counterA = await page.$eval('#timeline-counter', (el) => el.textContent || '');
         const fps = await page.evaluate(
           () =>
             new Promise<{ avg: number; p95: number; frames: number }>((resolve) => {
@@ -923,10 +927,9 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
             })
         );
         const sB = await tlState();
-        const counterB = await page.$eval('#timeline-counter', (el) => el.textContent || '');
-        if (!sA || !sB || !sB.playing || sB.step < sA.step + 1 || counterA === counterB || sA.step >= s0.lastStep) {
+        if (!sA || !sB || !sB.playing || sB.step < sA.step + 1 || sA.step >= s0.lastStep) {
           errors.push(
-            `Check 6b failed: playback must restart from the beginning and advance (A=${JSON.stringify(sA)}, B=${JSON.stringify(sB)}, "${counterA}" -> "${counterB}")`
+            `Check 6b failed: playback must restart from the beginning and advance (A=${JSON.stringify(sA)}, B=${JSON.stringify(sB)})`
           );
         }
         if (sB && sB.speed !== 2) errors.push(`Check 6b failed: speed 2x not applied (speed=${sB.speed})`);
@@ -1056,14 +1059,11 @@ async function testEngineE2E(page: Page, baseUrl: string, engine: EngineId): Pro
           return { maxD, missing, content: nodes.length };
         });
         const sEnd = await tlState();
-        if (parity.missing !== 0 || parity.maxD > 0.01 || !sEnd || sEnd.itemCount !== s0.total) {
+        const scrubberEnd = await page.$eval('#timeline-scrubber', (el) => (el as HTMLInputElement).value);
+        if (parity.missing !== 0 || parity.maxD > 0.01 || !sEnd || sEnd.itemCount !== s0.total || scrubberEnd !== String(s0.lastStep)) {
           errors.push(
-            `Check 6f failed: end state must equal the static graph (maxDelta=${parity.maxD.toFixed(4)}px, missing=${parity.missing}, state=${JSON.stringify(sEnd)})`
+            `Check 6f failed: end state must equal the static graph (maxDelta=${parity.maxD.toFixed(4)}px, missing=${parity.missing}, scrubber=${scrubberEnd}, state=${JSON.stringify(sEnd)})`
           );
-        }
-        const counterEnd = await page.$eval('#timeline-counter', (el) => el.textContent || '');
-        if (!counterEnd.includes(`${s0.total} Items`)) {
-          errors.push(`Check 6f failed: counter at end shows "${counterEnd}"`);
         }
 
         // 6g: a step is solved completely in the background (no visible iterations), then animates monotonically

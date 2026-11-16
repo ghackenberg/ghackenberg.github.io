@@ -247,35 +247,39 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               <span>Tune</span>
               <span id="tune-dirty-dot" class="hidden w-1.5 h-1.5 rounded-full bg-domain-visualizations"></span>
             </button>
+          </div>
 
-            <div
-              id="tune-panel"
-              class="hidden w-64 sm:w-72 max-h-[340px] overflow-y-auto rounded-2xl border border-element-border bg-gray-950/90 light:bg-white/95 backdrop-blur-xl shadow-2xl p-3 text-xs space-y-3"
-              role="region"
-              aria-label="Graph Parameter Inspector"
-            >
-              <div class="flex items-center justify-between border-b border-element-border pb-2">
-                <span class="font-bold text-gray-100 light:text-slate-800 tracking-tight">Physics &amp; Visuals</span>
-                <div class="flex items-center gap-1.5">
-                  <button
-                    id="tune-reset-btn"
-                    type="button"
-                    class="px-2 py-0.5 rounded text-[10px] font-semibold bg-element-bg border border-element-border text-gray-300 light:text-slate-600 hover:text-domain-visualizations hover:border-domain-visualizations/40 transition-colors cursor-pointer"
-                  >
-                    Reset
-                  </button>
-                  <button
-                    id="tune-close-btn"
-                    type="button"
-                    aria-label="Close parameter inspector"
-                    class="p-0.5 rounded text-gray-400 light:text-slate-500 hover:text-gray-100 light:hover:text-slate-800 cursor-pointer"
-                  >
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+          <!-- Full-height Left Sidebar Tune Overlay (covers #tune-toggle-btn when open) -->
+          <div
+            id="tune-panel"
+            class="hidden select-none absolute top-2.5 bottom-2.5 left-2.5 z-30 w-64 sm:w-72 flex-col rounded-2xl border border-element-border bg-gray-950/90 light:bg-white/95 backdrop-blur-xl shadow-2xl p-3 text-xs"
+            role="region"
+            aria-label="Graph Parameter Inspector"
+          >
+            <div class="shrink-0 flex items-center justify-between border-b border-element-border pb-2">
+              <span class="font-bold text-gray-100 light:text-slate-800 tracking-tight">Physics &amp; Visuals</span>
+              <div class="flex items-center gap-1.5">
+                <button
+                  id="tune-reset-btn"
+                  type="button"
+                  class="px-2 py-0.5 rounded text-[10px] font-semibold bg-element-bg border border-element-border text-gray-300 light:text-slate-600 hover:text-domain-visualizations hover:border-domain-visualizations/40 transition-colors cursor-pointer"
+                >
+                  Reset
+                </button>
+                <button
+                  id="tune-close-btn"
+                  type="button"
+                  aria-label="Close parameter inspector"
+                  class="p-0.5 rounded text-gray-400 light:text-slate-500 hover:text-gray-100 light:hover:text-slate-800 cursor-pointer"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-3 pt-2.5 pr-0.5">
 
               <!-- 1. Edge Cohesion & Hubs -->
               <div data-tune-layout="force" class="space-y-1.5">
@@ -472,31 +476,8 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               value="0"
               disabled
               aria-label="Timeline position (one step per content item)"
-              class="tune-slider order-last basis-full sm:order-none sm:basis-auto sm:flex-1 min-w-[8rem] h-1.5 cursor-pointer"
+              class="tune-slider flex-1 min-w-[8rem] h-1.5 cursor-pointer"
             />
-            <div class="flex items-center gap-1 shrink-0">
-              <label for="timeline-speed" class="sr-only">Playback speed</label>
-              <select
-                id="timeline-speed"
-                aria-label="Playback speed"
-                class="bg-element-bg/70 border border-element-border rounded-lg text-gray-200 light:text-slate-800 font-semibold text-[11px] sm:text-xs cursor-pointer px-1.5 py-0.5 focus:outline-none"
-              >
-                <option value="0.5">0.5x</option>
-                <option value="1" selected>1x</option>
-                <option value="2">2x</option>
-              </select>
-            </div>
-            <span
-              id="timeline-date"
-              class="shrink-0 px-2 py-0.5 rounded-lg border border-element-border bg-element-bg/70 font-semibold tabular-nums text-gray-200 light:text-slate-800 text-[11px] sm:text-xs"
-              title="Publication date of the current item"
-            >—</span>
-            <span
-              id="timeline-counter"
-              role="status"
-              aria-live="polite"
-              class="shrink-0 font-semibold tabular-nums text-gray-300 light:text-slate-600 text-[11px] sm:text-xs"
-            >0 Items · 0 Clusters</span>
           </div>
         </div>
 
@@ -989,9 +970,6 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       const tlPrev = document.getElementById('timeline-prev') as HTMLButtonElement | null;
       const tlNext = document.getElementById('timeline-next') as HTMLButtonElement | null;
       const tlScrubber = document.getElementById('timeline-scrubber') as HTMLInputElement | null;
-      const tlSpeed = document.getElementById('timeline-speed') as HTMLSelectElement | null;
-      const tlDate = document.getElementById('timeline-date');
-      const tlCounter = document.getElementById('timeline-counter');
       const tlIconPlay = document.getElementById('timeline-icon-play');
       const tlIconPause = document.getElementById('timeline-icon-pause');
       let timeline: GraphTimelineController | null = null;
@@ -1013,8 +991,6 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           tlScrubber.value = String(state.step);
           tlScrubber.setAttribute('aria-valuetext', `Item ${state.step + 1} of ${state.total}`);
         }
-        if (tlCounter) tlCounter.textContent = `${state.itemCount} Items · ${state.clusterCount} Clusters`;
-        if (tlDate) tlDate.textContent = state.dateLabel || '—';
         if (tlPlay) {
           tlPlay.setAttribute('aria-pressed', state.playing ? 'true' : 'false');
           tlPlay.setAttribute('aria-label', state.playing ? 'Pause timeline' : 'Play timeline');
@@ -1037,7 +1013,6 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           timeline = createGraphTimelineController(adapter);
           window.activeTimeline = timeline;
           timelineUnsub = timeline.subscribe(syncTimelineUI);
-          if (tlSpeed) timeline.setSpeed(Number(tlSpeed.value) || 1);
           syncTimelineUI(timeline.getState());
         } else {
           syncTimelineUI(null);
@@ -1051,10 +1026,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         const v = Number(tlScrubber.value);
         if (Number.isFinite(v)) timeline?.seek(v);
       });
-      tlSpeed?.addEventListener('change', () => timeline?.setSpeed(Number(tlSpeed.value) || 1));
       timelineBar?.addEventListener('keydown', (ev) => {
         const target = ev.target as HTMLElement | null;
-        if (ev.key === ' ' && target && target.tagName !== 'BUTTON' && target.tagName !== 'SELECT') {
+        if (ev.key === ' ' && target && target.tagName !== 'BUTTON') {
           ev.preventDefault();
           timeline?.toggle();
         }
@@ -1069,13 +1043,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       const tuneDirtyDot = document.getElementById('tune-dirty-dot');
 
       const syncTuneLayoutVisibility = (layoutId: string) => {
-        if (!tuneHud) return;
-        const sections = tuneHud.querySelectorAll<HTMLElement>('[data-tune-layout]');
+        if (!tunePanel) return;
+        const sections = tunePanel.querySelectorAll<HTMLElement>('[data-tune-layout]');
         sections.forEach((sec) => {
           const targetLayout = sec.dataset.tuneLayout;
           sec.classList.toggle('hidden', targetLayout !== layoutId);
         });
-        const visualSection = tuneHud.querySelector<HTMLElement>('[data-tune-section="visual"]');
+        const visualSection = tunePanel.querySelector<HTMLElement>('[data-tune-section="visual"]');
         if (visualSection) {
           const hasAbove = layoutId === 'force' || layoutId === 'radial';
           visualSection.classList.toggle('pt-1', hasAbove);
@@ -1127,12 +1101,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         syncContentFilterUI();
       }
 
-      if (tuneHud) {
+      if (tuneHud && tunePanel) {
         const stopCanvasEvent = (ev: Event) => {
           ev.stopPropagation();
         };
         ['pointerdown', 'mousedown', 'wheel', 'touchstart', 'click'].forEach((evtName) => {
           tuneHud.addEventListener(evtName, stopCanvasEvent);
+          tunePanel.addEventListener(evtName, stopCanvasEvent);
         });
 
         const formatTuneValue = (key: keyof GraphTuningState, val: number): string => {
@@ -1149,13 +1124,13 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
           if (tuneDirtyDot) {
             tuneDirtyDot.classList.toggle('hidden', isDefault);
           }
-          const sliders = tuneHud.querySelectorAll<HTMLInputElement>('input[data-tune-key]');
+          const sliders = tunePanel.querySelectorAll<HTMLInputElement>('input[data-tune-key]');
           sliders.forEach((slider) => {
             const key = slider.dataset.tuneKey as keyof GraphTuningState | undefined;
             if (!key || !(key in state)) return;
             const numVal = state[key];
             slider.value = String(numVal);
-            const valLabel = tuneHud.querySelector<HTMLElement>(`[data-tune-val="${key}"]`);
+            const valLabel = tunePanel.querySelector<HTMLElement>(`[data-tune-val="${key}"]`);
             if (valLabel) {
               valLabel.textContent = formatTuneValue(key, numVal);
             }
@@ -1165,6 +1140,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
         const setPanelOpen = (open: boolean) => {
           if (!tunePanel || !tuneToggleBtn) return;
           tunePanel.classList.toggle('hidden', !open);
+          tunePanel.classList.toggle('flex', open);
           tuneToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
         };
 
@@ -1179,7 +1155,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 
         let physicsDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-        const sliders = tuneHud.querySelectorAll<HTMLInputElement>('input[data-tune-key]');
+        const sliders = tunePanel.querySelectorAll<HTMLInputElement>('input[data-tune-key]');
         sliders.forEach((slider) => {
           slider.addEventListener('input', () => {
             const key = slider.dataset.tuneKey as keyof GraphTuningState | undefined;
