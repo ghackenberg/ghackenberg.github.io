@@ -379,10 +379,7 @@ export default {
       preset: initialPreset,
       clusterView: initialPreset === 'badges' ? ReadableBadgeClusterSvgView : undefined,
       theme: initialTheme,
-      meshStrategy: createAdaptiveHexMeshStrategy({
-        minSideLength: 280,
-        maxClusters: 8,
-      }),
+      meshStrategy: createAdaptiveHexMeshStrategy(),
       clusteringStrategy: createFinalSeededClusteringStrategy(allItems),
       colorStrategy: createPaletteColorStrategy<GraphNodePayload>(
         getClusterSpectrum(currentIsLight),
