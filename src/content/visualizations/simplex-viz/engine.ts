@@ -393,8 +393,26 @@ export default {
           if (maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX) {
             return;
           }
-          if (target.kind === 'content' && target.item.id.startsWith('/')) {
-            window.location.href = buildItemTargetUrl(target.item.id, extraOptions);
+          if (target.kind === 'content') {
+            if (target.neighborId) {
+              controller?.drillToNeighbor(target.neighborId);
+            } else if (target.item.id.startsWith('/')) {
+              window.location.href = buildItemTargetUrl(target.item.id, extraOptions);
+            }
+          } else if (target.kind === 'triangle') {
+            if (target.triangle.neighborId) {
+              controller?.drillToNeighbor(target.triangle.neighborId);
+            } else {
+              controller?.drillDownTriangle(target.triangle.index);
+            }
+          } else if (target.kind === 'cluster') {
+            if (target.neighborId) {
+              controller?.drillToNeighbor(target.neighborId);
+            } else {
+              controller?.drillDownCluster(target.cluster.clusterUid);
+            }
+          } else if (target.kind === 'background') {
+            controller?.drillUp();
           }
         },
       },

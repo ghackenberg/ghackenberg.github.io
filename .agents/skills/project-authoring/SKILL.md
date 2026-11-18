@@ -42,4 +42,4 @@ Structure project descriptions into a rigorous engineering case study:
 - **Asset Co-location**: Store screenshot images directly within `src/content/projects/<slug>/`.
 
 ## 4. Verification Gate
-Project entries and screenshot schemas are validated during the master release verification gate (see `build-engineering`).
+Project entries and screenshot schemas are validated during the master release verification gate (see `build-engineering`). In addition, `npm run lint:posts` enforces the prose-rhythm rule on `src/content/projects/*/index.md`: every `##` heading must be followed immediately by a prose paragraph before any list, table, or code block.
