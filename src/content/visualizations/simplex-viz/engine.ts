@@ -407,6 +407,42 @@ function buildItemTargetUrl(itemId: string, extraOptions?: Record<string, string
   return itemId.includes('?') ? `${itemId}&${query}` : `${itemId}?${query}`;
 }
 
+function waitForContainerDimensions(container: HTMLElement, timeoutMs = 1500): Promise<void> {
+  if (container.clientWidth > 0 && container.clientHeight > 0) {
+    return Promise.resolve();
+  }
+  return new Promise<void>((resolve) => {
+    let settled = false;
+    let observer: ResizeObserver | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+      if (timer !== null) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      resolve();
+    };
+
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(() => {
+        if (container.clientWidth > 0 && container.clientHeight > 0) {
+          finish();
+        }
+      });
+      observer.observe(container);
+    }
+
+    timer = setTimeout(finish, timeoutMs);
+  });
+}
+
 export default {
   layouts: LAYOUTS,
 
@@ -496,12 +532,15 @@ export default {
     container.addEventListener('touchend', onTouchEnd, { passive: true });
     container.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
-    if (typeof document !== 'undefined' && document.fonts) {
-      await Promise.race([
-        document.fonts.ready,
-        new Promise<void>((resolve) => setTimeout(resolve, 800)),
-      ]);
-    }
+    await Promise.all([
+      waitForContainerDimensions(container, 1500),
+      typeof document !== 'undefined' && document.fonts
+        ? Promise.race([
+            document.fonts.ready,
+            new Promise<void>((resolve) => setTimeout(resolve, 800)),
+          ])
+        : Promise.resolve(),
+    ]);
 
     const tooltipController: GraphTooltipController = createGraphTooltipController(container);
     let isContentHovered = false;
