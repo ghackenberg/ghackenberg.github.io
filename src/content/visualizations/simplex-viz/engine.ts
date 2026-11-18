@@ -146,7 +146,7 @@ interface DomainPolygonVisual {
   readonly theme: SimplexTheme;
 }
 
-const DOMAIN_NODE_RADIUS = 9.5;
+const DOMAIN_NODE_RADIUS = 7.5;
 const DOMAIN_NODE_STROKE_WIDTH = 1.4;
 
 const DomainPolygonSvgView: SvgNodeView<DomainPolygonVisual> = {
@@ -510,6 +510,10 @@ export default {
         { mode: 'edge-contrast' }
       ),
       layoutStrategy: createWarmStartPbdLayoutStrategy(),
+      layoutOptions: {
+        itemGapPx: 2.5,
+        clusterGapPx: 10,
+      },
       zoomStrategy: resolveZoomStrategy(),
       showZoomBreadcrumbs: true,
       tooltip: (target) => {
