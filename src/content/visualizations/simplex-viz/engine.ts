@@ -172,6 +172,7 @@ function resolvePreset(): SimplexVisualPreset {
 function resolveZoomStrategy(): SimplexZoomStrategy<GraphNodePayload> {
   return createSemanticZoomStrategy({
     clusterZoomMode: 'incident-star',
+    fullScaleThreshold: 0.65,
     leafTriangleFocus: true,
   });
 }
