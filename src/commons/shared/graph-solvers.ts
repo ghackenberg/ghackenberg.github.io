@@ -936,7 +936,7 @@ function buildSigmaForceAtlas2Graph(input: SolverGraphInput, init: InitialSpiral
       const m = getEdgePhysicsMetrics(weight);
       const fa2Weight = Math.max(
         0.0002,
-        Math.min(0.45, 0.06 * (m.stiffnessFactor / Math.pow(m.distanceFactor, 0.85)))
+        Math.min(0.55, 0.075 * (m.stiffnessFactor / Math.pow(m.distanceFactor, 1.2)))
       );
       graph.addUndirectedEdge(src, tgt, {
         weight: fa2Weight,

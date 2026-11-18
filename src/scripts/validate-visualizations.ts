@@ -67,6 +67,7 @@ import {
   createGraphDragPhysicsController2D,
   createGraphDragPhysicsController3D,
 } from '@commons/client/graph-drag-controller';
+import { VIS_PREVIEW_ENGINES } from '@commons/server/vis-preview-assets';
 
 const ROOT_DIR = process.cwd();
 const CONTENT_DIR = path.join(ROOT_DIR, 'src', 'content');
@@ -878,6 +879,26 @@ function evaluate3DSolverQuality(
 async function main() {
   const startTime = performance.now();
   const failures: string[] = [];
+
+  // =========================================================================
+  // GATE 0: Automatic Visualization Preview Engine Coverage
+  // =========================================================================
+  const visContentDir = path.join(CONTENT_DIR, 'visualizations');
+  const visSlugs = fs.existsSync(visContentDir)
+    ? fs
+        .readdirSync(visContentDir, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+        .sort()
+    : [];
+  const previewEngineSet = new Set<string>(VIS_PREVIEW_ENGINES);
+  for (const slug of visSlugs) {
+    assertCondition(
+      previewEngineSet.has(slug),
+      `[Gate 0: Preview Coverage] Visualization "${slug}" in src/content/visualizations/ is missing from VIS_PREVIEW_ENGINES in src/commons/server/vis-preview-assets.ts`,
+      failures
+    );
+  }
 
   // =========================================================================
   // GATE 1: Dataset & Privacy Integrity

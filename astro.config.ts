@@ -33,7 +33,7 @@ import {
 import { getFileContentHash, getHashedFilename } from '@commons/server/content-hash.js';
 import { BRANDING_CACHE_DIR, ensureBrandingAssets } from '@commons/server/branding-assets.js';
 import { MAP_CACHE_DIR, ensureMapAssets } from '@commons/server/map-assets.js';
-import { VIS_PREVIEW_CACHE_DIR, syncCachedVisPreviewsToDist } from '@commons/server/vis-preview-assets.js';
+import { VIS_PREVIEW_CACHE_DIR, VIS_PREVIEW_ENGINES, syncCachedVisPreviewsToDist } from '@commons/server/vis-preview-assets.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
@@ -164,9 +164,9 @@ function copyContentAssets(): AstroIntegration {
 
             // Dev server middleware for cached visualization preview screenshots
             const visPreviewMatch = cleanUrl.match(
-              /^\/assets\/vis-previews\/(cytoscape|sigma|d3|vis-network|3d-force-graph)-([a-f0-9]{8})\.png$/
+              /^\/assets\/vis-previews\/([a-z0-9-]+)-([a-f0-9]{8})\.png$/
             );
-            if (visPreviewMatch) {
+            if (visPreviewMatch && (VIS_PREVIEW_ENGINES as readonly string[]).includes(visPreviewMatch[1])) {
               const filePath = path.join(VIS_PREVIEW_CACHE_DIR, `${visPreviewMatch[1]}.png`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
                 res.writeHead(200, {
@@ -979,6 +979,7 @@ export default defineConfig({
         '3d-force-graph',
         'vis-network',
         'vis-data',
+        '@simplex-viz/svg',
         '@plausible-analytics/tracker',
       ],
     },

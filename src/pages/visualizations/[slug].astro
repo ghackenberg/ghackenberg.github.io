@@ -9,7 +9,6 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
 import ConversionCallout from "@components/ConversionCallout.astro";
 import { getCollection, render } from "astro:content";
-import { getImage } from "astro:assets";
 import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
 
 export async function getStaticPaths() {
@@ -25,21 +24,14 @@ const type = vis.id;
 const title = vis.data.title;
 const description = vis.data.description;
 const { previews: visPreviews } = await ensureVisPreviewAssets();
-const dynamicPreviewUrl = visPreviews[type];
-const fallbackScreenshot = vis.data.image;
-const screenshot = dynamicPreviewUrl ?? fallbackScreenshot;
+const screenshot = visPreviews[type];
+if (!screenshot) {
+  throw new Error(
+    `[Visualizations] Missing automatic preview asset for "${type}". Add "${type}" to VIS_PREVIEW_ENGINES in src/commons/server/vis-preview-assets.ts.`
+  );
+}
 
 const { Content } = await render(vis);
-
-const screenshotImg = !dynamicPreviewUrl && fallbackScreenshot
-  ? (typeof fallbackScreenshot === 'object' && 'src' in fallbackScreenshot ? fallbackScreenshot.src : fallbackScreenshot)
-  : null;
-const optimizedScreenshot = screenshotImg ? await getImage({
-  src: screenshotImg,
-  format: 'webp',
-  width: 1200,
-  quality: 85
-}) : null;
 
 import { getCanonicalGraphPayloadArtifact, getGraphPayloadEndpointUrl } from "@commons/server/graph-payload-endpoint";
 import { getGraphLayoutEndpointUrl } from "@commons/server/graph-layout-endpoint";
@@ -52,11 +44,12 @@ const defaultClusterCount = getDefaultTopicClusterCount(type);
 
 
 const engineSwitcherItems = [
-  { id: "cytoscape", label: "Cytoscape.js", badge: "2D Canvas" },
-  { id: "sigma", label: "Sigma.js", badge: "WebGL 2.0" },
-  { id: "d3", label: "D3.js", badge: "SVG DOM" },
-  { id: "vis-network", label: "Vis-Network", badge: "Spring 2D" },
-  { id: "3d-force-graph", label: "3D Force", badge: "Three.js" },
+  { id: "cytoscape", label: "Cytoscape.js" },
+  { id: "sigma", label: "Sigma.js" },
+  { id: "d3", label: "D3.js" },
+  { id: "vis-network", label: "Vis-Network" },
+  { id: "3d-force-graph", label: "3D Force" },
+  { id: "simplex-viz", label: "SimplexViz" },
 ];
 
 const defaultLayouts = [
@@ -71,7 +64,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
 <Layout 
   title={`${title} | Dr. Georg Hackenberg`}
   description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
-  image={screenshot || optimizedScreenshot?.src}
+  image={screenshot}
   jsonLd={vizSchema}
 >
   <Navbar />
@@ -116,10 +109,10 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
       >
         <!-- Top Band: Engine Switcher + Layout Selector + Fullscreen Toggle -->
         <div class="artifact-card-header w-full flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2">
-          <!-- Desktop Engine Pill Switcher (lg+) -->
-          <div class="hidden lg:flex items-center gap-2 min-w-0">
+          <!-- Desktop Engine Pill Switcher (xl+) -->
+          <div class="hidden xl:flex items-center gap-2 min-w-0">
             <span class="artifact-card-badge mr-1 shrink-0">Engine</span>
-            <nav aria-label="Compare graph engines" class="flex items-center gap-1.5 flex-wrap">
+            <nav aria-label="Compare graph engines" class="flex items-center gap-1.5 whitespace-nowrap">
               {engineSwitcherItems.map((item) => {
                 const isActive = item.id === type;
                 return (
@@ -136,19 +129,18 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                     }`}
                   >
                     <span>{item.label}</span>
-                    <span class="text-[10px] font-medium opacity-75 hidden xl:inline">({item.badge})</span>
                   </a>
                 );
               })}
             </nav>
           </div>
 
-          <!-- Responsive Controls Row: Engine Dropdown (< lg) + Layout Dropdown + Fullscreen Button -->
-          <div class="artifact-card-controls w-full lg:w-auto flex items-center justify-between lg:justify-end gap-2 min-w-0">
-            <!-- Smartphone Portrait & Tablet Engine Dropdown (< lg) -->
+          <!-- Responsive Controls Row: Engine Dropdown (< xl) + Layout Dropdown + Fullscreen Button -->
+          <div class="artifact-card-controls w-full xl:w-auto xl:ml-auto flex items-center justify-between xl:justify-end gap-2 min-w-0">
+            <!-- Smartphone Portrait & Tablet Engine Dropdown (< xl) -->
             <div
               id="engine-control-container"
-              class="flex lg:hidden items-center gap-1.5 px-2.5 py-1 rounded-lg bg-element-bg border border-element-border text-xs flex-1 min-w-0 sm:flex-initial"
+              class="flex xl:hidden items-center gap-1.5 px-2.5 py-1 rounded-lg bg-element-bg border border-element-border text-xs flex-1 min-w-0 sm:flex-initial"
             >
               <label for="engine-selector" class="flex items-center gap-1 text-gray-400 light:text-slate-500 font-semibold select-none shrink-0">
                 <svg class="w-3.5 h-3.5 text-domain-visualizations shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +156,7 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
                 >
                   {engineSwitcherItems.map((item) => (
                     <option value={item.id} selected={item.id === type}>
-                      {item.label} ({item.badge})
+                      {item.label}
                     </option>
                   ))}
                 </select>
@@ -176,41 +168,43 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               </div>
             </div>
 
-            <!-- Layout Dropdown Selector -->
-            <div
-              id="layout-control-container"
-              class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-element-bg border border-element-border text-xs flex-1 min-w-0 sm:flex-initial"
-            >
-              <label for="layout-selector" class="flex items-center gap-1 text-gray-400 light:text-slate-500 font-semibold select-none shrink-0">
-                <svg class="w-3.5 h-3.5 text-domain-visualizations shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-                <span class="hidden sm:inline">Layout:</span>
-              </label>
-              <div class="relative flex items-center flex-1 min-w-0">
-                <select
-                  id="layout-selector"
-                  aria-label="Select layout"
-                  class="w-full bg-transparent text-gray-200 light:text-slate-800 font-semibold text-[11px] sm:text-xs cursor-pointer focus:outline-none appearance-none pr-4 py-0.5 truncate"
-                >
-                  {defaultLayouts.map((layoutItem, idx) => (
-                    <option value={layoutItem.id} selected={idx === 0}>
-                      {layoutItem.label}
-                    </option>
-                  ))}
-                </select>
-                <div class="absolute right-0 flex items-center pointer-events-none text-gray-400 light:text-slate-500">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            {type !== "simplex-viz" && (
+              /* Layout Dropdown Selector */
+              <div
+                id="layout-control-container"
+                class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-element-bg border border-element-border text-xs flex-1 min-w-0 sm:flex-initial sm:ml-auto xl:ml-0"
+              >
+                <label for="layout-selector" class="flex items-center gap-1 text-gray-400 light:text-slate-500 font-semibold select-none shrink-0">
+                  <svg class="w-3.5 h-3.5 text-domain-visualizations shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                   </svg>
+                  <span class="hidden sm:inline">Layout:</span>
+                </label>
+                <div class="relative flex items-center flex-1 min-w-0">
+                  <select
+                    id="layout-selector"
+                    aria-label="Select layout"
+                    class="w-full bg-transparent text-gray-200 light:text-slate-800 font-semibold text-[11px] sm:text-xs cursor-pointer focus:outline-none appearance-none pr-4 py-0.5 truncate"
+                  >
+                    {defaultLayouts.map((layoutItem, idx) => (
+                      <option value={layoutItem.id} selected={idx === 0}>
+                        {layoutItem.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div class="absolute right-0 flex items-center pointer-events-none text-gray-400 light:text-slate-500">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <!-- Fullscreen Toggle Button -->
             <button
               type="button"
-              class="table-deck-btn shrink-0"
+              class={`table-deck-btn shrink-0${type === "simplex-viz" ? " sm:ml-auto xl:ml-0" : ""}`}
               data-media-fullscreen="true"
               aria-label={`Open fullscreen visualization: ${title}`}
               title="Fullscreen"
@@ -857,6 +851,9 @@ const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.
               break;
             case 'vis-network':
               engineModule = await import('@content/visualizations/vis-network/engine.ts');
+              break;
+            case 'simplex-viz':
+              engineModule = await import('@content/visualizations/simplex-viz/engine.ts');
               break;
             default:
               throw new Error(`Unknown visualization type: ${type}`);

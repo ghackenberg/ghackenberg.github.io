@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="SimplexViz three-package TypeScript architecture separating @simplex-viz/core, @simplex-viz/svg, and @simplex-viz/react">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-arch" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-line)" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="480" height="480" rx="12" fill="var(--svg-bg)" />
+
+  <text x="240" y="34" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" text-anchor="middle" fill="var(--svg-text-primary)">3-PACKAGE ARCHITECTURE</text>
+  <text x="240" y="54" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Strict layering from headless math to UI bindings</text>
+
+  <!-- Consumer Targets (Top Row) -->
+  <rect x="30" y="82" width="128" height="46" rx="8" fill="var(--svg-card-alt)" stroke="var(--svg-border)" stroke-width="1.4" />
+  <text x="94" y="105" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-text-primary)">Headless SSR</text>
+
+  <rect x="176" y="82" width="128" height="46" rx="8" fill="var(--svg-card-alt)" stroke="var(--svg-border)" stroke-width="1.4" />
+  <text x="240" y="105" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-text-primary)">Vue / Svelte / TS</text>
+
+  <rect x="322" y="82" width="128" height="46" rx="8" fill="var(--svg-card-alt)" stroke="var(--svg-border)" stroke-width="1.4" />
+  <text x="386" y="105" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-text-primary)">React Apps</text>
+
+  <!-- Layer 3: @simplex-viz/react -->
+  <rect x="64" y="168" width="352" height="72" rx="10" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+  <text x="240" y="193" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-purple-text)">@simplex-viz/react</text>
+  <text x="240" y="218" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-purple-subtext)">JSX renderers, hooks &amp; props</text>
+
+  <!-- Layer 2: @simplex-viz/svg -->
+  <rect x="64" y="274" width="352" height="72" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="240" y="299" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">@simplex-viz/svg</text>
+  <text x="240" y="324" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-subtext)">SVG scene graph &amp; hit-testing</text>
+
+  <!-- Layer 1: @simplex-viz/core -->
+  <rect x="64" y="380" width="352" height="74" rx="10" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <text x="240" y="405" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">@simplex-viz/core</text>
+  <text x="240" y="430" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-subtext)">0 DOM deps • Math, SAT, OKLab</text>
+
+  <!-- Dependency Arrows -->
+  <line x1="240" y1="380" x2="240" y2="348" stroke="var(--svg-line)" stroke-width="1.8" marker-end="url(#arr-arch)" />
+  <line x1="240" y1="274" x2="240" y2="242" stroke="var(--svg-line)" stroke-width="1.8" marker-end="url(#arr-arch)" />
+
+  <!-- Consumer Connectors -->
+  <path d="M 64 417 H 42 V 148 H 94 V 130" fill="none" stroke="var(--svg-line)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-arch)" />
+  <path d="M 416 310 H 442 V 148 H 240 V 130" fill="none" stroke="var(--svg-line)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-arch)" />
+  <path d="M 386 168 V 130" fill="none" stroke="var(--svg-line)" stroke-width="1.5" marker-end="url(#arr-arch)" />
+</svg>

@@ -20,12 +20,15 @@ import {
 
 export const VIS_PREVIEW_CACHE_DIR = path.resolve('.cache/vis-previews');
 
-export const VIS_PREVIEW_ENGINES: readonly VisualizationEngineType[] = [
+export type VisPreviewEngineSlug = VisualizationEngineType | 'simplex-viz';
+
+export const VIS_PREVIEW_ENGINES: readonly VisPreviewEngineSlug[] = [
   'cytoscape',
   'sigma',
   'd3',
   'vis-network',
   '3d-force-graph',
+  'simplex-viz',
 ] as const;
 
 export interface VisPreviewAssetsResult {
@@ -126,7 +129,7 @@ export function syncCachedVisPreviewsToDist(targetDistDir?: string): boolean {
   return true;
 }
 
-async function bundleEngineScript(slug: VisualizationEngineType): Promise<string> {
+async function bundleEngineScript(slug: VisPreviewEngineSlug): Promise<string> {
   const engineEntryPath = path.resolve('src/content/visualizations', slug, 'engine.ts').replace(/\\/g, '/');
   const entrySource = `
     import engine from '${engineEntryPath}';
@@ -235,7 +238,7 @@ async function runGeneration(
 
       const [bundledJs, layoutBundle] = await Promise.all([
         bundleEngineScript(slug),
-        getGraphLayoutBundle(slug),
+        slug === 'simplex-viz' ? Promise.resolve(null) : getGraphLayoutBundle(slug),
       ]);
 
       const targetK = getDefaultTopicClusterCount(slug);
@@ -243,7 +246,10 @@ async function runGeneration(
         targetK !== DEFAULT_TOPIC_CLUSTER_COUNT
           ? reclusterCanonicalGraphPayload(payloadArtifact.payload, targetK)
           : payloadArtifact.payload;
-      const hydratedPayload = hydrateEnginePayloads(effectiveCanonical, layoutBundle.payload.positions);
+      const hydratedPayload = hydrateEnginePayloads(
+        effectiveCanonical,
+        layoutBundle?.payload.positions
+      );
 
       const page = await browser.newPage();
       try {
@@ -257,7 +263,7 @@ async function runGeneration(
         await page.addScriptTag({ content: bundledJs });
 
         await page.evaluate(
-          async (payloadData: EnginePayloads) => {
+          async (payloadData: EnginePayloads, engineSlug: string) => {
             const container = document.getElementById('canvas');
             if (!container) {
               throw new Error('Missing #canvas container');
@@ -292,8 +298,16 @@ async function runGeneration(
                 });
               });
             });
+
+            if (engineSlug === 'simplex-viz') {
+              const svg = container.querySelector('svg');
+              if (!svg || svg.children.length === 0) {
+                throw new Error('simplex-viz did not render any SVG elements inside #canvas');
+              }
+            }
           },
-          hydratedPayload
+          hydratedPayload,
+          slug
         );
 
         const cachedPath = path.join(VIS_PREVIEW_CACHE_DIR, `${slug}.png`);

@@ -13,6 +13,14 @@ import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
 const visualizations = await getCollection("visualizations");
 const { previews: visPreviews } = await ensureVisPreviewAssets();
 
+for (const vis of visualizations) {
+  if (!visPreviews[vis.id]) {
+    throw new Error(
+      `[Visualizations] Missing automatic preview asset for "${vis.id}". Add "${vis.id}" to VIS_PREVIEW_ENGINES in src/commons/server/vis-preview-assets.ts.`
+    );
+  }
+}
+
 // Extract unique tags from all visualizations
 const tagsSet = new Set<string>();
 for (const vis of visualizations) {
@@ -23,9 +31,7 @@ for (const vis of visualizations) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = visualizations.map(v => (v.data.tags || []).map(t => t.toLowerCase()));
 
-const firstVisScreenshot =
-  (visualizations.length > 0 ? visPreviews[visualizations[0].id] : undefined) ||
-  visualizations.find(v => v.data.image)?.data.image;
+const firstVisScreenshot = visualizations.length > 0 ? visPreviews[visualizations[0].id] : undefined;
 
 ---
 
@@ -79,7 +85,7 @@ const firstVisScreenshot =
                   title={vis.data.title}
                   description={vis.data.description}
                   href={`/visualizations/${vis.id}/`}
-                  image={visPreviews[vis.id] ?? vis.data.image}
+                  image={visPreviews[vis.id]}
                   tags={vis.data.tags}
                 />
               </div>

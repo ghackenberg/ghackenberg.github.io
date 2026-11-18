@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="SimplexViz five-stage pluggable pipeline: Mesh, Clustering, OKLab Color, SAT/PBD Layout, and 1:4 Hierarchical Zoom">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-pipe" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-line)" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="480" height="480" rx="12" fill="var(--svg-bg)" />
+
+  <text x="240" y="34" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.05em" text-anchor="middle" fill="var(--svg-text-primary)">5-STAGE SIMPLEXVIZ PIPELINE</text>
+  <text x="240" y="54" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" fill="var(--svg-text-muted)">Hot-swappable strategies from data to drill-down</text>
+
+  <!-- Stage 1: Mesh -->
+  <rect x="44" y="76" width="392" height="62" rx="10" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+  <polygon points="84,92 66,122 102,122" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+  <line x1="75" y1="107" x2="93" y2="107" stroke="var(--svg-node-blue-border)" stroke-width="1.2" />
+  <text x="260" y="99" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-text)">1. 60° MESH STRATEGY</text>
+  <text x="260" y="121" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-blue-subtext)">Adaptive equilateral lattice</text>
+
+  <line x1="240" y1="138" x2="240" y2="154" stroke="var(--svg-line)" stroke-width="1.8" marker-end="url(#arr-pipe)" />
+
+  <!-- Stage 2: Clustering -->
+  <rect x="44" y="156" width="392" height="62" rx="10" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+  <circle cx="84" cy="175" r="5" fill="var(--svg-node-purple-border)" />
+  <circle cx="71" cy="199" r="5" fill="var(--svg-node-purple-border)" />
+  <circle cx="97" cy="199" r="5" fill="var(--svg-node-purple-border)" />
+  <text x="260" y="179" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-purple-text)">2. CLUSTERING</text>
+  <text x="260" y="201" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-purple-subtext)">Tags, vectors, or similarity</text>
+
+  <line x1="240" y1="218" x2="240" y2="234" stroke="var(--svg-line)" stroke-width="1.8" marker-end="url(#arr-pipe)" />
+
+  <!-- Stage 3: OKLab Color -->
+  <rect x="44" y="236" width="392" height="62" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <circle cx="78" cy="264" r="9" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <circle cx="90" cy="264" r="9" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <circle cx="84" cy="274" r="9" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+  <text x="260" y="259" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-text)">3. OKLAB COLOR</text>
+  <text x="260" y="281" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-green-subtext)">Perceptual barycentric mixing</text>
+
+  <line x1="240" y1="298" x2="240" y2="314" stroke="var(--svg-line)" stroke-width="1.8" marker-end="url(#arr-pipe)" />
+
+  <!-- Stage 4: SAT / PBD Layout -->
+  <rect x="44" y="316" width="392" height="62" rx="10" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.6" />
+  <rect x="67" y="335" width="14" height="14" rx="3" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1.6" />
+  <circle cx="95" cy="353" r="8" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1.6" />
+  <text x="260" y="339" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-text)">4. SAT / PBD LAYOUT</text>
+  <text x="260" y="361" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-node-amber-subtext)">Guaranteed 0.0 px overlap</text>
+
+  <line x1="240" y1="378" x2="240" y2="394" stroke="var(--svg-line)" stroke-width="1.8" marker-end="url(#arr-pipe)" />
+
+  <!-- Stage 5: 1:4 Zoom -->
+  <rect x="44" y="396" width="392" height="62" rx="10" fill="var(--svg-accent-9-bg)" stroke="var(--svg-accent-9-border)" stroke-width="1.6" />
+  <polygon points="84,410 66,442 102,442" fill="none" stroke="var(--svg-accent-9-border)" stroke-width="1.6" />
+  <polygon points="84,442 75,426 93,426" fill="none" stroke="var(--svg-accent-9-border)" stroke-width="1.2" />
+  <text x="260" y="419" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="var(--svg-accent-9-text)">5. 1:4 HIERARCHICAL ZOOM</text>
+  <text x="260" y="441" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="central" fill="var(--svg-accent-9-subtext)">Conformal drill-down &amp; focus</text>
+</svg>
