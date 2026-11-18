@@ -1,10 +1,11 @@
 import {
   BadgeClusterSvgView,
+  createAdaptiveHexMeshStrategy,
   createIncrementalAnchorClusteringStrategy,
+  createLocalAdaptiveLayoutStrategy,
   createPaletteColorStrategy,
   createSemanticZoomStrategy,
   createSimplexSvg,
-  createWarmStartPbdLayoutStrategy,
   type BadgeClusterVisual,
   type ClusteringStrategyContext,
   type ClusteringStrategyOutput,
@@ -359,6 +360,13 @@ export default {
     container.addEventListener('touchend', onTouchEnd, { passive: true });
     container.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
+    if (typeof document !== 'undefined' && document.fonts) {
+      await Promise.race([
+        document.fonts.ready,
+        new Promise<void>((resolve) => setTimeout(resolve, 800)),
+      ]);
+    }
+
     const initialTheme: SimplexTheme = currentIsLight ? 'light' : 'dark';
     const initialPreset = resolvePreset();
 
@@ -370,12 +378,16 @@ export default {
       preset: initialPreset,
       clusterView: initialPreset === 'badges' ? ReadableBadgeClusterSvgView : undefined,
       theme: initialTheme,
+      meshStrategy: createAdaptiveHexMeshStrategy({
+        minSideLength: 280,
+        maxClusters: 8,
+      }),
       clusteringStrategy: createFinalSeededClusteringStrategy(allItems),
       colorStrategy: createPaletteColorStrategy<GraphNodePayload>(
         getClusterSpectrum(currentIsLight),
         { mode: 'edge-contrast' }
       ),
-      layoutStrategy: createWarmStartPbdLayoutStrategy(),
+      layoutStrategy: createLocalAdaptiveLayoutStrategy({ warmStart: true }),
       zoomStrategy: resolveZoomStrategy(),
       showZoomBreadcrumbs: true,
       tooltip: (target) => {
@@ -417,6 +429,26 @@ export default {
         },
       },
     });
+
+    let onFontsLoadingDone: (() => void) | null = null;
+    if (
+      typeof document !== 'undefined' &&
+      document.fonts &&
+      document.fonts.status !== 'loaded'
+    ) {
+      let fontsRelayoutDone = false;
+      onFontsLoadingDone = () => {
+        if (fontsRelayoutDone || !controller) return;
+        if (document.fonts.status !== 'loaded') return;
+        fontsRelayoutDone = true;
+        if (onFontsLoadingDone) {
+          document.fonts.removeEventListener('loadingdone', onFontsLoadingDone);
+          onFontsLoadingDone = null;
+        }
+        controller.setLayoutStrategy(createLocalAdaptiveLayoutStrategy({ warmStart: true }));
+      };
+      document.fonts.addEventListener('loadingdone', onFontsLoadingDone);
+    }
 
     const canonical = payload.canonical ?? null;
     let currentNodes: GraphNodePayload[] = canonical?.nodes ? [...canonical.nodes] : [];
@@ -532,6 +564,10 @@ export default {
       },
 
       destroy() {
+        if (onFontsLoadingDone && typeof document !== 'undefined' && document.fonts) {
+          document.fonts.removeEventListener('loadingdone', onFontsLoadingDone);
+          onFontsLoadingDone = null;
+        }
         container.removeEventListener('pointerdown', onPointerDown);
         container.removeEventListener('pointermove', onPointerMove);
         container.removeEventListener('pointerup', onPointerEnd);
