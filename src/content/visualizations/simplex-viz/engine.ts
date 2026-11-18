@@ -24,6 +24,10 @@ import type {
   TimelinePoint,
   TimelineSnapshot,
 } from '@commons/client/graph-timeline-controller';
+import {
+  createGraphTooltipController,
+  type GraphTooltipController,
+} from '@commons/client/vis-tooltip';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import {
   CLUSTER_PALETTE,
@@ -31,6 +35,8 @@ import {
   GRAPH_COLORS,
   buildRegularPolygonSvgPoints,
   getActiveContentFilterGroups,
+  getAttenuatedNodeColor,
+  getAttenuatedNodeScale,
   getContentGroupPolygonSides,
   getPolygonAreaRadiusScale,
   getRegularPolygonUnitVertices,
@@ -184,26 +190,41 @@ const DomainPolygonSvgView: SvgNodeView<DomainPolygonVisual> = {
     const domainColors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     const accentRing = domainColors[8] ?? domainColors[0];
     const pinnedStroke = domainColors[5] ?? domainColors[0];
-    const isActive = state.interaction.isHovered || state.interaction.isPinned || state.interaction.isHighlighted;
+    const { isHovered, isPinned, isHighlighted, isDimmed } = state.interaction;
+    const isFocused = isHovered || isPinned;
 
-    polyEl.setAttribute('points', buildRegularPolygonSvgPoints(visual.radius, visual.group));
-    polyEl.setAttribute('fill', visual.fillHex);
+    let scale = 1;
+    let fill = visual.fillHex;
+    if (isFocused) {
+      scale = getAttenuatedNodeScale(0);
+    } else if (isHighlighted) {
+      scale = getAttenuatedNodeScale(1);
+      fill = getAttenuatedNodeColor(visual.fillHex, 1, isLight);
+    } else if (isDimmed) {
+      scale = getAttenuatedNodeScale(undefined);
+      fill = getAttenuatedNodeColor(visual.fillHex, undefined, isLight);
+    }
+
+    const scaledRadius = visual.radius * scale;
+
+    polyEl.setAttribute('points', buildRegularPolygonSvgPoints(scaledRadius, visual.group));
+    polyEl.setAttribute('fill', fill);
     polyEl.setAttribute(
       'stroke',
-      state.interaction.isPinned
+      isPinned
         ? pinnedStroke
-        : state.interaction.isHovered
+        : isHovered
           ? tokens.textHeading
           : visual.strokeHex
     );
     polyEl.setAttribute(
       'stroke-width',
-      String(state.interaction.isHovered || state.interaction.isPinned ? 2.2 : visual.strokeWidth)
+      String(isFocused ? 2.2 : visual.strokeWidth)
     );
 
-    if (isActive) {
-      ringEl.setAttribute('points', buildRegularPolygonSvgPoints(visual.radius + 4.5, visual.group));
-      ringEl.setAttribute('stroke', state.interaction.isPinned ? pinnedStroke : accentRing);
+    if (isFocused || isHighlighted) {
+      ringEl.setAttribute('points', buildRegularPolygonSvgPoints(scaledRadius + 4.5, visual.group));
+      ringEl.setAttribute('stroke', isPinned ? pinnedStroke : accentRing);
       ringEl.setAttribute('stroke-width', '1.4');
       ringEl.setAttribute('stroke-opacity', '0.9');
     } else {
@@ -482,6 +503,22 @@ export default {
       ]);
     }
 
+    const tooltipController: GraphTooltipController = createGraphTooltipController(container);
+    let isContentHovered = false;
+
+    const onPointerLeaveContainer = () => {
+      isContentHovered = false;
+      tooltipController.hide();
+    };
+    container.addEventListener('pointerleave', onPointerLeaveContainer, { passive: true });
+
+    const onPointerMoveTooltip = (ev: PointerEvent) => {
+      if (!isContentHovered) return;
+      const rect = container.getBoundingClientRect();
+      tooltipController.move(ev.clientX - rect.left, ev.clientY - rect.top);
+    };
+    container.addEventListener('pointermove', onPointerMoveTooltip, { passive: true });
+
     const initialTheme: SimplexTheme = currentIsLight ? 'light' : 'dark';
     const initialPreset = resolvePreset();
 
@@ -516,17 +553,34 @@ export default {
       },
       zoomStrategy: resolveZoomStrategy(),
       showZoomBreadcrumbs: true,
-      tooltip: (target) => {
-        if (target.kind === 'content') {
-          const prefix = target.item.typeLabel ? `${target.item.typeLabel}: ` : '';
-          return `${prefix}${target.item.name} (${target.layoutContext.tags.length} tags)`;
-        }
-        if (target.kind === 'cluster') {
-          return `${formatClusterTitle(target.cluster.defaultLabel)}: ${target.cluster.members.length} items`;
-        }
-        return `Simplex #${target.triangle.index + 1} (${target.triangle.coveredItemCount} items)`;
-      },
+      tooltip: false,
       interactions: {
+        onContentHover: (ev) => {
+          if (ev) {
+            isContentHovered = true;
+            tooltipController.show(
+              ev.item,
+              currentIsLight,
+              ev.screenPosition.x,
+              ev.screenPosition.y
+            );
+          } else {
+            isContentHovered = false;
+            tooltipController.hide();
+          }
+        },
+        onClusterHover: (ev) => {
+          if (ev) {
+            isContentHovered = false;
+            tooltipController.hide();
+          }
+        },
+        onTriangleHover: (ev) => {
+          if (ev) {
+            isContentHovered = false;
+            tooltipController.hide();
+          }
+        },
         onLeftClick: (target) => {
           if (maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX) {
             return;
@@ -697,12 +751,15 @@ export default {
         }
         container.removeEventListener('pointerdown', onPointerDown);
         container.removeEventListener('pointermove', onPointerMove);
+        container.removeEventListener('pointermove', onPointerMoveTooltip);
         container.removeEventListener('pointerup', onPointerEnd);
         container.removeEventListener('pointercancel', onPointerEnd);
+        container.removeEventListener('pointerleave', onPointerLeaveContainer);
         container.removeEventListener('touchstart', onTouchStart);
         container.removeEventListener('touchmove', onTouchMove);
         container.removeEventListener('touchend', onTouchEnd);
         container.removeEventListener('touchcancel', onTouchEnd);
+        tooltipController.destroy();
         if (controller) {
           controller.destroy();
           controller = null;
