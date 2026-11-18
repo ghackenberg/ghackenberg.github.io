@@ -201,10 +201,7 @@ function createFinalSeededClusteringStrategy(
 
     if (!finalClustering || !meshMatches) {
       if (ctx.items.length === allItems.length) {
-        const computed =
-          finalClustering && baseStrategy.update
-            ? baseStrategy.update(ctx)
-            : baseStrategy.initialize(ctx);
+        const computed = baseStrategy.initialize(ctx);
         finalClustering = computed;
         cachedMeshWidth = ctx.mesh.width;
         cachedMeshHeight = ctx.mesh.height;
@@ -233,7 +230,7 @@ function createFinalSeededClusteringStrategy(
     name: `final-seeded(${baseStrategy.name})`,
     requiresTags: baseStrategy.requiresTags,
     estimateClusterCount(ctx) {
-      if (finalClustering) {
+      if (finalClustering && ctx.items.length < allItems.length) {
         return finalClustering.clusters.length;
       }
       return baseStrategy.estimateClusterCount?.(ctx);
