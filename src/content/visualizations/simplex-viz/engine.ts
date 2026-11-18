@@ -1,11 +1,13 @@
 import {
   BadgeClusterSvgView,
+  SVG_NS,
   createAdaptiveHexMeshStrategy,
   createIncrementalAnchorClusteringStrategy,
-  createLocalAdaptiveLayoutStrategy,
   createPaletteColorStrategy,
+  createPresetVisualResolver,
   createSemanticZoomStrategy,
   createSimplexSvg,
+  createWarmStartPbdLayoutStrategy,
   type BadgeClusterVisual,
   type ClusteringStrategyContext,
   type ClusteringStrategyOutput,
@@ -15,6 +17,7 @@ import {
   type SimplexVisualPreset,
   type SimplexZoomStrategy,
   type SvgNodeView,
+  type VisualResolver,
 } from '@simplex-viz/svg';
 import type {
   TimelineAdapter,
@@ -26,7 +29,11 @@ import {
   CLUSTER_PALETTE,
   DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
+  buildRegularPolygonSvgPoints,
   getActiveContentFilterGroups,
+  getContentGroupPolygonSides,
+  getPolygonAreaRadiusScale,
+  getRegularPolygonUnitVertices,
   type CanonicalGraphPayload,
   type EnginePayloads,
   type GraphNodePayload,
@@ -36,7 +43,7 @@ export interface SimplexVizInstance {
   layouts: { id: string; label: string }[];
   currentLayout: string;
   isLight: boolean;
-  controller: SimplexSvgController<GraphNodePayload> | null;
+  controller: SimplexSvgController<GraphNodePayload, DomainPolygonVisual, BadgeClusterVisual> | null;
   timelineAdapter: TimelineAdapter;
   updateLayout(layout: string, isLight: boolean): void;
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
@@ -127,6 +134,113 @@ function formatClusterTitle(rawTitle: string): string {
     }
   }
   return `${formatted.slice(0, MAX_CLUSTER_LABEL_CHARS - 1).trimEnd()}…`;
+}
+
+interface DomainPolygonVisual {
+  readonly group: number;
+  readonly radius: number;
+  readonly fillHex: string;
+  readonly strokeHex: string;
+  readonly strokeWidth: number;
+  readonly label: string;
+  readonly theme: SimplexTheme;
+}
+
+const DOMAIN_NODE_RADIUS = 9.5;
+const DOMAIN_NODE_STROKE_WIDTH = 1.4;
+
+const DomainPolygonSvgView: SvgNodeView<DomainPolygonVisual> = {
+  measureConvexHull(visual) {
+    const sides = getContentGroupPolygonSides(visual.group);
+    const r = (visual.radius + visual.strokeWidth) * getPolygonAreaRadiusScale(sides);
+    const unitVerts = getRegularPolygonUnitVertices(sides);
+    return {
+      kind: 'polygon',
+      vertices: unitVerts.map(([ux, uy]) => ({ x: ux * r, y: uy * r })),
+    };
+  },
+
+  mountOrUpdate(groupEl, visual, state) {
+    let polyEl = groupEl.querySelector<SVGPolygonElement>('polygon.sv-domain-poly');
+    let ringEl = groupEl.querySelector<SVGPolygonElement>('polygon.sv-domain-ring');
+    if (!polyEl || !ringEl) {
+      while (groupEl.firstChild) {
+        groupEl.removeChild(groupEl.firstChild);
+      }
+      const doc = groupEl.ownerDocument;
+      ringEl = doc.createElementNS(SVG_NS, 'polygon');
+      ringEl.setAttribute('class', 'sv-domain-ring');
+      ringEl.setAttribute('fill', 'none');
+      ringEl.setAttribute('stroke-linejoin', 'round');
+      polyEl = doc.createElementNS(SVG_NS, 'polygon');
+      polyEl.setAttribute('class', 'sv-domain-poly');
+      polyEl.setAttribute('stroke-linejoin', 'round');
+      groupEl.appendChild(ringEl);
+      groupEl.appendChild(polyEl);
+    }
+
+    const isLight = visual.theme === 'light';
+    const tokens = getThemeTokens(isLight);
+    const domainColors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+    const accentRing = domainColors[8] ?? domainColors[0];
+    const pinnedStroke = domainColors[5] ?? domainColors[0];
+    const isActive = state.interaction.isHovered || state.interaction.isPinned || state.interaction.isHighlighted;
+
+    polyEl.setAttribute('points', buildRegularPolygonSvgPoints(visual.radius, visual.group));
+    polyEl.setAttribute('fill', visual.fillHex);
+    polyEl.setAttribute(
+      'stroke',
+      state.interaction.isPinned
+        ? pinnedStroke
+        : state.interaction.isHovered
+          ? tokens.textHeading
+          : visual.strokeHex
+    );
+    polyEl.setAttribute(
+      'stroke-width',
+      String(state.interaction.isHovered || state.interaction.isPinned ? 2.2 : visual.strokeWidth)
+    );
+
+    if (isActive) {
+      ringEl.setAttribute('points', buildRegularPolygonSvgPoints(visual.radius + 4.5, visual.group));
+      ringEl.setAttribute('stroke', state.interaction.isPinned ? pinnedStroke : accentRing);
+      ringEl.setAttribute('stroke-width', '1.4');
+      ringEl.setAttribute('stroke-opacity', '0.9');
+    } else {
+      ringEl.setAttribute('points', '');
+    }
+  },
+};
+
+function createDomainVisualResolver(
+  isLight: boolean
+): VisualResolver<GraphNodePayload, DomainPolygonVisual, BadgeClusterVisual> {
+  const theme: SimplexTheme = isLight ? 'light' : 'dark';
+  const tokens = getThemeTokens(isLight);
+  const baseResolver = createPresetVisualResolver<GraphNodePayload>('badges', (item) => item.name, theme);
+
+  return {
+    resolveContentVisual(item, ctx) {
+      return {
+        group: item.group,
+        radius: DOMAIN_NODE_RADIUS,
+        fillHex: ctx.mixedColorHex,
+        strokeHex: tokens.canvasBg,
+        strokeWidth: DOMAIN_NODE_STROKE_WIDTH,
+        label: item.name,
+        theme,
+      };
+    },
+    resolveClusterVisual(cluster) {
+      return baseResolver.resolveClusterVisual(cluster) as BadgeClusterVisual;
+    },
+    getVisualCacheKey(visual) {
+      if ('group' in visual) {
+        return `poly:${visual.theme}:${visual.group}:${visual.radius}:${visual.fillHex}`;
+      }
+      return baseResolver.getVisualCacheKey(visual);
+    },
+  };
 }
 
 const baseBadgeClusterView = new BadgeClusterSvgView();
@@ -371,12 +485,22 @@ export default {
     const initialTheme: SimplexTheme = currentIsLight ? 'light' : 'dark';
     const initialPreset = resolvePreset();
 
-    let controller: SimplexSvgController<GraphNodePayload> | null = createSimplexSvg<GraphNodePayload>(container, {
+    let controller: SimplexSvgController<
+      GraphNodePayload,
+      DomainPolygonVisual,
+      BadgeClusterVisual
+    > | null = createSimplexSvg<
+      GraphNodePayload,
+      DomainPolygonVisual,
+      BadgeClusterVisual
+    >(container, {
       items: allItems,
       getId: (item) => item.id,
       getTags: (item) => (item.tags ?? []).map(formatTagLabel),
       getLabel: (item) => item.name,
       preset: initialPreset,
+      visualResolver: createDomainVisualResolver(currentIsLight),
+      contentView: DomainPolygonSvgView,
       clusterView: initialPreset === 'badges' ? ReadableBadgeClusterSvgView : undefined,
       theme: initialTheme,
       meshStrategy: createAdaptiveHexMeshStrategy(),
@@ -385,7 +509,7 @@ export default {
         getClusterSpectrum(currentIsLight),
         { mode: 'edge-contrast' }
       ),
-      layoutStrategy: createLocalAdaptiveLayoutStrategy({ warmStart: true }),
+      layoutStrategy: createWarmStartPbdLayoutStrategy(),
       zoomStrategy: resolveZoomStrategy(),
       showZoomBreadcrumbs: true,
       tooltip: (target) => {
@@ -443,7 +567,7 @@ export default {
           document.fonts.removeEventListener('loadingdone', onFontsLoadingDone);
           onFontsLoadingDone = null;
         }
-        controller.setLayoutStrategy(createLocalAdaptiveLayoutStrategy({ warmStart: true }));
+        controller.setLayoutStrategy(createWarmStartPbdLayoutStrategy());
       };
       document.fonts.addEventListener('loadingdone', onFontsLoadingDone);
     }
@@ -535,6 +659,7 @@ export default {
         if (themeChanged) {
           applyDomainThemeTokens(container, currentIsLight);
           controller.setTheme(currentIsLight ? 'light' : 'dark');
+          controller.setVisualResolver(createDomainVisualResolver(currentIsLight));
           controller.setColorStrategy(
             createPaletteColorStrategy<GraphNodePayload>(
               getClusterSpectrum(currentIsLight),
