@@ -187,6 +187,12 @@ function extractContentItems(canonical?: CanonicalGraphPayload): GraphNodePayloa
   );
 }
 
+function resolveActiveItemFilter(): ((item: GraphNodePayload) => boolean) | null {
+  const activeGroups = getActiveContentFilterGroups();
+  if (!activeGroups || activeGroups.size === 0) return null;
+  return (item) => activeGroups.has(item.group);
+}
+
 function buildItemTargetUrl(itemId: string, extraOptions?: Record<string, string>): string {
   const isInternalPath = itemId.startsWith('/');
   if (!isInternalPath || !extraOptions) return itemId;
@@ -275,6 +281,8 @@ export default {
           clusterGapPx: 10,
         },
         emptyClusterBehavior: 'dim',
+        itemFilter: resolveActiveItemFilter(),
+        itemFilterMode: 'dim',
         relayoutOnFontLoad: true,
         deferInitialLayout: {
           fallbackTimeoutMs: DEFER_LAYOUT_FALLBACK_TIMEOUT_MS,
@@ -283,6 +291,8 @@ export default {
         clickTolerancePx: DRAG_VS_CLICK_THRESHOLD_PX,
         zoomStrategy: resolveZoomStrategy(),
         showZoomBreadcrumbs: true,
+        ariaLabel: 'Interactive topic simplex graph of site content',
+        keyboardNavigation: true,
         tooltip: false,
         interactions: {
           onContentHover: (ev) => {
@@ -330,18 +340,9 @@ export default {
     let livePositions = new Map<string, TimelinePoint>(restPositions);
     let activeItemIdsKey = allItems.map((item) => item.id).join('\0');
 
-    const applyFilteredItems = (items: GraphNodePayload[]) => {
+    const applyContentFilter = () => {
       if (!controller) return;
-      const activeGroups = getActiveContentFilterGroups();
-      const effectiveItems =
-        activeGroups && activeGroups.size > 0
-          ? items.filter((item) => activeGroups.has(item.group))
-          : items;
-      const finalItems = effectiveItems.length > 0 ? effectiveItems : items;
-      const nextKey = finalItems.map((item) => item.id).join('\0');
-      if (nextKey === activeItemIdsKey) return;
-      activeItemIdsKey = nextKey;
-      controller.setItems(finalItems);
+      controller.setItemFilter(resolveActiveItemFilter(), { mode: 'dim' });
     };
 
     const timelineAdapter: TimelineAdapter = {
@@ -356,10 +357,14 @@ export default {
       getRestPositions: () => restPositions,
       applySnapshot(snapshot: TimelineSnapshot) {
         currentNodes = snapshot.nodes;
+        if (!controller) return;
         const snapshotItems = snapshot.nodes.filter(
           (node) => node.group !== 0 && Array.isArray(node.tags) && node.tags.length > 0
         );
-        applyFilteredItems(snapshotItems);
+        const nextKey = snapshotItems.map((item) => item.id).join('\0');
+        if (nextKey === activeItemIdsKey) return;
+        activeItemIdsKey = nextKey;
+        controller.setItems(snapshotItems);
       },
       async solveWarm(
         snapshot: TimelineSnapshot,
@@ -405,30 +410,34 @@ export default {
         instance.currentLayout = currentLayout;
         instance.isLight = currentIsLight;
 
-        if (themeChanged) {
-          applyDomainThemeTokens(container, currentIsLight);
-          controller.setTheme(currentIsLight ? 'light' : 'dark');
-          controller.setShapeOptions(resolveShapeOptions(currentIsLight));
-          controller.setColorStrategy(
-            createPaletteColorStrategy<GraphNodePayload>(
-              getClusterSpectrum(currentIsLight),
-              { mode: 'edge-contrast' }
-            )
-          );
-        }
-
-        if (layoutChanged) {
-          controller.setPreset(resolvePreset(), (item) => item.name);
-          controller.setZoomStrategy(resolveZoomStrategy());
+        if (themeChanged || layoutChanged) {
+          if (themeChanged) {
+            applyDomainThemeTokens(container, currentIsLight);
+          }
+          controller.setOptions({
+            ...(themeChanged
+              ? {
+                  theme: currentIsLight ? 'light' : 'dark',
+                  shapeOptions: resolveShapeOptions(currentIsLight),
+                  colorStrategy: createPaletteColorStrategy<GraphNodePayload>(
+                    getClusterSpectrum(currentIsLight),
+                    { mode: 'edge-contrast' }
+                  ),
+                }
+              : {}),
+            ...(layoutChanged
+              ? {
+                  preset: resolvePreset(),
+                  getLabel: (item) => item.name,
+                  zoomStrategy: resolveZoomStrategy(),
+                }
+              : {}),
+          });
         }
       },
 
       applyTuning() {
-        applyFilteredItems(
-          currentNodes.filter(
-            (node) => node.group !== 0 && Array.isArray(node.tags) && node.tags.length > 0
-          )
-        );
+        applyContentFilter();
       },
 
       destroy() {
