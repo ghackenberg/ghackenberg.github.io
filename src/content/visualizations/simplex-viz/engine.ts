@@ -7,6 +7,7 @@ import {
   createSemanticZoomStrategy,
   createSimplexSvg,
   createWarmStartPbdLayoutStrategy,
+  type GeometricShapeSvgViewOptions,
   type SimplexSvgController,
   type SimplexTheme,
   type SimplexVisualPreset,
@@ -26,7 +27,9 @@ import {
   CLUSTER_PALETTE,
   DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
+  HOP_ATTENUATION_CONFIG,
   getActiveContentFilterGroups,
+  getAttenuatedNodeScale,
   getContentGroupPolygonSides,
   type CanonicalGraphPayload,
   type EnginePayloads,
@@ -52,6 +55,8 @@ const TOUCH_DIRECTION_THRESHOLD_PX = 8;
 const DRAG_VS_CLICK_THRESHOLD_PX = 12;
 const MAX_CLUSTER_LABEL_CHARS = 20;
 const DOMAIN_NODE_RADIUS = 7.5;
+const DOMAIN_NODE_STROKE_WIDTH = 1.4;
+const DEFER_LAYOUT_FALLBACK_TIMEOUT_MS = 1500;
 
 const TAG_DISPLAY_ALIASES: Record<string, string> = {
   'human-computer-interaction': 'HCI',
@@ -162,6 +167,19 @@ function applyDomainThemeTokens(container: HTMLElement, isLight: boolean): void 
   container.style.setProperty('--simplex-domain-accent', visAccent);
 }
 
+function resolveShapeOptions(isLight: boolean): GeometricShapeSvgViewOptions {
+  const theme = getThemeTokens(isLight);
+  const domainColors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+  const visAccent = domainColors[8] ?? domainColors[0];
+  return {
+    hoverScale: getAttenuatedNodeScale(1),
+    hoverRingColor: visAccent,
+    dimmedOpacity: HOP_ATTENUATION_CONFIG.nodeColor.min,
+    strokeColor: theme.canvasBg,
+    strokeWidth: DOMAIN_NODE_STROKE_WIDTH,
+  };
+}
+
 function extractContentItems(canonical?: CanonicalGraphPayload): GraphNodePayload[] {
   if (!canonical?.nodes) return [];
   return canonical.nodes.filter(
@@ -179,42 +197,6 @@ function buildItemTargetUrl(itemId: string, extraOptions?: Record<string, string
   const query = params.toString();
   if (!query) return itemId;
   return itemId.includes('?') ? `${itemId}&${query}` : `${itemId}?${query}`;
-}
-
-function waitForContainerDimensions(container: HTMLElement, timeoutMs = 1500): Promise<void> {
-  if (container.clientWidth > 0 && container.clientHeight > 0) {
-    return Promise.resolve();
-  }
-  return new Promise<void>((resolve) => {
-    let settled = false;
-    let observer: ResizeObserver | null = null;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      if (observer) {
-        observer.disconnect();
-        observer = null;
-      }
-      if (timer !== null) {
-        clearTimeout(timer);
-        timer = null;
-      }
-      resolve();
-    };
-
-    if (typeof ResizeObserver !== 'undefined') {
-      observer = new ResizeObserver(() => {
-        if (container.clientWidth > 0 && container.clientHeight > 0) {
-          finish();
-        }
-      });
-      observer.observe(container);
-    }
-
-    timer = setTimeout(finish, timeoutMs);
-  });
 }
 
 export default {
@@ -235,78 +217,7 @@ export default {
     container.style.position = 'relative';
     container.style.width = '100%';
     container.style.height = '100%';
-    container.style.touchAction = 'pan-y';
     applyDomainThemeTokens(container, currentIsLight);
-
-    // 12px drag-vs-click disambiguation state
-    let pointerDownX = 0;
-    let pointerDownY = 0;
-    let maxPointerDisplacement = 0;
-    let pointerTracking = false;
-
-    const onPointerDown = (ev: PointerEvent) => {
-      if (ev.button !== 0 && ev.pointerType === 'mouse') return;
-      pointerDownX = ev.clientX;
-      pointerDownY = ev.clientY;
-      maxPointerDisplacement = 0;
-      pointerTracking = true;
-    };
-
-    const onPointerMove = (ev: PointerEvent) => {
-      if (!pointerTracking) return;
-      const dist = Math.hypot(ev.clientX - pointerDownX, ev.clientY - pointerDownY);
-      if (dist > maxPointerDisplacement) {
-        maxPointerDisplacement = dist;
-      }
-    };
-
-    const onPointerEnd = () => {
-      pointerTracking = false;
-    };
-
-    // 8px touch direction-locking contract
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let lockedTouchAxis: 'horizontal' | 'vertical' | null = null;
-
-    const onTouchStart = (ev: TouchEvent) => {
-      if (ev.touches.length !== 1) {
-        lockedTouchAxis = null;
-        return;
-      }
-      touchStartX = ev.touches[0].clientX;
-      touchStartY = ev.touches[0].clientY;
-      lockedTouchAxis = null;
-    };
-
-    const onTouchMove = (ev: TouchEvent) => {
-      if (ev.touches.length !== 1) return;
-      const dx = Math.abs(ev.touches[0].clientX - touchStartX);
-      const dy = Math.abs(ev.touches[0].clientY - touchStartY);
-
-      if (lockedTouchAxis === null && Math.max(dx, dy) >= TOUCH_DIRECTION_THRESHOLD_PX) {
-        lockedTouchAxis = dy > dx ? 'vertical' : 'horizontal';
-      }
-
-      if (lockedTouchAxis === 'horizontal' && ev.cancelable) {
-        ev.preventDefault();
-      }
-    };
-
-    const onTouchEnd = () => {
-      lockedTouchAxis = null;
-    };
-
-    container.addEventListener('pointerdown', onPointerDown, { passive: true });
-    container.addEventListener('pointermove', onPointerMove, { passive: true });
-    container.addEventListener('pointerup', onPointerEnd, { passive: true });
-    container.addEventListener('pointercancel', onPointerEnd, { passive: true });
-    container.addEventListener('touchstart', onTouchStart, { passive: true });
-    container.addEventListener('touchmove', onTouchMove, { passive: false });
-    container.addEventListener('touchend', onTouchEnd, { passive: true });
-    container.addEventListener('touchcancel', onTouchEnd, { passive: true });
-
-    await waitForContainerDimensions(container, 1500);
 
     const tooltipController: GraphTooltipController = createGraphTooltipController(container);
     let isContentHovered = false;
@@ -345,6 +256,7 @@ export default {
           sides: getContentGroupPolygonSides(item.group),
           radius: DOMAIN_NODE_RADIUS,
         }),
+        shapeOptions: resolveShapeOptions(currentIsLight),
         meshStrategy: createAdaptiveHexMeshStrategy(),
         clusteringStrategy: createFinalSeededClusteringStrategy(
           createIncrementalAnchorClusteringStrategy<GraphNodePayload>(),
@@ -364,6 +276,11 @@ export default {
         },
         emptyClusterBehavior: 'dim',
         relayoutOnFontLoad: true,
+        deferInitialLayout: {
+          fallbackTimeoutMs: DEFER_LAYOUT_FALLBACK_TIMEOUT_MS,
+        },
+        touchScrollLockPx: TOUCH_DIRECTION_THRESHOLD_PX,
+        clickTolerancePx: DRAG_VS_CLICK_THRESHOLD_PX,
         zoomStrategy: resolveZoomStrategy(),
         showZoomBreadcrumbs: true,
         tooltip: false,
@@ -395,16 +312,12 @@ export default {
             }
           },
           onContentClick: (target) => {
-            if (maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX) {
-              return true;
-            }
             if (target.item.id.startsWith('/')) {
               window.location.href = buildItemTargetUrl(target.item.id, extraOptions);
               return true;
             }
             return false;
           },
-          onLeftClick: () => maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX,
         },
       });
 
@@ -495,6 +408,7 @@ export default {
         if (themeChanged) {
           applyDomainThemeTokens(container, currentIsLight);
           controller.setTheme(currentIsLight ? 'light' : 'dark');
+          controller.setShapeOptions(resolveShapeOptions(currentIsLight));
           controller.setColorStrategy(
             createPaletteColorStrategy<GraphNodePayload>(
               getClusterSpectrum(currentIsLight),
@@ -518,16 +432,8 @@ export default {
       },
 
       destroy() {
-        container.removeEventListener('pointerdown', onPointerDown);
-        container.removeEventListener('pointermove', onPointerMove);
         container.removeEventListener('pointermove', onPointerMoveTooltip);
-        container.removeEventListener('pointerup', onPointerEnd);
-        container.removeEventListener('pointercancel', onPointerEnd);
         container.removeEventListener('pointerleave', onPointerLeaveContainer);
-        container.removeEventListener('touchstart', onTouchStart);
-        container.removeEventListener('touchmove', onTouchMove);
-        container.removeEventListener('touchend', onTouchEnd);
-        container.removeEventListener('touchcancel', onTouchEnd);
         tooltipController.destroy();
         if (controller) {
           controller.destroy();
