@@ -1,23 +1,16 @@
 import {
-  BadgeClusterSvgView,
-  SVG_NS,
   createAdaptiveHexMeshStrategy,
+  createFinalSeededClusteringStrategy,
+  createFinalSeededLayoutStrategy,
   createIncrementalAnchorClusteringStrategy,
   createPaletteColorStrategy,
-  createPresetVisualResolver,
   createSemanticZoomStrategy,
   createSimplexSvg,
   createWarmStartPbdLayoutStrategy,
-  type BadgeClusterVisual,
-  type ClusteringStrategyContext,
-  type ClusteringStrategyOutput,
-  type SimplexClusteringStrategy,
   type SimplexSvgController,
   type SimplexTheme,
   type SimplexVisualPreset,
   type SimplexZoomStrategy,
-  type SvgNodeView,
-  type VisualResolver,
 } from '@simplex-viz/svg';
 import type {
   TimelineAdapter,
@@ -33,13 +26,8 @@ import {
   CLUSTER_PALETTE,
   DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
-  buildRegularPolygonSvgPoints,
   getActiveContentFilterGroups,
-  getAttenuatedNodeColor,
-  getAttenuatedNodeScale,
   getContentGroupPolygonSides,
-  getPolygonAreaRadiusScale,
-  getRegularPolygonUnitVertices,
   type CanonicalGraphPayload,
   type EnginePayloads,
   type GraphNodePayload,
@@ -49,7 +37,7 @@ export interface SimplexVizInstance {
   layouts: { id: string; label: string }[];
   currentLayout: string;
   isLight: boolean;
-  controller: SimplexSvgController<GraphNodePayload, DomainPolygonVisual, BadgeClusterVisual> | null;
+  controller: SimplexSvgController<GraphNodePayload> | null;
   timelineAdapter: TimelineAdapter;
   updateLayout(layout: string, isLight: boolean): void;
   applyTuning(category: 'physics' | 'geometry' | 'visual' | 'reset'): void;
@@ -63,6 +51,7 @@ const LAYOUTS = [
 const TOUCH_DIRECTION_THRESHOLD_PX = 8;
 const DRAG_VS_CLICK_THRESHOLD_PX = 12;
 const MAX_CLUSTER_LABEL_CHARS = 20;
+const DOMAIN_NODE_RADIUS = 7.5;
 
 const TAG_DISPLAY_ALIASES: Record<string, string> = {
   'human-computer-interaction': 'HCI',
@@ -104,7 +93,26 @@ const TAG_DISPLAY_ALIASES: Record<string, string> = {
   'machine-learning': 'ML',
 };
 
-const ACRONYM_WORDS = new Set(['ai', 'ui', 'ux', '3d', '2d', 'api', 'sdk', 'svg', 'iot', 'llm', 'rag', 'mcp', 'seo', 'geo', 'aeo', 'aio', 'cad', 'hci']);
+const ACRONYM_WORDS = new Set([
+  'ai',
+  'ui',
+  'ux',
+  '3d',
+  '2d',
+  'api',
+  'sdk',
+  'svg',
+  'iot',
+  'llm',
+  'rag',
+  'mcp',
+  'seo',
+  'geo',
+  'aeo',
+  'aio',
+  'cad',
+  'hci',
+]);
 
 function formatTagLabel(rawTag: string): string {
   const normalized = rawTag.trim().toLowerCase();
@@ -126,179 +134,10 @@ function formatClusterTitle(rawTitle: string): string {
   if (!trimmed) return trimmed;
   // Normalize slash/dot/bullet-separated multi-tag cluster labels if present
   const primarySegment = trimmed.split(/\s*[·•|/]\s*/)[0]?.trim() || trimmed;
-  const formatted = primarySegment.includes('-') && !primarySegment.includes(' ')
+  return primarySegment.includes('-') && !primarySegment.includes(' ')
     ? formatTagLabel(primarySegment)
     : primarySegment;
-  if (formatted.length <= MAX_CLUSTER_LABEL_CHARS) {
-    return formatted;
-  }
-  const words = formatted.split(/\s+/);
-  if (words.length >= 2) {
-    const twoWords = `${words[0]} ${words[1]}`;
-    if (twoWords.length <= MAX_CLUSTER_LABEL_CHARS) {
-      return twoWords;
-    }
-  }
-  return `${formatted.slice(0, MAX_CLUSTER_LABEL_CHARS - 1).trimEnd()}…`;
 }
-
-interface DomainPolygonVisual {
-  readonly group: number;
-  readonly radius: number;
-  readonly fillHex: string;
-  readonly strokeHex: string;
-  readonly strokeWidth: number;
-  readonly label: string;
-  readonly theme: SimplexTheme;
-}
-
-const DOMAIN_NODE_RADIUS = 7.5;
-const DOMAIN_NODE_STROKE_WIDTH = 1.4;
-
-const DomainPolygonSvgView: SvgNodeView<DomainPolygonVisual> = {
-  measureConvexHull(visual) {
-    const sides = getContentGroupPolygonSides(visual.group);
-    const r = (visual.radius + visual.strokeWidth) * getPolygonAreaRadiusScale(sides);
-    const unitVerts = getRegularPolygonUnitVertices(sides);
-    return {
-      kind: 'polygon',
-      vertices: unitVerts.map(([ux, uy]) => ({ x: ux * r, y: uy * r })),
-    };
-  },
-
-  mountOrUpdate(groupEl, visual, state) {
-    let polyEl = groupEl.querySelector<SVGPolygonElement>('polygon.sv-domain-poly');
-    let ringEl = groupEl.querySelector<SVGPolygonElement>('polygon.sv-domain-ring');
-    if (!polyEl || !ringEl) {
-      while (groupEl.firstChild) {
-        groupEl.removeChild(groupEl.firstChild);
-      }
-      const doc = groupEl.ownerDocument;
-      ringEl = doc.createElementNS(SVG_NS, 'polygon');
-      ringEl.setAttribute('class', 'sv-domain-ring');
-      ringEl.setAttribute('fill', 'none');
-      ringEl.setAttribute('stroke-linejoin', 'round');
-      polyEl = doc.createElementNS(SVG_NS, 'polygon');
-      polyEl.setAttribute('class', 'sv-domain-poly');
-      polyEl.setAttribute('stroke-linejoin', 'round');
-      groupEl.appendChild(ringEl);
-      groupEl.appendChild(polyEl);
-    }
-
-    const isLight = visual.theme === 'light';
-    const tokens = getThemeTokens(isLight);
-    const domainColors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
-    const accentRing = domainColors[8] ?? domainColors[0];
-    const pinnedStroke = domainColors[5] ?? domainColors[0];
-    const { isHovered, isPinned, isHighlighted, isDimmed } = state.interaction;
-    const isFocused = isHovered || isPinned;
-
-    let scale = 1;
-    let fill = visual.fillHex;
-    if (isFocused) {
-      scale = getAttenuatedNodeScale(0);
-    } else if (isHighlighted) {
-      scale = getAttenuatedNodeScale(1);
-      fill = getAttenuatedNodeColor(visual.fillHex, 1, isLight);
-    } else if (isDimmed) {
-      scale = getAttenuatedNodeScale(undefined);
-      fill = getAttenuatedNodeColor(visual.fillHex, undefined, isLight);
-    }
-
-    const scaledRadius = visual.radius * scale;
-
-    polyEl.setAttribute('points', buildRegularPolygonSvgPoints(scaledRadius, visual.group));
-    polyEl.setAttribute('fill', fill);
-    polyEl.setAttribute(
-      'stroke',
-      isPinned
-        ? pinnedStroke
-        : isHovered
-          ? tokens.textHeading
-          : visual.strokeHex
-    );
-    polyEl.setAttribute(
-      'stroke-width',
-      String(isFocused ? 2.2 : visual.strokeWidth)
-    );
-
-    if (isFocused || isHighlighted) {
-      ringEl.setAttribute('points', buildRegularPolygonSvgPoints(scaledRadius + 4.5, visual.group));
-      ringEl.setAttribute('stroke', isPinned ? pinnedStroke : accentRing);
-      ringEl.setAttribute('stroke-width', '1.4');
-      ringEl.setAttribute('stroke-opacity', '0.9');
-    } else {
-      ringEl.setAttribute('points', '');
-    }
-  },
-};
-
-function createDomainVisualResolver(
-  isLight: boolean
-): VisualResolver<GraphNodePayload, DomainPolygonVisual, BadgeClusterVisual> {
-  const theme: SimplexTheme = isLight ? 'light' : 'dark';
-  const tokens = getThemeTokens(isLight);
-  const baseResolver = createPresetVisualResolver<GraphNodePayload>('badges', (item) => item.name, theme);
-
-  return {
-    resolveContentVisual(item, ctx) {
-      return {
-        group: item.group,
-        radius: DOMAIN_NODE_RADIUS,
-        fillHex: ctx.mixedColorHex,
-        strokeHex: tokens.canvasBg,
-        strokeWidth: DOMAIN_NODE_STROKE_WIDTH,
-        label: item.name,
-        theme,
-      };
-    },
-    resolveClusterVisual(cluster) {
-      return baseResolver.resolveClusterVisual(cluster) as BadgeClusterVisual;
-    },
-    getVisualCacheKey(visual) {
-      if ('group' in visual) {
-        return `poly:${visual.theme}:${visual.group}:${visual.radius}:${visual.fillHex}`;
-      }
-      return baseResolver.getVisualCacheKey(visual);
-    },
-  };
-}
-
-const baseBadgeClusterView = new BadgeClusterSvgView();
-
-const ReadableBadgeClusterSvgView: SvgNodeView<BadgeClusterVisual> = {
-  mountOrUpdate(groupEl, visual, state) {
-    const cleanTitle = formatClusterTitle(visual.title);
-    const cleanParent = visual.parentContextLabel
-      ? formatClusterTitle(visual.parentContextLabel)
-      : undefined;
-
-    baseBadgeClusterView.mountOrUpdate(
-      groupEl,
-      {
-        ...visual,
-        code: '',
-        title: cleanTitle,
-        parentContextLabel: cleanParent,
-      },
-      state
-    );
-
-    // For primary capsule badges, omit the empty T1-T13 code slot and center the title cleanly
-    if (visual.variant !== 'intermediate') {
-      const textEls = Array.from(groupEl.querySelectorAll('text'));
-      const codeEl = textEls.find((el) => (el.textContent ?? '').trim() === '');
-      if (codeEl) {
-        codeEl.remove();
-      }
-      const titleEl = textEls.find((el) => (el.textContent ?? '').trim() === cleanTitle);
-      if (titleEl) {
-        titleEl.setAttribute('x', '0');
-        titleEl.setAttribute('text-anchor', 'middle');
-      }
-    }
-  },
-};
 
 function resolvePreset(): SimplexVisualPreset {
   return 'badges';
@@ -314,71 +153,6 @@ function resolveZoomStrategy(): SimplexZoomStrategy<GraphNodePayload> {
 
 function getClusterSpectrum(isLight: boolean): readonly string[] {
   return isLight ? CLUSTER_PALETTE.light : CLUSTER_PALETTE.dark;
-}
-
-function createFinalSeededClusteringStrategy(
-  allItems: readonly GraphNodePayload[]
-): SimplexClusteringStrategy<GraphNodePayload> {
-  const baseStrategy = createIncrementalAnchorClusteringStrategy<GraphNodePayload>();
-  let finalClustering: ClusteringStrategyOutput<GraphNodePayload> | null = null;
-  let cachedMeshWidth = 0;
-  let cachedMeshHeight = 0;
-
-  const projectForActiveItems = (
-    ctx: ClusteringStrategyContext<GraphNodePayload>
-  ): ClusteringStrategyOutput<GraphNodePayload> => {
-    const meshMatches =
-      finalClustering !== null &&
-      Math.abs(ctx.mesh.width - cachedMeshWidth) < 1 &&
-      Math.abs(ctx.mesh.height - cachedMeshHeight) < 1;
-
-    if (finalClustering && meshMatches && ctx.items.length === allItems.length) {
-      return finalClustering;
-    }
-
-    if (!finalClustering || !meshMatches) {
-      if (ctx.items.length === allItems.length) {
-        const computed = baseStrategy.initialize(ctx);
-        finalClustering = computed;
-        cachedMeshWidth = ctx.mesh.width;
-        cachedMeshHeight = ctx.mesh.height;
-        return computed;
-      }
-      return baseStrategy.update ? baseStrategy.update(ctx) : baseStrategy.initialize(ctx);
-    }
-
-    const activeIds = new Set(ctx.items.map((item) => item.id));
-    const filteredItems = finalClustering.items.filter((item) => activeIds.has(item.id));
-    const filteredClusters = finalClustering.clusters.map((cluster) => ({
-      ...cluster,
-      members: cluster.members.filter((m) => activeIds.has(m.itemId)),
-      representativeItems: cluster.representativeItems?.filter((m) => activeIds.has(m.itemId)),
-    }));
-
-    return {
-      clusters: filteredClusters,
-      items: filteredItems,
-      uniqueTags: finalClustering.uniqueTags,
-      preservedColors: finalClustering.preservedColors,
-    };
-  };
-
-  return {
-    name: `final-seeded(${baseStrategy.name})`,
-    requiresTags: baseStrategy.requiresTags,
-    estimateClusterCount(ctx) {
-      if (finalClustering && ctx.items.length < allItems.length) {
-        return finalClustering.clusters.length;
-      }
-      return baseStrategy.estimateClusterCount?.(ctx);
-    },
-    initialize(ctx) {
-      return projectForActiveItems(ctx);
-    },
-    update(ctx) {
-      return projectForActiveItems(ctx);
-    },
-  };
 }
 
 function applyDomainThemeTokens(container: HTMLElement, isLight: boolean): void {
@@ -532,15 +306,7 @@ export default {
     container.addEventListener('touchend', onTouchEnd, { passive: true });
     container.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
-    await Promise.all([
-      waitForContainerDimensions(container, 1500),
-      typeof document !== 'undefined' && document.fonts
-        ? Promise.race([
-            document.fonts.ready,
-            new Promise<void>((resolve) => setTimeout(resolve, 800)),
-          ])
-        : Promise.resolve(),
-    ]);
+    await waitForContainerDimensions(container, 1500);
 
     const tooltipController: GraphTooltipController = createGraphTooltipController(container);
     let isContentHovered = false;
@@ -561,113 +327,86 @@ export default {
     const initialTheme: SimplexTheme = currentIsLight ? 'light' : 'dark';
     const initialPreset = resolvePreset();
 
-    let controller: SimplexSvgController<
-      GraphNodePayload,
-      DomainPolygonVisual,
-      BadgeClusterVisual
-    > | null = createSimplexSvg<
-      GraphNodePayload,
-      DomainPolygonVisual,
-      BadgeClusterVisual
-    >(container, {
-      items: allItems,
-      getId: (item) => item.id,
-      getTags: (item) => (item.tags ?? []).map(formatTagLabel),
-      getLabel: (item) => item.name,
-      preset: initialPreset,
-      visualResolver: createDomainVisualResolver(currentIsLight),
-      contentView: DomainPolygonSvgView,
-      clusterView: initialPreset === 'badges' ? ReadableBadgeClusterSvgView : undefined,
-      theme: initialTheme,
-      meshStrategy: createAdaptiveHexMeshStrategy(),
-      clusteringStrategy: createFinalSeededClusteringStrategy(allItems),
-      colorStrategy: createPaletteColorStrategy<GraphNodePayload>(
-        getClusterSpectrum(currentIsLight),
-        { mode: 'edge-contrast' }
-      ),
-      layoutStrategy: createWarmStartPbdLayoutStrategy(),
-      layoutOptions: {
-        itemGapPx: 2.5,
-        clusterGapPx: 10,
-      },
-      zoomStrategy: resolveZoomStrategy(),
-      showZoomBreadcrumbs: true,
-      tooltip: false,
-      interactions: {
-        onContentHover: (ev) => {
-          if (ev) {
-            isContentHovered = true;
-            tooltipController.show(
-              ev.item,
-              currentIsLight,
-              ev.screenPosition.x,
-              ev.screenPosition.y
-            );
-          } else {
-            isContentHovered = false;
-            tooltipController.hide();
-          }
+    let controller: SimplexSvgController<GraphNodePayload> | null =
+      createSimplexSvg<GraphNodePayload>(container, {
+        items: allItems,
+        getId: (item) => item.id,
+        getTags: (item) => item.tags ?? [],
+        getLabel: (item) => item.name,
+        formatTagLabel,
+        preset: initialPreset,
+        theme: initialTheme,
+        badgeOptions: {
+          showCode: false,
+          maxTitleChars: MAX_CLUSTER_LABEL_CHARS,
+          formatTitle: (title) => formatClusterTitle(title),
         },
-        onClusterHover: (ev) => {
-          if (ev) {
-            isContentHovered = false;
-            tooltipController.hide();
-          }
+        getShape: (item) => ({
+          sides: getContentGroupPolygonSides(item.group),
+          radius: DOMAIN_NODE_RADIUS,
+        }),
+        meshStrategy: createAdaptiveHexMeshStrategy(),
+        clusteringStrategy: createFinalSeededClusteringStrategy(
+          createIncrementalAnchorClusteringStrategy<GraphNodePayload>(),
+          { seedItems: allItems }
+        ),
+        colorStrategy: createPaletteColorStrategy<GraphNodePayload>(
+          getClusterSpectrum(currentIsLight),
+          { mode: 'edge-contrast' }
+        ),
+        layoutStrategy: createFinalSeededLayoutStrategy(
+          createWarmStartPbdLayoutStrategy(),
+          { scaleMode: 'adaptive' }
+        ),
+        layoutOptions: {
+          itemGapPx: 2.5,
+          clusterGapPx: 10,
         },
-        onTriangleHover: (ev) => {
-          if (ev) {
-            isContentHovered = false;
-            tooltipController.hide();
-          }
-        },
-        onLeftClick: (target) => {
-          if (maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX) {
-            return;
-          }
-          if (target.kind === 'content') {
-            if (target.neighborId) {
-              controller?.drillToNeighbor(target.neighborId);
-            } else if (target.item.id.startsWith('/')) {
+        emptyClusterBehavior: 'dim',
+        relayoutOnFontLoad: true,
+        zoomStrategy: resolveZoomStrategy(),
+        showZoomBreadcrumbs: true,
+        tooltip: false,
+        interactions: {
+          onContentHover: (ev) => {
+            if (ev) {
+              isContentHovered = true;
+              tooltipController.show(
+                ev.item,
+                currentIsLight,
+                ev.screenPosition.x,
+                ev.screenPosition.y
+              );
+            } else {
+              isContentHovered = false;
+              tooltipController.hide();
+            }
+          },
+          onClusterHover: (ev) => {
+            if (ev) {
+              isContentHovered = false;
+              tooltipController.hide();
+            }
+          },
+          onTriangleHover: (ev) => {
+            if (ev) {
+              isContentHovered = false;
+              tooltipController.hide();
+            }
+          },
+          onContentClick: (target) => {
+            if (maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX) {
+              return true;
+            }
+            if (target.item.id.startsWith('/')) {
               window.location.href = buildItemTargetUrl(target.item.id, extraOptions);
+              return true;
             }
-          } else if (target.kind === 'triangle') {
-            if (target.triangle.neighborId) {
-              controller?.drillToNeighbor(target.triangle.neighborId);
-            } else {
-              controller?.drillDownTriangle(target.triangle.index);
-            }
-          } else if (target.kind === 'cluster') {
-            if (target.neighborId) {
-              controller?.drillToNeighbor(target.neighborId);
-            } else {
-              controller?.drillDownCluster(target.cluster.clusterUid);
-            }
-          } else if (target.kind === 'background') {
-            controller?.drillUp();
-          }
+            return false;
+          },
+          onLeftClick: () => maxPointerDisplacement > DRAG_VS_CLICK_THRESHOLD_PX,
         },
-      },
-    });
-
-    let onFontsLoadingDone: (() => void) | null = null;
-    if (
-      typeof document !== 'undefined' &&
-      document.fonts &&
-      document.fonts.status !== 'loaded'
-    ) {
-      let fontsRelayoutDone = false;
-      onFontsLoadingDone = () => {
-        if (fontsRelayoutDone || !controller) return;
-        if (document.fonts.status !== 'loaded') return;
-        fontsRelayoutDone = true;
-        if (onFontsLoadingDone) {
-          document.fonts.removeEventListener('loadingdone', onFontsLoadingDone);
-          onFontsLoadingDone = null;
-        }
-        controller.setLayoutStrategy(createWarmStartPbdLayoutStrategy());
-      };
-      document.fonts.addEventListener('loadingdone', onFontsLoadingDone);
-    }
+      });
 
     const canonical = payload.canonical ?? null;
     let currentNodes: GraphNodePayload[] = canonical?.nodes ? [...canonical.nodes] : [];
@@ -756,7 +495,6 @@ export default {
         if (themeChanged) {
           applyDomainThemeTokens(container, currentIsLight);
           controller.setTheme(currentIsLight ? 'light' : 'dark');
-          controller.setVisualResolver(createDomainVisualResolver(currentIsLight));
           controller.setColorStrategy(
             createPaletteColorStrategy<GraphNodePayload>(
               getClusterSpectrum(currentIsLight),
@@ -766,11 +504,7 @@ export default {
         }
 
         if (layoutChanged) {
-          const nextPreset = resolvePreset();
-          controller.setPreset(nextPreset, (item) => item.name);
-          if (nextPreset === 'badges') {
-            controller.setViews({ clusterView: ReadableBadgeClusterSvgView });
-          }
+          controller.setPreset(resolvePreset(), (item) => item.name);
           controller.setZoomStrategy(resolveZoomStrategy());
         }
       },
@@ -784,10 +518,6 @@ export default {
       },
 
       destroy() {
-        if (onFontsLoadingDone && typeof document !== 'undefined' && document.fonts) {
-          document.fonts.removeEventListener('loadingdone', onFontsLoadingDone);
-          onFontsLoadingDone = null;
-        }
         container.removeEventListener('pointerdown', onPointerDown);
         container.removeEventListener('pointermove', onPointerMove);
         container.removeEventListener('pointermove', onPointerMoveTooltip);

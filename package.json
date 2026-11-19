@@ -76,7 +76,7 @@
     "@nanostores/preact": "^1.1.1",
     "@octokit/core": "^7.0.6",
     "@plausible-analytics/tracker": "^0.4.6",
-    "@simplex-viz/svg": "^0.7.0",
+    "@simplex-viz/svg": "^0.8.0",
     "@tailwindcss/vite": "^4.3.0",
     "3d-force-graph": "^1.80.1",
     "astro": "^7.3.2",
