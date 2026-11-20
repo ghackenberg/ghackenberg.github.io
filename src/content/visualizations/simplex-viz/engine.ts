@@ -1,3 +1,4 @@
+import { render as preactRender } from 'preact';
 import {
   createAdaptiveHexMeshStrategy,
   createFinalSeededClusteringStrategy,
@@ -18,19 +19,18 @@ import type {
   TimelinePoint,
   TimelineSnapshot,
 } from '@commons/client/graph-timeline-controller';
-import {
-  createGraphTooltipController,
-  type GraphTooltipController,
-} from '@commons/client/vis-tooltip';
+import { renderVisNetworkTooltip } from '@commons/client/vis-tooltip';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 import {
   CLUSTER_PALETTE,
   DEFAULT_TOPIC_CLUSTER_COUNT,
   GRAPH_COLORS,
+  GRAPH_GROUP_NAMES,
   HOP_ATTENUATION_CONFIG,
   getActiveContentFilterGroups,
   getAttenuatedNodeScale,
   getContentGroupPolygonSides,
+  getNodeClusterColor,
   type CanonicalGraphPayload,
   type EnginePayloads,
   type GraphNodePayload,
@@ -225,22 +225,6 @@ export default {
     container.style.height = '100%';
     applyDomainThemeTokens(container, currentIsLight);
 
-    const tooltipController: GraphTooltipController = createGraphTooltipController(container);
-    let isContentHovered = false;
-
-    const onPointerLeaveContainer = () => {
-      isContentHovered = false;
-      tooltipController.hide();
-    };
-    container.addEventListener('pointerleave', onPointerLeaveContainer, { passive: true });
-
-    const onPointerMoveTooltip = (ev: PointerEvent) => {
-      if (!isContentHovered) return;
-      const rect = container.getBoundingClientRect();
-      tooltipController.move(ev.clientX - rect.left, ev.clientY - rect.top);
-    };
-    container.addEventListener('pointermove', onPointerMoveTooltip, { passive: true });
-
     const initialTheme: SimplexTheme = currentIsLight ? 'light' : 'dark';
     const initialPreset = resolvePreset();
 
@@ -293,36 +277,41 @@ export default {
         showZoomBreadcrumbs: true,
         ariaLabel: 'Interactive topic simplex graph of site content',
         keyboardNavigation: true,
-        tooltip: false,
+        shiftClickSelects: true,
+        tooltip: {
+          unstyled: true,
+          className: 'vis-tooltip',
+          render: (target, tooltipEl) => {
+            if (target.kind !== 'content') return false;
+            const node = target.item;
+            const themeTokens = getThemeTokens(currentIsLight);
+            const groupColors = GRAPH_COLORS[currentIsLight ? 'light' : 'dark'];
+            const typeLabel = node.typeLabel || GRAPH_GROUP_NAMES[node.group] || 'Item';
+            const accentColor =
+              getNodeClusterColor(node, currentIsLight) ||
+              groupColors[node.group] ||
+              themeTokens.nodeDefault;
+            const tagColor = groupColors[0];
+            tooltipEl.style.width = 'max-content';
+            tooltipEl.style.maxWidth = '250px';
+            renderVisNetworkTooltip(tooltipEl, {
+              node,
+              typeLabel,
+              accentColor,
+              tagColor,
+              themeTokens,
+              isPinned: false,
+            });
+            return () => {
+              preactRender(null, tooltipEl);
+            };
+          },
+          onHide: (tooltipEl) => {
+            preactRender(null, tooltipEl);
+          },
+        },
         interactions: {
-          onContentHover: (ev) => {
-            if (ev) {
-              isContentHovered = true;
-              tooltipController.show(
-                ev.item,
-                currentIsLight,
-                ev.screenPosition.x,
-                ev.screenPosition.y
-              );
-            } else {
-              isContentHovered = false;
-              tooltipController.hide();
-            }
-          },
-          onClusterHover: (ev) => {
-            if (ev) {
-              isContentHovered = false;
-              tooltipController.hide();
-            }
-          },
-          onTriangleHover: (ev) => {
-            if (ev) {
-              isContentHovered = false;
-              tooltipController.hide();
-            }
-          },
-          onContentClick: (target, rawEvent) => {
-            if (rawEvent?.shiftKey) return false;
+          onContentClick: (target) => {
             if (target.item.id.startsWith('/')) {
               window.location.href = buildItemTargetUrl(target.item.id, extraOptions);
               return true;
@@ -442,9 +431,6 @@ export default {
       },
 
       destroy() {
-        container.removeEventListener('pointermove', onPointerMoveTooltip);
-        container.removeEventListener('pointerleave', onPointerLeaveContainer);
-        tooltipController.destroy();
         if (controller) {
           controller.destroy();
           controller = null;
