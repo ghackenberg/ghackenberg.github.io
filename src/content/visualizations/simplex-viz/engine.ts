@@ -321,7 +321,8 @@ export default {
               tooltipController.hide();
             }
           },
-          onContentClick: (target) => {
+          onContentClick: (target, rawEvent) => {
+            if (rawEvent?.shiftKey) return false;
             if (target.item.id.startsWith('/')) {
               window.location.href = buildItemTargetUrl(target.item.id, extraOptions);
               return true;
