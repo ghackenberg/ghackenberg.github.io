@@ -2,6 +2,7 @@
 title: "Delta Dynamics: WebGL Ecosystem & Water Simulator"
 trl: 5
 description: "Low-poly ecosystem simulator featuring real-time dynamic terrain, GPU-accelerated water flow, resource management, and local LLM-driven AI behaviors."
+href: "https://hackenberg.tech/delta-dynamics/"
 tags: ["agentic-ai", "artificial-intelligence", "gpgpu", "local-ai", "react", "shaders", "simulation", "threejs", "web-llm", "webgl"]
 accentColor: "blue"
 order: 3
