@@ -29,6 +29,7 @@ import profileClosedMouthBlinkDepthImage from "@assets/avatar/comic-profile-head
 import { getCollection } from "astro:content";
 import { calculateTagCounts } from "@commons/shared/graph-payload.js";
 import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
+import { isRecentlyPublished } from "@commons/shared/format";
 
 const { previews: visPreviews } = await ensureVisPreviewAssets();
 
@@ -975,6 +976,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 pubDate={post.data.pubDate}
                 image={post.data.image}
                 tags={post.data.tags}
+                featured={index === 0 && isRecentlyPublished(post.data.pubDate, 90)}
               />
             </div>
           ))}
@@ -1347,6 +1349,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 pubDate={presentation.data.pubDate}
                 image={presentation.data.image}
                 tags={presentation.data.tags || []}
+                featured={index === 0 && isRecentlyPublished(presentation.data.pubDate, 90)}
               />
             </div>
           ))}
@@ -1442,6 +1445,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 tags={pub.data.tags}
                 publisherUrl={pub.data.publisherUrl}
                 image={pub.data.image}
+                featured={index === 0 && isRecentlyPublished(pub.data.pubDate, 180)}
               />
             </div>
           ))}
@@ -1535,6 +1539,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 description={issue.data.description}
                 pubDate={issue.data.pubDate}
                 image={issue.data.image}
+                featured={index === 0 && isRecentlyPublished(issue.data.pubDate, 90)}
               />
             </div>
           ))}

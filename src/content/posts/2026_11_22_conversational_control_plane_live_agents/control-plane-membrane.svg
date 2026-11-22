@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Halbdurchlässige Kontext-Membran zwischen schlanker Regie oben und isolierten Maschinenraum-Kontexten unten">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" fill="var(--svg-bg)" />
+
+  <!-- ==================== UPPER ZONE: REGIE (LIGHTWEIGHT CONTEXT) ==================== -->
+  <text x="240" y="40" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-node-blue-subtext)">REGIE</text>
+
+  <!-- Central Calm Dialogue Sphere -->
+  <g id="regie-core">
+    <circle cx="240" cy="118" r="44" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+    <!-- Speech Bubble Glyph -->
+    <path d="M 222 106 H 258 A 8 8 0 0 1 266 114 V 124 A 8 8 0 0 1 258 132 H 238 L 228 140 V 132 H 222 A 8 8 0 0 1 214 124 V 114 A 8 8 0 0 1 222 106 Z" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2" stroke-linejoin="round" />
+    <line x1="226" y1="116" x2="254" y2="116" stroke="var(--svg-node-blue-subtext)" stroke-width="2" stroke-linecap="round" />
+    <line x1="226" y1="123" x2="246" y2="123" stroke="var(--svg-node-blue-subtext)" stroke-width="2" stroke-linecap="round" />
+  </g>
+
+  <!-- Minimal Satellite Pills -->
+  <g id="pill-dialog">
+    <rect x="44" y="102" width="102" height="32" rx="16" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+    <text x="95" y="118" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-text-primary)">Dialogfluss</text>
+    <line x1="146" y1="118" x2="192" y2="118" stroke="var(--svg-node-blue-border)" stroke-width="1.5" stroke-dasharray="3,3" />
+  </g>
+
+  <g id="pill-status">
+    <rect x="334" y="102" width="102" height="32" rx="16" fill="var(--svg-card-alt)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+    <text x="385" y="118" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-text-primary)">Kurzstatus</text>
+    <line x1="288" y1="118" x2="334" y2="118" stroke="var(--svg-node-green-border)" stroke-width="1.5" stroke-dasharray="3,3" />
+  </g>
+
+  <!-- ==================== CENTER: SEMI-PERMEABLE CONTEXT MEMBRANE ==================== -->
+  <g id="context-membrane">
+    <!-- Glowing Curved Membrane Band -->
+    <path d="M 28 242 Q 240 206 452 242" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="3" stroke-dasharray="10,6" />
+    <path d="M 28 254 Q 240 218 452 254" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1.5" opacity="0.55" />
+
+    <!-- Center Membrane Label Pill -->
+    <rect x="166" y="218" width="148" height="28" rx="14" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+    <text x="240" y="232" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" letter-spacing="0.04em" fill="var(--svg-node-amber-text)">KONTEXT-MEMBRAN</text>
+  </g>
+
+  <!-- Left Downward Pore: Compact Briefing -->
+  <g id="pore-dispatch">
+    <path d="M 196 156 Q 134 196 134 294" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.2" marker-end="url(#arr-blue)" />
+    <circle cx="136" cy="236" r="15" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+    <!-- Mini Brief Sheet Icon -->
+    <rect x="130" y="229" width="12" height="14" rx="2" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="1.6" />
+    <line x1="133" y1="234" x2="139" y2="234" stroke="var(--svg-node-blue-text)" stroke-width="1.4" />
+    <line x1="133" y1="238" x2="138" y2="238" stroke="var(--svg-node-blue-text)" stroke-width="1.4" />
+    <text x="82" y="236" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-blue-subtext)">Auftrag</text>
+  </g>
+
+  <!-- Right Upward Pore: Distilled Result -->
+  <g id="pore-result">
+    <path d="M 346 298 Q 346 196 286 156" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+    <circle cx="344" cy="236" r="15" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.8" />
+    <!-- Mini Checkmark Icon -->
+    <path d="M 338 236 L 342 240 L 350 231" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="402" y="236" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-green-subtext)">Ergebnis</text>
+  </g>
+
+  <!-- ==================== LOWER ZONE: ISOLATED ENGINE ROOM DOMES ==================== -->
+  <!-- Dome 1: Analyse -->
+  <g id="dome-1">
+    <circle cx="104" cy="356" r="46" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <!-- Noise/Log Dots trapped inside -->
+    <circle cx="84" cy="336" r="3" fill="var(--svg-node-purple-subtext)" opacity="0.5" />
+    <circle cx="122" cy="338" r="2.5" fill="var(--svg-node-purple-subtext)" opacity="0.5" />
+    <circle cx="86" cy="374" r="2.5" fill="var(--svg-node-purple-subtext)" opacity="0.4" />
+    <!-- Magnifier / Doc Icon -->
+    <circle cx="102" cy="352" r="11" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+    <line x1="110" y1="360" x2="118" y2="368" stroke="var(--svg-node-purple-text)" stroke-width="2.2" stroke-linecap="round" />
+    <text x="104" y="422" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-primary)">Analyse</text>
+  </g>
+
+  <!-- Dome 2: Ausführung -->
+  <g id="dome-2">
+    <circle cx="240" cy="356" r="46" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <circle cx="218" cy="336" r="3" fill="var(--svg-node-purple-subtext)" opacity="0.5" />
+    <circle cx="260" cy="340" r="2.5" fill="var(--svg-node-purple-subtext)" opacity="0.5" />
+    <circle cx="222" cy="376" r="2.5" fill="var(--svg-node-purple-subtext)" opacity="0.4" />
+    <!-- Hexagonal Core Gear Icon -->
+    <polygon points="240,342 252,349 252,363 240,370 228,363 228,349" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+    <circle cx="240" cy="356" r="4" fill="var(--svg-node-purple-text)" />
+    <text x="240" y="422" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-primary)">Ausführung</text>
+  </g>
+
+  <!-- Dome 3: Prüfung -->
+  <g id="dome-3">
+    <circle cx="376" cy="356" r="46" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+    <circle cx="356" cy="338" r="2.5" fill="var(--svg-node-green-subtext)" opacity="0.5" />
+    <circle cx="394" cy="372" r="2.5" fill="var(--svg-node-green-subtext)" opacity="0.5" />
+    <!-- Shield Icon -->
+    <path d="M 376 340 L 389 346 V 357 C 389 365, 383 370, 376 373 C 369 370, 363 365, 363 357 V 346 Z" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" stroke-linejoin="round" />
+    <path d="M 371 356 L 375 360 L 382 352" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="376" y="422" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-primary)">Prüfung</text>
+  </g>
+
+  <!-- Subtle Footer Note -->
+  <text x="240" y="458" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="500" fill="var(--svg-text-muted)">Rohlogs bleiben im Maschinenraum isoliert</text>
+</svg>

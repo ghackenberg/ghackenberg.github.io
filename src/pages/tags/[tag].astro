@@ -14,6 +14,7 @@ import ServiceCard from "@components/ServiceCard.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getPageNumbers } from "@commons/client/pagination";
 import { ensureVisPreviewAssets } from "@commons/server/vis-preview-assets";
+import { isRecentlyPublished } from "@commons/shared/format";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -202,6 +203,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                     image={post.data.image}
                     tags={post.data.tags}
                     activeTag={tag.id}
+                    featured={index === 0 && isRecentlyPublished(post.data.pubDate, 90)}
                   />
                 </div>
               );
@@ -366,7 +368,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {presentations.map((pres) => (
+            {presentations.map((pres, index) => (
               <PresentationCard
                 id={pres.id}
                 title={pres.data.title}
@@ -376,6 +378,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 image={pres.data.image}
                 tags={pres.data.tags}
                 activeTag={tag.id}
+                featured={index === 0 && isRecentlyPublished(pres.data.pubDate, 90)}
               />
             ))}
           </div>
@@ -409,6 +412,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                     publisherUrl={pub.data.publisherUrl}
                     activeTag={tag.id}
                     image={pub.data.image}
+                    featured={index === 0 && isRecentlyPublished(pub.data.pubDate, 180)}
                   />
                 </div>
               );
@@ -486,7 +490,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {newsletters.map((issue) => (
+            {newsletters.map((issue, index) => (
               <NewsletterCard
                 id={issue.id}
                 issueNumber={issue.data.issueNumber}
@@ -496,6 +500,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 image={issue.data.image}
                 tags={issue.data.tags}
                 activeTag={tag.id}
+                featured={index === 0 && isRecentlyPublished(issue.data.pubDate, 90)}
               />
             ))}
           </div>

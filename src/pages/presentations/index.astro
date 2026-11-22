@@ -7,6 +7,7 @@ import FilterToolbar from "@components/FilterToolbar.astro";
 import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
+import { isRecentlyPublished } from "@commons/shared/format";
 import { getCollection } from "astro:content";
 
 const allPresentations = await getCollection("presentations");
@@ -89,6 +90,7 @@ const pagePreviewImage = presentations.find(t => t.data.image)?.data.image;
                   pubDate={presentation.data.pubDate}
                   image={presentation.data.image}
                   tags={presentation.data.tags || []}
+                  featured={idx === 0 && isRecentlyPublished(presentation.data.pubDate, 90)}
                 />
               </div>
             );

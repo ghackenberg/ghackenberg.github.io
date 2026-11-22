@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Flaschenhals eines monolithischen Agenten-Loops im Vergleich zur Zweischicht-Trennung zwischen Regie und Maschinenraum">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-red-border)" />
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" fill="var(--svg-bg)" />
+
+  <!-- ==================== TOP ZONE: MONOLITHISCHER FLASCHENHALS ==================== -->
+  <text x="240" y="40" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-node-red-subtext)">FLASCHENHALS</text>
+
+  <!-- Human Silhouette Icon (Left) -->
+  <g id="top-human">
+    <circle cx="72" cy="112" r="13" fill="var(--svg-card-alt)" stroke="var(--svg-text-secondary)" stroke-width="2" />
+    <path d="M 52 146 C 52 132, 92 132, 92 146" fill="var(--svg-card-alt)" stroke="var(--svg-text-secondary)" stroke-width="2" stroke-linecap="round" />
+    <text x="72" y="168" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-text-secondary)">Mensch</text>
+  </g>
+
+  <!-- Blocked Input Arrow -->
+  <path d="M 102 126 H 150" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2" marker-end="url(#arr-red)" />
+
+  <!-- Pinched Bottleneck Channel -->
+  <g id="bottleneck-funnel">
+    <path d="M 162 82 C 205 82, 212 110, 240 110 C 268 110, 275 82, 318 82 L 318 170 C 275 170, 268 142, 240 142 C 212 142, 205 170, 162 170 Z" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <!-- Jammed Task Tokens inside Bottleneck -->
+    <polygon points="190,116 200,110 210,116 210,128 200,134 190,128" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+    <polygon points="218,118 228,112 238,118 238,130 228,136 218,130" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.8" />
+    <polygon points="246,116 256,110 266,116 266,128 256,134 246,128" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" />
+    <!-- Pause / Wait Ring -->
+    <circle cx="290" cy="126" r="14" fill="var(--svg-card)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <line x1="286" y1="120" x2="286" y2="132" stroke="var(--svg-node-red-text)" stroke-width="2.5" stroke-linecap="round" />
+    <line x1="294" y1="120" x2="294" y2="132" stroke="var(--svg-node-red-text)" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Stalled Output Arrow -->
+  <path d="M 326 126 H 374" fill="none" stroke="var(--svg-node-red-border)" stroke-width="2" stroke-dasharray="4,4" />
+  <!-- Wait Clock Icon (Right) -->
+  <g id="wait-clock">
+    <circle cx="406" cy="126" r="20" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <line x1="406" y1="115" x2="406" y2="126" stroke="var(--svg-node-red-text)" stroke-width="2" stroke-linecap="round" />
+    <line x1="406" y1="126" x2="415" y2="131" stroke="var(--svg-node-red-text)" stroke-width="2" stroke-linecap="round" />
+    <text x="406" y="168" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-red-subtext)">Wartepause</text>
+  </g>
+
+  <text x="240" y="200" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-muted)">Ein Kanal für Dialog und Werkzeuge</text>
+
+  <!-- ==================== CURVED HORIZON DIVIDER ==================== -->
+  <path d="M 32 232 Q 240 220 448 232" fill="none" stroke="var(--svg-border)" stroke-width="1.5" />
+
+  <!-- ==================== BOTTOM ZONE: ZWEISCHICHT-TRENNUNG ==================== -->
+  <text x="240" y="266" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-node-blue-subtext)">ZWEISCHICHT-TRENNUNG</text>
+
+  <!-- Upper Lane: Serene Dialogue Channel -->
+  <g id="bottom-human">
+    <circle cx="72" cy="306" r="13" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <path d="M 52 340 C 52 326, 92 326, 92 340" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="2" stroke-linecap="round" />
+  </g>
+
+  <!-- Smooth Live Dialogue Wave -->
+  <path d="M 102 318 Q 134 302 166 318 T 194 318" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.5" marker-end="url(#arr-blue)" />
+
+  <!-- Control Plane Hub -->
+  <g id="control-hub">
+    <circle cx="240" cy="318" r="30" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+    <!-- Dialogue Wave Glyph -->
+    <path d="M 224 318 Q 232 308 240 318 T 256 318" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.2" stroke-linecap="round" />
+    <text x="240" y="280" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-blue-text)"></text>
+  </g>
+
+  <!-- Continuous Live Response Wave -->
+  <path d="M 278 318 Q 312 334 346 318 T 374 318" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.5" marker-end="url(#arr-green)" />
+
+  <!-- Live Dialogue Badge (Right) -->
+  <g id="live-badge">
+    <rect x="382" y="300" width="70" height="36" rx="18" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+    <text x="417" y="318" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-blue-text)">Regie</text>
+  </g>
+
+  <!-- Async Dispatch Arrows Down to Engine Room -->
+  <path d="M 222 346 Q 178 368 148 386" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arr-purple)" />
+  <path d="M 240 350 V 382" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arr-purple)" />
+  <path d="M 332 386 Q 300 366 264 344" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arr-green)" />
+
+  <!-- Lower Lane: Parallel Worker Hexagons -->
+  <g id="worker-1">
+    <polygon points="140,392 162,404 162,428 140,440 118,428 118,404" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <circle cx="140" cy="416" r="6" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  </g>
+  <g id="worker-2">
+    <polygon points="240,392 262,404 262,428 240,440 218,428 218,404" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <circle cx="240" cy="416" r="6" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="2" />
+  </g>
+  <g id="worker-3">
+    <polygon points="340,392 362,404 362,428 340,440 318,428 318,404" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+    <path d="M 333 416 L 338 421 L 348 411" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <text x="240" y="462" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="var(--svg-text-secondary)">Maschinenraum arbeitet asynchron</text>
+</svg>

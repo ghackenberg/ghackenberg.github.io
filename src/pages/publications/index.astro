@@ -9,6 +9,7 @@ import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
 import { getPageNumbers } from "@commons/client/pagination";
+import { isRecentlyPublished } from "@commons/shared/format";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -86,6 +87,7 @@ const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== 
                   tags={pub.data.tags}
                   publisherUrl={pub.data.publisherUrl}
                   image={pub.data.image}
+                  featured={idx === 0 && isRecentlyPublished(pub.data.pubDate, 180)}
                 />
               </div>
             );

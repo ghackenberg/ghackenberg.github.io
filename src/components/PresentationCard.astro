@@ -18,18 +18,18 @@ interface Props {
   featured?: boolean;
 }
 
-const { 
-  id, 
-  title, 
-  subtitle, 
-  description, 
-  pubDate, 
-  duration, 
-  image, 
-  tags = [], 
-  activeTag, 
-  showTags, 
-  featured = false 
+const {
+  id,
+  title,
+  subtitle,
+  description,
+  pubDate,
+  duration,
+  image,
+  tags = [],
+  activeTag,
+  showTags,
+  featured = false
 } = Astro.props;
 
 const displayDuration = duration ?? getPresentationDuration(id).text;
@@ -53,16 +53,25 @@ const optimizedImage = imageImg && !isSvg ? await getImage({
 
 // Article wrapper classes
 const articleClass = featured
-  ? "glass-card preview-card border-2 border-domain-presentations/50 light:border-domain-presentations/40 shadow-2xl shadow-domain-presentations/15 light:shadow-xl light:shadow-domain-presentations/10 bg-gradient-to-br from-domain-presentations/20 via-element-bg to-bg-main flex flex-col items-stretch group relative cursor-pointer hover:border-domain-presentations/80 transition-all duration-300 h-full w-full"
+  ? "glass-card presentation-featured-card preview-card border border-domain-presentations/40 hover:border-domain-presentations/70 light:border-domain-presentations/35 light:hover:border-domain-presentations/65 shadow-lg shadow-domain-presentations/10 flex flex-col items-stretch group relative cursor-pointer transition-all duration-300 h-full w-full"
   : "glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-domain-presentations/40 transition-all duration-300 h-full w-full";
 
 // Image container classes
-const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 light:bg-slate-100 flex items-center justify-center relative z-10";
+const imageContainerClass = featured
+  ? "w-full aspect-video shrink-0 overflow-hidden border-b border-domain-presentations/25 light:border-domain-presentations/20 bg-gray-900 light:bg-slate-100 flex items-center justify-center relative z-10"
+  : "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 light:bg-slate-100 flex items-center justify-center relative z-10";
+
+const ctaButtonClass = featured
+  ? "flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-presentations/15 hover:bg-domain-presentations/28 border border-domain-presentations/30 hover:border-domain-presentations/55 text-domain-presentations text-xs font-bold relative z-20 transition-all duration-200"
+  : "flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-presentations/12 hover:bg-domain-presentations/25 border border-domain-presentations/20 hover:border-domain-presentations/45 text-domain-presentations text-xs font-bold relative z-20 transition-all duration-200";
 ---
 
 <article class={articleClass} data-card-id={id} data-collection="presentations">
   {featured && (
-    <div class="absolute inset-0 bg-gradient-to-br from-domain-presentations/15 via-transparent to-domain-presentations/5 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-domain-presentations/[0.08] via-transparent to-domain-presentations/[0.03] light:from-domain-presentations/[0.06] light:via-transparent light:to-domain-presentations/[0.02]"
+    ></div>
   )}
 
   <!-- Image panel -->
@@ -71,7 +80,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
     <a href={`/presentations/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
     {image ? (
       <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
-        <img 
+        <img
           src={optimizedImage ? optimizedImage.src : (typeof imageImg === 'string' ? imageImg : (imageImg?.src || ''))}
           alt={imageDesc}
           title={imageTitle}
@@ -104,17 +113,12 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       </div>
     )}
   </div>
-  
+
   <!-- Content -->
   <div class="flex-grow flex flex-col relative z-10 preview-card-body">
 
     <!-- Meta row: date + duration -->
     <div class="flex flex-wrap items-center gap-2 mb-2">
-      {featured && (
-        <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-domain-presentations text-white shadow-md shadow-domain-presentations/30">
-          ★ Featured
-        </span>
-      )}
       <time class="text-xs font-semibold text-domain-presentations">
         {formatDate(pubDate, 'short')}
       </time>
@@ -147,7 +151,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       <div class="flex-grow flex flex-col mt-3">
         <div class="flex flex-wrap gap-2 self-start">
           {tags.map(tag => (
-            <a 
+            <a
               href={`/tags/${tag}/`}
               data-tag={tag}
               class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
@@ -161,10 +165,10 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
         <!-- Read More button — full width, pinned to bottom -->
         <div class="mt-auto pt-5 w-full">
-          <a 
-            href={`/presentations/${id}/`} 
+          <a
+            href={`/presentations/${id}/`}
             aria-label={`Read More: ${title}`}
-            class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-presentations/12 hover:bg-domain-presentations/25 border border-domain-presentations/20 hover:border-domain-presentations/45 text-domain-presentations text-xs font-bold relative z-20 transition-all duration-200"
+            class={ctaButtonClass}
           >
             <span>Read More</span>
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -175,10 +179,10 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       </div>
     ) : (
       <div class="mt-auto pt-4 w-full">
-        <a 
-          href={`/presentations/${id}/`} 
+        <a
+          href={`/presentations/${id}/`}
           aria-label={`Read More: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-presentations/12 hover:bg-domain-presentations/25 border border-domain-presentations/20 hover:border-domain-presentations/45 text-domain-presentations text-xs font-bold relative z-20 transition-all duration-200"
+          class={ctaButtonClass}
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -189,3 +193,33 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
     )}
   </div>
 </article>
+
+<style>
+  .presentation-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-presentations) 40%, transparent);
+    box-shadow:
+      0 10px 28px -12px color-mix(in srgb, var(--color-domain-presentations) 22%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-presentations) 12%, transparent) inset;
+  }
+
+  .presentation-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-presentations) 70%, transparent);
+    box-shadow:
+      0 16px 36px -12px color-mix(in srgb, var(--color-domain-presentations) 34%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-presentations) 22%, transparent) inset;
+  }
+
+  :global(.light) .presentation-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-presentations) 35%, transparent);
+    box-shadow:
+      0 10px 26px -10px color-mix(in srgb, var(--color-domain-presentations) 18%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-presentations) 10%, transparent) inset;
+  }
+
+  :global(.light) .presentation-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-presentations) 65%, transparent);
+    box-shadow:
+      0 16px 34px -10px color-mix(in srgb, var(--color-domain-presentations) 26%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-presentations) 18%, transparent) inset;
+  }
+</style>

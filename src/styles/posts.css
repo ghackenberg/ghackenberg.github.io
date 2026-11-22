@@ -1428,3 +1428,116 @@ blockquote:not(.markdown-alert) p:last-child,
   background: rgba(15, 23, 42, 0.025);
   box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.04);
 }
+
+/* ==========================================================================
+   Reusable Collapsible <details> Standard Block (Prose & Blog Posts)
+   Adaptive Dark/Light Card, Crisp <summary> Header, Smooth Chevron, Zero CLS
+   ========================================================================== */
+.prose-custom details,
+.post-body details {
+  margin: 1.75rem 0;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-medium);
+  background: var(--color-bg-card);
+  overflow: hidden;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.prose-custom details:hover,
+.post-body details:hover {
+  border-color: color-mix(in srgb, var(--color-current-domain, var(--color-domain-posts)) 40%, var(--color-border-medium));
+}
+
+:root.light .prose-custom details,
+.light .prose-custom details,
+:root.light .post-body details,
+.light .post-body details {
+  background: rgba(248, 250, 252, 0.88);
+  box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05);
+}
+
+.prose-custom details > summary,
+.post-body details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--color-text-heading);
+  background: var(--color-element-bg);
+  user-select: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.prose-custom details > summary::-webkit-details-marker,
+.post-body details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.prose-custom details > summary::marker,
+.post-body details > summary::marker {
+  content: "";
+}
+
+.prose-custom details > summary:hover,
+.post-body details > summary:hover {
+  background: var(--color-element-bg-hover);
+}
+
+.prose-custom details > summary:focus-visible,
+.post-body details > summary:focus-visible {
+  outline: 2px solid var(--color-current-domain, var(--color-domain-posts));
+  outline-offset: -2px;
+}
+
+.prose-custom details > summary::after,
+.post-body details > summary::after {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-right: 2px solid var(--color-text-subtle);
+  border-bottom: 2px solid var(--color-text-subtle);
+  transform: rotate(45deg);
+  margin-top: -0.2rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.prose-custom details[open] > summary,
+.post-body details[open] > summary {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.prose-custom details[open] > summary::after,
+.post-body details[open] > summary::after {
+  transform: rotate(-135deg);
+  margin-top: 0.2rem;
+  border-color: var(--color-current-domain, var(--color-domain-posts));
+}
+
+.prose-custom details > :not(summary),
+.post-body details > :not(summary) {
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+.prose-custom details > summary + *,
+.post-body details > summary + * {
+  margin-top: 1rem;
+}
+
+.prose-custom details > :last-child:not(summary),
+.post-body details > :last-child:not(summary) {
+  margin-bottom: 1.15rem;
+}
+
+.prose-custom details > figure.artifact-card,
+.post-body details > figure.artifact-card {
+  width: auto;
+  margin: 1rem 1.25rem;
+}

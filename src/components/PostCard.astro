@@ -17,17 +17,17 @@ interface Props {
   featured?: boolean;
 }
 
-const { 
-  id, 
-  title, 
-  description, 
-  pubDate, 
+const {
+  id,
+  title,
+  description,
+  pubDate,
   readingTime,
-  image, 
-  tags, 
-  activeTag, 
-  showTags, 
-  featured = false 
+  image,
+  tags,
+  activeTag,
+  showTags,
+  featured = false
 } = Astro.props;
 
 const displayReadingTime = readingTime ?? getPostReadingTime(id).text;
@@ -49,20 +49,27 @@ const optimizedImage = imageImg && !isSvg ? await getImage({
   quality: 80
 }) : null;
 
-
 // Article wrapper classes
 const articleClass = featured
-  ? "glass-card preview-card border-2 border-domain-posts/50 light:border-domain-posts/40 shadow-2xl shadow-domain-posts/15 light:shadow-xl light:shadow-domain-posts/10 bg-gradient-to-br from-domain-posts/20 via-element-bg to-bg-main flex flex-col items-stretch group relative cursor-pointer hover:border-domain-posts/80 transition-all duration-300 h-full w-full"
+  ? "glass-card post-featured-card preview-card border border-domain-posts/40 hover:border-domain-posts/70 light:border-domain-posts/35 light:hover:border-domain-posts/65 shadow-lg shadow-domain-posts/10 flex flex-col items-stretch group relative cursor-pointer transition-all duration-300 h-full w-full"
   : "glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-domain-posts/40 transition-all duration-300 h-full w-full";
 
 // Image container classes
-const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
----
+const imageContainerClass = featured
+  ? "w-full aspect-video shrink-0 overflow-hidden border-b border-domain-posts/25 light:border-domain-posts/20 bg-gray-900 flex items-center justify-center relative z-10"
+  : "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
 
+const ctaButtonClass = featured
+  ? "flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-posts/15 hover:bg-domain-posts/28 border border-domain-posts/30 hover:border-domain-posts/55 text-domain-posts text-xs font-bold relative z-20 transition-all duration-200"
+  : "flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-posts/12 hover:bg-domain-posts/25 border border-domain-posts/20 hover:border-domain-posts/45 text-domain-posts text-xs font-bold relative z-20 transition-all duration-200";
+---
 
 <article class={articleClass} data-card-id={id} data-collection="posts">
   {featured && (
-    <div class="absolute inset-0 bg-gradient-to-br from-domain-posts/15 via-transparent to-domain-posts/5 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-domain-posts/[0.08] via-transparent to-domain-posts/[0.03] light:from-domain-posts/[0.06] light:via-transparent light:to-domain-posts/[0.02]"
+    ></div>
   )}
 
   <!-- Image panel -->
@@ -71,7 +78,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
     <a href={`/posts/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
     {image ? (
       <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
-        <img 
+        <img
           src={optimizedImage ? optimizedImage.src : (typeof imageImg === 'string' ? imageImg : (imageImg?.src || ''))}
           alt={imageDesc}
           title={imageTitle}
@@ -91,17 +98,12 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       </div>
     )}
   </div>
-  
+
   <!-- Content -->
   <div class="flex-grow flex flex-col relative z-10 preview-card-body">
 
-    <!-- Meta row: date + badge + reading time -->
+    <!-- Meta row: date + reading time -->
     <div class="flex flex-wrap items-center gap-2 mb-1.5">
-      {featured && (
-        <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-domain-posts text-white shadow-md shadow-domain-posts/30">
-          ★ Featured
-        </span>
-      )}
       <time class="text-xs font-semibold text-domain-posts">
         {formatDate(pubDate, 'short')}
       </time>
@@ -134,7 +136,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       <div class="flex-grow flex flex-col mt-3">
         <div class="flex flex-wrap gap-2 self-start">
           {tags.map(tag => (
-            <a 
+            <a
               href={`/tags/${tag}/`}
               data-tag={tag}
               class={`tag-chip tag-chip-violet inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
@@ -148,10 +150,10 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
         <!-- Read more button — full width, pinned to bottom -->
         <div class="mt-auto pt-5 w-full">
-          <a 
-            href={`/posts/${id}/`} 
+          <a
+            href={`/posts/${id}/`}
             aria-label={`Read More: ${title}`}
-            class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-posts/12 hover:bg-domain-posts/25 border border-domain-posts/20 hover:border-domain-posts/45 text-domain-posts text-xs font-bold relative z-20 transition-all duration-200"
+            class={ctaButtonClass}
           >
             <span>Read More</span>
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -162,10 +164,10 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       </div>
     ) : (
       <div class="mt-auto pt-4 w-full">
-        <a 
-          href={`/posts/${id}/`} 
+        <a
+          href={`/posts/${id}/`}
           aria-label={`Read More: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-posts/12 hover:bg-domain-posts/25 border border-domain-posts/20 hover:border-domain-posts/45 text-domain-posts text-xs font-bold relative z-20 transition-all duration-200"
+          class={ctaButtonClass}
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -176,3 +178,33 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
     )}
   </div>
 </article>
+
+<style>
+  .post-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-posts) 40%, transparent);
+    box-shadow:
+      0 10px 28px -12px color-mix(in srgb, var(--color-domain-posts) 22%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-posts) 12%, transparent) inset;
+  }
+
+  .post-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-posts) 70%, transparent);
+    box-shadow:
+      0 16px 36px -12px color-mix(in srgb, var(--color-domain-posts) 34%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-posts) 22%, transparent) inset;
+  }
+
+  :global(.light) .post-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-posts) 35%, transparent);
+    box-shadow:
+      0 10px 26px -10px color-mix(in srgb, var(--color-domain-posts) 18%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-posts) 10%, transparent) inset;
+  }
+
+  :global(.light) .post-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-posts) 65%, transparent);
+    box-shadow:
+      0 16px 34px -10px color-mix(in srgb, var(--color-domain-posts) 26%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-posts) 18%, transparent) inset;
+  }
+</style>

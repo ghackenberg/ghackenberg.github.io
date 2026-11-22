@@ -66,3 +66,34 @@ export function formatDate(
   return new Intl.DateTimeFormat(effectiveLocale, formatOptions).format(d);
 }
 
+const MS_PER_DAY = 86_400_000;
+
+/**
+ * Returns true if the given publication date is within `maxAgeDays` of `referenceDate` (default: now).
+ * Handles Date instances, numeric timestamps, and 'YYYY-MM-DD' date strings safely in UTC.
+ */
+export function isRecentlyPublished(
+  date: Date | number | string | undefined | null,
+  maxAgeDays = 90,
+  referenceDate: Date = new Date()
+): boolean {
+  if (date == null) return false;
+  let d: Date;
+  if (typeof date === 'string') {
+    const trimmed = date.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      const [year, month, day] = trimmed.split('-').map(Number);
+      d = new Date(Date.UTC(year, month - 1, day));
+    } else {
+      d = new Date(trimmed);
+    }
+  } else if (date instanceof Date) {
+    d = date;
+  } else {
+    d = new Date(date);
+  }
+  if (isNaN(d.getTime())) return false;
+  const ageMs = referenceDate.getTime() - d.getTime();
+  return ageMs <= maxAgeDays * MS_PER_DAY;
+}
+

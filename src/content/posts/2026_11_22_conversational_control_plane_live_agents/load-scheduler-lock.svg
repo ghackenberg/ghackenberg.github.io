@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Schleuse des Last-Schedulers: Leichte Aufgaben laufen parallel durch den Bypass, schwere Rechenlasten passieren das Budget-Tor seriell">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" fill="var(--svg-bg)" />
+
+  <!-- Title -->
+  <text x="240" y="42" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-node-amber-subtext)">LAST-SCHLEUSE</text>
+
+  <!-- ==================== UPPER BYPASS LANE: LIGHT TASKS (PARALLEL) ==================== -->
+  <path d="M 52 126 Q 240 88 424 126" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2.2" marker-end="url(#arr-green)" />
+  <path d="M 52 142 Q 240 106 424 142" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.6" stroke-dasharray="4,3" opacity="0.7" />
+
+  <!-- Light Task Tokens Gliding Through -->
+  <circle cx="110" cy="119" r="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <circle cx="240" cy="107" r="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+  <circle cx="366" cy="119" r="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+
+  <text x="240" y="84" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-green-subtext)">Leichte Aufgaben: frei &amp; parallel</text>
+
+  <!-- ==================== LOWER LOCK CHANNEL: HEAVY TASKS (SERIALIZED) ==================== -->
+  <!-- Incoming Heavy Queue (Left) -->
+  <g id="heavy-queue">
+    <!-- Task A -->
+    <polygon points="74,232 94,244 94,268 74,280 54,268 54,244" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <line x1="66" y1="256" x2="82" y2="256" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linecap="round" />
+    <!-- Task B -->
+    <polygon points="74,302 94,314 94,338 74,350 54,338 54,314" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <line x1="66" y1="326" x2="82" y2="326" stroke="var(--svg-node-purple-text)" stroke-width="2" stroke-linecap="round" />
+    <!-- Queue arrows into lock -->
+    <path d="M 100 256 C 132 256, 134 282, 166 286" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" marker-end="url(#arr-purple)" />
+    <path d="M 100 326 C 132 326, 134 300, 166 296" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-purple)" />
+    <text x="74" y="376" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-purple-subtext)">Warteschlange</text>
+  </g>
+
+  <!-- Center Hexagonal Scheduler Lock Gate -->
+  <g id="scheduler-lock">
+    <!-- Outer Hexagon -->
+    <polygon points="240,210 310,250 310,332 240,372 170,332 170,250" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.5" />
+    <!-- Semicircular Load Gauge -->
+    <path d="M 206 298 A 34 34 0 0 1 274 298" fill="none" stroke="var(--svg-node-amber-subtext)" stroke-width="3.5" stroke-linecap="round" opacity="0.45" />
+    <path d="M 206 298 A 34 34 0 0 1 248 265" fill="none" stroke="var(--svg-node-green-border)" stroke-width="3.5" stroke-linecap="round" />
+    <!-- Gauge Needle -->
+    <line x1="240" y1="298" x2="254" y2="274" stroke="var(--svg-node-amber-text)" stroke-width="2.6" stroke-linecap="round" />
+    <circle cx="240" cy="298" r="5" fill="var(--svg-node-amber-text)" />
+    <!-- Gate Title -->
+    <text x="240" y="332" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-amber-text)">Budget-Tor</text>
+  </g>
+
+  <!-- Serialized Single-File Exit (Right) -->
+  <g id="serial-exit">
+    <path d="M 316 291 H 366" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2.2" marker-end="url(#arr-amber)" />
+    <!-- Single Active Heavy Token -->
+    <polygon points="404,267 424,279 424,303 404,315 384,303 384,279" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+    <path d="M 397 291 L 402 296 L 412 286" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="404" y="342" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="600" fill="var(--svg-node-blue-subtext)">1× seriell</text>
+  </g>
+
+  <!-- ==================== BOTTOM LEGEND PILLS ==================== -->
+  <g id="legend-pills">
+    <rect x="64" y="420" width="160" height="32" rx="16" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+    <text x="144" y="436" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-green-text)">Leicht: parallel</text>
+
+    <rect x="256" y="420" width="160" height="32" rx="16" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+    <text x="336" y="436" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-amber-text)">Schwer: seriell</text>
+  </g>
+</svg>

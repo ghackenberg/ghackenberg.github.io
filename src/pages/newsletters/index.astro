@@ -4,6 +4,7 @@ import Navbar from '@components/Navbar.astro';
 import Container from '@components/Container.astro';
 import Breadcrumbs from '@components/Breadcrumbs.astro';
 import { buildCollectionPageSchema } from '@commons/server/json-ld';
+import { isRecentlyPublished } from '@commons/shared/format';
 import NewsletterCard from '@components/NewsletterCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -49,7 +50,7 @@ const pageDescription =
       </p>
     ) : (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="newsletters-grid">
-        {sortedIssues.map((issue) => (
+        {sortedIssues.map((issue, idx) => (
           <NewsletterCard
             id={issue.id}
             issueNumber={issue.data.issueNumber}
@@ -58,6 +59,7 @@ const pageDescription =
             pubDate={issue.data.pubDate}
             image={issue.data.image}
             tags={issue.data.tags}
+            featured={idx === 0 && isRecentlyPublished(issue.data.pubDate, 90)}
           />
         ))}
       </div>

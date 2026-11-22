@@ -13,6 +13,7 @@ interface Props {
   tags?: (string | { id: string })[];
   activeTag?: string | string[];
   showTags?: boolean;
+  featured?: boolean;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   tags: rawTags = [],
   activeTag,
   showTags,
+  featured = false,
 } = Astro.props;
 
 const tags: string[] = (rawTags || []).map((t) => (typeof t === 'string' ? t : t.id));
@@ -45,13 +47,27 @@ const optimizedImage = imageImg && !isSvg ? await getImage({
   quality: 80,
 }) : null;
 
-const articleClass =
-  "glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-domain-newsletters/40 transition-all duration-300 h-full w-full";
-const imageContainerClass =
-  "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
+const articleClass = featured
+  ? "glass-card newsletter-featured-card preview-card border border-domain-newsletters/40 hover:border-domain-newsletters/70 light:border-domain-newsletters/35 light:hover:border-domain-newsletters/65 shadow-lg shadow-domain-newsletters/10 flex flex-col items-stretch group relative cursor-pointer transition-all duration-300 h-full w-full"
+  : "glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-domain-newsletters/40 transition-all duration-300 h-full w-full";
+
+const imageContainerClass = featured
+  ? "w-full aspect-video shrink-0 overflow-hidden border-b border-domain-newsletters/25 light:border-domain-newsletters/20 bg-gray-900 flex items-center justify-center relative z-10"
+  : "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
+
+const ctaButtonClass = featured
+  ? "flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/15 hover:bg-domain-newsletters/28 border border-domain-newsletters/30 hover:border-domain-newsletters/55 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200"
+  : "flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/12 hover:bg-domain-newsletters/25 border border-domain-newsletters/20 hover:border-domain-newsletters/45 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200";
 ---
 
 <article class={articleClass} data-card-id={id} data-collection="newsletters" data-tags={tags.join(',')}>
+  {featured && (
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-domain-newsletters/[0.08] via-transparent to-domain-newsletters/[0.03] light:from-domain-newsletters/[0.06] light:via-transparent light:to-domain-newsletters/[0.02]"
+    ></div>
+  )}
+
   <!-- Visual header panel -->
   <div class={imageContainerClass}>
     <a href={`/newsletters/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
@@ -124,7 +140,7 @@ const imageContainerClass =
           <a
             href={`/newsletters/${id}/`}
             aria-label={`Read More: ${title}`}
-            class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/12 hover:bg-domain-newsletters/25 border border-domain-newsletters/20 hover:border-domain-newsletters/45 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200"
+            class={ctaButtonClass}
           >
             <span>Read More</span>
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -138,7 +154,7 @@ const imageContainerClass =
         <a
           href={`/newsletters/${id}/`}
           aria-label={`Read More: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/12 hover:bg-domain-newsletters/25 border border-domain-newsletters/20 hover:border-domain-newsletters/45 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200"
+          class={ctaButtonClass}
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -149,3 +165,33 @@ const imageContainerClass =
     )}
   </div>
 </article>
+
+<style>
+  .newsletter-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-newsletters) 40%, transparent);
+    box-shadow:
+      0 10px 28px -12px color-mix(in srgb, var(--color-domain-newsletters) 22%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-newsletters) 12%, transparent) inset;
+  }
+
+  .newsletter-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-newsletters) 70%, transparent);
+    box-shadow:
+      0 16px 36px -12px color-mix(in srgb, var(--color-domain-newsletters) 34%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-newsletters) 22%, transparent) inset;
+  }
+
+  :global(.light) .newsletter-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-newsletters) 35%, transparent);
+    box-shadow:
+      0 10px 26px -10px color-mix(in srgb, var(--color-domain-newsletters) 18%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-newsletters) 10%, transparent) inset;
+  }
+
+  :global(.light) .newsletter-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-newsletters) 65%, transparent);
+    box-shadow:
+      0 16px 34px -10px color-mix(in srgb, var(--color-domain-newsletters) 26%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-newsletters) 18%, transparent) inset;
+  }
+</style>

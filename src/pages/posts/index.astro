@@ -8,6 +8,7 @@ import FilterToolbar from "@components/FilterToolbar.astro";
 import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
+import { isRecentlyPublished } from "@commons/shared/format";
 
 const allPosts = await getCollection("posts");
 const posts = allPosts.sort(
@@ -82,6 +83,7 @@ const pagePreviewImage = posts.find(p => p.data.image)?.data.image;
                   pubDate={post.data.pubDate}
                   image={post.data.image}
                   tags={post.data.tags}
+                  featured={idx === 0 && isRecentlyPublished(post.data.pubDate, 90)}
                 />
               </div>
             );
