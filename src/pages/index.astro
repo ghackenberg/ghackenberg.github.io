@@ -12,6 +12,7 @@ import ProjectCard from "@components/ProjectCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import NewsletterCard from "@components/NewsletterCard.astro";
+import NewsletterSignup from "@components/NewsletterSignup.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
 import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
@@ -180,6 +181,14 @@ const visualizations = await getCollection("visualizations");
 const sortedVisualizations = visualizations;
 const newsletters = await getCollection("newsletters");
 const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
+const latestNewsletterIssue = sortedNewsletters[0]
+  ? {
+      id: sortedNewsletters[0].id,
+      issueNumber: sortedNewsletters[0].data.issueNumber,
+      title: sortedNewsletters[0].data.title,
+    }
+  : undefined;
+
 const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 
@@ -809,6 +818,13 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
       };
     })();
   </script>
+
+  <!-- Newsletter Spotlight CTA Section -->
+  <Section id="newsletter-cta" border="top" padding="standard">
+    <Container size="wide" padding="none">
+      <NewsletterSignup variant="spotlight" latestIssue={latestNewsletterIssue} />
+    </Container>
+  </Section>
 
   <!-- Featured Blog Posts Section -->
   <Section id="latest-posts" border="top" padding="standard">

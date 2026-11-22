@@ -1,13 +1,22 @@
 ---
 type CalloutDomain = 'posts' | 'presentations' | 'publications' | 'visualizations' | 'projects' | 'courses';
+type NewsletterVariant = 'footer' | 'card' | 'spotlight';
+
+interface LatestIssue {
+  id: string;
+  issueNumber: number;
+  title: string;
+}
 
 interface Props {
-  variant?: 'footer' | 'card';
+  variant?: NewsletterVariant;
   domain?: CalloutDomain;
+  latestIssue?: LatestIssue;
   class?: string;
 }
 
-const { variant = 'footer', domain, class: className = '' } = Astro.props;
+const { variant = 'footer', domain, latestIssue, class: className = '' } = Astro.props;
+const isSpotlight = variant === 'spotlight';
 const inputId = `newsletter-email-${variant}`;
 const headingId = `newsletter-heading-${variant}`;
 
@@ -27,7 +36,7 @@ interface AccentTokens {
   inputFocus: string;
 }
 
-const accentByDomain: Record<CalloutDomain | 'brand', AccentTokens> = {
+const accentByDomain: Record<CalloutDomain | 'newsletters' | 'brand', AccentTokens> = {
   posts: {
     button: 'bg-domain-posts hover:bg-domain-posts/90 shadow-domain-posts/20',
     icon: 'text-domain-posts',
@@ -64,6 +73,12 @@ const accentByDomain: Record<CalloutDomain | 'brand', AccentTokens> = {
     link: 'text-domain-courses hover:text-domain-courses/80',
     inputFocus: 'focus:border-domain-courses focus:ring-domain-courses/25',
   },
+  newsletters: {
+    button: 'bg-domain-newsletters hover:bg-domain-newsletters/90 shadow-domain-newsletters/20',
+    icon: 'text-domain-newsletters',
+    link: 'text-domain-newsletters hover:text-domain-newsletters/80',
+    inputFocus: 'focus:border-domain-newsletters focus:ring-domain-newsletters/25',
+  },
   brand: {
     button: 'bg-brand-primary hover:bg-brand-primary/90 shadow-brand-primary/20',
     icon: 'text-brand-primary',
@@ -72,34 +87,41 @@ const accentByDomain: Record<CalloutDomain | 'brand', AccentTokens> = {
   },
 };
 
-const accent = accentByDomain[domain || 'brand'];
+const accent = accentByDomain[domain || (isSpotlight ? 'newsletters' : 'brand')];
 
-const variantContainerClasses: Record<'footer' | 'card', string> = {
+const variantContainerClasses: Record<NewsletterVariant, string> = {
   footer: 'w-full mb-12 md:mb-16 rounded-3xl glass-card border border-element-border relative overflow-hidden',
   card: 'w-full mt-10 rounded-3xl glass-card border border-element-border relative overflow-hidden',
+  spotlight:
+    'w-full rounded-3xl glass-card border border-domain-newsletters/50 light:border-domain-newsletters/35 shadow-2xl shadow-domain-newsletters/15 light:shadow-domain-newsletters/10 relative overflow-hidden',
 };
 
-const variantTopSectionClasses: Record<'footer' | 'card', string> = {
+const variantTopSectionClasses: Record<NewsletterVariant, string> = {
   footer: 'p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center',
   card: 'p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center',
+  spotlight: 'relative z-10 p-6 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center',
 };
 
-const variantBottomBarClasses: Record<'footer' | 'card', string> = {
+const variantBottomBarClasses: Record<NewsletterVariant, string> = {
   footer: 'px-6 sm:px-8 py-3 bg-white/[0.025] light:bg-slate-100/80 border-t border-element-border flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap',
   card: 'px-6 sm:px-8 py-3 bg-white/[0.025] light:bg-slate-100/80 border-t border-element-border flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap',
+  spotlight:
+    'relative z-10 px-6 sm:px-8 lg:px-10 py-3.5 bg-white/[0.03] light:bg-slate-100/80 border-t border-element-border flex items-center justify-between gap-2 text-xs text-gray-500 light:text-slate-500 whitespace-nowrap',
 };
 
-const variantLeftColClasses: Record<'footer' | 'card', string> = {
+const variantLeftColClasses: Record<NewsletterVariant, string> = {
   footer: 'md:col-span-5 lg:col-span-6 space-y-1.5',
   card: 'md:col-span-5 lg:col-span-6 space-y-1.5',
+  spotlight: 'lg:col-span-6 space-y-3',
 };
 
-const variantRightColClasses: Record<'footer' | 'card', string> = {
+const variantRightColClasses: Record<NewsletterVariant, string> = {
   footer: 'md:col-span-7 lg:col-span-6',
   card: 'md:col-span-7 lg:col-span-6',
+  spotlight: 'lg:col-span-6',
 };
 
-const variantCopy: Record<'footer' | 'card', { title: string; description: string }> = {
+const variantCopy: Record<NewsletterVariant, { title: string; description: string }> = {
   footer: {
     title: 'Subscribe to My Newsletter',
     description: 'Get notified when new blog posts, presentations, courses, or publications are published.',
@@ -107,6 +129,11 @@ const variantCopy: Record<'footer' | 'card', { title: string; description: strin
   card: {
     title: domain ? cardTitlesByDomain[domain] : 'Enjoyed this content? Stay in the loop.',
     description: 'Subscribe to get notified when new blog posts, presentations, courses, or publications go live.',
+  },
+  spotlight: {
+    title: 'Stay Ahead on AI-Based Software Engineering',
+    description:
+      'Periodic English-language dispatches summarizing my latest deep dives on agentic workflows, industrial informatics, keynotes, courses, and open-source tools.',
   },
 };
 
@@ -117,23 +144,68 @@ const copy = variantCopy[variant];
   aria-labelledby={headingId}
   class:list={[variantContainerClasses[variant], className]}
 >
+  {isSpotlight && (
+    <div class="pointer-events-none select-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-br from-domain-newsletters/20 via-domain-newsletters/[0.05] to-transparent light:from-domain-newsletters/12 light:via-domain-newsletters/[0.04] light:to-transparent"></div>
+      <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-domain-newsletters/20 light:bg-domain-newsletters/12 blur-3xl"></div>
+      <svg
+        class="absolute -bottom-8 -right-6 sm:-bottom-10 sm:-right-4 w-56 h-56 sm:w-64 sm:h-64 text-domain-newsletters opacity-[0.07] light:opacity-[0.09] -rotate-12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.2"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+      </svg>
+    </div>
+  )}
+
   <form data-newsletter-form data-newsletter-variant={variant} novalidate>
     <input type="text" name="nonce" value="" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
     <div class={variantTopSectionClasses[variant]}>
       <div class={variantLeftColClasses[variant]}>
-        <h3
-          id={headingId}
-          class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 tracking-tight"
-        >
-          {copy.title}
-        </h3>
-        <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
-          {copy.description}
-        </p>
+        {isSpotlight ? (
+          <>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-domain-newsletters text-white text-[11px] font-extrabold uppercase tracking-wider shadow-sm shadow-domain-newsletters/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse" aria-hidden="true"></span>
+                <span>New on the Site</span>
+              </span>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-domain-newsletters/12 border border-domain-newsletters/25 text-domain-newsletters text-[11px] font-bold uppercase tracking-wider">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                <span>Newsletter</span>
+              </div>
+            </div>
+            <h2
+              id={headingId}
+              class="text-2xl sm:text-3xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-tight"
+            >
+              Stay Ahead on <span class="text-domain-newsletters">AI-Based Software Engineering</span>
+            </h2>
+            <p class="text-sm sm:text-base text-gray-300 light:text-slate-600 leading-relaxed max-w-xl">
+              {copy.description}
+            </p>
+          </>
+        ) : (
+          <>
+            <h3
+              id={headingId}
+              class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 tracking-tight"
+            >
+              {copy.title}
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
+              {copy.description}
+            </p>
+          </>
+        )}
       </div>
 
       <div class={variantRightColClasses[variant]}>
-        <div class="flex items-center gap-2">
+        <div class={isSpotlight ? 'p-1.5 sm:p-2 rounded-2xl bg-slate-950/45 light:bg-white/90 border border-domain-newsletters/25 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5' : 'flex items-center gap-2'}>
           <label for={inputId} class="sr-only">Email address</label>
           <input
             id={inputId}
@@ -143,14 +215,18 @@ const copy = variantCopy[variant];
             autocomplete="email"
             placeholder="Enter your email address..."
             class:list={[
-              'flex-1 min-w-0 h-10 px-3.5 rounded-xl bg-element-bg/70 light:bg-white border border-element-border-medium light:border-slate-300 text-xs sm:text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all',
+              isSpotlight
+                ? 'w-full sm:w-auto sm:flex-1 min-w-0 h-12 px-4 rounded-xl bg-element-bg/80 light:bg-white border border-element-border-medium light:border-slate-300 text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all'
+                : 'flex-1 min-w-0 h-10 px-3.5 rounded-xl bg-element-bg/70 light:bg-white border border-element-border-medium light:border-slate-300 text-xs sm:text-sm text-gray-100 light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all',
               accent.inputFocus,
             ]}
           />
           <button
             type="submit"
             class:list={[
-              'h-10 px-4 sm:px-5 rounded-xl text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0',
+              isSpotlight
+                ? 'h-12 px-6 rounded-xl text-white font-extrabold text-sm tracking-wide inline-flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-domain-newsletters/35 hover:scale-[1.02] cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0'
+                : 'h-10 px-4 sm:px-5 rounded-xl text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shrink-0',
               accent.button,
             ]}
           >
@@ -166,7 +242,7 @@ const copy = variantCopy[variant];
           data-newsletter-feedback
           role="status"
           aria-live="polite"
-          class="hidden mt-2 text-xs px-3 py-2 rounded-xl border font-medium leading-relaxed"
+          class="hidden mt-2.5 text-xs px-3 py-2 rounded-xl border font-medium leading-relaxed"
         ></div>
       </div>
     </div>
@@ -198,16 +274,30 @@ const copy = variantCopy[variant];
         <a href="/datenschutz/#newsletter" class="underline hover:text-gray-300 light:hover:text-slate-800 transition-colors">Privacy<span class="hidden sm:inline"> Policy</span></a>
       </div>
 
-      <a
-        href="/newsletters/"
-        class:list={[
-          'inline-flex items-center gap-1 font-semibold hover:underline transition-colors shrink-0',
-          accent.link,
-        ]}
-      >
-        <span><span class="hidden sm:inline">Browse past issues in the </span>Archive</span>
-        <span aria-hidden="true">→</span>
-      </a>
+      {isSpotlight && latestIssue ? (
+        <a
+          href={`/newsletters/${latestIssue.id}/`}
+          title={latestIssue.title}
+          class:list={[
+            'inline-flex items-center gap-1 font-semibold hover:underline transition-colors shrink-0',
+            accent.link,
+          ]}
+        >
+          <span><span class="hidden sm:inline">Read latest issue </span>(#{latestIssue.issueNumber})</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      ) : (
+        <a
+          href="/newsletters/"
+          class:list={[
+            'inline-flex items-center gap-1 font-semibold hover:underline transition-colors shrink-0',
+            accent.link,
+          ]}
+        >
+          <span><span class="hidden sm:inline">Browse past issues in the </span>Archive</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      )}
     </div>
   </form>
 </aside>
