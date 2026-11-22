@@ -56,14 +56,14 @@
   
   /* Canonical Numbered Accent Palette (10-Stop Soft Nordic Pastel Spectrum) */
   --color-accent-1: #469b84; /* 1: Soft Sage (164°)        - About / Brand Primary */
-  --color-accent-2: #469b95; /* 2: Misty Teal (176°)       - Posts */
-  --color-accent-3: #47909e; /* 3: Dusty Cyan (190°)       - Publications */
-  --color-accent-4: #4a81a5; /* 4: Slate Sky (204°)        - Presentations */
+  --color-accent-2: #469b95; /* 2: Misty Teal (176°)       - Services */
+  --color-accent-3: #47909e; /* 3: Dusty Cyan (190°)       - Posts */
+  --color-accent-4: #4a81a5; /* 4: Slate Sky (204°)        - Projects */
   --color-accent-5: #4f76b0; /* 5: Dusty Blue (216°)       - Courses */
-  --color-accent-6: #5a6cb5; /* 6: Periwinkle Slate (228°) - Projects */
-  --color-accent-7: #6161b8; /* 7: Muted Indigo (240°)     - Services */
-  --color-accent-8: #7261b8; /* 8: Soft Iris (252°)        - Newsletters */
-  --color-accent-9: #8261b8; /* 9: Dusty Lavender (263°)   - Visualizations */
+  --color-accent-6: #5a6cb5; /* 6: Periwinkle Slate (228°) - Visualizations */
+  --color-accent-7: #6161b8; /* 7: Muted Indigo (240°)     - Presentations */
+  --color-accent-8: #7261b8; /* 8: Soft Iris (252°)        - Publications */
+  --color-accent-9: #8261b8; /* 9: Dusty Lavender (263°)   - Newsletters */
   --color-accent-10: #9261b8; /* 10: Muted Mauve (274°)    - Tags */
 
   /* Institution Logo Tokens (Soft Nordic Pastel) */

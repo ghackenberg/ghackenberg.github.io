@@ -31,5 +31,11 @@ During rapid live iteration, prioritize speed while maintaining safety in Window
 - **Fast Targeted Checks (Live Iteration)**: Instruct subagents to run fast targeted checks (`npm run lint`, `npm run typecheck`, plus relevant domain or color linters) after edits.
 - **Full Release Gate (Finalize / Pre-Merge)**: Reserve the full verification suite (`npm run verify`, governed by `build-engineering`) for when the user is satisfied or ready to finalize.
 
-## 5. Validation
+## 5. CPU & AI Load Scheduling (Scheduler Agent)
+When orchestrating multiple background tasks, designate a **Scheduler / Coordinator Agent** to govern both local machine load and AI concurrency:
+- **Local CPU Load Serialization**: Serialize heavy Node, Astro, ESLint, Typecheck, and build processes so they never saturate the user's machine or stall an active local dev server.
+- **Single Heavy-Job Rule**: Run at most **1 CPU-heavy verification or build process** at a time while a local dev server is running; queue subsequent verifications instead of running them concurrently.
+- **AI Concurrency Throttling**: Limit parallel subagent fan-out to only what is genuinely needed, avoiding speculative or redundant background workers.
+
+## 6. Validation
 Run the pre-flight skill validator (`npm run validate:skills`, governed by `skill-engineering`) in Windows PowerShell before finalizing any changes to this skill.

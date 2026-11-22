@@ -288,14 +288,14 @@ if (colorBrandBlueViolations === 0) {
 
 // 10. Overview pages <h1> must contain canonical solid domain highlights (<span class="text-domain-*">)
 const OVERVIEW_PAGES_CONFIG = [
-  { file: 'src/pages/posts/index.astro', domain: 'posts' },
-  { file: 'src/pages/publications/index.astro', domain: 'publications' },
-  { file: 'src/pages/presentations/index.astro', domain: 'presentations' },
-  { file: 'src/pages/courses/index.astro', domain: 'courses' },
-  { file: 'src/pages/projects/index.astro', domain: 'projects' },
   { file: 'src/pages/services.astro', domain: 'services' },
-  { file: 'src/pages/newsletters/index.astro', domain: 'newsletters' },
+  { file: 'src/pages/posts/index.astro', domain: 'posts' },
+  { file: 'src/pages/projects/index.astro', domain: 'projects' },
+  { file: 'src/pages/courses/index.astro', domain: 'courses' },
   { file: 'src/pages/visualizations/index.astro', domain: 'visualizations' },
+  { file: 'src/pages/presentations/index.astro', domain: 'presentations' },
+  { file: 'src/pages/publications/index.astro', domain: 'publications' },
+  { file: 'src/pages/newsletters/index.astro', domain: 'newsletters' },
   { file: 'src/pages/tags/index.astro', domain: 'tags' },
 ];
 
@@ -956,14 +956,14 @@ const indexFile = path.resolve(PAGES_DIR, 'index.astro');
 if (fs.existsSync(indexFile)) {
   const indexContent = fs.readFileSync(indexFile, 'utf8');
   const expectedIndexSectionIds = [
-    'latest-posts',
-    'publications',
-    'presentations',
-    'courses',
-    'projects',
     'services',
-    'newsletters',
+    'latest-posts',
+    'projects',
+    'courses',
     'visualizations',
+    'presentations',
+    'publications',
+    'newsletters',
     'content-tags'
   ];
   let lastIndex = -1;
@@ -987,14 +987,14 @@ const tagDetailPage = path.resolve(PAGES_DIR, 'tags', '[tag].astro');
 if (fs.existsSync(tagDetailPage)) {
   const tagDetailContent = fs.readFileSync(tagDetailPage, 'utf8');
   const expectedTagSectionIds = [
-    'blog-posts',
-    'publications',
-    'presentations',
-    'courses',
-    'projects',
     'services',
-    'newsletters',
-    'visualizations'
+    'blog-posts',
+    'projects',
+    'courses',
+    'visualizations',
+    'presentations',
+    'publications',
+    'newsletters'
   ];
   let lastIndex = -1;
   for (const secId of expectedTagSectionIds) {
@@ -1017,14 +1017,14 @@ const tagsOverviewPage = path.resolve(PAGES_DIR, 'tags', 'index.astro');
 if (fs.existsSync(tagsOverviewPage)) {
   const tagsOverviewContent = fs.readFileSync(tagsOverviewPage, 'utf8');
   const expectedBadges = [
-    '{tag.postCount > 0 && (',
-    '{tag.pubCount > 0 && (',
-    '{tag.presCount > 0 && (',
-    '{tag.courseCount > 0 && (',
-    '{tag.projCount > 0 && (',
     '{tag.serviceCount > 0 && (',
-    '{tag.newsletterCount > 0 && (',
-    '{tag.visCount > 0 && ('
+    '{tag.postCount > 0 && (',
+    '{tag.projCount > 0 && (',
+    '{tag.courseCount > 0 && (',
+    '{tag.visCount > 0 && (',
+    '{tag.presCount > 0 && (',
+    '{tag.pubCount > 0 && (',
+    '{tag.newsletterCount > 0 && ('
   ];
   let lastIndex = -1;
   for (const badge of expectedBadges) {

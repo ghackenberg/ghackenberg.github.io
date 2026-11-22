@@ -1,26 +1,26 @@
 /* Canonical Domain Color Tokens and Utilities */
 
 @theme {
-  --color-domain-posts: var(--color-accent-2);          /* 2: Misty Teal */
-  --color-domain-publications: var(--color-accent-3);   /* 3: Dusty Cyan */
-  --color-domain-presentations: var(--color-accent-4);  /* 4: Slate Sky */
+  --color-domain-services: var(--color-accent-2);       /* 2: Misty Teal */
+  --color-domain-posts: var(--color-accent-3);          /* 3: Dusty Cyan */
+  --color-domain-projects: var(--color-accent-4);       /* 4: Slate Sky */
   --color-domain-courses: var(--color-accent-5);        /* 5: Dusty Blue */
-  --color-domain-projects: var(--color-accent-6);       /* 6: Periwinkle Slate */
-  --color-domain-services: var(--color-accent-7);       /* 7: Muted Indigo */
-  --color-domain-newsletters: var(--color-accent-8);    /* 8: Soft Iris */
-  --color-domain-visualizations: var(--color-accent-9); /* 9: Dusty Lavender */
+  --color-domain-visualizations: var(--color-accent-6); /* 6: Periwinkle Slate */
+  --color-domain-presentations: var(--color-accent-7);  /* 7: Muted Indigo */
+  --color-domain-publications: var(--color-accent-8);   /* 8: Soft Iris */
+  --color-domain-newsletters: var(--color-accent-9);    /* 9: Dusty Lavender */
   --color-domain-tags: var(--color-accent-10);          /* 10: Muted Mauve */
 }
 
 :root.light, .light {
-  --color-domain-posts: var(--color-accent-2);
-  --color-domain-publications: var(--color-accent-3);
-  --color-domain-presentations: var(--color-accent-4);
+  --color-domain-services: var(--color-accent-2);
+  --color-domain-posts: var(--color-accent-3);
+  --color-domain-projects: var(--color-accent-4);
   --color-domain-courses: var(--color-accent-5);
-  --color-domain-projects: var(--color-accent-6);
-  --color-domain-services: var(--color-accent-7);
-  --color-domain-newsletters: var(--color-accent-8);
-  --color-domain-visualizations: var(--color-accent-9);
+  --color-domain-visualizations: var(--color-accent-6);
+  --color-domain-presentations: var(--color-accent-7);
+  --color-domain-publications: var(--color-accent-8);
+  --color-domain-newsletters: var(--color-accent-9);
   --color-domain-tags: var(--color-accent-10);
 }
 
@@ -31,14 +31,14 @@
   --color-current-domain: var(--color-domain-posts);
 }
 
-[data-domain="posts"], .domain-scope-posts { --color-current-domain: var(--color-domain-posts); }
-[data-domain="publications"], .domain-scope-publications { --color-current-domain: var(--color-domain-publications); }
-[data-domain="presentations"], .domain-scope-presentations { --color-current-domain: var(--color-domain-presentations); }
-[data-domain="courses"], .domain-scope-courses { --color-current-domain: var(--color-domain-courses); }
-[data-domain="projects"], .domain-scope-projects { --color-current-domain: var(--color-domain-projects); }
 [data-domain="services"], .domain-scope-services { --color-current-domain: var(--color-domain-services); }
-[data-domain="newsletters"], .domain-scope-newsletters { --color-current-domain: var(--color-domain-newsletters); }
+[data-domain="posts"], .domain-scope-posts { --color-current-domain: var(--color-domain-posts); }
+[data-domain="projects"], .domain-scope-projects { --color-current-domain: var(--color-domain-projects); }
+[data-domain="courses"], .domain-scope-courses { --color-current-domain: var(--color-domain-courses); }
 [data-domain="visualizations"], .domain-scope-visualizations { --color-current-domain: var(--color-domain-visualizations); }
+[data-domain="presentations"], .domain-scope-presentations { --color-current-domain: var(--color-domain-presentations); }
+[data-domain="publications"], .domain-scope-publications { --color-current-domain: var(--color-domain-publications); }
+[data-domain="newsletters"], .domain-scope-newsletters { --color-current-domain: var(--color-domain-newsletters); }
 [data-domain="tags"], .domain-scope-tags { --color-current-domain: var(--color-domain-tags); }
 
 /* All prose links and plain hyperlinks in content */

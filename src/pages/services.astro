@@ -3,10 +3,10 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
-import { getImage } from "astro:assets";
 import FilterToolbar from "@components/FilterToolbar.astro";
 import CatalogPreFilter from "@components/CatalogPreFilter.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ServiceCard from "@components/ServiceCard.astro";
 import { buildCollectionPageSchema } from "@commons/server/json-ld";
 
 const services = await getCollection("services");
@@ -22,38 +22,13 @@ for (const service of services) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = sortedServices.map(s => (s.data.tags || []).map(t => t.toLowerCase()));
 
-const optimizedServices = await Promise.all(
-  sortedServices.map(async (service) => {
-    let optimizedImageSrc = undefined;
-
-    if (service.data.image) {
-      const img = service.data.image.src;
-      const optimized = await getImage({
-        src: img,
-        format: "webp",
-        width: 800,
-        quality: 80
-      });
-      optimizedImageSrc = optimized.src;
-    }
-
-    return {
-      ...service,
-      optimizedImageSrc
-    };
-  })
-);
-
-
-
 const firstServiceImage = services.find(s => s.data.image)?.data.image;
 
 const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) => ({ id: `https://hackenberg.tech/services/${s.id}/#service` })));
-
 ---
 
-<Layout 
-  title="AI, Software & Content Engineering Services | Hackenberg" 
+<Layout
+  title="AI, Software & Content Engineering Services | Hackenberg"
   description="B2B engineering and advisory services by Prof. Dr. Georg Hackenberg: Sovereign AI agent stacks, MCP servers, software architecture, and content pipelines."
   image={firstServiceImage}
   jsonLd={pageJsonLd}
@@ -85,117 +60,29 @@ const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) 
     />
 
     <!-- Services Grid (3-2-1) -->
-    {optimizedServices.length === 0 ? (
+    {sortedServices.length === 0 ? (
       <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No services defined.</p>
     ) : (
       <>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="services-grid">
-          {optimizedServices.map((service) => {
+          {sortedServices.map((service) => {
             const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
             return (
-              <div 
-                id={service.id} 
+              <div
+                id={service.id}
                 class="service-card relative group h-full"
                 data-title={service.data.title.toLowerCase()}
                 data-desc={service.data.description.toLowerCase()}
                 data-tags={tagsJoined}
               >
-                <article class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-domain-services/40 transition-all duration-300" data-card-id={service.id} data-collection="services">
-                  <!-- Card Clickable Overlay Link -->
-                  <a 
-                    href={`/services/${service.id}/`} 
-                    class="absolute inset-0 z-10 cursor-pointer" 
-                    aria-label={`View details for ${service.data.title}`}
-                  ></a>
-
-                  <!-- Preview Image Column (Top) -->
-                  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
-                    {service.data.image && (() => {
-                      const img = service.data.image.src;
-                      const title = service.data.image.title;
-                      const desc = service.data.image.description;
-                      return (
-                      <svg 
-                        class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
-                        viewBox={`0 0 ${img.width} ${img.height}`} 
-                        preserveAspectRatio="xMidYMid slice" 
-                        role="img" 
-                        aria-label={desc}
-                      >
-                        <defs>
-                          <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="black" stop-opacity="0" />
-                            <stop offset="50%" stop-color="black" stop-opacity="0.15" />
-                            <stop offset="100%" stop-color="black" stop-opacity="0.75" />
-                          </linearGradient>
-                          <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="black" stop-opacity="0" />
-                            <stop offset="50%" stop-color="black" stop-opacity="0.10" />
-                            <stop offset="100%" stop-color="black" stop-opacity="0.40" />
-                          </linearGradient>
-                        </defs>
-                        <image 
-                          role="img"
-                          href={service.optimizedImageSrc || img.src} 
-                          x="0" 
-                          y="0" 
-                          width={img.width} 
-                          height={img.height} 
-                          preserveAspectRatio="xMidYMid slice" 
-                          {...{ title }}
-                          aria-label={desc}
-                        />
-                        <rect 
-                          x="0" 
-                          y="0" 
-                          width={img.width} 
-                          height={img.height + 0.5} 
-                          class="block light:hidden"
-                          fill={`url(#grad-service-dark-${service.id})`} 
-                        />
-                        <rect 
-                          x="0" 
-                          y="0" 
-                          width={img.width} 
-                          height={img.height + 0.5} 
-                          class="hidden light:block"
-                          fill={`url(#grad-service-light-${service.id})`} 
-                        />
-                      </svg>
-                    );
-                    })()}
-                  </div>
-
-                  <!-- Info Body (Below) -->
-                  <div class="preview-card-body flex flex-col flex-grow justify-between">
-                    <div>
-                      <!-- Header -->
-                      <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 tracking-tight leading-snug transition-colors group-hover:text-domain-services light:group-hover:text-domain-services line-clamp-1 min-h-[1lh]" title={service.data.title}>
-                        <span>{service.data.title}</span>
-                      </h2>
-
-                      <!-- Description -->
-                      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
-                        {service.data.description}
-                      </p>
-                    </div>
-
-                    <!-- Footer CTA Button -->
-                    <div class="mt-auto pt-4 w-full relative z-20">
-                      <a
-                        href={`/services/${service.id}/`}
-                        aria-label={`Read More: ${service.data.title}`}
-                        class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-services/12 hover:bg-domain-services/25 border border-domain-services/20 hover:border-domain-services/45 text-domain-services text-xs font-bold relative z-20 transition-all duration-200"
-                      >
-                        <span>Read More</span>
-                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-
-                </article>
+                <ServiceCard
+                  id={service.id}
+                  title={service.data.title}
+                  description={service.data.description}
+                  tags={service.data.tags}
+                  image={service.data.image}
+                  headingTag="h2"
+                />
               </div>
             );
           })}
@@ -213,48 +100,6 @@ const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) 
     </p>
   </Container>
 </Layout>
-
-<style>
-  /* Markdown content styling for service layouts */
-  .service-content :global(h3) {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: white;
-    margin-top: 1.5rem;
-    margin-bottom: 0.85rem;
-    letter-spacing: -0.015em;
-  }
-  .service-content :global(h3:first-child) {
-    margin-top: 0;
-  }
-  .service-content :global(h4) {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--color-text-heading);
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-  .service-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.7;
-    color: var(--color-text-subtle);
-    margin-bottom: 1.25rem;
-  }
-  .service-content :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.25rem;
-    color: var(--color-text-subtle);
-  }
-  .service-content :global(li) {
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-  .service-content :global(li strong) {
-    color: var(--color-text-heading);
-  }
-</style>
 
 <script>
   import { ClientListFilter } from "@commons/client/filter";

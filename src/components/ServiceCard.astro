@@ -11,6 +11,7 @@ interface Props {
   showTags?: boolean;
   image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   ctaText?: string;
+  headingTag?: 'h2' | 'h3';
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   showTags,
   image,
   ctaText = "Read More",
+  headingTag = "h3",
 } = Astro.props;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
@@ -40,22 +42,28 @@ const optimizedImage = imageImg ? await getImage({
 }) : null;
 ---
 
-<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-domain-services/40 transition-all duration-300" data-card-id={id} data-collection="services">
+<article class="glass-card service-featured-card preview-card h-full border border-domain-services/40 hover:border-domain-services/70 light:border-domain-services/35 light:hover:border-domain-services/65 shadow-lg shadow-domain-services/10 flex flex-col group relative cursor-pointer transition-all duration-300" data-card-id={id} data-collection="services">
+  <!-- Featured Service Ambient Backdrop Tint -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-domain-services/[0.08] via-transparent to-domain-services/[0.03] light:from-domain-services/[0.06] light:via-transparent light:to-domain-services/[0.02]"
+  ></div>
+
   <!-- Card Clickable Overlay Link -->
-  <a 
-    href={`/services/${id}/`} 
-    class="absolute inset-0 z-10 cursor-pointer" 
+  <a
+    href={`/services/${id}/`}
+    class="absolute inset-0 z-10 cursor-pointer"
     aria-label={`View details for ${title}`}
   ></a>
 
   <!-- Preview Image Column (Top) -->
-  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
+  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-domain-services/25 light:border-domain-services/20">
     {imageImg && optimizedImage ? (
-      <svg 
-        class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
-        viewBox={`0 0 ${imageImg.width || 800} ${imageImg.height || 450}`} 
-        preserveAspectRatio="xMidYMid slice" 
-        role="img" 
+      <svg
+        class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none"
+        viewBox={`0 0 ${imageImg.width || 800} ${imageImg.height || 450}`}
+        preserveAspectRatio="xMidYMid slice"
+        role="img"
         aria-label={imageDesc}
       >
         <defs>
@@ -70,32 +78,32 @@ const optimizedImage = imageImg ? await getImage({
             <stop offset="100%" stop-color="black" stop-opacity="0.40" />
           </linearGradient>
         </defs>
-        <image 
+        <image
           role="img"
-          href={optimizedImage.src} 
-          x="0" 
-          y="0" 
-          width={imageImg.width || 800} 
-          height={imageImg.height || 450} 
-          preserveAspectRatio="xMidYMid slice" 
+          href={optimizedImage.src}
+          x="0"
+          y="0"
+          width={imageImg.width || 800}
+          height={imageImg.height || 450}
+          preserveAspectRatio="xMidYMid slice"
           {...{ title: imageTitle }}
           aria-label={imageDesc}
         />
-        <rect 
-          x="0" 
-          y="0" 
-          width={imageImg.width || 800} 
-          height={(imageImg.height || 450) + 0.5} 
+        <rect
+          x="0"
+          y="0"
+          width={imageImg.width || 800}
+          height={(imageImg.height || 450) + 0.5}
           class="block light:hidden"
-          fill={`url(#grad-service-dark-${id})`} 
+          fill={`url(#grad-service-dark-${id})`}
         />
-        <rect 
-          x="0" 
-          y="0" 
-          width={imageImg.width || 800} 
-          height={(imageImg.height || 450) + 0.5} 
+        <rect
+          x="0"
+          y="0"
+          width={imageImg.width || 800}
+          height={(imageImg.height || 450) + 0.5}
           class="hidden light:block"
-          fill={`url(#grad-service-light-${id})`} 
+          fill={`url(#grad-service-light-${id})`}
         />
       </svg>
     ) : (
@@ -108,11 +116,17 @@ const optimizedImage = imageImg ? await getImage({
   </div>
 
   <!-- Content Body -->
-  <div class="preview-card-body flex flex-col flex-grow">
+  <div class="preview-card-body relative z-[1] flex flex-col flex-grow">
     <div>
-      <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 tracking-tight group-hover:text-domain-services transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={title}>
-        {title}
-      </h3>
+      {headingTag === 'h2' ? (
+        <h2 class="text-base sm:text-lg font-bold text-gray-100 mb-2 tracking-tight group-hover:text-domain-services transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={title}>
+          {title}
+        </h2>
+      ) : (
+        <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 tracking-tight group-hover:text-domain-services transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={title}>
+          {title}
+        </h3>
+      )}
       <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
         {description}
       </p>
@@ -125,7 +139,7 @@ const optimizedImage = imageImg ? await getImage({
             <a
               href={`/tags/${t}/`}
               data-tag={t}
-              class={`tag-chip tag-chip-emerald inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              class={`tag-chip tag-chip-services inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                 isTagActive(t) ? 'active-tag-match' : ''
               }`}
             >
@@ -138,7 +152,7 @@ const optimizedImage = imageImg ? await getImage({
           <a
             href={`/services/${id}/`}
             aria-label={`${ctaText}: ${title}`}
-            class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-services/12 hover:bg-domain-services/25 border border-domain-services/20 hover:border-domain-services/45 text-domain-services text-xs font-bold relative z-20 transition-all duration-200"
+            class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-services/15 hover:bg-domain-services/28 border border-domain-services/30 hover:border-domain-services/55 text-domain-services text-xs font-bold relative z-20 transition-all duration-200"
           >
             <span>{ctaText}</span>
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -152,7 +166,7 @@ const optimizedImage = imageImg ? await getImage({
         <a
           href={`/services/${id}/`}
           aria-label={`${ctaText}: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-services/12 hover:bg-domain-services/25 border border-domain-services/20 hover:border-domain-services/45 text-domain-services text-xs font-bold relative z-20 transition-all duration-200"
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-services/15 hover:bg-domain-services/28 border border-domain-services/30 hover:border-domain-services/55 text-domain-services text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>{ctaText}</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -163,3 +177,33 @@ const optimizedImage = imageImg ? await getImage({
     )}
   </div>
 </article>
+
+<style>
+  .service-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-services) 40%, transparent);
+    box-shadow:
+      0 10px 28px -12px color-mix(in srgb, var(--color-domain-services) 22%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-services) 12%, transparent) inset;
+  }
+
+  .service-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-services) 70%, transparent);
+    box-shadow:
+      0 16px 36px -12px color-mix(in srgb, var(--color-domain-services) 34%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-services) 22%, transparent) inset;
+  }
+
+  :global(.light) .service-featured-card {
+    border-color: color-mix(in srgb, var(--color-domain-services) 35%, transparent);
+    box-shadow:
+      0 10px 26px -10px color-mix(in srgb, var(--color-domain-services) 18%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-services) 10%, transparent) inset;
+  }
+
+  :global(.light) .service-featured-card:hover {
+    border-color: color-mix(in srgb, var(--color-domain-services) 65%, transparent);
+    box-shadow:
+      0 16px 34px -10px color-mix(in srgb, var(--color-domain-services) 26%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-domain-services) 18%, transparent) inset;
+  }
+</style>
