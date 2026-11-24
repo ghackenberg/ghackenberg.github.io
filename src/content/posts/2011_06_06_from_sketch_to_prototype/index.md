@@ -2,6 +2,7 @@
 title: "From Hand-Drawn UI Sketch to Functional Web Prototype"
 pubDate: "2011-06-05"
 description: "Walking through the iterative design process from initial pen-and-paper wireframes to a database-backed interactive web portfolio prototype."
+inLanguage: "en"
 tags: ["blog", "user-interface", "drawing"]
 image:
   src: "./backgrounds.png"

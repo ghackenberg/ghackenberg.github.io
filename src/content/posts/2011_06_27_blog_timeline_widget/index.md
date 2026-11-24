@@ -2,6 +2,7 @@
 title: "Interactive Blog Timeline Widget for Chronological Browsing"
 pubDate: "2011-06-26"
 description: "Designing an interactive chronological timeline widget in HTML and JavaScript to visualize publication density and browse blog archives by date."
+inLanguage: "en"
 tags: ["blog", "data-visualization", "user-interface", "youtube-video"]
 image:
   src: "./bubble.png"

@@ -2,6 +2,7 @@
 title: "Intelligent Traffic Control & Simulation Workbench Preview"
 pubDate: "2013-12-17"
 description: "Applying distributed smart-systems optimization and discrete-event simulation to adaptive urban traffic light control and corridor routing."
+inLanguage: "en"
 tags: ["data-visualization", "dynamic-programming", "simulation", "traffic-control", "transportation-systems"]
 image:
   src: "./graph.png"

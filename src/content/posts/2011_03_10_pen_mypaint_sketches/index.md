@@ -2,6 +2,7 @@
 title: "Digital Pen Sketching for Software Design with MyPaint"
 pubDate: "2011-03-09"
 description: "Using Tablet PC pen input and the open-source painting tool MyPaint for rapid software architecture sketching and UI wireframing."
+inLanguage: "en"
 tags: ["drawing"]
 image:
   src: "./book.png"

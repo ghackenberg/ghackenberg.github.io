@@ -2,6 +2,7 @@
 title: "3D Cubic Spline Interpolation: Real-Time Video Demo"
 pubDate: "2011-02-01"
 description: "Demonstrating smooth 3D trajectory estimation and surface smoothing using continuous cubic spline interpolation on time-series sensor data."
+inLanguage: "en"
 tags: ["youtube-video", "data-visualization"]
 image:
   src: "./screenshot.png"

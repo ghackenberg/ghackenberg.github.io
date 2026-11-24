@@ -2,6 +2,7 @@
 title: "Interactive Blog Calendar Interface for Archive Navigation"
 pubDate: "2011-06-27"
 description: "Building a two-dimensional calendar matrix interface for navigating chronological blog archives and inspecting daily publication activity."
+inLanguage: "en"
 tags: ["blog", "data-visualization", "user-interface"]
 image:
   src: "./bubble.png"

@@ -2,6 +2,7 @@
 title: "Procedural Graphs mit Mastra in TypeScript umsetzen"
 pubDate: 2026-09-20
 description: "Wie Software-Ingenieure selbstlernende Procedural Graphs mit Mastra und TypeScript implementieren: Zod-Schemas, Runtime Soft Guidance und MCP-Integration."
+inLanguage: "de"
 tags:
   - mastra
   - typescript
@@ -61,7 +62,7 @@ Dieser Beitrag schlägt die Brücke vom Forschungspapier zur lauffähigen Enterp
 > * **Procedural Graphs (Google Research, 2026):** Ein attributierter Wissensgraph $\mathcal{G} = (\mathcal{V}, \mathcal{R}, \mathcal{E}, \Phi)$ fungiert als dynamisches Leitplanken-Modell. Anstelle fest verdrahteter Code-Pfade liefert jede Kante situative Bedingungen, Handlungsrichtlinien und bekannte Fehler-Fallstricke (`condition`, `guidance`, `pitfalls`) als *Soft Guidance* in den Prompt des Agenten.
 > * **Warum Mastra?** Das TypeScript-Framework Mastra bietet native Zod-Validierung, asynchrone Workflow-Graphen mit programmierbaren Verzweigungen (`.branch()`) sowie die Fähigkeit, Workflows via `suspend()` und `resume()` für Genehmigungsschritte (*Human-in-the-Loop*) persistent anzuhalten.
 
-## 1. Das Architektur-Paradigma: Ausführungsgraph vs. Attributierter Wissensgraph
+## 1. Wie unterscheidet sich ein Ausführungsgraph von einem Wissensgraphen?
 
 Der häufigste Denkfehler bei der praktischen Umsetzung von Procedural Graphs besteht darin, sie mit klassischen Graph-Workflow-Engines gleichzusetzen. 
 
@@ -613,3 +614,13 @@ Für die erfolgreiche Einführung in produktiven Unternehmensumgebungen empfehle
 4. **Rejection Memory von Tag 1 an aktivieren:** Jeder im Validation Gate abgewiesene Optimierungsvorschlag muss dauerhaft im Gedächtnis verankert werden, um endlose Optimierungsschleifen im Keim zu ersticken.
 
 Mit dieser Architektur erhalten Enterprise-Entwickler das Beste aus zwei Welten: die unbestechliche Verlässlichkeit und Nachvollziehbarkeit formaler Prozessstrukturen – gepaart mit der intuitiven Flexibilität und Problemlösungskompetenz modernster Sprachmodelle.
+
+Die folgende Gegenüberstellung ordnet starre RPA-Workflows, unbeschränkte ReAct-Agenten und Procedural Graphs in Mastra systematisch ein:
+
+<!-- caption: "Architekturvergleich zwischen klassischen RPA-Workflows, freien ReAct-Agenten und Procedural Graphs in Mastra." -->
+| Kriterium | Klassischer RPA / DAG-Workflow | Unbeschränkter ReAct-Agent | Procedural Graph in Mastra |
+| :--- | :--- | :--- | :--- |
+| **Steuerungslogik** | Hart codierte Verzweigungen | Rein stochastische Tool-Auswahl | Attributierter Wissensgraph + Runtime Soft Guidance |
+| **Fehlertoleranz** | Fragil bei Formatabweichungen | Schleifen- und Drift-Anfälligkeit | Deterministische Guards, `suspend`/`resume` & Recovery |
+| **Wartung & Evolution** | Code-Deployment für jede Regel | Prompt-Tuning ohne Gedächtnis | Offline-Evolution mit Zod-Gate & Rejection Memory |
+| **Compliance & Audit** | Hoch, aber unflexibel | Schwer nachvollziehbar | `requiresHumanReview` & persistenter `PostgresStore` |

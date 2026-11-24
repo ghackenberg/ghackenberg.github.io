@@ -2,6 +2,7 @@
 title: "Modeling Battery Energy Storage in Smart Grid Simulations"
 pubDate: "2012-08-19"
 description: "Integrating distributed battery energy storage models into our smart grid simulation workbench to buffer peak loads and stabilize grid frequency."
+inLanguage: "en"
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
 image:
   src: "./diagram.png"

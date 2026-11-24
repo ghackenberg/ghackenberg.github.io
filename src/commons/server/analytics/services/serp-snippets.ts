@@ -21,13 +21,14 @@ function findMarkdownFiles(dir: string): string[] {
 }
 
 function parseFrontmatter(content: string): { title: string; description: string } {
+  const normalized = content.replace(/^\uFEFF/, '').trimStart();
   let title = '';
   let description = '';
 
-  if (content.startsWith('---')) {
-    const end = content.indexOf('---', 3);
+  if (normalized.startsWith('---')) {
+    const end = normalized.indexOf('---', 3);
     if (end !== -1) {
-      const header = content.slice(3, end);
+      const header = normalized.slice(3, end);
 
       const titleMatch = header.match(/^title:\s*(?:["']?)(.*?)(?:["']?)$/m);
       if (titleMatch) title = titleMatch[1].trim();

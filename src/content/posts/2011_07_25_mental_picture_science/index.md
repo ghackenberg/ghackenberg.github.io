@@ -2,6 +2,7 @@
 title: "A Mental Picture of Science & Engineering Research"
 pubDate: "2011-07-24"
 description: "Reflecting on the epistemological cycle between empirical observation, formal mathematical modeling, and software systems engineering."
+inLanguage: "en"
 tags: ["drawing"]
 image:
   src: "./whiteboard.jpg"

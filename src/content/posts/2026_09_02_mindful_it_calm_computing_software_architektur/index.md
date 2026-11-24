@@ -70,7 +70,7 @@ Doch wie sieht die **konstruktive ingenieurwissenschaftliche Antwort** aus?
 
 **Mindful IT** (Achtsame Informationstechnologie) und **Calm Computing** sind keine esoterischen Wellness-Trends oder bloße Meditations-Apps. Sie markieren einen fundamentalen **Paradigmenwechsel im Software-Engineering und in der Systemarchitektur**. Es geht um den systematischen Entwurf von IT-Systemen, Datenarchitekturen und KI-Agenten, die die biologischen Grenzen der menschlichen Kognition respektieren, mentale Reibung minimieren und den Menschen als intentional handelndes Subjekt in den Mittelpunkt stellen.
 
-## 1. Der Paradigmenwechsel: Von „Attention Extraction“ zu „Kognitiver Resilienz“
+## 1. Warum verdrängt Kognitive Resilienz die klassische Attention Extraction?
 
 In den vergangenen zwei Jahrzehnten wurden IT-Systeme primär auf Metriken optimiert, die Aufmerksamkeit wie einen Rohstoff abbauen: *Daily Active Users (DAU)*, *Time-on-Screen*, *Scroll Depth* und *Impression Volume*. 
 
@@ -122,7 +122,7 @@ Die folgende Grafik verdeutlicht das Zusammenspiel von peripherer Wahrnehmung un
 
 ![Calm Technology und Kognitive Ergonomie](./calm_technology_cognition.svg "Calm Technology Cognition")
 
-## 3. Software-Architekturen & Engineering-Muster für Mindful Systems
+## 3. Welche Software-Architekturen ermöglichen produktive Mindful Systems?
 
 Wie übersetzt man psychologische Achtsamkeitsprinzipien in konkrete Systemarchitekturen, Datenmodelle und Code? Fünf Architekturmuster bilden das technologische Rückgrat:
 

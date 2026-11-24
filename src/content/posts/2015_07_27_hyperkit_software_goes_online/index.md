@@ -2,6 +2,7 @@
 title: "Hyperkit Software&#8482; goes online!"
 pubDate: "2015-07-26"
 description: "I am happy to announce the launch of www.hyperkit-software.com! We have been working on our software products over the past two years. Now we feel is the right ..."
+inLanguage: "en"
 tags: ["hyperkit-software", "knowledge-management", "data-visualization"]
 image:
   src: "./screenshot.jpg"

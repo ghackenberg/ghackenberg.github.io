@@ -2,6 +2,7 @@
 title: "Systems Engineering Perspectives on Smart Energy Grids"
 pubDate: "2011-07-21"
 description: "Analyzing the transition toward decentralized renewable energy supply systems from a software architecture and systems engineering perspective."
+inLanguage: "en"
 tags: ["drawing", "energy-systems", "systems-engineering"]
 image:
   src: "./bus.jpg"

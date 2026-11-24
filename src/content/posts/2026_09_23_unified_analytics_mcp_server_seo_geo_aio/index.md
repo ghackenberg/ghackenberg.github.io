@@ -2,6 +2,7 @@
 title: "Unified Analytics MCP Server für SEO-, GEO- & AIO-Audits"
 pubDate: 2026-09-23
 description: "Wie unser nativer Model Context Protocol (MCP) Server Google Search Console und Plausible Analytics für automatisierte SEO-, GEO- und AIO-Audits vereint."
+inLanguage: "de"
 tags:
   - aeo
   - agentic-ai

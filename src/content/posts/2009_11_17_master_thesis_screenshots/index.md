@@ -2,6 +2,7 @@
 title: "3D Hand Tracking & Multi-Touch Master Thesis Screenshots"
 pubDate: "2009-11-10"
 description: "First screenshots of my real-time 3D hand tracking and multi-touch interaction prototype developed during my Master thesis at Fraunhofer FIT."
+inLanguage: "en"
 tags: ["motion-capture", "computer-vision", "data-visualization"]
 image:
   src: "./default.jpg"

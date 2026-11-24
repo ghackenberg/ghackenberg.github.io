@@ -7,8 +7,8 @@ order: 1
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: Requirements & Story Mapping"
-  description: "Isometrisches Story-Mapping-Board mit strukturierten User-Story-Spalten, Epic-Hierarchien und verifizierten Akzeptanzkriterien"
+  title: "Architecture: Requirements & Story Mapping"
+  description: "Isometric story-mapping board displaying structured user-story columns, epic hierarchies, and verified acceptance criteria"
 highlights:
   - "Collaborative stakeholder elicitation workshops using Event Storming and Domain Storytelling"
   - "Formal specification of functional requirements and domain invariants with unambiguous acceptance criteria"

@@ -2,6 +2,7 @@
 title: "Interactive 3D Behavior Space & Trace Visualization"
 pubDate: "2013-05-15"
 description: "Visualizing high-dimensional simulation behavior trees and heuristic optimization trajectories in 3D within our Xtream smart systems workbench."
+inLanguage: "en"
 tags: ["computer-graphics", "data-visualization", "dynamic-programming", "simulation"]
 image:
   src: "./rendering.png"

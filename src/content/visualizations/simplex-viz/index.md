@@ -1,6 +1,6 @@
 ---
 title: "SimplexViz: Barycentric Simplex Mesh Graph"
-description: "Interactive barycentric simplex triangulation visualization powered by @simplex-viz/svg, featuring OKLab perceptual color mixing, SAT zero-overlap packing, and 1:4 conformal drill-down."
+description: "Interactive 60° simplex mesh knowledge graph powered by @simplex-viz/svg with OKLab blending, 0.0 px SAT packing, and 1:4 drill-down."
 image:
   src: "./simplex-viz.png"
   title: "SimplexViz Barycentric Simplex Mesh"

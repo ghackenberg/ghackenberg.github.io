@@ -130,3 +130,5 @@ Because [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.i
   },
 ],
 ```
+
+Together with our [flicker-free unread notification badges](/posts/2026_05_24_unread_indicators_navbar_badges/), the [dynamic parallax content gallery engine](/posts/2026_09_15_dynamic_parallax_content_gallery_engine/), and the [Slide-as-Code presentation engine](/posts/2026_09_26_presentation_engine_slide_as_code_voiceover/), these Preact and AST gates complete the site's zero-flicker, zero-`innerHTML` frontend architecture.

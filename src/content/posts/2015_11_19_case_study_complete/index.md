@@ -2,6 +2,7 @@
 title: "Manufacturing systems case study completed!"
 pubDate: "2015-11-18"
 description: "It took me the whole year to develop a software, which implements the cross-discipline manufacturing systems modeling and consistency checking technique I propo..."
+inLanguage: "en"
 tags: ["manufacturing-engineering", "manufacturing-systems", "systems-engineering", "systems-verification"]
 image:
   src: "./pick_and_place_unit.png"

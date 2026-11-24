@@ -2,6 +2,7 @@
 title: "3D Multi-Touch Product Vision & Gesture Display Concept"
 pubDate: "2011-01-26"
 description: "Translating our Fraunhofer FIT 3D multi-touch research prototype into an industrial product vision for interactive 3D gesture displays."
+inLanguage: "en"
 tags: ["drawing", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 image:
   src: "./pencil_drawing.jpg"

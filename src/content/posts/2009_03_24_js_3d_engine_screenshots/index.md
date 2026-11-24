@@ -2,6 +2,7 @@
 title: "JavaScript 3D Engine Screenshots."
 pubDate: "2009-03-23"
 description: "The history of me developing 3D engines for the Web goes back quite a while. It was revived after working at Siemens Corporate Research because they had the nee..."
+inLanguage: "en"
 tags: ["computer-graphics", "data-visualization", "hyperkit-software", "javascript", "zumida"]
 image:
   src: "./firefox.gif"

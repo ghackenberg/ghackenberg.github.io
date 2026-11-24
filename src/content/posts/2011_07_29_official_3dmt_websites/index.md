@@ -2,6 +2,7 @@
 title: "Official 3D Multi-Touch Websites"
 pubDate: "2011-07-28"
 description: "Recently, two websites went online about the 3D multi-touch prototype that I developed during my Master thesis at Fraunhofer FIT. They serve as the public hub f..."
+inLanguage: "en"
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 image:
   src: "./fraunhofer.png"

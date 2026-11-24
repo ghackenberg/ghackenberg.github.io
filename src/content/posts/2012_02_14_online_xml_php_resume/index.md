@@ -2,6 +2,7 @@
 title: "Managing/Publishing Your Resume with PHP and XML"
 pubDate: "2011-02-13"
 description: "For some time now I was looking for a solution to manage and publish my resume on my website. A simple solution is to upload the PDF, however integration with o..."
+inLanguage: "en"
 tags: ["blog", "data-visualization", "web-development"]
 image:
   src: "./files.png"

@@ -2,6 +2,7 @@
 title: "Animated Article Tiles for Visual Blog Exploration"
 pubDate: "2011-06-28"
 description: "Combining preview thumbnails with animated hover transitions to create a spatial tile grid for exploring technical blog articles."
+inLanguage: "en"
 tags: ["blog", "data-visualization", "user-interface"]
 image:
   src: "./screenshot.png"

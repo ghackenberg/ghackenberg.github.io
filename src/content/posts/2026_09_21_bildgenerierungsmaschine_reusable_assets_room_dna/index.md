@@ -2,6 +2,7 @@
 title: "Bildgenerierungsmaschine: Reusable Assets & Room DNA"
 pubDate: 2026-09-21
 description: "Wie wir mit Relational Libraries, Character Slots und Room DNA reproduzierbare, visuell konsistente 3D-Comic-Illustrationen für Fachartikel generieren."
+inLanguage: "de"
 tags:
   - generative-ai
   - diffusion-models
@@ -56,7 +57,7 @@ references:
 
 
 
-In unserer Beitragsreihe zur praktischen IT- und KI-Transformation haben wir uns ausführlich mit skalierbaren Softwarearchitekturen befasst – von [Mastra und TypeScript-basierten Procedural Graphs](/posts/2026_09_20_procedural_graphs_in_mastra_technische_umsetzung/) über das [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) bis zur [Performance-Optimierung moderner Astro-Websites](/posts/2026_05_23_website_relaunch_astro_typescript/). 
+In unserer Beitragsreihe zur praktischen IT- und KI-Transformation haben wir skalierbare Architekturen von [Mastra und Procedural Graphs](/posts/2026_09_20_procedural_graphs_in_mastra_technische_umsetzung/) über [Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) bis zur [Astro-Website](/posts/2026_05_23_website_relaunch_astro_typescript/) beleuchtet. Dieser Artikel zeigt, wie Room DNA, Fokus-Varianten und ein relationaler Asset-Graph reproduzierbare, markenkonforme Diffusionsgrafiken ohne 2D-Layout-Locking erzeugen. 
 
 Diese Website ([hackenberg.tech](https://hackenberg.tech)) dient dabei nicht nur als technisches Blog und akademisches Portfolio, sondern als produktives **Reallabor für agentenbasierte Content-Automatisierung**: Wann immer neue Fachartikel, didaktische Fallstudien oder Systemarchitekturen publiziert werden, sollen autonome KI-Coding-Assistenten (wie Google Antigravity, Claude Code oder Cursor) passende Illustrationen, Hero-Grafiken und Schaubilder automatisiert und reproduzierbar generieren – mit dem Autor selbst als wiederkehrendem Protagonisten in seinen tatsächlichen Arbeits- und Forschungsumgebungen (vom alpinen Home Office in Grünau im Almtal bis zum Design Thinking Lab am Campus Wels).
 
@@ -71,7 +72,7 @@ Während Sprachmodelle (LLMs) dank Zod-Schemas, formalen Grammatiken und Functio
 
 Dieser Beitrag dokumentiert die ingenieurwissenschaftlichen Grundlagen unseres **Visual Systems Engineering**: Wie wir die Mechanismen von Diffusionsmodellen analysiert haben, warum herkömmliche Bildkonditionierungen in die sogenannte **2D-Layout-Locking-Falle** tappen, und wie ein relationaler Asset-Graph in Kombination mit **Room DNA**, diskreten **Fokus-Varianten** und strikten **Agenten-Protokollen ([`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md))** eine hochgradig reproduzierbare, visuell konsistente und markenkonforme Bildgenerierung ermöglicht.
 
-## 1. Das Konsistenz-Dilemma generativer Diffusionsmodelle
+## 1. Warum driftet die Konsistenz generativer Diffusionsmodelle?
 
 Um zu verstehen, warum Bildgeneratoren bei komplexen Kompositionen scheitern, muss man ihre mathematische Funktionsweise betrachten. Moderne Latent-Diffusion [@zhang-2023-adding-conditional]-Modelle (wie Stable Diffusion, Flux oder Imagen; grundlegend formuliert von *Rombach et al [@rombach-2022-highresolution-image]., CVPR 2022*) arbeiten nicht mit einem impliziten räumlichen 3D-Weltmodell, sondern approximieren Wahrscheinlichkeitsverteilungen in einem komprimierten latenten Bildraum $\mathcal{Z}$.
 
@@ -118,7 +119,7 @@ Ein verwandtes Phänomen tritt auf, wenn Referenz-Assets nicht zu 100 % isoliert
 
 Bei der späteren Generierung „bluten“ diese Merkmale in die generierten Szenen: Plötzlich tauchen auf jedem generierten Bild unerwünschte schwarze Monitorränder oder Lichtflecken an unpassenden Stellen auf.
 
-## 3. Die Lösung: Room DNA, Fokus-Varianten und 0 % Okklusion
+## 3. Wie lösen Room DNA und Fokus-Varianten die 0-%-Okklusion?
 
 Um dieses Konsistenz-Dilemma fundamental zu lösen, haben wir ein dreistufiges Entkopplungsprinzip etabliert: von rektifizierten, okklusionsfreien Signature-Objekten über rein semantische Raum-DNA bis hin zu vorberechneten Fokus-Varianten als verlässliche Kamera-Anker.
 

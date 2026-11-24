@@ -2,6 +2,7 @@
 title: "Smart Grid Research Initiative"
 pubDate: "2012-06-18"
 description: "The last weeks my colleagues and I have been working on a website to promote our smart grid research and communicate with other researchers and practitioners fr..."
+inLanguage: "en"
 tags: ["dynamic-programming", "energy-systems", "teaching"]
 image:
   src: "./screenshot.png"

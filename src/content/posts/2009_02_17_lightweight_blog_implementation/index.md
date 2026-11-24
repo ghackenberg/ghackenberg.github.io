@@ -2,6 +2,7 @@
 title: "Lightweight Blog Implementation."
 pubDate: "2009-02-16"
 description: "In this article I describe how this website is created. You get a good insight into the techniques and technologies used. And maybe you get good ideas for your ..."
+inLanguage: "en"
 tags: ["blog", "software-systems", "web-development"]
 image:
   src: "./article.png"

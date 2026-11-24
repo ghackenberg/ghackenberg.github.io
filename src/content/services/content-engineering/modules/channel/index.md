@@ -22,8 +22,8 @@ order: 2
 pubDate: 2026-09-11
 image:
   src: "./preview.jpg"
-  title: "Channel Architecture Syndikations-Hub"
-  description: "Zentraler Content-Hub mit fünf synchronisierten Distributionskanälen für Web, RSS, Social und REST-APIs im Comic-Stil."
+  title: "Architecture: Channel Syndication Hub"
+  description: "Central content hub linking five synchronized distribution channels across Web, RSS, social platforms, and REST APIs."
 inputs:
   - "Current publishing channels, audience metrics, and distribution logs"
   - "Communication objectives and target audience profiles"

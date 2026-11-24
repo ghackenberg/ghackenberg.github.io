@@ -2,6 +2,7 @@
 title: "Describing the Structure of Information"
 pubDate: "2011-06-20"
 description: "In a previous article I explained the basic Information Visualization Problem caused by the vast space of options for visual design. In this article I concentra..."
+inLanguage: "en"
 tags: ["data-visualization", "drawing", "knowledge-management"]
 image:
   src: "./custom.jpg"

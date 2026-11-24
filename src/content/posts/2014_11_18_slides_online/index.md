@@ -2,6 +2,7 @@
 title: "Publication slides online now!"
 pubDate: "2014-11-17"
 description: "To complete the publications section of my website I recently added slides, abstracts and BibTEX entries. Note that the slides are hosted on slideshare, a free ..."
+inLanguage: "en"
 tags: ["blog", "slideshare-presentation"]
 image:
   src: "./screenshot.png"

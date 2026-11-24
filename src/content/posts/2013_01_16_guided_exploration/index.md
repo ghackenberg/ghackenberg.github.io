@@ -2,6 +2,7 @@
 title: "Guided Behavior Space Exploration"
 pubDate: "2013-01-15"
 description: "Previously, our results showed that we are able to generate high quality goal-oriented behavior for models including up to 20 components. This article demonstra..."
+inLanguage: "en"
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation"]
 image:
   src: "./balance-20.png"

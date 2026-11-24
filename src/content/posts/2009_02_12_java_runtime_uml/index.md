@@ -2,6 +2,7 @@
 title: "SoftRay: Dynamic Java Runtime UML Diagram Generation"
 pubDate: "2009-02-11"
 description: "How SoftRay at Siemens Corporate Research in Princeton dynamically reverse-engineers UML sequence and class diagrams from running Java applications."
+inLanguage: "en"
 tags: ["data-visualization", "software-architecture", "software-systems"]
 image:
   src: "./uml_diagram.png"

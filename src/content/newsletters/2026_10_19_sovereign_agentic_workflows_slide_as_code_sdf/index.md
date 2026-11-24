@@ -1,8 +1,8 @@
 ---
 issueNumber: 1
-title: "Sovereign Agentic Workflows, Slide-as-Code & Real-Time Web Geometry"
+title: "Sovereign Agentic Workflows, Slide-as-Code & SDF"
 subtitle: "Architecture notes and recent deep-dives from hackenberg.tech"
-description: "Inaugural engineering dispatch covering reliable multi-agent control planes, Slide-as-Code lecture engines with neural voiceovers, and line-exact 2D Signed Distance Field hero typography."
+description: "Engineering dispatch on multi-agent control planes, Slide-as-Code lecture decks with neural voiceovers, and 2D SDF hero typography."
 pubDate: 2026-10-19
 tags:
   - agentic-ai

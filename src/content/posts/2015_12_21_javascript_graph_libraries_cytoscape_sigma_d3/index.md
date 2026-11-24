@@ -2,6 +2,7 @@
 title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 pubDate: "2015-12-20"
 description: "Compare Cytoscape.js, Sigma.js, and D3.js for interactive JavaScript graph visualizations, including layout physics, WebGL benchmarks, and live browser demos."
+inLanguage: "en"
 tags: ["blog", "cytoscape", "d3", "data-visualization", "hyperkit-software", "javascript", "zumida"]
 image:
   src: "./cytoscape.png"

@@ -2,6 +2,7 @@
 title: "Attending ICSE 2012 & Smart Grid Workshop in Zurich"
 pubDate: "2012-05-30"
 description: "Heading to the 34th International Conference on Software Engineering (ICSE 2012) in Zurich to present our research on smart grid control architectures."
+inLanguage: "en"
 tags: ["conference", "energy-systems", "software-systems"]
 image:
   src: "./screenshot.png"

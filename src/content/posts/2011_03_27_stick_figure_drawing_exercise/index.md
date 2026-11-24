@@ -2,6 +2,7 @@
 title: "Visual Thinking & Stick Figure Sketching Exercises"
 pubDate: "2011-03-26"
 description: "Practicing visual communication and stick-figure sketching techniques to illustrate human-computer interaction scenarios and engineering workflows."
+inLanguage: "en"
 tags: ["drawing"]
 image:
   src: "./draft.png"

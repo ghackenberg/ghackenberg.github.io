@@ -2,6 +2,7 @@
 title: "Procedural Graphs: Zuverlässige KI-Prozessautomatisierung"
 pubDate: 2026-09-18
 description: "Warum über 80 % agentischer Pilotprojekte scheitern und wie Googles Procedural Graphs Standard Operating Procedures in selbstlernende Graphen überführen."
+inLanguage: "de"
 tags:
   - agentic-ai
   - artificial-intelligence

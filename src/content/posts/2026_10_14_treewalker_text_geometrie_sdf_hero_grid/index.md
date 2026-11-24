@@ -100,7 +100,7 @@ references:
       - name: Peter J. Stuckey
 ---
 
-Die Kombination aus zeilenexakter DOM-Textvermessung mittels `document.createTreeWalker` und `Range.getClientRects()` sowie kontinuierlichen zweidimensionalen Signed Distance Fields (2D SDF) löst ein klassisches Dilemma moderner Web-Oberflächen: Sie ersetzt starre, rechteckige CSS-Block-Bounding-Boxes durch die reale, treppenförmige Zeilenkontur des umbrochenen Textes. Auf dieser Basis platziert ein deterministischer 2D-Optimierer im Hero-Bereich unserer Startseite sowohl das interaktive WebGL-Porträt als auch ein physikbasiertes Hintergrund-Punktraster millimetergenau in die frei gewordenen Freiräume – ohne Überlappungen, ohne Layout-Shift (CLS = 0) und mit maximal zehn gebündelten Canvas-2D-Draw-Calls pro Frame.
+Zeilenexakte DOM-Textvermessung per `document.createTreeWalker` und `Range.getClientRects()` kombiniert mit 2D Signed Distance Fields (2D SDF) ersetzt starre CSS-Block-Boxen durch reale Zeilenkonturen. Ein deterministischer 2D-Optimierer platziert daraufhin WebGL-Porträt und Punktraster kollisionsfrei auf unserer Startseite – ohne Layout-Shift (CLS = 0) und mit maximal zehn Canvas-Draw-Calls pro Frame.
 
 Die folgende Architektur-Übersicht zeigt den qualitativen und quantitativen Unterschied zwischen klassischer CSS-Block-Geometrie, CSS Shapes und unserer sub-elementaren `TreeWalker` + 2D-SDF-Pipeline:
 

@@ -1,7 +1,7 @@
 ---
-title: "Im Gespräch bleiben, während der Maschinenraum arbeitet: Das Control-Plane-Muster für Live-Agenten"
+title: "Das Control-Plane-Muster für reaktive Live-Agenten"
 pubDate: 2026-11-22
-description: "Wie das Conversational-Control-Plane-Muster lebendige Mensch-KI-Dialoge von langlaufender Werkzeugausführung entkoppelt und lokale Rechen- sowie Modelllasten über eine Last-Schleuse stabil hält."
+description: "Wie das Conversational-Control-Plane-Muster Live-Dialoge von Werkzeug-Loops entkoppelt und Lasten über einen Scheduler stabilisiert."
 inLanguage: "de"
 tags:
   - agentic-ai

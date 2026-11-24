@@ -60,7 +60,7 @@ Wenn das Almtal wirtschaftlich, demografisch und ökologisch gesund bleiben will
 
 Als Professor für Informatik und Industriesysteme an der Fachhochschule Oberösterreich (Campus Wels) und engagierter Bürger der Region präsentiere ich mit dem vorliegenden Diskussionsentwurf (Version 0.1) eine zukunftsgerichtete Vision für das Almtal als **dezentrales Reallabor** und akademisches Innovations-Ökosystem: Eine konzeptionelle **School of Natural Sciences and Applications** (Campus Almtal 2035).
 
-## 1. Die Kernvision: Das Almtal als dezentrales "Reallabor"
+## 1. Warum braucht das Almtal ein dezentrales „Reallabor“?
 
 Das Almtal verfügt über einen unfairen Wettbewerbsvorteil, den kaum eine andere Region in Oberösterreich vorweisen kann: Die unmittelbare Nachbarschaft von intakter alpiner Wildnis, enormen natürlichen Ressourcen (Holz, sauberes Wasser) und echten industriellen Weltmarktführern (*Fronius*, *Wolf System*, *Grüne Erde*, *Mayr-Schulmöbel*, *Danner* etc.).
 
@@ -120,7 +120,19 @@ Aus volkswirtschaftlicher und unternehmerischer Sicht entfaltet die Trägergesel
 2. **Corporate ROI für Betriebe:** Drastische Senkung von Rekrutierungskosten für technische Spitzenkräfte durch frühzeitiges Onboarding von Studierenden direkt vor Ort.
 3. **Regionale Wertschöpfung & Demografie:** Bei vollständiger Realisierung im Zielhorizont 2035 eröffnet der dezentrale Campus ein Potenzial für mehrere hundert direkte und indirekte Ganzjahres-Arbeits- und Ausbildungsplätze, stärkt die kommunale Steuerbasis und wirkt der Abwanderung junger Akademiker nachhaltig entgegen.
 
-## 5. Der Stufenplan: Roadmap 2026–2030
+Die folgende Übersicht fasst die sechs Almtaler Satellitenstandorte und ihre komplementären Forschungsschwerpunkte zusammen:
+
+<!-- caption: "Übersicht der sechs Almtaler Gemeinden im dezentralen Hub-and-Spoke-Modell des Campus Almtal." -->
+| Gemeinde | Rolle im Verbund | Leitbetriebe & Forschungspartner | Thematischer Schwerpunkt |
+| :--- | :--- | :--- | :--- |
+| **Scharnstein** | Inkubator & Hauptcampus | Wolf System, Grüne Erde, HTL/HAK | Industrielles Bauen & Kreislaufwirtschaft |
+| **Grünau im Almtal** | Alpines Biosphären-Labor | Konrad-Lorenz-Forschungsstelle (Uni Wien) | Ökologie, Wasser & Wildtiermanagement |
+| **Pettenbach** | Energie- & Tech-Gateway | Fronius, Danner Wasserkraft | Dezentrale Energienetze & Automatisierung |
+| **Viechtwang** | Campus für Lernwelten | Mayr-Schulmöbel | Ergonomie, Arbeitsräume & Handwerk |
+| **Steinbach am Ziehberg** | Feldlabor Forstwirtschaft | Sägewerk Aitzetmüller | Forstmanagement, Biomasse & Retreats |
+| **St. Konrad** | Ressourcen-Resilienz | Regionale Agrar-Pioniere | Agri-Tech, Permakultur & Wasserkreisläufe |
+
+## 5. Wie sieht der Stufenplan (Roadmap 2026–2030) aus?
 
 Um Bedenken auszuräumen und Machbarkeit schrittweise zu beweisen, folgen wir einem klaren 4-Phasen-Modell:
 

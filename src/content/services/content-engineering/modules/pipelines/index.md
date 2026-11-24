@@ -22,8 +22,8 @@ order: 4
 pubDate: 2026-09-11
 image:
   src: "./preview.jpg"
-  title: "Architektur: Publishing Pipelines"
-  description: "Automatisierte 3D-Publishing-Pipeline mit strukturierter Dateneinspeisung, Validierungsprozessor und Bereitstellung optimierter Web-Artefakte"
+  title: "Architecture: Publishing Pipelines"
+  description: "Automated 3D publishing pipeline showing structured source ingestion, validation stages, and optimized static web artifact delivery"
 inputs:
   - "Content repositories, Markdown/MDX source files, and asset directories"
   - "Target hosting environment (GitHub Pages, Cloudflare Pages, AWS S3/CloudFront)"

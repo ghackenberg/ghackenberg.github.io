@@ -2,6 +2,7 @@
 title: "Website Usability Redesign, Navigation & RSS Feeds"
 pubDate: "2011-01-18"
 description: "Redesigning my engineering website layout and information architecture after two years online, adding structured RSS feeds and streamlined navigation."
+inLanguage: "en"
 tags: ["blog", "human-computer-interaction", "user-interface", "ux-design"]
 image:
   src: "./screenshot.png"

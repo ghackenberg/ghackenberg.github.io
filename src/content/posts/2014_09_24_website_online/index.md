@@ -2,6 +2,7 @@
 title: "Fourth-Generation Personal Engineering Website Relaunch"
 pubDate: "2014-09-23"
 description: "Launching the fourth edition of my personal website with a clean, responsive layout focused on research publications, software tools, and teaching."
+inLanguage: "en"
 tags: ["blog", "web-development"]
 image:
   src: "./screenshot.png"

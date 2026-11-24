@@ -2,6 +2,7 @@
 title: "The Evolution of a Functional Prototype"
 pubDate: "2011-06-10"
 description: "In a previous article From Sketch to Prototype I illustrated the change from fuzzy whiteboard sketches to more structured and formal HTML prototypes. In this ar..."
+inLanguage: "en"
 tags: ["blog", "drawing", "product-design", "user-interface", "ux-design"]
 image:
   src: "./data.png"

@@ -22,8 +22,8 @@ order: 1
 pubDate: 2026-09-11
 image:
   src: "./preview.jpg"
-  title: "Architektur: Content Modeling"
-  description: "Isometrische 3D-Architektur strukturierter Datenschemata mit Schema-Validierungsschicht und persistenter Datenbasis"
+  title: "Architecture: Content Modeling"
+  description: "Isometric 3D diagram of structured content schemas with a build-time schema validation layer and persistent repository storage"
 inputs:
   - "Existing content archives, Markdown/MDX files, or database exports"
   - "Catalog of content types (articles, case studies, documentation, projects, authors)"

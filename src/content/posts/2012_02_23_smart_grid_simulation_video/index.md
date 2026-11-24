@@ -2,6 +2,7 @@
 title: "First Results on Smart Grid Simulation as YouTube Video"
 pubDate: "2012-02-22"
 description: "The last weeks my colleagues and I have been working hard on a basic simulation of a household with electric components and control software. We show first resu..."
+inLanguage: "en"
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation", "youtube-video"]
 image:
   src: "./csv.png"

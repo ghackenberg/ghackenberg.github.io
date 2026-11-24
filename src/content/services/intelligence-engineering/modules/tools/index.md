@@ -21,8 +21,8 @@ methodologyPhases:
 order: 3
 image:
   src: "./preview.jpg"
-  title: "Architektur: Tool Integration & MCP"
-  description: "Hexagonales 3D-Gateway zur nahtlosen Anbindung modularer Werkzeug- und API-Module über das Model Context Protocol"
+  title: "Architecture: Tool Integration & MCP"
+  description: "Hexagonal 3D gateway enabling seamless connection of modular tool and API adapters via the Model Context Protocol"
 pubDate: 2026-09-11
 inputs:
   - "API specifications (OpenAPI/REST, GraphQL, gRPC) and database connection parameters"

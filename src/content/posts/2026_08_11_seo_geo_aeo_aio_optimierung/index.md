@@ -2,6 +2,7 @@
 title: "SEO, GEO, AEO & AIO: Leitfaden fürs KI-Zeitalter"
 pubDate: 2026-08-11
 description: Wie man Websites für traditionelle Suchmaschinen (SEO), Generative Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch optimiert.
+inLanguage: "de"
 tags:
   - aeo
   - agentic-ai

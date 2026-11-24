@@ -2,6 +2,7 @@
 title: "Curriculum Vitae & Academic Resume Published Online"
 pubDate: "2009-02-11"
 description: "Overview of my academic curriculum vitae, computer science studies at RWTH Aachen University, and software engineering projects at Siemens and Fraunhofer."
+inLanguage: "en"
 tags: ["data-visualization"]
 image:
   src: "./screenshot.png"

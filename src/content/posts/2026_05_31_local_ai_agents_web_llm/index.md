@@ -2,6 +2,7 @@
 title: "Local Browser AI Agents: Web-LLM in Delta Dynamics"
 pubDate: 2026-05-31
 description: Bringing client-side LLM-driven AI agents into the browser with WebGPU, MLC Web-LLM, and web workers for decentralized ecosystem simulation.
+inLanguage: "en"
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -69,7 +70,7 @@ The solution? **Run the LLM entirely client-side, in the browser, powered by the
 
 This post details how we integrated **MLC Web-LLM** via **WebGPU [@w3c-2024-webgpu-crossplatform]** into Delta Dynamics, offloaded the execution to a **Web Worker** to maintain a smooth 60 FPS Three.js rendering loop, and enforced **JSON Schema grammar constraints** to turn conversational AI into structured, executable game commands.
 
-## 1. WebGPU & MLC Web-LLM: Direct Hardware Access
+## 1. How Do WebGPU and MLC Web-LLM Enable Direct Hardware Access?
 
 For years, web-based graphics and computing were restricted to WebGL, which is tailored for rendering and lacks support for compute shaders and general-purpose GPU (GPGPU) operations. The arrival of **WebGPU** changes this. It provides low-level, high-performance access to the graphics card directly from the browser, allowing us to run heavy parallel tensor calculations.
 
@@ -330,4 +331,14 @@ Running local AI models directly in the web browser removes server hosting bills
 
 As lightweight open-source models continue to get smaller and more capable, the web browser will increasingly become a powerful, self-contained runtime for decentralized, AI-driven applications.
 
-Try spawning LLM-driven agents on the [Delta Dynamics Simulation Panel](/projects/delta-dynamics/)!
+The table below compares traditional browser game AI against the Web-LLM + WebGPU worker architecture used in Delta Dynamics:
+
+<!-- caption: "Comparison of finite state machines, cloud LLM APIs, and local WebGPU Web-LLM workers for browser simulation agents." -->
+| Dimension | Classic FSM / Behavior Trees | Cloud LLM API Calls | Local Web-LLM (WebGPU + Worker) |
+| :--- | :--- | :--- | :--- |
+| **Decision Flexibility** | Rigid scripted rules | High contextual reasoning | High contextual reasoning |
+| **Inference Latency** | Sub-millisecond | 300–2,000 ms network round-trip | ~30–50 tok/s local GPU stream |
+| **Main Thread Impact** | Minimal | Async network I/O | Zero UI freeze (isolated Web Worker) |
+| **Hosting Cost & Privacy** | Zero cost, local | Per-token API cost, external egress | Zero server cost, 100% client-side |
+
+Try spawning LLM-driven agents on the [Delta Dynamics Simulation Panel](/projects/delta-dynamics/) and explore how the underlying terrain hydrology runs on WebGL shaders in our [GPU Water Simulation in Delta Dynamics](/posts/2026_05_25_gpu_water_simulation_delta_dynamics/) deep dive!

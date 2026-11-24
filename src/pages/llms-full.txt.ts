@@ -1,7 +1,133 @@
 import { getCollection } from "astro:content";
-import { formatAuthorsPlain } from "@commons/shared/authors";
+import { formatAuthorsPlain, type AuthorEntry } from "@commons/shared/authors";
+import { CITATION_GROUP_REGEX, generateCitationLabel, parseCitationGroup, type CitationRef } from "@commons/shared/citations";
 
 const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "").trim() : "");
+
+interface LlmsRefEntry extends Omit<CitationRef, "authors"> {
+  id: string;
+  title: string;
+  authors?: AuthorEntry[];
+  url?: string;
+  doi?: string;
+  booktitle?: string;
+  journal?: string;
+  publisher?: string;
+  siteName?: string;
+  howpublished?: string;
+}
+
+function buildRefLabelMap(refs?: LlmsRefEntry[]): Map<string, { label: string; ref: LlmsRefEntry }> {
+  const map = new Map<string, { label: string; ref: LlmsRefEntry }>();
+  if (!refs) return map;
+  for (const ref of refs) {
+    const label = generateCitationLabel(ref);
+    map.set(ref.id, { label, ref });
+  }
+  return map;
+}
+
+function resolveInlineCitations(text: string, refMap: Map<string, { label: string; ref: LlmsRefEntry }>): string {
+  if (!text) return "";
+  return text.replace(CITATION_GROUP_REGEX, (fullMatch, inner: string) => {
+    const keys = parseCitationGroup(inner);
+    const resolved = keys.map((k) => refMap.get(k)?.label || k);
+    return resolved.length > 0 ? `[${resolved.join("; ")}]` : fullMatch;
+  });
+}
+
+function formatReferenceLines(refs: LlmsRefEntry[] | undefined, refMap: Map<string, { label: string; ref: LlmsRefEntry }>): string {
+  if (!refs || refs.length === 0) return "";
+  const lines = refs.map((ref) => {
+    const label = refMap.get(ref.id)?.label || ref.id;
+    const authors = Array.isArray(ref.authors) ? formatAuthorsPlain(ref.authors) : "";
+    const venue = ref.booktitle || ref.journal || ref.siteName || ref.publisher || ref.howpublished || "";
+    const year = ref.year ? ` (${ref.year})` : "";
+    const url = ref.doi ? `https://doi.org/${ref.doi.replace(/^https?:\/\/(?:dx\.)?doi\.org\//i, "")}` : ref.url || "";
+    return `- **[${label}]** ${authors ? `${authors}${year}: ` : ""}*${ref.title}*${venue ? `, ${venue}` : ""}${url ? ` — ${url}` : ""}`;
+  });
+  return `\n#### References\n${lines.join("\n")}\n`;
+}
+
+function cleanPostBodyForLlm(body: string, refMap: Map<string, { label: string; ref: LlmsRefEntry }>): string {
+  if (!body) return "";
+  let cleaned = resolveInlineCitations(body, refMap);
+  cleaned = cleaned
+    .replace(/<details[^>]*>/gi, "")
+    .replace(/<\/details>/gi, "")
+    .replace(/<summary[^>]*>([\s\S]*?)<\/summary>/gi, (_, title: string) => `**${title.trim()}**\n`)
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  return cleaned;
+}
+
+function extractMdxSlideText(body: string, refMap: Map<string, { label: string; ref: LlmsRefEntry }>): string {
+  if (!body) return "";
+  let text = body
+    .replace(/^import\s+[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, "")
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "");
+  text = stripCues(resolveInlineCitations(text, refMap));
+
+  // Unwrap fenced code blocks inside JSX or extract clean prose/props
+  const outLines: string[] = [];
+  const rawLines = text.split(/\r?\n/);
+  let inCode = false;
+
+  for (const rawLine of rawLines) {
+    const trimmed = rawLine.trim();
+    if (trimmed.startsWith("```")) {
+      inCode = !inCode;
+      outLines.push(rawLine);
+      continue;
+    }
+    if (inCode) {
+      outLines.push(rawLine);
+      continue;
+    }
+
+    // Extract string props from MDX components (title, subtitle, label, sublabel, desc, caption, summary, name, quote, author, code)
+    const propMatches = [...trimmed.matchAll(/\b(?:title|subtitle|label|sublabel|desc|description|caption|summary|quote|statement|leftTitle|rightTitle|header)\s*[:=]\s*"([^"]+)"/g)];
+    if (propMatches.length > 0 && (trimmed.startsWith("<") || trimmed.startsWith("{") || trimmed.startsWith("items="))) {
+      for (const m of propMatches) {
+        const val = m[1].trim();
+        if (val && val !== "{frontmatter.title}" && val !== "{frontmatter.subtitle}") {
+          outLines.push(`- ${val}`);
+        }
+      }
+      continue;
+    }
+
+    // Extract numeric/unit pairs for MetricStat
+    const metricMatch = trimmed.match(/\bvalue\s*=\s*"([^"]+)"/);
+    if (metricMatch) {
+      const unitMatch = trimmed.match(/\bunit\s*=\s*"([^"]+)"/);
+      outLines.push(`- Metric: ${metricMatch[1]}${unitMatch ? ` ${unitMatch[1]}` : ""}`);
+      continue;
+    }
+
+    // Skip pure JSX structural lines & braces
+    if (
+      /^<\/?[A-Z][A-Za-z0-9]*(?:\s|>|$)/.test(trimmed) ||
+      /^(?:slot|ratio|cue|slideNumber|totalSlides|icon|variant|type|size|columns|align)=/.test(trimmed) ||
+      /^[\[\]{}(),;]+$/.test(trimmed) ||
+      trimmed === "/>" ||
+      trimmed === ">"
+    ) {
+      continue;
+    }
+
+    // Strip inline HTML/JSX tags on mixed lines
+    const plain = trimmed
+      .replace(/<\/?[A-Za-z][A-Za-z0-9-]*(?:\s+[^>]*)?>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (plain) {
+      outLines.push(plain);
+    }
+  }
+
+  return outLines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
 
 export async function GET() {
   const posts = await getCollection("posts");
@@ -20,18 +146,20 @@ export async function GET() {
   const experiences = await getCollection("experiences");
   const profiles = await getCollection("profiles");
 
-  // Sort posts, presentations, and publications by date descending
   const sortedPosts = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
   const sortedPresentations = presentations.sort((a, b) => {
-    const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || '').getTime();
-    const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || '').getTime();
+    const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || "").getTime();
+    const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || "").getTime();
     return db - da;
   });
   const sortedPublications = publications.sort((a, b) => {
-    const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || '').getTime();
-    const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || '').getTime();
+    const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || "").getTime();
+    const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || "").getTime();
     return db - da;
   });
+  const sortedCourses = courses.slice().sort((a, b) => a.id.localeCompare(b.id));
+  const sortedProjects = projects.slice().sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedVisualizations = visualizations.slice().sort((a, b) => a.id.localeCompare(b.id));
   const sortedDegrees = degrees.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedExperiences = experiences.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
@@ -41,10 +169,10 @@ export async function GET() {
   const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
 
   const degreeLines = sortedDegrees
-    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.organization.name} (${d.data.startYear}-${d.data.endYear ?? 'Present'})`)
+    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.organization.name} (${d.data.startYear}-${d.data.endYear ?? "Present"})`)
     .join("\n");
   const experienceLines = sortedExperiences
-    .map((e) => `- ${e.data.title} - ${e.data.organization.name} (${e.data.startYear}-${e.data.endYear ?? 'Present'})`)
+    .map((e) => `- ${e.data.title} - ${e.data.organization.name} (${e.data.startYear}-${e.data.endYear ?? "Present"})`)
     .join("\n");
   const profileLines = sortedProfiles
     .map((p) => `- ${p.data.name} (${p.data.handle}): ${p.data.url}`)
@@ -52,8 +180,8 @@ export async function GET() {
 
   let output = `# Dr. Georg Hackenberg - Complete Website Corpus (llms-full.txt)
 
-> Professor for Industrial Informatics at UAP - University of Applied Sciences Upper Austria (Technology Campus Wels) and enterprise software architect. He bridges academic systems engineering with autonomous agent workflows and modern digital production across Web, YouTube, LinkedIn, and GitHub. Founder of CADdrive (caddrive.com) and Mentawise (mentawise.com).
-> Website: https://hackenberg.tech
+> Professor for Industrial Informatics and Head of Computer Science at UAP – University of Applied Sciences Upper Austria (FH Upper Austria / FH OÖ, Technology Campus Wels) and enterprise software architect based in Grünau im Almtal. He bridges academic systems engineering with Sovereign AI Systems, autonomous agent workflows, and modern digital production across Web, YouTube, LinkedIn, and GitHub. Creator of CADdrive (https://caddrive.org / https://caddrive.com), Mentawise (https://mentawise.com), and SimplexViz (https://hackenberg.tech/projects/simplex-viz/).
+> Website: https://hackenberg.tech/
 > Contact: georg.hackenberg@fh-wels.at
 > GitHub Sponsors & Open-Source Patronage: https://github.com/sponsors/ghackenberg (Overview: https://hackenberg.tech/support/)
 
@@ -61,7 +189,7 @@ export async function GET() {
 
 ## 1. About Dr. Georg Hackenberg
 
-Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industrial Informatics at UAP – University of Applied Sciences Upper Austria (Technology Campus Wels). He holds a Doctor of Natural Sciences (Dr. rer. nat.) in Software and Systems Engineering from the Technical University of Munich (TUM), a Master of Science (M.Sc.) in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science (B.Sc.) in Software & Internet Technology from the University of Mannheim. His academic research and software engineering practice bridge model-based systems engineering, cyber-physical systems simulation, knowledge graph architectures, and sovereign agentic AI workflows. He is the founder and architect of software platforms including CADdrive (https://caddrive.com) and Mentawise (https://mentawise.com).
+Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industrial Informatics and Head of Computer Science at UAP – University of Applied Sciences Upper Austria (FH Upper Austria, Technology Campus Wels), and founder of an IT consulting & software engineering practice in Grünau im Almtal. He holds a Doctor of Natural Sciences (Dr. rer. nat.) in Software and Systems Engineering from the Technical University of Munich (TUM), a Master of Science (M.Sc.) in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science (B.Sc.) in Software & Internet Technology from the University of Mannheim. His academic research and software engineering practice bridge model-based systems engineering, cyber-physical systems simulation, knowledge graph architectures, and sovereign agentic AI workflows. He is the founder and architect of software platforms including CADdrive (https://caddrive.org and https://caddrive.com), Mentawise (https://mentawise.com), and SimplexViz (https://hackenberg.tech/projects/simplex-viz/).
 
 ### Professional Experience
 ${experienceLines}
@@ -79,32 +207,39 @@ ${profileLines}
 `;
 
   for (const post of sortedPosts) {
-    const formattedDate = post.data.pubDate.toISOString().split('T')[0];
-    const tags = post.data.tags ? post.data.tags.join(', ') : '';
+    const formattedDate = post.data.pubDate.toISOString().split("T")[0];
+    const postTags = post.data.tags ? post.data.tags.join(", ") : "";
+    const refs = (post.data.references || []) as LlmsRefEntry[];
+    const refMap = buildRefLabelMap(refs);
+
     output += `### ${post.data.title}\n`;
     output += `- URL: https://hackenberg.tech/posts/${post.id}/\n`;
     output += `- Date: ${formattedDate}\n`;
-    if (tags) output += `- Tags: ${tags}\n`;
+    output += `- Language: ${post.data.inLanguage || "de"}\n`;
+    if (postTags) output += `- Tags: ${postTags}\n`;
     if (post.data.description) output += `- Summary: ${post.data.description}\n`;
-    output += `\n${post.body}\n\n---\n\n`;
+    output += `\n${cleanPostBodyForLlm(post.body || "", refMap)}\n`;
+    output += formatReferenceLines(refs, refMap);
+    output += `\n---\n\n`;
   }
 
   output += `## 3. Academic Publications & Research Papers\n\n`;
   for (const pub of sortedPublications) {
-    const pubDateStr = pub.data.pubDate instanceof Date ? pub.data.pubDate.toISOString().split('T')[0] : String(pub.data.pubDate);
+    const pubDateStr = pub.data.pubDate instanceof Date ? pub.data.pubDate.toISOString().split("T")[0] : String(pub.data.pubDate);
     output += `### ${pub.data.title}\n`;
     output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
-    output += `- Date/Venue: ${pubDateStr}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
+    output += `- Date/Venue: ${pubDateStr}${pub.data.book ? ` (${pub.data.book})` : ""}\n`;
     output += `- Authors: ${formatAuthorsPlain(pub.data.authors)}\n`;
+    if (pub.data.publisherUrl) output += `- Publisher URL: ${pub.data.publisherUrl}\n`;
     if (pub.data.abstract) output += `- Abstract: ${pub.data.abstract}\n`;
     if (pub.data.bibtex) output += `\n\`\`\`bibtex\n${pub.data.bibtex}\n\`\`\`\n`;
-    output += `\n${pub.body}\n\n---\n\n`;
+    output += `\n${pub.body || ""}\n\n---\n\n`;
   }
 
   output += `## 4. Keynote Presentations & Slide Decks\n\n`;
   for (const pres of sortedPresentations) {
-    const rawDate = pres.data.pubDate instanceof Date ? pres.data.pubDate.toISOString().split('T')[0] : (pres.data.pubDate || '');
-    const tags = pres.data.tags ? pres.data.tags.join(', ') : '';
+    const rawDate = pres.data.pubDate instanceof Date ? pres.data.pubDate.toISOString().split("T")[0] : (pres.data.pubDate || "");
+    const presTags = pres.data.tags ? pres.data.tags.join(", ") : "";
     const deckSlides = allSlides
       .filter((s) => s.id.startsWith(pres.id))
       .sort((a, b) => a.id.localeCompare(b.id));
@@ -113,19 +248,30 @@ ${profileLines}
     output += `- URL: https://hackenberg.tech/presentations/${pres.id}/\n`;
     if (pres.data.subtitle) output += `- Subtitle: ${pres.data.subtitle}\n`;
     output += `- Date: ${rawDate}\n`;
-    if (tags) output += `- Tags: ${tags}\n`;
+    if (presTags) output += `- Tags: ${presTags}\n`;
     if (pres.data.description) output += `- Summary: ${pres.data.description}\n`;
     if (pres.body) output += `\n${pres.body}\n`;
 
     if (deckSlides.length > 0) {
-      output += `\n#### Spoken Transcript & Slide Sequence (${deckSlides.length} Slides)\n\n`;
+      output += `\n#### Slide Content & Spoken Transcript (${deckSlides.length} Slides)\n\n`;
       deckSlides.forEach((slide, idx) => {
-        const slideNum = String(idx + 1).padStart(2, '0');
-        const cleanSub = stripCues(slide.data.subtitle || '');
-        const cleanVoice = stripCues(slide.data.voiceover || '');
-        output += `##### Slide ${slideNum}: ${slide.data.title}${cleanSub ? ` — ${cleanSub}` : ''}\n`;
-        if (cleanVoice) {
-          output += `${cleanVoice}\n\n`;
+        const slideNum = String(idx + 1).padStart(2, "0");
+        const cleanSub = stripCues(slide.data.subtitle || "");
+        const cleanVoice = stripCues(slide.data.voiceover || "");
+        const slideRefs = (slide.data.references || []) as LlmsRefEntry[];
+        const slideRefMap = buildRefLabelMap(slideRefs);
+        const slideContent = extractMdxSlideText(slide.body || "", slideRefMap);
+        const resolvedVoice = resolveInlineCitations(cleanVoice, slideRefMap);
+
+        output += `##### Slide ${slideNum}: ${slide.data.title}${cleanSub ? ` — ${cleanSub}` : ""}\n`;
+        if (slideContent) {
+          output += `${slideContent}\n\n`;
+        }
+        if (resolvedVoice) {
+          output += `Voiceover: ${resolvedVoice}\n\n`;
+        }
+        if (slideRefs.length > 0) {
+          output += formatReferenceLines(slideRefs, slideRefMap) + "\n";
         }
       });
     }
@@ -133,46 +279,46 @@ ${profileLines}
   }
 
   output += `## 5. University Courses & Educational Content\n\n`;
-  for (const course of courses) {
+  for (const course of sortedCourses) {
     output += `### ${course.data.title}\n`;
     output += `- URL: https://hackenberg.tech/courses/${course.id}/\n`;
     output += `- Repository: ${course.data.repoName}\n`;
     output += `- Language: ${course.data.inLanguage}\n`;
     if (course.data.description) output += `- Description: ${course.data.description}\n`;
     if (course.data.learningGoals && course.data.learningGoals.length > 0) {
-      output += `- Learning Goals:\n  * ${course.data.learningGoals.join('\n  * ')}\n`;
+      output += `- Learning Goals:\n  * ${course.data.learningGoals.join("\n  * ")}\n`;
     }
-    output += `\n${course.body}\n\n---\n\n`;
+    output += `\n${course.body || ""}\n\n---\n\n`;
   }
 
   for (const mod of sortedCourseModules) {
     output += `### Course Module: ${mod.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/courses/${mod.data.courseId}/${mod.id.split('/').pop()}/\n`;
+    output += `- URL: https://hackenberg.tech/courses/${mod.data.courseId}/${mod.id.split("/").pop()}/\n`;
     output += `- Course: ${mod.data.courseId}\n`;
     output += `- Description: ${mod.data.description}\n`;
     if (mod.data.topics && mod.data.topics.length > 0) {
-      output += `- Topics: ${mod.data.topics.join(', ')}\n`;
+      output += `- Topics: ${mod.data.topics.join(", ")}\n`;
     }
     if (mod.data.tools && mod.data.tools.length > 0) {
-      output += `- Tools: ${mod.data.tools.join(', ')}\n`;
+      output += `- Tools: ${mod.data.tools.join(", ")}\n`;
     }
     if (mod.data.competencies && mod.data.competencies.length > 0) {
-      output += `- Competencies:\n  * ${mod.data.competencies.join('\n  * ')}\n`;
+      output += `- Competencies:\n  * ${mod.data.competencies.join("\n  * ")}\n`;
     }
-    output += `\n${mod.body}\n\n---\n\n`;
+    output += `\n${mod.body || ""}\n\n---\n\n`;
   }
 
   output += `## 6. Software Projects & Systems\n\n`;
-  for (const project of projects) {
+  for (const project of sortedProjects) {
     output += `### ${project.data.title}\n`;
     output += `- URL: https://hackenberg.tech/projects/${project.id}/\n`;
     if (project.data.href) output += `- External Link: ${project.data.href}\n`;
     output += `- Technology Readiness Level: TRL ${project.data.trl}\n`;
     output += `- Description: ${project.data.description}\n`;
     if (project.data.tags && project.data.tags.length > 0) {
-      output += `- Technologies: ${project.data.tags.join(', ')}\n`;
+      output += `- Technologies: ${project.data.tags.join(", ")}\n`;
     }
-    output += `\n${project.body}\n\n---\n\n`;
+    output += `\n${project.body || ""}\n\n---\n\n`;
   }
 
   output += `## 7. Business Services & Modules\n\n`;
@@ -180,8 +326,17 @@ ${profileLines}
     output += `### Service: ${service.data.title}\n`;
     output += `- URL: https://hackenberg.tech/services/${service.id}/\n`;
     output += `- Description: ${service.data.description}\n`;
+    if (service.data.targetAudience && service.data.targetAudience.length > 0) {
+      output += `- Target Audience: ${service.data.targetAudience.join("; ")}\n`;
+    }
+    if (service.data.strategicPillars && service.data.strategicPillars.length > 0) {
+      output += `- Strategic Pillars:\n  * ${service.data.strategicPillars.join("\n  * ")}\n`;
+    }
+    if (service.data.techFoundations && service.data.techFoundations.length > 0) {
+      output += `- Technical Stack: ${service.data.techFoundations.join(", ")}\n`;
+    }
     if (service.data.tags && service.data.tags.length > 0) {
-      output += `- Tags: ${service.data.tags.join(', ')}\n`;
+      output += `- Tags: ${service.data.tags.join(", ")}\n`;
     }
     if (service.body) {
       output += `\n${service.body}\n`;
@@ -191,41 +346,41 @@ ${profileLines}
 
   for (const mod of sortedServiceModules) {
     output += `### Module: ${mod.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/services/${mod.data.serviceId}/${mod.id.split('/').pop()}/\n`;
+    output += `- URL: https://hackenberg.tech/services/${mod.data.serviceId}/${mod.id.split("/").pop()}/\n`;
     output += `- Service: ${mod.data.serviceId}\n`;
     output += `- Description: ${mod.data.description}\n`;
     if (mod.data.highlights && mod.data.highlights.length > 0) {
-      output += `- Key Highlights:\n  * ${mod.data.highlights.join('\n  * ')}\n`;
+      output += `- Key Highlights:\n  * ${mod.data.highlights.join("\n  * ")}\n`;
     }
-    output += `\n${mod.body}\n\n---\n\n`;
+    output += `\n${mod.body || ""}\n\n---\n\n`;
   }
 
   output += `## 8. Technical Newsletters\n\n`;
   for (const nl of sortedNewsletters) {
-    const nlDate = nl.data.pubDate instanceof Date ? nl.data.pubDate.toISOString().split('T')[0] : String(nl.data.pubDate);
+    const nlDate = nl.data.pubDate instanceof Date ? nl.data.pubDate.toISOString().split("T")[0] : String(nl.data.pubDate);
     output += `### Issue #${nl.data.issueNumber}: ${nl.data.title}\n`;
     output += `- URL: https://hackenberg.tech/newsletters/${nl.id}/\n`;
     if (nl.data.subtitle) output += `- Subtitle: ${nl.data.subtitle}\n`;
     output += `- Date: ${nlDate}\n`;
     output += `- Description: ${nl.data.description}\n`;
     if (nl.data.tags && nl.data.tags.length > 0) {
-      output += `- Tags: ${nl.data.tags.join(', ')}\n`;
+      output += `- Tags: ${nl.data.tags.join(", ")}\n`;
     }
-    output += `\n${nl.body}\n\n---\n\n`;
+    output += `\n${nl.body || ""}\n\n---\n\n`;
   }
 
   output += `## 9. Interactive Visualizations\n\n`;
-  for (const viz of visualizations) {
+  for (const viz of sortedVisualizations) {
     output += `### ${viz.data.title}\n`;
     output += `- URL: https://hackenberg.tech/visualizations/${viz.id}/\n`;
     output += `- Description: ${viz.data.description}\n`;
     if (viz.data.tags && viz.data.tags.length > 0) {
-      output += `- Tags: ${viz.data.tags.join(', ')}\n`;
+      output += `- Tags: ${viz.data.tags.join(", ")}\n`;
     }
     if (viz.data.specs) {
       output += `- Specs: Backend=${viz.data.specs.renderingBackend}, Topology=${viz.data.specs.spatialTopology}, Capacity=${viz.data.specs.nodeCapacity}, Solver=${viz.data.specs.physicsSolver}, Complexity=${viz.data.specs.computationalComplexity}\n`;
     }
-    output += `\n${viz.body}\n\n---\n\n`;
+    output += `\n${viz.body || ""}\n\n---\n\n`;
   }
 
   output += `## 10. Knowledge Index & Topic Tags\n\n`;
@@ -239,7 +394,7 @@ ${profileLines}
   return new Response(output, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=3600"
-    }
+      "Cache-Control": "public, max-age=3600",
+    },
   });
 }

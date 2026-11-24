@@ -2,6 +2,7 @@
 title: "From Static CSS Layout to Smooth JavaScript Animation"
 pubDate: "2011-06-15"
 description: "Extending our functional web prototype with smooth, frame-synchronized JavaScript transitions and interactive visual state feedback."
+inLanguage: "en"
 tags: ["blog", "drawing", "user-interface", "ux-design", "youtube-video"]
 image:
   src: "./screenshot.png"

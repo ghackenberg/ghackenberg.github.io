@@ -2,6 +2,7 @@
 title: "Optimizing Powerhouse Dispatch Control in Smart Grids"
 pubDate: "2012-08-16"
 description: "Modeling and optimizing conventional powerhouse dispatch schedules to guarantee real-time power balance under volatile renewable feed-in."
+inLanguage: "en"
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
 image:
   src: "./balance.png"

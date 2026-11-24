@@ -2,6 +2,7 @@
 title: "Smart Grid Vision Videos & Decentralized Energy Control"
 pubDate: "2011-08-11"
 description: "Reviewing industry vision videos and architectural concepts for future smart grids, decentralized power generation, and automated demand response."
+inLanguage: "en"
 tags: ["drawing", "energy-systems", "youtube-video"]
 image:
   src: "./youtube_research.jpg"

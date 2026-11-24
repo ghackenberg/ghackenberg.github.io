@@ -71,7 +71,7 @@ Bevor wir die internen Protokollabläufe und Token-Transformationsmechanismen im
 
 ![Keycloak Zero-Trust Governance und Schichtenintegration im souveränen AI Tech Stack](./keycloak_stack_integration.svg "Keycloak Zero-Trust Governance und Schichtenintegration")
 
-## 1. Keycloak im Kontext des souveränen AI Tech Stacks
+## 1. Warum ist Keycloak die zentrale Identity-Schicht im souveränen AI-Stack?
 
 In unserem sechsgliedrigen Referenzstack agiert Keycloak nicht als isolierter Authentifizierungsserver, sondern als **universelle Vertrauensanker-Instanz (Trust Broker)**, der Mensch-zu-Maschine-, Maschine-zu-Maschine- und Maschine-zu-Ressource-Transaktionen kryptografisch absichert:
 
@@ -152,7 +152,7 @@ Ein zentraler Mehrwert von Keycloak für unseren AI Stack sind **Protocol Mapper
 
 Durch diese Claims-Injektion weiß [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) unmittelbar nach der Signaturprüfung, welches Budget gilt und welche Modelle freigeschaltet sind, ohne eine synchrone REST-Anfrage an ein Abrechnungssystem stellen zu müssen.
 
-## 4. Authentifizierungs- & Delegations-Flows im Agenten-Zeitalter
+## 4. Wie funktionieren Authentifizierung und Token-Delegation für KI-Agenten?
 
 Klassische Web-Architekturen beschränken sich auf die Anmeldung von Menschen. In einem agentischen KI-System interagieren jedoch Menschen, autonome Software-Agenten und verteilte Werkzeuge dynamisch miteinander. Keycloak orchestriert hierfür drei essenzielle Protokollabläufe:
 

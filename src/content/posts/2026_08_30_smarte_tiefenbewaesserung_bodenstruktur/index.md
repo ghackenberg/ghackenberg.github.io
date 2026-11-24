@@ -2,6 +2,7 @@
 title: Smarte Tiefenbewässerung & urbanes Wurzelzonen-Management
 pubDate: 2026-08-30
 description: Symbiose aus überbaubarem Baumsubstrat, Tiefenbewässerung und smarter IoT-Sensorik für gesunde Stadtbäume auf versiegelten Pflasterflächen.
+inLanguage: "de"
 tags:
   - smart-home
   - iot
@@ -68,7 +69,7 @@ Konventionelle Bewässerungsmethoden stoßen in solchen Mischzonen schnell an ph
 
 In diesem Beitrag stellen wir ein ganzheitliches mechatronisches und bodenbauliches Gesamtkonzept vor: **Die Kombination aus strukturell tragfähigem, überbaubarem Baumsubstrat, unterirdischer Unterflur-Tropfbewässerung, variablen Tiefenlanzen und einer Edge-integrierten Smart-Home-Regelung.**
 
-## 1. Bautechnische Bodenstruktur: Wurzelraum unter befahrbaren Pflasterflächen
+## 1. Wie schützt eine bautechnische Bodenstruktur Wurzeln unter Pflasterflächen?
 
 Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzuschnüren, ist ein präzise dimensionierter Schichtenaufbau nach den Richtlinien der FLL [@ev-2015-empfehlungen-baumpflanzungen] (Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.) erforderlich.
 
@@ -109,7 +110,7 @@ Für bestehende Gehölze oder punktuelle Tiefenversorgung bietet sich die Instal
 - **Direktinjektion:** Das Wasser tritt über eine perforierte Injektionszone in $40\text{--}75\,\text{cm}$ Tiefe aus und befeuchtet die unteren Bodenschichten, ohne die Oberfläche zu benetzen.
 - **Keine Oberflächenerosion & kein Unkraut:** Da die oberste Bodenschicht trocken bleibt, wird Unkrautkeimung drastisch reduziert und das Auswaschen von Mulchschichten verhindert.
 
-## 3. IoT- und Smart-Home-Systemarchitektur
+## 3. Wie steuert die IoT- und Smart-Home-Architektur die Tiefenbewässerung?
 
 Ein energie- und wassereffizientes System lebt von der intelligenten Verknüpfung von Messwerten, Aktorik und Regelungsalgorithmen.
 

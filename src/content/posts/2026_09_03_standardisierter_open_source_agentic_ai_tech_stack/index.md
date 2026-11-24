@@ -86,7 +86,7 @@ In unserer Beratungspraxis an der Schnittstelle zwischen angewandter Spitzenfors
 
 ![Referenzarchitektur des standardisierten Open-Source Agentic AI Tech Stacks](./open_source_agentic_ai_tech_stack.svg "Referenzarchitektur des standardisierten Open-Source Agentic")
 
-## 1. Das 6-Schichten-Modell für Souveräne KI-Agenten
+## 1. Wie ist das 6-Schichten-Modell für souveräne KI-Agenten aufgebaut?
 
 Ein belastbarer KI-Stack darf kein unübersichtlicher Flickenteppich aus Python-Skripten sein. Wir strukturieren die Gesamtlösung in sechs klar abgegrenzte, modular austauschbare Architekturschichten:
 
@@ -100,7 +100,7 @@ Ein belastbarer KI-Stack darf kein unübersichtlicher Flickenteppich aus Python-
 | **2. Agent Runtime & Skills** | Autonome Logik & Werkzeug-Standards | **Hermes Agent & Google WikiSkills** | Deterministisches Function Calling, standardisierte Werkzeugkataloge (SKILL.md) |
 | **1. Compute & Inference** | Hardware-nahe Modellausführung | **vLLM** | Hochdurchsatz-Serving, PagedAttention, Continuous Batching, Tensor-Parallelismus |
 
-## 2. Schicht 1: Hochdurchsatz-Inferenz mit vLLM
+## 2. Warum bildet vLLM die Hochdurchsatz-Inferenzschicht (Schicht 1)?
 
 Das Fundament jedes autonomen Systems ist die Fähigkeit, Open-Weights-Modelle (wie Llama, Mistral, Qwen oder DeepSeek) mit minimaler Latenz (*Time-to-First-Token*, TTFT) und maximaler Concurrency bereitzustellen. 
 

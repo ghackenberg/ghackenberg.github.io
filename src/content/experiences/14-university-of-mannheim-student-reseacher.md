@@ -1,5 +1,5 @@
 ---
-title: "Student Reseacher"
+title: "Student Researcher"
 employmentType: "Part-time"
 startMonth: 5
 startYear: 2004

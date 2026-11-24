@@ -8,8 +8,8 @@ order: 6
 repoName: "welding-simulation"
 image:
   src: "./screenshot.png"
-  title: "Welding Simulation: 3D-Temperaturfeld & Schweißnaht-Geometrie"
-  description: "Interaktive OpenGL-Visualisierung des räumlichen Temperaturfelds und der Schmelzbad-Isothermen mit orthogonalen 2D-Schnittansichten"
+  title: "Welding Simulation: 3D Thermal Field & Seam Geometry"
+  description: "Interactive OpenGL visualization of the 3D spatial temperature field and molten pool isotherms with orthogonal 2D cross-section views"
 screenshots:
   - src: "./screenshot.png"
     title: "Welding Simulation Desktop Workspace"

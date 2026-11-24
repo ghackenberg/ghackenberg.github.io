@@ -2,6 +2,7 @@
 title: "Blog Cover Interface: Magazine-Style Article Navigation"
 pubDate: "2011-06-29"
 description: "Refining animated article tiles into a magazine-style cover interface with persistent typography overlays and responsive preview scaling."
+inLanguage: "en"
 tags: ["blog", "data-visualization", "user-interface"]
 image:
   src: "./screenshot_one.png"

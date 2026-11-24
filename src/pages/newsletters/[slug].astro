@@ -62,7 +62,7 @@ const { previews: visPreviews } =
     ? await ensureVisPreviewAssets()
     : { previews: {} as Record<string, string> };
 
-const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Dr. Georg Hackenberg`;
+const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Georg Hackenberg`;
 const newsletterSchema = buildNewsletterIssueSchema({
   issue,
   mentions: [

@@ -7,8 +7,8 @@ order: 2
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: Clean Architecture & Ports"
-  description: "Physisches Schichtenmodell der Hexagonalen Architektur mit zentralem Domänenkern und entkoppelten Adapter-Schnittstellen"
+  title: "Architecture: Clean Architecture & Ports"
+  description: "Layered hexagonal architecture diagram depicting a central domain core surrounded by decoupled port and adapter interfaces"
 highlights:
   - "Strategic domain design and bounded context mapping using Domain-Driven Design (DDD)"
   - "Hexagonal (Ports & Adapters) and Clean Architecture structuring to decouple domain logic from I/O"

@@ -7,8 +7,8 @@ order: 3
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: Software Construction & Clean Code"
-  description: "Verzahnte modulare Code-Syntax-Bausteine mit automatischer Linter-Prüfschiene zur Durchsetzung von Clean-Code-Standards"
+  title: "Architecture: Software Construction & Clean Code"
+  description: "Interlocking modular code syntax blocks paired with an automated linter inspection rail enforcing clean code standards"
 highlights:
   - "Strict type-driven domain modeling in TypeScript, C#, and Java to make invalid states unrepresentable"
   - "Application of SOLID principles and GoF structural/behavioral design patterns to minimize coupling"

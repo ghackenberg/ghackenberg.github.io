@@ -7,8 +7,8 @@ order: 4
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: API Integration & System-Kopplung"
-  description: "Standardisierte API-Brücke mit physischen Steckverbindern und transparentem Datenkanal zur Kopplung verteilter Systeme"
+  title: "Architecture: API Integration & System Coupling"
+  description: "Standardized API bridge featuring physical connector ports and a transparent data channel linking distributed systems"
 highlights:
   - "Contract-first API design using OpenAPI (REST) and Protocol Buffers (gRPC) with bi-directional code generation"
   - "Event-driven asynchronous messaging and stream processing using Apache Kafka, RabbitMQ, and Redis Streams"

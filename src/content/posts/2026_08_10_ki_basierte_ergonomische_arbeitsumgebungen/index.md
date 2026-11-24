@@ -2,6 +2,7 @@
 title: "KI-Ergonomie: Dynamische Prävention am Arbeitsplatz"
 pubDate: 2026-08-10
 description: Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel Haltungsschäden im Homeoffice und Büro aktiv verhindern und Ergonomie steigern.
+inLanguage: "de"
 tags:
   - artificial-intelligence
   - cognitive-ergonomics
@@ -60,7 +61,7 @@ Klassische Ergonomie-Ansätze stoßen hier an ihre Grenzen: Ein höhenverstellba
 
 An unserer **Professur für Industrieinformatik an der FH OÖ Campus Wels** widmen wir uns daher einem zentralen Forschungsthema der Zukunft: Der **Entwicklung KI-basierter ergonomischer Arbeitsumgebungen**, die sich durch multimodale Sensorik, lernende Algorithmen und adaptive Aktorik kontinuierlich und unaufdringlich an den Menschen anpassen.
 
-## 1. Das Kernproblem: Statische Ergonomie trifft auf dynamische Menschen
+## 1. Warum stößt statische Ergonomie bei modernen Arbeitsplätzen an Grenzen?
 
 Sowohl im Corporate Office als auch in der häuslichen Wohnumgebung lassen sich prägnante ergonomische Herausforderungen beobachten:
 
@@ -70,7 +71,7 @@ Sowohl im Corporate Office als auch in der häuslichen Wohnumgebung lassen sich 
 
 Unsere Forschung am Forschungsschwerpunkt für Industrieinformatik der FH OÖ (Campus Wels) setzt genau an dieser Schnittstelle an: Wir wandeln die Arbeitsumgebung von einem passiven Mobiliar in ein **aktives, lernendes Assistenzsystem** um, das Prävention im Alltag verankert.
 
-## 2. Die 4-Schichten-Systemarchitektur
+## 2. Wie arbeitet die 4-Schichten-Systemarchitektur für KI-Ergonomie?
 
 Um eine transparente, datenschutzkonforme und reaktionsschnelle Steuerung zu gewährleisten, basiert unser Forschungsansatz auf einer modularen, vierstufigen Systemarchitektur.
 
@@ -121,7 +122,7 @@ Die Entwicklung KI-basierter ergonomischer Arbeitsumgebungen erfordert einen sta
 - **Mechatronik & Sensorik:** Integration präziser Sensorteleskope, Druckmessmatten und geräuscharmer Aktorik.
 - **Human Factors & Ergonomie:** Validierung der Bio-Feedback-Schleifen und Nutzerakzeptanz in Zusammenarbeit mit Arbeitsmediziner*innen und Sportwissenschafter*innen.
 
-Durch den Aufbau von **Reallaboren (Living Labs [@leminen-2012-living-labs])** testen wir Prototypen unter realistischen Bedingungen – sowohl in Testbüros am Campus als auch in realen Homeoffice-Szenarien unserer Projektpartner.
+Durch den Aufbau von **Reallaboren (Living Labs [@leminen-2012-living-labs])** – etwa im Rahmen unserer [Vision für den dezentralen Campus Almtal](/posts/2026_08_09_fh_ooe_campus_almtal_vision/) – testen wir Prototypen unter realistischen Bedingungen – sowohl in Testbüros am Campus als auch in realen Homeoffice-Szenarien unserer Projektpartner.
 
 ## 5. Fazit & Ausblick
 

@@ -2,6 +2,7 @@
 title: "Interactive 2D JavaScript & SVG Physics Simulation"
 pubDate: "2011-04-13"
 description: "Testing browser-based 2D particle physics and spring-damper simulations in JavaScript using cross-browser SVG and VML vector rendering."
+inLanguage: "en"
 tags: ["data-visualization", "hyperkit-software", "javascript", "simulation", "youtube-video", "zumida"]
 image:
   src: "./bounce_four.png"

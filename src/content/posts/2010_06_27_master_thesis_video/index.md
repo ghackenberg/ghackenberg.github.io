@@ -2,6 +2,7 @@
 title: "3D Multi-Touch Interaction: Master Thesis Video Demo"
 pubDate: "2010-06-26"
 description: "Video demonstration of my Master thesis project at Fraunhofer FIT showcasing vision-based 3D hand tracking and multi-touch gesture interaction."
+inLanguage: "en"
 tags: ["youtube-video", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 image:
   src: "./screenshot.png"

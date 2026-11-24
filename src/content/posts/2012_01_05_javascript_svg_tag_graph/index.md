@@ -2,6 +2,7 @@
 title: "JavaScript/SVG Tag Graph Interface"
 pubDate: "2012-01-04"
 description: "Here's another interface in the series of JavaScript/SVG interactive respectively animated prototypes: The tag graph. The idea is to display the article tags as..."
+inLanguage: "en"
 tags: ["blog", "data-visualization", "hyperkit-software", "javascript", "knowledge-graphs", "user-interface", "zumida"]
 image:
   src: "./javascript.png"

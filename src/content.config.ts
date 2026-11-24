@@ -136,6 +136,7 @@ const publications = defineCollection({
       abstract: z.string().optional(),
       tags: z.array(tagReference).default([]),
       bibtex: z.string().optional(),
+      doi: z.string().optional(),
       image: coverImageSchema({ image }),
       publisherUrl: z.string().optional(),
     }).strict(),

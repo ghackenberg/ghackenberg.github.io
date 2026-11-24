@@ -4,7 +4,7 @@ subtitle: "Zwischen algorithmischen Auktionen, kognitiver Werbeblindheit und nac
 pubDate: "2026-10-04"
 audience: "Geschäftsführer, CMOs, Marketingleiter und Vertriebsstrategen aus Industrie und B2B"
 inLanguage: "de"
-description: "Analytischer Deep Dive zur Systemik bezahlter Kanäle: Auktionsalgorithmen, Werbeblindheit, generative Werbeformate in KI-Suchmaschinen und B2B-Full-Funnel-Orchestrierung."
+description: "Deep Dive zur Ökonomie bezahlter Kanäle: Auktionsalgorithmen, Werbeblindheit, KI-Antwortmaschinen und B2B-Full-Funnel-Orchestrierung."
 tags: ["seo", "geo", "aio", "aeo", "social-media", "enterprise-ai", "benchmarks", "psychology", "cognitive-science"]
 image:
   src: "./preview.jpg"

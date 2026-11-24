@@ -7,8 +7,8 @@ order: 5
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: 3D-Testpyramide & Qualitätssicherung"
-  description: "Gestufte 3D-Testpyramide mit Unit-Test-Basis, Integrations-Kopplern und optischem E2E-Prüfstrahl zur Testautomatisierung"
+  title: "Architecture: 3D Test Pyramid & Quality Assurance"
+  description: "Tiered 3D test pyramid combining a unit-test foundation, integration couplers, and an optical end-to-end verification beam"
 highlights:
   - "Implementation of the balanced Test Pyramid (unit, integration, contract, component, and end-to-end)"
   - "Test-Driven Development (TDD) methodologies to drive decoupled, verifiable system designs"

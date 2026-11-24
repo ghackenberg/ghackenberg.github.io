@@ -1,7 +1,7 @@
 ---
 title: "Animating Knowledge Graphs Without Breaking the Mental Map"
 pubDate: 2026-11-17
-description: "How final-corpus clustering, chronological slicing, weighted Procrustes alignment, and quadratic u² blending animate evolving knowledge graphs without breaking the mental map."
+description: "Animate evolving knowledge graphs without breaking the mental map via final-corpus clustering, Procrustes alignment, and u² blending."
 inLanguage: "en"
 tags:
   - data-visualization
@@ -89,4 +89,4 @@ Across all five live sandboxes—[Cytoscape](/visualizations/cytoscape/), [Sigma
 
 Letting each historical slice converge freely before applying rigid-body Procrustes alignment balances early legibility with global spatial memory. Strict per-node pinning freezes early articles at awkward future distances, whereas unpinned convergence followed by weighted alignment and `u²` blending preserves local proportions while converging smoothly to the resting graph.
 
-Pinning every early node to its 2026 coordinates leaves a three-article graph stretched across an empty canvas as if waiting for unseen neighbors. Letting the force solver relax each sparse slice naturally keeps early clusters compact and readable, while post-solve Procrustes alignment and `u²` blending ensure the viewer never loses their bearings as the corpus grows.
+Pinning every early node to its 2026 coordinates leaves a three-article graph stretched across an empty canvas as if waiting for unseen neighbors. Letting the force solver relax each sparse slice naturally keeps early clusters compact and readable, while post-solve Procrustes alignment and `u²` blending ensure the viewer never loses their bearings as the corpus grows. For the zero-overlap successor engine built on 60° barycentric triangulation, read [SimplexViz: 60° Triangulation for Knowledge Maps](/posts/2026_11_18_introducing_simplex_viz/) or explore the [interactive SimplexViz graph](/visualizations/simplex-viz/).

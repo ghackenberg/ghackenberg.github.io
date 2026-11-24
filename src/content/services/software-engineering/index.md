@@ -6,8 +6,8 @@ ctaText: "Inquire about Software Engineering"
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Serviceübersicht: Software Engineering"
-  description: "Dr. Georg Hackenberg präsentiert die Architektur und Methodik robuster Softwaresysteme im Beratungsgespräch am Campus Wels"
+  title: "Service Overview: Software Engineering"
+  description: "Dr. Georg Hackenberg presenting resilient software system architecture during an advisory session at Campus Wels"
 tags:
   - "software-engineering"
   - "software-architecture"
@@ -63,3 +63,15 @@ Each module addresses a critical stage of system delivery, from initial domain s
 5. **Quality Assurance**: Comprehensive test automation hierarchies across unit, integration, end-to-end, and automated regression suites.
 6. **Release Engineering**: Immutable container packaging, automated CI/CD pipelines, automated schema migrations, and zero-downtime deployment strategies.
 7. **Cloud Operations**: Infrastructure as Code, distributed observability, telemetry instrumentation (OpenTelemetry), and production incident runbooks.
+
+## Strategic Pillars & Technology Stack
+
+Software engineering engagements emphasize five durable engineering pillars across enterprise system lifecycles:
+
+- **Domain Modeling & Rigorous System Specification**: Clear bounded contexts, ubiquitous domain language, and verifiable system invariants.
+- **Modular Microservices & Distributed Architecture**: Decoupled service boundaries with explicit resilience patterns and fault isolation.
+- **Clean Code Construction & Static Verification**: Strict type checking, automated linting, and disciplined refactoring workflows.
+- **Contract-Driven API Integration & Event Streaming**: Versioned API specifications and reliable asynchronous messaging topologies.
+- **Continuous Delivery & Resilient Cloud Operations**: Reproducible container builds, automated deployment gates, and full-stack telemetry.
+
+The underlying technology foundation spans **TypeScript / Node.js**, **Java / Spring Boot**, **Python**, **Docker & Kubernetes**, **PostgreSQL & Redis**, **OpenAPI & gRPC**, **GitHub Actions CI/CD**, and **OpenTelemetry & Prometheus**.

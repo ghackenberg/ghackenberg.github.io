@@ -7,8 +7,8 @@ order: 6
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: CI/CD & Release-Straße"
-  description: "Automatisierte Deployment-Förderstrecke vom geprüften Code-Artefakt bis zum versandbereiten Frachtcontainer mit Release-Antrieb"
+  title: "Architecture: CI/CD & Release Pipeline"
+  description: "Automated deployment conveyor moving verified code artifacts through container packaging toward immutable production releases"
 highlights:
   - "Continuous Integration and Continuous Delivery (CI/CD) workflows orchestrated via GitHub Actions"
   - "Immutable container packaging using multi-stage Docker builds, minimal base images, and vulnerability scanning"

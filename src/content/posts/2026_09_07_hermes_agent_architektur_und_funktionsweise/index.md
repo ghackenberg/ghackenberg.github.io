@@ -2,6 +2,7 @@
 title: "Hermes Agent Architektur: Body-Brain-Trennung & Skills"
 pubDate: 2026-09-07
 description: "Softwaretechnische Analyse des Hermes Agent von Nous Research: Modellagnostik durch Body-Brain-Entkopplung, Bounded Memory, Progressive Skills & Curator."
+inLanguage: "de"
 tags:
   - agentic-ai
   - artificial-intelligence

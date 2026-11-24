@@ -2,6 +2,7 @@
 title: "SE4SG 2012 Talk Slides: Distributed Smart Grid Architecture"
 pubDate: "2012-06-04"
 description: "Presentation slides from my ICSE 2012 SE4SG talk in Zurich on software engineering patterns and distributed control in smart energy grids."
+inLanguage: "en"
 tags: ["conference", "energy-systems", "slideshare-presentation", "systems-engineering"]
 image:
   src: "./title.png"

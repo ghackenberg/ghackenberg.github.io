@@ -2,6 +2,7 @@
 title: "Google WikiSkill: Persistente Wissensevolution für Agenten"
 pubDate: 2026-09-06
 description: "Warum naive Trajektorien-Optimierung bei Agent-Skills scheitert und wie Googles WikiSkill-Architektur Wissen persistent von Prozeduren entkoppelt."
+inLanguage: "de"
 tags:
   - artificial-intelligence
   - agentic-ai
@@ -76,7 +77,7 @@ Dieser Artikel liefert die ingenieurwissenschaftliche Analyse: Welches systemisc
 
 ![Das Fertigkeiten-Dilemma autonomer Agenten: Problem und Lösung im Überblick](./wikiskill_problem_und_dilemma.svg "Das Fertigkeiten-Dilemma autonomer Agenten")
 
-## 1. Das Problem: Das Fertigkeiten-Dilemma & „Optimization Amnesia“
+## 1. Was versteht man unter dem Fertigkeiten-Dilemma und „Optimization Amnesia“?
 
 Um die Tragweite von WikiSkill zu verstehen, muss man die Grenzen klassischer Anpassungsstrategien für Large Language Models (LLMs) im agentischen Umfeld betrachten.
 
@@ -117,7 +118,7 @@ Bisherige Ansätze versuchen, aus unstrukturierten, teils tausende Tokens langen
 #### 3. Wiederkehrende Sackgassen (Recurrent Blind Alleys)
 Weil es keinen lückenlosen, versionsunabhängigen Audit-Trail über verworfene Vorschläge gibt, tendieren Optimizer-Agenten in späteren Runden dazu, nahezu identische oder leicht variierte Patches erneut vorzuschlagen, die bereits in früheren Iterationen gescheitert sind. Die Optimierung divergiert oder stagniert in lokalen Minima.
 
-## 2. Der konkrete Lösungsansatz: Die WikiSkill-Architektur
+## 2. Wie löst die WikiSkill-Architektur persistente Wissensevolution?
 
 Die Kernidee von WikiSkill basiert auf einem Gedanken, den **Andrej Karpathy (2026)** unter dem Begriff *„LLM Wiki“* formulierte: Anstatt flüchtige Kontextfenster immer wieder mit Rohdaten zu überfluten, müssen Sprachmodelle ihre Erfahrungen kontinuierlich in eine strukturierte, kumulative und persistent wachsende Wissensbasis kompilieren.
 

@@ -4,6 +4,25 @@ import { getContentManifestArtifact } from "@commons/server/content-manifest-end
 
 const oneLine = (text?: string) => (text ? text.replace(/\s+/g, " ").trim() : "");
 
+const PRIORITY_TAG_IDS = new Set([
+  "agentic-ai",
+  "enterprise-ai",
+  "local-ai",
+  "mcp",
+  "knowledge-graphs",
+  "data-visualization",
+  "software-architecture",
+  "systems-engineering",
+  "content-engineering",
+  "intelligence-engineering",
+  "geo",
+  "seo",
+  "astro",
+  "typescript",
+  "simulation",
+  "cad",
+]);
+
 export async function GET() {
   const [
     manifestArtifact,
@@ -45,17 +64,24 @@ export async function GET() {
     const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || "").getTime();
     return db - da;
   });
+  const recentPublications = sortedPublications.filter((pub) => {
+    const year = pub.data.pubDate instanceof Date ? pub.data.pubDate.getFullYear() : new Date(pub.data.pubDate || "").getFullYear();
+    return year >= 2023;
+  });
   const sortedPresentations = presentations.sort((a, b) => {
     const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || "").getTime();
     const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || "").getTime();
     return db - da;
   });
-  const sortedCourseModules = courseModules.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  const sortedCourses = courses.slice().sort((a, b) => a.id.localeCompare(b.id));
   const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedServiceModules = serviceModules.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedNewsletters = newsletters.sort((a, b) => b.data.issueNumber - a.data.issueNumber);
-  const sortedTags = tags.sort((a, b) => a.data.title.localeCompare(b.data.title));
+  const sortedVisualizations = visualizations.slice().sort((a, b) => a.id.localeCompare(b.id));
+  const curatedTags = tags
+    .filter((t) => PRIORITY_TAG_IDS.has(t.id))
+    .sort((a, b) => a.data.title.localeCompare(b.data.title));
   const sortedDegrees = degrees.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedExperiences = experiences.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
   const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
@@ -70,18 +96,24 @@ export async function GET() {
     .map((p) => `  - ${p.data.name}: ${p.data.url}`)
     .join("\n");
 
+  const flagshipPosts = sortedPosts.slice(0, 18);
+
   let output = `# Dr. Georg Hackenberg
 
-> Professor for Industrial Informatics at UAP - University of Applied Sciences Upper Austria (Technology Campus Wels) and enterprise software architect. He bridges academic systems engineering with autonomous agent workflows and modern digital production across Web, YouTube, LinkedIn, and GitHub. Founder of CADdrive (caddrive.com) and Mentawise (mentawise.com).
+> Professor for Industrial Informatics and Head of Computer Science at UAP – University of Applied Sciences Upper Austria (FH Upper Austria / FH OÖ, Technology Campus Wels), and sovereign AI software architect based in Grünau im Almtal. He researches and builds Sovereign AI Systems, Agentic Workflows, MCP / Control-Plane Architectures, cyber-physical simulations, Slide-as-Code Keynotes, and platforms including CADdrive (caddrive.org / caddrive.com), Mentawise (mentawise.com), and SimplexViz.
 
 ## Core Identity & Credentials
 - **Name**: Dr. rer. nat. Georg Hermann Richard Hackenberg, M.Sc., B.Sc.
-- **Role**: Professor for Industrial Informatics & Enterprise Software Architect
-- **Institution**: UAP – University of Applied Sciences Upper Austria, Technology Campus Wels, Austria
+- **Role**: Professor for Industrial Informatics, Head of Computer Science (Campus Wels), & Sovereign AI Systems Architect
+- **Academic Institution**: UAP – University of Applied Sciences Upper Austria (FH Upper Austria / FH OÖ), Technology Campus Wels, Stelzhamerstraße 23, 4600 Wels, Austria
+- **Business Headquarters**: Edthof 13a, 4645 Grünau im Almtal, Upper Austria (IT Consulting & Software Engineering)
 - **Email**: georg.hackenberg@fh-wels.at
-- **Primary Website**: https://hackenberg.tech
+- **Primary Website**: https://hackenberg.tech/
 - **GitHub Sponsors & Open-Source Patronage**: https://github.com/sponsors/ghackenberg (Overview: https://hackenberg.tech/support/)
-- **Key Projects**: CADdrive (https://caddrive.com), Mentawise (https://mentawise.com)
+- **Key Platforms**:
+  - CADdrive: https://caddrive.org (Community & Docs) / https://caddrive.com (Hosted Web-CAD App)
+  - Mentawise: https://mentawise.com (Visual Personal Knowledge Graph Studio)
+  - SimplexViz: https://hackenberg.tech/projects/simplex-viz/ (Barycentric 60° Simplex Mesh Library)
 - **Academic Degrees**:
 ${degreeLines}
 - **Professional Experience**:
@@ -89,93 +121,86 @@ ${experienceLines}
 - **Profiles & Knowledge Graph**:
 ${profileLines}
 
-## Full Content Export for LLMs & RAG
-- [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured text of all blog posts, publication abstracts, course outlines, software projects, business services, email newsletters, and interactive visualizations.
+## Canonical Facts & FAQ
+- **Who is Dr. Georg Hackenberg?** Dr. rer. nat. Georg Hackenberg (TU Munich, RWTH Aachen, University of Mannheim) is a Full Professor for Industrial Informatics and Head of Computer Science at UAP – University of Applied Sciences Upper Austria (FH Upper Austria, Campus Wels), and an independent software engineering consultant based in Grünau im Almtal.
+- **What is UAP?** UAP is the new international brand (effective 01/2027) of the University of Applied Sciences Upper Austria (FH Oberösterreich / FH OÖ), where Dr. Hackenberg teaches and leads Computer Science at Campus Wels.
+- **What are his core 2026 engineering & research areas?** Sovereign on-premise AI systems (vLLM, GraphRAG, MCP), multi-agent control planes, Slide-as-Code lecture engines, generative engine optimization (GEO/AIO), and barycentric knowledge graph visualizations (SimplexViz).
+
+## Machine-Readable Corpus & Endpoints
+- [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured Markdown export of all ${sortedPosts.length} blog posts (with resolved citations), ${sortedPublications.length} academic publications, ${sortedPresentations.length} presentation decks (slide bodies + neural voiceovers), ${sortedCourses.length} courses (${courseModules.length} modules), ${sortedProjects.length} projects, ${sortedServices.length} services (${sortedServiceModules.length} modules), ${sortedNewsletters.length} newsletters, and ${sortedVisualizations.length} visualizations.
 - [JSON Content Manifest](https://hackenberg.tech${manifestArtifact.url}): Machine-readable index of all published entries and metadata.
 - [RSS XML Feed](https://hackenberg.tech/rss.xml): RSS feed of all published updates across all content domains.
+- [About & Curriculum Vitae](https://hackenberg.tech/about/): Full academic background, career timeline, and Schema.org ProfilePage.
+- [Business Contact](https://hackenberg.tech/contact/): Campus Wels office and Grünau im Almtal headquarters.
 
-## Key Sections & Topics
+## Curated Hub & Flagship Index
 
-### Blog Posts
-- [Blog Posts Index](https://hackenberg.tech/posts): Technical essays on AI agents, Web-LLMs, system architecture, and software engineering.
+### Blog Posts (${sortedPosts.length} Total — Top ${flagshipPosts.length} Recent)
+- [All Blog Posts Index](https://hackenberg.tech/posts/): Complete archive of ${sortedPosts.length} technical essays (2009–2026) on Sovereign AI agents, MCP control planes, GEO/AIO, and systems engineering.
 `;
 
-  for (const post of sortedPosts) {
+  for (const post of flagshipPosts) {
     const desc = oneLine(post.data.description);
     output += `- [${post.data.title}](https://hackenberg.tech/posts/${post.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
 
-  output += `\n### Reviewed Publications
-- [Publications Index](https://hackenberg.tech/publications): Peer-reviewed research papers, conference proceedings, and book chapters on industrial informatics and systems engineering.
-`;
-  for (const pub of sortedPublications) {
+  output += `\n### Reviewed Publications (${sortedPublications.length} Total — Recent Highlights)\n`;
+  output += `- [All Publications Index](https://hackenberg.tech/publications/): Complete list of ${sortedPublications.length} peer-reviewed papers, conference proceedings, and doctoral thesis.\n`;
+  for (const pub of recentPublications) {
     const authors = formatAuthorsPlain(pub.data.authors);
     const venue = pub.data.book ? ` (${pub.data.book})` : "";
     output += `- [${pub.data.title}](https://hackenberg.tech/publications/${pub.id}/): ${authors}${venue}\n`;
   }
 
-  output += `\n### Interactive Presentations
-- [Presentations Index](https://hackenberg.tech/presentations): Interactive slide decks, voiceover keynotes, and presentation handouts on SEO/GEO/AIO, software architecture, and industrial computing.
-`;
+  output += `\n### Interactive Presentations (${sortedPresentations.length} Decks)\n`;
+  output += `- [Presentations Index](https://hackenberg.tech/presentations/): Interactive Slide-as-Code decks, voiceover keynotes, and PDF handouts.\n`;
   for (const pres of sortedPresentations) {
     const desc = oneLine(pres.data.description || pres.data.subtitle);
     output += `- [${pres.data.title}](https://hackenberg.tech/presentations/${pres.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
 
-  output += `\n### University Courses & Modules
-- [Courses Index](https://hackenberg.tech/courses): University courses on software architecture, industrial computing, database systems, and software engineering principles.
-`;
-  for (const course of courses) {
+  output += `\n### University Courses (${sortedCourses.length} Courses, ${courseModules.length} Modules)\n`;
+  output += `- [Courses Index](https://hackenberg.tech/courses/): Higher education lectures and ${courseModules.length} curriculum modules taught at UAP / FH Upper Austria.\n`;
+  for (const course of sortedCourses) {
     const desc = oneLine(course.data.description);
     output += `- [${course.data.title}](https://hackenberg.tech/courses/${course.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
-  for (const mod of sortedCourseModules) {
-    const modSlug = mod.id.split("/").pop();
-    const desc = oneLine(mod.data.description);
-    output += `- [Course Module: ${mod.data.title}](https://hackenberg.tech/courses/${mod.data.courseId}/${modSlug}/)${desc ? `: ${desc}` : ""}\n`;
-  }
 
-  output += `\n### Software Projects
-- [Projects Index](https://hackenberg.tech/projects): Enterprise systems, open source repositories, and web applications including CADdrive and Mentawise.
-`;
+  output += `\n### Software Projects (${sortedProjects.length} Systems)\n`;
+  output += `- [Projects Index](https://hackenberg.tech/projects/): Enterprise systems, open-source repositories, and platforms including CADdrive (caddrive.org / caddrive.com), Mentawise, and SimplexViz.\n`;
   for (const project of sortedProjects) {
     const desc = oneLine(project.data.description);
     output += `- [${project.data.title} (TRL ${project.data.trl})](https://hackenberg.tech/projects/${project.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
 
-  output += `\n### Engineering Services & Modules
-- [Services Index](https://hackenberg.tech/services): High-impact technical consulting, executive training, architectural reviews, and model-driven software engineering modules.
-`;
+  output += `\n### Engineering Services (${sortedServices.length} Practices, ${sortedServiceModules.length} Modules)\n`;
+  output += `- [Services Index](https://hackenberg.tech/services/): Technical consulting, Sovereign AI engineering, and architectural advisory.\n`;
   for (const service of sortedServices) {
     const desc = oneLine(service.data.description);
-    output += `- [${service.data.title}](https://hackenberg.tech/services/${service.id}/)${desc ? `: ${desc}` : ""}\n`;
-  }
-  for (const mod of sortedServiceModules) {
-    const modSlug = mod.id.split("/").pop();
-    const desc = oneLine(mod.data.description);
-    output += `- [Service Module: ${mod.data.title}](https://hackenberg.tech/services/${mod.data.serviceId}/${modSlug}/)${desc ? `: ${desc}` : ""}\n`;
+    const modLinks = sortedServiceModules
+      .filter((m) => m.data.serviceId === service.id)
+      .map((m) => `[${m.data.title}](https://hackenberg.tech/services/${service.id}/${m.id.split("/").pop()}/)`)
+      .join(", ");
+    output += `- [${service.data.title}](https://hackenberg.tech/services/${service.id}/)${desc ? `: ${desc}` : ""}${modLinks ? ` Modules: ${modLinks}.` : ""}\n`;
   }
 
-  output += `\n### Email Newsletters
-- [Newsletters Index](https://hackenberg.tech/newsletters): Curated engineering digests and updates on AI systems, architecture, and research.
-`;
+  output += `\n### Email Newsletters\n`;
+  output += `- [Newsletters Index](https://hackenberg.tech/newsletters/): Curated engineering dispatches on Sovereign AI, Slide-as-Code, and geometry.\n`;
   for (const nl of sortedNewsletters) {
     const desc = oneLine(nl.data.description || nl.data.subtitle);
     output += `- [Issue #${nl.data.issueNumber}: ${nl.data.title}](https://hackenberg.tech/newsletters/${nl.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
 
-  output += `\n### Content Visualizations
-- [Visualizations Index](https://hackenberg.tech/visualizations): Interactive 3D, WebGL, and force-directed graph visualizers and scientific simulation models.
-`;
-  for (const viz of visualizations) {
+  output += `\n### Content Visualizations (${sortedVisualizations.length} Interactive Models)\n`;
+  output += `- [Visualizations Index](https://hackenberg.tech/visualizations/): Interactive 3D, WebGL, Canvas, and Simplex SVG knowledge graph engines.\n`;
+  for (const viz of sortedVisualizations) {
     const desc = oneLine(viz.data.description);
     output += `- [${viz.data.title}](https://hackenberg.tech/visualizations/${viz.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
 
-  output += `\n### Topic Tags
-- [Tags Index](https://hackenberg.tech/tags): Structured cross-domain taxonomy connecting posts, publications, presentations, courses, projects, services, newsletters, and visualizations.
-`;
-  for (const tag of sortedTags) {
+  output += `\n### Core Topic Tags (${tags.length} Total — ${curatedTags.length} Strategic Highlights)\n`;
+  output += `- [All Topic Tags Index](https://hackenberg.tech/tags/): Cross-domain taxonomy spanning all ${tags.length} topics.\n`;
+  for (const tag of curatedTags) {
     const desc = oneLine(tag.data.description);
     output += `- [#${tag.data.title}](https://hackenberg.tech/tags/${tag.id}/)${desc ? `: ${desc}` : ""}\n`;
   }

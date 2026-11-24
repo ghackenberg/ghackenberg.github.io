@@ -2,6 +2,7 @@
 title: "Vector Logo Design Explorations & Visual Branding Ideas"
 pubDate: "2009-04-05"
 description: "Exploring geometric vector logo designs, typography concepts, and visual identity studies created for software engineering and web projects."
+inLanguage: "en"
 tags: ["drawing"]
 image:
   src: "./eduride.png"

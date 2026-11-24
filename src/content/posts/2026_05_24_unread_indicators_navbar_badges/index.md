@@ -2,6 +2,7 @@
 title: Flicker-Free Unread Indicators in Astro
 pubDate: 2026-05-24
 description: How to build a zero-flicker client-side unread content notification badge in Astro using localStorage and synchronous manifest synchronization.
+inLanguage: "en"
 tags:
   - web-development
   - astro
@@ -18,7 +19,7 @@ references:
     title: Optimize Cumulative Layout Shift (CLS)
     url: https://web.dev/articles/cls
     year: 2024
-    siteName: Google Chrome Developer Documentation. Available online at [web.dev/cls](https://web.dev/articles/cls)
+    siteName: "Google Chrome Developer Documentation"
     id: google-2024-optimize-cumulative
     authors:
       - name: Google Web Vitals
@@ -33,13 +34,14 @@ references:
       - name: W3C Web Applications Working Group
         type: Organization
   - type: online
-    title: WebKit Team (Apple)
+    title: "Tracking Prevention Policy and Client-Side Storage Caps"
     url: https://webkit.org/tracking-prevention/
-    siteName: "* (2020). *Tracking Prevention Policy and Client-Side Storage Caps*. WebKit Open Source Project. Available online at [webkit.org/tracking-prevention](https://webkit.org/tracking-prevention/)"
+    year: 2020
+    siteName: "WebKit Open Source Project"
     id: hackenberg-webkit-team
     authors:
-      - name: Georg Hackenberg
-        id: https://hackenberg.tech/#person
+      - name: WebKit Team
+        type: Organization
 ---
 
 
@@ -57,7 +59,7 @@ We wanted a visual system that instantly guides users. The final interface featu
 
 Here is a mockup of the visual interface:
 
-![Benutzeroberflächen-Mockup für ungelesene Inhalte und Badges](./mockup.svg "UI-Mockup für Benachrichtigungs-Badges in Astro")
+![UI mockup showing navbar unread notification badges and card unread indicator dots](./mockup.svg "UI Mockup for Unread Notification Badges in Astro")
 
 ## How Do You Prevent Layout Shift When Loading Client-Side State?
 
@@ -98,7 +100,7 @@ To make indicators render instantly, we split our system into three layers:
 
 The diagram below illustrates how these three layers interact across build time and client runtime:
 
-![Entkoppelte Systemarchitektur für flackerfreies Laden von Lesezuständen](./architecture.svg "Systemarchitektur: Build-Time Manifest und Client-Time Cache")
+![Decoupled system architecture combining build-time manifest generation and synchronous client-side localStorage painting](./architecture.svg "System Architecture: Build-Time Manifest and Client-Time Cache")
 
 ### 1. Build-Time Content Manifest
 First, we created a dynamic endpoint `src/pages/content-manifest.json.ts` that runs during the Astro build process. It fetches all content collections, extracts their URLs and publication timestamps (validated by Zod schemas), and output a single, pre-compiled static JSON file:
@@ -167,7 +169,7 @@ Once the page is rendered, our primary client-side TypeScript module `src/script
 
 The sequence diagram below displays the step-by-step workflow of the client state machine when a user triggers a page request:
 
-![Ablaufdiagramm des clientseitigen Benachrichtigungs-Zustandsautomaten](./workflow.svg "Zustandsdiagramm: Synchrone Anzeige und asynchroner Abgleich")
+![Sequence diagram of the client-side notification state machine for synchronous paint and background sync](./workflow.svg "State Sequence Diagram: Synchronous Render and Background Sync")
 
 By utilizing the cached manifest cache from the *previous* session, the client is able to execute Step 2 synchronously. When the background fetch completes in Step 4, if there is a discrepancy (e.g., a new article was published since the user last refreshed), the UI updates smoothly, ensuring they always have accurate, real-time unread counts without sacrificing performance.
 

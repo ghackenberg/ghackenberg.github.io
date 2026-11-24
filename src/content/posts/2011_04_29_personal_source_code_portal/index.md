@@ -2,6 +2,7 @@
 title: "Launching a Public Source Code & Project Tracking Portal"
 pubDate: "2011-04-28"
 description: "Setting up a public source code portal and issue tracker to share open-source software prototypes, demos, and research implementations."
+inLanguage: "en"
 tags: ["hyperkit-software", "software-systems", "web-development"]
 image:
   src: "./dashboard.png"

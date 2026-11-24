@@ -5,8 +5,8 @@ order: 3
 ctaText: "Inquire about Content Engineering"
 image:
   src: "./preview.jpg"
-  title: "Serviceübersicht: Content Engineering"
-  description: "Dr. Georg Hackenberg erläutert Multi-Channel-Publishing-Pipelines am Besuchertisch im Campus Office Wels"
+  title: "Service Overview: Content Engineering"
+  description: "Dr. Georg Hackenberg explaining multi-channel publishing pipelines at the visitor table in the Campus Wels office"
 pubDate: 2026-09-11
 tags:
   - "content-engineering"
@@ -60,3 +60,15 @@ The engineering practice is structured into five modular workstreams that can be
 3. **Design Systems**: Systematic tokenization of typography, palettes, and layout components across web and visual assets.
 4. **Publishing Pipelines**: Static site generators, programmatic image optimization, and automated CI/CD build workflows.
 5. **Semantic Optimization**: Structured data integration (Schema.org JSON-LD), LLM context manifests, and automated sitemap generation.
+
+## Strategic Pillars & Technology Stack
+
+Each content engineering engagement is anchored around five strategic pillars designed for long-term editorial maintainability and machine readability:
+
+- **Structured Content Modeling & Validation**: Typed collections, canonical taxonomy schemas, and build-time constraint enforcement.
+- **Omnichannel Syndication & COPE Workflows**: Single-source Markdown/MDX publishing across web portals, RSS feeds, newsletters (Listmonk), and LLM endpoints.
+- **Design System Tokenization & Multi-Format Layouts**: Unified domain typography, color tokens, and reusable visual components.
+- **Automated Git CI/CD & Asset Optimization**: Zero-artifact build caching, deterministic SVG compilation, and automated asset verification.
+- **Generative Engine & Semantic Search Optimization**: Schema.org JSON-LD graphs, structured RAG context (`llms.txt`), and AIO-ready prose geometry.
+
+Across these pillars, our production technology stack integrates **Astro SSG**, **TypeScript**, **Zod Schemas**, **Tailwind CSS**, **MDX**, **GitHub Actions CI/CD**, **Schema.org JSON-LD**, **Listmonk**, and **Sharp & WebP** image pipelines.

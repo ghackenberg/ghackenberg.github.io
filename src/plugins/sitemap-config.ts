@@ -72,7 +72,8 @@ function getLatestGitDate(relativePath: string, gitMap: Map<string, Date>): Date
  * Parses frontmatter YAML block without heavy dependencies.
  */
 function parseSimpleFrontmatter(content: string): Record<string, string | string[]> {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const normalized = content.replace(/^\uFEFF/, '').trimStart();
+  const match = normalized.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   const yaml = match[1];
   const result: Record<string, string | string[]> = {};

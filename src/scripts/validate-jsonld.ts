@@ -1350,7 +1350,7 @@ async function verifyExternalAuthorities() {
   for (const doi of missingDois) {
     try {
       const res = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
-        headers: { 'User-Agent': 'hackenberg.tech-jsonld-validator/1.0 (mailto:georg@hackenberg.tech)' }
+        headers: { 'User-Agent': 'hackenberg.tech-jsonld-validator/1.0 (mailto:georg.hackenberg@fh-wels.at)' }
       });
       if (res.ok) {
         const data = (await res.json()) as CrossrefApiResponse;

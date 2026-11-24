@@ -21,8 +21,8 @@ methodologyPhases:
 order: 2
 image:
   src: "./preview.jpg"
-  title: "Architektur: Hybrid Retrieval & RAG"
-  description: "Duale 3D-Retrieval-Architektur mit dichter Vektoreinbettung, strukturierter Textindizierung und Cross-Encoder-Reranking"
+  title: "Architecture: Hybrid Retrieval & RAG"
+  description: "Dual 3D retrieval architecture combining dense vector embeddings, structured lexical indexing, and cross-encoder reranking"
 pubDate: 2026-09-11
 inputs:
   - "Internal document repositories (technical manuals, Markdown files, PDFs, source code)"

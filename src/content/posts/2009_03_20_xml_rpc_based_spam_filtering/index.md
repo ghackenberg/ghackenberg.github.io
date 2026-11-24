@@ -2,6 +2,7 @@
 title: "Open-Source XML-RPC Spam Filtering with BlogSpam.net"
 pubDate: "2009-03-19"
 description: "Integrating open-source XML-RPC comment spam filtering via BlogSpam.net into a custom PHP blog engine to block automated bot submissions."
+inLanguage: "en"
 tags: ["blog", "software-systems", "web-development"]
 image:
   src: "./http_post.png"

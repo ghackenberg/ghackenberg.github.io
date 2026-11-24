@@ -2,6 +2,7 @@
 title: "LiteLLM Architektur: AI Gateway, Routing & Fallbacks"
 pubDate: 2026-09-09
 description: "Softwaretechnische Analyse von LiteLLM: Universelle Abstraktion für 100+ LLMs, dynamisches Routing, kaskadierende Fallbacks und Keycloak-Governance."
+inLanguage: "de"
 tags:
   - litellm
   - agentic-ai
@@ -67,7 +68,7 @@ Bevor wir die internen Transformationsmechanismen und Routing-Algorithmen im Det
 
 ![Umfassende Systemarchitektur von LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen](./litellm_system_architecture.svg "LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen - Umfassende Systemarchitektur")
 
-## 1. Systemarchitektur & Entwurfsprinzipien
+## 1. Wie normalisiert LiteLLM heterogene LLM-APIs auf Architekturebene?
 
 Auf Systemebene unterscheidet LiteLLM zwischen zwei Betriebsmodi: einer leichtgewichtigen **Python-Bibliothek (SDK)** für embedded Programmierung und dem eigenständigen, produktionsreifen **LiteLLM Proxy Server**. Im Enterprise-Stack bildet der Proxy Server das Herzstück der Inferenz-Infrastruktur.
 
@@ -144,7 +145,7 @@ LiteLLM harmonisiert alle denkbaren Providerfehler in eine deterministische Pyth
 
 Dadurch können übergeordnete Orchestrierungsschichten wie [LangGraph](/tags/langgraph/) oder [Hermes](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) generische Retry- und Ausnahme-Behandlungsroutinen implementieren, ohne providerspezifischen Code vorzuhalten.
 
-## 3. Dynamisches Routing, Lastverteilung & Resilienz-Strategien
+## 3. Wie sichern dynamisches Routing und Fallbacks die Ausfallsicherheit?
 
 In Hochlastumgebungen genügt es nicht, Anfragen starr an einen einzelnen Inferenz-Knoten weiterzuleiten. Der LiteLLM Router bildet eine dynamische Steuerebene, die Lasten intelligent verteilt und Ausfälle transparent kompensiert.
 

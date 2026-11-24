@@ -2,6 +2,7 @@
 title: "Zero-JS Mermaid in Astro: Statische Build-Time-SVGs"
 pubDate: 2026-09-22
 description: "Warum clientseitiges Mermaid die Core Web Vitals bremst und wie unsere Astro-Build-Time-Pipeline statische SVGs für SEO, GEO und KI-Agenten vorrendert."
+inLanguage: "de"
 tags:
   - astro
   - software-architecture
@@ -241,3 +242,13 @@ classDiagram
 Mit der Einführung von **Build-Time Static Mermaid Rendering** schlagen wir zwei Fliegen mit einer Klappe:
 1. **Bestehende Autoren-Ergonomie:** Technische Schaubilder können direkt in Markdown versioniert, kollaborativ über Git gepflegt und unkompliziert aktualisiert werden.
 2. **Kompromisslose Web-Performance:** Unsere Leser profitieren von sofort sichtbaren, gestochen scharfen Vektorgrafiken ohne einen einzigen Byte unnötiges Client-JavaScript – während Suchmaschinen und KI-Agenten die semantische Struktur unserer Artikel mühelos erschließen können.
+
+Die folgende Vergleichstabelle fasst die architektonischen Unterschiede zwischen clientseitigem Mermaid-Rendering und der Build-Time-SVG-Pipeline zusammen:
+
+<!-- caption: "Vergleich von clientseitigem Mermaid.js-Rendering und Build-Time Static SVG Compilation in Astro." -->
+| Merkmal | Clientseitiges Mermaid.js | Build-Time Static SVG (Remark-Plugin) |
+| :--- | :--- | :--- |
+| **Client-JS-Bundle** | ~2+ MB JavaScript zur Laufzeit | 0 Bytes JavaScript im Browser |
+| **Layout-Shift (CLS)** | Sichtbares Nachladen & Reflow | Null Layout-Shift (`width`/`height` im HTML) |
+| **SEO / KI-Crawler** | Roher Codeblock ohne sichtbare Grafik | Semantisches `<svg>` direkt im statischen DOM |
+| **Theme-Anpassung** | Manuelles Re-Rendering bei Wechsel | CSS-Variablen & Dark/Light-Synchronisation |

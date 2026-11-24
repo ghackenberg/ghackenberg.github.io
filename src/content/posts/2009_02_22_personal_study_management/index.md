@@ -2,6 +2,7 @@
 title: "Personal Study Management with XML Learning Schedules"
 pubDate: "2009-02-21"
 description: "Ein strukturiertes System zur Organisation von Prüfungsvorbereitungen mit XML-basierten Lernplänen und automatischer Fortschrittsberechnung."
+inLanguage: "en"
 tags: ["data-visualization", "education", "hyperkit-software", "task-management"]
 image:
   src: "./plan.png"

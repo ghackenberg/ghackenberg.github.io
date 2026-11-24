@@ -2,6 +2,7 @@
 title: "MaCon Video Demo: Cross-Discipline Manufacturing Modeling"
 pubDate: "2015-12-01"
 description: "YouTube demonstration of MaCon, our modeling workbench for consistent cross-disciplinary engineering of mechatronic manufacturing systems."
+inLanguage: "en"
 tags: ["manufacturing-engineering", "manufacturing-systems", "mechatronic-systems", "systems-engineering", "user-interface", "youtube-video"]
 image:
   src: "./screenshot.png"

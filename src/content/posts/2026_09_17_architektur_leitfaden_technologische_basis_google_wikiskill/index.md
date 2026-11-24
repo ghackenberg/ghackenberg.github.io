@@ -2,6 +2,7 @@
 title: "Google WikiSkill Architektur: Tech-Stack im Vergleich"
 pubDate: 2026-09-17
 description: "Wie lässt sich das Google-WikiSkill-Paradigma technisch umsetzen? Ein Architekturvergleich zwischen Mastra, Pi Agent, PydanticAI, Hermes und LangGraph."
+inLanguage: "de"
 tags:
   - agentic-ai
   - artificial-intelligence

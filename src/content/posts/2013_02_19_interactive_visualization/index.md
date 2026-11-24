@@ -2,6 +2,7 @@
 title: "Model Visualization for Windows and Android"
 pubDate: "2013-02-18"
 description: "As part of our virtual smart grid testbed lab we have been working on an interactive visualization for our models including their structure and behavior. Here a..."
+inLanguage: "en"
 tags: ["data-visualization", "energy-systems", "simulation", "user-interface"]
 image:
   src: "./screenshot_android.png"

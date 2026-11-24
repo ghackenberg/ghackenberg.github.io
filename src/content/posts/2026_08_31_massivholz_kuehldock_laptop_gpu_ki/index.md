@@ -56,7 +56,7 @@ Ob beim Ausführen lokaler Large Language Models (LLMs) via Ollama, beim Rendern
 
 Um dieses Problem mit einer Symbiose aus minimalistischer Konstruktion, Thermodynamik und zeitlosem Naturdesign zu lösen, stelle ich in diesem Beitrag ein neuartiges Hardware-Konzept vor: **Den CNC-gefertigten Leichtbau-Holzständer mit offenen Seitenwangen und horizontalen Belüftungsschlitzen**.
 
-## 1. Die Problemstellung: Hitzestau und Thermal Throttling am Schreibtisch
+## 1. Warum drosselt Hitzestau die GPU-Leistung bei KI-Workflows?
 
 Moderne Laptop-Kühlsysteme vollbringen mechatronische Höchstleistungen. Kompakte Vapor Chambers und hochdrehende Radiallüfter (oft 4.500 bis über 6.000 U/min) transportieren bis zu 150 bis 175 Watt thermische Verlustleistung (TDP – *Thermal Design Power*) aus CPU und dedizierter GPU ab. 
 
@@ -67,7 +67,7 @@ Ein konstruktives Dilemma vieler aktueller Hochleistungs-Notebooks liegt jedoch 
 
 Herkömmliche Laptop-Ständer aus gestanztem Blech oder klapprigem Plastik schaffen hier oft nur unzureichend Abhilfe und wirken im hochwertigen Büro- oder Homeoffice-Ambiente wie Fremdkörper.
 
-## 2. Das Konzept: Maximale Luftzirkulation durch minimalistischen Holz-Leichtbau
+## 2. Wie maximiert ein minimalistischer Holz-Leichtbau die Luftzirkulation?
 
 Um maximale thermische Entlastung bei minimalem Materialeinsatz zu erreichen, bricht unser Konzept mit klobigen, geschlossenen Konstruktionen:
 
@@ -140,6 +140,8 @@ Gutes Arbeitsplatzdesign der Zukunft besteht nicht nur aus Software und Bildschi
 Der minimalistische Leichtbau-Holzständer beweist, dass thermische Ingenieurskunst und nachhaltiges Produktdesign keine Gegensätze sind: Er schützt teure Workstation-Hardware vor thermischem Verschleiß, sichert maximale Rechenleistung für anspruchsvolle KI- und CAD-Aufgaben und bereichert den Schreibtisch als ästhetisches Statement gegen die Wegwerfkultur aus Plastik.
 
 Vertiefende Einblicke in moderne Arbeitsplatz- und Hardware-Systeme finden Sie in den folgenden Beiträgen:
+- [FH OÖ Campus Almtal: Die Vision vom dezentralen Reallabor](/posts/2026_08_09_fh_ooe_campus_almtal_vision/)
 - [KI-basierte ergonomische Arbeitsumgebungen: Sensorik, Aktorik und adaptive Möbel](/posts/2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/)
+- [Smarte Tiefenbewässerung & urbanes Wurzelzonen-Management](/posts/2026_08_30_smarte_tiefenbewaesserung_bodenstruktur/)
 - [Standardisierter Open-Source Agentic AI Tech Stack für lokale Entwicklung](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/)
 - [Consulting & Systemarchitektur für Künstliche Intelligenz](/services/ai/)

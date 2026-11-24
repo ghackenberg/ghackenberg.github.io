@@ -33,11 +33,42 @@ export type JsonLdPrimitive = string | number | boolean | null | undefined;
 export type JsonLdValue = JsonLdPrimitive | { [key: string]: JsonLdValue } | JsonLdValue[];
 export type JsonLdNode = Record<string, JsonLdValue>;
 
-export const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?: boolean; sameAs?: string }> = {
+export const OFFICIAL_ORG_LABELS: Record<
+  string,
+  {
+    name: string;
+    isEducational?: boolean;
+    sameAs?: string;
+    url?: string;
+    alternateName?: string[];
+    description?: string;
+    address?: {
+      '@type': 'PostalAddress';
+      streetAddress: string;
+      addressLocality: string;
+      postalCode: string;
+      addressCountry: string;
+    };
+  }
+> = {
   'https://www.wikidata.org/wiki/Q1388312': {
     name: 'University of Applied Sciences Upper Austria',
     isEducational: true,
-    sameAs: 'https://www.fh-ooe.at/'
+    sameAs: 'https://www.fh-ooe.at/',
+    alternateName: ['UAP', 'FH Upper Austria', 'FH Oberösterreich', 'FH OÖ']
+  },
+  'https://hackenberg.tech/#organization': {
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech/',
+    description:
+      'Sole proprietorship for IT consulting, Sovereign AI engineering, and scientific software architecture in Grünau im Almtal, Upper Austria.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Edthof 13a',
+      addressLocality: 'Grünau im Almtal',
+      postalCode: '4645',
+      addressCountry: 'AT'
+    }
   },
   'https://www.wikidata.org/wiki/Q157808': { name: 'Technical University of Munich', isEducational: true },
   'https://www.wikidata.org/wiki/Q273263': { name: 'RWTH Aachen University', isEducational: true },
@@ -119,7 +150,8 @@ export function buildWebsiteSchema() {
     '@id': WEBSITE_ID,
     url: 'https://hackenberg.tech/',
     name: 'Dr. Georg Hackenberg',
-    description: 'Personal website of Dr. Georg Hackenberg, Full Professor for Industrial Informatics, software engineer, digital entrepreneur, and researcher.',
+    description:
+      'Prof. Dr. Georg Hackenberg (UAP / FH Upper Austria): Industrial Informatics, Sovereign AI Systems, CADdrive, Mentawise, SimplexViz, and lectures.',
     publisher: PERSON_REF
   };
 }
@@ -193,34 +225,37 @@ export function buildAboutPageSchemas(params: {
     ? profiles.slice().sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
     : [];
 
-  const orgMap = new Map<string, Record<string, string | undefined>>();
+  const orgMap = new Map<string, JsonLdNode>();
+  const orgRefMap = new Map<string, JsonLdNode>();
+
+  const registerOrg = (id: string, fallbackName: string) => {
+    if (orgMap.has(id)) return;
+    const meta = OFFICIAL_ORG_LABELS[id];
+    const orgType = meta?.isEducational ? 'EducationalOrganization' : 'Organization';
+    const refNode: JsonLdNode = {
+      '@type': orgType,
+      '@id': id,
+      name: meta?.name || fallbackName,
+      ...(meta?.sameAs ? { sameAs: meta.sameAs } : {}),
+      ...(meta?.url ? { url: meta.url } : {})
+    };
+    orgRefMap.set(id, refNode);
+    orgMap.set(id, {
+      ...refNode,
+      ...(meta?.alternateName ? { alternateName: meta.alternateName } : {}),
+      ...(meta?.description ? { description: meta.description } : {}),
+      ...(meta?.address ? { address: meta.address } : {})
+    });
+  };
 
   for (const d of sortedDegrees) {
     const org = d.data.organization;
-    const id = org?.id;
-    if (id && !orgMap.has(id)) {
-      const meta = OFFICIAL_ORG_LABELS[id];
-      orgMap.set(id, {
-        '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
-        '@id': id,
-        name: meta?.name || org.name,
-        ...(meta?.sameAs ? { sameAs: meta.sameAs } : {})
-      });
-    }
+    if (org?.id) registerOrg(org.id, org.name);
   }
 
   for (const e of activeExperiences) {
     const org = e.data.organization;
-    const id = org?.id;
-    if (id && !orgMap.has(id)) {
-      const meta = OFFICIAL_ORG_LABELS[id];
-      orgMap.set(id, {
-        '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
-        '@id': id,
-        name: meta?.name || org.name,
-        ...(meta?.sameAs ? { sameAs: meta.sameAs } : {})
-      });
-    }
+    if (org?.id) registerOrg(org.id, org.name);
   }
 
   const distinctOrgs = Array.from(orgMap.values());
@@ -229,7 +264,7 @@ export function buildAboutPageSchemas(params: {
   for (const d of sortedDegrees) {
     if (d.data.organization?.id) pastOrgIds.add(d.data.organization.id);
   }
-  const alumniOfList = Array.from(pastOrgIds).map((id) => orgMap.get(id) ?? { '@id': id });
+  const alumniOfList = Array.from(pastOrgIds).map((id) => orgRefMap.get(id) ?? { '@id': id });
 
   const worksForOrgs = Array.from(
     new Map(
@@ -237,7 +272,7 @@ export function buildAboutPageSchemas(params: {
         .filter((e) => e.data.organization?.id)
         .map((e) => {
           const id = e.data.organization!.id!;
-          return [id, orgMap.get(id) ?? { '@id': id }];
+          return [id, orgRefMap.get(id) ?? { '@id': id }];
         })
     ).values()
   );
@@ -251,10 +286,10 @@ export function buildAboutPageSchemas(params: {
     honorificPrefix: 'Dr.',
     jobTitle: 'Professor for Industrial Informatics',
     description:
-      'Full Professor for Industrial Informatics at FH OÖ Campus Wels, software engineer, digital entrepreneur, and researcher.',
+      'Professor for Industrial Informatics and Head of Computer Science at UAP (University of Applied Sciences Upper Austria, Campus Wels), software architect, and researcher in Sovereign AI Systems, CADdrive, Mentawise, and SimplexViz.',
     url: 'https://hackenberg.tech/about/',
     ...(imageUrl ? { image: imageUrl } : {}),
-    email: 'mailto:mail@georghackenberg.com',
+    email: 'mailto:georg.hackenberg@fh-wels.at',
     telephone: '+43 50804 43250',
     workLocation: {
       '@type': 'Place',
@@ -280,7 +315,7 @@ export function buildAboutPageSchemas(params: {
       credentialCategory: 'degree',
       name: `${d.data.degree} in ${d.data.program}`,
       ...(d.data.organization?.id
-        ? { recognizedBy: orgMap.get(d.data.organization.id) ?? { '@id': d.data.organization.id } }
+        ? { recognizedBy: orgRefMap.get(d.data.organization.id) ?? { '@id': d.data.organization.id } }
         : {
             recognizedBy: {
               '@type': 'EducationalOrganization',
@@ -321,7 +356,7 @@ export function buildContactPageSchemas(params: {
     '@id': PERSON_ID,
     name: 'Dr. Georg Hackenberg',
     url: 'https://hackenberg.tech/about/',
-    email: 'mailto:mail@georghackenberg.com',
+    email: 'mailto:georg.hackenberg@fh-wels.at',
     telephone: '+43 50804 43250',
     workLocation: {
       '@type': 'Place',
@@ -575,11 +610,21 @@ export function buildPublicationSchema(params: {
 
   const authorPlain = pub.data.authors.map((a) => a.name).join(', ');
 
+  const pubEntry = pub.data as { doi?: string };
+  const urlDoiMatch = pub.data.publisherUrl?.match(/^https?:\/\/(?:dx\.)?doi\.org\/(10\.\d{4,9}\/\S+)/i);
+  const bibDoiMatch = pub.data.bibtex?.match(/\bdoi\s*=\s*[{"']?(10\.\d{4,9}\/[^\s},"']+)/i);
+  const extractedDoi = (pubEntry.doi || urlDoiMatch?.[1] || bibDoiMatch?.[1])
+    ?.replace(/^https?:\/\/(?:dx\.)?doi\.org\//i, '')
+    .trim();
+
   const sameAsList: string[] = [];
   if (pub.data.publisherUrl) sameAsList.push(pub.data.publisherUrl);
-  // Publication doi from schema
-  const pubEntry = pub.data as { doi?: string };
-  if (pubEntry.doi) sameAsList.push(`https://doi.org/${pubEntry.doi}`);
+  if (extractedDoi) {
+    const doiUrl = `https://doi.org/${extractedDoi}`;
+    if (!sameAsList.some((u) => u.toLowerCase() === doiUrl.toLowerCase())) {
+      sameAsList.push(doiUrl);
+    }
+  }
 
   const scholarlyArticleSchema: JsonLdNode = {
     '@type': 'ScholarlyArticle',
@@ -598,6 +643,7 @@ export function buildPublicationSchema(params: {
     description: cleanAbstract || `${pub.data.title} - Academic publication by ${authorPlain}.`,
     about: buildTagAboutRefs(pub.data.tags),
     image: imageSrc ? new URL(imageSrc, siteUrl).href : undefined,
+    ...(extractedDoi ? { identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: extractedDoi } } : {}),
     ...(sameAsList.length === 1 ? { sameAs: sameAsList[0] } : sameAsList.length > 1 ? { sameAs: sameAsList } : {})
   };
 
@@ -826,6 +872,17 @@ export function buildServiceSchema(params: {
   const serviceUrl = `${siteUrl}/services/${service.id}/`;
   const imageSrc = extractImageSrc(service.data.image);
 
+  const outputs =
+    service.data.keyOutcomes && service.data.keyOutcomes.length > 0
+      ? service.data.keyOutcomes
+      : service.data.strategicPillars && service.data.strategicPillars.length > 0
+        ? service.data.strategicPillars
+        : [];
+  const techCategory =
+    service.data.techFoundations && service.data.techFoundations.length > 0
+      ? service.data.techFoundations.join(', ')
+      : undefined;
+
   const serviceSchema = {
     '@type': 'Service',
     '@id': `${serviceUrl}#service`,
@@ -835,6 +892,8 @@ export function buildServiceSchema(params: {
     image: imageSrc ? new URL(imageSrc, siteUrl).href : undefined,
     url: serviceUrl,
     provider: PERSON_REF,
+    areaServed: ['AT', 'DE', 'CH', 'EU'],
+    ...(techCategory ? { category: techCategory } : {}),
     isPartOf: {
       '@id': 'https://hackenberg.tech/services/#collectionpage'
     },
@@ -842,9 +901,7 @@ export function buildServiceSchema(params: {
     ...(service.data.targetAudience && service.data.targetAudience.length > 0
       ? { audience: { '@type': 'Audience', audienceType: service.data.targetAudience.join(', ') } }
       : {}),
-    ...(service.data.keyOutcomes && service.data.keyOutcomes.length > 0
-      ? { serviceOutput: service.data.keyOutcomes.join(', ') }
-      : {}),
+    ...(outputs.length > 0 ? { serviceOutput: outputs.join(', ') } : {}),
     ...(modules.length > 0
       ? {
           hasPart: modules.map((m) => {

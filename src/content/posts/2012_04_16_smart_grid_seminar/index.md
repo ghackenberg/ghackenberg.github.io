@@ -2,6 +2,7 @@
 title: "Smart grid seminar started today!"
 pubDate: "2012-04-15"
 description: "Today the spring term started at the Technical University of Munich and so did our newly created smart grid seminar. The goal of the seminar is to teach young s..."
+inLanguage: "en"
 tags: ["dynamic-programming", "energy-systems", "teaching"]
 image:
   src: "./website.png"

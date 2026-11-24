@@ -278,7 +278,7 @@ async function fetchArxivAuthors(arxivId: string): Promise<ResolvedAuthor[] | nu
   try {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'ghackenberg-site-builder (https://hackenberg.tech; mail@georghackenberg.com)',
+        'User-Agent': 'ghackenberg-site-builder (https://hackenberg.tech; georg.hackenberg@fh-wels.at)',
       },
     });
     if (!res.ok) return null;
@@ -301,7 +301,7 @@ async function fetchOpenAlexAuthors(doi: string): Promise<ResolvedAuthor[] | nul
   try {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'ghackenberg-site-builder (https://hackenberg.tech; mail@georghackenberg.com)',
+        'User-Agent': 'ghackenberg-site-builder (https://hackenberg.tech; georg.hackenberg@fh-wels.at)',
       },
     });
     if (!res.ok) return null;
@@ -327,7 +327,7 @@ async function fetchCrossrefAuthors(doi: string): Promise<ResolvedAuthor[] | nul
   try {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'ghackenberg-site-builder (https://hackenberg.tech; mail@georghackenberg.com)',
+        'User-Agent': 'ghackenberg-site-builder (https://hackenberg.tech; georg.hackenberg@fh-wels.at)',
       },
     });
     if (!res.ok) return null;

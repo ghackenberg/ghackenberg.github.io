@@ -2,6 +2,7 @@
 title: "ICSE 2012 SE4SG Report: Smart Grid Software Engineering"
 pubDate: "2012-06-03"
 description: "Highlights and research takeaways from the ICSE 2012 SE4SG workshop on software engineering challenges for decentralized smart energy grids."
+inLanguage: "en"
 tags: ["conference", "energy-systems", "software-systems", "systems-engineering"]
 image:
   src: "./photo.jpg"

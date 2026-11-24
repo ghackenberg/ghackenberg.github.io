@@ -22,8 +22,8 @@ order: 5
 pubDate: 2026-09-11
 image:
   src: "./preview.jpg"
-  title: "Architektur: LLM Observability"
-  description: "Isometrisches 3D-Telemetriemodul zur Echtzeit-Überwachung von Token-Durchsatz, Latenzwellen und Modellmetriken"
+  title: "Architecture: LLM Observability"
+  description: "Isometric 3D telemetry module for real-time monitoring of token throughput, latency waves, and model evaluation metrics"
 inputs:
   - "Front-end application architecture and UI component framework"
   - "Operational latency targets, throughput requirements, and token budgets"

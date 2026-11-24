@@ -2,6 +2,7 @@
 title: "Mastra TypeScript Agent Framework: Architektur im Detail"
 pubDate: 2026-09-19
 description: "Tiefgehende Architekturanalyse des Mastra-Frameworks: Typsichere Workflows, RAG-Pipelines, Tool-Calling und deterministische KI-Agenten in TypeScript."
+inLanguage: "de"
 tags:
   - mastra
   - typescript
@@ -72,7 +73,7 @@ Mit dem quelloffenen Framework **Mastra [@team-2024-mastra]** ([github.com/mastr
 
 Dieser Artikel analysiert Mastra aus der Perspektive erfahrener Software-Entwickler: Wie ist das Framework aufgebaut? Wie harmonieren autonome ReAct-Schleifen und deterministische State Machines? Wie funktioniert die native MCP-Integration? Und wie sieht der produktive Code in der Praxis aus?
 
-## 1. Systemarchitektur: Das Backend-Betriebssystem für KI-Anwendungen
+## 1. Wie strukturiert Mastra produktive KI-Anwendungen in TypeScript?
 
 Mastra versteht sich nicht bloß als Wrapper um LLM-APIs, sondern als **vollwertige Backend-Laufzeitumgebung**. Während Inferenz-Layer wie das Vercel AI SDK den reinen Netzwerkzugriff auf Sprachmodelle vereinheitlichen, stellt Mastra die darüberliegenden Kontrollstrukturen, Zustandsspeicher, Werkzeugvalidierungen und Evaluationsmechanismen bereit.
 
@@ -130,7 +131,7 @@ export const mastra = new Mastra({
 
 Durch diese zentrale Konfiguration ist der Mastra-Daemon sofort betriebsbereit: Er startet den REST-Server, bindet die Persistenzschicht an und initialisiert die Telemetrie-Spans via OpenTelemetry.
 
-## 2. Stochastische ReAct-Agenten vs. Deterministische Workflows
+## 2. Wann sollte man ReAct-Agenten statt deterministischer Workflows wählen?
 
 In unserem Artikel zu den [Procedural Graphs in der Praxis](/posts/2026_09_18_procedural_graphs_praxis_automatisierung_repetitiver_prozesse/) haben wir eines der größten Risiken agentischer Architekturen beleuchtet: den **Long-Horizon Drift**. Lässt man ein LLM in einer ungebundenen ReAct-Schleife (*Reasoning + Acting*) über 15 bis 20 Schritte hinweg frei agieren, steigt die Wahrscheinlichkeit von Zyklen, vergessenen Vorgaben und stochastischen Fehlentscheidungen exponentiell an.
 

@@ -11,7 +11,17 @@ tags:
   - systems-validation
   - traffic-control
   - transportation-systems
-bibtex: ""
+bibtex: |
+  @INPROCEEDINGS{ascher2016transp0,
+    author={Dominik Ascher and Georg Hackenberg},
+    title={The TRANSP-0 framework for integrated transportation and power system design},
+    booktitle={2016 IEEE 19th International Conference on Intelligent Transportation Systems (ITSC)},
+    year={2016},
+    pages={945-952},
+    publisher={IEEE},
+    doi={10.1109/ITSC.2016.7795669}
+  }
+doi: "10.1109/itsc.2016.7795669"
 image:
   src: "./power_system.png"
   title: "TRANSP-0 Power System Design Framework"

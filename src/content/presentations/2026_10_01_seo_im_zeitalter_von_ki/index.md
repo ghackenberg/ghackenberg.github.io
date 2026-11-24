@@ -1,10 +1,10 @@
 ---
-title: "SEO im Zeitalter von KI: Strategien für SEO, GEO, AIO und AEO"
+title: "SEO im Zeitalter von KI: Strategien für SEO, GEO & AEO"
 subtitle: "Von Suchmaschinen zu generativen Antwortsystemen – Paradigmenwechsel für Industrie und B2B-Mittelstand"
 pubDate: "2026-10-01"
 audience: "Geschäftsführer, IT-Leiter und Marketingverantwortliche aus Industrie und B2B"
 inLanguage: "de"
-description: "Umfassende Keynote zur Transformation von traditioneller Suchmaschinenoptimierung hin zu Generative Engine Optimization (GEO), RAG-Architekturen, Schema.org-Wissensgraphen, B2B Social Media und agentengestütztem Web-Publishing."
+description: "Keynote zur Transformation von klassischer Suchmaschinenoptimierung zu Generative Engine Optimization (GEO), RAG, Schema.org und Agenten-Publishing."
 tags: ["seo", "geo", "aio", "aeo", "rag", "mcp", "knowledge-graphs", "enterprise-ai", "social-media"]
 image:
   src: "./preview.jpg"

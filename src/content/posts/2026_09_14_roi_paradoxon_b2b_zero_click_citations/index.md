@@ -2,6 +2,7 @@
 title: "Das B2B ROI-Paradoxon: Erfolgsmessung für Zero-Click GEO"
 pubDate: 2026-09-14
 description: "Warum klassische PageViews bei 68 % Zero-Click-Suchen im B2B versagen und wie Unternehmen Share of Model (SoM), Citation Share und Prompt-Audits messen."
+inLanguage: "de"
 tags:
   - aeo
   - agentic-ai
@@ -58,7 +59,7 @@ references:
 
 
 
-In klassischen Marketing- und Vertriebsberichten des industriellen B2B-Sektors drehte sich das Controlling jahrzehntelang um dieselben Standardkennzahlen: Website-Sitzungen (*Sessions*), Seitenaufrufe (*PageViews*), Klickraten (*CTR*) und Konversionen über digitale Kontaktformulare.
+In klassischen Marketing- und Vertriebsberichten des industriellen B2B-Sektors drehte sich das Controlling jahrzehntelang um dieselben Standardkennzahlen: Website-Sitzungen (*Sessions*), Seitenaufrufe (*PageViews*), Klickraten (*CTR*) und Konversionen über digitale Kontaktformulare. Im Zeitalter von Zero-Click-KI-Antworten verschiebt sich diese Erfolgsmessung jedoch grundlegend hin zu Share of Model, Zitationsanteilen und hochqualifizierten Verifikationsbesuchen.
 
 Wer diese Metriken heute im Vorstand präsentiert, erlebt ein beunruhigendes Phänomen: Die traditionellen Website-Klicks stagnieren oder brechen zweistellig ein. Doch der Grund dafür ist keineswegs mangelndes Kundeninteresse, sondern eine fundamentale Strukturverschiebung im Suchverhalten:
 
@@ -68,7 +69,7 @@ Wer diese Metriken heute im Vorstand präsentiert, erlebt ein beunruhigendes Ph�
 
 Für Geschäftsführer und Vertriebsleiter entsteht daraus das **B2B ROI-Paradoxon**: **Der klassische organische Erstkontakt-Traffic stagniert oder sinkt, während das Unternehmen in der realen industriellen Beschaffungswelt dennoch massive Marktanteile gewinnen kann – vorausgesetzt, es dominiert die Zitations-Ökonomie der generativen Modelle und nutzt seine Website als hochqualitative Verifikationsplattform.**
 
-## 1. Die veränderte Rolle der Website im industriellen Beschaffungsprozess
+## 1. Wie verändert sich die Rolle der Website im industriellen Beschaffungsprozess?
 
 Warum sind isolierte PageViews für technische Investitionsgüter heute weitgehend blind?
 
@@ -83,7 +84,7 @@ Im B2B-Anlagenbau kauft niemand per schnellem Klick im Webshop. Die reale Konver
 
 Wer Optimierungsmaßnahmen ausschließlich an der schieren Masse flüchtiger Klicks misst, schaltet das Marketing genau an der Stelle ab, an der es den größten Hebel entfaltet: bei der semantischen Maschinenlesbarkeit.
 
-## 2. Die neuen Leitmetriken für die Zitations-Ökonomie
+## 2. Welche neuen Leitmetriken zählen in der Zitations-Ökonomie?
 
 Um den Return on Investment (ROI) von SEO- (*Search Engine Optimization*), GEO- (*Generative [@aggarwal-2024-geo] Engine Optimization* für KI-Suchsysteme wie Perplexity, ChatGPT Search oder Google AI Overviews) und AEO-Initiativen (*Answer Engine Optimization* für direkte Antwort- und Zitations-Engines) im industriellen B2B-Umfeld belastbar zu quantifizieren, müssen Controlling und Marketing auf drei neue Steuerungsgrößen umstellen:
 
@@ -135,3 +136,13 @@ Für die strategische Ausrichtung von Industrie- und B2B-Unternehmen lässt sich
 > *„Wer im B2B-Zeitalter generativer Systeme den Erfolg digitaler Inhalte rein über rohe Zugriffszahlen misst, verkennt den Wandel des Trichters. Rohe Klicks auf Überblicksseiten weichen einer neuen Realität: KI-Modelle übernehmen die Informationssynthese im Vorfeld, während der Web-Traffic sich zu hochqualifizierten, gezielten Prüf- und Validierungsbesuchen verdichtet.“*
 
 Ein einziger siebenstelliger Industrieauftrag, der zustande kommt, weil ein KI-Agent Ihr Unternehmen anhand strukturierter Daten auf die Shortlist gesetzt hat und das Buying Center anschließend zur technischen Detailprüfung auf Ihre Plattform wechselt, wiegt tausende oberflächliche Klicks auf. Wer seine Daten heute maschinenlesbar und zitierfähig strukturiert, investiert nicht in kurzlebige Klickzahlen, sondern in die digitale Sichtbarkeit und vertriebliche Relevanz der Zukunft.
+
+Die folgende Matrix fasst den Übergang von klassischen B2B-Klickmetriken zu den neuen Steuerungsgrößen der Zitations-Ökonomie zusammen:
+
+<!-- caption: "Vergleich klassischer B2B-Web-KPIs mit modernen GEO- und AEO-Erfolgsmetriken in der Zero-Click-Beschaffung." -->
+| Dimension | Klassisches Klick-Controlling | Zitations-Ökonomie (GEO / AEO) |
+| :--- | :--- | :--- |
+| **Primäre Reichweite** | Impressions & organische PageViews | Share of Model (SoM) & Citation Share |
+| **Funktion der Website** | Erste Informationssuche (Top of Funnel) | Technische Verifikation (Normen, CAD, Daten) |
+| **Qualitätssignal** | Klickrate (CTR) & Verweildauer | Day-One Shortlist-Nominierung & High-Intent-Anfragen |
+| **Risiko bei Lücken** | Sinkende Traffic-Zahlen | Confident Misunderstanding durch Einkaufs-Bots |

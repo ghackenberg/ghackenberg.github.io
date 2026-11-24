@@ -50,7 +50,7 @@ references:
 
 
 
-When visitors arrive at a personal technical portfolio or academic website, they are typically greeted by a static hero section followed by a conventional chronological list. While this works well for highlighting the latest few entries, it leaves a vast repository of historical depth unseen. Over the past twenty years, my website has accumulated more than 170 distinct illustrated articles, open-source projects, university course curricula, consulting architectures, interactive physics simulations, and scientific research domains.
+When visitors arrive at a technical portfolio, static hero lists leave decades of engineering depth hidden. Over twenty years, this site has accumulated more than 170 articles, open-source projects, courses, and simulations—which a custom three-tier optical motion parallax gallery surfaces continuously without repetition.
 
 Traditional carousels or looping marquees suffer from well-known UX problems: they repeat the same dozen items in an endless loop, ignore what the visitor has already seen, and lack visual depth. 
 
@@ -60,7 +60,7 @@ To solve this, we designed and engineered a **living, 3-tier parallax Content [@
 > **Live Interactive Experience:**  
 > You can experience this dynamic 3-tier parallax gallery live in action directly below the hero section on the [hackenberg.tech homepage](https://hackenberg.tech).
 
-## 1. Kinematics & Visual Hierarchy: Optical Motion Parallax
+## 1. How Does Optical Motion Parallax Establish Visual Hierarchy?
 
 Rather than creating a single horizontal slider or a uniform grid, the gallery is structured into **three distinct horizontal tiers** moving continuously from right to left. 
 
@@ -84,7 +84,7 @@ Coupling geometric card dimensions with angular velocity yields three perceptual
 2. **Visual Rhythm**: Because each tier travels at a different velocity (~65, ~42, and ~26 px/s), cards in different rows constantly shift relative to each other. Vertically aligned repetitions never form, creating an organic, fluid visual tapestry.
 3. **Pure Artwork Aesthetic**: We explicitly removed textual category badges, colored outlines, and decorative emoji icons from the cards. Each card relies on a uniform dark glass border (`border-white/10 light:border-slate-200/80`), subtle hover elevation, and a dark scrim gradient. This ensures the illustrations and technical screenshots take center stage without visual clutter.
 
-## 2. The Conveyor Belt: Zero-Jump Continuous DOM Recycling
+## 2. How Does the Conveyor Belt Recycle DOM Nodes Without Jumps?
 
 Most looping web marquees duplicate their entire DOM tree (e.g., `Sequence A` and `Sequence B`) and run a static CSS `@keyframes transform: translate3d(-50%, 0, 0)` loop. While simple, this approach has fatal limitations:
 - It can only ever loop the exact same fixed set of cards.

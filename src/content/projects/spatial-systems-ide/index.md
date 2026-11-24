@@ -8,8 +8,8 @@ accentColor: "blue"
 order: 5
 image:
   src: "./screenshot.png"
-  title: "Spatial Systems IDE: Integrierte Modellierung mechatronischer Systeme"
-  description: "Umfassende DockFX-Entwicklungsumgebung mit Komponenten-Hierarchie, 3D-Geometrieansicht, Zustandsautomaten und Disziplin-Schnittstellen"
+  title: "Spatial Systems IDE: Integrated Mechatronic Modeling"
+  description: "Multi-dock DockFX workbench displaying component hierarchies, 3D geometric views, state machines, and cross-discipline interfaces"
 screenshots:
   - src: "./screenshot.png"
     title: "DockFX Spatio-Temporal Systems Workbench"

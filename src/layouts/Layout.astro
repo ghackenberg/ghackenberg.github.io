@@ -63,8 +63,8 @@ interface Props {
 }
 
 const { 
-  title = "Dr. Georg Hackenberg | Professor for Industrial Informatics", 
-  description = "Personal website of Dr. Georg Hackenberg, Full Professor for Industrial Informatics, software engineer, digital entrepreneur, and researcher.",
+  title = "Dr. Georg Hackenberg | Industrial Informatics & AI Systems", 
+  description = "Prof. Dr. Georg Hackenberg (UAP / FH Upper Austria): Industrial Informatics, Sovereign AI Systems, CADdrive, Mentawise, SimplexViz, and lectures.",
   image,
   type = "website",
   pubDate,
@@ -303,7 +303,8 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     
     <!-- RSS Feed & Machine Discovery -->
     <link rel="alternate" type="application/rss+xml" title="Dr. Georg Hackenberg - RSS Feed" href={`${import.meta.env.BASE_URL}rss.xml`} />
-    <link rel="author" href="https://hackenberg.tech/llms.txt" />
+    <link rel="alternate" type="text/plain" title="LLMs Context Summary" href={`${import.meta.env.BASE_URL}llms.txt`} />
+    <link rel="author" href="https://hackenberg.tech/about/" />
     
     <!-- Theme & Mobile Colors -->
     <meta name="theme-color" content="var(--color-bg-main)" />

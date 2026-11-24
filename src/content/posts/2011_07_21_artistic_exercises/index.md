@@ -2,6 +2,7 @@
 title: "Creative Sketching & Visual Composition Studies in Berlin"
 pubDate: "2011-07-20"
 description: "Exploring visual composition, perspective sketching, and creative storytelling techniques during an interdisciplinary exchange in Berlin."
+inLanguage: "en"
 tags: ["drawing"]
 image:
   src: "./freedom.jpg"

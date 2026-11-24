@@ -21,8 +21,8 @@ methodologyPhases:
 order: 4
 image:
   src: "./preview.jpg"
-  title: "Architektur: Multi-Agent Orchestration"
-  description: "Zentraler 3D-Supervisor-Routing-Hub zur Koordination spezialisierter Agenten-Subsysteme über integrierte Datenbusse"
+  title: "Architecture: Multi-Agent Orchestration"
+  description: "Central 3D supervisor routing hub coordinating specialized agent subsystems across integrated message and state buses"
 pubDate: 2026-09-11
 inputs:
   - "Process workflows, decision rules, and validation criteria"

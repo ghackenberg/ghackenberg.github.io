@@ -7,8 +7,8 @@ order: 7
 pubDate: 2026-10-08
 image:
   src: "./preview.jpg"
-  title: "Architektur: Cloud Operations & Telemetrie"
-  description: "Kompaktes Blade-Server-Rack mit Telemetrie-Display, Uptime-Monitoring und Hardware-Messuhren für stabilen Cloud-Betrieb"
+  title: "Architecture: Cloud Operations & Telemetry"
+  description: "Compact blade server rack equipped with a live telemetry display, uptime indicators, and hardware gauges for reliable cloud operations"
 highlights:
   - "Container orchestration and declarative workload management on Kubernetes and cloud-native runtimes"
   - "Distributed tracing, structured logging, and metric instrumentation powered by OpenTelemetry and Prometheus"

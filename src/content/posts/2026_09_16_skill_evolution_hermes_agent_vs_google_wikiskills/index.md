@@ -2,6 +2,7 @@
 title: "Agent Skill Evolution: Hermes Agent vs. Google WikiSkill"
 pubDate: 2026-09-16
 description: "Architekturvergleich zur Skill Evolution autonomer Agenten: Die Runtime-Kuratierung des Hermes Agent trifft auf die 3-Schichten-Logik von Google WikiSkill."
+inLanguage: "de"
 tags:
   - agentic-ai
   - artificial-intelligence
@@ -62,7 +63,7 @@ Genau an dieser Schnittstelle prallen derzeit zwei wegweisende, aber grundversch
 
 Dieser Beitrag stellt beide Paradigmen in einen direkten softwaretechnischen Vergleich: Wo liegen die Stärken und Schwächen? Wie gehen beide Systeme mit Fehlern um? Und wie sieht eine praxistaugliche Enterprise-Synthese aus?
 
-## 1. Das Kernproblem: Warum statische Skills nicht ausreichen
+## 1. Warum reichen statische Agenten-Skills im Produktionsbetrieb nicht aus?
 
 Um den Entwurfsraum beider Frameworks zu verstehen, müssen wir uns vor Augen führen, warum klassische Methoden der Modell- und Prompt-Adaption für prozedurale Fähigkeiten versagen.
 
@@ -148,7 +149,7 @@ Jede Evolutionsrunde $k$ durchläuft vier spezialisierte Rollen:
 3. **Skill Proposer ($\mathcal{M}_{\text{P}}$):** Ein ReAct-Agent, der auf Basis des Wikis und des historischen Prüfpfads (`skill-impact.md`) gezielt atomare Skill-Patches formuliert. Da er den gesamten Misserfolgs-Katalog kennt, wiederholt er keine historischen Fehler.
 4. **Validation Gating & Rollback Harness:** Evaluiert die neuen Skills $S'_k$. Sinkt der Score, rollt das Harness die Datei `SKILL.md` zurück – hängt die Diff und die Fehlersymptome jedoch **unlöschbar an `wiki/skill-impact.md` an**.
 
-## 4. Direkter Systemvergleich: Gegenüberstellung beider Paradigmen
+## 4. Worin unterscheiden sich Hermes Agent und Google WikiSkills im Vergleich?
 
 Die folgende Matrix stellt die beiden Systeme über alle ingenieurtechnisch relevanten Dimensionen gegenüber:
 

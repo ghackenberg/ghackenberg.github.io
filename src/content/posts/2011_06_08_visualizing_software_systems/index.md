@@ -2,6 +2,7 @@
 title: "Visualizing Complex Software Systems & Mental Models"
 pubDate: "2011-06-07"
 description: "Why software engineering needs expressive visual representations to communicate abstract architectures, data flows, and runtime state transitions."
+inLanguage: "en"
 tags: ["data-visualization", "drawing", "software-architecture", "software-systems"]
 image:
   src: "./crawler.png"

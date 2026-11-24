@@ -86,6 +86,16 @@ Comparing the two deployment models highlights how request-time compute is repla
 - **Old (Left)**: The client had to wait for Apache to compile the PHP template engine and retrieve values from the filesystem on every request.
 - **New (Right)**: The compiler runs locally or via CI/CD. The build output is a folder of optimized HTML, CSS, and JS files served directly from the GitHub Pages CDN.
 
+The table below summarizes the key architectural differences across rendering, schema safety, and deployment:
+
+<!-- caption: "Architectural comparison between the legacy server-side PHP template engine and the static Astro + TypeScript stack." -->
+| Dimension | Legacy PHP / XML Stack | Modern Astro + TypeScript Stack |
+| :--- | :--- | :--- |
+| **Rendering Model** | Dynamic request-time PHP evaluation | Static build-time HTML generation (SSG) |
+| **Type & Schema Safety** | Unvalidated XML/filesystem templates | Compile-time Zod schemas & TypeScript checks |
+| **Hosting & Latency** | Apache server process per request | Global GitHub Pages CDN with zero backend |
+| **Content Authoring** | Custom database/XML editing | Git-versioned Markdown & MDX collections |
+
 ## The New Foundation: Type-Safe Content Collections
 
 One of the best features of the relaunch is Astro's type-safe **Content Collections**. Powered by TypeScript and Zod schemas, we can guarantee that all content has correct frontmatter values. For example, my blog posts schema ensures every post contains a valid title, date, and description:
@@ -115,4 +125,4 @@ Relaunching on GitHub Pages with Astro and TypeScript has been an incredibly sat
 
 Thanks to **Google Antigravity** and the impressive speed and comprehension of **Gemini 3.5 Flash (High)**, the migration of all legacy content was a flawless success.
 
-Stay tuned for more updates as I continue to share insights on software engineering, data visualization, and web technologies!
+Stay tuned for more updates as I continue to share insights on software engineering, data visualization, and web technologies! Follow-up deep dives cover [flicker-free unread notification badges](/posts/2026_05_24_unread_indicators_navbar_badges/), our [dynamic parallax content gallery engine](/posts/2026_09_15_dynamic_parallax_content_gallery_engine/), and the [Slide-as-Code presentation engine](/posts/2026_09_26_presentation_engine_slide_as_code_voiceover/).

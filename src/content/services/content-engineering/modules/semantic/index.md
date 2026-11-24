@@ -22,8 +22,8 @@ order: 5
 pubDate: 2026-09-11
 image:
   src: "./preview.jpg"
-  title: "Architektur: Semantic Optimization"
-  description: "3D-Architektur semantischer Optimierung mit Prismenkern zur Projektion vernetzter Wissensgraphen und Vektoreinbettungen"
+  title: "Architecture: Semantic Optimization"
+  description: "3D architecture diagram of semantic optimization with a prism core projecting linked knowledge graphs and vector embeddings"
 inputs:
   - "Existing web templates, layout components, and metadata fields"
   - "Organizational profile data, academic credentials, publication metadata, and taxonomy terms"

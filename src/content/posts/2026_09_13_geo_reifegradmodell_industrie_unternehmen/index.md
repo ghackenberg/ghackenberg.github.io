@@ -2,6 +2,7 @@
 title: "GEO-Reifegradmodell für B2B- & Industrieunternehmen"
 pubDate: 2026-09-13
 description: "Das 5-Stufen-Reifegradmodell für technische B2B-Unternehmen: Von klassischer SEO-Crawlability über Wissensgraphen bis zur Interaktion mit KI-Agenten."
+inLanguage: "de"
 tags:
   - aeo
   - agentic-ai
@@ -77,7 +78,7 @@ references:
 
 
 
-In unseren vorangegangenen Beiträgen haben wir die [technischen Grundlagen von SEO, GEO, AEO und AIO](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/), die [empirische Studienlage zu Zitationshebeln](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) sowie die [spezifischen Hürden des industriellen B2B-Marketings](/posts/2026_09_12_b2b_industrial_geo_maschinenlesbare_industrie/) analysiert.
+In unseren vorangegangenen Beiträgen haben wir die [technischen Grundlagen von SEO, GEO, AEO und AIO](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/), die [empirische Studienlage zu Zitationshebeln](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) sowie die [spezifischen Hürden des industriellen B2B-Marketings](/posts/2026_09_12_b2b_industrial_geo_maschinenlesbare_industrie/) analysiert. Darauf aufbauend definiert dieser Artikel ein vierstufiges GEO-Reifegradmodell samt 15-Minuten-Audit und konkreter Umsetzungsroadmap.
 
 Wenn Führungskräfte, Werksleiter und IT-Verantwortliche im Maschinen- und Anlagenbau vor der Frage stehen, wie sie ihren Webauftritt für das Zeitalter generativer Systeme aufstellen sollen, fehlt es oft an Orientierung: Wo steht das eigene Unternehmen heute? Welche Investitionen bringen echten Wettbewerbsvorteil, und welche Maßnahmen sind rein kosmetische Beschäftigungstherapie?
 

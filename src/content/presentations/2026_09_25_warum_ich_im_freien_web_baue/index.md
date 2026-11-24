@@ -4,7 +4,7 @@ subtitle: "Mein Weg zwischen autodidaktischen Web-Ursprüngen, Spitzenforschung,
 pubDate: "2026-09-25"
 audience: "Studierende, Entwickler, R&D-Partner und Technologie-Entscheider aus der Industrie"
 inLanguage: "de"
-description: "Persönliche Keynote von Dr. Georg Hackenberg: 25 Jahre im Code zwischen autodidaktischen Web-Ursprüngen, Spitzenforschung, Industrie-IoT-Leadership und offener Hochschullehre."
+description: "Keynote von Dr. Georg Hackenberg: 25 Jahre im freien Web zwischen autodidaktischen Ursprüngen, Forschung, Industrie-IoT und Hochschullehre."
 tags: ["open-source", "web-development", "education", "teaching", "industrial-informatics", "software-architecture", "software-engineering", "iot"]
 image:
   src: "./preview.jpg"

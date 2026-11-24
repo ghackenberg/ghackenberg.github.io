@@ -1,10 +1,10 @@
 ---
-title: "Wie promptet man richtig? Systematisches Prompt Engineering für Unternehmen"
+title: "Wie promptet man richtig? Prompt Engineering für Teams"
 subtitle: "Von heuristischen Faustregeln zu deterministischen Schnittstellen: Wissenschaftlich fundierte Methoden für verlässliche KI-Systeme"
 pubDate: "2026-10-05"
 audience: "Führungskräfte, Ingenieure, Produktmanager und Fachanwender mit technischer Affinität"
 inLanguage: "de"
-description: "Wissenschaftlich fundierter Deep Dive in systematisches Prompt Engineering für Unternehmen: Stochastische Grundlagen, empirische Studien (Harvard/BCG, Stanford), Reasoning-Taxonomien, XML-Kapselung, Structured Outputs, Evals und defensive Architekturen."
+description: "Deep Dive in systematisches Prompt Engineering: Stochastik, Harvard/Stanford-Studien, Reasoning, XML-Kapselung, Structured Outputs und Evals."
 tags: ["prompt-engineering", "enterprise-ai", "generative-ai", "agentic-ai", "rag", "benchmarks", "software-engineering"]
 image:
   src: "./preview.jpg"

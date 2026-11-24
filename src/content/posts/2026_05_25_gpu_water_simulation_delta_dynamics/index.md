@@ -133,7 +133,7 @@ Water moves vertically between the surface and the aquifer based on two physical
 
 To run this cellular automata model on the GPU, we store the physical state of the grid in floating-point textures and run a double-buffered simulation loop.
 
-![GPU FBO Loop](./gpu_fbo_loop.svg "GPU-Accelerated Water Flow and Subsurface Hydrolog")
+![Ping-pong WebGL Framebuffer Object (FBO) simulation loop computing heightfield water advection, flux, and subsurface infiltration](./gpu_fbo_loop.svg "GPU-Accelerated Water Flow and Subsurface Hydrology")
 
 ### Data Layout in Textures
 We pack our grid variables into two main textures:

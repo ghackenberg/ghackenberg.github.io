@@ -2,6 +2,7 @@
 title: "eLearning Course Project Sketches."
 pubDate: "2009-02-21"
 description: "Here are some impressions from my last term at university. I participated in a course called eLearning. The goal was to teach us how to develop eLearning produc..."
+inLanguage: "en"
 tags: ["drawing", "education", "user-interface"]
 image:
   src: "./choice.jpg"

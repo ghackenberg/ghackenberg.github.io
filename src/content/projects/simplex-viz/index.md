@@ -1,7 +1,7 @@
 ---
-title: "SimplexViz"
+title: "SimplexViz: Barycentric Knowledge Graph Engine"
 trl: 7
-description: "Open-source barycentric simplex mesh visualization library for multi-tag knowledge graphs, featuring OKLab perceptual color mixing, SAT zero-overlap packing, and 1:4 conformal drill-down."
+description: "Open-source TypeScript simplex mesh library for multi-tag knowledge graphs with OKLab color blending, SAT packing, and 1:4 drill-down."
 href: "https://hackenberg.tech/simplex-viz/"
 repoName: "simplex-viz"
 accentColor: "blue"

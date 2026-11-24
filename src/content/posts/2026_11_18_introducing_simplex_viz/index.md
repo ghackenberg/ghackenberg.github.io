@@ -1,7 +1,7 @@
 ---
-title: "Introducing SimplexViz: 60° Triangulation for Overlap-Free Knowledge Maps"
+title: "SimplexViz: 60° Triangulation for Knowledge Maps"
 pubDate: 2026-11-18
-description: "An architectural introduction to SimplexViz, an open-source TypeScript visualization engine combining 60° simplex triangulation, OKLab color blending, 0.0 px overlap resolution, and 1:4 hierarchical drill-down."
+description: "Open-source TypeScript visualization engine combining 60° simplex triangulation, OKLab color blending, 0.0 px overlap, and 1:4 drill-down."
 inLanguage: "en"
 tags:
   - data-visualization

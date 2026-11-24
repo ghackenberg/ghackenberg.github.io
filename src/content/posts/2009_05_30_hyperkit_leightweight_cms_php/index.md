@@ -2,6 +2,7 @@
 title: "HyperKit - A lightweight CMS written in PHP."
 pubDate: "2009-05-29"
 description: "Recently, I helped a friend of mine who is starting his own business with his website. I searched for a lightweight content management system which provides eno..."
+inLanguage: "en"
 tags: ["hyperkit-software", "software-systems", "user-interface", "web-development"]
 image:
   src: "./setup.jpg"

@@ -2,6 +2,7 @@
 title: "Business Documents using XSL-FO."
 pubDate: "2009-03-20"
 description: "Recently I faced the problem of writing a bill to a customer for which I did Web consulting and development services. I searched for a solution to automatically..."
+inLanguage: "en"
 tags: ["hyperkit-software", "software-systems"]
 image:
   src: "./system.png"

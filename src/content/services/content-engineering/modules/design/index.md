@@ -22,8 +22,8 @@ order: 3
 pubDate: 2026-09-11
 image:
   src: "./preview.jpg"
-  title: "Architektur: Design Systems"
-  description: "Modulare 3D-Architektur einer Design-System-Engine mit Design-Tokens, Farbpaletten, typografischer Skalierung und UI-Komponenten"
+  title: "Architecture: Design Systems Engine"
+  description: "Modular 3D diagram of a design system engine combining design tokens, color palettes, typographic scales, and reusable UI components"
 inputs:
   - "Existing vector logos, typography specifications, and brand guidelines"
   - "Target publication platforms and required aspect ratios (1:1, 16:9, 4:5)"

@@ -129,11 +129,12 @@ export function evaluateContentString(
   const config = getConfig();
 
   // Strip frontmatter if markdown
-  let rawBody = content;
-  if (content.startsWith('---')) {
-    const end = content.indexOf('---', 3);
+  const trimmedContent = content.replace(/^\uFEFF/, '').trimStart();
+  let rawBody = trimmedContent;
+  if (trimmedContent.startsWith('---')) {
+    const end = trimmedContent.indexOf('---', 3);
     if (end !== -1) {
-      rawBody = content.slice(end + 3);
+      rawBody = trimmedContent.slice(end + 3);
     }
   }
 

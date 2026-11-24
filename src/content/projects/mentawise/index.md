@@ -8,8 +8,8 @@ accentColor: "blue"
 order: 2
 image:
   src: "./mentawise-graph.png"
-  title: "Mentawise: Radialer Fokusgraph & Wissensnetzwerk"
-  description: "Interaktive Web-Oberfläche mit radialem Wissensgraphen, zentriertem Fokus-Knoten, konzentrischen Nachbarschaftsebenen und Detail-Inspektor"
+  title: "Mentawise: Radial Focus Graph & Knowledge Network"
+  description: "Interactive web interface featuring a radial knowledge graph, centered focus node, concentric neighborhood rings, and detail inspector"
 screenshots:
   - src: "./mentawise-graph.png"
     title: "Radial Knowledge Graph & Focus Network"

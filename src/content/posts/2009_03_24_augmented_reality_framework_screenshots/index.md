@@ -2,6 +2,7 @@
 title: "Augmented Reality Framework Screenshot."
 pubDate: "2009-03-23"
 description: "Last year I started developing an augmented reality framework with a friend of mine from electrical engineering science. We succeeded in providing a QT user int..."
+inLanguage: "en"
 tags: ["computer-vision", "data-visualization"]
 image:
   src: "./screenshot.png"

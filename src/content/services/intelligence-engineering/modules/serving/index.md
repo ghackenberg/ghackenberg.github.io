@@ -21,8 +21,8 @@ methodologyPhases:
 order: 1
 image:
   src: "./preview.jpg"
-  title: "Architektur: Model Serving & Inferenz"
-  description: "Hochperformantes 3D-Beschleunigermodul für Inferenz-Serving mit dynamischem Token-Batching und gestreamten Ausgabekanälen"
+  title: "Architecture: Model Serving & Inference"
+  description: "High-throughput 3D inference serving accelerator featuring dynamic token batching and streamed output channels"
 pubDate: 2026-09-11
 inputs:
   - "Infrastructure specifications (on-premise servers, private cloud instances, or dedicated hardware)"

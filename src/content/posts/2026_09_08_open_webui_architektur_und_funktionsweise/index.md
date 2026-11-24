@@ -2,6 +2,7 @@
 title: "Open WebUI Architektur: Hybrides RAG & AI Orchestrierung"
 pubDate: 2026-09-08
 description: "Tiefenanalyse von Open WebUI: Entkoppelte SvelteKit-FastAPI-Architektur, In-Process Functions, hybrides RAG mit BM25/Cross-Encoder und RBAC-Governance."
+inLanguage: "de"
 tags:
   - open-webui
   - agentic-ai
@@ -64,7 +65,7 @@ Bevor wir die internen Kommunikationspfade und Filter-Zyklen im Detail zerlegen,
 
 ![Umfassende Systemarchitektur von Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration](./open_webui_system_architecture.svg "Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration - Umfassende Systemarchitektur")
 
-## 1. Systemarchitektur & Entwurfsprinzipien
+## 1. Welche Entwurfsprinzipien prägen die Systemarchitektur von Open WebUI?
 
 Auf Systemebene folgt Open WebUI einem konsequent entkoppelten, zustandslosen Schichtenmodell. Im Gegensatz zu vielen monolithischen Chatbot-Lösungen, die Anwendungslogik und Webserver eng an eine konkrete Python-Inferenz-Bibliothek binden, fungiert Open WebUI als **autonomer Aggregator und Vermittler** zwischen Anwendern, Dokumentenkollektionen, Berechtigungssystemen und heterogenen Inferenz-Clustern.
 
@@ -179,7 +180,7 @@ Verarbeitet den fertig generierten Modell-Output vor der Auslieferung an den Cli
 * **KaTeX-Korrektur:** Glättung inkonsistenter LaTeX-Syntax für mathematische Formeln.
 * **Wasserzeichen & Compliance-Banner:** Automatischer Ausweis von Modellversion, Generierungszeitstempel und Vertraulichkeitsstufen.
 
-## 4. Enterprise RAG-Engine: Multimodales Chunking, Hybridsuche & Reranking
+## 4. Wie kombiniert die Enterprise RAG-Engine Hybridsuche und Reranking?
 
 Retrieval-Augmented Generation (RAG) gehört zu den Kernfunktionen von Open WebUI. Fachanwender können Dokumente per Drag-and-Drop in den Chat ziehen oder in thematischen **Wissensdatenbanken (Knowledge Bases)** strukturieren.
 

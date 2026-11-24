@@ -5,8 +5,8 @@ order: 2
 ctaText: "Inquire about Intelligence Engineering"
 image:
   src: "./preview.jpg"
-  title: "Serviceübersicht: Intelligence Engineering"
-  description: "Dr. Georg Hackenberg erläutert sovereign AI-Architekturen am Besuchertisch im Campus Office Wels"
+  title: "Service Overview: Intelligence Engineering"
+  description: "Dr. Georg Hackenberg explaining sovereign AI architectures at the visitor table in the Campus Wels office"
 pubDate: 2026-09-11
 tags:
   - "artificial-intelligence"
@@ -61,3 +61,15 @@ Each engagement is organized around five composable architectural layers that ad
 3. **Tool Integration**: Connecting language models to databases, enterprise APIs, and local runtimes using the Model Context Protocol (MCP) and schema validation.
 4. **Agentic Orchestration**: Multi-agent coordination graphs with explicit state management (LangGraph), conditional routing, and human-in-the-loop checkpoints.
 5. **System Observability**: Distributed tracing, latency and token metrics, continuous evaluation benchmarks, and interactive UI steering interfaces.
+
+## Strategic Pillars & Technology Stack
+
+Sovereign intelligence engagements focus on five core architectural pillars tailored for regulated and IP-sensitive organizations:
+
+- **Sovereign Inference & Model Serving Clusters**: On-premise and private-cloud GPU hosting of open-weight models without external data egress.
+- **Hybrid GraphRAG & Continuous Memory Systems**: Dense vector retrieval coupled with structured property graphs and persistent session memory.
+- **Standardized Tool Integration via Model Context Protocol**: Schema-validated MCP servers bridging models cleanly to enterprise data and APIs.
+- **Cyclic Multi-Agent Decision Logic & Supervision**: Stateful orchestrator-worker topologies with deterministic execution bounds and retries.
+- **Enterprise Observability, Token Budgeting & Human-in-the-Loop**: Real-time cost accounting, telemetry dashboards, and interactive steering controls.
+
+Our core production stack combines **vLLM**, **TensorRT-LLM**, **LiteLLM Proxy**, **Qdrant**, **Neo4j GraphRAG**, **Model Context Protocol (MCP)**, **LangGraph**, and **Nous Hermes** models.

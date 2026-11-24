@@ -2,6 +2,7 @@
 title: "Langzeitgedächtnis für KI-Agenten: Mem0 vs. Full-Context"
 pubDate: 2026-09-04
 description: "Warum Full-Context und naives RAG bei autonomen LLM-Agenten scheitern: Ingenieurwissenschaftliche Analyse und empirische Benchmarks der Mem0-Architektur."
+inLanguage: "de"
 tags:
   - artificial-intelligence
   - agentic-ai

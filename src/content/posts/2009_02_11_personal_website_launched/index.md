@@ -2,6 +2,7 @@
 title: "Personal Engineering Website & Research Blog Launched"
 pubDate: "2009-02-10"
 description: "Launching my personal engineering website and research blog covering software architecture, computer graphics, and systems engineering projects."
+inLanguage: "en"
 tags: ["blog", "web-development"]
 image:
   src: "./icon.png"

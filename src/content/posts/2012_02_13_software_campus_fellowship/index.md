@@ -2,6 +2,7 @@
 title: "Software Campus - A new academic excellence program."
 pubDate: "2012-02-12"
 description: "To promote young computer scientists on their way to management or entrepreneurship a consortium of leading German corporations and the Federal Ministry of Educ..."
+inLanguage: "en"
 tags: ["award", "dynamic-programming", "data-visualization", "machine-learning"]
 image:
   src: "./group.jpg"
