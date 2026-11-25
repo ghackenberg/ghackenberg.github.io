@@ -26,7 +26,7 @@ bibtex: "@article{\r
 
   }"
 image:
-  src: "./interfaces_overview.png"
+  src: "./preview.jpg"
   title: "Industrial Automation Interface Behavior Specification"
   description: "Formal interface automaton models verifying functional conformance across mechanical, electrical, and control components."
 publisherUrl: https://doi.org/10.1515/auto-2014-1126

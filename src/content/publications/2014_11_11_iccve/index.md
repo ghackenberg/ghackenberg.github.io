@@ -32,7 +32,7 @@ bibtex: "@INPROCEEDINGS{Ascher2014, \r
 
   }"
 image:
-  src: "./graph.png"
+  src: "./preview.jpg"
   title: "Multi-Objective Traffic Flow Estimation Graph"
   description: "Network graph model estimating vehicle throughput, travel time, and energy consumption trade-offs in urban traffic."
 publisherUrl: https://doi.org/10.1109/ICCVE.2014.7297511

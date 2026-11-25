@@ -14,15 +14,16 @@ All generated images must follow a color scheme based on the website's custom da
 | **Personal** | Brand Green | `#10b981` | Personal, sport, recreation, sponsorships |
 | **Background** | Slate Black | `#030712` | Dark background panels and cards |
 
-## 2. Core Visual Aesthetic: Stylized Comic Illustration
+## 2. Core Visual Aesthetic: Mature Editorial Graphic Novel / Ligne Claire
 
-All non-screenshot images must follow a **stylized Disney/Pixar comic-book vector illustration** aesthetic:
+All non-screenshot images must follow a **Mature Editorial Graphic Novel / Ligne Claire** aesthetic—matching the established character and linework standard of `src/content/services/` and `src/content/presentations/`:
 
-* **Crisp Outlines**: Use distinct, dark (slate or black) ink borders and outlines for figures, cards, and diagrams to emulate a cartoon/comic layout.
-* **Cel Shading & Gradients**: Use flat fills, bold cel-shading, or clean gradients. Avoid realistic lighting, photographic textures, or soft-blurred 3D renders.
+* **Realistic Adult Proportions**: Depict engineers, CTOs, professors, and customers with realistic adult human proportions (30s–40s). **ZERO oversized cartoon eyes, bobble-head ratios, or child-like/Disney/Pixar proportions.**
+* **Crisp Ink Outlines**: Use distinct, dark (slate or black) ink borders and clean ligne claire outlines for figures, architectural spaces, and diagrams.
+* **Clean 2D Cel Shading & Gradients**: Use flat fills, clean 2D cel-shading, and controlled gradients. Avoid realistic lighting, photographic textures, or soft-blurred 3D renders.
 * **No Border Frames**: Previews and diagrams must not contain mock frames, photo-like white margins, or borders around the image canvas.
 * **No Picture-in-Picture**: Avoid nesting smaller image mockups or screenshots inside a larger frame. Keep the canvas as a single unified scene.
-* **Aesthetic Details**: Incorporate comic-style details such as subtle halftone dot patterns, hand-drawn vector arrows, or comic speech/info bubbles where appropriate.
+* **Aesthetic Details**: Incorporate refined graphic-novel details such as crisp architectural linework, subtle halftone shading, or clean vector callout arrows where appropriate.
 * **Background Integration**: Always design with a dark background matching `#030712` or slate gray. Avoid solid white backgrounds so the images blend seamlessly into the site's premium dark mode (except the illuminated projection screen on keynote stages).
 
 ## 3. Canonical Protagonist Identity (Dr. Georg Hackenberg)
@@ -46,4 +47,4 @@ Whenever an image features a person (e.g. author, researcher, professor, develop
 * Georg should be positioned to one side (left or right third of the frame), marker or clicker in hand, turning warmly toward the viewer, never obscuring or blocking the central diagram.
 
 ### Inclusion Rule
-Include Georg in comic scenes whenever it makes narrative sense (author presenting a project, building an architecture, running an experiment, or teaching a concept). For strictly didactic or product showcase archetypes (courses, projects, service modules, interests), personal avatars are strictly excluded.
+Include Georg in graphic-novel scenes whenever it makes narrative sense (executive advisory, keynote presenting, or sporadic real-user project scenes where Georg is an actual user). For strictly didactic or emblem archetypes (courses, service modules, interests, publications, newsletters), personal avatars are strictly excluded.

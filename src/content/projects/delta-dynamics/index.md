@@ -8,7 +8,7 @@ accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
 image:
-  src: "./final_sample_terrain_view.png"
+  src: "./preview.jpg"
   title: "Delta Dynamics: Low-Poly Ecosystem & Hydrology Simulation"
   description: "Interactive 3D low-poly terrain featuring procedural elevation tiers, dynamic biome coloring, and GPU shallow-water simulation."
 screenshots:

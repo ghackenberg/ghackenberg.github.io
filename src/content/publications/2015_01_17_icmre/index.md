@@ -2,7 +2,7 @@
 title: From Conception to Refinement in Mechatronics Systems Engineering
 pubDate: 2015-01-17
 image:
-  src: "./examples.png"
+  src: "./preview.jpg"
   title: "Mechatronic Concept Refinement Models"
   description: "Stepwise refinement patterns transforming high-level domain concepts into verified physical and software components."
 book: Proceedings of the International Conference on Mechatronics and Robotics Engineering, Kuala Lumpur

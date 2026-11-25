@@ -7,7 +7,7 @@ accentColor: "blue"
 order: 5
 repoName: "welding-analytics"
 image:
-  src: "./screenshot.png"
+  src: "./preview.jpg"
   title: "Welding Process Diagnostics Dashboard"
   description: "Synchronous multi-panel view displaying electrical voltage and current timeseries alongside dynamic arc phase cyclograms and probability density functions."
 screenshots:

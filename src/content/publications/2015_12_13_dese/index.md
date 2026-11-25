@@ -29,7 +29,7 @@ bibtex: "@INPROCEEDINGS{Richter2015, \r
 
   }"
 image:
-  src: "./meta_model_analysis.jpg"
+  src: "./preview.jpg"
   title: "Integrated Requirements Engineering Metamodel"
   description: "UML metamodel establishing formal traceability links between natural language requirements and system architecture elements."
 publisherUrl: https://doi.org/10.1109/DeSE.2015.43

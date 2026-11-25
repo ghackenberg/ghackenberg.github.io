@@ -42,7 +42,7 @@ bibtex: "@inproceedings{\r
 
   }"
 image:
-  src: "./trace.png"
+  src: "./preview.jpg"
   title: "Behavior Space Exploration Trace Analysis"
   description: "Simulation execution traces showing emergent state space trajectories and multi-objective Pareto frontiers."
 publisherUrl: https://doi.org/10.1145/2467307.2467315

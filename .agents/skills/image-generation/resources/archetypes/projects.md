@@ -1,38 +1,35 @@
 # Visual Archetype: Projects (`preview.jpg`)
 
-Project previews spotlight software systems, developer platforms, engineering tools, and simulation engines.
+Project previews spotlight real-world software systems, developer platforms, engineering tools, and simulation engines by showing **who uses them and what concrete operational pain they solve**.
 
-## Visual Archetype: Orthogonal Software & System Workbench (2D Frontal)
+## Visual Archetype: Real-World Value-in-Action (Customer & Pain Solved)
 
-A crisp, tangible software and system workbench showcasing the core algorithmic mechanism, visual data structures, and interactive user interface of each software project in action.
+A grounded, mature editorial graphic-novel scene depicting the actual customer or domain practitioner (30s–40s engineers, factory planners, researchers, CTOs) actively using the software in an authentic workplace setting to resolve a tangible real-world problem.
 
-## 4-Column Layout Ergonomics
-* **Thumbnail Scaling Factor**: Project cards are rendered in multi-column portfolio grids (~300–400px wide per card).
-* **Simplicity Contract**: Exactly **1 dominant, concrete application workspace or core architectural mechanism** centered in the 16:9 frame (occupying ~60–70% of canvas height).
-* **Orthographic Frontal Projection**: Strictly planar, direct frontal or top-down alignment with zero perspective tilt for maximum architectural precision and instant thumbnail legibility.
-* **Generous Padding**: Ample margin around the central subject to all four canvas edges so the motif "breathes".
-* **Concrete Project Motifs**:
-  * **CADdrive**: Collaborative web-based 3D CAD modeling viewport paired with a Git-like branching & merging CAD version graph.
-  * **Delta Dynamics**: Terraced low-poly terrain ecosystem simulation viewport with dynamic GPU water flow vectors and autonomous agent beacons.
-  * **MentaWise**: Radial ego-graph knowledge map with exactly one prominent focused node in the absolute center, surrounded by multi-level concentric neighborhood rings.
-  * **SpineML**: Industrial factory layout spine model with a central arterial transport backbone ("spine") and perpendicular side tracks ("ribs") docking automated production machines.
-* **Zero Clutter**: Strictly no people, no human figures, no hands, no sci-fi hologram tables, no unreadable pseudo-text.
+## Composition & Storytelling Rules
+* **Authentic Workplace Context**: Anchor the scene in the real physical environment where the software delivers value (e.g., mechanical engineering design studio, industrial factory floor, research lab, or executive architecture suite)—never abstract floating UI boxes in an empty void.
+* **Customer & Concrete Pain Solved**: Frame 1–2 adult practitioners interacting with the software on a crisp workstation monitor, tablet, or collaborative display so the viewer immediately grasps the domain problem being solved:
+  * **CADdrive**: Two mechanical engineers at a studio workstation smoothly merging branching 3D CAD assembly revisions without file-lock conflicts.
+  * **Delta Dynamics**: An environmental or systems engineer inspecting a live terraced terrain and water-flow simulation on a wide lab display.
+  * **MentaWise**: A researcher or knowledge architect navigating a radial ego-graph knowledge map to synthesize complex literature without getting lost.
+  * **SpineML**: An industrial plant planner on a modern factory floor comparing a clean spine-and-rib production line layout against physical automated workcells.
+* **Thumbnail Legibility**: Project cards render at ~300–400px wide in portfolio grids. Keep the foreground uncluttered, emphasize 1 clear focal workstation/screen + 1–2 adult figures, and avoid tiny unreadable UI text.
 
-## Avatar & Entity Rules
-* **Avatar Inclusion**: **STRICTLY NO Georg avatar**.
-* **Human Figures**: Strictly zero human figures or hands.
+## Avatar, Character & Style Conditioning Rules
+* **Mature Editorial Graphic Novel / Ligne Claire**: Realistic adult human proportions (30s–40s), crisp dark ink outlines, clean 2D cel shading. **ZERO oversized cartoon eyes, bobble-head ratios, or child-like proportions.**
+* **Visual Style Reference Anchor**: Pass an existing `src/content/services/` hero image (e.g., `src/content/services/software-engineering/preview.jpg`) as a visual style reference in `ImagePaths` so character anatomy, ink linework, and cel shading stay 100% consistent with `src/content/services/` and `src/content/presentations/`.
+* **Avatar Inclusion (Optional / Sporadic)**: Primarily feature authentic domain customers/practitioners. Dr. Georg Hackenberg's avatar (`src/content/characters/georg/portrait.png`) may appear sporadically only for projects where he is a genuine real-world user.
 
 ## Environment & Palette
-* **Environment**: Clean, uncluttered deep slate-black void (`#030712`).
-* **Palette**: Dark slate foundation with soft ambient radial glow in project accent colors:
+* **Foundation**: Deep slate-black shadows and dark-mode architectural surfaces (`#030712`) illuminated by warm workplace lighting and the project's signature accent palette:
   * CADdrive: Brand Blue (`#3b82f6`) and Cyan (`#06b6d4`)
   * Delta Dynamics: Emerald Green (`#10b981`) and Water Cyan (`#06b6d4`)
-  * MentaWise: Purple (`#a855f7`) and Magenta / Violet
+  * MentaWise: Purple (`#a855f7`) and Violet
   * SpineML: Factory Amber (`#f59e0b`) and Industrial Slate
 * **Format & Aspect Ratio**: `AspectRatio: "16:9"`, saved as `preview.jpg` in `src/content/projects/[project_id]/preview.jpg`.
 
 ## Canonical Prompt Template
 
 ```text
-Planar direct frontal orthographic 2D view of [project subject: collaborative web CAD with branching version graph / radial ego-graph knowledge map / factory spine layout model], centered with generous padding on all sides. [Key visual elements: central focused node / spine transport backbone / version control branches / simulation viewports]. Deep slate-black background (#030712) with a soft ambient radial glow in [project colors, e.g. #3b82f6 blue and #06b6d4 cyan]. Stylized Disney/Pixar comic-book vector illustration style, crisp dark ink outlines, bold cel shading, clean graphic shapes, ample breathing room between elements and to canvas borders. Strictly borderless composition, no human figures, no hands, no real text, no perspective tilt. 16:9 aspect ratio.
+Mature editorial graphic novel / ligne claire illustration matching the character anatomy, crisp dark ink outlines, and clean 2D cel shading of the reference services illustration. Authentic real-world workplace scene in [domain setting: mechanical engineering studio / industrial factory floor / research lab] showing [1–2 realistic adult practitioners in their 30s–40s with realistic human proportions] actively solving [concrete operational pain] using [project software] on a prominent crisp display. On the screen, clean high-contrast visual schematics of [core project mechanism] glow in [project accent colors, e.g. #3b82f6 blue and #06b6d4 cyan] against dark slate (#030712) UI surfaces. Warm architectural lighting balanced with deep slate shadows (#030712) for dark-mode integration. Strictly borderless full-bleed composition, zero oversized cartoon eyes or child-like proportions, no unreadable tiny text, no soft 3D renders. 16:9 aspect ratio.
 ```

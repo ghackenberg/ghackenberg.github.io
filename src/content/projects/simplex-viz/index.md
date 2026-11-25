@@ -15,7 +15,7 @@ tags:
   - "software-architecture"
   - "typescript"
 image:
-  src: "./preview-demo.png"
+  src: "./preview.jpg"
   title: "SimplexViz: Interactive Barycentric Simplex Mesh Explorer"
   description: "Equilateral 60-degree simplex triangulation mesh with OKLab-tinted topic clusters, zero-overlap geometric content nodes, and live collision inspector"
 screenshots:

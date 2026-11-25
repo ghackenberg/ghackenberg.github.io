@@ -29,7 +29,7 @@ bibtex: "@INPROCEEDINGS{ \r
 
   }"
 image:
-  src: "./workflow_revised.png"
+  src: "./preview.jpg"
   title: "Partial System Prototyping Workflow"
   description: "Rapid prototyping development process using partial behavioral models to evaluate decentralized smart energy systems."
 publisherUrl: https://doi.org/10.1109/COMPSACW.2014.100

@@ -28,7 +28,7 @@ bibtex: "@INPROCEEDINGS{ \r
 
   }"
 image:
-  src: "./image.png"
+  src: "./preview.jpg"
   title: "Optical Palm and Finger Tracking Pipeline"
   description: "Computer-vision processing stages for real-time 3D hand tracking and markerless gesture control in virtual environments."
 publisherUrl: https://doi.org/10.1109/VR.2011.5759431

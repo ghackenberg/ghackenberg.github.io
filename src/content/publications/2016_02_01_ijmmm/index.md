@@ -30,7 +30,7 @@ bibtex: "@article{Hackenberg2016,\r
 
   }"
 image:
-  src: "./examples.png"
+  src: "./preview.jpg"
   title: "Disciplinary Refinement Case Study Models"
   description: "Domain-specific architectural diagrams illustrating mechanical, electrical, and control refinement cycles."
 publisherUrl: https://doi.org/10.7763/IJMMM.2016.V4.227

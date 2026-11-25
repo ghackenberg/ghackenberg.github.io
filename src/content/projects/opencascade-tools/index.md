@@ -15,7 +15,7 @@ tags:
   - "web-development"
   - "software-architecture"
 image:
-  src: "./preview.png"
+  src: "./preview.jpg"
   title: "OpenCASCADE Tools: Open-Source CAD Geometry Conversion Toolkit"
   description: "Showcase preview of opencascade-tools open-source repository and toolkit for WebGL and Three.js."
 screenshots:

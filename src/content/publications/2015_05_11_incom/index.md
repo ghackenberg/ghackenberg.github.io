@@ -38,7 +38,7 @@ bibtex: "@article{\r
 
   }"
 image:
-  src: "./pre_selection.png"
+  src: "./preview.jpg"
   title: "Requirement Change Impact Pre-Selection Matrix"
   description: "Filtering matrix identifying candidate manufacturing modules affected by engineering change orders."
 publisherUrl: https://doi.org/10.1016/j.ifacol.2015.06.296

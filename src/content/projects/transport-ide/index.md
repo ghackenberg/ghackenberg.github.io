@@ -15,7 +15,7 @@ accentColor: "blue"
 order: 5
 repoName: "Transport-IDE"
 image:
-  src: "./simulator.png"
+  src: "./preview.jpg"
   title: "Transport IDE: ITS Simulation & Analytics View"
   description: "Real-time discrete-event simulation with telemetry graphs for intersections, segment traversals, and vehicle battery discharge."
 screenshots:

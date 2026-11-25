@@ -7,7 +7,7 @@ accentColor: "blue"
 order: 4
 repoName: "spineml"
 image:
-  src: "./salabim.png"
+  src: "./preview.jpg"
   title: "SpineML: 3D Factory Simulation with Salabim"
   description: "Discrete-event 3D animation showing gantry robot material transport, buffer stations, and machining cells."
 screenshots:

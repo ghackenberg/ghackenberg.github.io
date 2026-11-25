@@ -23,7 +23,7 @@ bibtex: |
   }
 doi: "10.1109/itsc.2016.7795669"
 image:
-  src: "./power_system.png"
+  src: "./preview.jpg"
   title: "TRANSP-0 Power System Design Framework"
   description: "Simulation environment coupling electrified transit fleet dispatch with power substation loading constraints."
 publisherUrl: https://doi.org/10.1109/itsc.2016.7795669

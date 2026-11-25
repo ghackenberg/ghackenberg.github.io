@@ -17,7 +17,7 @@ accentColor: "blue"
 order: 7
 repoName: "Smart-Systems-IDE"
 image:
-  src: "./screenshot.png"
+  src: "./preview.jpg"
   title: "XTREAM Dynamic Optimization Workbench & Hydro Power Plant Simulation"
   description: "Multi-chart engineering dashboard displaying inflow, price signals, net power production, and cascaded water reservoir levels."
 screenshots:

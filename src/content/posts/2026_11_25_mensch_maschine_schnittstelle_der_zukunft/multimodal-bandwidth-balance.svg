@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Multimodale Bandbreiten-Balance zwischen Sprache (Intention), Auge und Fläche (paralleler Überblick) sowie Hand und Zeiger (räumliche Präzision) rund um den kognitiven Fokus">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <radialGradient id="core-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--svg-node-amber-border)" stop-opacity="0.22" />
+      <stop offset="60%" stop-color="var(--svg-accent-3-border)" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="var(--svg-bg)" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="tri-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="var(--svg-node-blue-border)" />
+      <stop offset="50%" stop-color="var(--svg-node-purple-border)" />
+      <stop offset="100%" stop-color="var(--svg-node-green-border)" />
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-text-primary)">MULTIMODALE BANDBREITEN-BALANCE</text>
+  <text x="240" y="54" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-text-secondary)">Drei Modalitäten kompensieren jeweilige kognitive Grenzen</text>
+
+  <!-- Ambient Radar Rings centered at exact equilateral centroid (240, 272) -->
+  <circle cx="240" cy="272" r="146" fill="url(#core-aura)" />
+  <circle cx="240" cy="272" r="140" fill="none" stroke="var(--svg-line)" stroke-width="1.2" stroke-dasharray="4,4" />
+  <circle cx="240" cy="272" r="98" fill="none" stroke="var(--svg-line)" stroke-width="1.2" />
+  <circle cx="240" cy="272" r="56" fill="none" stroke="var(--svg-line)" stroke-width="1" stroke-dasharray="3,3" />
+
+  <!-- Radial Axes to Exact 120-deg Equilateral Vertices (R=120 around 240,272) -->
+  <line x1="240" y1="272" x2="240" y2="152" stroke="var(--svg-node-blue-border)" stroke-width="1.5" opacity="0.45" />
+  <line x1="240" y1="272" x2="136" y2="332" stroke="var(--svg-node-purple-border)" stroke-width="1.5" opacity="0.45" />
+  <line x1="240" y1="272" x2="344" y2="332" stroke="var(--svg-node-green-border)" stroke-width="1.5" opacity="0.45" />
+
+  <!-- Equilateral Multimodal Synergy Triangle -->
+  <polygon points="240,152 344,332 136,332" fill="var(--svg-card-alt)" fill-opacity="0.35" stroke="url(#tri-grad)" stroke-width="2.4" stroke-linejoin="round" />
+
+  <!-- Central Human Cognitive Core -->
+  <g id="cognitive-core">
+    <circle cx="240" cy="272" r="40" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2" />
+    <circle cx="240" cy="272" r="34" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" />
+    <text x="240" y="266" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-amber-text)">Kognitiver</text>
+    <text x="240" y="283" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-amber-text)">Fokus</text>
+  </g>
+
+  <!-- ==================== TOP APEX: SPRACHE (VOICE / INTENT) ==================== -->
+  <g id="node-voice">
+    <line x1="240" y1="114" x2="240" y2="128" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+    <rect x="148" y="68" width="184" height="46" rx="12" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.6" />
+    <text x="240" y="86" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-blue-text)">SPRACHE (AUDIO)</text>
+    <text x="240" y="103" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-blue-subtext)">Intention • ~150 W/min</text>
+
+    <circle cx="240" cy="152" r="24" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.2" />
+    <line x1="229" y1="148" x2="229" y2="156" stroke="var(--svg-node-blue-subtext)" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="235" y1="142" x2="235" y2="162" stroke="var(--svg-node-blue-text)" stroke-width="2.4" stroke-linecap="round" />
+    <line x1="241" y1="138" x2="241" y2="166" stroke="var(--svg-node-blue-text)" stroke-width="2.4" stroke-linecap="round" />
+    <line x1="247" y1="144" x2="247" y2="160" stroke="var(--svg-node-blue-text)" stroke-width="2.4" stroke-linecap="round" />
+    <line x1="253" y1="149" x2="253" y2="155" stroke="var(--svg-node-blue-subtext)" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+
+  <!-- ==================== BOTTOM-LEFT APEX: HAND & ZEIGER ==================== -->
+  <g id="node-deixis">
+    <line x1="136" y1="356" x2="124" y2="376" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+    <circle cx="136" cy="332" r="24" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.2" />
+    <polygon points="128,322 128,340 133,335 140,338" fill="var(--svg-node-purple-text)" />
+    <line x1="138" y1="327" x2="148" y2="327" stroke="var(--svg-node-purple-subtext)" stroke-width="2" stroke-linecap="round" />
+    <circle cx="143" cy="327" r="2.5" fill="var(--svg-node-purple-text)" />
+
+    <rect x="34" y="376" width="180" height="48" rx="12" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.6" />
+    <text x="124" y="395" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-purple-text)">HAND &amp; ZEIGER</text>
+    <text x="124" y="412" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-purple-subtext)">Deixis &amp; diskret</text>
+  </g>
+
+  <!-- ==================== BOTTOM-RIGHT APEX: AUGE & FLÄCHE ==================== -->
+  <g id="node-vision">
+    <line x1="344" y1="356" x2="356" y2="376" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+    <circle cx="344" cy="332" r="24" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+    <path d="M 329 332 Q 344 319 359 332 Q 344 345 329 332 Z" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" stroke-linejoin="round" />
+    <circle cx="344" cy="332" r="4.5" fill="var(--svg-node-green-text)" />
+
+    <rect x="266" y="376" width="180" height="48" rx="12" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+    <text x="356" y="395" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" fill="var(--svg-node-green-text)">AUGE &amp; FLÄCHE</text>
+    <text x="356" y="412" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-green-subtext)">Parallel &amp; prüfbar</text>
+  </g>
+
+  <!-- Footer Note -->
+  <text x="240" y="454" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-text-muted)">Starke Sprachschnittstellen kombinieren alle drei Kanäle</text>
+</svg>

@@ -7,7 +7,7 @@ accentColor: "blue"
 order: 6
 repoName: "welding-simulation"
 image:
-  src: "./screenshot.png"
+  src: "./preview.jpg"
   title: "Welding Simulation: 3D Thermal Field & Seam Geometry"
   description: "Interactive OpenGL visualization of the 3D spatial temperature field and molten pool isotherms with orthogonal 2D cross-section views"
 screenshots:

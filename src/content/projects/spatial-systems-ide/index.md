@@ -7,7 +7,7 @@ tags: ["mechatronic-systems", "systems-engineering", "manufacturing-systems", "j
 accentColor: "blue"
 order: 5
 image:
-  src: "./screenshot.png"
+  src: "./preview.jpg"
   title: "Spatial Systems IDE: Integrated Mechatronic Modeling"
   description: "Multi-dock DockFX workbench displaying component hierarchies, 3D geometric views, state machines, and cross-discipline interfaces"
 screenshots:

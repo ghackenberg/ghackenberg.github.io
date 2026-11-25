@@ -35,7 +35,7 @@ bibtex: "@article{\r
 
   }"
 image:
-  src: "./geometry.png"
+  src: "./preview.jpg"
   title: "Multi-Disciplinary Mechatronic Geometry Metamodel"
   description: "Geometric and spatial modeling formalism linking mechanical constraints, electrical wiring, and software control logic."
 publisherUrl: https://doi.org/10.1016/j.protcy.2014.09.029

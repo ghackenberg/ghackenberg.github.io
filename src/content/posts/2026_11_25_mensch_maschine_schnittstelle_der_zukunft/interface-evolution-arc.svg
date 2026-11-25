@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Entwicklungsbogen der Mensch-Maschine-Schnittstelle über vier Epochen: Von CLI über WIMP/GUI und Touch bis zur Sprachschnittstelle mit abnehmender semantischer Distanz">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <pattern id="dot-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="var(--svg-line)" />
+    </pattern>
+    <clipPath id="grid-clip">
+      <rect x="24" y="66" width="432" height="338" rx="14" />
+    </clipPath>
+    <radialGradient id="voice-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--svg-node-green-border)" stop-opacity="0.28" />
+      <stop offset="65%" stop-color="var(--svg-accent-2-border)" stop-opacity="0.10" />
+      <stop offset="100%" stop-color="var(--svg-bg)" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="arc-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="var(--svg-node-red-border)" />
+      <stop offset="33%" stop-color="var(--svg-node-purple-border)" />
+      <stop offset="66%" stop-color="var(--svg-node-blue-border)" />
+      <stop offset="100%" stop-color="var(--svg-node-green-border)" />
+    </linearGradient>
+    <linearGradient id="dist-bar-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="var(--svg-node-red-border)" />
+      <stop offset="35%" stop-color="var(--svg-node-purple-border)" />
+      <stop offset="68%" stop-color="var(--svg-node-blue-border)" />
+      <stop offset="100%" stop-color="var(--svg-node-green-border)" />
+    </linearGradient>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Canvas & Clipped Architectural Dot Matrix -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+  <g clip-path="url(#grid-clip)">
+    <rect x="24" y="66" width="432" height="338" fill="url(#dot-grid)" />
+    <circle cx="384" cy="134" r="108" fill="url(#voice-halo)" />
+  </g>
+  <rect x="24" y="66" width="432" height="338" rx="14" fill="none" stroke="var(--svg-border)" stroke-width="1" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-text-primary)">KOMPRESSION DER ÜBERSETZUNGSLAST</text>
+  <text x="240" y="54" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-text-secondary)">Semantische Distanz schrumpft über vier Interface-Epochen</text>
+
+  <!-- Subtle Horizontal Elevation Guides -->
+  <line x1="44" y1="134" x2="436" y2="134" stroke="var(--svg-line)" stroke-width="1" stroke-dasharray="3,4" />
+  <line x1="44" y1="198" x2="436" y2="198" stroke="var(--svg-line)" stroke-width="1" stroke-dasharray="3,4" />
+  <line x1="44" y1="262" x2="436" y2="262" stroke="var(--svg-line)" stroke-width="1" stroke-dasharray="3,4" />
+  <line x1="44" y1="326" x2="436" y2="326" stroke="var(--svg-line)" stroke-width="1" stroke-dasharray="3,4" />
+
+  <!-- Vertical Projection Tethers to Gauge Bar -->
+  <line x1="86" y1="388" x2="86" y2="416" stroke="var(--svg-node-red-border)" stroke-width="1.2" stroke-dasharray="2,3" opacity="0.55" />
+  <line x1="184" y1="326" x2="184" y2="416" stroke="var(--svg-node-purple-border)" stroke-width="1.2" stroke-dasharray="2,3" opacity="0.55" />
+  <line x1="284" y1="264" x2="284" y2="416" stroke="var(--svg-node-blue-border)" stroke-width="1.2" stroke-dasharray="2,3" opacity="0.55" />
+  <line x1="384" y1="216" x2="384" y2="416" stroke="var(--svg-node-green-border)" stroke-width="1.2" stroke-dasharray="2,3" opacity="0.65" />
+
+  <!-- Ascending Evolution Trajectory (Arrow terminates cleanly at outer ring of Epoch 4) -->
+  <path d="M 86 326 C 136 318, 148 274, 184 262 C 226 248, 242 212, 284 198 C 314 188, 326 168, 341 157" fill="none" stroke="url(#arc-grad)" stroke-width="8" stroke-linecap="round" opacity="0.18" />
+  <path d="M 86 326 C 136 318, 148 274, 184 262 C 226 248, 242 212, 284 198 C 314 188, 326 168, 341 157" fill="none" stroke="url(#arc-grad)" stroke-width="2.6" stroke-linecap="round" marker-end="url(#arr-green)" />
+
+  <!-- Epoch 1: CLI / Terminal -->
+  <g id="epoch-cli">
+    <circle cx="86" cy="326" r="27" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <polyline points="74,320 82,326 74,332" fill="none" stroke="var(--svg-node-red-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="86" y1="332" x2="96" y2="332" stroke="var(--svg-node-red-text)" stroke-width="2.2" stroke-linecap="round" />
+    <text x="86" y="368" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-red-text)">CLI</text>
+    <text x="86" y="383" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-red-subtext)">Syntax</text>
+  </g>
+
+  <!-- Epoch 2: WIMP / GUI -->
+  <g id="epoch-wimp">
+    <circle cx="184" cy="262" r="29" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2" />
+    <rect x="169" y="249" width="26" height="20" rx="3" fill="none" stroke="var(--svg-node-purple-text)" stroke-width="1.8" />
+    <line x1="169" y1="255" x2="195" y2="255" stroke="var(--svg-node-purple-text)" stroke-width="1.5" />
+    <line x1="173" y1="260" x2="184" y2="260" stroke="var(--svg-node-purple-subtext)" stroke-width="1.5" stroke-linecap="round" />
+    <line x1="173" y1="264" x2="181" y2="264" stroke="var(--svg-node-purple-subtext)" stroke-width="1.5" stroke-linecap="round" />
+    <polygon points="189,262 189,275 193,272 198,274" fill="var(--svg-node-purple-text)" />
+    <text x="184" y="306" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-purple-text)">WIMP / GUI</text>
+    <text x="184" y="321" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-purple-subtext)">Menü-Baum</text>
+  </g>
+
+  <!-- Epoch 3: Touch -->
+  <g id="epoch-touch">
+    <circle cx="284" cy="198" r="31" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <rect x="272" y="182" width="24" height="32" rx="4" fill="none" stroke="var(--svg-node-blue-text)" stroke-width="1.8" />
+    <circle cx="284" cy="198" r="8" fill="none" stroke="var(--svg-node-blue-subtext)" stroke-width="1.4" stroke-dasharray="3,2" />
+    <circle cx="284" cy="198" r="3.5" fill="var(--svg-node-blue-text)" />
+    <text x="284" y="244" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-blue-text)">Touch</text>
+    <text x="284" y="259" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-node-blue-subtext)">Direktgeste</text>
+  </g>
+
+  <!-- Epoch 4: Voice-First + Spatial Canvas (Hero Node) -->
+  <g id="epoch-voice">
+    <circle cx="384" cy="134" r="46" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.2" stroke-dasharray="4,4" opacity="0.55" />
+    <circle cx="384" cy="134" r="39" fill="none" stroke="var(--svg-accent-2-border)" stroke-width="1.4" opacity="0.65" />
+    <circle cx="384" cy="134" r="33" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.4" />
+    <line x1="366" y1="130" x2="366" y2="138" stroke="var(--svg-node-green-subtext)" stroke-width="2.4" stroke-linecap="round" />
+    <line x1="373" y1="123" x2="373" y2="145" stroke="var(--svg-node-green-text)" stroke-width="2.6" stroke-linecap="round" />
+    <line x1="380" y1="117" x2="380" y2="151" stroke="var(--svg-node-green-text)" stroke-width="2.8" stroke-linecap="round" />
+    <line x1="387" y1="121" x2="387" y2="147" stroke="var(--svg-node-green-text)" stroke-width="2.6" stroke-linecap="round" />
+    <line x1="394" y1="127" x2="394" y2="141" stroke="var(--svg-node-green-subtext)" stroke-width="2.4" stroke-linecap="round" />
+    <line x1="401" y1="131" x2="401" y2="137" stroke="var(--svg-node-green-subtext)" stroke-width="2.2" stroke-linecap="round" />
+    <text x="384" y="195" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="var(--svg-node-green-text)">Sprache</text>
+    <text x="384" y="211" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-green-subtext)">Reiner Intent</text>
+  </g>
+
+  <!-- Bottom Semantic Distance Gradient Gauge with Epoch Ticks -->
+  <g id="semantic-gauge">
+    <rect x="44" y="418" width="392" height="10" rx="5" fill="url(#dist-bar-grad)" opacity="0.88" />
+    <circle cx="86" cy="423" r="6" fill="var(--svg-bg)" stroke="var(--svg-node-red-border)" stroke-width="2" />
+    <circle cx="184" cy="423" r="5" fill="var(--svg-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.8" />
+    <circle cx="284" cy="423" r="5" fill="var(--svg-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" />
+    <circle cx="384" cy="423" r="6" fill="var(--svg-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.2" />
+    <text x="44" y="450" text-anchor="start" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-red-subtext)">Hohe Übersetzungslast</text>
+    <text x="436" y="450" text-anchor="end" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="var(--svg-node-green-subtext)">Minimale semantische Distanz</text>
+  </g>
+</svg>

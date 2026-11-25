@@ -26,7 +26,7 @@ bibtex: "@article{Richter2015,\r
 
   }"
 image:
-  src: "./Operator_Panel.png"
+  src: "./preview.jpg"
   title: "Mechatronisches Bedienpanel-Konzeptmodell"
   description: "Modellgetriebene Konzeption und formale Spezifikation industrieller HMI-Bedienoberflächen in mechatronischen Anlagen."
 publisherUrl: https://doi.org/10.3139/9783446447288.009

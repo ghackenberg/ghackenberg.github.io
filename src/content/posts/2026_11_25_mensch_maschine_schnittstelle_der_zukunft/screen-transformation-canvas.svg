@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Transformation von Bildschirmen: Oben das überladene Menü-Cockpit, in der Mitte das Sprach-Prisma als Filter, unten die ruhige ephemere Projektionsfläche mit räumlichem Modell und Zeiger-Deixis">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <linearGradient id="voice-beam" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="var(--svg-node-blue-border)" />
+      <stop offset="50%" stop-color="var(--svg-accent-2-border)" />
+      <stop offset="100%" stop-color="var(--svg-node-green-border)" />
+    </linearGradient>
+    <radialGradient id="canvas-glow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="var(--svg-node-green-border)" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="var(--svg-card)" stop-opacity="0" />
+    </radialGradient>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas -->
+  <rect x="0" y="0" width="480" height="480" rx="16" fill="var(--svg-bg)" />
+
+  <!-- Header -->
+  <text x="240" y="34" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" letter-spacing="0.06em" fill="var(--svg-text-primary)">VOM COCKPIT ZUR PROJEKTION</text>
+  <text x="240" y="54" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="var(--svg-text-secondary)">Bildschirme werden zu kontextsensitiven Prüfflächen</text>
+
+  <!-- ==================== TOP ZONE: STATIC WIMP LABYRINTH ==================== -->
+  <g id="wimp-labyrinth">
+    <rect x="44" y="72" width="392" height="114" rx="12" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.6" />
+    <rect x="44" y="72" width="392" height="22" rx="12" fill="var(--svg-card-alt)" />
+    <rect x="44" y="84" width="392" height="10" fill="var(--svg-card-alt)" />
+    <circle cx="62" cy="83" r="3.5" fill="var(--svg-node-red-border)" />
+    <circle cx="74" cy="83" r="3.5" fill="var(--svg-node-amber-border)" />
+    <circle cx="86" cy="83" r="3.5" fill="var(--svg-node-green-border)" />
+    <rect x="110" y="78" width="42" height="10" rx="3" fill="var(--svg-pill-bg)" />
+    <rect x="158" y="78" width="46" height="10" rx="3" fill="var(--svg-pill-bg)" />
+    <rect x="210" y="78" width="38" height="10" rx="3" fill="var(--svg-pill-bg)" />
+    <rect x="254" y="78" width="52" height="10" rx="3" fill="var(--svg-pill-bg)" />
+    <circle cx="416" cy="83" r="4.5" fill="var(--svg-node-red-border)" />
+
+    <rect x="54" y="102" width="84" height="76" rx="6" fill="var(--svg-card-alt)" stroke="var(--svg-line)" stroke-width="1" />
+    <rect x="62" y="110" width="58" height="6" rx="3" fill="var(--svg-text-muted)" opacity="0.45" />
+    <rect x="68" y="122" width="52" height="6" rx="3" fill="var(--svg-text-muted)" opacity="0.35" />
+    <rect x="68" y="134" width="46" height="6" rx="3" fill="var(--svg-text-muted)" opacity="0.35" />
+    <rect x="62" y="146" width="60" height="6" rx="3" fill="var(--svg-node-red-border)" opacity="0.6" />
+    <rect x="68" y="158" width="48" height="6" rx="3" fill="var(--svg-text-muted)" opacity="0.35" />
+
+    <rect x="148" y="104" width="166" height="20" rx="4" fill="var(--svg-card-alt)" stroke="var(--svg-line)" stroke-width="1" />
+    <rect x="148" y="130" width="166" height="20" rx="4" fill="var(--svg-card-alt)" stroke="var(--svg-line)" stroke-width="1" />
+    <rect x="148" y="156" width="102" height="18" rx="4" fill="var(--svg-card-alt)" stroke="var(--svg-line)" stroke-width="1" />
+
+    <rect x="184" y="112" width="146" height="62" rx="8" fill="var(--svg-node-red-bg)" stroke="var(--svg-node-red-border)" stroke-width="1.6" />
+    <circle cx="204" cy="132" r="9" fill="none" stroke="var(--svg-node-red-border)" stroke-width="1.8" />
+    <line x1="204" y1="127" x2="204" y2="133" stroke="var(--svg-node-red-text)" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="204" cy="136.5" r="1" fill="var(--svg-node-red-text)" />
+    <rect x="220" y="125" width="96" height="7" rx="3" fill="var(--svg-node-red-subtext)" opacity="0.65" />
+    <rect x="220" y="137" width="74" height="6" rx="3" fill="var(--svg-node-red-subtext)" opacity="0.45" />
+    <rect x="256" y="152" width="28" height="14" rx="4" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1" />
+    <rect x="290" y="152" width="30" height="14" rx="4" fill="var(--svg-node-red-border)" />
+
+    <rect x="342" y="102" width="84" height="74" rx="6" fill="var(--svg-card-alt)" stroke="var(--svg-node-amber-border)" stroke-width="1.2" stroke-dasharray="3,2" />
+    <rect x="350" y="112" width="66" height="8" rx="3" fill="var(--svg-node-amber-border)" opacity="0.45" />
+    <rect x="350" y="126" width="58" height="8" rx="3" fill="var(--svg-text-muted)" opacity="0.35" />
+    <rect x="350" y="140" width="62" height="8" rx="3" fill="var(--svg-text-muted)" opacity="0.35" />
+    <rect x="350" y="154" width="50" height="8" rx="3" fill="var(--svg-text-muted)" opacity="0.35" />
+
+    <path d="M 96 148 Q 160 112 220 132 T 378 122" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1.5" stroke-dasharray="3,3" />
+  </g>
+  <text x="240" y="204" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-red-subtext)">Gestern: Menü-Labyrinth &amp; Klick-Reibung</text>
+
+  <!-- ==================== CENTER PRISM: VOICE TRANSFORMATION ==================== -->
+  <g id="voice-prism">
+    <!-- Symmetric Acoustic Dual-Strand Waves Left & Right -->
+    <path d="M 38 242 Q 66 226 94 242 T 146 242" fill="none" stroke="url(#voice-beam)" stroke-width="2.4" stroke-linecap="round" />
+    <path d="M 38 242 Q 66 258 94 242 T 146 242" fill="none" stroke="url(#voice-beam)" stroke-width="1.4" stroke-linecap="round" opacity="0.5" />
+
+    <rect x="150" y="226" width="180" height="32" rx="16" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2" />
+    <text x="240" y="242" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" letter-spacing="0.04em" fill="var(--svg-node-blue-text)">SPRACHE FILTERT UI</text>
+
+    <path d="M 334 242 Q 362 226 390 242 T 442 242" fill="none" stroke="url(#voice-beam)" stroke-width="2.4" stroke-linecap="round" />
+    <path d="M 334 242 Q 362 258 390 242 T 442 242" fill="none" stroke="url(#voice-beam)" stroke-width="1.4" stroke-linecap="round" opacity="0.5" />
+
+    <!-- Projection Rays Downward to Calm Surface -->
+    <path d="M 192 258 L 154 292" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#arr-blue)" />
+    <path d="M 240 258 V 292" fill="none" stroke="var(--svg-accent-2-border)" stroke-width="2" marker-end="url(#arr-green)" />
+    <path d="M 288 258 L 326 292" fill="none" stroke="var(--svg-node-green-border)" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#arr-green)" />
+  </g>
+
+  <!-- ==================== BOTTOM ZONE: EPHEMERAL PROJECTION CANVAS ==================== -->
+  <g id="calm-canvas">
+    <rect x="44" y="298" width="392" height="136" rx="14" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="2" />
+    <rect x="44" y="298" width="392" height="136" rx="14" fill="url(#canvas-glow)" />
+
+    <!-- Left Shaded 3D Isometric Spatial Object (CAD/Data Projection) -->
+    <g id="spatial-prism">
+      <!-- Top Face (Lit) -->
+      <polygon points="154,322 198,346 154,370 110,346" fill="var(--svg-accent-3-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" stroke-linejoin="round" />
+      <!-- Left Face (Mid) -->
+      <polygon points="110,346 154,370 154,418 110,394" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" stroke-linejoin="round" />
+      <!-- Right Face (Shaded) -->
+      <polygon points="154,370 198,346 198,394 154,418" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="1.8" stroke-linejoin="round" />
+      <!-- Crisp Highlighted Isometric Ridges -->
+      <polyline points="110,346 154,370 198,346" fill="none" stroke="var(--svg-accent-2-border)" stroke-width="2" stroke-linejoin="round" />
+      <line x1="154" y1="370" x2="154" y2="418" stroke="var(--svg-accent-2-border)" stroke-width="2" />
+
+      <!-- Deixis Target Node ("Put-that-there") -->
+      <circle cx="198" cy="346" r="10" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.8" opacity="0.9" />
+      <circle cx="198" cy="346" r="3.5" fill="var(--svg-node-amber-text)" />
+      <!-- Deixis Pointer Arrow + Label -->
+      <line x1="238" y1="326" x2="213" y2="339" stroke="var(--svg-node-amber-border)" stroke-width="1.8" stroke-dasharray="3,2" marker-end="url(#arr-amber)" />
+      <text x="244" y="324" text-anchor="start" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="var(--svg-node-amber-subtext)">Zeiger-Deixis</text>
+    </g>
+
+    <!-- Right On-Demand Verification Card -->
+    <g id="verify-card">
+      <rect x="262" y="346" width="150" height="68" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+      <circle cx="286" cy="370" r="10" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1.6" />
+      <path d="M 281 370 L 285 374 L 292 366" fill="none" stroke="var(--svg-node-green-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="348" y="370" text-anchor="middle" dominant-baseline="central" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="var(--svg-node-green-text)">Prüf-Ansicht</text>
+      <rect x="278" y="392" width="118" height="6" rx="3" fill="var(--svg-node-green-border)" opacity="0.45" />
+      <rect x="278" y="402" width="84" height="5" rx="2.5" fill="var(--svg-node-green-subtext)" opacity="0.35" />
+    </g>
+  </g>
+  <text x="240" y="456" text-anchor="middle" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="700" fill="var(--svg-node-green-subtext)">Morgen: Ruhige Projektion &amp; visuelle Verifikation</text>
+</svg>

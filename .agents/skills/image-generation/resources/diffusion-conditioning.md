@@ -34,7 +34,7 @@ To prevent unwanted visual contamination across scenes, reference assets in `src
 * Perspective foreshortening or trapezoidal warping in reference images is permanently baked into the latent representation, causing unnatural double-distortion when re-projected into novel scenes.
 
 ### Style Purity
-* All reference assets must strictly embody the stylized Disney/Pixar comic aesthetic (crisp ink linework, cel shading, no photorealistic museum backgrounds, no drop-shadow borders).
+* All reference assets must strictly embody the mature editorial graphic novel / ligne claire aesthetic (realistic adult proportions, crisp ink linework, clean 2D cel shading, zero cartoon/child-like features, no photorealistic museum backgrounds, no drop-shadow borders).
 
 ## 3. Environment Focus Variants & Conditioning Slots
 

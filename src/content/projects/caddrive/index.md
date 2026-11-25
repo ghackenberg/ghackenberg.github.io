@@ -8,7 +8,7 @@ accentColor: "blue"
 order: 1
 repoName: "caddrive"
 image:
-  src: "./versions.png"
+  src: "./preview.jpg"
   title: "CADdrive Version History & 3D Assembly Viewer"
   description: "Interactive in-browser 3D CAD model viewer with chronological version tracking, commit metadata, and asset downloads"
 screenshots:
