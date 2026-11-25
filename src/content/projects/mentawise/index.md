@@ -54,3 +54,9 @@ outcomes:
   - "Proven in production at international exhibition booths in Las Vegas, Barcelona, and Munich."
   - "Personal daily thinking, note-taking, and teaching companion for over a decade."
 ---
+
+## Knowledge Graph Lineage & Ecosystem Links
+
+**Mentawise** avoids the tangled hairballs of unguided force-directed graph tools through deterministic space partitioning, radial focus centering, and concentric neighborhood exploration. Across three architectural generations—from SVG layouts for the Frankfurt Book Fair to high-throughput HTML5 Canvas deployments for Infineon at CES and MWC, and onward to a daily web application—the platform prioritizes legibility and instant visual orientation.
+
+Explore how these space-partitioning and focus-navigation principles evolved into our interactive graph sandboxes in the [Visualizations Hub](/visualizations/)—and discover our deterministic barycentric successor in the [SimplexViz project](/projects/simplex-viz/), the [SimplexViz live workbench](/visualizations/simplex-viz/), and [Introducing SimplexViz](/posts/2026_11_18_introducing_simplex_viz/).

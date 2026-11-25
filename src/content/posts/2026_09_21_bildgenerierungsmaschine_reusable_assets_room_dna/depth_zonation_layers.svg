@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 455" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 455" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;" role="img" aria-label="Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten von Foreground über Midground bis Background">
+  <title>Foreground über Midground bis Background - Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten</title>
+  <desc>Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten von Foreground über Midground bis Background</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

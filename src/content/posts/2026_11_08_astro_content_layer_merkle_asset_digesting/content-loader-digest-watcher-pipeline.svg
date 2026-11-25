@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector architecture of assetAwareGlob intercepting generateDigest and proxying Vite FSWatcher for single-entry invalidation">
+  <title>Composite Digest Hook and Bound FSWatcher Proxy Pipeline</title>
+  <desc>Semantic vector architecture of assetAwareGlob intercepting generateDigest and proxying Vite FSWatcher for single-entry invalidation</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

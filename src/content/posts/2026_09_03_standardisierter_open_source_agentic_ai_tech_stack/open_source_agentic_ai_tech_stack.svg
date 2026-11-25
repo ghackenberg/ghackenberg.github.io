@@ -1,4 +1,6 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, sans-serif;" role="img" aria-label="Referenzarchitektur des standardisierten Open-Source Agentic AI Tech Stacks">
+  <title>Referenzarchitektur des standardisierten Open-Source Agentic</title>
+  <desc>Referenzarchitektur des standardisierten Open-Source Agentic AI Tech Stacks</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

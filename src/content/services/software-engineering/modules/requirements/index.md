@@ -57,4 +57,4 @@ Functional features represent only one dimension of system specification. Non-fu
 
 ### Executable Specifications & Verification
 
-Specifications should be verifiable by design. We structure business rules into executable specifications using Given-When-Then patterns and formal state machines. This creates an unbroken traceability link from high-level stakeholder requirements down to automated integration and acceptance test suites in the continuous integration pipeline.
+Specifications should be verifiable by design. We structure business rules into executable specifications using Given-When-Then patterns and formal state machines. This creates an unbroken traceability link from high-level stakeholder requirements down to automated integration and acceptance test suites in the continuous integration pipeline—grounded in our research on [test-driven cyber-physical system design](/publications/2018_11_14_tum/) and the [Spatial Systems IDE](/projects/spatial-systems-ide/).

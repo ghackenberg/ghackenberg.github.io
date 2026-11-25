@@ -68,7 +68,7 @@ This post breaks down the mathematics of our discrete grid hydrology model, the 
 
 Most game water systems use simple wave-height maps that look nice but carry no physical volume. For an ecosystem simulator, we need **mass-conserving volumetric water flow**. We designed a coupled model comprising two main layers: **Surface Water** and **Groundwater (Aquifers)**, connected by vertical fluxes.
 
-![Water Cycle Diagram](./water_cycle.svg "Water Cycle")
+![Hydrological water cycle diagram showing precipitation, surface runoff diffusion, groundwater aquifer infiltration, and evaporation in Delta Dynamics](./water_cycle.svg "Delta Dynamics Coupled Surface and Subsurface Water Cycle")
 
 ### Lateral Surface Water Flow (Diffusion & Flux Clamping)
 We approximate the shallow water equations using a cell-centered, discrete height-based diffusion model. For each grid cell, we evaluate its 4-neighborhood (Up, Down, Left, Right). 

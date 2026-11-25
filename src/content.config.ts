@@ -134,6 +134,7 @@ const publications = defineCollection({
       book: z.string().optional(),
       authors: z.array(authorEntrySchema).min(1),
       abstract: z.string().optional(),
+      inLanguage: z.enum(['de', 'en']).default('en'),
       tags: z.array(tagReference).default([]),
       bibtex: z.string().optional(),
       doi: z.string().optional(),

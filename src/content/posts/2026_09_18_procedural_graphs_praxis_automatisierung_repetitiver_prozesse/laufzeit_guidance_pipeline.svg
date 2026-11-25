@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 240" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 240" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Der Inferenz-Mechanismus: 4-stufige Generative Soft Guidance zur Laufzeit">
+  <title>Der Inferenz-Mechanismus</title>
+  <desc>Der Inferenz-Mechanismus: 4-stufige Generative Soft Guidance zur Laufzeit</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

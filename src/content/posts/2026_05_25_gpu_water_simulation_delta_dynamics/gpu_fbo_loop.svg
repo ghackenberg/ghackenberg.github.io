@@ -1,4 +1,6 @@
-<svg viewBox="0 0 950 480" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 950 480" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ping-pong WebGL Framebuffer Object (FBO) simulation loop computing heightfield water advection, flux, and subsurface infiltration">
+  <title>GPU-Accelerated Water Flow and Subsurface Hydrology</title>
+  <desc>Ping-pong WebGL Framebuffer Object (FBO) simulation loop computing heightfield water advection, flux, and subsurface infiltration</desc>
   <style>
     .bg { fill: #0f172a; }
     .title { font-family: 'Inter', system-ui, sans-serif; font-size: 20px; font-weight: 700; fill: #f8fafc; }

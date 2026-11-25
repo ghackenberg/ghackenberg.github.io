@@ -71,4 +71,4 @@ Each content engineering engagement is anchored around five strategic pillars de
 - **Automated Git CI/CD & Asset Optimization**: Zero-artifact build caching, deterministic SVG compilation, and automated asset verification.
 - **Generative Engine & Semantic Search Optimization**: Schema.org JSON-LD graphs, structured RAG context (`llms.txt`), and AIO-ready prose geometry.
 
-Across these pillars, our production technology stack integrates **Astro SSG**, **TypeScript**, **Zod Schemas**, **Tailwind CSS**, **MDX**, **GitHub Actions CI/CD**, **Schema.org JSON-LD**, **Listmonk**, and **Sharp & WebP** image pipelines.
+Across these pillars, our production technology stack integrates **Astro SSG**, **TypeScript**, **Zod Schemas**, **Tailwind CSS**, **MDX**, **GitHub Actions CI/CD**, **Schema.org JSON-LD**, **Listmonk**, and **Sharp & WebP** image pipelines. Explore live architectural case studies in [Agentic SEO, GEO & AIO Practice](/posts/2026_09_24_agentic_seo_geo_aio_mcp_praxisbericht/), [Astro Content-Layer Merkle Asset Digesting](/posts/2026_11_08_astro_content_layer_merkle_asset_digesting/), and the [SimplexViz Knowledge Graph Engine](/projects/simplex-viz/).

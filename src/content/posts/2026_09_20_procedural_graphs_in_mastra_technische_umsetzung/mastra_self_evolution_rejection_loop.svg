@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Mastra Offline Self-Evolution Loop: Die Evolutions-Pipeline mit Rejection Memory und Mastra Evals">
+  <title>Mastra Offline Self-Evolution Loop</title>
+  <desc>Mastra Offline Self-Evolution Loop: Die Evolutions-Pipeline mit Rejection Memory und Mastra Evals</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

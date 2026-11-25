@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Halbdurchlässige Kontext-Membran zwischen schlanker Regie oben und isolierten Maschinenraum-Kontexten unten">
+  <title>Kontext-Membran zwischen Regie und Maschinenraum</title>
+  <desc>Halbdurchlässige Kontext-Membran zwischen der schlanken Gesprächsregie oben und drei isolierten Maschinenraum-Kontexten für Analyse, Ausführung und Prüfung unten</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

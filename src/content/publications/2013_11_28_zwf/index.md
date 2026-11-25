@@ -1,6 +1,7 @@
 ---
-title: Modellbasierte entwicklungsmethode für modulare maschinen und anlagen
+title: "Modellbasierte Entwicklungsmethode für modulare Maschinen und Anlagen"
 pubDate: 2013-11-28
+inLanguage: "de"
 image:
   src: "./preview.jpg"
   title: "Modellbasierte Entwicklung modularer Anlagen"
@@ -15,7 +16,7 @@ tags:
 bibtex: |
   @ARTICLE{richter2013modellbasierte,
     author={Christoph Richter and Georg Hackenberg and Michael F Zäh},
-    title={Modellbasierte entwicklungsmethode für modulare maschinen und anlagen},
+    title={Modellbasierte Entwicklungsmethode für modulare Maschinen und Anlagen},
     year={2013},
     journal={Zeitschrift für wirtschaftlichen Fabrikbetrieb},
     volume={108},

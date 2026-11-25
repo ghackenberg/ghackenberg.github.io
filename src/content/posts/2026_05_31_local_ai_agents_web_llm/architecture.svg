@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;" role="img" aria-label="Multithreaded Web-Worker-Architektur mit Web-LLM und Three.js">
+  <title>Web Worker Architektur für browserbasierte KI-Inferenz</title>
+  <desc>Multithreaded Web-Worker-Architektur mit Web-LLM und Three.js</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

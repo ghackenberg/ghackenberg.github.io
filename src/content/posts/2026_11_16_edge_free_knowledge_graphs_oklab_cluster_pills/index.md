@@ -84,7 +84,13 @@ Color mixing only communicates multi-topic membership when the human eye can sti
 
 In standard sRGB, averaging complementary colors like sky blue and amber drops saturation and produces a dull brownish gray in the middle. By converting hex colors into OKLab via `hexToOklab`, computing a weighted average over cluster overlap ratios, and gently boosting chroma in `mixHexColorsOklab` inside [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts), bridge nodes retain clean, readable intermediate hues.
 
-Even in OKLab, perceptual blending has a strict cognitive ceiling. Three primary cluster hues (Sky, Amber, and Mint in 2D) or four (adding Rose in 3D) form a legible color gamut where every mixed node visibly reveals its dominant and secondary topic weights at a glance.
+Even in OKLab, perceptual blending has a strict cognitive ceiling. Three primary cluster hues (Sky, Amber, and Mint in 2D) or four (adding Rose in 3D) form a legible color gamut enforced by three design rules:
+
+- **Bounded Palette Gamut (`CLUSTER_PALETTE`):** Limits default mixing to 3 primary anchors in 2D and 4 in 3D so hues never collapse to gray.
+- **Perceptual Linear Averaging (`hexToOklab`):** Computes weighted color sums in uniform OKLab lightness coordinates rather than sRGB.
+- **Bridge Chroma Boost (`mixHexColorsOklab`):** Restores subtle saturation on multi-cluster items so cross-disciplinary bridges stand out visually.
+
+Together, these three constraints ensure every mixed node visibly communicates both its dominant and secondary topic weights at a glance.
 
 ## Cluster Pills, Clearance Zones, and Equal-Area N-Gons
 
@@ -94,7 +100,13 @@ Removing visible edges shifts the burden of legibility onto node geometry and la
 
 In [`src/commons/shared/graph-solvers.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-solvers.ts), `enforceClusterPillClearance2D` and `enforceClusterPillClearance3D` enforce a rectangular exclusion zone (`boxHalfW = 79.5`, `boxHalfH = 17.2`) around each cluster pill so content nodes never hide behind pill typography. Any colliding node is pushed outward along staggered candidate offsets just beyond the pill boundary.
 
-During hover interaction, [`src/commons/client/vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx) docks an external `%` coverage badge beside each connected cluster pill and adds its width (`extraBadgeW`) to the tooltip's collision-avoidance bounding box. Meanwhile, `getContentGroupPolygonSides` and `getPolygonAreaRadiusScale` in [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts) map the eight content types onto regular polygons (`3` to `10` sides) scaled to equal visual area so triangles never look smaller than circles.
+During hover interaction, [`src/commons/client/vis-tooltip.tsx`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/vis-tooltip.tsx) docks an external `%` coverage badge beside each connected cluster pill and adds its width (`extraBadgeW`) to the tooltip's collision-avoidance bounding box. Meanwhile, `getContentGroupPolygonSides` and `getPolygonAreaRadiusScale` in [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts) map the eight content types onto regular polygons (`3` to `10` sides) scaled to equal visual area so triangles never look smaller than circles:
+
+- **Rectangular Pill Exclusion (`boxHalfW = 79.5`, `boxHalfH = 17.2`):** Repels overlapping content nodes cleanly outside cluster label boundaries.
+- **Docked Coverage Badges (`extraBadgeW`):** Accounts for hover `%` badge widths inside tooltip collision-avoidance boxes.
+- **Equal-Area N-Gon Mapping (`3` to `10` sides):** Normalizes visual polygon area across all eight content collections.
+
+These geometric clearance invariants keep pill typography, hover badges, and multi-domain node shapes legible without static edge clutter.
 
 ## Honest Trade-Offs: Path Finding vs. Global Clarity
 

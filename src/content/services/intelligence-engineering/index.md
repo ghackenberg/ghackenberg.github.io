@@ -72,4 +72,4 @@ Sovereign intelligence engagements focus on five core architectural pillars tail
 - **Cyclic Multi-Agent Decision Logic & Supervision**: Stateful orchestrator-worker topologies with deterministic execution bounds and retries.
 - **Enterprise Observability, Token Budgeting & Human-in-the-Loop**: Real-time cost accounting, telemetry dashboards, and interactive steering controls.
 
-Our core production stack combines **vLLM**, **TensorRT-LLM**, **LiteLLM Proxy**, **Qdrant**, **Neo4j GraphRAG**, **Model Context Protocol (MCP)**, **LangGraph**, and **Nous Hermes** models.
+Our core production stack combines **vLLM**, **TensorRT-LLM**, **LiteLLM Proxy**, **Qdrant**, **Neo4j GraphRAG**, **Model Context Protocol (MCP)**, **LangGraph**, and **Nous Hermes** models. Deep-dive architectural blueprints cover our [Standardized Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/), the [Conversational Control Plane](/posts/2026_11_22_conversational_control_plane_live_agents/), and [Voice-First Human-Machine Interfaces](/posts/2026_11_25_mensch_maschine_schnittstelle_der_zukunft/).

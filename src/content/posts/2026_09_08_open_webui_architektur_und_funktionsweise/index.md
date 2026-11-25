@@ -18,7 +18,7 @@ tags:
   - vllm
 image:
   src: ./hero.jpg
-  title: Open WebUI
+  title: "Open WebUI: SvelteKit-FastAPI RAG & IAM-Zentrale"
   description: "Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem"
 references:
   - type: inproceedings
@@ -55,7 +55,7 @@ references:
 
 In unserer Artikelserie zur Konzeption und Realisierung souveräner, agentischer Unternehmens-KI haben wir die technischen Schichten moderner Architekturen systematisch analysiert: Ausgehend von unserem [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das mathematisch fundierte [sitzungsübergreifende Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) und die [kontinuierliche Wissensevolution via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) bis hin zur [Body-Brain-Entkopplung und Bounded-Memory-Laufzeit des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/).
 
-Bislang stand vor allem das Zusammenspiel von Inferenz-Engines ([vLLM](/tags/vllm/)), deklarativen Graphen ([LangGraph](/tags/langgraph/)) und autonomen Agenten im Fokus. Doch die architektonisch anspruchsvollste Backend-Infrastruktur verfehlt ihre Wirkung in Organisationen, wenn der Zugang auf kryptische Terminal-Konsolen, Entwickler-Skripte oder proprietäre Cloud-Clients beschränkt bleibt. Bereits in unseren ersten Analysen zu [lokalen KI-Agenten und strukturierter Inferenz](/posts/2026_05_31_local_ai_agents_web_llm/) zeigte sich deutlich: **Souveräne KI benötigt eine ergonomische, sichere und vollumfänglich kontrollierbare Mensch-Maschine-Schnittstelle.**
+Bislang stand vor allem das Zusammenspiel von Inferenz-Engines ([vLLM](/tags/vllm/)), deklarativen Graphen ([LangGraph](/tags/langgraph/)) und autonomen Agenten im Fokus. Doch die architektonisch anspruchsvollste Backend-Infrastruktur verfehlt ihre Wirkung in Organisationen, wenn der Zugang auf kryptische Terminal-Konsolen, Entwickler-Skripte oder proprietäre Cloud-Clients beschränkt bleibt. Bereits in unseren ersten Analysen zu [lokalen KI-Agenten und strukturierter Inferenz](/posts/2026_05_31_local_ai_agents_web_llm/) zeigte sich deutlich: **Souveräne KI benötigt eine ergonomische, sichere und vollumfänglich kontrollierbare [Mensch-Maschine-Schnittstelle](/posts/2026_11_25_mensch_maschine_schnittstelle_der_zukunft/).**
 
 Genau diese Lücke schließt **Open WebUI** als **Schicht 6 (Human-in-the-Loop Interaktion & Workspace Control)** unseres Referenzstacks. Ursprünglich als schlanke Oberfläche für Ollama konzipiert, hat sich das Projekt zu einer modularen, hochgradig erweiterbaren Plattform für Unternehmen, Universitäten und Entwicklerteams entwickelt.
 

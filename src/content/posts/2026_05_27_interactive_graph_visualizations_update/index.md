@@ -63,7 +63,7 @@ Interactive directed graph visualization in JavaScript balances graphical perfor
 
 On this website, interactive network graphs allow visitors to explore the multidimensional relationships between content topics, engineering blog posts, and [academic publications](/publications/). To turn these architectural principles into a fast, responsive user experience, we recently overhauled this visualization system from the ground up.
 
-Instead of a monolithic script, the system now runs on a modular, multi-engine architecture supporting **Cytoscape.js**, **D3.js**, **Sigma.js**, **Vis.js Network**, and an immersive **3D Force Graph** powered by Three.js and WebGL.
+Instead of a monolithic script, the system now runs on a modular, multi-engine architecture with six live interactive sandboxes you can launch directly: [Cytoscape.js](/visualizations/cytoscape/), [D3.js Force](/visualizations/d3/), [Sigma.js WebGL](/visualizations/sigma/), [Vis.js Network](/visualizations/vis-network/), [3D Force Graph](/visualizations/3d-force-graph/), and the barycentric [SimplexViz workbench](/visualizations/simplex-viz/) (see the [SimplexViz project](/projects/simplex-viz/)).
 
 Here is a technical walkthrough of how we restructured the system, implemented layout algorithms with smooth animations, added live theme-awareness, and synchronized user settings via the URL.
 
@@ -133,7 +133,7 @@ In graph physics simulation, naive n-body repulsive calculations scale quadratic
 ### 3D Force Graph (WebGL & Three.js)
 The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/3d-force/engine.js)) renders the network as a floating three-dimensional sphere. 
 
-![3D Force Graph Preview](./3d-force.png "3d Force")
+![3D Force Graph volumetric WebGL knowledge network rendered with Three.js orbital camera and particle links](./3d-force.png "3D Force-Graph Three.js WebGL Network Preview")
 
 Key capabilities of the 3D Force Graph implementation include:
 
@@ -144,7 +144,7 @@ Key capabilities of the 3D Force Graph implementation include:
 ### Vis.js Network (HTML5 Canvas)
 The Vis.js engine ([vis-network/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/vis-network/engine.js)) provides an incredibly smooth 2D canvas visualization.
 
-![Vis.js Network Preview](./vis-network.png "Vis Network")
+![Vis.js Network HTML5 2D canvas graph with Barnes-Hut spring-damper physics and topic clusters](./vis-network.png "Vis.js Network HTML5 Canvas Preview")
 
 Core interactive characteristics of the Vis.js Canvas renderer include:
 

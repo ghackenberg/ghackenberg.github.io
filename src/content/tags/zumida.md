@@ -1,4 +1,4 @@
 ---
 title: "Zumida Platform"
-description: "Visual spatial collaboration canvas and diagramming workspace designed for agile development teams."
+description: "Visual spatial collaboration canvas, infinite mind-mapping workspace, and lightweight diagramming tooling for agile engineering teams."
 ---

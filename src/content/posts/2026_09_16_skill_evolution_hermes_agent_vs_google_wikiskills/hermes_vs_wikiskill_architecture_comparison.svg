@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 460" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;"><defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 460" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Architektur- und Paradigmenvergleich zwischen Hermes Agent und Google WikiSkills">
+  <title>Architektur- und Paradigmenvergleich zwischen Hermes</title>
+  <desc>Architektur- und Paradigmenvergleich zwischen Hermes Agent und Google WikiSkills</desc>
+  <defs>
     <style>
       @import url('/styles/graphics.css');
     </style>

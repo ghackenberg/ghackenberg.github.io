@@ -1,4 +1,4 @@
 ---
 title: "Mem0 Architecture"
-description: "Persistent, adaptive long-term memory layer for AI agents and personalized language model interactions."
+description: "Persistent, adaptive long-term memory layer enabling cross-session episodic recall and personalization for autonomous AI agents."
 ---

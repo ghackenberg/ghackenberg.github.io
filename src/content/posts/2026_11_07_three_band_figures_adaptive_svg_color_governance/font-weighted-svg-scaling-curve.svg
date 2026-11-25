@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector diagram contrasting fixed 760px column SVG stretching (25.3px inflated labels) against font-weighted SVG scaling in rehype-inline-svg.ts targeting 14px-14.5px body prose parity">
+  <title>Font-Weighted SVG Max-Width Scaling Curve</title>
+  <desc>Semantic vector diagram contrasting fixed 760px column SVG stretching (25.3px inflated labels) against font-weighted SVG scaling in rehype-inline-svg.ts targeting 14px-14.5px body prose parity</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

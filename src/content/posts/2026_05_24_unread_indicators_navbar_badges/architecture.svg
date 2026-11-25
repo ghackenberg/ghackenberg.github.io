@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="100%" height="100%" role="img" aria-label="Decoupled system architecture combining build-time manifest generation and synchronous client-side localStorage painting">
+  <title>System Architecture: Build-Time Manifest and Client-Time Cache</title>
+  <desc>Decoupled system architecture combining build-time manifest generation and synchronous client-side localStorage painting</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

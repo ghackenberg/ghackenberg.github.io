@@ -17,7 +17,7 @@ tags:
   - python
 image:
   src: ./hero.jpg
-  title: LiteLLM
+  title: "LiteLLM: Souveränes Multi-Model AI Gateway & Proxy"
   description: "LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem"
 references:
   - type: online

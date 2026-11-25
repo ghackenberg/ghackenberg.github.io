@@ -66,6 +66,7 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
   image={pub.data.image}
   type="article"
   pubDate={pub.data.pubDate}
+  inLanguage={pub.data.inLanguage || 'en'}
   tags={pub.data.tags}
   jsonLd={[publicationSchema]}
 >

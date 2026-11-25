@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Multi-Provider Inferenz-Orchestrierung und dynamisches Routing in Open WebUI">
+  <title>Multi-Provider Inferenz-Orchestrierung und dynamisches Routing</title>
+  <desc>Multi-Provider Inferenz-Orchestrierung und dynamisches Routing in Open WebUI</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

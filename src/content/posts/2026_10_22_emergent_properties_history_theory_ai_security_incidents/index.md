@@ -1,5 +1,5 @@
 ---
-title: "Emergent Properties in AI: Scaling Theory & Control Loops"
+title: "Emergent AI Behavior: Scaling Mirages & Control Loops"
 pubDate: 2026-10-22
 description: "An interdisciplinary analysis of emergent properties in AI—from symmetry breaking and LLM scaling mirages to STAMP/STPA-Sec control-loop security."
 inLanguage: en

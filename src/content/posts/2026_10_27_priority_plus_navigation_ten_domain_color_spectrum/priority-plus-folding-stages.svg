@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic illustrating Priority+ navigation folding stages across 1440px Wide, 960px Medium, and 480px Compact viewports with synchronous pre-paint CLS=0 lock">
+  <title>Priority+ Responsive Folding Stages and Pre-Paint Lock</title>
+  <desc>Semantic vector infographic illustrating Priority+ navigation folding stages across 1440px desktop, 960px tablet, and 480px mobile viewports with synchronous pre-paint CLS=0 lock</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

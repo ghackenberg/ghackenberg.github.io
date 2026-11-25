@@ -523,7 +523,7 @@ export function buildCitationList(
         if (a && typeof a === 'object') {
           const isGeorg =
             a.id === PERSON_ID ||
-            a.id === 'https://orcid.org/0000-0002-0096-2484' ||
+            a.id === 'https://orcid.org/0000-0003-3913-4148' ||
             /Georg Hackenberg/i.test(a.name);
           if (isGeorg) return PERSON_REF;
           const authorType = a.type || 'Person';
@@ -632,7 +632,7 @@ export function buildPublicationSchema(params: {
     headline: pub.data.title,
     name: pub.data.title,
     url: pubUrl,
-    inLanguage: 'en',
+    inLanguage: pub.data.inLanguage || 'en',
     author: mappedAuthors,
     publisher: PERSON_REF,
     isPartOf: [

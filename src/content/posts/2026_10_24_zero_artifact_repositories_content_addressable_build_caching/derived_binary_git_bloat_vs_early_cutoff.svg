@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 430" width="100%" height="auto" role="img" aria-label="Comparison of Traditional In-Tree Binary Git Bloat versus Domain-Projected Constructive Traces with Early Cutoff">
+  <title>In-Tree Binary Packfile Bloat vs. Constructive Trace Early Cutoff</title>
+  <desc>Side-by-side architectural schematic contrasting traditional in-tree binary commits and VCDIFF delta breakdown against domain-projected constructive traces with early cutoff</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

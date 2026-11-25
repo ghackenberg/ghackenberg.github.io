@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" height="460" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" height="460" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Mastra Procedural Graph Engine: Das 4-Schichten-Modell im Überblick">
+  <title>Mastra Procedural Graph Engine</title>
+  <desc>Mastra Procedural Graph Engine: Das 4-Schichten-Modell im Überblick</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

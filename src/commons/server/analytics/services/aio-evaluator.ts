@@ -149,6 +149,7 @@ export function evaluateContentString(
 
   let currentHeading: string | null = null;
   let currentPara: string[] = [];
+  let firstParaClosed = false;
 
   for (const line of lines) {
     const trimmed = line.trim();
@@ -163,20 +164,32 @@ export function evaluateContentString(
       }
       currentHeading = headingMatch[1];
       currentPara = [];
+      firstParaClosed = false;
 
       if (questionHeadingRegex.test(trimmed)) {
         questionHeadings.push(headingMatch[1]);
       }
-    } else if (
-      currentHeading &&
-      trimmed.length > 0 &&
-      !trimmed.startsWith('#') &&
-      !trimmed.startsWith('|') &&
-      !trimmed.startsWith('-') &&
-      !trimmed.startsWith('*')
-    ) {
-      if (currentPara.length < 5) {
-        currentPara.push(trimmed);
+    } else if (currentHeading && !firstParaClosed) {
+      if (trimmed === '') {
+        if (currentPara.length > 0) {
+          firstParaClosed = true;
+        }
+      } else if (
+        !trimmed.startsWith('#') &&
+        !trimmed.startsWith('|') &&
+        !trimmed.startsWith('-') &&
+        !trimmed.startsWith('*') &&
+        !trimmed.startsWith('>') &&
+        !trimmed.startsWith('```') &&
+        !trimmed.startsWith('<!--') &&
+        !/^\d+\.\s+/.test(trimmed) &&
+        !/^!\[[^\]]*\]\([^)]+\)\s*$/.test(trimmed)
+      ) {
+        if (currentPara.length < 5) {
+          currentPara.push(trimmed);
+        }
+      } else if (currentPara.length > 0) {
+        firstParaClosed = true;
       }
     }
   }

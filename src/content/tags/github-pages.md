@@ -1,4 +1,4 @@
 ---
 title: "GitHub Pages"
-description: "Static website hosting, automated GitHub Actions deployments, and open-source documentation publishing."
+description: "Zero-ops static site hosting, automated GitHub Actions CI/CD pipelines, and deterministic open-source web publishing workflows."
 ---

@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector schematic of the unified Three-Band Artifact Card anatomy across SVG, Mermaid, Code, Table, and Image nodes connected to the native dialog lightbox">
+  <title>Unified Three-Band Artifact Card and Lightbox Architecture</title>
+  <desc>Semantic vector schematic of the unified Three-Band Artifact Card anatomy across SVG, Mermaid, Code, Table, and Image nodes connected to the native dialog lightbox</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

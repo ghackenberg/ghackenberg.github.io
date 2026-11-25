@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Dimensional compression from 126 individual tag hubs into 3-cluster 2D triangle simplex and 4-cluster 3D tetrahedron simplex">
+  <title>Dimensional Compression into 2D Triangle and 3D Tetrahedron Simplexes</title>
+  <desc>Comparison of 126 cluttered individual tag hubs against a clean 2D triangle simplex with K=3 clusters and a 3D tetrahedron simplex with K=4 clusters</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

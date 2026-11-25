@@ -1,7 +1,7 @@
 ---
-title: "CADdrive: Collaborative Web-Based 3D CAD Platform"
+title: "CADdrive: Open-Source 3D Web-CAD Platform"
 trl: 7
-description: "Open-source, browser-based collaborative 3D CAD and product engineering platform with WebGL assembly viewing, Git-style version history, and Python FEA."
+description: "Free open-source browser 3D CAD with Git-style branching, WebGL assembly viewer, STEP conversion & Python FEA—built by Dr. Georg Hackenberg."
 href: "https://caddrive.org"
 tags: ["cad", "collaborative-software", "education", "open-source", "product-design", "systems-engineering", "web-development"]
 accentColor: "blue"
@@ -64,3 +64,9 @@ outcomes:
   - "Successfully evaluated in master-level university courses and high-school engineering workshops."
   - "Open-source platform with dedicated caddrive-python simulation toolkit."
 ---
+
+## Architectural Context & Ecosystem Links
+
+**CADdrive** brings software-engineering workflows—Git-style branching, pull-request issue discussions, milestone analytics, and role-based access control—into collaborative 3D mechanical and mechatronic product design directly inside the browser. By removing desktop license barriers and local installation friction, teams and student cohorts can co-author 3D assemblies in real time using TypeScript, WebGL, and Three.js alongside Python-based structural (FEA) and fluid (CFD) verification.
+
+For neutral industrial CAD ingestion, CADdrive pairs with our WebAssembly tessellation toolkit [OpenCASCADE Tools](/projects/opencascade-tools/) to convert ISO 10303-21 STEP and IGES assemblies into lightweight web meshes. Empirical evaluation across two Master's courses and high-school engineering workshops at FH OÖ Campus Wels is published in our [Design Society 2025 paper](/publications/2025_08_11_design_society/), while related architectural practices inform our [Software Engineering advisory practice](/services/software-engineering/).

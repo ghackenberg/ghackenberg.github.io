@@ -1,4 +1,4 @@
 ---
 title: "Psychology & Human Behavior"
-description: "Behavioral principles, habit formation, and motivational mechanics applied to technological systems."
+description: "Cognitive psychology, attention economics, behavioral habit loops, and cyberpsychology applied to human-centered software systems."
 ---

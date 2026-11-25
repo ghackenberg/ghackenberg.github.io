@@ -1,6 +1,6 @@
 ---
-title: "Digital Factory Simulation & Production Engineering"
-description: "Master-level university course on Digital Factory Simulation and production engineering with discrete-event modeling and 3D layouts in JaamSim."
+title: "Digital Factory Simulation & JaamSim Labs"
+description: "Free master's course on Digital Factory Simulation: learn discrete-event modeling, 3D JaamSim layouts, and bottleneck analysis with open GitHub labs."
 repoName: "course-digital-factory"
 learningGoals:
   - "Understand discrete event simulation principles and concepts."

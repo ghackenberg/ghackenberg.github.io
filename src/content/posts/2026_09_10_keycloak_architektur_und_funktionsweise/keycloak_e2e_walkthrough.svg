@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 760" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 760" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="End-to-End Security Walkthrough: Vollständiger kryptografischer Anfrage-Lebenszyklus im Sovereign AI Tech Stack">
+  <title>End-to-End Security Walkthrough</title>
+  <desc>End-to-End Security Walkthrough: Vollständiger kryptografischer Anfrage-Lebenszyklus im Sovereign AI Tech Stack</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

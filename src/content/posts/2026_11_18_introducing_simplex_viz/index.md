@@ -77,7 +77,15 @@ SimplexViz processes any collection through five hot-swappable strategy stages: 
 
 At the geometry layer, `SimplexMeshStrategy` selects the most area-efficient 60° lattice orientation for the available viewport. Next, `SimplexClusteringStrategy` partitions tagged items, single- or multi-modal vector embeddings, or custom pairwise similarity matrices into balanced clusters, embedding their centroids onto mesh vertices via quadratic assignment.
 
-Once cluster anchors are fixed, `SimplexColorStrategy` assigns high-contrast vertex hues in the perceptual OKLab color space [@ottosson-2020-oklab] and blends bridge items smoothly by their barycentric weights. `SimplexLayoutStrategy` then pairs a seeder, position-based dynamics (PBD) dispersion, and Separating Axis Theorem (SAT) hull checks to guarantee `0.0 px` overlap inside every triangle. Finally, `SimplexZoomStrategy` switches seamlessly between free-camera pan/zoom and conformal `1:4` sub-triangle drill-down with breadcrumb navigation.
+Once cluster anchors are fixed, `SimplexColorStrategy` assigns high-contrast vertex hues in the perceptual OKLab color space [@ottosson-2020-oklab] and blends bridge items smoothly by their barycentric weights. `SimplexLayoutStrategy` then pairs a seeder, position-based dynamics (PBD) dispersion, and Separating Axis Theorem (SAT) hull checks to guarantee `0.0 px` overlap inside every triangle. Finally, `SimplexZoomStrategy` switches seamlessly between free-camera pan/zoom and conformal `1:4` sub-triangle drill-down with breadcrumb navigation:
+
+1. **Adaptive Mesh (`SimplexMeshStrategy`):** Selects the highest-area 60° equilateral lattice orientation for the host viewport.
+2. **Topic Clustering (`SimplexClusteringStrategy`):** Partitions items, embeddings, or similarity matrices onto balanced vertex anchors.
+3. **Perceptual Coloring (`SimplexColorStrategy`):** Assigns high-contrast OKLab vertex hues and blends multi-tag bridge colors smoothly.
+4. **Zero-Overlap Solver (`SimplexLayoutStrategy`):** Applies PBD dispersion and SAT hull separation to guarantee `0.0 px` card collisions.
+5. **Conformal Zoom (`SimplexZoomStrategy`):** Transitions seamlessly between free camera panning and `1:4` hierarchical triangle drill-down.
+
+Each strategy contract accepts plain TypeScript data structures so teams can replace individual stages without altering the SVG renderer.
 
 ## Three-Package TypeScript Architecture and Zero-Config Quickstart
 
@@ -85,7 +93,13 @@ SimplexViz separates pure geometric math from DOM rendering across three TypeScr
 
 ![Three-layer TypeScript package architecture separating headless @simplex-viz/core math, framework-agnostic @simplex-viz/svg rendering, and @simplex-viz/react bindings](./package-architecture.svg "Three-Package TypeScript Architecture")
 
-Because `@simplex-viz/core` has zero DOM, SVG, or React dependencies, the exact same layout solver runs identically in browser workers, Node.js servers, or static site generators. Framework-agnostic applications mount directly with `createSimplexSvg` from `@simplex-viz/svg`, while React applications drop in `<SimplexTopicGraph />` from `@simplex-viz/react`:
+Because `@simplex-viz/core` has zero DOM, SVG, or React dependencies, the exact same layout solver runs identically in browser workers, Node.js servers, or static site generators across three layered packages:
+
+- **`@simplex-viz/core`:** Headless geometry, clustering, OKLab mixing, and PBD/SAT solver running identically in Node.js or Web Workers.
+- **`@simplex-viz/svg`:** Framework-agnostic DOM reconciliation controller (`createSimplexSvg`) with animated spring transitions.
+- **`@simplex-viz/react`:** Declarative React wrapper (`<SimplexTopicGraph />`) with zero-config presets and tooltips.
+
+Framework-agnostic applications mount directly with `createSimplexSvg` from `@simplex-viz/svg`, while React applications drop in `<SimplexTopicGraph />` from `@simplex-viz/react`:
 
 ```tsx caption="Zero-config React quickstart rendering an overlap-free topic map with SimplexTopicGraph"
 import { SimplexTopicGraph } from '@simplex-viz/react';

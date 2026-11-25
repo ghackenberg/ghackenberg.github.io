@@ -1,4 +1,4 @@
 ---
 title: "Web Development"
-description: "Engineering standards, responsive design, and browser technologies for scalable internet applications."
+description: "Modern web engineering standards, Astro SSG, TypeScript type safety, WebGL graphics, and high-performance browser architectures."
 ---

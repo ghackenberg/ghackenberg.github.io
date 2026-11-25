@@ -77,13 +77,25 @@ Even with frozen cluster identities, sparse early subsets still rotate, scale, o
 
 ![Comparison of unaligned spinning keyframes versus Procrustes-aligned and u-squared blended keyframes with the timeline scrubber bar](./procrustes-timeline-alignment.svg "Procrustes Frame Alignment, u-Squared Blending, and Timeline Scrubber")
 
-In [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts), `computeFinalLayoutAlignmentWeights` assigns `1.0` to macro clusters (`group === 0`) and `0.01` to content nodes, locking the coordinate frame onto the stable topic anchors while allowing individual articles to settle naturally. `alignLayoutProcrustes` solves the optimal rigid-body transformation—with uniform scale clamped to `[0.85, 1.15]` and zero reflection—in both 2D and 3D. Finally, `alignAndBlendToFinalLayout` computes normalized progress `u = step / (total - 1)` and blends each aligned frame toward the resting layout by `u²`, easing smoothly into 100% static parity (`0.0000px` delta) on the last step.
+In [`src/commons/shared/graph-payload.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/graph-payload.ts), `computeFinalLayoutAlignmentWeights` assigns `1.0` to macro clusters (`group === 0`) and `0.01` to content nodes, locking the coordinate frame onto the stable topic anchors while allowing individual articles to settle naturally. `alignLayoutProcrustes` solves the optimal rigid-body transformation—with uniform scale clamped to `[0.85, 1.15]` and zero reflection—in both 2D and 3D. Finally, `alignAndBlendToFinalLayout` computes normalized progress `u = step / (total - 1)` and blends each aligned frame toward the resting layout by `u²`, easing smoothly into 100% static parity (`0.0000px` delta) on the last step:
+
+- **Weighted Anchor Lock:** Assigns weight `1.0` to macro cluster pills and `0.01` to article nodes so early clusters stay oriented.
+- **Clamped Procrustes Transform:** Eliminates arbitrary rotation and mirroring while bounding scale drift within `[0.85, 1.15]`.
+- **Quadratic `u²` End-State Blend:** Guarantees exact `0.0000px` positional parity with the final static layout on step `n - 1`.
+
+Together, these three invariants preserve spatial memory across decades of publications without freezing early layouts artificially.
 
 ## Interactive Timeline Bar and Left-Sidebar Tune Panel Across Five Engines
 
 `GraphTimelineController` coordinates asynchronous warm solves and caches every step inside `keyframeCache` across all five visualization engines. A compact `#timeline-bar` provides `#timeline-prev`, `#timeline-play`, `#timeline-next`, and `#timeline-scrubber` controls below the canvas, while the `#tune-panel` left sidebar overlay keeps physics sliders accessible without covering playback.
 
-Across all five live sandboxes—[Cytoscape](/visualizations/cytoscape/), [Sigma](/visualizations/sigma/), [D3](/visualizations/d3/), [vis-network](/visualizations/vis-network/), and [3D Force Graph](/visualizations/3d-force-graph/)—[`src/commons/client/graph-timeline-controller.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/graph-timeline-controller.ts) drives chronological playback through a shared adapter contract. Caching each snapshot in `keyframeCache` keeps backward scrubbing instantaneous, while [`src/pages/visualizations/[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/visualizations/[slug].astro) docks `#timeline-bar` beneath the viewport and tucks `#tune-panel` into a collapsible left sidebar so visitors can adjust `K` or spring physics while watching the timeline unfold.
+Across all five live sandboxes—[Cytoscape](/visualizations/cytoscape/), [Sigma](/visualizations/sigma/), [D3](/visualizations/d3/), [vis-network](/visualizations/vis-network/), and [3D Force Graph](/visualizations/3d-force-graph/)—[`src/commons/client/graph-timeline-controller.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/client/graph-timeline-controller.ts) drives chronological playback through a shared adapter contract:
+
+- **Step Controls (`#timeline-prev`, `#timeline-play`, `#timeline-next`):** Trigger discrete forward/backward stepping or continuous playback loops.
+- **Scrubber & Cache (`#timeline-scrubber`, `keyframeCache`):** Enables instant zero-recompute seeking across previously solved steps.
+- **Cluster Tuning Overlay (`#tune-panel`):** Docks physics and `K`-cluster sliders in a collapsible left sidebar clear of the timeline bar.
+
+Caching each snapshot keeps backward scrubbing instantaneous while keeping physics sliders accessible during playback.
 
 ## Practical Trade-Offs: Free Convergence vs. Strict Pinning
 

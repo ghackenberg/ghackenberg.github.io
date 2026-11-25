@@ -32,6 +32,6 @@ This newsletter is served directly from a self-hosted **Listmonk** instance with
 
 ## Key Engineering Themes This Month
 
-- **Control-Plane vs. Data-Plane Agent Architectures**: Why production multi-agent systems fail when context windows are polluted by raw tool output, and how strict orchestrator-worker isolation keeps multi-step engineering workflows deterministic.
-- **Slide-as-Code with Cue-Synchronized Neural Voiceovers**: Building an Astro + Reveal.js presentation pipeline that compiles Markdown slides, inline SVG schematics, Edge-TTS audio tracks, and zero-diff PDF handouts from a single source of truth.
-- **Line-Exact Text Geometry & 2D Signed Distance Fields**: Using DOM `TreeWalker` and `Range.getClientRects()` to compute smooth Quilez `smin` distance fields around multi-line typography at 60 FPS.
+- **[Control-Plane vs. Data-Plane Agent Architectures](/posts/2026_10_06_verlaessliche_agenten_architekturen/)**: Why production multi-agent systems fail when context windows are polluted by raw tool output, and how strict orchestrator-worker isolation keeps multi-step engineering workflows deterministic.
+- **[Slide-as-Code with Cue-Synchronized Neural Voiceovers](/posts/2026_09_26_presentation_engine_slide_as_code_voiceover/)**: Building an Astro + Reveal.js presentation pipeline that compiles Markdown slides, inline SVG schematics, Edge-TTS audio tracks, and zero-diff PDF handouts from a single source of truth.
+- **[Line-Exact Text Geometry & 2D Signed Distance Fields](/posts/2026_10_14_treewalker_text_geometrie_sdf_hero_grid/)**: Using DOM `TreeWalker` and `Range.getClientRects()` to compute smooth Quilez `smin` distance fields around multi-line typography at 60 FPS.

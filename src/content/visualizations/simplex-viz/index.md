@@ -1,6 +1,6 @@
 ---
 title: "SimplexViz: Barycentric Simplex Mesh Graph"
-description: "Interactive 60° simplex mesh knowledge graph powered by @simplex-viz/svg with OKLab blending, 0.0 px SAT packing, and 1:4 drill-down."
+description: "Interactive 60° simplex mesh knowledge graph powered by @simplex-viz/svg with OKLab color blending, 0.0 px SAT packing, and 1:4 drill-down."
 image:
   src: "./simplex-viz.png"
   title: "SimplexViz Barycentric Simplex Mesh"
@@ -51,12 +51,20 @@ The table below summarizes the technical characteristics of the SimplexViz SVG e
 
 ## Technical FAQ
 
-The following answers explain how SimplexViz differs from force-directed graph engines and when to choose it.
+The following answers explain how SimplexViz differs from force-directed graph engines, how it guarantees zero overlap, and when to choose it.
 
-### How Does Barycentric Projection Prevent Hairballs?
+### How Does Barycentric Projection Prevent Force-Directed Hairballs?
 
 Force-directed layouts balance spring attraction against global repulsion, which often collapses densely connected multi-tag nodes into an unreadable center. SimplexViz anchors topic clusters at fixed lattice vertices and computes each item's equilibrium directly from its normalized tag weights, guaranteeing spatial separation across triangles.
 
-### Engine Comparison
+### How Does SimplexViz Guarantee Zero Node Overlap Inside Dense Triangles?
 
-Choose **SimplexViz** when multi-tag membership and zero-overlap legibility matter most. For classical force-directed physics or 3D topologies, compare it with [Cytoscape.js](/visualizations/cytoscape/), [Sigma.js](/visualizations/sigma/), [D3.js](/visualizations/d3/), [Vis-Network](/visualizations/vis-network/), or [3D Force-Graph](/visualizations/3d-force-graph/).
+Even when multiple articles share identical tag distributions, SimplexViz runs Position-Based Dynamics (PBD) paired with Separating Axis Theorem (SAT) bounding checks after initial barycentric projection. Neighboring cards and badges disperse locally inside their host simplex until every viewport element achieves deterministic `0.0 px` overlap.
+
+### When Should You Choose SimplexViz Over Force-Directed Graph Engines?
+
+Choose **SimplexViz** when multi-tag membership, perceptual OKLab cluster coloring, and guaranteed zero-overlap legibility matter more than explicit link-line tracing. Compare its strengths against our force-directed and 3D visualization engines:
+
+- **Zero-Overlap Multi-Tag Exploration**: Best suited for portfolios, taxonomies, and catalogs where items bridge two or three overlapping topic domains.
+- **Complementary Engines**: Compare with [Cytoscape.js](/visualizations/cytoscape/) for shortest-path graph algorithms, [Sigma.js](/visualizations/sigma/) for 50,000+ WebGL nodes, [D3.js](/visualizations/d3/) for custom vector bindings, [Vis-Network](/visualizations/vis-network/) for spring physics, or [3D Force-Graph](/visualizations/3d-force-graph/) for volumetric Three.js rendering.
+- **Deep-Dive Documentation**: Read [Introducing SimplexViz](/posts/2026_11_18_introducing_simplex_viz/) and inspect the [SimplexViz project page](/projects/simplex-viz/) for package architecture and React bindings.

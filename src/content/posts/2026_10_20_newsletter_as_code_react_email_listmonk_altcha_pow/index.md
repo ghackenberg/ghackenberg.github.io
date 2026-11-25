@@ -1,5 +1,5 @@
 ---
-title: "Sovereign Newsletter-as-Code: React Email, Listmonk & PoW"
+title: "Newsletter-as-Code: React Email, Listmonk & ALTCHA"
 pubDate: 2026-10-20
 description: "How we built a Git-native Newsletter-as-Code pipeline with dual-target React Email compilation, Listmonk v6.2.0, and an Int32Array ALTCHA PoW Web Worker."
 inLanguage: en

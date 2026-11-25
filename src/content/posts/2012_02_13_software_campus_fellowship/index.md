@@ -6,8 +6,8 @@ inLanguage: "en"
 tags: ["award", "dynamic-programming", "data-visualization", "machine-learning"]
 image:
   src: "./group.jpg"
-  title: "Group"
-  description: "Group photo"
+  title: "Software Campus Pilot Cohort with Chancellor Angela Merkel"
+  description: "Group photograph at the 2011 National IT Summit in Munich showing the selected Software Campus pilot PhD fellows holding the program banner alongside Chancellor Angela Merkel and industry leaders"
 ---
 <div class="flow-root my-6">
 
@@ -28,7 +28,7 @@ Overall, this frameset provides a great opportunity for industry-driven research
 Finally, here is a picture of the eleven selected pilot PhD students with the **German Chancellor Dr. Angela Merkel**, the **Vice Chancellor Dr. Philipp Roesler**, the founder of the *Scheer Group* **Prof. August-Wilhelm Scheer** and the CEO of the *SAP AG* **Jim Hagemann Snabe**.
 This picture was taken at the [2011 National IT Summit](http://www.it-gipfel.de/) in Munich, an occasion where the German IT industry comes together and discusses past evolutions and future strategies.
 
-![Group photo of Software Campus participants with Chancellor Angela Merkel](./group.jpg "Group Photo")
+![Software Campus pilot PhD fellows holding the program banner alongside German Chancellor Angela Merkel and industry leaders at the 2011 National IT Summit in Munich](./group.jpg "Software Campus Pilot Cohort with Chancellor Angela Merkel")
 <p class="text-xs text-gray-500 text-center -mt-6 mb-6">Copyright 2011 Wolfram Scheible</p>
 
 I hope this article got you interested in the excellence program.

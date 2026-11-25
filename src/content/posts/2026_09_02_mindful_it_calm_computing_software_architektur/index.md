@@ -101,7 +101,7 @@ Das menschliche Bewusstsein verfügt über zwei Aufmerksamkeitsbereiche:
 1. **Das Aufmerksamkeitszentrum (*Center of Attention*):** Fokussiert, analytisch, aber extrem energieintensiv und in der Kapazität strikt limitiert ($4 \pm 1$ Chunks).
 2. **Die Peripherie (*Periphery of Attention*):** Nimmt subtile Umgebungsinformationen (Geräusche, Lichtveränderungen, periphere Bewegungen) parallel und ohne spürbaren kognitiven Aufwand wahr.
 
-Schlecht gestaltete Software zwingt jede triviale Statusänderung durch blinkende Badges, Töne oder Banner mit Gewalt in das Aufmerksamkeitszentrum. Calm Technology hingegen platziert Statusinformationen in der Peripherie (z. B. dezente Farbverläufe, sanfte Helligkeitsnuancen) und erlaubt dem Nutzer, sie bei Bedarf mühelos ins Zentrum zu holen – ohne den aktuellen Denkprozess zu unterbrechen.
+Schlecht gestaltete Software zwingt jede triviale Statusänderung durch blinkende Badges, Töne oder Banner mit Gewalt in das Aufmerksamkeitszentrum. Calm Technology hingegen platziert Statusinformationen in der Peripherie (z. B. dezente Farbverläufe, sanfte Helligkeitsnuancen) und erlaubt dem Nutzer, sie bei Bedarf mühelos ins Zentrum zu holen – ohne den aktuellen Denkprozess zu unterbrechen. Wie sich diese periphere Ruhe auf [sprachgeführte Mensch-Maschine-Schnittstellen mit ephemeren Projektionsflächen](/posts/2026_11_25_mensch_maschine_schnittstelle_der_zukunft/) überträgt, zeigt der direkte Architekturvergleich von Menü-Cockpit und dialogorientierter Prüffläche.
 
 ### B. Humane Technology & Mindful Friction (Positive Reibung)
 

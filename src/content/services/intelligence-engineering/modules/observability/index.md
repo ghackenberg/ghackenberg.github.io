@@ -52,4 +52,4 @@ Rather than displaying raw chat streams, front-end interfaces can render structu
 
 ### Distributed Telemetry
 
-OpenTelemetry instrumentation records detailed trace spans for model requests, database queries, and tool invocations. Metrics track time-to-first-token (TTFT), completion token counts, and error rates, providing operators with actionable performance data across the deployment.
+OpenTelemetry instrumentation records detailed trace spans for model requests, database queries, and tool invocations. Metrics track time-to-first-token (TTFT), completion token counts, and error rates, providing operators with actionable performance data across the deployment—complementing our [Unified Analytics MCP Server](/posts/2026_09_23_unified_analytics_mcp_server_seo_geo_aio/), [Control-Plane Status Ledger](/posts/2026_11_22_conversational_control_plane_live_agents/), and [Ephemeral Verification Surfaces](/posts/2026_11_25_mensch_maschine_schnittstelle_der_zukunft/).

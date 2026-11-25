@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Umfassende Systemarchitektur von LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen">
+  <title>LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen - Umfassende Systemarchitektur</title>
+  <desc>Umfassende Systemarchitektur von LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

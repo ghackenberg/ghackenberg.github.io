@@ -66,7 +66,13 @@ To eliminate copy-paste drift before touching the rendering layer, Phase 1 conso
 
 ![Semantic vector infographic contrasting 49-script client sprawl and 6 raw innerHTML XSS sinks with consolidated CatalogPreFilter.astro, clipboard.ts, and typed Preact .tsx VDOM islands](./client-script-deduplication-islands.svg "49-Script Client Audit Deduplication and Preact Island Migration")
 
-Replacing string-concatenated DOM templates with typed Preact `.tsx` islands guarantees automatic contextual text escaping across every tooltip, pagination bar, and analytics inspector while shrinking duplicated inline scripts.
+Replacing string-concatenated DOM templates with typed Preact `.tsx` islands guarantees automatic contextual text escaping across every tooltip, pagination bar, and analytics inspector while shrinking duplicated inline scripts:
+
+- **Parameterized Pre-Filter (`CatalogPreFilter.astro`):** Replaces 7 duplicated ~75-line inline ES5 query pre-filter scripts with one shared component.
+- **Unified Clipboard State (`clipboard.ts`):** Consolidates 4 scattered copy handlers using `WeakMap` timer tracking and `astro:page-load` hooks.
+- **Typed Preact VDOM Islands (`.tsx`):** Eliminates all 6 imperative `.innerHTML` sinks across pagination, graph tooltips, and analytics inspectors.
+
+Together, these refactorings eliminate manual string interpolation across the entire client surface.
 
 ## How Do Preact Islands Coexist with Server-Side React Email?
 
@@ -110,7 +116,13 @@ Because manual code review alone cannot prevent future contributors or autonomou
 
 ![Semantic vector infographic of the two-layer mechanical Zero-innerHTML security gate combining ESLint AST restrictions with the validate-architecture.ts inline script scanner](./zero-innerhtml-ast-security-gate.svg "Two-Layer Mechanical Zero-innerHTML ESLint and AST Security Gate")
 
-Because [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) simultaneously sets `'eslint-comments/no-use': ['error', { allow: [] }]`, neither human developers nor autonomous coding agents can suppress the ban with `eslint-disable` comments:
+Because [`eslint.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/eslint.config.ts) simultaneously sets `'eslint-comments/no-use': ['error', { allow: [] }]`, neither human developers nor autonomous coding agents can suppress the ban with `eslint-disable` comments—enforcing three non-bypassable checks:
+
+- **AST Property Ban (`no-restricted-properties`):** Blocks `.innerHTML` and `.outerHTML` assignments across all TypeScript and Preact modules.
+- **AST Method Ban (`no-restricted-syntax`):** Rejects `insertAdjacentHTML()` calls at lint time with zero warning tolerance.
+- **Inline Script Scanner (`validate-architecture.ts`):** Audits raw `<script is:inline>` blocks inside `.astro` templates outside ESLint's JS AST scope.
+
+The ESLint configuration block below implements these AST restrictions directly in CI:
 
 ```ts caption="Unbypassable ESLint AST rules forbidding innerHTML, outerHTML, and insertAdjacentHTML in eslint.config.ts."
 // eslint.config.ts — Unbypassable Zero-innerHTML AST Gate

@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Comparison between unsorted background edge occlusion and dynamic hop z-ordering with 750ms sine-eased transitions">
+  <title>Dynamic Hop Z-Stack and 750ms Sine Easing Loop</title>
+  <desc>Comparison between unsorted background edge occlusion and dynamic hop z-ordering with 750ms sine-eased transitions</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

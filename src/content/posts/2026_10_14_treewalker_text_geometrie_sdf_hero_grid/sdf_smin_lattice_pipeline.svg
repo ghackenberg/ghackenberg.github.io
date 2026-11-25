@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" width="100%" height="auto" role="img" aria-label="Vierstufige 2D Signed Distance Field und Canvas-Batching-Pipeline in ReactiveDotGrid.astro">
+  <title>4-Stufen-Pipeline: 2D Box-SDF, Quilez smin, Smoothstep und 10-Bucket Canvas-Batching</title>
+  <desc>Vierstufige 2D Signed Distance Field und Canvas-Batching-Pipeline in ReactiveDotGrid.astro</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

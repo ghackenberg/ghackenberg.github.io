@@ -18,7 +18,7 @@ Every publication lives under `src/content/publications/<slug>/`:
   authors:
     - name: "Georg Hackenberg"
       id: "https://hackenberg.tech/#person"
-      orcid: "0000-0002-0096-2484"
+      orcid: "0000-0003-3913-4148"
     - name: "John Doe"
     - name: "Jane Smith"
   abstract: "This paper presents a formal verification framework for asynchronous multi-agent coordination..."

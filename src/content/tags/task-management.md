@@ -1,4 +1,4 @@
 ---
 title: "Task Management & Workflow"
-description: "Productivity workflows, hierarchical task decomposition, and software tools for tracking execution progress."
+description: "Structured productivity workflows, hierarchical task decomposition, priority scheduling, and deterministic execution tracking."
 ---

@@ -1,4 +1,4 @@
 ---
 title: "GLSL & Compute Shaders"
-description: "High-performance GPU shader code for real-time procedural rendering, image filters, and physical simulations."
+description: "High-performance GLSL fragment and compute shaders for real-time shallow-water physics, raymarching, and WebGL post-processing."
 ---

@@ -1,4 +1,4 @@
 ---
 title: "Three.js"
-description: "JavaScript 3D graphics library utilizing WebGL and WebGPU for interactive browser-based 3D scene rendering."
+description: "JavaScript 3D graphics library powering WebGL/WebGPU scenes, 3D CAD assembly viewers, and volumetric force-directed graphs."
 ---

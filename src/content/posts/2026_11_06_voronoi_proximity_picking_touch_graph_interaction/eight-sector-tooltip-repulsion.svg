@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="8-sector compass tooltip repulsion evaluating neighbor edge ray penalties and viewport clamping with 750ms sine-eased opacity transitions">
+  <title>8-Sector Compass Tooltip Repulsion and Neighbor Ray Cost Model</title>
+  <desc>8-sector compass tooltip repulsion evaluating neighbor edge ray penalties and viewport clamping with 750ms sine-eased opacity transitions</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

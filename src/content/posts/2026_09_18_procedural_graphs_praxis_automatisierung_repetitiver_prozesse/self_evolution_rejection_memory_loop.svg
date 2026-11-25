@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 300" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 300" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Der 4-Phasen-Evolutionszyklus mit Rejection Memory">
+  <title>Self Evolution Rejection Memory Loop</title>
+  <desc>Der 4-Phasen-Evolutionszyklus mit Rejection Memory</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

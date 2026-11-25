@@ -23,3 +23,5 @@ In diesem 21-Folien-Grundsatzvortrag reflektiert Dr. Georg Hackenberg über sein
 4. **Industrie-Leadership & Großflotten (2017–2019):** Cloud Native (Serverless & PaaS) und IaaS mit Docker & Kubernetes bei Reply in München sowie Aufbau und Führung einer Business Unit von 5 auf 25 Mitarbeiter mit 50 % Automotive- und 50 % Smart-Infrastructure/Factory/Home-Kunden.
 5. **Campus Wels & Transfer (2019–heute):** Akademische Freiheit mit agiler Umsetzung, Transfer von Informatik-Paradigmen auf den 3D-CAD-Bereich mit Projekt CADdrive, Fachbereichsleitung für die gesamte Informatiklehre der Fakultät und radikal offene Lehre auf GitHub ohne Login-Mauern.
 6. **Relaunch 2026, Content-Ökosystem & Kernbotschaften:** Der Neustart der persönlichen Webplattform mit modernem Astro-Stack, Fokus auf AI-Augmented Workflows & Digital Content Creation und die drei handlungsleitenden Maximen für Entwickler, Studierende und Industriepartner.
+
+Den vollständigen Lebenslauf finden Sie auf der [About-Seite](/about/); die technische Umsetzung des Relaunchs beschreibt der Beitrag zum [Website-Relaunch mit Astro und TypeScript](/posts/2026_05_23_website_relaunch_astro_typescript/).

@@ -1,4 +1,4 @@
 ---
 title: "Video Lectures & Tutorials"
-description: "Educational video productions, coding demonstrations, and conference recording archives on YouTube."
+description: "Recorded engineering lectures, live coding demonstrations, conference keynotes, and software architecture walkthroughs on YouTube."
 ---

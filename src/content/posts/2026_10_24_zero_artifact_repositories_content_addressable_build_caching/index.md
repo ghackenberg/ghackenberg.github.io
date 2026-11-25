@@ -1,5 +1,5 @@
 ---
-title: "Zero-Artifact Git Repos & Content-Addressable Build Caches"
+title: "How We Cut 241 MB of Git Bloat with SHA-256 Caches"
 pubDate: 2026-10-24
 description: "How we eliminated 241 MB of binary Git bloat using SHA-256 content-addressable build caching with early cutoff, Edge-TTS synthesis, and LCG asset hashing."
 inLanguage: en
@@ -138,7 +138,7 @@ references:
 
 A **Zero-Artifact Git Repository** enforces a strict Hermetic Source-Only Invariant [@potvin-2016-google-monorepo; @dolstra-2004-nix-safe-deployment]: version control tracks exclusively human-authored source files while deterministic build pipelines synthesize, fingerprint, and cache derived binary artifacts (`MP3`, `PDF`, `PNG`, `WebP`) out-of-tree in content-addressable stores [@mokhov-2018-build-systems-a-la-carte] without polluting `.git/objects/pack` history [@korn-2002-rfc3284-vcdiff].
 
-The following architectural trade-off matrix contrasts four common approaches to managing heavy derived media and build artifacts across static site generators, documentation platforms, and Slide-as-Code repositories:
+Jump directly to [why binaries break VCDIFF delta compression](#why-do-derived-binary-artifacts-break-git-delta-compression-and-monorepo-scalability), the [three-tier SHA-256 early-cutoff blueprints](#how-do-domain-projected-constructive-traces-enable-early-cutoff-between-audio-and-pdf-pipelines), or the [241 MB packfile & CI/CD benchmarks](#what-are-the-empirical-storage-packfile-and-build-time-gains-of-our-zero-artifact-migration) — summarized in the trade-off matrix below:
 
 <!-- caption: "Architectural comparison of in-tree binary commits, Git LFS pointers, uncached CI rebuilds, and content-addressable build caching." -->
 | Architectural Dimension | 1. In-Tree Binary Commits (`git add *.mp3 *.pdf`) | 2. Git LFS Pointer Offloading (`git-lfs`) | 3. Naive Uncached CI Re-Generation | 4. Zero-Artifact Content-Addressable Cache (`.cache/*`) |

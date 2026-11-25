@@ -324,4 +324,4 @@ Finally, to ensure visual polish along the horizontal boundaries of the gallery 
 
 Modern portfolio and technical websites do not need to choose between static, lifeless layouts and resource-heavy, repetitive 3D canvases. 
 
-By marrying **optical motion kinematics** with a **mathematically seamless DOM recycling loop**, and driving content selection via **client-side LRU display history**, we created a gallery that feels perpetually fresh, never repeats on screen, and brings twenty years of engineering projects into view effortlessly.
+By marrying **optical motion kinematics** with a **mathematically seamless DOM recycling loop**, and driving content selection via **client-side LRU display history**, we created a gallery that feels perpetually fresh, never repeats on screen, and brings twenty years of engineering projects into view effortlessly—working alongside our [TreeWalker 2D-SDF hero grid](/posts/2026_10_14_treewalker_text_geometrie_sdf_hero_grid/), [WebGL Parallax Occlusion portrait](/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/), and [Slide-as-Code presentation engine](/presentations/2026_09_23_slide_as_code_presentation_engine/).

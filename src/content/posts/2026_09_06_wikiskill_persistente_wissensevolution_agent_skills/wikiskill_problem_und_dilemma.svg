@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 510" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 510" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;" role="img" aria-label="Das Fertigkeiten-Dilemma autonomer Agenten: Problem und Lösung im Überblick">
+  <title>Das Fertigkeiten-Dilemma autonomer Agenten</title>
+  <desc>Das Fertigkeiten-Dilemma autonomer Agenten: Problem und Lösung im Überblick</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

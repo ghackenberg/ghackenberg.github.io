@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Fünf-Säulen-Referenzarchitektur sprachgeführter Mensch-Maschine-Systeme: Multimodaler Eingang, Mixed-Initiative Dialog-Regie, Kontext-Membran, Asynchroner Maschinenraum, Ephemere Projektionsfläche und souveräne Edge-Grenze">
+  <title>Referenzarchitektur sprachgeführter Mensch-Maschine-Systeme</title>
+  <desc>Fünf-Säulen-Referenzarchitektur sprachgeführter Mensch-Maschine-Systeme: Multimodaler Eingang, Mixed-Initiative Dialog-Regie, Kontext-Membran, Asynchroner Maschinenraum, Ephemere Projektionsfläche und souveräne Edge-Grenze</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

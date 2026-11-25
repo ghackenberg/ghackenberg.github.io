@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Architektur der hybriden Enterprise-RAG-Engine in Open WebUI mit dualer Indizierung und Cross-Encoder Reranking">
+  <title>Architektur der hybriden Enterprise-RAG-Engine in Open WebUI</title>
+  <desc>Architektur der hybriden Enterprise-RAG-Engine in Open WebUI mit dualer Indizierung und Cross-Encoder Reranking</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

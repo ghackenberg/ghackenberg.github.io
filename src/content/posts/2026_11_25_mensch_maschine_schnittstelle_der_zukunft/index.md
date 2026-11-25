@@ -1,5 +1,5 @@
 ---
-title: "Die Mensch-Maschine-Schnittstelle der Zukunft: Sprache als Primärinterface"
+title: "Mensch-Maschine-Schnittstelle: Sprache zuerst"
 pubDate: 2026-11-25
 description: "Warum gesprochene Sprache zur primären Mensch-Maschine-Schnittstelle wird und klassische Oberflächen zu kontextsensitiven Projektionsflächen wandelt."
 inLanguage: "de"
@@ -129,7 +129,7 @@ Wenn gesprochene Sprache die primäre Steuerung übernimmt, verlieren dauerhafte
 
 Ein verbreitetes Missverständnis über die Zukunft der Sprachinteraktion lautet, dass Bildschirme vollständig verschwinden und wir nur noch mit unsichtbaren Lautsprechern sprechen würden. In Wahrheit geschieht etwas weit Radikaleres: Der Bildschirm wird von seiner Doppelrolle als Eingabe-Labyrinth befreit. Statt 80 Prozent der Fläche für Schaltflächen, Seitenleisten, Filter-Dropdowns und Status-Badges zu opfern, gehört der Raum wieder dem eigentlichen Arbeitsgegenstand.
 
-Schon 1980 skizzierte Richard Bolt im wegweisenden System *„Put-that-there“*, warum Sprache und Grafik erst gemeinsam ihr volles Potenzial entfalten [@bolt-1980-put-that-there]. Wer auf eine Karte, ein 3D-Bauteil oder eine Zeitreihe blickt und sagt *„Verschiebe dieses Element dorthin und prüfe die Belastung“*, kombiniert sprachliche Absicht (*was* und *warum*) mit räumlicher Deixis (*welches* und *wohin*). Weder ein endloses Formular noch ein reines Sprachkommando ohne visuelle Referenz erreicht diese mühelose Dichte.
+Schon 1980 skizzierte Richard Bolt im wegweisenden System *„Put-that-there“*, warum Sprache und Grafik erst gemeinsam ihr volles Potenzial entfalten [@bolt-1980-put-that-there]. Wer auf eine Karte, ein [3D-Bauteil](/projects/caddrive/), einen [Wissensgraphen](/projects/mentawise/) oder eine Zeitreihe blickt und sagt *„Verschiebe dieses Element dorthin und prüfe die Belastung“*, kombiniert sprachliche Absicht (*was* und *warum*) mit räumlicher Deixis (*welches* und *wohin*). Weder ein endloses Formular noch ein reines Sprachkommando ohne visuelle Referenz erreicht diese mühelose Dichte.
 
 ![Transformation von Bildschirmen: Oben das überladene Menü-Cockpit, in der Mitte das Sprach-Prisma als Filter, unten die ruhige ephemere Projektionsfläche mit räumlichem Modell und Zeiger-Deixis](./screen-transformation-canvas.svg "Vom Menü-Cockpit zur ephemeren Projektionsfläche")
 
@@ -141,7 +141,7 @@ Reine Sprachsteuerung scheitert überall dort, wo komplexe Strukturen auf einen 
 
 Jede ernsthafte Vision der Mensch-Maschine-Interaktion braucht ein ehrliches Korrektiv gegen naive Sprach-Euphorie. Ben Shneiderman benannte bereits im Jahr 2000 vier handfeste physiologische und soziale Grenzen reiner Sprachsysteme, die unabhängig von der Qualität künstlicher Intelligenz bestehen bleiben [@shneiderman-2000-limits-speech]:
 
-- **Kognitive Interferenz im Arbeitsgedächtnis:** Sprechen und inneres Problemformulieren konkurrieren im Gehirn um dieselben phonologischen Schleifen; wer hochkonzentriert eine Architektur durchdenkt, will beim Nachschlagen eines Details nicht zwingend laut reden oder einem langen Monolog zuhören.
+- **[Kognitive Interferenz im Arbeitsgedächtnis](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/):** Sprechen und inneres Problemformulieren konkurrieren im Gehirn um dieselben phonologischen Schleifen; wer hochkonzentriert eine Architektur durchdenkt, will beim Nachschlagen eines Details nicht zwingend laut reden oder einem langen Monolog zuhören.
 - **Lineare Langsamkeit beim Lesen vs. Scannen:** Das menschliche Auge erfasst eine strukturierte Tabelle, ein Diagramm oder zwanzig Codezeilen parallel in Sekundenbruchteilen, während vorgelesenes Audio streng sequenziell mit rund 150 Wörtern pro Minute verstreicht.
 - **Soziale Akustik und Privatsphäre:** Im Großraumbüro, im Zug oder im vertraulichen Kundengespräch ist lautes Diktieren weder diskret noch sozial verträglich; stille Eingaben über Blick, Geste oder Tastatur bleiben unverzichtbar.
 - **Präzision und räumliche Orientierung:** Das punktgenaue Verschieben einer Kurve oder das millimetergenaue Justieren einer Geometrie gelingt per Zeigebewegung unmittelbar, während verbale Koordinatenangaben schnell umständlich werden.
@@ -163,8 +163,8 @@ Auf der Ebene der Systemarchitektur greifen fünf tragende Säulen ineinander, u
 1. **Vollduplex-Akustik und Prosodie-Sensitivität:** Das System verarbeitet eingehende Sprache kontinuierlich parallel zur eigenen Ausgabe, erkennt spontanes Einlenken (*Barge-in*) ohne Klick-Verzögerung und liest Zögern oder Nachdruck als bedeutungstragende Signale [@defossez-2024-moshi].
 2. **Mixed-Initiative-Dialogführung bei Unsicherheit:** Nach den Prinzipien von Eric Horvitz wägt die Schnittstelle fortlaufend zwischen autonomer Ausführung und knapper Rückfrage ab — statt bei mehrdeutiger Absicht blind loszulaufen oder den Menschen wegen jeder Kleinigkeit zu unterbrechen [@horvitz-1999-mixed-initiative].
 3. **Asynchrone Entkopplung von Gespräch und Maschinenraum:** Wie im [Control-Plane-Muster für reaktive Live-Agenten](/posts/2026_11_22_conversational_control_plane_live_agents/) beschrieben, darf der lebendige Sprachkanal niemals durch langlaufende Analysen, Builds oder Recherchen einfrieren; aufwendige Arbeit wandert hinter eine schützende Kontext-Membran.
-4. **Ephemere visuelle Prüfflächen statt Chat-Endlosbändern:** Wann immer Entscheidungen, Vergleiche oder räumliche Objekte berührt sind, projiziert das System strukturierte Tabellen, 3D-Ansichten oder Änderungs-Diffs — kompakt, scannbar und für Menschen verlässlich freigabefähig.
-5. **Souveräne Edge-Grenze für Akustik und Kontext:** Ein dauerhaft mithörendes Interface ist nur akzeptabel, wenn Sprachaktivierung, biometrische Stimmmerkmale und vertrauliche Gesprächskontexte strikt lokal unter Kontrolle der Nutzer bleiben.
+4. **Ephemere visuelle Prüfflächen statt Chat-Endlosbändern:** Wann immer Entscheidungen, Vergleiche oder räumliche Objekte berührt sind, projiziert das System — etwa über standardisierte Browser-Werkzeuge wie [W3C WebMCP](/posts/2026_10_23_webmcp_w3c_standard_architecture_history_future/) — strukturierte Tabellen, 3D-Ansichten oder Änderungs-Diffs, kompakt, scannbar und für Menschen verlässlich freigabefähig.
+5. **Souveräne Edge-Grenze für Akustik und Kontext:** Ein dauerhaft mithörendes Interface ist nur akzeptabel, wenn Sprachaktivierung, biometrische Stimmmerkmale und vertrauliche Gesprächskontexte strikt lokal unter Kontrolle der Nutzer bleiben — eingebettet in selbstgehostete Schnittstellen wie [Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) und modulare [Intelligence-Engineering-Architekturen](/services/intelligence-engineering/).
 
 Das folgende Architekturschema fasst zusammen, wie sich multimodale Eingänge, Dialogregie, isolierter Maschinenraum und Projektionsfläche innerhalb einer souveränen lokalen Grenze zu einem geschlossenen Wirkungskreis verbinden:
 

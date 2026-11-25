@@ -31,7 +31,7 @@ const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== 
 
 <Layout 
   title="Academic Publications & Research | Dr. Georg Hackenberg" 
-  description="Peer-reviewed IEEE, ACM, and Springer research papers by Prof. Dr. Georg Hackenberg on industrial informatics, software architecture, AI, and smart grids."
+  description="34 peer-reviewed IEEE, ACM & Springer papers with abstracts, BibTeX citations & PDFs on cyber-physical systems, digital twins, CADdrive & smart grids."
   image={firstPubIcon}
   jsonLd={buildCollectionPageSchema("publications", publications.map((p) => ({ id: `https://hackenberg.tech/publications/${p.id}/#article` })))}
 >

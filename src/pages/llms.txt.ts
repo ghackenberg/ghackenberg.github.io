@@ -21,7 +21,23 @@ const PRIORITY_TAG_IDS = new Set([
   "typescript",
   "simulation",
   "cad",
+  "human-computer-interaction",
+  "ux-design",
+  "calm-technology",
+  "cognitive-ergonomics",
 ]);
+
+const PILLAR_POST_IDS = [
+  "2026_10_20_newsletter_as_code_react_email_listmonk_altcha_pow",
+  "2026_09_24_agentic_seo_geo_aio_mcp_praxisbericht",
+  "2026_09_23_unified_analytics_mcp_server_seo_geo_aio",
+  "2026_09_12_b2b_industrial_geo_maschinenlesbare_industrie",
+  "2026_09_11_empirische_daten_geo_aeo_seo_studien",
+  "2026_09_03_standardisierter_open_source_agentic_ai_tech_stack",
+  "2026_09_02_mindful_it_calm_computing_software_architektur",
+  "2026_09_01_psychologie_der_modernen_informationstechnologie",
+  "2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3",
+];
 
 export async function GET() {
   const [
@@ -96,7 +112,13 @@ export async function GET() {
     .map((p) => `  - ${p.data.name}: ${p.data.url}`)
     .join("\n");
 
-  const flagshipPosts = sortedPosts.slice(0, 18);
+  const flagshipPosts = sortedPosts.slice(0, 22);
+  const flagshipIds = new Set(flagshipPosts.map((p) => p.id));
+  const pillarEssays = PILLAR_POST_IDS
+    .map((id) => sortedPosts.find((p) => p.id === id))
+    .filter((p): p is (typeof sortedPosts)[number] => Boolean(p))
+    .filter((p) => !flagshipIds.has(p.id));
+  const phdThesis = sortedPublications.find((p) => p.id === "2018_11_14_tum");
 
   let output = `# Dr. Georg Hackenberg
 
@@ -127,7 +149,7 @@ ${profileLines}
 - **What are his core 2026 engineering & research areas?** Sovereign on-premise AI systems (vLLM, GraphRAG, MCP), multi-agent control planes, Slide-as-Code lecture engines, generative engine optimization (GEO/AIO), and barycentric knowledge graph visualizations (SimplexViz).
 
 ## Machine-Readable Corpus & Endpoints
-- [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured Markdown export of all ${sortedPosts.length} blog posts (with resolved citations), ${sortedPublications.length} academic publications, ${sortedPresentations.length} presentation decks (slide bodies + neural voiceovers), ${sortedCourses.length} courses (${courseModules.length} modules), ${sortedProjects.length} projects, ${sortedServices.length} services (${sortedServiceModules.length} modules), ${sortedNewsletters.length} newsletters, and ${sortedVisualizations.length} visualizations.
+- [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured Markdown export of all ${sortedPosts.length} blog posts (with resolved citations), ${sortedPublications.length} academic publications, ${sortedPresentations.length} presentation decks (slide bodies + neural voiceovers), ${sortedCourses.length} courses (${courseModules.length} modules), ${sortedProjects.length} projects, ${sortedServices.length} services (${sortedServiceModules.length} modules), ${sortedNewsletters.length} ${sortedNewsletters.length === 1 ? "newsletter" : "newsletters"}, and ${sortedVisualizations.length} visualizations.
 - [JSON Content Manifest](https://hackenberg.tech${manifestArtifact.url}): Machine-readable index of all published entries and metadata.
 - [RSS XML Feed](https://hackenberg.tech/rss.xml): RSS feed of all published updates across all content domains.
 - [About & Curriculum Vitae](https://hackenberg.tech/about/): Full academic background, career timeline, and Schema.org ProfilePage.
@@ -144,8 +166,21 @@ ${profileLines}
     output += `- [${post.data.title}](https://hackenberg.tech/posts/${post.id}/)${desc ? `: ${desc}` : ""}\n`;
   }
 
-  output += `\n### Reviewed Publications (${sortedPublications.length} Total — Recent Highlights)\n`;
+  if (pillarEssays.length > 0) {
+    output += `\n### Curated Pillar Essays (GEO, Sovereign AI & Cognitive Ergonomics)\n`;
+    for (const post of pillarEssays) {
+      const desc = oneLine(post.data.description);
+      output += `- [${post.data.title}](https://hackenberg.tech/posts/${post.id}/)${desc ? `: ${desc}` : ""}\n`;
+    }
+  }
+
+  output += `\n### Reviewed Publications (${sortedPublications.length} Total — Recent Highlights & Dissertation)\n`;
   output += `- [All Publications Index](https://hackenberg.tech/publications/): Complete list of ${sortedPublications.length} peer-reviewed papers, conference proceedings, and doctoral thesis.\n`;
+  if (phdThesis) {
+    const phdAuthors = formatAuthorsPlain(phdThesis.data.authors);
+    const phdVenue = phdThesis.data.book ? ` (${phdThesis.data.book}, 2018)` : " (2018)";
+    output += `- [Doctoral Dissertation: ${phdThesis.data.title}](https://hackenberg.tech/publications/${phdThesis.id}/): ${phdAuthors}${phdVenue}\n`;
+  }
   for (const pub of recentPublications) {
     const authors = formatAuthorsPlain(pub.data.authors);
     const venue = pub.data.book ? ` (${pub.data.book})` : "";

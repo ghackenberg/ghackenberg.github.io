@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Architektonischer Vergleich: Legacy Pipelines vs. Modern In-Process Functions">
+  <title>Architektonischer Vergleich</title>
+  <desc>Architektonischer Vergleich: Legacy Pipelines vs. Modern In-Process Functions</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

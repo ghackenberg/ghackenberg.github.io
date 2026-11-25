@@ -51,3 +51,9 @@ outcomes:
   - "Interactive parameter exploration for heat input, torch velocity, and material properties with real-time visual feedback."
   - "Open-source research tool published on GitHub providing a modular architecture for welding process simulation."
 ---
+
+## Thermal Simulation & Engineering Synergy
+
+**Welding Simulation** provides rapid interactive estimation of 3D spatial temperature fields, molten pool isotherms, and weld seam geometry across changing heat-input, torch-velocity, and material parameters in OpenGL—delivering immediate engineering intuition without heavyweight finite-element meshing overhead.
+
+For empirical high-frequency electrical arc diagnostics on real welding waveforms, see the companion desktop suite [Welding Analytics](/projects/welding-analytics/) as well as numerical simulation foundations in [Computersimulation](/courses/kurs-computer-simulation/).

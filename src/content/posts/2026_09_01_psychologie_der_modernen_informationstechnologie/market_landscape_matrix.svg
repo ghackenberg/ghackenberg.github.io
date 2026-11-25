@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 500" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 500" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;" role="img" aria-label="Kommerzielle Marktlandschaft und Software-Ökosysteme">
+  <title>Market Landscape Matrix</title>
+  <desc>Kommerzielle Marktlandschaft und Software-Ökosysteme</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

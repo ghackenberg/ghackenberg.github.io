@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="100%" height="auto" role="img" aria-label="Four Agent Bridging Topologies Connecting Native Browser Agents, In-Page Scripts, CDP Coding Harnesses, and Local Stdio-WebSocket Relays to In-Page W3C WebMCP document.modelContext">
+  <title>Four W3C WebMCP Agent Bridging &amp; Transport Topologies</title>
+  <desc>Detailed architectural schematic illustrating the four agent bridging topologies connecting standard MCP hosts and browser agents to in-page W3C WebMCP</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

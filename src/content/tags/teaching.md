@@ -1,4 +1,4 @@
 ---
 title: "Academic Teaching & Pedagogy"
-description: "Instructional methodologies, student project coaching, and laboratory course design at the university level."
+description: "University teaching methodologies, open-source GitHub laboratory coursework, and project coaching in software and systems engineering."
 ---

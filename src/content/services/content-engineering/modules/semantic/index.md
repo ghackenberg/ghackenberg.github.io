@@ -51,4 +51,4 @@ Page templates embed typed JSON-LD scripts defining entities such as TechArticle
 
 ### Context Manifests
 
-In addition to standard XML sitemaps, automated build scripts generate plain-text and JSON content manifests (such as content-manifest.json and llms.txt). These manifests index canonical URLs, summaries, and topics, enabling efficient retrieval by automated agents and search crawlers.
+In addition to standard XML sitemaps, automated build scripts generate plain-text and JSON content manifests (such as content-manifest.json and llms.txt). These manifests index canonical URLs, summaries, and topics, enabling efficient retrieval by automated agents and search crawlers—backed by our [Single-Root JSON-LD Validator](/posts/2026_10_25_single_root_json_ld_knowledge_graph_validator/), [Unified Analytics MCP Server](/posts/2026_09_23_unified_analytics_mcp_server_seo_geo_aio/), and [GEO & AIO Field Report](/posts/2026_09_24_agentic_seo_geo_aio_mcp_praxisbericht/).

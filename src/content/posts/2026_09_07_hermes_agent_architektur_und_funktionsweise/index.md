@@ -16,7 +16,7 @@ tags:
   - wikiskills
 image:
   src: ./hero.jpg
-  title: Hermes Agent
+  title: "Hermes Agent: Body-Brain-Architektur & Bounded Memory"
   description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"
 references:
   - type: online

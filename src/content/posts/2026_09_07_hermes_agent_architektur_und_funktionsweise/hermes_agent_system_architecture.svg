@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Referenzarchitektur und Subsysteme des Hermes Agent">
+  <title>Referenzarchitektur und Subsysteme des Hermes</title>
+  <desc>Referenzarchitektur und Subsysteme des Hermes Agent</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

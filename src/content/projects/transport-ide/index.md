@@ -73,3 +73,9 @@ outcomes:
   - "Orders-of-magnitude speedup over traditional continuous-time microscopic traffic simulators via discrete-event semantics."
   - "Fully open-source modular architecture under MIT license on GitHub (github.com/ghackenberg/Transport-IDE)."
 ---
+
+## Discrete-Event ITS Research & Evolution
+
+**Transport IDE** accelerates urban and multimodal traffic control optimization by replacing heavy continuous-time micro-stepping with a discrete-event simulation formalism in Java and JavaFX paired with approximate dynamic programming solvers.
+
+Our discrete-event traffic formulations and next-generation Intelligent Transportation Systems design methodologies are detailed in our [ISDA 2023/2024 proceedings paper](/publications/2023_12_11_isda/) and [MODELSWARD 2025 publication](/publications/2025_02_26_modelsward/), building directly on earlier optimal-control foundations from [Smart Systems IDE](/projects/smart-systems-ide/).

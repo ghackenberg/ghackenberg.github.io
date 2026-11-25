@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" width="100%" height="auto" role="img" aria-label="Vergleich zwischen starrer CSS Block-Bounding-Box und zeilenexakter TreeWalker-Kontur">
+  <title>Block-Box vs. Sub-Element TreeWalker-Zeilenkontur</title>
+  <desc>Vergleich zwischen starrer CSS Block-Bounding-Box und zeilenexakter TreeWalker-Kontur</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

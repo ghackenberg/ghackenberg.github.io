@@ -227,7 +227,7 @@ Die von John Sweller [@sweller-1988-cognitive-load] begründete **Cognitive Load
 2. **Extraneous Load (Störbelastung):** Mentale Energie, die durch schlechtes Interface-Design, unübersichtliche Navigation, visuelle Störgeräusche, Werbebanner oder Dark Patterns verschwendet wird.
 3. **Germane Load (Lernbezogene Belastung):** Die produktive mentale Arbeit, die zur Bildung dauerhafter mentaler Schemata im Langzeitgedächtnis führt.
 
-Da die Kapazität des menschlichen Arbeitsgedächtnisses auf lediglich etwa $4 \pm 1$ Informationseinheiten begrenzt ist (Cowan / Miller), führt ein hoher *Extraneous Load* durch schlecht konzipierte Software unmittelbar zum **Information Overload** und zu kognitiver Erschöpfung.
+Da die Kapazität des menschlichen Arbeitsgedächtnisses auf lediglich etwa $4 \pm 1$ Informationseinheiten begrenzt ist (Cowan / Miller), führt ein hoher *Extraneous Load* durch schlecht konzipierte Software unmittelbar zum **Information Overload** und zu kognitiver Erschöpfung — weshalb künftige [sprachgeführte Mensch-Maschine-Schnittstellen](/posts/2026_11_25_mensch_maschine_schnittstelle_der_zukunft/) konsequent zwischen linearer Sprache und parallelem visuellem Überblick balancieren müssen.
 
 ### C. Internet, Cyberpsychologie & Digitale Sozialdynamiken
 
@@ -245,7 +245,7 @@ Durch die allgegenwärtige Verfügbarkeit von Suchmaschinen und generativen KI-A
 * **Automation Bias & De-Skilling:** Übermäßiges Vertrauen in automatisierte Systeme und KI-Assistenten führt dazu, dass menschliche Anwender Warnsignale übersehen oder eigene analytische Fähigkeiten verlernen (*kognitive Atrophie*).
 ### E. Kognitive Wirkmechanismen vs. Software-Architekturen im Überblick
 
-Die folgende Synthese stellt die wichtigsten psychologischen Phänomene den typischen persuasiven Mustern kommerzieller Plattformen und human-zentrierten Gegenmaßnahmen (*Calm Computing*) gegenüber:
+Die folgende Synthese stellt die wichtigsten psychologischen Phänomene den typischen persuasiven Mustern kommerzieller Plattformen und human-zentrierten Gegenmaßnahmen ([Mindful IT & Calm Computing](/posts/2026_09_02_mindful_it_calm_computing_software_architektur/)) gegenüber:
 
 <!-- caption: "Synthese zentraler kognitionspsychologischer Effekte, korrespondierender persuasiver Dark Patterns und menschenzentrierter Calm-Computing-Gegenmaßnahmen." -->
 | Kognitiver Faktor | Psychologischer Wirkmechanismus | Persuasives Software-Muster | Human-Centered Gegenmaßnahme |
@@ -357,6 +357,6 @@ Ein zukunftsfähiges, menschenzentriertes Softwaresystem zeichnet sich durch fol
 * **Kognitive Schonkost statt Reizüberflutung:** Reduktion von *Extraneous Load* durch klare visuelle Hierarchien, minimalistische Informationsdichte und den Verzicht auf manipulative Dark Patterns.
 * **Batching & Fokus-Respekt:** Bündelung von Benachrichtigungen in logischen Zeitfenstern statt ständiger Mikrostörungen im Sekundentakt.
 * **Transparenz & kognitive Souveränität:** Dem Nutzer die Kontrolle über algorithmische Filter und Empfehlungen zurückgeben; Erklärbarkeit bei KI-gestützten Entscheidungshilfen.
-* **Privacy-Preserving Bio-Adaptive UX:** Sensordaten (wie Eye-Tracking oder Ermüdungsmetriken) dürfen ausschließlich zur lokalen, datenschutzkonformen Entlastung des Nutzers eingesetzt werden – niemals zur Steigerung von Werbeeinnahmen.
+* **Privacy-Preserving Bio-Adaptive UX:** Sensordaten (wie Eye-Tracking oder Ermüdungsmetriken) dürfen ausschließlich zur lokalen, datenschutzkonformen Entlastung des Nutzers eingesetzt werden – niemals zur Steigerung von Werbeeinnahmen; ein konkretes Praxisbeispiel zeigen unsere [KI-basierten ergonomischen Arbeitsumgebungen](/posts/2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/).
 
 Moderne Informationstechnologie entfaltet ihr wahres Potenzial erst dann, wenn sie die menschliche Psyche nicht als Schwachstelle zur Verhaltensausbeutung begreift, sondern als wertvolle Ressource, die es durch intelligente, ergonomische Werkzeuge zu stärken und zu erweitern gilt.

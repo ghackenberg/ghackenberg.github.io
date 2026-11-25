@@ -57,3 +57,9 @@ outcomes:
   - "Open-source Python toolkit available on GitHub (github.com/ghackenberg/SpineML)."
   - "Proven methodology for optimizing machine utilization and factory logistics throughput."
 ---
+
+## Research Grounding & Course Integration
+
+**SpineML** formalizes spine-based factory layout planning (FLP) and job shop scheduling (JSS) around a central automated material transport axis paired with modular machining ribs. Using discrete-event simulation in Salabim, NetworkX dependency graphs, and Matplotlib utilization analytics, engineers can evaluate buffer capacities, gantry travel times, and throughput bottlenecks prior to shop-floor commissioning.
+
+The formal spine modeling methodology and empirical scheduling results are published in our [Procedia CIRP 2025 paper](/publications/2025_01_01_procedia_cirp/). Hands-on discrete-event factory modeling exercises and bottleneck optimization labs built for graduate students are available in our open [Digital Factory Simulation & JaamSim Labs course](/courses/course-digital-factory/).

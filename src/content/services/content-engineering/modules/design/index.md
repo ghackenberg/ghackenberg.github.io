@@ -52,4 +52,4 @@ Color ramps, font families, line heights, and elevation levels are declared as d
 
 ### Multi-Format Layouts
 
-Templates are structured for standard publication ratios: square (1:1) for social feeds, widescreen (16:9) for video and slide presentations, and portrait (4:5) for mobile reading, ensuring visual hierarchy is preserved across viewport sizes.
+Templates are structured for standard publication ratios: square (1:1) for social feeds, widescreen (16:9) for video and slide presentations, and portrait (4:5) for mobile reading, ensuring visual hierarchy is preserved across viewport sizes—see [FOIT-Free Vector Branding Compilation](/posts/2026_10_29_foit_free_vector_branding_svg_path_compilation/) and [Adaptive SVG Color Governance](/posts/2026_11_07_three_band_figures_adaptive_svg_color_governance/).

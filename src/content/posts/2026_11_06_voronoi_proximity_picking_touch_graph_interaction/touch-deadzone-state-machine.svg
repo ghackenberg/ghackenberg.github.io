@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Touch interaction state machine reconciling vertical pan-y scrolling, two-step touch tap preview and navigation, and 8px deadzone node dragging">
+  <title>8px Touch Deadzone State Machine and Gesture Arbitration</title>
+  <desc>Touch interaction state machine reconciling vertical pan-y scrolling, two-step touch tap preview and navigation, and 8px deadzone node dragging</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

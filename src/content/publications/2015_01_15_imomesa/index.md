@@ -1,6 +1,7 @@
 ---
 title: "IMoMeSA-Abschlussbericht: Integrierte modellbasierte Entwicklung mechatronischer Systeme im Maschinen- und Anlagenbau: das IGF-Vorhaben 435 ZN der Forschungsvereinigung VDW"
 pubDate: 2015-01-15
+inLanguage: "de"
 image:
   src: "./preview.jpg"
   title: "IMoMeSA Integrierte Mechatronik-Entwicklung"

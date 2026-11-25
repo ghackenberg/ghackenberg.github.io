@@ -51,20 +51,21 @@ The table below outlines the core rendering, physics, and interaction capabiliti
 
 The following answers summarize the physical force equations and interactive design trade-offs of the Vis.js engine.
 
-### Spring Simulation
+### How Does Vis-Network Solve Spring-Damper Equilibrium?
 
-Vis.js calculates dynamic physical equilibrium through complementary forces:
+Vis.js calculates dynamic spatial equilibrium across nodes by coupling edge spring elasticity with repulsive charge forces inside an $\mathcal{O}(n \log n)$ Barnes-Hut quadtree ($\theta \approx 0.5$). Each simulation step integrates velocity dampening so dragged sub-networks settle smoothly without endless oscillation:
+
 - **Hooke's Law**: Treats edges as spring-dampers pulling connected concepts together.
 - **Coulomb Repulsion**: Treats unconnected nodes as charged particles that push apart.
 - **Step Integration**: Solves velocity damping iteratively until the network settles into a stable resting state.
 
-### Engine Comparison
+### When Should You Choose Vis-Network Over Cytoscape.js, Sigma.js, or SimplexViz?
 
-Vis.js provides clear design advantages for targeted network sizes:
-- **Tactile Interaction**: Supports fluid drag-and-drop, node pinning, and elastic cluster movement.
-- **Crisp Typography**: Renders high-fidelity vector text and custom pill badges cleanly on HTML5 canvas.
-- **Ideal Scale**: Perfectly optimized for networks of 50 to 1,000 nodes where individual label readability is paramount, complementing [Cytoscape.js](/visualizations/cytoscape/), [Sigma.js](/visualizations/sigma/), [D3.js](/visualizations/d3/), and [3D Force-Graph](/visualizations/3d-force-graph/).
+Choose Vis-Network for small-to-medium exploratory knowledge graphs (50 to 1,000 nodes) where tactile drag-and-drop manipulation, smooth elastic feedback, and legible Canvas badge typography enhance comprehension. For different scale or structural demands, compare our companion engines:
 
-### Reference Documentation
+- **Tactile Drag & Typography**: Smooth pointer physics, dynamic node pinning, and sharp HTML5 canvas text rendering.
+- **Complementary Engines**: Compare against [Cytoscape.js](/visualizations/cytoscape/) for graph algorithms, [Sigma.js](/visualizations/sigma/) for 50,000+ WebGL nodes, [D3.js](/visualizations/d3/) for vector SVG diagrams, [3D Force-Graph](/visualizations/3d-force-graph/) for volumetric Three.js rendering, or [SimplexViz](/visualizations/simplex-viz/) (see the [SimplexViz project](/projects/simplex-viz/)) for 0.0 px overlap simplex layouts.
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). Additional engineering analyses cover [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).
+### Where Are the Vis-Network Benchmarks and Touch Picking Rules Documented?
+
+A complete architectural walkthrough and comparative benchmark across our visualization engines is documented in [Interactive JavaScript Graph Visualizations: WebGL & 3D](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). Additional engineering analyses cover [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

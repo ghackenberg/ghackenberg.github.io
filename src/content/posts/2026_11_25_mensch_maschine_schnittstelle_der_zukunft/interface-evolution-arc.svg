@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Entwicklungsbogen der Mensch-Maschine-Schnittstelle über vier Epochen: Von CLI über WIMP/GUI und Touch bis zur Sprachschnittstelle mit abnehmender semantischer Distanz">
+  <title>Vom Werkzeug-Menü zum gesprochenen Intent</title>
+  <desc>Entwicklungsbogen der Mensch-Maschine-Schnittstelle über vier Epochen: Von CLI über WIMP/GUI und Touch bis zur Sprachschnittstelle mit abnehmender semantischer Distanz</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

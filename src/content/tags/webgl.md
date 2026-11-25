@@ -1,4 +1,4 @@
 ---
 title: "WebGL"
-description: "Cross-platform, royalty-free web standard for low-level 3D hardware-accelerated graphics in web browsers."
+description: "Hardware-accelerated WebGL shader pipelines, 2.5D parallax occlusion mapping, and GPU particle graphs in standard web browsers."
 ---

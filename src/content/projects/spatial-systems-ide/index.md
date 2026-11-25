@@ -52,3 +52,9 @@ outcomes:
   - "Bridge between mechanical layout, electrical wiring, and software control logic within a single executable environment."
   - "Open-source research workbench available on GitHub (github.com/ghackenberg/Spatial-Systems-IDE)."
 ---
+
+## Formal Verification & Dissertation Roots
+
+**Spatial Systems IDE** unifies mechanical 3D geometry, electrical wiring models, and software state-machine control logic within a single DockFX workbench so multidisciplinary design inconsistencies surface during early conceptual modeling rather than late shop-floor commissioning.
+
+The formal modeling semantics, quality taxonomy, and pick-and-place validation experiments originate in the TUM doctoral dissertation [Test-driven conceptual design of cyber-physical manufacturing systems](/publications/2018_11_14_tum/) and the [IMoMeSA project report](/publications/2015_01_15_imomesa/), shaping our approach to [Formal Requirements Engineering](/services/software-engineering/requirements/).

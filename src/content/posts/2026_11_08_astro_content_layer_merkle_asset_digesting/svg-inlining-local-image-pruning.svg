@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector schematic showing Remark image registration followed by rehype-inline-svg DOM replacement and localImagePaths pruning">
+  <title>Two-Stage Remark Registration and Rehype SVG Pruning</title>
+  <desc>Semantic vector schematic showing Remark image registration followed by rehype-inline-svg DOM replacement and localImagePaths pruning</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

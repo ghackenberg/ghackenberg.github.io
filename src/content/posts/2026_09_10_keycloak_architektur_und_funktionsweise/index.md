@@ -17,7 +17,7 @@ tags:
   - langgraph
 image:
   src: ./hero.jpg
-  title: Keycloak
+  title: "Keycloak: OIDC Identity Hub & RFC 8693 Token Exchange"
   description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack"
 references:
   - type: misc

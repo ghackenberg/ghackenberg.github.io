@@ -52,4 +52,4 @@ The primary web publication functions as the authoritative repository. Structure
 
 ### Canonical Attribution
 
-Every syndicated asset maintains explicit canonical links to the authoritative source URL. This consolidates search engine ranking signals, prevents content duplication penalties, and directs audiences to primary documentation.
+Every syndicated asset maintains explicit canonical links to the authoritative source URL. This consolidates search engine ranking signals, prevents content duplication penalties, and directs audiences to primary documentation—demonstrated in our [Newsletter-as-Code pipeline](/posts/2026_10_20_newsletter_as_code_react_email_listmonk_altcha_pow/), [Slide-as-Code keynote engine](/posts/2026_09_26_presentation_engine_slide_as_code_voiceover/), and [SEO im Zeitalter von KI](/presentations/2026_10_01_seo_im_zeitalter_von_ki/) presentation.

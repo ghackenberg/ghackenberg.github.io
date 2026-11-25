@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Schleuse des Last-Schedulers: Leichte Aufgaben laufen parallel durch den Bypass, schwere Rechenlasten passieren das Budget-Tor seriell">
+  <title>Die Schleuse des Last-Schedulers</title>
+  <desc>Schleuse des Last-Schedulers mit parallelem Bypass für leichte Aufgaben oben und einem Budget-Tor zur seriellen Abarbeitung schwerer Rechenlasten unten</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

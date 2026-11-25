@@ -52,4 +52,4 @@ Using Astro with MDX allows technical articles to embed interactive components w
 
 ### Automated Pipelines
 
-Every commit to the version control repository triggers automated CI/CD workflows. Automated checks validate TypeScript types, markdown schemas, citation references, and image optimizations before pushing verified static assets to the distribution network.
+Every commit to the version control repository triggers automated CI/CD workflows. Automated checks validate TypeScript types, markdown schemas, citation references, and image optimizations before pushing verified static assets to the distribution network—detailed in [Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/) and [Zero-innerHTML Preact Architecture](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/).

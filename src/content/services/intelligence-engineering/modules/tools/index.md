@@ -52,4 +52,4 @@ The Model Context Protocol establishes an open client-server architecture over J
 
 ### Schema Validation
 
-Tool input parameters are validated against formal schemas (using Zod in TypeScript or Pydantic in Python) before execution. If parameter types or boundary values fail validation, the system returns structured error messages to the model, enabling automated correction without unhandled runtime exceptions.
+Tool input parameters are validated against formal schemas (using Zod in TypeScript or Pydantic in Python) before execution. If parameter types or boundary values fail validation, the system returns structured error messages to the model, enabling automated correction without unhandled runtime exceptions—as demonstrated in our [Unified Analytics MCP Server](/posts/2026_09_23_unified_analytics_mcp_server_seo_geo_aio/) and [W3C WebMCP Browser Agent Architecture](/posts/2026_10_23_webmcp_w3c_standard_architecture_history_future/).

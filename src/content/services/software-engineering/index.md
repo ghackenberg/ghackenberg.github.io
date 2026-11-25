@@ -74,4 +74,4 @@ Software engineering engagements emphasize five durable engineering pillars acro
 - **Contract-Driven API Integration & Event Streaming**: Versioned API specifications and reliable asynchronous messaging topologies.
 - **Continuous Delivery & Resilient Cloud Operations**: Reproducible container builds, automated deployment gates, and full-stack telemetry.
 
-The underlying technology foundation spans **TypeScript / Node.js**, **Java / Spring Boot**, **Python**, **Docker & Kubernetes**, **PostgreSQL & Redis**, **OpenAPI & gRPC**, **GitHub Actions CI/CD**, and **OpenTelemetry & Prometheus**.
+The underlying technology foundation spans **TypeScript / Node.js**, **Java / Spring Boot**, **Python**, **Docker & Kubernetes**, **PostgreSQL & Redis**, **OpenAPI & gRPC**, **GitHub Actions CI/CD**, and **OpenTelemetry & Prometheus**. Production implementations include [CADdrive](/projects/caddrive/), [SimplexViz](/projects/simplex-viz/), and our [Zero-innerHTML Preact & Nanostores Architecture](/posts/2026_11_02_zero_innerhtml_architecture_preact_nanostores/).

@@ -1,4 +1,4 @@
 ---
 title: "User Interface Design"
-description: "Visual layout, component ergonomics, typography, and interactive aesthetics for computer software."
+description: "Visual layout geometry, cognitive ergonomics, adaptive design tokens, typography, and low-friction interactive web interfaces."
 ---

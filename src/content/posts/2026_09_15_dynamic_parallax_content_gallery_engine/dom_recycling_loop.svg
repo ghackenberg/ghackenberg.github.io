@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%" role="img" aria-label="Zero-Jump Continuous DOM Recycling Loop">
+  <title>Dom Recycling Loop</title>
+  <desc>Zero-Jump Continuous DOM Recycling Loop</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

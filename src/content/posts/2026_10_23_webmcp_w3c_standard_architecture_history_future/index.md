@@ -1,5 +1,5 @@
 ---
-title: "W3C WebMCP Explained: Browser Agent Architecture & APIs"
+title: "W3C WebMCP: Giving Browser Agents Native Tool APIs"
 pubDate: 2026-10-23
 description: "An architectural analysis of W3C WebMCP (document.modelContext)—covering normative WebIDL and HTML APIs, CDP/WebSocket bridges, and security trade-offs."
 inLanguage: en
@@ -732,5 +732,5 @@ To synthesize these empirical and security trade-offs into an actionable enginee
 | :--- | :--- | :--- | :--- |
 | **Tier 1: Read-Only Knowledge & Docs** | Technical blog posts, API documentation, academic catalogs, and static marketing pages. | Public, stateless, cacheable at the CDN edge. | Semantic HTML5, JSON-LD, Answer-First GEO blocks, and static `/llms.txt` Markdown feeds. |
 | **Tier 2: Headless Backend & CLI Automation** | CI/CD pipelines, database telemetry, repository indexing, and unattended cron workflows. | Service-account API keys, OAuth2 tokens, or local OS filesystem permissions. | **Backend MCP Server** over `stdio` or Streamable HTTP/SSE (e.g., [`src/tools/unified-analytics.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/tools/unified-analytics.ts)) [@mcp-specification-2024]. |
-| **Tier 3: Cooperative Human-in-the-Loop Web Apps** | Interactive SaaS dashboards, canvas editors, e-commerce filters, and SSO-protected code review. | Shared live browser tab (`HttpOnly` SSO cookies, client-side React/WebGL state, human confirmation). | **W3C WebMCP (`document.modelContext`)** + declarative `<form toolname="...">` [@walderman-2026-webmcp]. |
+| **Tier 3: Cooperative Human-in-the-Loop Web Apps** | Interactive SaaS dashboards, canvas editors, e-commerce filters, and SSO-protected code review (including [voice-first ephemeral projection interfaces](/posts/2026_11_25_mensch_maschine_schnittstelle_der_zukunft/)). | Shared live browser tab (`HttpOnly` SSO cookies, client-side React/WebGL state, human confirmation). | **W3C WebMCP (`document.modelContext`)** + declarative `<form toolname="...">` [@walderman-2026-webmcp]. |
 | **Tier 4: Legacy & Uncooperative Third-Party Sites** | Legacy enterprise portals or external web pages that expose neither APIs nor WebMCP tools. | Ephemeral browser profile or isolated container sandbox. | **Headless CDP / Multimodal DOM Actuation** (`chrome-devtools-mcp`, Playwright, OSWorld/WebArena harnesses) [@zhou-2024-webarena]. |

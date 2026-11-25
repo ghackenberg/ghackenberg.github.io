@@ -59,3 +59,9 @@ outcomes:
   - "Zero-dependency custom 2D canvas architecture enabling real-time navigation across high-frequency industrial welding recordings."
   - "Open-source codebase on GitHub (github.com/ghackenberg/welding-analytics) under active engineering maintenance."
 ---
+
+## Process Diagnostics & Teaching Context
+
+**Welding Analytics** delivers a zero-dependency Java 2D canvas diagnostics workbench built to scrub, zoom, and correlate high-frequency electrical voltage and current welding recordings alongside arc phase cyclograms and probability density distributions without frame lag.
+
+Its empirical measurement workflow complements predictive thermal modeling in [Welding Simulation](/projects/welding-simulation/) and aligns with practical data exploration pipelines covered in our university course [Datenanalyse](/courses/kurs-datenanalyse/).

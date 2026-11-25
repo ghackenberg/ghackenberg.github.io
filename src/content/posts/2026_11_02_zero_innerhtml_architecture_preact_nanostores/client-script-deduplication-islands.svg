@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic contrasting 49-script client sprawl and 6 raw innerHTML XSS sinks with consolidated CatalogPreFilter.astro, clipboard.ts, and typed Preact .tsx VDOM islands">
+  <title>49-Script Client Audit Deduplication and Preact Island Migration</title>
+  <desc>Semantic vector infographic contrasting 49-script client sprawl and 6 raw innerHTML XSS sinks with consolidated CatalogPreFilter.astro, clipboard.ts, and typed Preact .tsx VDOM islands</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

@@ -1,4 +1,4 @@
 ---
 title: "Systems Implementation"
-description: "Realization, deployment, and practical commissioning of engineered software and hardware specifications."
+description: "End-to-end software and hardware realization, field commissioning, and industrial validation of engineered mechatronic systems."
 ---

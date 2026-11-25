@@ -65,3 +65,9 @@ outcomes:
   - "Validated early-stage behavioral modeling for electric vehicle-to-grid (V2G) power grid balancing and traffic congestion management."
   - "Open-source research tool published on GitHub (github.com/ghackenberg/Smart-Systems-IDE)."
 ---
+
+## Research Foundations & Related Workbenches
+
+**Smart Systems IDE** provides an integrated Java environment for modeling state spaces, objective functions, and dynamic programming policies across coupled energy and mobility systems, including cascaded hydro power storage optimization and electric vehicle-to-grid (V2G) coordination.
+
+Peer-reviewed formulations and experimental case studies are documented in our [COMPSAC 2014 paper](/publications/2014_07_21_compsac/) and the [IEEE ITSC 2016 TRANSP-0 framework](/publications/2016_11_01_itsc/), while modern discrete-event traffic optimization capabilities continue in [Transport IDE](/projects/transport-ide/).

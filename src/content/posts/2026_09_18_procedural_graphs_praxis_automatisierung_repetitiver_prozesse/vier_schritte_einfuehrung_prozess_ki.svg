@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 180" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 180" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="In 4 Schritten zur produktiven Prozess-KI: Von der Identifikation zur autonomen Härtung">
+  <title>der Identifikation zur autonomen Härtung - In 4 Schritten zur produktiven Prozess-KI:</title>
+  <desc>In 4 Schritten zur produktiven Prozess-KI: Von der Identifikation zur autonomen Härtung</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

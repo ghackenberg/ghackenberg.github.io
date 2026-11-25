@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Perceptual OKLab color blending between cluster hues, rectangular cluster pill clearance with satellite coverage badge, and N-gon content type polygons">
+  <title>Perceptual OKLab Blending, Pill Clearance Zones, and N-Gon Shapes</title>
+  <desc>Diagram showing OKLab weighted color blending, the cluster pill rectangular clearance zone with a docked percentage coverage badge, and regular N-gon content type shapes</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

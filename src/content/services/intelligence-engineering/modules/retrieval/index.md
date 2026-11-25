@@ -52,4 +52,4 @@ A dedicated vector database (Qdrant) indexes document embeddings using Hierarchi
 
 ### Graph Traversal
 
-Structured relationships are stored in a property graph (Neo4j). When a query involves interconnected entities—such as software components, organizational units, or regulatory requirements—graph queries retrieve relational context that vector proximity alone cannot capture.
+Structured relationships are stored in a property graph (Neo4j). When a query involves interconnected entities—such as software components, organizational units, or regulatory requirements—graph queries retrieve relational context that vector proximity alone cannot capture, aligning with [Long-Term Memory via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), [Open WebUI Hybrid RAG](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/), and [Mentawise Knowledge Graphs](/projects/mentawise/).

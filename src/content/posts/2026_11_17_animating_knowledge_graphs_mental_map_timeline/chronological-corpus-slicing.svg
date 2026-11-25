@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Final-corpus clustering followed by chronological slicing across three progressive timeline snapshots with fixed cluster colors and zero renames">
+  <title>Final-Corpus Clustering and Chronological Slicing</title>
+  <desc>Diagram of final-corpus clustering followed by chronological slicing across three progressive timeline snapshots with fixed cluster colors and zero renames</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

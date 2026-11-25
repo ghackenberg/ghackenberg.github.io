@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic contrasting sandboxed SVG text nodes causing Flash of Invisible Text in favicons with instant synchronous vector path geometry">
+  <title>Sandboxed SVG Text FOIT Failure vs. Synchronous Vector Polygon Paths</title>
+  <desc>Semantic vector infographic contrasting sandboxed SVG text nodes causing Flash of Invisible Text in favicons with instant synchronous vector path geometry</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

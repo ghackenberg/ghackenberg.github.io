@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="SimplexViz five-stage pluggable pipeline: Mesh, Clustering, OKLab Color, SAT/PBD Layout, and 1:4 Hierarchical Zoom">
+  <title>SimplexViz 5-Stage Pluggable Pipeline</title>
+  <desc>Five-stage pluggable SimplexViz pipeline mapping arbitrary collections through a 60° equilateral lattice, clustering, OKLab color mixing, zero-overlap SAT/PBD layout, and 1:4 hierarchical zoom</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

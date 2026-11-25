@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Mastra Runtime Guidance Flow: Der 4-Schritte-Inferenzzyklus mit Suspend/Resume">
+  <title>Mastra Runtime Guidance Flow</title>
+  <desc>Mastra Runtime Guidance Flow: Der 4-Schritte-Inferenzzyklus mit Suspend/Resume</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

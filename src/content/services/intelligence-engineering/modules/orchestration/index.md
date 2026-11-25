@@ -52,4 +52,4 @@ Using graph orchestration frameworks such as LangGraph allows workflows to execu
 
 ### State Checkpointing
 
-Graph execution states are persisted to a database checkpoint store after each node transition. This enables execution to pause at human-in-the-loop gates—allowing operators to inspect, modify, or approve intermediate state before the graph resumes execution.
+Graph execution states are persisted to a database checkpoint store after each node transition. This enables execution to pause at human-in-the-loop gates—allowing operators to inspect, modify, or approve intermediate state before the graph resumes execution, as detailed in [Reliable Agent Architectures](/posts/2026_10_06_verlaessliche_agenten_architekturen/), [Agent Harnesses Taxonomy](/posts/2026_10_21_agent_harnesses_architecture_taxonomy_evolution/), and [Conversational Control Planes](/posts/2026_11_22_conversational_control_plane_live_agents/).

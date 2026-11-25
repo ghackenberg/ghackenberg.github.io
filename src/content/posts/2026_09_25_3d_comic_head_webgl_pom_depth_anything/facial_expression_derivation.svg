@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 740 730" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 740 730" width="100%" height="100%" role="img" aria-label="Hierarchischer Abstammungsbaum der fünf konsistenten Facial Expressions">
+  <title>Abstammung und Entstehung der Facial Expressions</title>
+  <desc>Hierarchischer Abstammungsbaum der fünf konsistenten Facial Expressions</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

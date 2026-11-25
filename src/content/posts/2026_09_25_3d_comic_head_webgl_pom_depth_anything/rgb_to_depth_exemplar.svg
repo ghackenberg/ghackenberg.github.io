@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 880 360" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 880 360" width="100%" height="100%" role="img" aria-label="Exemplarischer Übergang vom 2D-RGB-Comic-Kopf zum 8-Bit-Höhenfeld von Depth Anything V2">
+  <title>Exemplarische Tiefenrekonstruktion: RGB zu Depth Map</title>
+  <desc>Exemplarischer Übergang vom 2D-RGB-Comic-Kopf zum 8-Bit-Höhenfeld von Depth Anything V2</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

@@ -1,4 +1,4 @@
 ---
 title: "Google Gemini"
-description: "Multimodal foundation models, prompt architecture, and agent integrations utilizing Google Gemini APIs."
+description: "Multimodal Google Gemini foundation models, structured JSON prompting, function calling, and agentic workflow integrations."
 ---

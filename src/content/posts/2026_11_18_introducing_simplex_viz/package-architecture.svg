@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="SimplexViz three-package TypeScript architecture separating @simplex-viz/core, @simplex-viz/svg, and @simplex-viz/react">
+  <title>Three-Package TypeScript Architecture</title>
+  <desc>Three-layer TypeScript package architecture separating headless @simplex-viz/core math, framework-agnostic @simplex-viz/svg rendering, and @simplex-viz/react bindings</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

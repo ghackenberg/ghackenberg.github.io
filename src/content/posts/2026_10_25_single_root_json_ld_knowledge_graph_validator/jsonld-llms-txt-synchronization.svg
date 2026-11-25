@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic showing single-source compilation from Astro Content Collections into both HTML JSON-LD 1.1 for search engines and llms.txt Markdown for AI agents">
+  <title>Single-Source Entity Synchronization Across JSON-LD @graph and llms.txt</title>
+  <desc>Semantic vector infographic showing single-source compilation from Astro Content Collections into both HTML JSON-LD 1.1 for search engines and llms.txt Markdown for AI agents</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

@@ -64,3 +64,9 @@ outcomes:
   - "100% client-side execution with zero backend infrastructure requirements."
   - "In-browser local LLM integration enabling autonomous agent behavior."
 ---
+
+## Simulation Architecture & Technical Deep-Dives
+
+**Delta Dynamics** demonstrates that coupled surface-water and subsurface aquifer hydrology can run completely client-side at 60 FPS inside a standard browser. By offloading discrete grid shallow-water equations, CFL flux clamping, and Darcy's Law groundwater diffusion into double-buffered WebGL ping-pong framebuffers, the terrain remains hydrodynamically responsive without backend compute servers.
+
+For the full mathematical derivation, GLSL fragment shader implementation, and FBO pipeline breakdown, read [GPU Water Flow & Hydrology Shaders in Delta Dynamics](/posts/2026_05_25_gpu_water_simulation_delta_dynamics/). On-device autonomous agent reasoning inside the ecosystem connects directly to our work on [Local AI Agents with WebLLM](/posts/2026_05_31_local_ai_agents_web_llm/).

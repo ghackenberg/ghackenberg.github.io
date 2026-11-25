@@ -6,8 +6,8 @@ inLanguage: "en"
 tags: ["blog", "software-systems", "web-development"]
 image:
   src: "./article.png"
-  title: "Article"
-  description: "Article fragment"
+  title: "PHP and HTML Source Template of a Lightweight Blog Article"
+  description: "Syntax-highlighted PHP and HTML source template for a lightweight blog article integrating layout.php, commenting.php, date metadata, and Subversion-backed announcements"
 ---
 <div class="flow-root my-6">
 
@@ -53,7 +53,7 @@ Having seen how articles are listed, we now have a look at the articles themselv
 Articles basically are just simple HTML pages stored in a category folder.
 The following code listing shows an example taken from this website:
 
-![Article fragment from Lightweight Blog Implementation](./article.png "Article")
+![Syntax-highlighted PHP and HTML source code of a lightweight blog article integrating layout and commenting modules](./article.png "PHP and HTML Source Code of a Lightweight Blog Article")
 
 Each article has to define a *title*, a *date* and a *tagline*.
 These information items are considered as meta-data and displayed in media listings such as the front page and the *RSS* feeds.

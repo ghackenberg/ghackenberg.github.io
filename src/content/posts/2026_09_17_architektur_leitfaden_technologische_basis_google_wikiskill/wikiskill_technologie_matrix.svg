@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 480" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;"><defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 480" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', system-ui, sans-serif;" role="img" aria-label="Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra vs. Pi Agent vs. PydanticAI vs. Hermes vs. LangGraph">
+  <title>Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes</title>
+  <desc>Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra vs. Pi Agent vs. PydanticAI vs. Hermes vs. LangGraph</desc>
+  <defs>
     <style>
       @import url('/styles/graphics.css');
     </style>

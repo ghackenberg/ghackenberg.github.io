@@ -54,4 +54,4 @@ Using modern inference engines such as vLLM allows servers to leverage PagedAtte
 
 ### Gateway Routing
 
-A centralized proxy gateway (LiteLLM Proxy) standardizes client communication through an OpenAI-compatible API interface. The gateway manages model routing, fallback endpoints, rate limits, and per-user token quotas, secured via Keycloak OpenID Connect authentication.
+A centralized proxy gateway (LiteLLM Proxy) standardizes client communication through an OpenAI-compatible API interface. The gateway manages model routing, fallback endpoints, rate limits, and per-user token quotas, secured via Keycloak OpenID Connect authentication—see our architectural deep dives on [LiteLLM Gateway Routing](/posts/2026_09_09_litellm_architektur_und_funktionsweise/), [Keycloak RFC 8693 Token Exchange](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/), and the [Sovereign Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/).

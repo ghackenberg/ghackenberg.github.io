@@ -52,4 +52,4 @@ Using Zod schemas within Astro content collections guarantees that invalid front
 
 ### Entity Relationships
 
-Content entities are linked through explicit identifiers, establishing bidirectional relationships between articles, technical skills, academic publications, and software projects without manual reference synchronization.
+Content entities are linked through explicit identifiers, establishing bidirectional relationships between articles, technical skills, academic publications, and software projects without manual reference synchronization—illustrated by our [Astro Content Collections migration](/posts/2026_05_23_website_relaunch_astro_typescript/), [Merkle asset digesting loader](/posts/2026_11_08_astro_content_layer_merkle_asset_digesting/), and [Mentawise knowledge graph](/projects/mentawise/).

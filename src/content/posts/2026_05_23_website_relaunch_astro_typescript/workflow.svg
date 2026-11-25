@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250" width="100%" height="100%" role="img" aria-label="Migration Workflow vom PHP-Altsystem zu Astro">
+  <title>Automatisierter KI-Migrations-Workflow</title>
+  <desc>Migration Workflow vom PHP-Altsystem zu Astro</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

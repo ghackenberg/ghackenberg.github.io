@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 540" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 540" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, sans-serif;" role="img" aria-label="Der Mem0-Lifecycle: Von Dialog-Streams zu persistenter Wissensevolution">
+  <title>Dialog-Streams zu persistenter Wissensevolution - Der Mem0-Lifecycle:</title>
+  <desc>Der Mem0-Lifecycle: Von Dialog-Streams zu persistenter Wissensevolution</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

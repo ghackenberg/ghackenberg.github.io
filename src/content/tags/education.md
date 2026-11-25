@@ -1,4 +1,4 @@
 ---
 title: "Computer Science Education"
-description: "Higher education pedagogy, practical curricula, and laboratory coursework in software engineering and industrial informatics taught at the University of Applied Sciences Upper Austria."
+description: "Higher education pedagogy, open-source GitHub curricula, and practical software engineering laboratory courses taught at UAP / FH Upper Austria."
 ---

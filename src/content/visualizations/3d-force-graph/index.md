@@ -1,5 +1,5 @@
 ---
-title: "3D Force-Graph WebGL & Three.js Network Visualization"
+title: "3D Force-Graph: Three.js WebGL Network Demo"
 description: "Interactive 3D Force-Graph network visualization built with Three.js and WebGL, featuring octree n-body physics, orbital camera controls, and particles."
 image:
   src: "./3d-force.png"
@@ -51,23 +51,24 @@ The following table summarizes the technical characteristics and performance pro
 
 The sections below address common architectural questions regarding volumetric projection, particle rendering, and engine selection.
 
-### Spatial Occlusion
+### How Does 3D Projection Mitigate Planar Edge Crossings and Occlusion?
 
-Projecting relationship networks into three dimensions eliminates planar edge crossings that cause 2D hairballs. Adding a third degree of freedom (z-axis) allows dense semantic clusters to occupy distinct spatial shells. While distant nodes can be visually occluded by foreground clusters, dynamic camera rotation immediately restores visibility from alternate vantage points.
+Projecting relationship networks into three-dimensional Three.js space eliminates the forced planar crossings that flatten dense 2D graphs into tangled hairballs. Adding the z-axis lets distinct topic shells separate by depth while spherical orbital controls let users rotate past foreground occlusion in real time.
 
-### Particle Streams
+### How Are Directional Particle Streams Rendered at 60 FPS?
 
-Dynamic particle animations visualize connection directionality without cluttering the scene with static arrowheads:
+Dynamic particle animations communicate directed semantic dependencies between nodes without cluttering the 3D viewport with static polygon arrowheads. By computing parametric curve steps inside GPU buffers, WebGL sustains 60 FPS across thousands of animated links:
+
 - **Parametric Traversal**: Particles calculate intermediate coordinates along vector paths using linear interpolation between source and target positions.
 - **Batch Rendering**: Particle positions update within instanced buffer attributes, avoiding individual mesh allocations.
 
-### Engine Comparison
+### When Should You Choose 3D Force-Graph Over Sigma.js, Cytoscape.js, or SimplexViz?
 
-The 3D Force engine provides distinct architectural advantages for exploratory landscapes:
-- **Volumetric Exploration**: Best suited for discovering deep semantic clusters, citation lineages, and cross-discipline links.
-- **Visual Immersion**: Provides an engaging tactile overview of large institutional repositories.
-- **Complementary Tooling**: Use [D3.js](/visualizations/d3/) for exact typographic layouts, [Cytoscape.js](/visualizations/cytoscape/) for formal shortest-path algorithms, [Sigma.js](/visualizations/sigma/) for 2D WebGL shaders, or [Vis-Network](/visualizations/vis-network/) for 2D spring-damper physics.
+Choose 3D Force-Graph when exploring multi-layered citation lineages or volumetric topic landscapes up to 5,000+ nodes where depth cues clarify complex intersections. For flat 2D clarity or deterministic non-overlapping grids, consider our complementary engines:
 
-### Reference Documentation
+- **Volumetric Immersion**: Ideal for 3D topic constellations, orbital camera storytelling, and directional link-flow inspection.
+- **Complementary Engines**: Use [D3.js](/visualizations/d3/) for vector SVG typography, [Cytoscape.js](/visualizations/cytoscape/) for shortest-path graph analytics, [Sigma.js](/visualizations/sigma/) for 2D WebGL shaders, [Vis-Network](/visualizations/vis-network/) for 2D spring-damper physics, or [SimplexViz](/visualizations/simplex-viz/) (see the [SimplexViz project](/projects/simplex-viz/)) for zero-overlap 60° simplex meshes.
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For the underlying 1-hop/2-hop topological attenuation rules and pointer-picking mechanics, read [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).
+### Where Are the 3D Force-Graph Physics and Hop Attenuation Rules Documented?
+
+A complete architectural walkthrough and comparative benchmark across our visualization engines is documented in [Interactive JavaScript Graph Visualizations: WebGL & 3D](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For the underlying 1-hop/2-hop topological attenuation rules and pointer-picking mechanics, read [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="60fps live drag physics with steady 8 percent centroid drift compensation and dynamic polar slot re-sorting">
+  <title>60fps Drag Physics, Steady Centroid Framing, and Live Slot Re-Sorting</title>
+  <desc>60fps live drag physics with steady 8 percent centroid drift compensation and dynamic polar and column slot re-sorting</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

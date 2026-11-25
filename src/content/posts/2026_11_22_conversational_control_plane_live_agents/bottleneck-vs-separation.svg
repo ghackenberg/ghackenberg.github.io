@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Flaschenhals eines monolithischen Agenten-Loops im Vergleich zur Zweischicht-Trennung zwischen Regie und Maschinenraum">
+  <title>Flaschenhals vs. Zweischicht-Trennlinie</title>
+  <desc>Gegenüberstellung eines blockierten monolithischen Agenten-Flaschenhalses oben und der asynchronen Zweischicht-Trennung aus freier Regie und parallelem Maschinenraum unten</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

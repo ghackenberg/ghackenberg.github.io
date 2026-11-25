@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', sans-serif;" role="img" aria-label="Langzeitgedächtnis für autonome KI-Agenten: Problem- und Lösungsraum im Überblick">
+  <title>Langzeitgedächtnis für autonome KI-Agenten</title>
+  <desc>Langzeitgedächtnis für autonome KI-Agenten: Problem- und Lösungsraum im Überblick</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

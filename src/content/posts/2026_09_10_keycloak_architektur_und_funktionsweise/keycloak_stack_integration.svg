@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Keycloak Zero-Trust Governance und Schichtenintegration im souveränen AI Tech Stack">
+  <title>Keycloak Zero-Trust Governance und Schichtenintegration</title>
+  <desc>Keycloak Zero-Trust Governance und Schichtenintegration im souveränen AI Tech Stack</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

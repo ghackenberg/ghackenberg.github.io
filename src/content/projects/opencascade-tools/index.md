@@ -17,7 +17,7 @@ tags:
 image:
   src: "./preview.jpg"
   title: "OpenCASCADE Tools: Open-Source CAD Geometry Conversion Toolkit"
-  description: "Showcase preview of opencascade-tools open-source repository and toolkit for WebGL and Three.js."
+  description: "Workshop desk illustration showing an engineer inspecting a machined steel gear flange with calipers beside a browser viewport rendering its glowing cyan OpenCASCADE wireframe mesh."
 screenshots:
   - src: "./pipeline-architecture.png"
     title: "End-to-End Geometry Pipeline"
@@ -68,3 +68,9 @@ outcomes:
   - "Over 22 GitHub stars and active npm distribution as a standalone open-source CLI and library."
   - "Enables zero-backend, client-side CAD model visualization for educational design platforms."
 ---
+
+## CAD Pipeline & Integration Context
+
+**OpenCASCADE Tools** bridges industrial boundary-representation (B-Rep) engineering files—ISO 10303-21 STEP and IGES—with modern browser graphics by wrapping OpenCASCADE Technology compiled to WebAssembly via OpenCascade.js. Configurable linear and angular deflection controls let developers balance geometric chord precision against GLTF, GLB, and OBJ polygon budgets in both Node.js CLIs and browser Web Workers.
+
+In production, this dual-target meshing toolkit powers client-side CAD ingestion inside [CADdrive](/projects/caddrive/) and exemplifies clean TypeScript modularization highlighted in our [Code Construction & Legacy Refactoring service](/services/software-engineering/construction/).

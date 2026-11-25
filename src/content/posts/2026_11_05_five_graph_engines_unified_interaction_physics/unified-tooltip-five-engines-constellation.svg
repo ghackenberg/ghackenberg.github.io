@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Radial constellation of five graph engines sharing centralized style tokens and Preact viewport-clamped hover tooltips">
+  <title>Five Graph Engines Sharing One Preact Tooltip and Token Kernel</title>
+  <desc>Radial constellation of five graph engines sharing centralized style tokens and Preact viewport-clamped hover tooltips</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

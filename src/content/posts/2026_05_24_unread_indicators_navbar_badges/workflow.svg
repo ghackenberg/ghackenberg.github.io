@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 270" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 270" width="100%" height="100%" role="img" aria-label="Sequence diagram of the client-side notification state machine for synchronous paint and background sync">
+  <title>State Sequence Diagram: Synchronous Render and Background Sync</title>
+  <desc>Sequence diagram of the client-side notification state machine for synchronous paint and background sync</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

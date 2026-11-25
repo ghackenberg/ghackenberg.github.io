@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Semantic vector infographic of the six-gate postbuild validator inspecting 433 built HTML pages through three shield verification stages into an approved dist/ build">
+  <title>Six-Gate SHACL-Inspired Postbuild Validation Pipeline</title>
+  <desc>Semantic vector infographic of the six-gate postbuild validator inspecting 433 built HTML pages through three shield verification stages into an approved dist/ build</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

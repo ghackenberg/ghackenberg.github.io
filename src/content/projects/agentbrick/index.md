@@ -64,3 +64,9 @@ outcomes:
   - "Multi-agent architecture replacing unstructured LLM generation with validated topological and spatial intermediate states."
   - "Extensible modular repository with custom agent middlewares, state validation schemas, and reproducible workflow tests."
 ---
+
+## Agentic Pipeline & Related Systems
+
+**AgentBrick** replaces unconstrained text-to-3D LLM guessing with a stateful LangGraph pipeline that compiles natural language design intents through intermediate textual specifications, topological component-interface graphs, and discrete voxel grids into syntactically valid LDraw CAD models.
+
+This structured state-machine approach builds on our engineering patterns for [Reliable Agent Architectures](/posts/2026_10_06_verlaessliche_agenten_architekturen/) and our [Intelligence Engineering practice](/services/intelligence-engineering/), while complementing browser-based collaborative brick and CAD workflows in [CADdrive](/projects/caddrive/).

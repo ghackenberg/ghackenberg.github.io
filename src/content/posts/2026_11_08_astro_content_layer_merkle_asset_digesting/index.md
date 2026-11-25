@@ -111,7 +111,14 @@ const enhancedContext: LoaderContext = {
 };
 ```
 
-When a co-located `.svg` or raster image changes on disk, `findAffectedMarkdownFiles` resolves the owning `.md`/`.mdx` entry within a 100ms debounce window, refreshes `mdFileByBaseDigest`, and invokes `globChangeHandler(mdFile)` so Astro re-renders only that entry in under 200ms.
+When a co-located `.svg` or raster image changes on disk, `findAffectedMarkdownFiles` resolves the owning `.md`/`.mdx` entry within a 100ms debounce window, refreshes `mdFileByBaseDigest`, and invokes `globChangeHandler(mdFile)` so Astro re-renders only that entry in under 200ms:
+
+1. **Directory Asset Discovery:** Scans sibling `.svg`, `.png`, `.jpg`, `.webp`, `.avif`, and `.gif` files plus explicit relative links.
+2. **Global Token Tracking:** Includes [`src/styles/graphics.css`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/styles/graphics.css) and rendering plugins in the hash closure.
+3. **Stat-Keyed MD5 Caching (`getFileContentHash`):** Reuses 16-character digests keyed by `mtimeMs` and byte `size` for sub-millisecond lookups.
+4. **Bound `Proxy` Invalidation:** Captures Astro's internal `globChangeHandler` while preserving `FSWatcher` `this`-bindings.
+
+This constructive trace closure eliminates stale `.astro/data-store.json` hits without sacrificing incremental rebuild speed.
 
 ## Why Must Build-Time Inlined SVGs Be Pruned From Astro's Image Pipeline?
 
@@ -121,4 +128,10 @@ Because our diagrams rely on CSS custom properties (`var(--svg-*)` from [`src/st
 
 ![Semantic vector schematic showing Remark image registration followed by rehype-inline-svg DOM replacement and localImagePaths pruning](./svg-inlining-local-image-pruning.svg "Two-Stage Remark Registration and Rehype SVG Pruning")
 
-However, Astro's internal Remark image plugin runs *before* Rehype and pushes every `![alt](./diagram.svg)` path into `vfile.data.astro.localImagePaths`. By filtering `inlinedSrcs` and `.svg` entries out of `astroData.localImagePaths` at the end of [`rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) and recording `inlineSvgDependencies`, Astro's image pipeline only optimizes genuine raster assets like `hero.jpg`, while [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) remains completely free of manual `.astro/data-store.json` deletion hacks—unifying our [Schema.org ImageObject Metadata Pipeline](/posts/2026_10_16_schema_org_image_object_metadata_asset_governance/), [Zero-Artifact Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/), [Single-Root JSON-LD 1.1 Knowledge Graph Validator](/posts/2026_10_25_single_root_json_ld_knowledge_graph_validator/), and [Three-Band Adaptive SVG Color Governance](/posts/2026_11_07_three_band_figures_adaptive_svg_color_governance/).
+However, Astro's internal Remark image plugin runs *before* Rehype and pushes every `![alt](./diagram.svg)` path into `vfile.data.astro.localImagePaths`. By filtering `inlinedSrcs` and `.svg` entries out of `astroData.localImagePaths` at the end of [`rehype-inline-svg.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-inline-svg.ts) and recording `inlineSvgDependencies`, Astro's image pipeline stays deterministic:
+
+- **Inline DOM Scoping:** Replaces `<p><img src="./diagram.svg"></p>` with `<figure class="svg-diagram">` and SHA-256 prefixed IDs (`svg-${hash}-`).
+- **`localImagePaths` Pruning:** Strips inlined `.svg` paths from `vfile.data.astro.localImagePaths` so `astro:assets` optimizes only genuine raster images.
+- **Zero Cache-Wipe Hacks:** Keeps [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) free of manual `.astro/data-store.json` deletions.
+
+This pipeline unifies our [Schema.org ImageObject Metadata Pipeline](/posts/2026_10_16_schema_org_image_object_metadata_asset_governance/), [Zero-Artifact Content-Addressable Build Caching](/posts/2026_10_24_zero_artifact_repositories_content_addressable_build_caching/), [Single-Root JSON-LD 1.1 Knowledge Graph Validator](/posts/2026_10_25_single_root_json_ld_knowledge_graph_validator/), and [Three-Band Adaptive SVG Color Governance](/posts/2026_11_07_three_band_figures_adaptive_svg_color_governance/).

@@ -1,4 +1,6 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, sans-serif;" role="img" aria-label="Hybride Datenarchitektur und Mem0-Langzeitgedächtnis">
+  <title>Hybrid Memory Architecture</title>
+  <desc>Hybride Datenarchitektur und Mem0-Langzeitgedächtnis</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

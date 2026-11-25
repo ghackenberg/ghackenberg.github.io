@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%" style="background-color: var(--svg-bg); font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;" role="img" aria-label="Das B2B ROI-Paradoxon: Von Webtraffic zu Zitationsautorität">
+  <title>Webtraffic zu Zitationsautorität - Das B2B ROI-Paradoxon:</title>
+  <desc>Das B2B ROI-Paradoxon: Von Webtraffic zu Zitationsautorität</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

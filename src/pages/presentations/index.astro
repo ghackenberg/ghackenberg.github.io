@@ -33,7 +33,7 @@ const pagePreviewImage = presentations.find(t => t.data.image)?.data.image;
 
 <Layout
   title="Interactive Presentations | Dr. Georg Hackenberg"
-  description="Explore interactive presentations, keynote slide decks, and executive briefings by Dr. Georg Hackenberg on AI, search engines, knowledge graphs, and software architecture."
+  description="Interactive Slide-as-Code keynotes, audio briefings, and PDF decks by Dr. Georg Hackenberg on AI search (GEO/AEO), knowledge graphs & software architecture."
   image={pagePreviewImage}
   jsonLd={buildCollectionPageSchema("presentations", presentations.map((p) => ({ id: `https://hackenberg.tech/presentations/${p.id}/#presentation` })))}
   lang="en"

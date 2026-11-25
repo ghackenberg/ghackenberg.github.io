@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Three deterministic regulators of effective hop distance: 16-node focus budget, logarithmic hub degree penalty, and shared-parent triangulation discount">
+  <title>Focus Budget, Logarithmic Hub Penalty, and Multi-Path Triangulation</title>
+  <desc>Three deterministic regulators of effective hop distance in computeHopDistances: 16-node focus budget, logarithmic hub degree penalty, and shared-parent triangulation discount</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

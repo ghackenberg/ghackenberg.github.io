@@ -51,24 +51,25 @@ The table below details the technical parameters and graphical strengths of the 
 
 The following answers explain the numerical physics integration, DOM scaling thresholds, and ideal use cases for D3.js.
 
-### Numerical Integration
+### How Does D3-Force Solve Physics via Velocity Verlet Integration?
 
-D3 solves Newtonian motion equations using **Velocity Verlet integration**:
+D3 solves Newtonian motion equations using a deterministic Velocity Verlet integrator that tracks both position and velocity per simulation tick. Composable force modules accumulate repulsive Barnes-Hut charges, link springs, and collision radii before applying exponential alpha cooling so the graph converges cleanly:
+
 - **Position Updates**: Coordinates update iteratively via velocity and acceleration vectors each simulation frame.
 - **Alpha Cooling**: The simulation parameter alpha starts at 1.0 and decays toward minimum thresholds, gradually freezing node movement once forces balance.
 - **Collision Avoidance**: Radial collision forces prevent overlapping node circles while preserving cluster boundaries.
 
-### DOM Scalability
+### Why Does D3.js SVG Rendering Bottleneck Beyond 500 Nodes?
 
-Because D3 manages native SVG elements directly in the browser DOM, each entity incurs layout and paint overhead. Beyond 500 interconnected nodes, DOM garbage collection and style recalculations degrade interactive frame rates. For massive networks with thousands of nodes, canvas or WebGL engines (such as Vis.js or Sigma.js) provide higher throughput.
+Because D3 manages native SVG elements directly inside the browser DOM, every node, circle, and link edge incurs layout, paint, and style recalculation overhead. Beyond roughly 500 interconnected nodes, DOM garbage collection degrades frame rates, making Canvas or WebGL renderers necessary for larger graphs.
 
-### Engine Comparison
+### When Should You Choose D3.js Over Sigma.js, Cytoscape.js, or SimplexViz?
 
-D3.js is the preferred choice when graphical fidelity and precise typographic control outweigh raw entity counts:
-- **Publication Graphics**: Ideal for didactic figures, exportable vector diagrams, and technical case studies.
-- **DOM Interactivity**: Seamless integration with SVG filters, clip-paths, and CSS pseudo-classes.
-- **Complementary Tooling**: Use [Cytoscape.js](/visualizations/cytoscape/) for formal graph analytics, [Sigma.js](/visualizations/sigma/) for large-scale WebGL graphs exceeding 1,000 nodes, [Vis-Network](/visualizations/vis-network/) for HTML5 Canvas spring physics, or [3D Force-Graph](/visualizations/3d-force-graph/) for 3D Three.js topologies.
+Choose D3.js when pixel-perfect SVG typography, CSS theme responsiveness, and exportable publication graphics outweigh raw entity scale. When scaling up or requiring zero-overlap multi-tag geometry, select a complementary visualization engine:
 
-### Reference Documentation
+- **Publication Graphics & DOM Fidelity**: Ideal for didactic vector charts, custom SVG filters, clip-paths, and accessible inline DOM interactivity.
+- **Scaling & Layout Alternatives**: Use [Cytoscape.js](/visualizations/cytoscape/) for graph analytics, [Sigma.js](/visualizations/sigma/) for 1,000+ WebGL nodes, [Vis-Network](/visualizations/vis-network/) for Canvas springs, [3D Force-Graph](/visualizations/3d-force-graph/) for 3D Three.js topologies, or [SimplexViz](/visualizations/simplex-viz/) (see the [SimplexViz project](/projects/simplex-viz/)) for deterministic 60° simplex mesh packing.
 
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in [Interactive Graph Visualizations in JavaScript: WebGL, Cytoscape & 3D Compared](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For deep dives into our topological hop-attenuation model and Voronoi touch picking over SVG and Canvas viewports, see [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).
+### Where Are the D3.js Benchmarks and Interaction Physics Documented?
+
+A complete architectural walkthrough and comparative benchmark across our visualization engines is documented in [Interactive JavaScript Graph Visualizations: WebGL & 3D](/posts/2026_05_27_interactive_graph_visualizations_update/) and [Unified Interaction Physics Across Five Graph Engines](/posts/2026_11_05_five_graph_engines_unified_interaction_physics/). For topological hop-attenuation and Voronoi touch picking over SVG and Canvas viewports, see [Focus-Aware Hop Attenuation in Knowledge Graphs](/posts/2026_11_04_focus_aware_hop_attenuation_knowledge_graphs/) and [Voronoi Proximity Picking for Touch Graph Interaction](/posts/2026_11_06_voronoi_proximity_picking_touch_graph_interaction/).

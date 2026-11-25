@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="100%" height="auto" role="img" aria-label="Three-Tier Content-Addressable Build Cache Architecture across Branding, Edge-TTS Audio, and Slide PDFs">
+  <title>Three-Tier Content-Addressable Build Cache Pipeline (.cache/*)</title>
+  <desc>Comprehensive architectural schematic of the three-tier content-addressable build cache pipeline connecting source engines, out-of-tree .cache stores, and Dev/SSG/CI delivery surfaces</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

@@ -1,4 +1,4 @@
 ---
 title: "Cytoscape.js"
-description: "Graph analysis and network visualization library for complex relationship mapping and computational biology."
+description: "Client-side graph theory analytics, CoSE compound layouts, shortest-path search, and HTML5 Canvas network visualization with Cytoscape.js."
 ---

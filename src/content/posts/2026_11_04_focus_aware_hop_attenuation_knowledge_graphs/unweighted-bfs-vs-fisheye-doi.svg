@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="auto" role="img" aria-label="Comparison between unweighted 2-hop BFS hub explosion and focus-aware fisheye degree-of-interest hop attenuation">
+  <title>Unweighted BFS Hub Explosion vs. Focus-Aware Fisheye DOI Attenuation</title>
+  <desc>Comparison between unweighted 2-hop BFS hub explosion flooding over 80 percent of the graph and focus-aware fisheye degree-of-interest attenuation stretching crowded hubs outward</desc>
   <defs>
     <style>
       @import url('/styles/graphics.css');

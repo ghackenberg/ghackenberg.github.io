@@ -14,8 +14,8 @@ tags:
   - smart-workplace
 image:
   src: ./icon.jpg
-  title: Icon
-  description: KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht
+  title: "KI-Ergonomie: Adaptives Arbeitsplatz-Konzept"
+  description: "Isometrische Architektur-Illustration eines KI-gestützten ergonomischen Arbeitsplatzes mit Edge-Kamera, Wirbelsäulen-Wireframe, Höhenverstell- und Lumbaldruck-Telemetrie sowie zentralem Posture-AI-Knoten"
 references:
   - type: online
     title: "ISO 9241-5:2024: Ergonomics of human-system interaction — Part 5: Workstation layout and postural requirements"
