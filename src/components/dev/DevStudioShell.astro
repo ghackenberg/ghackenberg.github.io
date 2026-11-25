@@ -1678,9 +1678,10 @@ const manifestArtifact = await getContentManifestArtifact();
       this.currentGradientStops = null;
 
       // Reset Cockpit pane
+      const plausibleHost = (import.meta.env.PUBLIC_PLAUSIBLE_HOST || 'https://analytics.mentawise.com').replace(/\/$/, '');
       const plausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
       if (plausibleLink) {
-        plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
+        plausibleLink.href = `${plausibleHost}/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
       }
 
       const sankeyEl = document.getElementById('full-visitor-flow-sankey');
@@ -1811,9 +1812,10 @@ const manifestArtifact = await getContentManifestArtifact();
 
     private renderFullView(data: DevOverlayData): void {
       const { plausible, gsc } = data;
+      const plausibleHost = (import.meta.env.PUBLIC_PLAUSIBLE_HOST || 'https://analytics.mentawise.com').replace(/\/$/, '');
       const plausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
       if (plausibleLink) {
-        plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
+        plausibleLink.href = `${plausibleHost}/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
       }
 
       // Visitor Flow Stage (Docked Split or Maximized)

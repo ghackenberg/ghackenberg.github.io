@@ -1,5 +1,11 @@
 import { getGscPagePerformance } from '../clients/gsc.js';
-import { getPlausiblePageMetrics } from '../clients/plausible.js';
+import {
+  getPlausiblePageMetrics,
+  getPlausibleHumanVsAutomationBreakdown,
+  getPlausibleTrafficSources,
+  detectTechTrafficAnomalies,
+  summarizeAiAssistants,
+} from '../clients/plausible.js';
 import { normalizePath, toFullUrl } from './normalizer.js';
 import type { UnifiedPageAudit, PlausiblePageMetrics } from '../types.js';
 
@@ -10,8 +16,8 @@ export async function getUnifiedPageAudit(
   const normPath = normalizePath(urlOrPath);
   const fullUrl = toFullUrl(normPath);
 
-  // Execute both queries concurrently
-  const [gscMetrics, plausibleMetrics] = await Promise.all([
+  // Execute queries concurrently
+  const [gscMetrics, plausibleMetrics, humanBreakdown, pageSources] = await Promise.all([
     getGscPagePerformance(normPath, period).catch((err) => ({
       page: normPath,
       clicks: 0,
@@ -27,7 +33,40 @@ export async function getUnifiedPageAudit(
       bounceRate: null,
       visitDuration: null,
     })),
+    getPlausibleHumanVsAutomationBreakdown(normPath, period, 0).catch(() => null),
+    getPlausibleTrafficSources(period, 50, normPath).catch(() => []),
   ]);
+
+  const suspectedBotAnomalies = plausibleMetrics.tech
+    ? detectTechTrafficAnomalies(
+        plausibleMetrics.tech,
+        plausibleMetrics.pageviews,
+        plausibleMetrics.visitors,
+        plausibleMetrics.countries
+      )
+    : [];
+
+  const humanVerifiedVisitors = humanBreakdown?.humanVerifiedVisitors ?? 0;
+  const humanVerificationRate =
+    plausibleMetrics.visitors > 0 && humanBreakdown
+      ? Number(((humanVerifiedVisitors / plausibleMetrics.visitors) * 100).toFixed(1))
+      : null;
+
+  const trafficQuality = {
+    totalVisitors: plausibleMetrics.visitors,
+    humanVerifiedVisitors,
+    humanVerificationRate,
+    envTrustBreakdown: (humanBreakdown?.envTrustBreakdown ?? []).map((seg) => ({
+      ...seg,
+      percentage:
+        plausibleMetrics.visitors > 0
+          ? Number(((seg.visitors / plausibleMetrics.visitors) * 100).toFixed(1))
+          : seg.percentage,
+    })),
+    suspectedBotAnomalies,
+  };
+
+  const aiAssistants = summarizeAiAssistants(pageSources, plausibleMetrics.visitors);
 
   const notes: string[] = [];
   let status: UnifiedPageAudit['assessment']['status'] = 'healthy';
@@ -141,6 +180,33 @@ export async function getUnifiedPageAudit(
       notes.push(`Recorded goal conversions: ${summaryList.join('; ')}`);
     }
 
+    // AI assistant referral summary note
+    if (aiAssistants.visitors > 0) {
+      notes.push(
+        `AI assistant referrals: ${aiAssistants.visitors} visitors (${aiAssistants.sharePct}% of page visitors via ${aiAssistants.sources.map((s) => `${s.source}: ${s.visitors}`).join(', ')}).`
+      );
+    }
+
+    // Traffic quality & human verification notes
+    if (humanVerifiedVisitors > 0 && humanVerificationRate !== null) {
+      notes.push(
+        `Human-verified engagement: ${humanVerifiedVisitors}/${plausibleMetrics.visitors} visitors (${humanVerificationRate}%) triggered trusted client interaction.`
+      );
+    }
+
+    const suspectEnvSegment = trafficQuality.envTrustBreakdown.find((s) => s.envTrust === 'suspect');
+    if (suspectEnvSegment && suspectEnvSegment.visitors > 0) {
+      notes.push(
+        `Client automation guard flagged ${suspectEnvSegment.visitors} visitors (${suspectEnvSegment.percentage}%) with env_trust="suspect".`
+      );
+    }
+
+    if (suspectedBotAnomalies.length > 0) {
+      notes.push(
+        `Suspected automation anomalies (${suspectedBotAnomalies.length}): ${suspectedBotAnomalies.map((a) => `${a.segment} (${a.reason})`).join('; ')}.`
+      );
+    }
+
     if (gscMetrics.clicks > 10 && plausibleMetrics.visitors > 15 && (plausibleMetrics.bounceRate ?? 0) < 60) {
       notes.push('Strong engagement and solid search performance.');
     }
@@ -158,6 +224,8 @@ export async function getUnifiedPageAudit(
       topQueries: gscMetrics.queries || [],
     },
     plausible: plausibleMetrics,
+    trafficQuality,
+    aiAssistants,
     assessment: {
       status,
       notes,

@@ -7,22 +7,32 @@ import {
   getPlausibleTechBreakdown,
   getPlausibleGeoBreakdown,
   getPlausibleUtmBreakdown,
+  getPlausiblePageMetrics,
+  getPlausibleHumanVsAutomationBreakdown,
+  detectTechTrafficAnomalies,
+  summarizeAiAssistants,
 } from '../clients/plausible.js';
 import type {
   SiteOverviewSummary,
-  TrafficSourceMetric,
+  TrafficSourcesReport,
+  AudienceBreakdownReport,
   TopQueriesReport,
   RetentionBottleneck,
-  TechBreakdown,
-  GeoDimensionMetric,
-  UtmCampaignMetric,
   PlausibleGoalConversion,
 } from '../types.js';
 
 export async function getSiteOverview(
   period: string = 'last_28_days'
 ): Promise<SiteOverviewSummary> {
-  const [gscMetrics, plausibleMetrics, goalsSummary, techDistribution, topCountries] = await Promise.all([
+  const [
+    gscMetrics,
+    plausibleMetrics,
+    goalsSummary,
+    techDistribution,
+    topCountries,
+    trafficSources,
+    humanVsAutomation,
+  ] = await Promise.all([
     getGscSiteOverview(period).catch((err) => {
       console.warn(`GSC site overview query failed: ${err.message}`);
       return { clicks: 0, impressions: 0, ctr: 0, position: 0 };
@@ -34,7 +44,42 @@ export async function getSiteOverview(
     getPlausibleSiteGoals(period).catch(() => []),
     getPlausibleTechBreakdown(undefined, period).catch(() => ({ devices: [], operatingSystems: [], browsers: [] })),
     getPlausibleGeoBreakdown(undefined, period, undefined, 10).catch(() => []),
+    getPlausibleTrafficSources(period, 100).catch(() => []),
+    getPlausibleHumanVsAutomationBreakdown(undefined, period, 0).catch(() => ({
+      totalVisitors: 0,
+      humanVerifiedVisitors: 0,
+      humanVerificationRate: null,
+      envTrustBreakdown: [],
+    })),
   ]);
+
+  const suspectedBotAnomalies = detectTechTrafficAnomalies(
+    techDistribution,
+    plausibleMetrics.pageviews,
+    plausibleMetrics.visitors,
+    topCountries
+  );
+
+  const humanVerificationRate =
+    plausibleMetrics.visitors > 0
+      ? Number(((humanVsAutomation.humanVerifiedVisitors / plausibleMetrics.visitors) * 100).toFixed(1))
+      : null;
+
+  const trafficQuality = {
+    totalVisitors: plausibleMetrics.visitors,
+    humanVerifiedVisitors: humanVsAutomation.humanVerifiedVisitors,
+    humanVerificationRate,
+    envTrustBreakdown: humanVsAutomation.envTrustBreakdown.map((seg) => ({
+      ...seg,
+      percentage:
+        plausibleMetrics.visitors > 0
+          ? Number(((seg.visitors / plausibleMetrics.visitors) * 100).toFixed(1))
+          : seg.percentage,
+    })),
+    suspectedBotAnomalies,
+  };
+
+  const aiAssistants = summarizeAiAssistants(trafficSources, plausibleMetrics.visitors);
 
   const keyRecommendations: string[] = [];
   let trafficHealth: SiteOverviewSummary['assessment']['trafficHealth'] = 'early_stage';
@@ -67,9 +112,22 @@ export async function getSiteOverview(
     );
   }
 
+  if (aiAssistants.visitors > 0) {
+    keyRecommendations.push(
+      `AI Assistant referrals recorded ${aiAssistants.visitors} visitors (${aiAssistants.sharePct}% share via ${aiAssistants.sources.map((s) => `${s.source}: ${s.visitors}`).join(', ')}). Continue optimizing answer-first GEO structures.`
+    );
+  }
+
+  if (suspectedBotAnomalies.length > 0) {
+    keyRecommendations.push(
+      `Traffic quality alert: ${suspectedBotAnomalies.length} suspected automation cluster(s) detected (${suspectedBotAnomalies.map((a) => `${a.segment}: ${a.visitors}`).join(', ')}). Evaluate human-verified rates before interpreting bounce/duration KPIs.`
+    );
+  }
+
   const summary =
     `Site recorded ${plausibleMetrics.visitors} visitors (${plausibleMetrics.pageviews} pageviews, ` +
-    `bounce rate ${plausibleMetrics.bounceRate ?? 'n/a'}%, avg duration ${plausibleMetrics.visitDuration ?? 'n/a'}s) ` +
+    `bounce rate ${plausibleMetrics.bounceRate ?? 'n/a'}%, avg duration ${plausibleMetrics.visitDuration ?? 'n/a'}s, ` +
+    `AI referrals ${aiAssistants.visitors} [${aiAssistants.sharePct}%]) ` +
     `and ${gscMetrics.clicks} Google clicks from ${gscMetrics.impressions} impressions (CTR ${(gscMetrics.ctr * 100).toFixed(1)}%, avg position ${gscMetrics.position.toFixed(1)}).`;
 
   return {
@@ -89,6 +147,8 @@ export async function getSiteOverview(
     goalsSummary,
     techDistribution,
     topCountries,
+    trafficQuality,
+    aiAssistants,
     assessment: {
       summary,
       trafficHealth,
@@ -100,11 +160,25 @@ export async function getSiteOverview(
 export async function getTrafficSourcesReport(
   period: string = 'last_28_days',
   limit: number = 20
-): Promise<{ period: string; totalSources: number; sources: TrafficSourceMetric[] }> {
-  const sources = await getPlausibleTrafficSources(period, limit);
+): Promise<TrafficSourcesReport> {
+  const [allSources, overview] = await Promise.all([
+    getPlausibleTrafficSources(period, Math.max(limit, 100)),
+    getPlausibleSiteOverview(period).catch(() => null),
+  ]);
+
+  const totalVisitors =
+    overview && overview.visitors > 0
+      ? overview.visitors
+      : allSources.reduce((acc, s) => acc + s.visitors, 0);
+
+  const aiAssistantsSummary = summarizeAiAssistants(allSources, totalVisitors);
+  const sources = allSources.slice(0, limit);
+
   return {
     period,
     totalSources: sources.length,
+    totalVisitors,
+    aiAssistantsSummary,
     sources,
   };
 }
@@ -183,18 +257,39 @@ export async function findRetentionBottlenecks(
 export async function getAudienceBreakdownReport(
   period: string = 'last_28_days',
   urlOrPath?: string
-): Promise<{
-  period: string;
-  path?: string;
-  tech: TechBreakdown;
-  countries: GeoDimensionMetric[];
-  campaigns: UtmCampaignMetric[];
-}> {
-  const [tech, countries, campaigns] = await Promise.all([
+): Promise<AudienceBreakdownReport> {
+  const [tech, countries, campaigns, metricsOverview, humanBreakdown] = await Promise.all([
     getPlausibleTechBreakdown(urlOrPath, period),
     getPlausibleGeoBreakdown(urlOrPath, period, undefined, 20),
     getPlausibleUtmBreakdown(period, urlOrPath, 20),
+    (urlOrPath
+      ? getPlausiblePageMetrics(urlOrPath, period, false)
+      : getPlausibleSiteOverview(period)
+    ).catch(() => ({
+      visitors: 0,
+      pageviews: 0,
+      bounceRate: null,
+      visitDuration: null,
+    })),
+    getPlausibleHumanVsAutomationBreakdown(urlOrPath, period, 0).catch(() => ({
+      totalVisitors: 0,
+      humanVerifiedVisitors: 0,
+      humanVerificationRate: null,
+      envTrustBreakdown: [],
+    })),
   ]);
+
+  const suspectedAutomationClusters = detectTechTrafficAnomalies(
+    tech,
+    metricsOverview.pageviews,
+    metricsOverview.visitors,
+    countries
+  );
+
+  const humanVerificationRate =
+    metricsOverview.visitors > 0
+      ? Number(((humanBreakdown.humanVerifiedVisitors / metricsOverview.visitors) * 100).toFixed(1))
+      : null;
 
   return {
     period,
@@ -202,6 +297,16 @@ export async function getAudienceBreakdownReport(
     tech,
     countries,
     campaigns,
+    suspectedAutomationClusters,
+    envTrustBreakdown: humanBreakdown.envTrustBreakdown.map((seg) => ({
+      ...seg,
+      percentage:
+        metricsOverview.visitors > 0
+          ? Number(((seg.visitors / metricsOverview.visitors) * 100).toFixed(1))
+          : seg.percentage,
+    })),
+    humanVerifiedVisitors: humanBreakdown.humanVerifiedVisitors,
+    humanVerificationRate,
   };
 }
 

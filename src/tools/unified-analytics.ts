@@ -30,7 +30,7 @@ server.registerTool(
   'get_page_audit',
   {
     description:
-      'Retrieve consolidated SEO and engagement metrics (GSC clicks, impressions, CTR, average ranking position, top queries + Plausible visitors, pageviews, bounce rate, visit duration, scroll retention funnel, goal conversions with download/outbound URLs, and device/browser/OS breakdown with anomaly detection) for a relative path or full URL.',
+      'Retrieve consolidated SEO and engagement metrics (GSC clicks, impressions, CTR, average ranking position, top queries + Plausible visitors, pageviews, bounce rate, visit duration, scroll retention funnel, goal conversions, AI assistant referrals, Human Verified / env_trust traffic quality, and device/browser/OS breakdown with automation anomaly detection) for a relative path or full URL.',
     inputSchema: {
       path: z
         .string()
@@ -387,7 +387,7 @@ server.registerTool(
   'get_site_overview',
   {
     description:
-      'Retrieve site-wide consolidated performance and engagement metrics across the entire domain from Google Search Console (clicks, impressions, average CTR, average position) and Plausible Analytics (visitors, pageviews, average bounce rate, visit duration).',
+      'Retrieve site-wide consolidated performance and engagement metrics across the entire domain from Google Search Console (clicks, impressions, average CTR, average position) and Plausible Analytics (visitors, pageviews, average bounce rate, visit duration, AI assistant referral share, Human Verified / env_trust traffic quality, and suspected bot anomalies).',
     inputSchema: {
       period: z
         .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
@@ -426,7 +426,7 @@ server.registerTool(
   'get_traffic_sources',
   {
     description:
-      'Retrieve breakdown of traffic channels and referrers (e.g. Google, Direct, LinkedIn, search engines, AI platforms) with visitor counts, bounce rate, and visit duration from Plausible.',
+      'Retrieve breakdown of traffic channels and referrers (classified into ai_assistant, search_engine, social, direct, internal, referral with an aggregated aiAssistantsSummary) including visitor counts, bounce rate, and visit duration from Plausible.',
     inputSchema: {
       period: z
         .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
@@ -558,7 +558,7 @@ server.registerTool(
   'get_audience_breakdown',
   {
     description:
-      'Retrieve technical and demographic audience metrics (devices: Desktop/Mobile/Tablet, operating systems: Windows/iOS/Linux/Android/Mac, browsers: Chrome/Safari/Edge/Firefox, countries, and UTM campaign parameters) for the entire domain or a specific URL path.',
+      'Retrieve technical and demographic audience metrics (devices, operating systems, browsers, countries, UTM campaigns) plus suspectedAutomationClusters, envTrustBreakdown, and Human Verified engagement rates for the entire domain or a specific URL path.',
     inputSchema: {
       path: z
         .string()

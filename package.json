@@ -59,6 +59,8 @@
     "benchmark:vis": "tsx src/scripts/benchmark-visualizations.ts",
     "validate:vis": "tsx src/scripts/validate-visualizations.ts",
     "test:vis:e2e": "tsx src/scripts/test-visualizations-e2e.ts",
+    "test:telemetry": "tsx src/scripts/test-telemetry.ts",
+    "test:telemetry:e2e": "tsx src/scripts/test-telemetry.ts --e2e",
     "resolve:citations": "tsx src/scripts/resolve-citations.ts",
     "validate:jsonld": "tsx src/scripts/validate-jsonld.ts"
   },

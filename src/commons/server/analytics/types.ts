@@ -194,6 +194,45 @@ export interface PlausiblePageMetrics {
   timeseries?: PlausibleDailyTrafficPoint[];
 }
 
+export type TrafficChannelCategory =
+  | 'ai_assistant'
+  | 'search_engine'
+  | 'social'
+  | 'direct'
+  | 'internal'
+  | 'referral';
+
+export interface AiAssistantsSummary {
+  visitors: number;
+  sharePct: number;
+  sources: TrafficSourceMetric[];
+}
+
+export interface EnvTrustSegmentMetric {
+  envTrust: 'standard' | 'suspect' | '(not set)' | string;
+  visitors: number;
+  percentage: number;
+  bounceRate: number | null;
+  visitDuration: number | null;
+}
+
+export interface AutomationAnomaly {
+  dimension: 'os' | 'browser' | 'device' | 'country' | 'page_integrity';
+  segment: string;
+  visitors: number;
+  bounceRate: number | null;
+  visitDuration: number | null;
+  reason: string;
+}
+
+export interface TrafficQualitySummary {
+  totalVisitors: number;
+  humanVerifiedVisitors: number;
+  humanVerificationRate: number | null;
+  envTrustBreakdown: EnvTrustSegmentMetric[];
+  suspectedBotAnomalies: AutomationAnomaly[];
+}
+
 export interface UnifiedPageAudit {
   path: string;
   fullUrl: string;
@@ -202,6 +241,8 @@ export interface UnifiedPageAudit {
     topQueries: GscQueryMetric[];
   };
   plausible: PlausiblePageMetrics;
+  trafficQuality?: TrafficQualitySummary;
+  aiAssistants?: AiAssistantsSummary;
   assessment: {
     status: 'healthy' | 'needs_attention' | 'underperforming' | 'no_data';
     notes: string[];
@@ -395,6 +436,8 @@ export interface SiteOverviewSummary {
   goalsSummary?: PlausibleGoalConversion[];
   techDistribution?: TechBreakdown;
   topCountries?: GeoDimensionMetric[];
+  trafficQuality?: TrafficQualitySummary;
+  aiAssistants?: AiAssistantsSummary;
   assessment: {
     summary: string;
     trafficHealth: 'thriving' | 'growing' | 'early_stage' | 'low_traffic';
@@ -404,9 +447,30 @@ export interface SiteOverviewSummary {
 
 export interface TrafficSourceMetric {
   source: string;
+  channelCategory: TrafficChannelCategory;
   visitors: number;
   bounceRate: number | null;
   visitDuration: number | null;
+}
+
+export interface TrafficSourcesReport {
+  period: string;
+  totalSources: number;
+  totalVisitors: number;
+  aiAssistantsSummary: AiAssistantsSummary;
+  sources: TrafficSourceMetric[];
+}
+
+export interface AudienceBreakdownReport {
+  period: string;
+  path?: string;
+  tech: TechBreakdown;
+  countries: GeoDimensionMetric[];
+  campaigns: UtmCampaignMetric[];
+  suspectedAutomationClusters: AutomationAnomaly[];
+  envTrustBreakdown?: EnvTrustSegmentMetric[];
+  humanVerifiedVisitors?: number;
+  humanVerificationRate?: number | null;
 }
 
 export interface TopQueriesReport {

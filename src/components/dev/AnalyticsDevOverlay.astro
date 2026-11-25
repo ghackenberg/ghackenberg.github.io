@@ -9,6 +9,7 @@ interface Props {
 
 const { isInsideFrame = false } = Astro.props;
 const manifestArtifact = !isInsideFrame ? await getContentManifestArtifact() : null;
+const plausibleDashboardHost = (import.meta.env.PUBLIC_PLAUSIBLE_HOST || 'https://analytics.mentawise.com').replace(/\/$/, '');
 ---
 
 {!isInsideFrame && (
@@ -182,7 +183,7 @@ const manifestArtifact = !isInsideFrame ? await getContentManifestArtifact() : n
         <!-- External Dashboard Quick Link (lg+) -->
         <a
           id="dev-plausible-link"
-          href="https://plausible.io/hackenberg.tech"
+          href={`${plausibleDashboardHost}/hackenberg.tech`}
           target="_blank"
           rel="noopener noreferrer"
           class="h-7 w-7 hidden lg:flex items-center justify-center rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs transition-colors"
@@ -684,13 +685,14 @@ const manifestArtifact = !isInsideFrame ? await getContentManifestArtifact() : n
       if (fullPathEl) fullPathEl.textContent = currentPath;
 
       // Update Plausible direct links
+      const plausibleHost = (import.meta.env.PUBLIC_PLAUSIBLE_HOST || 'https://analytics.mentawise.com').replace(/\/$/, '');
       const plausibleLink = document.getElementById('dev-plausible-link') as HTMLAnchorElement | null;
       if (plausibleLink) {
-        plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(currentPath)}`;
+        plausibleLink.href = `${plausibleHost}/hackenberg.tech?page=${encodeURIComponent(currentPath)}`;
       }
       const fullPlausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
       if (fullPlausibleLink) {
-        fullPlausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(currentPath)}`;
+        fullPlausibleLink.href = `${plausibleHost}/hackenberg.tech?page=${encodeURIComponent(currentPath)}`;
       }
 
       this.setLoadingState(true);

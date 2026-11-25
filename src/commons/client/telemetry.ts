@@ -60,6 +60,9 @@ export interface TelemetryEventMap {
     id: string;
     collection?: string;
   };
+  'Human Verified': {
+    trigger: 'pointer' | 'scroll' | 'keyboard' | 'touch';
+  };
   'Filter Content': {
     type: 'dropdown' | 'button' | 'reset';
     key?: string;
@@ -101,20 +104,225 @@ export interface TelemetryEventMap {
 
 export type KnownTelemetryEvent = keyof TelemetryEventMap;
 
+export interface TrackEventOptions {
+  interactive?: boolean;
+}
+
+export type EnvTrustLevel = 'standard' | 'suspect';
+
+export interface ClientAutomationSignal {
+  dropReason: string | null;
+  envTrust: EnvTrustLevel;
+  reasons: string[];
+}
+
+export interface ClientAutomationEnv {
+  webdriver: boolean;
+  userAgent: string;
+  automationGlobals: string[];
+  documentKeys: string[];
+  outerWidth: number;
+  outerHeight: number;
+  innerWidth: number;
+  languages: readonly string[] | null;
+  hasMatchMedia: boolean;
+  hardwareConcurrency: number | null;
+}
+
+export type AutomationGlobalValue = string | number | boolean | (() => void) | Record<string, never>;
+
+export interface AutomationWindow extends Window {
+  doNotTrack?: string;
+  _phantom?: AutomationGlobalValue;
+  __nightmare?: AutomationGlobalValue;
+  Cypress?: AutomationGlobalValue;
+  __plausible?: boolean;
+  __playwright__binding__?: AutomationGlobalValue;
+  __pwInitScripts?: AutomationGlobalValue;
+  domAutomation?: AutomationGlobalValue;
+  domAutomationController?: AutomationGlobalValue;
+  __puppeteer_evaluation_script__?: AutomationGlobalValue;
+}
+
+const NON_INTERACTIVE_EVENTS: ReadonlySet<string> = new Set([
+  'Section Viewed',
+  'Heading Viewed',
+  'Card Viewed',
+  'Human Verified',
+]);
+
+const AUTOMATION_WINDOW_KEYS = [
+  '_phantom',
+  '__nightmare',
+  'Cypress',
+  '__playwright__binding__',
+  '__pwInitScripts',
+  'domAutomation',
+  'domAutomationController',
+  '__puppeteer_evaluation_script__',
+] as const;
+
+const AUTOMATION_UA_REGEX = /HeadlessChrome|PhantomJS|SlimerJS|CasperJS|Playwright|Puppeteer/i;
+const DESKTOP_UA_REGEX = /Windows|Macintosh|X11|Linux/i;
+const MOBILE_UA_REGEX = /Mobile|Android|iPhone|iPad/i;
+
+function hasTruthyWindowProp(
+  win: AutomationWindow,
+  key: (typeof AUTOMATION_WINDOW_KEYS)[number]
+): boolean {
+  switch (key) {
+    case '_phantom':
+      return Boolean(win._phantom);
+    case '__nightmare':
+      return Boolean(win.__nightmare);
+    case 'Cypress':
+      return Boolean(win.Cypress);
+    case '__playwright__binding__':
+      return Boolean(win.__playwright__binding__);
+    case '__pwInitScripts':
+      return Boolean(win.__pwInitScripts);
+    case 'domAutomation':
+      return Boolean(win.domAutomation);
+    case 'domAutomationController':
+      return Boolean(win.domAutomationController);
+    case '__puppeteer_evaluation_script__':
+      return Boolean(win.__puppeteer_evaluation_script__);
+  }
+}
+
+function readBrowserAutomationEnv(): ClientAutomationEnv | null {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined' || typeof document === 'undefined') {
+    return null;
+  }
+
+  const win = window as AutomationWindow;
+  const automationGlobals: string[] = [];
+  for (const key of AUTOMATION_WINDOW_KEYS) {
+    if (key in win && hasTruthyWindowProp(win, key)) {
+      automationGlobals.push(key);
+    }
+  }
+
+  let documentKeys: string[] = [];
+  try {
+    documentKeys = Object.keys(document);
+  } catch {
+    documentKeys = [];
+  }
+
+  return {
+    webdriver: navigator.webdriver === true,
+    userAgent: typeof navigator.userAgent === 'string' ? navigator.userAgent : '',
+    automationGlobals,
+    documentKeys,
+    outerWidth: typeof win.outerWidth === 'number' ? win.outerWidth : 0,
+    outerHeight: typeof win.outerHeight === 'number' ? win.outerHeight : 0,
+    innerWidth: typeof win.innerWidth === 'number' ? win.innerWidth : 0,
+    languages: Array.isArray(navigator.languages) ? navigator.languages : null,
+    hasMatchMedia: typeof win.matchMedia === 'function',
+    hardwareConcurrency:
+      typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : null,
+  };
+}
+
+/**
+ * Evaluates transient, zero-fingerprinting runtime signals to drop obvious headless/automation
+ * traffic via `transformRequest` and classify softer anomalies under `env_trust`.
+ */
+export function evaluateClientAutomationSignal(env?: ClientAutomationEnv): ClientAutomationSignal {
+  const resolved = env ?? readBrowserAutomationEnv();
+  if (!resolved) {
+    return { dropReason: null, envTrust: 'standard', reasons: [] };
+  }
+
+  const reasons: string[] = [];
+  let dropReason: string | null = null;
+
+  if (resolved.webdriver) {
+    dropReason = 'webdriver';
+    reasons.push('navigator.webdriver');
+  } else if (AUTOMATION_UA_REGEX.test(resolved.userAgent)) {
+    dropReason = 'automation_ua';
+    reasons.push('automation_user_agent');
+  } else if (resolved.automationGlobals.length > 0) {
+    dropReason = 'automation_global';
+    reasons.push(`globals:${resolved.automationGlobals.join(',')}`);
+  } else if (resolved.documentKeys.some((k) => k.startsWith('$cdc_') || k.startsWith('cdc_'))) {
+    dropReason = 'chromedriver_cdc';
+    reasons.push('chromedriver_cdc_property');
+  }
+
+  const isDesktopUa =
+    DESKTOP_UA_REGEX.test(resolved.userAgent) && !MOBILE_UA_REGEX.test(resolved.userAgent);
+  if (
+    isDesktopUa &&
+    resolved.outerWidth === 0 &&
+    resolved.outerHeight === 0 &&
+    resolved.innerWidth > 0
+  ) {
+    reasons.push('zero_outer_dimensions');
+  }
+
+  if (Array.isArray(resolved.languages) && resolved.languages.length === 0) {
+    reasons.push('empty_languages');
+  }
+
+  if (!resolved.hasMatchMedia) {
+    reasons.push('missing_match_media');
+  }
+
+  if (resolved.hardwareConcurrency === 0) {
+    reasons.push('zero_hardware_concurrency');
+  }
+
+  const envTrust: EnvTrustLevel =
+    dropReason !== null || reasons.length > 0 ? 'suspect' : 'standard';
+
+  return {
+    dropReason,
+    envTrust,
+    reasons,
+  };
+}
+
+/**
+ * Executes a callback only once the document is in `'visible'` state,
+ * preventing passive observers from firing in prerendered or hidden tabs.
+ */
+export function whenPageVisible(cb: () => void): void {
+  if (typeof document === 'undefined') return;
+  if (document.visibilityState === 'visible') {
+    cb();
+    return;
+  }
+
+  const onVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      cb();
+    }
+  };
+
+  document.addEventListener('visibilitychange', onVisibilityChange);
+}
+
 /**
  * Safely dispatches a typed custom event to Plausible.
  */
 export function trackEvent<E extends KnownTelemetryEvent>(
   eventName: E,
-  props?: TelemetryEventMap[E]
+  props?: TelemetryEventMap[E],
+  options?: TrackEventOptions
 ): void;
 export function trackEvent(
   eventName: string,
-  props?: Record<string, string | number | boolean | undefined>
+  props?: Record<string, string | number | boolean | undefined>,
+  options?: TrackEventOptions
 ): void;
 export function trackEvent(
   eventName: string,
-  props?: Record<string, string | number | boolean | undefined>
+  props?: Record<string, string | number | boolean | undefined>,
+  options?: TrackEventOptions
 ): void {
   try {
     const formattedProps: Record<string, string> | undefined = props
@@ -125,7 +333,20 @@ export function trackEvent(
         )
       : undefined;
 
-    trackPlausible(eventName, formattedProps ? { props: formattedProps } : {});
+    const interactive = options?.interactive ?? !NON_INTERACTIVE_EVENTS.has(eventName);
+    const plausibleOptions: {
+      props?: Record<string, string>;
+      interactive?: boolean;
+    } = {};
+
+    if (formattedProps && Object.keys(formattedProps).length > 0) {
+      plausibleOptions.props = formattedProps;
+    }
+    if (!interactive) {
+      plausibleOptions.interactive = false;
+    }
+
+    trackPlausible(eventName, plausibleOptions);
   } catch (err) {
     // Fail silently in development or if adblocker interferes
     console.debug(`[Telemetry] Failed to track event "${eventName}":`, err);
@@ -135,7 +356,8 @@ export function trackEvent(
 let isAnalyticsInitialized = false;
 
 /**
- * Initializes Plausible Analytics tracker with consent-free internal referrer step tracking.
+ * Initializes Plausible Analytics tracker with consent-free internal referrer step tracking
+ * and zero-fingerprinting automation guards.
  */
 export function initAnalytics(): void {
   if (typeof window === 'undefined' || isAnalyticsInitialized) return;
@@ -146,7 +368,7 @@ export function initAnalytics(): void {
     if (
       navigator.globalPrivacyControl === true ||
       navigator.doNotTrack === '1' ||
-      (window as Window & { doNotTrack?: string }).doNotTrack === '1'
+      (window as AutomationWindow).doNotTrack === '1'
     ) {
       localStorage.setItem('plausible_ignore', 'true');
     }
@@ -171,7 +393,10 @@ export function initAnalytics(): void {
       bindToWindow: true,
       customProperties: () => ({
         prev_page: getPreviousInternalPage(),
+        env_trust: evaluateClientAutomationSignal().envTrust,
       }),
+      transformRequest: (payload) =>
+        evaluateClientAutomationSignal().dropReason ? null : payload,
     });
   } catch (err) {
     console.debug('[Telemetry] Failed to initialize Plausible tracker:', err);
@@ -180,8 +405,9 @@ export function initAnalytics(): void {
 
 /**
  * Initializes semantic section visibility tracking.
- * Uses an IntersectionObserver with a 1.5s dwell-time threshold to avoid
+ * Uses an IntersectionObserver with a 2.0s dwell-time threshold to avoid
  * capturing accidental fast-scrolls. Each section is only tracked once per pageview.
+ * Delayed until `document.visibilityState === 'visible'` so hidden/prerender tabs never emit events.
  */
 export function initSectionTracking(): void {
   if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
@@ -189,100 +415,114 @@ export function initSectionTracking(): void {
   const trackedSections = new Set<string>();
   const dwellTimers = new Map<Element, number>();
 
-  // Select sections to track:
-  // 1. Explicit macro sections rendered via <Section id="..."> ([data-page-section][id])
-  // 2. Content headings (h2, h3, h4 with IDs inside article or main, excluding preview cards)
-  const candidateElements: HTMLElement[] = [];
+  whenPageVisible(() => {
+    // Select sections to track:
+    // 1. Explicit macro sections rendered via <Section id="..."> ([data-page-section][id])
+    // 2. Content headings (h2, h3, h4 with IDs inside article or main, excluding preview cards)
+    const candidateElements: HTMLElement[] = [];
 
-  const sections = document.querySelectorAll<HTMLElement>('[data-page-section][id]');
-  sections.forEach((el) => {
-    // Exclude slides and elements nested inside the presentation player (handled by dedicated Slide Viewed telemetry)
-    if (el.closest('#presentation-player, .slide-deck-container') && el.id !== 'presentation-player') {
-      return;
-    }
+    const sections = document.querySelectorAll<HTMLElement>('[data-page-section][id]');
+    sections.forEach((el) => {
+      // Exclude slides and elements nested inside the presentation player (handled by dedicated Slide Viewed telemetry)
+      if (el.closest('#presentation-player, .slide-deck-container') && el.id !== 'presentation-player') {
+        return;
+      }
 
-    const id = el.id;
-    if (id && !trackedSections.has(id)) {
-      candidateElements.push(el);
-    }
-  });
+      const id = el.id;
+      if (id && !trackedSections.has(id)) {
+        candidateElements.push(el);
+      }
+    });
 
-  // Include article and content headings (h2, h3, h4 with IDs)
-  const contentHeadings = document.querySelectorAll<HTMLElement>(
-    'article :is(h2, h3, h4)[id], .post-body :is(h2, h3, h4)[id], .prose-custom :is(h2, h3, h4)[id], .prose :is(h2, h3, h4)[id], main :is(h2, h3, h4)[id]'
-  );
-  contentHeadings.forEach((el) => {
-    // Exclude headings inside preview-cards / tag-cards (handled by Card Tracking)
-    // and headings inside presentation player / slide deck (handled by SlideDeck)
-    if (el.closest('.preview-card, .tag-card, #presentation-player, .slide-deck-container, dialog, [role="dialog"], .modal')) return;
+    // Include article and content headings (h2, h3, h4 with IDs)
+    const contentHeadings = document.querySelectorAll<HTMLElement>(
+      'article :is(h2, h3, h4)[id], .post-body :is(h2, h3, h4)[id], .prose-custom :is(h2, h3, h4)[id], .prose :is(h2, h3, h4)[id], main :is(h2, h3, h4)[id]'
+    );
+    contentHeadings.forEach((el) => {
+      // Exclude headings inside preview-cards / tag-cards (handled by Card Tracking)
+      // and headings inside presentation player / slide deck (handled by SlideDeck)
+      if (el.closest('.preview-card, .tag-card, #presentation-player, .slide-deck-container, dialog, [role="dialog"], .modal')) return;
 
-    if (el.id && !trackedSections.has(el.id)) {
-      candidateElements.push(el);
-    }
-  });
+      if (el.id && !trackedSections.has(el.id)) {
+        candidateElements.push(el);
+      }
+    });
 
-  if (candidateElements.length === 0) return;
+    if (candidateElements.length === 0) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const el = entry.target as HTMLElement;
-        const sectionId = el.id;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target as HTMLElement;
+          const sectionId = el.id;
 
-        if (trackedSections.has(sectionId)) {
-          observer.unobserve(el);
-          return;
-        }
+          if (trackedSections.has(sectionId)) {
+            observer.unobserve(el);
+            return;
+          }
 
-        if (entry.isIntersecting) {
-          // Start dwell timer (2.0 seconds threshold)
-          if (!dwellTimers.has(el)) {
-            const timerId = window.setTimeout(() => {
-              if (!trackedSections.has(sectionId)) {
-                trackedSections.add(sectionId);
-                dwellTimers.delete(el);
-                observer.unobserve(el);
-
-                const isHeading = /^H[1-6]$/i.test(el.tagName);
-                if (isHeading) {
-                  trackEvent('Heading Viewed', {
-                    id: sectionId,
-                    level: el.tagName.toLowerCase(),
-                  });
-                } else if (el.hasAttribute('data-page-section')) {
-                  trackEvent('Section Viewed', {
-                    id: sectionId,
-                  });
+          if (entry.isIntersecting && document.visibilityState === 'visible') {
+            // Start dwell timer (2.0 seconds threshold)
+            if (!dwellTimers.has(el)) {
+              const timerId = window.setTimeout(() => {
+                if (document.visibilityState !== 'visible') {
+                  dwellTimers.delete(el);
+                  return;
                 }
-              }
-            }, 2000);
+                if (!trackedSections.has(sectionId)) {
+                  trackedSections.add(sectionId);
+                  dwellTimers.delete(el);
+                  observer.unobserve(el);
 
-            dwellTimers.set(el, timerId);
-          }
-        } else {
-          // If scrolled away before 2.0s, cancel timer
-          if (dwellTimers.has(el)) {
-            clearTimeout(dwellTimers.get(el));
-            dwellTimers.delete(el);
-          }
-        }
-      });
-    },
-    {
-      threshold: 0.5,
-      rootMargin: '0px 0px -5% 0px'
-    }
-  );
+                  const isHeading = /^H[1-6]$/i.test(el.tagName);
+                  if (isHeading) {
+                    trackEvent(
+                      'Heading Viewed',
+                      {
+                        id: sectionId,
+                        level: el.tagName.toLowerCase(),
+                      },
+                      { interactive: false }
+                    );
+                  } else if (el.hasAttribute('data-page-section')) {
+                    trackEvent(
+                      'Section Viewed',
+                      {
+                        id: sectionId,
+                      },
+                      { interactive: false }
+                    );
+                  }
+                }
+              }, 2000);
 
-  candidateElements.forEach((el) => observer.observe(el));
+              dwellTimers.set(el, timerId);
+            }
+          } else {
+            // If scrolled away or tab became hidden before 2.0s, cancel timer
+            if (dwellTimers.has(el)) {
+              clearTimeout(dwellTimers.get(el));
+              dwellTimers.delete(el);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+        rootMargin: '0px 0px -5% 0px'
+      }
+    );
+
+    candidateElements.forEach((el) => observer.observe(el));
+  });
 }
 
 /**
  * Initializes Preview Card impression and click tracking for catalog / discovery feeds
  * (Homepage, Posts, Courses, Projects, Publications, Visualizations, Services).
- * 
- * - Card Viewed: Fired once per card when visible >= 50% for at least 1.5 seconds.
- * - Card Clicked: Fired when the user clicks or navigates via a teaser card.
+ *
+ * - Card Viewed: Fired once per card when visible >= 50% for at least 1.5 seconds (non-interactive).
+ * - Card Clicked: Fired when the user clicks or navigates via a teaser card (interactive).
  * Enables Click-Through-Rate (CTR = Card Clicked / Card Viewed) telemetry.
  */
 export function initCardTracking(): void {
@@ -291,56 +531,66 @@ export function initCardTracking(): void {
   const trackedCards = new Set<string>();
   const dwellTimers = new Map<Element, number>();
 
-  const cards = document.querySelectorAll<HTMLElement>('.preview-card[data-card-id], [data-card-id]');
-  if (cards.length === 0) return;
+  whenPageVisible(() => {
+    const cards = document.querySelectorAll<HTMLElement>('.preview-card[data-card-id], [data-card-id]');
+    if (cards.length === 0) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const el = entry.target as HTMLElement;
-        const cardId = el.getAttribute('data-card-id');
-        if (!cardId) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target as HTMLElement;
+          const cardId = el.getAttribute('data-card-id');
+          if (!cardId) return;
 
-        if (trackedCards.has(cardId)) {
-          observer.unobserve(el);
-          return;
-        }
-
-        if (entry.isIntersecting) {
-          // 1.5 second dwell time to capture intentional consideration
-          if (!dwellTimers.has(el)) {
-            const timerId = window.setTimeout(() => {
-              if (!trackedCards.has(cardId)) {
-                trackedCards.add(cardId);
-                dwellTimers.delete(el);
-                observer.unobserve(el);
-
-                const collection = el.getAttribute('data-collection') || 'content';
-
-                trackEvent('Card Viewed', {
-                  id: cardId,
-                  collection
-                });
-              }
-            }, 1500);
-
-            dwellTimers.set(el, timerId);
+          if (trackedCards.has(cardId)) {
+            observer.unobserve(el);
+            return;
           }
-        } else {
-          if (dwellTimers.has(el)) {
-            clearTimeout(dwellTimers.get(el));
-            dwellTimers.delete(el);
-          }
-        }
-      });
-    },
-    {
-      threshold: 0.5,
-      rootMargin: '0px 0px 0px 0px'
-    }
-  );
 
-  cards.forEach((el) => observer.observe(el));
+          if (entry.isIntersecting && document.visibilityState === 'visible') {
+            // 1.5 second dwell time to capture intentional consideration
+            if (!dwellTimers.has(el)) {
+              const timerId = window.setTimeout(() => {
+                if (document.visibilityState !== 'visible') {
+                  dwellTimers.delete(el);
+                  return;
+                }
+                if (!trackedCards.has(cardId)) {
+                  trackedCards.add(cardId);
+                  dwellTimers.delete(el);
+                  observer.unobserve(el);
+
+                  const collection = el.getAttribute('data-collection') || 'content';
+
+                  trackEvent(
+                    'Card Viewed',
+                    {
+                      id: cardId,
+                      collection
+                    },
+                    { interactive: false }
+                  );
+                }
+              }, 1500);
+
+              dwellTimers.set(el, timerId);
+            }
+          } else {
+            if (dwellTimers.has(el)) {
+              clearTimeout(dwellTimers.get(el));
+              dwellTimers.delete(el);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+        rootMargin: '0px 0px 0px 0px'
+      }
+    );
+
+    cards.forEach((el) => observer.observe(el));
+  });
 
   // Delegate click tracking for preview cards to compute CTR
   document.addEventListener('click', (e) => {
@@ -365,6 +615,76 @@ export function initCardTracking(): void {
       collection
     });
   });
+}
+
+let humanVerifiedSentForPage = false;
+let cleanupHumanListeners: (() => void) | null = null;
+
+/**
+ * Resets transient in-memory human verification state (for SPA / View Transitions).
+ */
+export function resetHumanInteractionTracking(): void {
+  humanVerifiedSentForPage = false;
+  if (cleanupHumanListeners) {
+    cleanupHumanListeners();
+    cleanupHumanListeners = null;
+  }
+}
+
+/**
+ * Emits a single non-interactive `'Human Verified'` event per pageview upon the first
+ * trusted user input (`event.isTrusted === true`) while the page is visible.
+ * Uses strictly transient RAM state (zero storage, zero fingerprinting).
+ */
+export function initHumanInteractionTracking(): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (humanVerifiedSentForPage) return;
+
+  if (cleanupHumanListeners) {
+    cleanupHumanListeners();
+    cleanupHumanListeners = null;
+  }
+
+  const triggerOnce = (
+    event: Event,
+    trigger: TelemetryEventMap['Human Verified']['trigger']
+  ) => {
+    if (humanVerifiedSentForPage) return;
+    if (event.isTrusted !== true) return;
+    if (document.visibilityState !== 'visible') return;
+
+    humanVerifiedSentForPage = true;
+    if (cleanupHumanListeners) {
+      cleanupHumanListeners();
+      cleanupHumanListeners = null;
+    }
+
+    trackEvent('Human Verified', { trigger }, { interactive: false });
+  };
+
+  const onPointerDown = (e: Event) => triggerOnce(e, 'pointer');
+  const onWheel = (e: Event) => triggerOnce(e, 'scroll');
+  const onTouchStart = (e: Event) => triggerOnce(e, 'touch');
+  const onKeyDown = (e: Event) => triggerOnce(e, 'keyboard');
+  const onScroll = (e: Event) => {
+    if (window.scrollY > 24) {
+      triggerOnce(e, 'scroll');
+    }
+  };
+
+  window.addEventListener('pointerdown', onPointerDown, { passive: true });
+  window.addEventListener('wheel', onWheel, { passive: true });
+  window.addEventListener('touchstart', onTouchStart, { passive: true });
+  window.addEventListener('keydown', onKeyDown, { passive: true });
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  cleanupHumanListeners = () => {
+    window.removeEventListener('pointerdown', onPointerDown);
+    window.removeEventListener('wheel', onWheel);
+    window.removeEventListener('touchstart', onTouchStart);
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('scroll', onScroll);
+  };
 }
 
 /**
@@ -463,6 +783,12 @@ if (typeof window !== 'undefined') {
     initCardTracking();
     initDeclarativeClickTracking();
     initCopyTracking();
+    initHumanInteractionTracking();
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    resetHumanInteractionTracking();
+    initHumanInteractionTracking();
   });
 }
 

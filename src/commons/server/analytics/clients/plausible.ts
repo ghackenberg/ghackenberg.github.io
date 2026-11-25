@@ -14,6 +14,11 @@ import type {
   CardCtrMetric,
   PlausibleVisitorFlow,
   VisitorFlowItem,
+  TrafficChannelCategory,
+  TrafficSourceMetric,
+  AiAssistantsSummary,
+  EnvTrustSegmentMetric,
+  AutomationAnomaly,
 } from '../types.js';
 
 export function resolvePlausibleParams(period: string = 'last_28_days'): { period: string; date?: string } {
@@ -50,7 +55,9 @@ export interface PlausibleBreakdownRow {
   page?: string;
   id?: string;
   section_id?: string;
+  env_trust?: string;
   'event:props:id'?: string;
+  'event:props:env_trust'?: string;
   visitors?: number;
   events?: number;
   bounce_rate?: number | null;
@@ -66,7 +73,8 @@ export async function fetchBreakdown(
   period: string,
   filter?: string,
   metrics: string = 'visitors,bounce_rate,visit_duration',
-  limit: number = 30
+  limit: number = 30,
+  silent: boolean = false
 ): Promise<PlausibleBreakdownRow[]> {
   const config = getConfig();
   if (!config.plausible.apiKey) return [];
@@ -93,15 +101,19 @@ export async function fetchBreakdown(
     });
 
     if (!res.ok) {
-      const errText = await res.text();
-      console.warn(`Plausible breakdown error for ${property}: ${errText}`);
+      if (!silent) {
+        const errText = await res.text();
+        console.warn(`Plausible breakdown error for ${property}: ${errText}`);
+      }
       return [];
     }
 
     const data = await res.json();
     return data.results || [];
   } catch (err) {
-    console.warn(`Failed to contact Plausible breakdown API (${property}): ${(err as Error).message}`);
+    if (!silent) {
+      console.warn(`Failed to contact Plausible breakdown API (${property}): ${(err as Error).message}`);
+    }
     return [];
   }
 }
@@ -486,31 +498,185 @@ export async function getPlausibleSiteOverview(
   }
 }
 
+const AI_ASSISTANT_HOSTS = [
+  'chatgpt.com',
+  'chat.openai.com',
+  'perplexity.ai',
+  'labs.perplexity.ai',
+  'claude.ai',
+  'gemini.google.com',
+  'bard.google.com',
+  'aistudio.google.com',
+  'copilot.microsoft.com',
+  'edgeservices.bing.com',
+  'you.com',
+  'phind.com',
+  'kagi.com',
+  'grok.com',
+  'x.ai',
+  'mistral.ai',
+  'chat.mistral.ai',
+  'deepseek.com',
+  'chat.deepseek.com',
+  'poe.com',
+] as const;
+
+const AI_ASSISTANT_LABELS = new Set([
+  'chatgpt',
+  'perplexity',
+  'claude',
+  'gemini',
+  'copilot',
+  'deepseek',
+  'mistral',
+  'phind',
+  'you',
+  'grok',
+  'poe',
+]);
+
+const SEARCH_ENGINE_LABELS = new Set([
+  'google',
+  'bing',
+  'duckduckgo',
+  'yahoo',
+  'yahoo!',
+  'yandex',
+  'baidu',
+  'ecosia',
+  'qwant',
+  'brave',
+  'startpage',
+  'searx',
+]);
+
+const SEARCH_ENGINE_HOST_PATTERNS = [
+  /(^|\.)google\.[a-z.]+$/,
+  /(^|\.)bing\.com$/,
+  /(^|\.)duckduckgo\.com$/,
+  /(^|\.)yahoo\.com$/,
+  /(^|\.)yandex\.[a-z.]+$/,
+  /(^|\.)baidu\.com$/,
+  /(^|\.)ecosia\.org$/,
+  /(^|\.)qwant\.com$/,
+  /(^|\.)search\.brave\.com$/,
+  /(^|\.)startpage\.com$/,
+];
+
+const SOCIAL_LABELS = new Set([
+  'linkedin',
+  'twitter',
+  'x',
+  'reddit',
+  'facebook',
+  'instagram',
+  'hacker news',
+  'mastodon',
+  'bluesky',
+  'youtube',
+  'threads',
+]);
+
+const SOCIAL_HOSTS = [
+  'linkedin.com',
+  'lnkd.in',
+  't.co',
+  'twitter.com',
+  'x.com',
+  'reddit.com',
+  'redd.it',
+  'facebook.com',
+  'fb.com',
+  'instagram.com',
+  'news.ycombinator.com',
+  'bsky.app',
+  'threads.net',
+  'youtube.com',
+  'youtu.be',
+  'mastodon.social',
+  'fosstodon.org',
+] as const;
+
+function normalizeSourceHost(rawSource: string): string {
+  const trimmed = rawSource.trim().toLowerCase();
+  if (!trimmed) return '';
+  if (trimmed.includes('://')) {
+    try {
+      return new URL(trimmed).hostname.replace(/^www\./, '');
+    } catch {
+      return trimmed.replace(/^www\./, '');
+    }
+  }
+  const withoutPath = trimmed.split('/')[0].split('?')[0].split('#')[0];
+  return withoutPath.replace(/^www\./, '');
+}
+
+function matchesHostOrSubdomain(host: string, domain: string): boolean {
+  return host === domain || host.endsWith(`.${domain}`);
+}
+
 /**
- * Fetches breakdown of traffic sources (referrers) from Plausible.
+ * Classifies a Plausible `visit:source` string into a standardized channel category,
+ * separating human AI referrals (`ai_assistant`) from traditional search engines.
+ */
+export function classifyTrafficSource(source: string): TrafficChannelCategory {
+  const raw = (source || '').trim().toLowerCase();
+  if (!raw || raw === '(none)' || raw === 'direct / none' || raw === 'direct') {
+    return 'direct';
+  }
+
+  const host = normalizeSourceHost(raw);
+
+  if (AI_ASSISTANT_LABELS.has(raw) || AI_ASSISTANT_HOSTS.some((d) => matchesHostOrSubdomain(host, d))) {
+    return 'ai_assistant';
+  }
+
+  if (matchesHostOrSubdomain(host, 'hackenberg.tech')) {
+    return 'internal';
+  }
+
+  if (SEARCH_ENGINE_LABELS.has(raw) || SEARCH_ENGINE_HOST_PATTERNS.some((re) => re.test(host))) {
+    return 'search_engine';
+  }
+
+  if (SOCIAL_LABELS.has(raw) || SOCIAL_HOSTS.some((d) => matchesHostOrSubdomain(host, d))) {
+    return 'social';
+  }
+
+  return 'referral';
+}
+
+/**
+ * Fetches breakdown of traffic sources (referrers) from Plausible, classified by channel category.
  */
 export async function getPlausibleTrafficSources(
   period: string = 'last_28_days',
-  limit: number = 20
-): Promise<Array<{ source: string; visitors: number; bounceRate: number | null; visitDuration: number | null }>> {
+  limit: number = 20,
+  urlOrPath?: string
+): Promise<TrafficSourceMetric[]> {
   const config = getConfig();
 
   if (!config.plausible.apiKey) {
     return [];
   }
 
+  const normPath = urlOrPath ? normalizePath(urlOrPath) : undefined;
   const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
-  const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
-  url.searchParams.set('site_id', config.plausible.siteId);
-  url.searchParams.set('period', plausiblePeriod);
-  if (plausibleDate) {
-    url.searchParams.set('date', plausibleDate);
-  }
-  url.searchParams.set('property', 'visit:source');
-  url.searchParams.set('metrics', 'visitors,bounce_rate,visit_duration');
-  url.searchParams.set('limit', String(limit));
 
-  try {
+  const querySources = async (filterPath?: string): Promise<TrafficSourceMetric[]> => {
+    const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
+    url.searchParams.set('site_id', config.plausible.siteId);
+    url.searchParams.set('period', plausiblePeriod);
+    if (plausibleDate) {
+      url.searchParams.set('date', plausibleDate);
+    }
+    url.searchParams.set('property', 'visit:source');
+    url.searchParams.set('metrics', 'visitors,bounce_rate,visit_duration');
+    url.searchParams.set('limit', String(limit));
+    if (filterPath) {
+      url.searchParams.set('filters', `event:page==${filterPath}`);
+    }
+
     const res = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${config.plausible.apiKey}`,
@@ -524,16 +690,218 @@ export async function getPlausibleTrafficSources(
     }
 
     const data = await res.json();
-    return (data.results || []).map((item: PlausibleBreakdownRow) => ({
-      source: item.source || 'Direct / None',
-      visitors: item.visitors || 0,
-      bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
-      visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
-    }));
+    return (data.results || []).map((item: PlausibleBreakdownRow) => {
+      const source = item.source || 'Direct / None';
+      return {
+        source,
+        channelCategory: classifyTrafficSource(source),
+        visitors: item.visitors || 0,
+        bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
+        visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
+      };
+    });
+  };
+
+  try {
+    let rows = await querySources(normPath);
+    if (rows.length === 0 && normPath && normPath !== '/') {
+      const altPath = normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`;
+      rows = await querySources(altPath);
+    }
+    return rows;
   } catch (err) {
     console.warn(`Failed to contact Plausible breakdown API: ${(err as Error).message}`);
     return [];
   }
+}
+
+/**
+ * Fetches `event:props:env_trust` (`standard` vs. `suspect`) and `Human Verified` goal conversions
+ * to quantify verified human engagement vs. headless/suspect traffic.
+ */
+export async function getPlausibleHumanVsAutomationBreakdown(
+  urlOrPath?: string,
+  period: string = 'last_28_days',
+  totalVisitors?: number
+): Promise<{
+  totalVisitors: number;
+  humanVerifiedVisitors: number;
+  humanVerificationRate: number | null;
+  envTrustBreakdown: EnvTrustSegmentMetric[];
+}> {
+  const normPath = urlOrPath ? normalizePath(urlOrPath) : undefined;
+  const pageFilter = normPath ? `event:page==${normPath}` : undefined;
+
+  const fetchBoth = async (filter?: string) =>
+    Promise.all([
+      fetchBreakdown('event:props:env_trust', period, filter, 'visitors,bounce_rate,visit_duration', 10, true),
+      fetchBreakdown('event:goal', period, filter, 'visitors', 100, true),
+    ]);
+
+  let [rawEnvTrust, rawGoals] = await fetchBoth(pageFilter);
+
+  if (rawEnvTrust.length === 0 && rawGoals.length === 0 && normPath && normPath !== '/') {
+    const altPath = normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`;
+    [rawEnvTrust, rawGoals] = await fetchBoth(`event:page==${altPath}`);
+  }
+
+  let effectiveTotal = totalVisitors;
+  if (effectiveTotal === undefined) {
+    if (normPath) {
+      const pageMetrics = await getPlausiblePageMetrics(normPath, period, false);
+      effectiveTotal = pageMetrics.visitors;
+    } else {
+      const siteOverview = await getPlausibleSiteOverview(period);
+      effectiveTotal = siteOverview.visitors;
+    }
+  }
+
+  const humanGoal = rawGoals.find((g) => g.goal === 'Human Verified');
+  const humanVerifiedVisitors = humanGoal?.visitors || 0;
+  const humanVerificationRate =
+    effectiveTotal > 0 ? Number(((humanVerifiedVisitors / effectiveTotal) * 100).toFixed(1)) : null;
+
+  const envSum = rawEnvTrust.reduce((acc, row) => acc + (row.visitors || 0), 0);
+  const pctDenominator = effectiveTotal > 0 ? effectiveTotal : envSum || 1;
+
+  const envTrustBreakdown: EnvTrustSegmentMetric[] = rawEnvTrust.map((item) => {
+    const rawVal = String(item.env_trust ?? item['event:props:env_trust'] ?? item.value ?? '(not set)');
+    const envTrust = rawVal === '(none)' || rawVal === '' ? '(not set)' : rawVal;
+    const visitors = item.visitors || 0;
+    return {
+      envTrust,
+      visitors,
+      percentage: Number(((visitors / pctDenominator) * 100).toFixed(1)),
+      bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
+      visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
+    };
+  });
+
+  return {
+    totalVisitors: effectiveTotal,
+    humanVerifiedVisitors,
+    humanVerificationRate,
+    envTrustBreakdown,
+  };
+}
+
+/**
+ * Detects suspected automated / headless traffic clusters within tech/geo breakdowns
+ * and flags `visitors > pageviews` ghost-session anomalies.
+ */
+export function detectTechTrafficAnomalies(
+  tech: TechBreakdown,
+  pageviews: number,
+  totalVisitors: number,
+  countries?: GeoDimensionMetric[]
+): AutomationAnomaly[] {
+  const anomalies: AutomationAnomaly[] = [];
+
+  const checkTechList = (
+    items: TechDimensionMetric[],
+    dimension: 'os' | 'browser' | 'device'
+  ) => {
+    for (const item of items) {
+      if (item.visitors < 5) continue;
+
+      const reasons: string[] = [];
+      const isZeroSecondHighBounce =
+        item.visitDuration !== null &&
+        item.visitDuration <= 2 &&
+        item.bounceRate !== null &&
+        item.bounceRate >= 80;
+      const isUnrecognized = item.name === '(not set)' || item.name === '(unknown)';
+
+      if (isZeroSecondHighBounce) {
+        reasons.push(
+          `${item.visitors} visitors with ${item.visitDuration}s avg duration and ${item.bounceRate}% bounce rate`
+        );
+      }
+      if (isUnrecognized) {
+        reasons.push(`unrecognized ${dimension} "${item.name}" with ${item.visitors} visitors`);
+      }
+
+      if (reasons.length > 0) {
+        anomalies.push({
+          dimension,
+          segment: item.name,
+          visitors: item.visitors,
+          bounceRate: item.bounceRate,
+          visitDuration: item.visitDuration,
+          reason: reasons.join('; '),
+        });
+      }
+    }
+  };
+
+  checkTechList(tech.operatingSystems, 'os');
+  checkTechList(tech.browsers, 'browser');
+  checkTechList(tech.devices, 'device');
+
+  if (countries && countries.length > 0) {
+    for (const c of countries) {
+      if (c.visitors < 5) continue;
+      const reasons: string[] = [];
+      const isZeroSecondHighBounce =
+        c.visitDuration !== null &&
+        c.visitDuration <= 2 &&
+        c.bounceRate !== null &&
+        c.bounceRate >= 80;
+      const isUnrecognized = c.country === '(not set)' || c.country === '(unknown)';
+
+      if (isZeroSecondHighBounce) {
+        reasons.push(
+          `${c.visitors} visitors with ${c.visitDuration}s avg duration and ${c.bounceRate}% bounce rate`
+        );
+      }
+      if (isUnrecognized) {
+        reasons.push(`unrecognized country "${c.country}" with ${c.visitors} visitors`);
+      }
+
+      if (reasons.length > 0) {
+        anomalies.push({
+          dimension: 'country',
+          segment: c.country,
+          visitors: c.visitors,
+          bounceRate: c.bounceRate,
+          visitDuration: c.visitDuration,
+          reason: reasons.join('; '),
+        });
+      }
+    }
+  }
+
+  if (totalVisitors >= 5 && totalVisitors > pageviews * 1.15) {
+    anomalies.push({
+      dimension: 'page_integrity',
+      segment: 'visitors > pageviews',
+      visitors: totalVisitors,
+      bounceRate: null,
+      visitDuration: null,
+      reason: `visitors (${totalVisitors}) exceed pageviews (${pageviews}) by >15%, indicating non-pageview/hidden-tab event ghosts`,
+    });
+  }
+
+  return anomalies;
+}
+
+/**
+ * Aggregates all `ai_assistant` traffic sources and computes their share relative to total visitors.
+ */
+export function summarizeAiAssistants(
+  sources: TrafficSourceMetric[],
+  totalVisitors: number
+): AiAssistantsSummary {
+  const aiSources = sources.filter((s) => s.channelCategory === 'ai_assistant');
+  const visitors = aiSources.reduce((acc, s) => acc + s.visitors, 0);
+  const denominator = totalVisitors > 0 ? totalVisitors : sources.reduce((acc, s) => acc + s.visitors, 0);
+  const sharePct = denominator > 0 ? Number(((visitors / denominator) * 100).toFixed(1)) : 0;
+
+  return {
+    visitors,
+    sharePct,
+    sources: aiSources,
+  };
 }
 
 /**
@@ -642,6 +1010,7 @@ const GOAL_DETAIL_PROPERTIES: Record<string, { propKey: string; fieldName: strin
   'Heading Viewed': { propKey: 'event:props:id', fieldName: 'id' },
   'Card Viewed': { propKey: 'event:props:id', fieldName: 'id' },
   'Card Clicked': { propKey: 'event:props:id', fieldName: 'id' },
+  'Human Verified': { propKey: 'event:props:trigger', fieldName: 'trigger' },
   'Slide Viewed': { propKey: 'event:props:slide_number', fieldName: 'slide_number' },
   'High Intent: Copy Email': { propKey: 'event:props:location', fieldName: 'location' },
   'High Intent: Copy BibTeX': { propKey: 'event:props:id', fieldName: 'id' },

@@ -55,7 +55,7 @@ export function getConfig(): AppConfig {
 
   const plausibleApiKey = process.env.PLAUSIBLE_API_KEY;
   const plausibleSiteId = process.env.PLAUSIBLE_SITE_ID || 'hackenberg.tech';
-  const plausibleHost = (process.env.PLAUSIBLE_HOST || 'https://plausible.io').replace(/\/$/, '');
+  const plausibleHost = (process.env.PLAUSIBLE_HOST || 'https://analytics.mentawise.com').replace(/\/$/, '');
 
   return {
     projectRoot: PROJECT_ROOT,
