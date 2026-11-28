@@ -135,4 +135,4 @@ The architecture diagram below traces how [`theme.css`](https://github.com/ghack
 
 ![Semantic vector diagram of the static AST governance pipeline uniting theme.css, graphics.css, lint-colors.ts, lint-svgs.ts across 108 SVGs, and lint-posts.ts across 150 posts and 136 collection entries](./cross-layer-token-prose-governance.svg "Cross-Layer Color Token and Editorial Prose Rhythm Governance")
 
-Together, build-time three-band figure synthesis, font-weighted SVG width clamping, and static AST governance ensure that every diagram, code listing, and data table renders with uniform typographic rhythm and zero theme drift.
+Together, build-time three-band figure synthesis, font-weighted SVG width clamping, and static AST governance ensure that every diagram, code listing, and data table renders with uniform typographic rhythm and zero theme drift—forming the layered verification backbone of our [five-stage process model derived from 750 commits](/posts/2026_11_28_fuenf_stufen_prozessmodell_750_commits/).
